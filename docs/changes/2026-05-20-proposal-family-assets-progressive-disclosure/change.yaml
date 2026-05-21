@@ -1,0 +1,228 @@
+change_id: 2026-05-20-proposal-family-assets-progressive-disclosure
+title: Proposal-family assets progressive disclosure
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md
+  spec: specs/proposal-family-assets-progressive-disclosure.md
+  test_spec: specs/proposal-family-assets-progressive-disclosure.test.md
+  plan: docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md
+  change_summary: docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md
+  review_resolution: docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md
+  explain_change: docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/explain-change.md
+  verify_report: docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/verify-report.md
+requirements:
+  - Record the accepted proposal direction for applying assets-only progressive disclosure to proposal-family skills.
+  - Resolve proposal-review findings PFA-PR1, PFA-PR2, PFA-PR3, and PFA-PR4 before downstream reliance.
+  - Create an approved spec for proposal-family assets progressive disclosure before planning and implementation.
+  - Record clean spec-review approval before downstream plan reliance.
+  - Create an active execution plan and record clean plan-review approval before implementation.
+  - Create an active test spec before implementation.
+  - Implement M1 baseline summary and validator foundation before skill text changes.
+  - Keep proposal-family rules, enums, review dimensions, recording obligations, lifecycle boundaries, and handoff behavior in SKILL.md.
+  - Require deterministic validator coverage for proposal-family asset mapping, COPY usage, metadata, placeholder policy, review-class structural labels, forbidden review-policy labels, generated-output presence, and baseline-summary presence.
+tests:
+  - Review artifact closeout validation for proposal-review, spec-review, and plan-review evidence.
+  - Artifact lifecycle validation for proposal, spec, test spec, active plan, plan index, and review artifacts.
+  - Skill validator fixture coverage for proposal-family asset mapping, COPY usage, metadata, status, placeholder, review-class boundary, generated-output presence, and baseline-summary checks.
+  - Full canonical skill validation after M1 validator changes.
+  - Whitespace validation for touched files.
+validation:
+  - command: python scripts/test-skill-validator.py
+    result: pass_150_tests_after_m1_validator_foundation
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m1_validator_foundation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_valid_change_metadata_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_reviews_4_findings_4_log_entries_4_resolution_entries_4_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md
+    result: pass_validated_3_lifecycle_artifacts_after_m1
+  - command: git diff --check --
+    result: pass_after_m1
+  - command: python scripts/test-skill-validator.py
+    result: pass_151_tests_after_pfa_m1_cr1_resolution
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_pfa_m1_cr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_valid_change_metadata_after_pfa_m1_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_after_pfa_m1_cr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md
+    result: pass_after_pfa_m1_cr1_resolution
+  - command: git diff --check --
+    result: pass_after_pfa_m1_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_after_code_review_m1_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_after_code_review_m1_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md
+    result: pass_after_code_review_m1_r2
+  - command: git diff --check --
+    result: pass_after_code_review_m1_r2
+  - command: python scripts/validate-skills.py skills/proposal/SKILL.md
+    result: pass_validated_1_skill_file_after_m2_proposal_asset
+  - command: python scripts/test-skill-validator.py
+    result: pass_151_tests_after_m2_proposal_asset
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m2_proposal_asset
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_after_m2_proposal_asset
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_after_m2_proposal_asset
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md
+    result: pass_after_m2_proposal_asset
+  - command: git diff --check --
+    result: pass_after_m2_proposal_asset
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md
+    result: pass_after_code_review_m2_r1
+  - command: git diff --check --
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-skills.py skills/proposal-review/SKILL.md
+    result: pass_validated_1_skill_file_after_m3_proposal_review_assets
+  - command: python scripts/test-skill-validator.py
+    result: pass_151_tests_after_m3_proposal_review_assets
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3_proposal_review_assets
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_after_m3_proposal_review_assets
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_after_m3_proposal_review_assets
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md
+    result: pass_after_m3_proposal_review_assets
+  - command: git diff --check --
+    result: pass_after_m3_proposal_review_assets
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3_r1
+  - command: git diff --check --
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-skills.py skills/proposal-review/SKILL.md
+    result: pass_validated_1_skill_file_after_pfa_m3_cr1_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_152_tests_after_pfa_m3_cr1_resolution
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_pfa_m3_cr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_after_pfa_m3_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_after_pfa_m3_cr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md
+    result: pass_after_pfa_m3_cr1_resolution
+  - command: git diff --check --
+    result: pass_after_pfa_m3_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_after_code_review_m3_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_after_code_review_m3_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r2.md
+    result: pass_after_code_review_m3_r2
+  - command: git diff --check --
+    result: pass_after_code_review_m3_r2
+  - command: python scripts/build-skills.py --check --output-dir /tmp/rigorloop-pfa-m4-skills-final-wybuIX/skills
+    result: pass_generated_proposal_family_assets_present_after_m4
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-pfa-m4-adapters-final-bT9gTu
+    result: pass_built_temporary_codex_claude_opencode_adapter_archives_after_m4
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-pfa-m4-adapters-final-bT9gTu --version v0.1.5
+    result: pass_validated_temporary_adapter_archives_after_m4
+  - command: python -c "inspect /tmp/rigorloop-pfa-m4-adapters-final-bT9gTu temporary adapter archives with zipfile"
+    result: pass_proposal_family_assets_present_in_all_temporary_adapter_archives_after_m4
+  - command: python scripts/build-adapters.py --check --version v0.1.5 --verbose
+    result: deferred_known_tracked_tree_expanded_adapter_debt_total_112_missing_111_manifest_error_1_after_m4
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_23_skills_250084_bytes_62509_estimated_tokens_after_m4
+  - command: python scripts/validate-skills.py skills/proposal/SKILL.md
+    result: pass_validated_1_skill_file_after_m4_proposal_wording_trim
+  - command: python scripts/test-skill-validator.py
+    result: pass_152_tests_after_m4
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_after_m4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_reviews_9_findings_6_log_entries_9_resolution_entries_6_after_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/generated-output-proof.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r2.md
+    result: pass_validated_3_lifecycle_artifacts_after_m4
+  - command: git diff --check --
+    result: pass_after_m4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/generated-output-proof.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m4-r1.md
+    result: pass_after_code_review_m4_r1
+  - command: git diff --check --
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/generated-output-proof.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/explain-change.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m4-r1.md
+    result: pass_after_explain_change
+  - command: git diff --check --
+    result: pass_after_explain_change
+  - command: python scripts/test-skill-validator.py
+    result: pass_152_tests_during_final_verify
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_during_final_verify
+  - command: python scripts/build-skills.py --check --output-dir /tmp/rigorloop-pfa-verify-skills-ZyX94U/skills
+    result: pass_generated_proposal_family_assets_present_during_final_verify
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-pfa-verify-adapters-TEhWIA
+    result: pass_built_temporary_codex_claude_opencode_adapter_archives_during_final_verify
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-pfa-verify-adapters-TEhWIA --version v0.1.5
+    result: pass_validated_temporary_adapter_archives_during_final_verify
+  - command: python -c "inspect /tmp/rigorloop-pfa-verify-adapters-TEhWIA temporary adapter archives with zipfile"
+    result: pass_proposal_family_assets_present_in_all_temporary_adapter_archives_during_final_verify
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_23_skills_250084_bytes_62509_estimated_tokens_during_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+    result: pass_valid_change_metadata_during_final_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure
+    result: pass_reviews_10_findings_6_log_entries_10_resolution_entries_6_during_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/generated-output-proof.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/explain-change.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m4-r1.md
+    result: pass_validated_3_lifecycle_artifacts_during_final_verify
+  - command: git diff --check --
+    result: pass_during_final_verify
+  - command: bash scripts/ci.sh --mode pr --base 386ff42834e9489ad17a9194b863f40d5332e0af --head HEAD
+    result: pass_selected_pr_ci_checks_during_final_verify
+  - command: python scripts/build-adapters.py --check --version v0.1.5 --verbose
+    result: deferred_known_tracked_tree_expanded_adapter_debt_total_112_missing_111_manifest_error_1_during_final_verify
+changed_files:
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/explain-change.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/generated-output-proof.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/verify-report.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r2.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m4-r1.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md
+  - docs/plan.md
+  - docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md
+  - docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - skills/proposal/SKILL.md
+  - skills/proposal/assets/proposal-skeleton.md
+  - skills/proposal-review/SKILL.md
+  - skills/proposal-review/assets/material-finding.md
+  - skills/proposal-review/assets/review-result-skeleton.md
+  - specs/proposal-family-assets-progressive-disclosure.md
+  - specs/proposal-family-assets-progressive-disclosure.test.md
+review:
+  status: clean-with-notes
+  unresolved_items: 0

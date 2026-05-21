@@ -66,6 +66,15 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Resource map
+
+- COPY `assets/review-result-skeleton.md` when producing the proposal-review result artifact.
+  Fill: review status, material findings, recording status, recording blocker, review record, review log, review resolution, open blockers, immediate next stage, review dimensions, scope-preservation result, recommended edits, and recommendation.
+  Do not emit unfilled placeholders.
+- COPY `assets/material-finding.md` once per material finding.
+  Fill: finding ID, severity, location, evidence, required outcome, safe resolution path, and needs-decision rationale when needed.
+  Do not emit unfilled placeholders.
+
 ## Review dimensions
 
 | Dimension | Question |
@@ -292,35 +301,13 @@ Read the full file when the whole file is the review target, context can change 
 
 ## Output skeleton
 
-Use placeholders such as `<one review status value>` when producing the review artifact.
+Use the mapped assets as the copy-and-fill structure for proposal-review artifacts.
 
 ```md
-## Result
-- Skill: proposal-review
-- Review status: <one review status value>
-- Material findings: <finding IDs or none>
-- Recording status: <one recording status value>
-- Recording blocker: <blocker or none>
-- Review record: <path, not-required, or blocked>
-- Review log: <path, not-required, or blocked>
-- Review resolution: <path, not-required, or blocked>
-- Open blockers: <blockers or none>
-- Immediate next stage: <next stage or isolated stop>
-
-## Material Findings
-<finding table with ID, severity, location, evidence, required outcome, and safe resolution>
-
-## Review Dimensions
-| Dimension | Result | Notes |
-|---|---|---|
-| <dimension> | <one review dimension result> | <notes> |
-
-## Scope Preservation Review
-<scope-preservation result>
-## Recommended Proposal Edits
-1. <edit or "None">
-## Recommendation
-<status, reason, next step, and immediate next stage>
+COPY `assets/review-result-skeleton.md` for the review result artifact.
+COPY `assets/material-finding.md` once per material finding.
+Fill <proposal-review artifact fields> required by this skill.
+Do not emit unfilled placeholders.
 ```
 
 ## Expected output

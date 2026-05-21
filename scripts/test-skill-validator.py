@@ -589,6 +589,23 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             )
         return metadata + textwrap.dedent(body)
 
+    def proposal_family_asset_text(
+        self,
+        *,
+        template: str,
+        skill: str,
+        status: str = "normative",
+        body: str = "| <field> | <value> |\n",
+        include_metadata: bool = True,
+    ) -> str:
+        return self.spec_family_asset_text(
+            template=template,
+            skill=skill,
+            status=status,
+            body=body,
+            include_metadata=include_metadata,
+        )
+
     def assertFixturePasses(self, relative_path: str) -> None:
         result = run_validator(FIXTURES / relative_path)
         self.assertEqual(
@@ -1119,6 +1136,391 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Closed enums that remain in `SKILL.md`",
             "Stop conditions that remain in `SKILL.md`",
             "Review dimensions or coverage obligations that remain in `SKILL.md`",
+            "Source location for each extracted asset",
+        ]:
+            with self.subTest(required=required):
+                self.assertIn(required, text)
+
+    def test_proposal_family_asset_valid_fixture_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "proposal",
+                {
+                    "assets/proposal-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-skeleton-v1",
+                        skill="proposal",
+                        body=(
+                            "## Status\n\n<status>\n\n"
+                            "## Conditional sections\n\n"
+                            "- Initial intent preservation: include when triggered by SKILL.md.\n"
+                            "- Scope budget: include when triggered by SKILL.md.\n"
+                        ),
+                    ),
+                },
+            )
+            self.write_spec_family_asset_fixture(
+                root,
+                "proposal-review",
+                {
+                    "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-review-result-skeleton-v1",
+                        skill="proposal-review",
+                        body=(
+                            "## Result\n\n"
+                            "- Skill: proposal-review\n"
+                            "- Review status: <review status>\n"
+                            "- Material findings: <material findings>\n"
+                            "- Recording status: <recording status>\n"
+                            "- Recording blocker: <recording blocker>\n"
+                            "- Review record: <review record>\n"
+                            "- Review log: <review log>\n"
+                            "- Review resolution: <review resolution>\n"
+                            "- Open blockers: <open blockers>\n"
+                            "- Immediate next stage: <immediate next stage>\n"
+                            "- Review dimensions: <review dimensions>\n"
+                            "- Scope-preservation result: <scope-preservation result>\n"
+                            "- Recommended edits: <recommended edits>\n"
+                            "- Recommendation: <recommendation>\n"
+                        ),
+                    ),
+                    "assets/material-finding.md": self.proposal_family_asset_text(
+                        template="proposal-review-material-finding-v1",
+                        skill="proposal-review",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Finding ID: <finding id>\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                            "- needs-decision rationale: <needs-decision rationale>\n"
+                        ),
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_proposal_review_result_skeleton_preserves_baseline_result_block(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "proposal-review",
+                {
+                    "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-review-result-skeleton-v1",
+                        skill="proposal-review",
+                        body=(
+                            "# Result\n\n"
+                            "- Review status: <review status>\n"
+                            "- Material findings: <material findings>\n"
+                            "- Recording status: <recording status>\n"
+                        ),
+                    ),
+                    "assets/material-finding.md": self.proposal_family_asset_text(
+                        template="proposal-review-material-finding-v1",
+                        skill="proposal-review",
+                        body="- Severity: <severity>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            output = result.stdout + result.stderr
+            self.assertIn(
+                "proposal-review review-result-skeleton must include baseline heading: ## Result",
+                output,
+            )
+            self.assertIn(
+                "proposal-review review-result-skeleton must include baseline field: Skill",
+                output,
+            )
+
+    def test_proposal_family_asset_rejects_unapproved_asset_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "proposal",
+                {
+                    "assets/proposal-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-skeleton-v1", skill="proposal"
+                    ),
+                    "assets/scope-budget-row.md": self.proposal_family_asset_text(
+                        template="proposal-scope-budget-row-v1", skill="proposal"
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "proposal-family asset rollout must ship exactly approved assets",
+                result.stdout + result.stderr,
+            )
+
+    def test_proposal_family_asset_resource_map_requires_copy_and_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "proposal",
+                {
+                    "assets/proposal-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-skeleton-v1", skill="proposal"
+                    ),
+                },
+                resource_entries=textwrap.dedent(
+                    """\
+                    - READ `assets/proposal-skeleton.md` when creating a proposal.
+                      Do not emit unfilled placeholders.
+                    """
+                ),
+            )
+
+            result = run_validator(root)
+            output = result.stdout + result.stderr
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "Resource map entry for 'assets/proposal-skeleton.md' must use literal COPY",
+                output,
+            )
+            self.assertIn(
+                "Resource map entry for 'assets/proposal-skeleton.md' must name fields or structures to fill",
+                output,
+            )
+
+    def test_proposal_family_asset_metadata_status_and_placeholder_required(self) -> None:
+        cases = [
+            (
+                "missing metadata",
+                self.proposal_family_asset_text(
+                    template="proposal-skeleton-v1",
+                    skill="proposal",
+                    include_metadata=False,
+                ),
+                "asset metadata missing required field 'Template'",
+            ),
+            (
+                "invalid status",
+                self.proposal_family_asset_text(
+                    template="proposal-skeleton-v1",
+                    skill="proposal",
+                    status="example",
+                ),
+                "proposal-family asset 'assets/proposal-skeleton.md' Template status must be one of normative, optional",
+            ),
+            (
+                "missing placeholder",
+                self.proposal_family_asset_text(
+                    template="proposal-skeleton-v1",
+                    skill="proposal",
+                    body="## Status\n\nStatus field.\n",
+                ),
+                "asset 'assets/proposal-skeleton.md' must include a visible placeholder",
+            ),
+            (
+                "filler prose",
+                self.proposal_family_asset_text(
+                    template="proposal-skeleton-v1",
+                    skill="proposal",
+                    body="your text here\n",
+                ),
+                "asset 'assets/proposal-skeleton.md' must not use filler placeholder text",
+            ),
+            (
+                "root dependency",
+                self.proposal_family_asset_text(
+                    template="proposal-skeleton-v1",
+                    skill="proposal",
+                    body="Run scripts/internal-check.py before filling <field>.\n",
+                ),
+                "asset 'assets/proposal-skeleton.md' must not require repository-root dependency",
+            ),
+        ]
+
+        for name, asset_text, expected in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self.write_spec_family_asset_fixture(
+                    root,
+                    "proposal",
+                    {
+                        "assets/proposal-skeleton.md": asset_text,
+                    },
+                )
+
+                result = run_validator(root)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(expected, result.stdout + result.stderr)
+
+    def test_proposal_review_asset_policy_field_labels_fail(self) -> None:
+        for forbidden_label in (
+            "Severity policy",
+            "Material-finding sufficiency",
+            "Safe-resolution decision rule",
+            "Recording-status rules",
+            "Scope-preservation rules",
+            "Scope-budget review",
+            "Vision fit review",
+            "Standing artifact gate review",
+            "Review dimension guidance",
+        ):
+            with self.subTest(forbidden_label=forbidden_label):
+                with tempfile.TemporaryDirectory() as temporary:
+                    root = Path(temporary)
+                    self.write_spec_family_asset_fixture(
+                        root,
+                        "proposal-review",
+                        {
+                            "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                                template="proposal-review-result-skeleton-v1",
+                                skill="proposal-review",
+                                body=f"- {forbidden_label}: <policy>\n",
+                            ),
+                            "assets/material-finding.md": self.proposal_family_asset_text(
+                                template="proposal-review-material-finding-v1",
+                                skill="proposal-review",
+                                body="- Severity: <severity>\n",
+                            ),
+                        },
+                    )
+
+                    result = run_validator(root)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn(
+                        "proposal-review asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
+                        result.stdout + result.stderr,
+                    )
+
+    def test_proposal_review_asset_non_allowlisted_field_labels_fail(self) -> None:
+        for label in (
+            "Architecture impact",
+            "Testability notes",
+            "Rollout realism",
+            "Strategic value",
+        ):
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self.write_spec_family_asset_fixture(
+                    root,
+                    "proposal-review",
+                    {
+                        "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                            template="proposal-review-result-skeleton-v1",
+                            skill="proposal-review",
+                            body=f"- {label}: <notes>\n",
+                        ),
+                        "assets/material-finding.md": self.proposal_family_asset_text(
+                            template="proposal-review-material-finding-v1",
+                            skill="proposal-review",
+                            body="- Severity: <severity>\n",
+                        ),
+                    },
+                )
+
+                result = run_validator(root)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(
+                    "proposal-review asset 'assets/review-result-skeleton.md' field label is not in the approved structural-label allowlist: "
+                    + label,
+                    result.stdout + result.stderr,
+                )
+
+    def test_proposal_review_asset_policy_prose_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "proposal-review",
+                {
+                    "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-review-result-skeleton-v1",
+                        skill="proposal-review",
+                        body="This asset MUST define severity policy for reviewers.\n<field>\n",
+                    ),
+                    "assets/material-finding.md": self.proposal_family_asset_text(
+                        template="proposal-review-material-finding-v1",
+                        skill="proposal-review",
+                        body="- Severity: <severity>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "proposal-review asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
+                result.stdout + result.stderr,
+            )
+
+    def test_proposal_family_generated_asset_presence_names_adapter_surface(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical_skill_dir = self.write_spec_family_asset_fixture(
+                root / "canonical",
+                "proposal-review",
+                {
+                    "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-review-result-skeleton-v1",
+                        skill="proposal-review",
+                        body="- Review status: <review status>\n",
+                    ),
+                    "assets/material-finding.md": self.proposal_family_asset_text(
+                        template="proposal-review-material-finding-v1",
+                        skill="proposal-review",
+                        body="- Severity: <severity>\n",
+                    ),
+                },
+            )
+            generated_skill_dir = root / "generated-adapter" / "proposal-review"
+            generated_asset = generated_skill_dir / "assets/review-result-skeleton.md"
+            generated_asset.parent.mkdir(parents=True, exist_ok=True)
+            generated_asset.write_text("generated result skeleton", encoding="utf-8")
+
+            errors = skill_validation.validate_generated_asset_presence(
+                skill_name="proposal-review",
+                canonical_skill_dir=canonical_skill_dir,
+                generated_skill_dir=generated_skill_dir,
+                surface_label="generated adapter output",
+            )
+
+            self.assertEqual(
+                errors,
+                [
+                    "Generated output for skill 'proposal-review' is missing mapped asset "
+                    "'assets/material-finding.md' in generated adapter output"
+                ],
+            )
+
+    def test_proposal_family_baseline_summary_records_required_surfaces(self) -> None:
+        baseline = (
+            ROOT
+            / "docs"
+            / "changes"
+            / "2026-05-20-proposal-family-assets-progressive-disclosure"
+            / "baseline.md"
+        )
+        self.assertTrue(baseline.exists())
+        text = baseline.read_text(encoding="utf-8")
+        for required in [
+            "Source commit or branch point",
+            "skills/proposal/SKILL.md",
+            "skills/proposal-review/SKILL.md",
+            "Source file hashes",
+            "Existing full skeleton section set",
+            "Repeated substructure fields to extract",
+            "Conditional sections governed by `SKILL.md`",
+            "Closed enums that remain in `SKILL.md`",
+            "Scope-preservation and scope-budget rules that remain in `SKILL.md`",
+            "Vision fit and standing artifact gate rules that remain in `SKILL.md`",
+            "Review dimensions and recording obligations that remain in `SKILL.md`",
             "Source location for each extracted asset",
         ]:
             with self.subTest(required=required):
