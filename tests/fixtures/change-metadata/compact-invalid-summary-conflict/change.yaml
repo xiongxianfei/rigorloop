@@ -1,0 +1,22 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-change-validation-metadata
+  change_root: tests/fixtures/change-metadata/compact-invalid-summary-conflict
+validation_bundles:
+  metadata:
+    command: python scripts/validate-change-metadata.py {change_root}/change.yaml
+validation_events:
+  - stage: proposal-review-r1
+    lifecycle_stage: proposal-review
+    bundles:
+      - metadata
+    result: blocked
+    failures:
+      - kind: missing-precondition
+        message: proposal review not ready
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - proposal-review-r1
+  final_counts: {}
+  open_validation_blockers: []

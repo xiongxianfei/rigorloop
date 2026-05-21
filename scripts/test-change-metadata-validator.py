@@ -232,6 +232,42 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
                 "compact-invalid-unsafe-bundle-command-secret",
                 "validation_bundles.unsafe_secret.command contains secret-like value",
             ),
+            (
+                "compact-invalid-summary-conflict",
+                "validation_summary.all_passed: expected false when any event is not pass",
+            ),
+            (
+                "compact-invalid-stages-validated-drift",
+                "validation_summary.stages_validated: expected pass-event stages",
+            ),
+            (
+                "compact-invalid-duplicate-stage",
+                "validation_events[1].stage: duplicate stage 'proposal-review-r1'",
+            ),
+            (
+                "compact-invalid-skipped-without-decision",
+                "validation_events[1].owner_decision: required when result is skipped",
+            ),
+            (
+                "compact-invalid-not-run-without-blocker",
+                "validation_summary.open_validation_blockers: missing blocker for stage 'spec-review-r1'",
+            ),
+            (
+                "compact-invalid-missing-path-delta",
+                "validation_events[0].paths_added.lifecycle: required for first path-expanding bundle event",
+            ),
+            (
+                "compact-invalid-final-count-drift",
+                "validation_summary.final_counts.reviews: expected 1",
+            ),
+            (
+                "compact-invalid-review-counts",
+                "validation_events[0].counts.reviews: expected review artifact count 1",
+            ),
+            (
+                "compact-invalid-review-count-precondition",
+                "review artifact count cross-check blocked",
+            ),
         ]
         for fixture, expected in cases:
             with self.subTest(fixture=fixture):
@@ -239,6 +275,97 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
 
     def test_compact_pre_stage_missing_artifact_passes(self) -> None:
         self.assertPathPasses(FIXTURES / "compact-valid-pre-stage-missing-artifact" / "change.yaml")
+
+    def test_compact_m3_valid_fixtures_pass(self) -> None:
+        for fixture in (
+            "compact-valid-skipped-with-decision",
+            "compact-valid-review-counts",
+        ):
+            with self.subTest(fixture=fixture):
+                self.assertPathPasses(FIXTURES / fixture / "change.yaml")
+
+    def test_compact_path_accumulation_helper(self) -> None:
+        validator = load_validator_module()
+        data = validator.load_yaml(FIXTURES / "compact-valid" / "change.yaml")
+        variables, errors = validator.resolve_compact_path_vars(data["path_vars"])
+        self.assertEqual(errors, [])
+        reconstructed, errors = validator.reconstruct_compact_path_sets(
+            data["validation_bundles"],
+            data["validation_events"],
+            variables,
+        )
+        self.assertEqual(errors, [])
+        self.assertEqual(
+            reconstructed[("proposal-review-r1", "lifecycle")],
+            [
+                "docs/proposals/2026-05-21-compact-change-validation-metadata.md",
+                "tests/fixtures/change-metadata/compact-valid/change.yaml",
+            ],
+        )
+        self.assertEqual(
+            reconstructed[("test-spec-r1", "lifecycle")],
+            [
+                "docs/proposals/2026-05-21-compact-change-validation-metadata.md",
+                "tests/fixtures/change-metadata/compact-valid/change.yaml",
+                "specs/compact-change-validation-metadata.md",
+                "specs/compact-change-validation-metadata.test.md",
+                "tests/fixtures/change-metadata/compact-valid/change.validation-log.yaml",
+            ],
+        )
+
+    def test_compact_common_read_reduction_helper(self) -> None:
+        validator = load_validator_module()
+        legacy = "\n".join(
+            f"- command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-r{i}.md\n  result: pass_reviews_{i}_findings_0_log_entries_{i}_resolution_entries_0"
+            for i in range(1, 9)
+        )
+        compact = """validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    expands_with: validation_events[].paths_added.lifecycle
+validation_events:
+  - stage: proposal-review-r1
+    bundles: [lifecycle]
+    paths_added:
+      lifecycle:
+        - docs/proposals/{change_id}.md
+validation_summary:
+  all_passed: true
+"""
+        reduction = validator.measure_compact_common_read_reduction(legacy, compact)
+        self.assertGreaterEqual(reduction, 0.30)
+
+    def test_compact_validator_does_not_execute_bundle_commands(self) -> None:
+        sentinel = ROOT / "tests" / "fixtures" / "change-metadata" / "compact-command-sentinel"
+        if sentinel.exists():
+            sentinel.unlink()
+        with tempfile.TemporaryDirectory(prefix="change-metadata-no-exec-") as temp_dir:
+            target = Path(temp_dir) / "change.yaml"
+            target.write_text(
+                """schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-change-validation-metadata
+  change_root: tests/fixtures/change-metadata/compact-valid
+validation_bundles:
+  sentinel:
+    command: python -c create_compact_command_sentinel
+validation_events:
+  - stage: proposal-review-r1
+    lifecycle_stage: proposal-review
+    bundles:
+      - sentinel
+    result: pass
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - proposal-review-r1
+  final_counts: {}
+  open_validation_blockers: []
+""",
+                encoding="utf-8",
+            )
+            self.assertPathPasses(target)
+        self.assertFalse(sentinel.exists(), "bundle command was executed")
 
     def test_clean_receipt_root_metadata_passes(self) -> None:
         self.assertPathPasses(CLEAN_RECEIPT_ROOT)

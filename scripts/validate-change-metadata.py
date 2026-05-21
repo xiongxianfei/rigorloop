@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from change_metadata_semantics import validate_clean_receipt_root_review_metadata
+from review_artifact_validation import validate_change_root as validate_review_artifact_root
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -747,6 +748,113 @@ def validate_compact_counts(counts: Any, event_path: str) -> list[str]:
     return errors
 
 
+def compact_count_value(counts: dict[str, Any], key: str) -> int | None:
+    value = counts.get(key)
+    if isinstance(value, int) and not isinstance(value, bool):
+        return value
+    return None
+
+
+def measure_compact_common_read_reduction(legacy_common_read: str, compact_common_read: str) -> float:
+    before = len(legacy_common_read.encode("utf-8"))
+    after = len(compact_common_read.encode("utf-8"))
+    if before <= 0:
+        return 0.0
+    return (before - after) / before
+
+
+def compact_bundle_expands_with(bundle_id: str, definition: Any) -> str | None:
+    if not isinstance(definition, dict):
+        return None
+    expands_with = definition.get("expands_with")
+    return expands_with if isinstance(expands_with, str) else None
+
+
+def compact_paths_added_for_bundle(
+    event: dict[str, Any],
+    event_path: str,
+    bundle_id: str,
+) -> tuple[list[tuple[str, Any]] | None, list[str]]:
+    if "paths_added" not in event:
+        return None, []
+    paths_added = event["paths_added"]
+    if not isinstance(paths_added, dict):
+        return None, [f"{event_path}.paths_added: expected object"]
+    if bundle_id not in paths_added:
+        return None, []
+    path = path_label(path_label(event_path, "paths_added"), bundle_id)
+    flattened = iter_compact_paths_added(paths_added[bundle_id], path)
+    if not flattened:
+        return [], [f"{path}: expected at least one path"]
+    return flattened, []
+
+
+def reconstruct_compact_path_sets(
+    validation_bundles: dict[str, Any],
+    validation_events: list[Any],
+    variables: dict[str, str],
+) -> tuple[dict[tuple[str, str], list[str]], list[str]]:
+    reconstructed: dict[tuple[str, str], list[str]] = {}
+    accumulated: dict[str, list[str]] = {}
+    errors: list[str] = []
+
+    path_expanding_bundles: set[str] = set()
+    for bundle_id, definition in validation_bundles.items():
+        expands_with = compact_bundle_expands_with(bundle_id, definition)
+        if expands_with is None:
+            continue
+        expected = f"validation_events[].paths_added.{bundle_id}"
+        if expands_with != expected:
+            errors.append(
+                f"{path_label('validation_bundles', bundle_id)}.expands_with: expected '{expected}'"
+            )
+            continue
+        path_expanding_bundles.add(bundle_id)
+        accumulated[bundle_id] = []
+
+    for index, event in enumerate(validation_events):
+        event_path = path_label("validation_events", index)
+        if not isinstance(event, dict):
+            continue
+        stage = event.get("stage")
+        if not isinstance(stage, str):
+            continue
+        event_bundles = event.get("bundles")
+        if not isinstance(event_bundles, list):
+            continue
+
+        paths_added = event.get("paths_added")
+        if isinstance(paths_added, dict):
+            for bundle_id in paths_added:
+                if bundle_id in validation_bundles and bundle_id not in path_expanding_bundles:
+                    errors.append(
+                        f"{path_label('validation_bundles', bundle_id)}.expands_with: required when paths_added references bundle"
+                    )
+
+        for bundle_id in event_bundles:
+            if not isinstance(bundle_id, str) or bundle_id not in path_expanding_bundles:
+                continue
+            flattened, path_errors = compact_paths_added_for_bundle(event, event_path, bundle_id)
+            errors.extend(path_errors)
+            if flattened is None:
+                if not accumulated[bundle_id]:
+                    errors.append(
+                        f"{event_path}.paths_added.{bundle_id}: required for first path-expanding bundle event"
+                    )
+                    continue
+            else:
+                resolved_paths: list[str] = []
+                for path, template in flattened:
+                    resolved, resolve_errors = resolve_compact_event_path(template, variables, path)
+                    errors.extend(resolve_errors)
+                    if resolved:
+                        resolved_paths.append(resolved)
+                accumulated[bundle_id].extend(resolved_paths)
+            reconstructed[(stage, bundle_id)] = list(accumulated[bundle_id])
+
+    return reconstructed, list(dict.fromkeys(errors))
+
+
 def validate_compact_failure_details(event: dict[str, Any], event_path: str) -> list[str]:
     result = event.get("result")
     if result not in {"fail", "blocked"}:
@@ -755,6 +863,19 @@ def validate_compact_failure_details(event: dict[str, Any], event_path: str) -> 
     if not isinstance(failures, list) or not failures:
         return [f"{event_path}.failures: required when result is {result}"]
     return []
+
+
+def validate_compact_skipped_event(event: dict[str, Any], event_path: str) -> list[str]:
+    if event.get("result") != "skipped":
+        return []
+    errors: list[str] = []
+    if not is_nonempty_string(event.get("skip_reason")):
+        errors.append(f"{event_path}.skip_reason: required when result is skipped")
+    if not is_nonempty_string(event.get("owner_decision")):
+        errors.append(f"{event_path}.owner_decision: required when result is skipped")
+    elif event.get("owner_decision") != "accepted":
+        errors.append(f"{event_path}.owner_decision: expected accepted")
+    return errors
 
 
 def validate_compact_lifecycle_stage(event: dict[str, Any], event_path: str) -> list[str]:
@@ -893,6 +1014,7 @@ def validate_compact_event(
         errors.extend(validate_compact_counts(event["counts"], event_path))
 
     errors.extend(validate_compact_failure_details(event, event_path))
+    errors.extend(validate_compact_skipped_event(event, event_path))
     if variables is not None:
         errors.extend(validate_compact_event_paths(event, event_path, variables))
         errors.extend(validate_compact_transcript_reference(event, event_path, variables))
@@ -925,6 +1047,197 @@ def validate_compact_first_exists(
     return errors
 
 
+def compact_blocker_stages(blockers: Any) -> set[str]:
+    stages: set[str] = set()
+    if not isinstance(blockers, list):
+        return stages
+    for blocker in blockers:
+        if isinstance(blocker, dict) and isinstance(blocker.get("stage"), str):
+            stages.add(blocker["stage"])
+    return stages
+
+
+def latest_compact_event_counts(validation_events: list[Any]) -> dict[str, int]:
+    latest: dict[str, int] = {}
+    for event in validation_events:
+        if not isinstance(event, dict):
+            continue
+        counts = event.get("counts")
+        if not isinstance(counts, dict):
+            continue
+        latest = {
+            key: value
+            for key, value in counts.items()
+            if isinstance(value, int) and not isinstance(value, bool)
+        }
+    return latest
+
+
+def compact_review_artifact_counts(
+    resolved_vars: dict[str, str],
+) -> tuple[dict[str, int] | None, list[str]]:
+    change_root = resolved_vars.get("change_root")
+    if not change_root:
+        return None, []
+    root_path = ROOT / change_root
+    if not any(
+        (root_path / child).exists()
+        for child in ("reviews", "review-log.md", "review-resolution.md")
+    ):
+        return None, []
+    result = validate_review_artifact_root(root_path, mode="closeout")
+    if result.blocking_findings:
+        return None, [
+            "review artifact count cross-check blocked: "
+            + result.blocking_findings[0].message
+        ]
+    return {
+        "reviews": result.review_count,
+        "findings": result.finding_count,
+        "log_entries": result.review_log_entry_count,
+        "resolution_entries": result.resolution_entry_count,
+    }, []
+
+
+def validate_compact_review_counts(
+    validation_events: list[Any],
+    final_counts: dict[str, Any] | None,
+    resolved_vars: dict[str, str],
+) -> tuple[dict[str, int] | None, list[str]]:
+    review_counts, errors = compact_review_artifact_counts(resolved_vars)
+    if review_counts is None:
+        return None, errors
+    for event_index, event in enumerate(validation_events):
+        if not isinstance(event, dict) or not isinstance(event.get("counts"), dict):
+            continue
+        event_path = path_label("validation_events", event_index)
+        counts = event["counts"]
+        for key, expected in review_counts.items():
+            actual = compact_count_value(counts, key)
+            if actual is not None and actual != expected:
+                errors.append(
+                    f"{event_path}.counts.{key}: expected review artifact count {expected}"
+                )
+    if final_counts is not None:
+        for key, expected in review_counts.items():
+            actual = compact_count_value(final_counts, key)
+            if actual is not None and actual != expected:
+                errors.append(
+                    f"validation_summary.final_counts.{key}: expected review artifact count {expected}"
+                )
+    return review_counts, errors
+
+
+def validate_compact_summary(
+    validation_events: list[Any],
+    validation_summary: Any,
+    resolved_vars: dict[str, str],
+) -> list[str]:
+    if not isinstance(validation_summary, dict):
+        return []
+    errors: list[str] = []
+    for field in ("all_passed", "stages_validated", "final_counts", "open_validation_blockers"):
+        if field not in validation_summary:
+            errors.append(f"validation_summary.{field}: missing required field")
+
+    all_passed = validation_summary.get("all_passed")
+    stages_validated = validation_summary.get("stages_validated")
+    final_counts = validation_summary.get("final_counts")
+    blockers = validation_summary.get("open_validation_blockers")
+
+    if "all_passed" in validation_summary and not isinstance(all_passed, bool):
+        errors.append("validation_summary.all_passed: expected boolean")
+    if "stages_validated" in validation_summary and not isinstance(stages_validated, list):
+        errors.append("validation_summary.stages_validated: expected array")
+    if "final_counts" in validation_summary and not isinstance(final_counts, dict):
+        errors.append("validation_summary.final_counts: expected object")
+    if "open_validation_blockers" in validation_summary and not isinstance(blockers, list):
+        errors.append("validation_summary.open_validation_blockers: expected array")
+
+    pass_stages: list[str] = []
+    stage_counts: dict[str, int] = {}
+    non_pass_stages: list[str] = []
+    for index, event in enumerate(validation_events):
+        if not isinstance(event, dict):
+            continue
+        stage = event.get("stage")
+        result = event.get("result")
+        if isinstance(stage, str):
+            stage_counts[stage] = stage_counts.get(stage, 0) + 1
+            if stage_counts[stage] > 1:
+                errors.append(f"{path_label('validation_events', index)}.stage: duplicate stage '{stage}'")
+            if result == "pass":
+                pass_stages.append(stage)
+            elif result in {"fail", "blocked", "skipped", "not-run"}:
+                non_pass_stages.append(stage)
+
+    if isinstance(stages_validated, list):
+        if stages_validated != pass_stages:
+            errors.append(
+                f"validation_summary.stages_validated: expected pass-event stages {pass_stages}"
+            )
+        for index, value in enumerate(stages_validated):
+            if not isinstance(value, str):
+                errors.append(
+                    f"{path_label('validation_summary.stages_validated', index)}: expected string"
+                )
+
+    blocker_stages = compact_blocker_stages(blockers)
+    for event in validation_events:
+        if not isinstance(event, dict):
+            continue
+        stage = event.get("stage")
+        result = event.get("result")
+        if not isinstance(stage, str):
+            continue
+        if result in {"fail", "blocked", "not-run"} and stage not in blocker_stages:
+            errors.append(
+                f"validation_summary.open_validation_blockers: missing blocker for stage '{stage}'"
+            )
+        if result == "skipped":
+            accepted = (
+                is_nonempty_string(event.get("skip_reason"))
+                and event.get("owner_decision") == "accepted"
+            )
+            if not accepted and stage not in blocker_stages:
+                errors.append(
+                    f"validation_summary.open_validation_blockers: missing blocker for stage '{stage}'"
+                )
+
+    expected_all_passed = (
+        all(
+            isinstance(event, dict) and event.get("result") == "pass"
+            for event in validation_events
+        )
+        and blockers == []
+    )
+    if isinstance(all_passed, bool) and all_passed != expected_all_passed:
+        expected_text = "true" if expected_all_passed else "false"
+        reason = "when any event is not pass" if not expected_all_passed else "when all events pass and blockers are empty"
+        errors.append(f"validation_summary.all_passed: expected {expected_text} {reason}")
+
+    derived_counts = latest_compact_event_counts(validation_events)
+    review_counts, review_errors = validate_compact_review_counts(
+        validation_events,
+        final_counts if isinstance(final_counts, dict) else None,
+        resolved_vars,
+    )
+    errors.extend(review_errors)
+    if review_counts is not None:
+        derived_counts.update(review_counts)
+
+    if isinstance(final_counts, dict):
+        for key, expected in derived_counts.items():
+            actual = final_counts.get(key)
+            if actual != expected:
+                errors.append(f"validation_summary.final_counts.{key}: expected {expected}")
+        for key, value in final_counts.items():
+            if not isinstance(value, int) or isinstance(value, bool):
+                errors.append(f"validation_summary.final_counts.{key}: expected integer")
+
+    return list(dict.fromkeys(errors))
+
+
 def validate_compact_metadata_semantics(data: Any) -> list[str]:
     if not isinstance(data, dict):
         return []
@@ -949,7 +1262,20 @@ def validate_compact_metadata_semantics(data: Any) -> list[str]:
             errors.extend(
                 validate_compact_event(event, index, validation_bundles, resolved_vars)
             )
+        errors.extend(
+            reconstruct_compact_path_sets(
+                validation_bundles,
+                validation_events,
+                resolved_vars,
+            )[1]
+        )
         errors.extend(validate_compact_first_exists(resolved_vars, validation_events))
+
+    validation_summary = data.get("validation_summary")
+    if isinstance(validation_events, list):
+        errors.extend(
+            validate_compact_summary(validation_events, validation_summary, resolved_vars)
+        )
 
     return errors
 
