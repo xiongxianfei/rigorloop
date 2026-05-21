@@ -1,22 +1,14 @@
 schema_version: 2
 path_vars:
   change_id: 2026-05-21-compact-change-validation-metadata
-  change_root: docs/changes/{change_id}
-  spec: specs/{slug}.md
-  test_spec: specs/{slug}.test.md
+  test_spec: specs/{change_id}.test.md
 validation_bundles:
   lifecycle:
     command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
-    description: lifecycle validation
 validation_events:
   - stage: test-spec-r1
     lifecycle_stage: test-spec
     bundles:
       - lifecycle
     result: pass
-    counts:
-      reviews: 1
-      findings: 0
-    evidence:
-      transcript: tests/fixtures/change-metadata/compact-valid/change.validation-log.yaml#test-spec-r1
 validation_summary: {}
