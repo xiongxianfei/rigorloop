@@ -55,6 +55,8 @@
 - Multi-Adapter Init and Proxy-Aware Adapter Download spec: `specs/multi-adapter-init-and-proxy-aware-download.md`
 - Multi-Adapter Init and Proxy-Aware Adapter Download ADR: `docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md`
 - Multi-Adapter Init and Proxy-Aware Adapter Download change metadata: `docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml`
+- Script Output Optimization proposal: `docs/proposals/2026-05-21-script-output-optimization.md`
+- Script Output Optimization spec: `specs/script-output-optimization.md`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
@@ -86,6 +88,7 @@ The goals are:
 - publish the first public `@xiongxianfei/rigorloop` npm package only through a reviewable release-hardening boundary that preserves npm as delivery, not source of truth;
 - make public release skill token-friendliness measurable through release reports, structured metadata, and fixture-backed runtime benchmarks;
 - make dynamic token-friendliness coverage visible across the core delivery workflow without requiring every optional skill benchmark for every release;
+- keep repository script output proportional to actionability: compact on success, specific on failure, and expandable through explicit verbose modes;
 - keep first adoption and package-quality refinement review-based until real package usage proves which checks are worth automating.
 
 ## Architecture Constraints
@@ -195,14 +198,15 @@ The CLI package remains an additive delivery container. For multi-adapter init, 
 
 ### Level 2 White-Box: Validation and Generation Scripts
 
-The validation and generation container has four important internal responsibilities:
+The validation and generation container has these important internal responsibilities:
 
-- selector and CI wrapper: `scripts/validation_selection.py`, `scripts/select-validation.py`, and `scripts/ci.sh` classify paths, select stable check IDs, and run repository-owned proof commands;
+- selector and CI wrapper: `scripts/validation_selection.py`, `scripts/select-validation.py`, and `scripts/ci.sh` classify paths, select stable check IDs, run repository-owned proof commands, summarize successful selected checks, and surface failed check output with stable check identity;
 - lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, and `scripts/validate-review-artifacts.py` validate artifact status, change metadata, and material review closeout structure;
 - skill and adapter generation: `scripts/build-skills.py`, `scripts/build-adapters.py`, and adapter distribution helpers generate local runtime state, public adapter output, and release artifact outputs from canonical sources;
 - release and adapter validation: `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, adapter artifact metadata, tracked release notes, checksums, and smoke evidence. For public releases, `release-verify.sh` is the maintainer-facing gate and `validate-release.py` owns structured release validation delegated from that gate. For `v0.1.3` and later, these checks validate generated temporary or release-output adapter packages and release archives instead of tracked adapter package trees.
 - measurement, benchmark, and reporting scripts: repository-local commands measure skill size, run token-cost benchmark prompts in disposable fixtures, analyze Codex JSONL session exports, summarize tool-output amplification, validate token-cost release metadata, and produce reviewable evidence for reports without requiring hosted telemetry.
 - required-benchmark context: release validation determines the release-specific required dynamic benchmark set from core suite policy, transition carryover policy, changed public skills, and claimed optional coverage, then passes that context to token-cost validation in process or through a transient YAML file for CLI and debugging use.
+- first-slice script-output shaping: `scripts/test-select-validation.py` is the first standalone runner surface for compact `[PASS]` success summaries, actionable `[FAIL]` details, explicit `--verbose`, silent successful `--quiet`, reliable-only rerun guidance, and behavior-preservation evidence.
 
 This decomposition is prose-only for now. A component diagram should be added when future validation work changes these internal responsibilities enough that prose no longer explains the selector, validator, generator, and CI-wrapper relationships.
 
@@ -241,6 +245,8 @@ This decomposition is prose-only for now. A component diagram should be added wh
 7. Architecture diagram source files and historical or exceptional change-local architecture evidence route only to existing non-enforcement lifecycle checks; C4 sufficiency, arc42 completeness, ADR need, and package shape remain architecture-review or code-review evidence.
 8. Unclassified paths do not fail open; they require explicit manual routing or a later selector contract update.
 9. Final broad smoke runs only when an authoritative trigger requires it.
+10. Normal script and wrapper output is summary-first and failure-focused: passing checks collapse into counts and durations, failed checks expand with actionable details, and full passing detail remains available through `--verbose`.
+11. `--quiet` is a script-local success-silencing mode, not a failure-hiding mode. Successful quiet runs produce no stdout or stderr, while usage errors, validation failures, test failures, and zero-test safety failures may emit bounded actionable diagnostics.
 
 ### Token-cost measurement flow
 
@@ -379,6 +385,8 @@ Lifecycle-managed artifacts keep status in the artifact. Current architecture ar
 
 The selector owns routing and stable check IDs. Validation scripts own proof work. Manual review owns C4 diagram sufficiency, arc42 completeness, ADR need, and architecture package shape until a later approved automation contract changes that. Architecture support paths may select lifecycle checks for deterministic CI routing, but that routing is not architecture-package enforcement.
 
+Validation output is part of the proof surface. Default human-readable output should scale with actionability rather than work volume: success output records status, identity, counts, and duration; failure output records responsible checks, names, messages, locations when available, and reliable rerun guidance when available. `--verbose` is the explicit expansion path for full passing detail. `--quiet` suppresses successful script output only and must not hide failure reasons.
+
 ### Diagram source policy
 
 Package diagrams have one authored source file and are linked from `architecture.md` by relative path. Default Mermaid diagrams use `.mmd` files under the package `diagrams/` directory. Mermaid flowchart or graph C4 diagrams use shared role classes for people, the system under review, external systems, and containers; generated images, if added later for publication, are derived output and are not edited by hand.
@@ -480,6 +488,8 @@ No additional ADR is required for the 2026-05-12 record-every-formal-review amen
 
 No additional ADR is required for the `v0.1.1` single-authored-source transition release because ADR-20260512 already records the durable generated-output and adapter release artifact migration. This package revision records the release-specific validation and packaging architecture for the transition window.
 
+No additional ADR is required for script output optimization because it refines repository-owned validation output presentation inside the existing selector, test-runner, and CI-wrapper architecture. It does not introduce a new system boundary, persistence model, packaging model, release model, or durable source-of-truth decision.
+
 ## Quality Requirements
 
 | Quality | Scenario | Measure |
@@ -506,6 +516,7 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 | Release token-friendliness | A maintainer prepares a public release. | Markdown and YAML token-friendliness reports exist under `docs/reports/token-cost/releases/`, Codex benchmark evidence or a valid waiver is recorded, portability passes, and release validation delegates to the token-cost report validator. |
 | Dynamic benchmark coverage | A maintainer prepares a public release with `skill-token-runtime-v2`. | The report records required core coverage, transition carryover coverage when applicable, changed-skill-required coverage, claimed optional coverage, optional warnings, and per-run result-quality evidence. |
 | Review closeout | Architecture-review records a material finding. | The finding includes evidence, required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes. |
+| Script output actionability | A contributor runs `scripts/test-select-validation.py` or selected checks through `scripts/ci.sh`. | Successful default output is compact and count-bearing; failed output preserves actionable failure evidence; `--verbose` exposes suppressed passing detail; `--quiet` success is silent while non-success diagnostics remain visible. |
 | Security | Architecture work touches trust boundaries, permissions, data exposure, or secret handling. | The relevant architecture prose or diagram states the boundary, and no artifact includes secrets, credentials, private keys, or machine-local debug-only data. |
 
 ## Risks and Technical Debt
@@ -545,6 +556,7 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 | Generated adapter archives could create binary churn in Git | Generated archives are release assets by default; Git tracks artifact metadata and checksums instead of archive files. |
 | Warning-only token budgets could be mistaken for CI gates | The first measurement slice treats budget thresholds as report warnings; hard gates require a later accepted proposal and spec. |
 | Optional benchmark failures could be mistaken for passing release coverage | `skill-token-runtime-v2` separates optional warning evidence from claimed optional release coverage; claimed coverage follows required benchmark evidence and result-quality gates. |
+| Shorter validation output could hide changed coverage or failure evidence | Script output optimization is presentation-only. Behavior-preservation evidence must prove selected checks, exit codes, failure detection, and failure evidence remain unchanged, and quiet mode must not hide non-success diagnostics. |
 
 ## Glossary
 
@@ -607,9 +619,10 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 - Architecture-review for the RigorLoop CLI New Change architecture update: approved in `docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md` with no material findings.
 - RigorLoop npm Publication: accepted proposal and approved spec define the first public `@xiongxianfei/rigorloop@0.1.4` npm release, package-content allowlist, dependency and lifecycle-script policy, trusted-publishing and bootstrap modes, publication evidence, packed-package smoke, real Codex install smoke, and FU-010 closeout boundary.
 - Multi-Adapter Init and Proxy-Aware Adapter Download: accepted proposal, approved spec, and accepted ADR define descriptor-driven CLI init for Codex, Claude Code, and opencode; keep Codex on `.agents/skills`; define schema v2 mixed-root lockfile handling; preserve release-archive and local-archive verification; and add proxy-safe download diagnostics while deferring programmatic Undici dispatcher support.
+- Script Output Optimization: accepted proposal and approved spec define first-slice `scripts/test-select-validation.py` output shaping, reliable-only rerun guidance, silent quiet success, behavior-preservation evidence, and minimal `scripts/ci.sh` wrapper adjustment only when needed to preserve quiet-success and loud-failure behavior.
 
 ## Readiness
 
-This canonical package revision records the current repository architecture for generated skill output, adapter release artifact migration, the `v0.1.1` single-authored-source transition release, the `v0.1.3` public adapter untracking release, the first RigorLoop CLI package plus Codex init slice, the durable lockfile extension for verified Codex init, the `new-change` metadata scaffolding slice, the first public npm publication boundary for `@xiongxianfei/rigorloop@0.1.4`, and descriptor-driven multi-adapter init with proxy-safe download diagnostics.
+This canonical package revision records the current repository architecture for generated skill output, adapter release artifact migration, the `v0.1.1` single-authored-source transition release, the `v0.1.3` public adapter untracking release, the first RigorLoop CLI package plus Codex init slice, the durable lockfile extension for verified Codex init, the `new-change` metadata scaffolding slice, the first public npm publication boundary for `@xiongxianfei/rigorloop@0.1.4`, descriptor-driven multi-adapter init with proxy-safe download diagnostics, and first-slice repository script output optimization.
 
 ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md` records the durable `v0.1.3` decision to make release archives the active public adapter install surface and retire tracked generated adapter package fragments. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and original publication block. ADR `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md` records the durable lockfile boundary, strict schema handling, drift comparison, and partial-failure write ordering for Codex init. ADR `docs/adr/ADR-20260516-rigorloop-npm-publication.md` records the first public npm publication boundary, package-content and publication-mode decisions, and real install closeout proof. ADR `docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md` records descriptor-driven multi-adapter init, schema v2 mixed-root lockfiles, opencode skills-only compatibility, and proxy-safe diagnostics. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.
