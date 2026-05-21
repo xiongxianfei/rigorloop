@@ -65,13 +65,13 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Current Handoff Summary
 
 - Current milestone: Final closeout
-- Current milestone state: final-local-verify-passed-ready-for-pr
+- Current milestone state: pr-open-hosted-ci-pending
 - Last reviewed milestone: M5. Lifecycle evidence and closeout handoff
 - Review status: `code-review-ci-routing-r1` closed the selector-routing maintenance fix with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted CI and human review on PR #83
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, explain-change is current, and final local verify passed; PR handoff has not happened.
+- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, explain-change is current, final local verify passed, and PR #83 is open; hosted CI and human review remain pending.
 
 ## Milestones
 
@@ -402,6 +402,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: `code-review-ci-routing-r1` closed the selector-routing maintenance fix cleanly with no material findings; explain-change needs refresh before final verify.
 - 2026-05-21: Explain-change refreshed the durable rationale to include the selector-routing maintenance fix and its clean review.
 - 2026-05-21: Final local verify passed; branch-ready evidence is recorded and the next stage is PR handoff.
+- 2026-05-21: PR #83 opened for hosted CI and human review.
 
 ## Decision log
 
