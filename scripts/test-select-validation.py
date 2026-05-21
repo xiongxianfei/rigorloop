@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import signal
 import subprocess
@@ -117,6 +118,141 @@ def parse_stdout(result: subprocess.CompletedProcess[str]) -> dict[str, object]:
 
 def selected_ids(result: dict[str, object]) -> set[str]:
     return {check["id"] for check in result["selected_checks"]}  # type: ignore[index]
+
+
+class ScriptOutputFixtureTests(unittest.TestCase):
+    def fixture_contract_failure(self) -> None:
+        self.fail("script output contract fixture failure")
+
+
+class ScriptOutputContractTests(unittest.TestCase):
+    """Expected-failure tests for the approved script-output contract."""
+
+    PASSING_TEST = "ValidationSelectionTests.test_catalog_matches_v1_contract"
+    FAILING_TEST = "ScriptOutputFixtureTests.fixture_contract_failure"
+    SUITE = "test-select-validation"
+    PASS_SUMMARY = re.compile(r"^\[PASS\] test-select-validation: [1-9][0-9]* passed in \d+(?:\.\d+)?s$")
+    FAIL_SUMMARY = re.compile(
+        r"^\[FAIL\] test-select-validation: [1-9][0-9]* failed, [0-9]+ passed in \d+(?:\.\d+)?s"
+    )
+
+    def run_runner(self, *args: str) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            [sys.executable, str(Path(__file__).resolve()), *args],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+
+    def combined_output(self, result: subprocess.CompletedProcess[str]) -> str:
+        return result.stdout + result.stderr
+
+    @unittest.expectedFailure
+    def test_output_contract_default_success_is_single_summary_line(self) -> None:
+        result = self.run_runner(self.PASSING_TEST)
+
+        self.assertEqual(result.returncode, 0, msg=self.combined_output(result))
+        stdout_lines = result.stdout.splitlines()
+        self.assertEqual(len(stdout_lines), 1, msg=self.combined_output(result))
+        self.assertRegex(stdout_lines[0], self.PASS_SUMMARY)
+        self.assertNotIn(self.PASSING_TEST, self.combined_output(result))
+        self.assertEqual(result.stderr, "")
+
+    @unittest.expectedFailure
+    def test_output_contract_default_failure_expands_failures_only(self) -> None:
+        result = self.run_runner(self.PASSING_TEST, self.FAILING_TEST)
+        output = self.combined_output(result)
+
+        self.assertEqual(result.returncode, 1, msg=output)
+        first_line = next(line for line in output.splitlines() if line.strip())
+        self.assertRegex(first_line, self.FAIL_SUMMARY)
+        self.assertIn(self.FAILING_TEST, output)
+        self.assertIn("script output contract fixture failure", output)
+        self.assertIn("scripts/test-select-validation.py", output)
+        self.assertNotIn(f"{self.PASSING_TEST}) ... ok", output)
+
+    def test_output_contract_verbose_success_preserves_full_pass_detail(self) -> None:
+        for flag in ("--verbose", "-v"):
+            with self.subTest(flag=flag):
+                result = self.run_runner(flag, self.PASSING_TEST)
+                output = self.combined_output(result)
+
+                self.assertEqual(result.returncode, 0, msg=output)
+                self.assertIn(self.PASSING_TEST, output)
+                self.assertIn("ok", output)
+
+    @unittest.expectedFailure
+    def test_output_contract_quiet_success_is_silent(self) -> None:
+        for flag in ("--quiet", "-q"):
+            with self.subTest(flag=flag):
+                result = self.run_runner(flag, self.PASSING_TEST)
+
+                self.assertEqual(result.returncode, 0, msg=self.combined_output(result))
+                self.assertEqual(result.stdout, "")
+                self.assertEqual(result.stderr, "")
+
+    @unittest.expectedFailure
+    def test_output_contract_quiet_failure_remains_actionable(self) -> None:
+        result = self.run_runner("--quiet", self.PASSING_TEST, self.FAILING_TEST)
+        output = self.combined_output(result)
+
+        self.assertEqual(result.returncode, 1, msg=output)
+        self.assertIn("[FAIL] test-select-validation:", output)
+        self.assertIn(self.FAILING_TEST, output)
+        self.assertIn("script output contract fixture failure", output)
+        self.assertIn("scripts/test-select-validation.py", output)
+        self.assertNotIn("[PASS]", output)
+
+    @unittest.expectedFailure
+    def test_output_contract_conflicting_output_flags_fail_before_tests_run(self) -> None:
+        for args in (("--verbose", "--quiet"), ("--quiet", "--verbose")):
+            with self.subTest(args=args):
+                result = self.run_runner(*args, self.PASSING_TEST)
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual(result.stdout, "")
+                self.assertIn("--verbose", result.stderr)
+                self.assertIn("--quiet", result.stderr)
+                self.assertNotIn("[PASS]", result.stderr)
+                self.assertNotIn("[FAIL]", result.stderr)
+                self.assertNotIn("[SKIP]", result.stderr)
+                self.assertNotIn("Ran 1 test", result.stderr)
+                self.assertNotIn(self.PASSING_TEST, result.stderr)
+
+    @unittest.expectedFailure
+    def test_output_contract_zero_executed_tests_fail_with_summary(self) -> None:
+        result = self.run_runner("-k", "definitely_no_script_output_tests")
+        output = self.combined_output(result)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("[FAIL] test-select-validation:", output)
+        self.assertIn("0 tests", output)
+        self.assertIn("expected at least 1", output)
+
+    @unittest.expectedFailure
+    def test_output_contract_reliable_failure_includes_scoped_rerun(self) -> None:
+        result = self.run_runner(self.FAILING_TEST)
+        output = self.combined_output(result)
+
+        self.assertEqual(result.returncode, 1, msg=output)
+        self.assertIn(
+            'Re-run: python scripts/test-select-validation.py -k "ScriptOutputFixtureTests.fixture_contract_failure"',
+            output,
+        )
+
+    def test_output_contract_unreliable_failure_omits_misleading_scoped_rerun(self) -> None:
+        result = self.run_runner("NoSuchTest")
+        output = self.combined_output(result)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn('-k "NoSuchTest"', output)
+
+    def test_output_contract_json_support_is_not_added_in_first_slice(self) -> None:
+        result = self.run_runner("--json")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(result.stdout.lstrip().startswith("{"))
+        self.assertIn("--json", self.combined_output(result))
 
 
 class ValidationSelectionTests(unittest.TestCase):
