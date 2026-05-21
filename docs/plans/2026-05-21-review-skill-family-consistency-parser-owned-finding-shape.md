@@ -54,12 +54,12 @@ The review-artifact parser contract remains unchanged. The implementation must p
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Spec-review asset conformance and material-finding rename
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Proposal-review asset conformance
-- Review status: M4 implementation ready for code-review
-- Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review M4
+- Current milestone: M5. Generated output, token, cold-read, and lifecycle closeout
+- Current milestone state: ready
+- Last reviewed milestone: M4. Spec-review asset conformance and material-finding rename
+- Review status: M4 clean-with-notes; no open findings
+- Remaining in-scope implementation milestones: M5
+- Next stage: implement M5
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff are still outstanding.
 
@@ -184,7 +184,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 
 ### M4. Spec-review asset conformance and material-finding rename
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Bring `spec-review` under the review-family asset contract, including the approved `assets/material-finding.md` name, while preserving spec-review readiness and status behavior.
 - Requirements: RSF-R1 through RSF-R30, RSF-R43, AC-RSF-001 through AC-RSF-013
 - Files/components likely touched:
@@ -223,7 +223,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 
 ### M5. Generated output, token, cold-read, and lifecycle closeout
 
-- Milestone state: planned
+- Milestone state: ready
 - Goal: Prove the canonical skill changes package correctly into generated mirrors and temporary adapters, record token/cold-read evidence, and prepare final lifecycle handoff.
 - Requirements: RSF-R31 through RSF-R37, RSF-R43 through RSF-R45, AC-RSF-014 through AC-RSF-018
 - Files/components likely touched:
@@ -318,6 +318,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: M3 conformed proposal-review's existing assets by adding literal `Finding ID:` resource-map confirmation, explicit gate-review status vocabulary, focused validator coverage, and preservation evidence. M3 is ready for code-review.
 - 2026-05-21: M3 code-review returned clean-with-notes. M3 is closed and the active handoff is `implement M4`.
 - 2026-05-21: M4 replaced spec-review `review-finding.md` with `material-finding.md`, updated references, aligned spec-family validator inventory, added focused validator coverage, and recorded preservation evidence. M4 is ready for code-review.
+- 2026-05-21: M4 code-review returned clean-with-notes. M4 is closed and the active handoff is `implement M5`.
 
 ## Decision log
 
@@ -346,6 +347,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: M3 targeted validation passed: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape`; `git diff --check --`.
 - 2026-05-21: M3 code-review recorded clean-with-notes with no material findings.
 - 2026-05-21: M4 targeted validation passed: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape`; `git diff --check --`.
+- 2026-05-21: M4 code-review recorded clean-with-notes with no material findings.
 
 ## Outcome and retrospective
 
@@ -354,5 +356,5 @@ The review-artifact parser contract remains unchanged. The implementation must p
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M4`.
+- Ready for `implement M5`.
 - Not ready for final closeout or PR; implementation, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
