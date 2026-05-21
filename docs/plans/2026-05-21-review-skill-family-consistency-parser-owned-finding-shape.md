@@ -55,13 +55,13 @@ The review-artifact parser contract remains unchanged. The implementation must p
 ## Current Handoff Summary
 
 - Current milestone: M5. Generated output, token, cold-read, and lifecycle closeout
-- Current milestone state: ready
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Spec-review asset conformance and material-finding rename
-- Review status: M4 clean-with-notes; no open findings
+- Review status: M5 implementation ready for code-review
 - Remaining in-scope implementation milestones: M5
-- Next stage: implement M5
+- Next stage: code-review M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff are still outstanding.
+- Reason final closeout is or is not ready: M5 code-review, review-resolution if triggered, explain-change, verify, and PR handoff are still outstanding.
 
 ## Milestones
 
@@ -223,7 +223,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 
 ### M5. Generated output, token, cold-read, and lifecycle closeout
 
-- Milestone state: ready
+- Milestone state: review-requested
 - Goal: Prove the canonical skill changes package correctly into generated mirrors and temporary adapters, record token/cold-read evidence, and prepare final lifecycle handoff.
 - Requirements: RSF-R31 through RSF-R37, RSF-R43 through RSF-R45, AC-RSF-014 through AC-RSF-018
 - Files/components likely touched:
@@ -253,6 +253,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plan.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md`
   - `git diff --check --`
 - Expected observable result: generated mirrors and temporary adapter archives include all mapped assets; no generated output is hand-edited; evidence is ready for explain-change, verify, and PR.
+- Result: Implemented. Generated skill mirror checks passed, temporary `v0.1.5` adapter archives were built and validated, mapped first-slice review-family assets were inspected in generated mirror and adapter archives, token/cold-read evidence was recorded, and no generated adapter output was hand-edited.
 - Commit message: `M5: close review-family asset evidence`
 - Milestone closeout:
   - validation passed
@@ -319,6 +320,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: M3 code-review returned clean-with-notes. M3 is closed and the active handoff is `implement M4`.
 - 2026-05-21: M4 replaced spec-review `review-finding.md` with `material-finding.md`, updated references, aligned spec-family validator inventory, added focused validator coverage, and recorded preservation evidence. M4 is ready for code-review.
 - 2026-05-21: M4 code-review returned clean-with-notes. M4 is closed and the active handoff is `implement M5`.
+- 2026-05-21: M5 recorded generated skill mirror proof, temporary adapter archive proof, token-cost evidence, cold-read proof, scope-boundary proof, and follow-on triggers. M5 is ready for code-review.
 
 ## Decision log
 
@@ -348,6 +350,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: M3 code-review recorded clean-with-notes with no material findings.
 - 2026-05-21: M4 targeted validation passed: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape`; `git diff --check --`.
 - 2026-05-21: M4 code-review recorded clean-with-notes with no material findings.
+- 2026-05-21: M5 generated-output validation passed: `python scripts/build-skills.py --check`; `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/tmp.cG1mr7T4PH`; `python scripts/validate-adapters.py --root /tmp/tmp.cG1mr7T4PH --version v0.1.5`; `python scripts/measure-skill-tokens.py`.
 
 ## Outcome and retrospective
 
@@ -356,5 +359,5 @@ The review-artifact parser contract remains unchanged. The implementation must p
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M5`.
-- Not ready for final closeout or PR; implementation, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
+- Ready for `code-review M5`.
+- Not ready for final closeout or PR; M5 code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain.

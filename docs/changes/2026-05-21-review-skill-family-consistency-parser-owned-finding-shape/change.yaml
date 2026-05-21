@@ -30,6 +30,7 @@ requirements:
   - Close M3 only after clean code-review and hand off to M4.
   - Implement M4 by conforming `spec-review`, replacing `review-finding.md` with `material-finding.md`, updating validator inventory, focused validator coverage, and preservation evidence.
   - Close M4 only after clean code-review and hand off to M5.
+  - Implement M5 by recording generated skill mirror proof, temporary adapter archive proof, token-cost evidence, cold-read proof, scope-boundary proof, and follow-on triggers.
 tests:
   - Proposal-review checks problem framing, option quality, scope boundaries, vision fit, risks, and readiness for spec.
   - Review artifact structure validation for clean proposal-review receipt.
@@ -50,6 +51,9 @@ tests:
   - Code-review M3 clean review confirms proposal-review conformance is structurally safe.
   - Spec-review M4 validator coverage confirms material-finding asset rename, status vocabulary, and eventual test-spec readiness preservation.
   - Code-review M4 clean review confirms spec-review conformance is structurally safe.
+  - Generated skill mirror proof confirms all mapped review-family assets are present.
+  - Temporary adapter archive proof and adapter validation confirm all mapped review-family assets ship in generated adapter packages.
+  - Token-cost and cold-read evidence confirms common-path size is recorded separately from packaged footprint and installed-skill readers can produce a parser-shaped material finding.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
     result: pass_before_proposal_review
@@ -213,6 +217,22 @@ validation:
     result: pass_validated_3_lifecycle_artifacts_after_code_review_m4_r1
   - command: git diff --check --
     result: pass_after_code_review_m4_r1
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m5
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/tmp.cG1mr7T4PH
+    result: pass_built_codex_claude_opencode_archives_after_m5
+  - command: python scripts/validate-adapters.py --root /tmp/tmp.cG1mr7T4PH --version v0.1.5
+    result: pass_validated_generated_adapter_archives_after_m5
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_23_skills_250524_bytes_62619_estimated_tokens_after_m5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_m5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_9_findings_2_log_entries_9_resolution_entries_2_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.test.md --path docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plan.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r2.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/plan-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m1-r2.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m4-r1.md
+    result: pass_validated_3_lifecycle_artifacts_after_m5
+  - command: git diff --check --
+    result: pass_after_m5
 changed_files:
   - docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
   - specs/review-skill-family-consistency-parser-owned-finding-shape.md
@@ -232,6 +252,7 @@ changed_files:
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m4-r1.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/m5-generated-token-cold-read-evidence.md
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/m4-spec-review-preservation.md
   - skills/spec-review/SKILL.md
   - skills/spec-review/assets/material-finding.md
