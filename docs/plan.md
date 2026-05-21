@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-21 Script Output Optimization](plans/2026-05-21-script-output-optimization.md) - active execution plan for compacting `scripts/test-select-validation.py` success output, preserving actionable failure evidence, adding explicit verbose/quiet behavior, recording audit and behavior-preservation proof, and touching `scripts/ci.sh` only if needed; M4 closed after clean code-review and M5 lifecycle evidence and closeout handoff is next.
+- [2026-05-21 Script Output Optimization](plans/2026-05-21-script-output-optimization.md) - active execution plan for compacting `scripts/test-select-validation.py` success output, preserving actionable failure evidence, adding explicit verbose/quiet behavior, recording audit and behavior-preservation proof, and touching `scripts/ci.sh` only if needed; M5 lifecycle evidence and closeout handoff is ready for code-review.
 - [2026-05-20 Proposal-Family Assets Progressive Disclosure](plans/2026-05-20-proposal-family-assets-progressive-disclosure.md) - active execution plan for adding assets-only progressive disclosure to `proposal` and `proposal-review`; M2, M3, and M4 are closed after clean code reviews, explain-change and verify are recorded, and PR #81 is open for hosted CI and human review.
 
 ## Blocked
