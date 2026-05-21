@@ -65,13 +65,13 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Current Handoff Summary
 
 - Current milestone: Final closeout
-- Current milestone state: explain-change-recorded-ready-for-verify
+- Current milestone state: selector-routing-reviewed-ready-for-explain-change-refresh
 - Last reviewed milestone: M5. Lifecycle evidence and closeout handoff
-- Review status: `code-review-m5-r1` closed M5 with no material findings
+- Review status: `code-review-ci-routing-r1` closed the selector-routing maintenance fix with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: explain-change refresh
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded; final verify and PR handoff have not happened.
+- Reason final closeout is or is not ready: all implementation milestones are closed and the post-verify selector-routing maintenance fix has clean code-review; explain-change must be refreshed before final verify and PR handoff.
 
 ## Milestones
 
@@ -398,6 +398,8 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: M5 recorded final behavior-preservation and scope-boundary evidence and is ready for code-review.
 - 2026-05-21: `code-review-m5-r1` closed M5 cleanly with no material findings; explain-change is the next stage.
 - 2026-05-21: Explain-change recorded the decision trail, diff rationale, tests, validation evidence, review-resolution summary, scope controls, risks, and verify handoff.
+- 2026-05-21: Verify found PR-mode CI blocked by four change-local evidence files classified as `change-local-unsupported`; a narrow selector-routing maintenance fix routed those files to `artifact_lifecycle.validate`.
+- 2026-05-21: `code-review-ci-routing-r1` closed the selector-routing maintenance fix cleanly with no material findings; explain-change needs refresh before final verify.
 
 ## Decision log
 
@@ -558,6 +560,20 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - Explain-change validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 14 reviews, 10 findings, 14 log entries, 10 resolution entries.
 - Explain-change validation `git diff --check --` passed.
 - Explain-change selected CI passed: selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- Verify rerun after explain-change found PR-mode CI blocked on `output-contract-red-test.md`, `script-output-audit.md`, `selected-tests-baseline.txt`, and `selected-tests-m3.txt` as `change-local-unsupported`.
+- Selector-routing maintenance added those four evidence filenames to `change-local-lifecycle` routing and added selector regression fixture coverage.
+- Selector-routing maintenance validation `python scripts/test-select-validation.py` passed: `[PASS] test-select-validation: 73 passed ...`.
+- Selector-routing maintenance validation `bash scripts/ci.sh --mode pr --base $(git merge-base HEAD main) --head HEAD --jobs 1` passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- Selector-routing maintenance validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Selector-routing maintenance validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed before review recording: 14 reviews, 10 findings, 14 log entries, 10 resolution entries.
+- Selector-routing maintenance validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/explain-change.md` passed.
+- Selector-routing maintenance validation `git diff --check --` passed.
+- Code-review CI routing R1 recorded no material findings and closed the selector-routing maintenance fix.
+- Code-review CI routing R1 recording validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 15 reviews, 10 findings, 15 log entries, 10 resolution entries.
+- Code-review CI routing R1 recording validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Code-review CI routing R1 recording validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-ci-routing-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- Code-review CI routing R1 recording validation `git diff --check --` passed.
+- Code-review CI routing R1 selected CI passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
@@ -566,4 +582,4 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for verify only. Readiness is not Done; final verify and PR handoff remain open.
+- Ready for explain-change refresh only. Readiness is not Done; final verify and PR handoff remain open.

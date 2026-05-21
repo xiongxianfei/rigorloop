@@ -46,6 +46,9 @@ tests:
   - M5 records final behavior-preservation, scope-boundary, and lifecycle handoff evidence for code-review.
   - Code-review M5 R1 closed M5 with no material findings.
   - Explain-change records the decision trail, diff rationale, tests, validation evidence, review-resolution summary, scope controls, risks, and verify handoff.
+  - Verify found PR-mode selected CI blocked by four change-local evidence files that lacked deterministic selector routing.
+  - Selector-routing maintenance routes the four evidence files as change-local lifecycle artifacts and adds selector regression coverage.
+  - Code-review CI routing R1 closed the selector-routing maintenance fix with no material findings.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
     result: pass_reviews_5_findings_7_log_entries_5_resolution_entries_7_after_plan_authoring
@@ -345,6 +348,28 @@ validation:
     result: pass_after_explain_change
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-21-script-output-optimization/explain-change.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --jobs 1
     result: pass_selected_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_explain_change
+  - command: python scripts/test-select-validation.py
+    result: pass_73_tests_after_selector_routing_maintenance
+  - command: bash scripts/ci.sh --mode pr --base $(git merge-base HEAD main) --head HEAD --jobs 1
+    result: pass_selected_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_after_selector_routing_maintenance
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml
+    result: pass_after_selector_routing_maintenance
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
+    result: pass_reviews_14_findings_10_log_entries_14_resolution_entries_10_after_selector_routing_maintenance_before_review_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/explain-change.md
+    result: pass_validated_4_artifact_files_after_selector_routing_maintenance
+  - command: git diff --check --
+    result: pass_after_selector_routing_maintenance
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
+    result: pass_reviews_15_findings_10_log_entries_15_resolution_entries_10_after_code_review_ci_routing_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml
+    result: pass_after_code_review_ci_routing_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-ci-routing-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md
+    result: pass_validated_4_artifact_files_after_code_review_ci_routing_r1
+  - command: git diff --check --
+    result: pass_after_code_review_ci_routing_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-ci-routing-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --jobs 1
+    result: pass_selected_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_ci_routing_r1
 changed_files:
   - docs/proposals/2026-05-21-script-output-optimization.md
   - specs/script-output-optimization.md
@@ -375,7 +400,9 @@ changed_files:
   - docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m3-r2.md
   - docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m4-r1.md
   - docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m5-r1.md
+  - docs/changes/2026-05-21-script-output-optimization/reviews/code-review-ci-routing-r1.md
   - scripts/test-select-validation.py
+  - scripts/validation_selection.py
 review:
-  status: explain_change_recorded_verify_next
+  status: selector_routing_reviewed_explain_change_refresh_next
   unresolved_items: 0
