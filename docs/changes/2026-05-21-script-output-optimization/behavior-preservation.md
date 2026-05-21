@@ -14,7 +14,7 @@ This matrix records baseline evidence before changing presentation. Later implem
 | --- | --- | --- | --- |
 | exit code on pass | `python scripts/test-select-validation.py` exited `0` | pending M3 | pending |
 | exit code on failure | `python scripts/test-select-validation.py NoSuchTest` exited `1` | pending M3 | pending |
-| selected tests/checks | `python scripts/test-select-validation.py` ran `62` tests | pending M3 | pending |
+| selected tests/checks | `python scripts/test-select-validation.py` ran the `62` ordered unittest identifiers listed in `selected-tests-baseline.txt`; selected-set SHA-256 is `sha256:af470dd836f5b1b44c702be35206934f77621a1477d88cafae923e50a7f492bd` | pending M3 | M3 must preserve the same ordered selected-test set unless an intentional selection change is separately approved |
 | failure detection | `python scripts/test-select-validation.py NoSuchTest` reported `ERROR` and `FAILED (errors=1)` | pending M3 | pending |
 | failure evidence | `NoSuchTest` failure output included failed identifier, error status, exception type/message, run count, and failed summary | pending M3 | pending |
 | verbose output | `python scripts/test-select-validation.py --verbose` exited `0`, ran `62` tests, and emitted the current full pass-list output | pending M3 | pending |
@@ -33,6 +33,16 @@ This matrix records baseline evidence before changing presentation. Later implem
 | successful child output exposed with wrapper `--verbose` | `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --verbose` exited `0` and emitted 81 stdout lines including child pass-list output | pending M4 | pending |
 | failed selected-check evidence | existing `scripts/test-select-validation.py` regressions cover wrapper failure attribution for selected command failure, unavailable command, timeout, signal, decode failure, and malformed selector output | pending M4 if touched | pending |
 | CI semantics if touched | baseline wrapper modes and child-process exit behavior are unchanged in M1 because no wrapper code was edited | pending M4 if touched | pending |
+
+## Selected test/check set baseline
+
+- Command: `python scripts/test-select-validation.py`
+- Count: `62`
+- Ordered list: `selected-tests-baseline.txt`
+- Hash input rule: ordered identifiers joined by `\n`, with one trailing newline and no extra whitespace.
+- SHA-256: `sha256:af470dd836f5b1b44c702be35206934f77621a1477d88cafae923e50a7f492bd`
+
+The ordered list was derived from the baseline `ValidationSelectionTests` unittest identifiers. M3 must compare the post-change selected test/check set against this list and hash unless an intentional selection change is separately approved.
 
 ## M1 conclusion
 

@@ -10,6 +10,8 @@ Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
 ## Resolution Entries
 
@@ -132,5 +134,27 @@ No material findings.
 No material findings.
 
 ### plan-review-r1
+
+No material findings.
+
+### code-review-m1-r1
+
+## Findings
+
+#### SRO-M1-CR1
+
+Finding ID: SRO-M1-CR1
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement
+Chosen action: Added `selected-tests-baseline.txt` with the ordered selected unittest identifiers, recorded the SHA-256 hash and hash input rule in `behavior-preservation.md`, and updated the selected tests/checks matrix row to reference the list and hash.
+Rationale: The approved test spec requires count/list/hash or another stable proof for the selected test/check set. Count alone cannot prove a later presentation-only change preserved the same selected tests.
+Required outcome: M1 baseline evidence must let reviewers compare the post-change selected test/check set against the baseline without relying only on the count.
+Safe resolution path: Generate an ordered list of baseline unittest identifiers or a stable hash from that ordered list, record it in `behavior-preservation.md` or linked change-local evidence, update the matrix row, and rerun M1 validation.
+Validation target: Review-resolution rerun proves `behavior-preservation.md` contains durable selected-set proof and the change-local review artifacts remain structurally valid.
+Validation evidence: `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/selected-tests-baseline.txt --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md`, `git diff --check --`, and selected CI passed after the evidence update.
+
+### code-review-m1-r2
 
 No material findings.
