@@ -65,13 +65,13 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Current Handoff Summary
 
 - Current milestone: M3. Test-select-validation output shaping
-- Current milestone state: ready
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Output contract tests
-- Review status: `code-review-m2-r2` closed M2 with no material findings
+- Review status: M3 implemented and ready for code-review
 - Remaining in-scope implementation milestones: M3, M4 when triggered, M5
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3, conditional M4, M5, explain-change, final verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: M3 needs code-review; conditional M4, M5, explain-change, final verify, and PR handoff have not happened.
 
 ## Milestones
 
@@ -204,7 +204,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 
 ### M3. Test-select-validation output shaping
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Implement the approved default, verbose, quiet, conflict-flag, zero-test, rerun, and JSON-deferral behavior in `scripts/test-select-validation.py`.
 - Requirements: R1 through R24, R27, R32 through R35, AC1 through AC11, AC14
 - Files/components likely touched:
@@ -236,6 +236,9 @@ The implementation must create durable first-slice evidence under `docs/changes/
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml`
   - `git diff --check --`
 - Expected observable result: local default runner success is one `[PASS]` line, verbose exposes the previous full pass detail, quiet success is silent, failures remain actionable, and behavior-preservation evidence proves selection and exit-code semantics are unchanged.
+- Result: Implemented. Added a script-local unittest runner adapter that parses `--verbose` / `-v`, `--quiet` / `-q`, `-k`, and explicit test names, rejects conflicting output flags before loading tests, captures result and duration for compact default/quiet output, preserves full unittest pass-list output under verbose mode, fails zero-test runs, omits scoped rerun commands for unreliable loader failures, and keeps `--json` unsupported.
+- Evidence updates: `behavior-preservation.md` now records M3 new proof for `scripts/test-select-validation.py`; `script-output-audit.md` records post-change observations; `output-contract-red-test.md` records the red-test command passing after M3.
+- Aligned surface note: `scripts/ci.sh` remains untouched in M3. M4 still owns the conditional wrapper no-code/patch decision.
 - Commit message: `M3: shape test-select-validation output`
 - Milestone closeout:
   - validation passed
@@ -379,6 +382,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: M2 code-review found `SRO-M2-CR1`; expected-failure decorators mask required output-contract failures and need resolution before M2 can close.
 - 2026-05-21: `SRO-M2-CR1` resolved by removing expected-failure masking, adding explicit red-test proof at `output-contract-red-test.md`, and keeping ordinary M2 validation separate from the pre-M3 red-test command.
 - 2026-05-21: `code-review-m2-r2` closed M2 cleanly with no material findings; M3 is the next implementation milestone.
+- 2026-05-21: M3 implemented `scripts/test-select-validation.py` output shaping and moved to code-review.
 
 ## Decision log
 
@@ -462,6 +466,22 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - Code-review M2 R2 recording validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m2-r2.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
 - Code-review M2 R2 recording validation `git diff --check --` passed.
 - Code-review M2 R2 selected CI passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- M3 validation `python scripts/test-select-validation.py` passed: `[PASS] test-select-validation: 63 passed ...`.
+- M3 validation `python scripts/test-select-validation.py ScriptOutputContractTests` passed: `[PASS] test-select-validation: 10 passed ...`.
+- M3 validation `python scripts/test-select-validation.py --verbose` passed and emitted full unittest pass-list output for 63 tests.
+- M3 validation `python scripts/test-select-validation.py --quiet` passed with exit `0`, `0` stdout bytes, and `0` stderr bytes.
+- M3 validation `python scripts/test-select-validation.py --verbose --quiet` exited `2`, wrote `0` stdout bytes, and named both flags in stderr.
+- M3 validation `python scripts/test-select-validation.py --json` exited `2` with `unrecognized arguments: --json`.
+- M3 validation `python scripts/test-select-validation.py -k definitely_no_script_output_tests` exited `1` with zero-test `[FAIL]` output.
+- M3 validation `python scripts/test-select-validation.py --quiet ScriptOutputFixtureTests.fixture_contract_failure` exited `1` with `[FAIL]`, failure name, assertion message, file location, and scoped rerun command.
+- M3 validation `python scripts/test-select-validation.py NoSuchTest` exited `1` with `[FAIL]` and no scoped `-k "NoSuchTest"` rerun command.
+- M3 selected-test proof from `python scripts/test-select-validation.py --verbose` recorded `63` ordered identifiers with SHA-256 `sha256:425feac0e0ea777c474032b954e6aa375b0f9d2986d82b9fd7053ac119e5a104`.
+- M3 selected CI `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --jobs 1 --verbose` passed: selected `selector.regression` and exposed child `[PASS]` output in wrapper verbose mode.
+- M3 validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- M3 validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/output-contract-red-test.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- M3 validation `git diff --check --` passed.
+- M3 selector inspection with `script-output-audit.md` and `output-contract-red-test.md` included blocked those files as `change-local-unsupported`; it had no unclassified paths. Manual route `git diff --check -- docs/changes/2026-05-21-script-output-optimization/script-output-audit.md docs/changes/2026-05-21-script-output-optimization/output-contract-red-test.md` passed.
+- M3 selected CI excluding manually routed evidence files passed: selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 
 ## Outcome and retrospective
 
@@ -470,4 +490,4 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for implement M3 only. Readiness is not Done; M3, conditional M4, M5, explain-change, final verify, and PR handoff remain open.
+- Ready for code-review M3 only. Readiness is not Done; M3 review, conditional M4, M5, explain-change, final verify, and PR handoff remain open.
