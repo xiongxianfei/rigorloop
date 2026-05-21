@@ -11,6 +11,7 @@ This ledger records formal lifecycle reviews for the review-skill family consist
 | `proposal-review-r1` | `proposal-review` | `1` | `docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md` | `reviews/proposal-review-r1.md` | `approved` | `0` | `recorded` |
 | `spec-review-r2` | `spec-review` | `2` | `specs/review-skill-family-consistency-parser-owned-finding-shape.md` | `reviews/spec-review-r2.md` | `approved` | `0` | `recorded` |
 | `plan-review-r1` | `plan-review` | `1` | `docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md` | `reviews/plan-review-r1.md` | `approved` | `0` | `recorded` |
+| `code-review-m1-r2` | `code-review` | `2` | `docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md` M1 | `reviews/code-review-m1-r2.md` | `clean-with-notes` | `0` | `recorded` |
 
 ## Review Entries
 
