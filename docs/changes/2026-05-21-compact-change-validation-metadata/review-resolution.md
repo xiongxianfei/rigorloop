@@ -2,11 +2,28 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: spec-review-r1
 
 ## Resolution Entries
+
+### code-review-m2-r1
+
+## Findings
+
+#### CVM-M2-CR1
+
+Finding ID: CVM-M2-CR1
+Disposition: accepted
+Status: pending
+Owner: implement
+Owning stage: review-resolution
+Chosen action: Add compact bundle-command safety validation and a focused unsafe-command regression fixture.
+Rationale: The approved spec's security/privacy boundary includes bundle commands, but the M2 implementation only safety-checks path variables, event paths, and transcript references.
+Required outcome: Compact validation rejects unsafe bundle command strings containing machine-local paths, hostnames, credentials, proxy URLs, or secret-like values, without executing commands or changing selected validation behavior.
+Safe resolution path: Add a fixture with an unsafe `validation_bundles.<id>.command`, assert the validator rejects it, extend bundle validation to apply the approved safety checks to command strings, and rerun M2 targeted validation.
+Validation target: `scripts/test-change-metadata-validator.py` includes an unsafe bundle-command fixture, and `scripts/validate-change-metadata.py` rejects that fixture with a stable actionable message.
 
 ### spec-review-r1
 

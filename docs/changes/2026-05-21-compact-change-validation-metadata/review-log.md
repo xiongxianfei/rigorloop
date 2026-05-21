@@ -17,6 +17,17 @@ This ledger records formal lifecycle reviews for the compact change validation m
 
 ### Review entry
 
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: 1
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: CVM-M2-CR1
+Open findings: CVM-M2-CR1
+
+### Review entry
+
 Review ID: spec-review-r1
 Stage: spec-review
 Round: 1
