@@ -50,8 +50,9 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 - COPY `assets/review-result-skeleton.md` when recording the review result.
   Fill: review title, result fields, findings summary, next stage, eventual test-spec readiness, and stop condition.
   Do not emit unfilled placeholders.
-- COPY `assets/review-finding.md` when recording each material finding.
-  Fill: finding ID, summary, severity, location, evidence, required outcome, and safe resolution path or needs-decision rationale.
+- COPY `assets/material-finding.md` when recording each material finding.
+  Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed.
+  Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
   Do not emit unfilled placeholders.
 
 ## Review dimensions
@@ -185,7 +186,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ```md
 COPY `assets/review-result-skeleton.md` for <spec review result>.
-Use `assets/review-finding.md` once per material finding.
+COPY `assets/material-finding.md` once per material finding.
 Do not emit unfilled placeholders.
 ```
 

@@ -8,7 +8,7 @@
 ## Result
 
 - Skill: spec-review
-- Review status: <review status>
+- Review status: <approved | changes-requested | blocked | inconclusive>
 - Material findings: <finding IDs or none>
 - Recording status: <recording status>
 - Recording blocker: <recording blocker or none>

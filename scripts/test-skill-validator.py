@@ -606,6 +606,23 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             include_metadata=include_metadata,
         )
 
+    def review_family_asset_text(
+        self,
+        *,
+        template: str,
+        skill: str,
+        status: str = "normative",
+        body: str = "| <field> | <value> |\n",
+        include_metadata: bool = True,
+    ) -> str:
+        return self.spec_family_asset_text(
+            template=template,
+            skill=skill,
+            status=status,
+            body=body,
+            include_metadata=include_metadata,
+        )
+
     def assertFixturePasses(self, relative_path: str) -> None:
         result = run_validator(FIXTURES / relative_path)
         self.assertEqual(
@@ -845,17 +862,32 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                             "- Recording status: <recording status>\n"
                         ),
                     ),
-                    "assets/review-finding.md": self.spec_family_asset_text(
-                        template="spec-review-finding-v1",
+                    "assets/material-finding.md": self.spec_family_asset_text(
+                        template="spec-review-material-finding-v1",
                         skill="spec-review",
                         body=(
                             "## Finding <finding id>\n\n"
+                            "- Finding ID: <finding id>\n"
                             "- Severity: <severity>\n"
                             "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
                             "- Safe resolution path: <safe resolution path>\n"
+                            "- needs-decision rationale: <needs-decision rationale>\n"
                         ),
                     ),
                 },
+                resource_entries=textwrap.dedent(
+                    """\
+                    - COPY `assets/material-finding.md` when recording each material finding.
+                      Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path.
+                      Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
+                      Do not emit unfilled placeholders.
+                    - COPY `assets/review-result-skeleton.md` when recording the review result.
+                      Fill: review result fields.
+                      Do not emit unfilled placeholders.
+                    """
+                ),
             )
             self.write_spec_family_asset_fixture(
                 root,
@@ -918,10 +950,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                         skill="spec-review",
                         body="## Result\n\n- Review status: <review status>\n",
                     ),
-                    "assets/review-finding.md": self.spec_family_asset_text(
-                        template="spec-review-finding-v1",
+                    "assets/material-finding.md": self.spec_family_asset_text(
+                        template="spec-review-material-finding-v1",
                         skill="spec-review",
-                        body="## Finding <finding id>\n\n- Severity: <severity>\n",
+                        body="## Finding <finding id>\n\n- Finding ID: <finding id>\n- Severity: <severity>\n",
                     ),
                 },
             )
@@ -941,7 +973,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 errors,
                 [
                     "Generated output for skill 'spec-review' is missing mapped asset "
-                    "'assets/review-finding.md' in generated adapter output"
+                    "'assets/material-finding.md' in generated adapter output"
                 ],
             )
 
@@ -955,8 +987,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "assets/review-result-skeleton.md": self.spec_family_asset_text(
                         template="spec-review-result-skeleton-v1", skill="spec-review"
                     ),
-                    "assets/review-finding.md": self.spec_family_asset_text(
-                        template="spec-review-finding-v1", skill="spec-review"
+                    "assets/material-finding.md": self.spec_family_asset_text(
+                        template="spec-review-material-finding-v1", skill="spec-review"
                     ),
                     "assets/review-dimension-row.md": self.spec_family_asset_text(
                         template="spec-review-dimension-row-v1", skill="spec-review"
@@ -1069,8 +1101,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                         skill="spec-review",
                         body="This asset MUST define severity policy for reviewers.\n<field>\n",
                     ),
-                    "assets/review-finding.md": self.spec_family_asset_text(
-                        template="spec-review-finding-v1", skill="spec-review"
+                    "assets/material-finding.md": self.spec_family_asset_text(
+                        template="spec-review-material-finding-v1", skill="spec-review"
                     ),
                 },
             )
@@ -1105,8 +1137,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                                 skill="spec-review",
                                 body=f"- {forbidden_label}: <policy>\n",
                             ),
-                            "assets/review-finding.md": self.spec_family_asset_text(
-                                template="spec-review-finding-v1", skill="spec-review"
+                            "assets/material-finding.md": self.spec_family_asset_text(
+                                template="spec-review-material-finding-v1", skill="spec-review"
                             ),
                         },
                     )
@@ -1497,6 +1529,260 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "Generated output for skill 'proposal-review' is missing mapped asset "
                     "'assets/material-finding.md' in generated adapter output"
                 ],
+            )
+
+    def test_review_family_asset_resource_map_requires_finding_id_confirmation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "code-review",
+                {
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Finding ID: <finding id>\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                            "- needs-decision rationale: <needs-decision rationale>\n"
+                        ),
+                    ),
+                    "assets/review-result-skeleton.md": self.review_family_asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
+                        body="- Review status: <review status>\n",
+                    ),
+                },
+                resource_entries=textwrap.dedent(
+                    """\
+                    - COPY `assets/material-finding.md` when recording each material finding.
+                      Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path.
+                      Do not emit unfilled placeholders.
+                    - COPY `assets/review-result-skeleton.md` when recording the review result.
+                      Fill: review result fields.
+                      Do not emit unfilled placeholders.
+                    """
+                ),
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "Resource map entry for 'assets/material-finding.md' must instruct agents to confirm the literal Finding ID line before linking",
+                result.stdout + result.stderr,
+            )
+
+    def test_code_review_family_assets_are_installed_and_preserve_status_vocabulary(self) -> None:
+        skills_dir = ROOT / "skills"
+        skill_path = skills_dir / "code-review" / "SKILL.md"
+        skill_text = skill_path.read_text(encoding="utf-8")
+
+        self.assertIn("- COPY `assets/material-finding.md`", skill_text)
+        self.assertIn("- COPY `assets/review-result-skeleton.md`", skill_text)
+        self.assertIn("Finding ID:", skill_text)
+
+        material_finding = (skills_dir / "code-review" / "assets" / "material-finding.md").read_text(
+            encoding="utf-8"
+        )
+        for label in [
+            "Finding ID:",
+            "Severity:",
+            "Location:",
+            "Evidence:",
+            "Required outcome:",
+            "Safe resolution path:",
+            "needs-decision rationale:",
+        ]:
+            self.assertIn(label, material_finding)
+
+        result_skeleton = (
+            skills_dir / "code-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn(
+            "clean-with-notes | changes-requested | blocked | inconclusive",
+            result_skeleton,
+        )
+        self.assertIn("- Reviewed milestone:", result_skeleton)
+        self.assertIn("- Milestone closeout:", result_skeleton)
+        self.assertNotIn("approved | changes-requested", result_skeleton)
+
+    def test_proposal_review_family_assets_preserve_gate_status_vocabulary(self) -> None:
+        skills_dir = ROOT / "skills"
+        skill_text = (skills_dir / "proposal-review" / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertIn("- COPY `assets/material-finding.md`", skill_text)
+        self.assertIn("- COPY `assets/review-result-skeleton.md`", skill_text)
+        self.assertIn("Finding ID:", skill_text)
+
+        material_finding = (
+            skills_dir / "proposal-review" / "assets" / "material-finding.md"
+        ).read_text(encoding="utf-8")
+        code_review_finding = (
+            skills_dir / "code-review" / "assets" / "material-finding.md"
+        ).read_text(encoding="utf-8")
+        for label in [
+            "Finding ID:",
+            "Severity:",
+            "Location:",
+            "Evidence:",
+            "Required outcome:",
+            "Safe resolution path:",
+            "needs-decision rationale:",
+        ]:
+            self.assertIn(label, material_finding)
+        self.assertEqual(
+            skill_validation._review_family_material_finding_field_block(material_finding),
+            skill_validation._review_family_material_finding_field_block(code_review_finding),
+        )
+
+        result_skeleton = (
+            skills_dir / "proposal-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("approved | changes-requested | blocked | inconclusive", result_skeleton)
+        self.assertNotIn("clean-with-notes", result_skeleton)
+
+    def test_spec_review_family_assets_use_material_finding_and_preserve_readiness(self) -> None:
+        skills_dir = ROOT / "skills"
+        skill_text = (skills_dir / "spec-review" / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertIn("- COPY `assets/material-finding.md`", skill_text)
+        self.assertIn("- COPY `assets/review-result-skeleton.md`", skill_text)
+        self.assertIn("Finding ID:", skill_text)
+        self.assertNotIn("assets/review-finding.md", skill_text)
+        self.assertFalse((skills_dir / "spec-review" / "assets" / "review-finding.md").exists())
+
+        material_finding = (
+            skills_dir / "spec-review" / "assets" / "material-finding.md"
+        ).read_text(encoding="utf-8")
+        code_review_finding = (
+            skills_dir / "code-review" / "assets" / "material-finding.md"
+        ).read_text(encoding="utf-8")
+        self.assertEqual(
+            skill_validation._review_family_material_finding_field_block(material_finding),
+            skill_validation._review_family_material_finding_field_block(code_review_finding),
+        )
+
+        result_skeleton = (
+            skills_dir / "spec-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("approved | changes-requested | blocked | inconclusive", result_skeleton)
+        self.assertIn("Eventual test-spec readiness", result_skeleton)
+        self.assertNotIn("clean-with-notes", result_skeleton)
+
+    def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "code-review",
+                {
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Finding: <finding id>\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                        ),
+                    ),
+                    "assets/review-result-skeleton.md": self.review_family_asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
+                        body="- Review status: <review status>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "review-family material-finding must include parser-owned label 'Finding ID:'",
+                result.stdout + result.stderr,
+            )
+
+    def test_review_family_material_finding_field_block_must_match_across_skills(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            common_finding = (
+                "## Finding <finding id>\n\n"
+                "- Finding ID: <finding id>\n"
+                "- Severity: <severity>\n"
+                "- Location: <location>\n"
+                "- Evidence: <evidence>\n"
+                "- Required outcome: <required outcome>\n"
+                "- Safe resolution path: <safe resolution path>\n"
+                "- needs-decision rationale: <needs-decision rationale>\n"
+            )
+            changed_finding = common_finding.replace(
+                "- Evidence: <evidence>\n- Required outcome: <required outcome>\n",
+                "- Required outcome: <required outcome>\n- Evidence: <evidence>\n",
+            )
+            for skill_name, finding_body in (
+                ("code-review", common_finding),
+                ("proposal-review", common_finding),
+                ("spec-review", changed_finding),
+            ):
+                result_body = "- Review status: <review status>\n"
+                if skill_name == "proposal-review":
+                    result_body = "## Result\n\n- Skill: proposal-review\n- Review status: <review status>\n"
+                self.write_spec_family_asset_fixture(
+                    root,
+                    skill_name,
+                    {
+                        "assets/material-finding.md": self.review_family_asset_text(
+                            template=f"{skill_name}-material-finding-v1",
+                            skill=skill_name,
+                            body=finding_body,
+                        ),
+                        "assets/review-result-skeleton.md": self.review_family_asset_text(
+                            template=f"{skill_name}-result-skeleton-v1",
+                            skill=skill_name,
+                            body=result_body,
+                        ),
+                    },
+                )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "review-family material-finding parser-owned field block must be byte-identical across first-slice review skills",
+                result.stdout + result.stderr,
+            )
+
+    def test_review_family_asset_policy_field_labels_fail(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "code-review",
+                {
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
+                        body="- Severity: <severity>\n",
+                    ),
+                    "assets/review-result-skeleton.md": self.review_family_asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
+                        body="- Severity policy: <policy>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "review-family asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
+                result.stdout + result.stderr,
             )
 
     def test_proposal_family_baseline_summary_records_required_surfaces(self) -> None:
