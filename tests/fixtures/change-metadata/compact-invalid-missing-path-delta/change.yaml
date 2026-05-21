@@ -1,10 +1,11 @@
 schema_version: 2
 path_vars:
-  change_id: 2026-05-21-missing-before-stage
-  spec: specs/{slug}.md
+  change_id: 2026-05-21-compact-change-validation-metadata
+  change_root: tests/fixtures/change-metadata/compact-invalid-missing-path-delta
 validation_bundles:
   lifecycle:
     command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    expands_with: validation_events[].paths_added.lifecycle
 validation_events:
   - stage: proposal-review-r1
     lifecycle_stage: proposal-review

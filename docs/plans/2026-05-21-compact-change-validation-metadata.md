@@ -49,13 +49,13 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 ## Current Handoff Summary
 
 - Current milestone: M3. Reconstruction, Summary Derivation, Review Counts, And Compactness Proof
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2
-- Review status: code-review-m2-r2 clean-with-notes
-- Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Review status: M3 implementation complete; code-review pending
+- Remaining in-scope implementation milestones: none
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is not implemented or reviewed, final explain-change and verify have not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M3 is not reviewed, final explain-change and verify have not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -178,7 +178,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 
 ### M3. Reconstruction, Summary Derivation, Review Counts, And Compactness Proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Implement exact path-expanding command reconstruction checks, stored-summary consistency, review-artifact count cross-checking, duplicate-stage rejection, skipped/not-run blocker handling, and representative compactness proof.
 - Requirements: R29-R32, R43-R50, R59-R62, R76-R82; AC8-AC9, AC18, AC22-AC24, AC27.
 - Files/components likely touched:
@@ -227,6 +227,15 @@ Implement the approved compact `change.yaml` validation metadata contract while 
   - Compactness proof could become brittle if fixture formatting changes.
 - Rollback/recovery:
   - Keep M1/M2 validation in place and temporarily reject compact files with cross-check-dependent fields until the count/reconstruction bug is fixed, or revert M3 as a standalone patch.
+- Result:
+  - Added M3 compact fixtures and tests for path-expanding bundle reconstruction, summary derivation, duplicate stage rejection, skipped/not-run blocker handling, review-artifact count cross-checking, compactness measurement, and no-execution behavior for bundle commands.
+  - Confirmed the M3 tests failed before implementation because summary drift, duplicate stages, missing path deltas, review-count mismatches, and compactness helper behavior were not yet implemented.
+  - Added deterministic accumulated path-set reconstruction for path-expanding bundles declared with `expands_with: validation_events[].paths_added.<bundle>`.
+  - Added stored-summary validation for `all_passed`, pass-only `stages_validated`, `final_counts`, `open_validation_blockers`, duplicate event stages, skipped owner decisions, and blocker requirements for non-pass events.
+  - Added review-artifact count cross-checking through the existing review-artifact parser when referenced review artifacts exist.
+  - Added compactness measurement helper proof and confirmed compact validation does not execute bundle commands while validating metadata.
+  - Preserved legacy metadata compatibility and the M1/M2 compact path/lifecycle validation behavior.
+  - M3 implementation is complete and ready for code-review.
 
 ## Validation plan
 
@@ -272,6 +281,8 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-21: Code-review M2 R1 recorded CVM-M2-CR1; M2 moved to `resolution-needed`.
 - 2026-05-21: Review-resolution for CVM-M2-CR1 added unsafe bundle-command validation and returned M2 to `review-requested`.
 - 2026-05-21: Code-review M2 R2 recorded `clean-with-notes`; M2 closed and next stage is implement M3.
+- 2026-05-21: M3 tests were added first and failed against the M2 validator path; implementation then added reconstruction, summary derivation, review-count cross-checking, compactness proof, and no-execution coverage.
+- 2026-05-21: M3 moved to `review-requested` after targeted validation passed.
 
 ## Decision log
 
@@ -314,6 +325,13 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-21: `git diff --check --` passed after CVM-M2-CR1 resolution.
 - 2026-05-21: `python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata`, and `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md` passed after CVM-M2-CR1 resolution evidence was recorded.
 - 2026-05-21: `git diff --check --`, `python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata`, and `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md` passed after code-review M2 R2 recording.
+- 2026-05-21: `python scripts/test-change-metadata-validator.py` passed for M3 after initially failing on M3 compact fixtures and helper tests before implementation.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml` passed for M3.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-summary-conflict/change.yaml` failed as expected for M3 with summary conflict diagnostics.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid-review-counts/change.yaml` passed for M3.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-review-counts/change.yaml` failed as expected for M3 with review-count mismatch diagnostics.
+- 2026-05-21: `python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py scripts/review_artifact_validation.py` passed for M3.
+- 2026-05-21: `git diff --check --`, `python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata`, and `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md` passed for M3 before handoff recording.
 
 ## Outcome and retrospective
 
@@ -322,4 +340,4 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M3`; not ready for final closeout, verify, or PR handoff.
+- Ready for `code-review M3`; not ready for final closeout, verify, or PR handoff.
