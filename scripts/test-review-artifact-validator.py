@@ -712,6 +712,22 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         replace_field(root / "reviews" / "code-review-r1.md", "Finding ID", "CR1 F1")
         self.assertFails(root, "Finding ID must be a stable ASCII identifier")
 
+        root = self.fixture()
+        replace_field(root / "reviews" / "code-review-r1.md", "Finding ID", "")
+        self.assertFails(root, "Finding ID must be a stable ASCII identifier")
+
+    def test_material_finding_identity_label_is_parser_owned(self) -> None:
+        root = self.fixture()
+        review_path = root / "reviews" / "code-review-r1.md"
+        text = review_path.read_text(encoding="utf-8")
+        review_path.write_text(text.replace("Finding ID: CR1-F1", "Finding: CR1-F1"), encoding="utf-8")
+        self.assertFails(root, "review-log Material findings reference unknown Finding ID")
+
+    def test_non_enum_severity_is_not_structure_validated(self) -> None:
+        root = self.fixture()
+        replace_field(root / "reviews" / "code-review-r1.md", "Severity", "not-a-current-enum")
+        self.assertPasses(root)
+
     def test_review_log_canonical_blocks_are_required(self) -> None:
         for field in ["Review ID", "Stage", "Round", "Status", "Detailed record", "Resolution", "Material findings", "Open findings"]:
             with self.subTest(field=field):

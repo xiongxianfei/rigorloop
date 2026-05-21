@@ -3,6 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
+- [2026-05-21 Review-Skill Family Consistency and Parser-Owned Finding Shape](plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md) - active execution plan for adding review-family material-finding and result-skeleton assets to `code-review`, `proposal-review`, and `spec-review`, with validator/parser-conformance proof, behavior preservation, generated-output evidence, token/cold-read evidence, clean plan-review, active test spec, and current handoff to code-review M1.
 - [2026-05-20 Proposal-Family Assets Progressive Disclosure](plans/2026-05-20-proposal-family-assets-progressive-disclosure.md) - active execution plan for adding assets-only progressive disclosure to `proposal` and `proposal-review`; M2, M3, and M4 are closed after clean code reviews, explain-change and verify are recorded, and PR #81 is open for hosted CI and human review.
 
 ## Blocked

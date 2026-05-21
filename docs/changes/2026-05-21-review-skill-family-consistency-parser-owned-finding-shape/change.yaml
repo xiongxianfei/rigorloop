@@ -1,0 +1,141 @@
+change_id: 2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+title: Review-skill family consistency and parser-owned finding shape
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
+  spec: specs/review-skill-family-consistency-parser-owned-finding-shape.md
+  test_spec: specs/review-skill-family-consistency-parser-owned-finding-shape.test.md
+  plan: docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
+  review_resolution: docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md
+requirements:
+  - Record the proposal direction for review-family material-finding and result-skeleton assets.
+  - Preserve review behavior, status enums, recording rules, and lifecycle boundaries while extracting field-shape assets.
+  - Keep review-class assets limited to structural field shape and placeholders.
+  - Bind material-finding assets to the review-artifact parser contract and validate representative valid and invalid fills.
+  - Record first-slice boundaries and deferred follow-ons for remaining review skills, build-time partials, and referential-integrity validation.
+  - Create a draft feature spec that converts the accepted proposal direction into testable review-family asset requirements.
+  - Resolve spec-review finding RSF-SR1 before downstream reliance on the spec.
+  - Keep RSF-SR1 resolution narrow by preserving current parser behavior and excluding severity-enum validation from this slice.
+  - Create an execution plan that sequences validator foundation, per-skill asset conformance, generated-output proof, token and cold-read evidence, and lifecycle closeout.
+  - Record clean plan-review approval before test-spec.
+  - Create an active test spec that maps every approved review-family requirement, example, edge case, and acceptance criterion to proof before implementation.
+  - Implement M1 validator foundation and record that `specs/skill-contract.md` is sufficient before review-skill asset edits.
+tests:
+  - Proposal-review checks problem framing, option quality, scope boundaries, vision fit, risks, and readiness for spec.
+  - Review artifact structure validation for clean proposal-review receipt.
+  - Artifact lifecycle validation for the proposal and review evidence.
+  - Artifact lifecycle validation for the draft spec.
+  - Review artifact closeout validation for resolved spec-review finding RSF-SR1.
+  - Focused text inspection proving RSF-R20, RSF-R21, EC2, and AC-RSF-010 no longer require non-enum severity values to fail structure validation.
+  - Plan-review must approve the execution plan before test-spec or implementation.
+  - Review artifact closeout validation for clean plan-review receipt.
+  - Test-spec coverage maps requirements, examples, edge cases, validation commands, fixtures, manual proof, compatibility, and lifecycle checks before implementation.
+  - M1 validator fixture coverage rejects review-family asset contract drift and review-artifact parser fixtures prove parser-owned identity behavior without severity-enum validation.
+validation:
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
+    result: pass_before_proposal_review
+  - command: git diff --check -- docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
+    result: pass_before_proposal_review
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0_after_proposal_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_proposal_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md
+    result: pass_validated_1_lifecycle_artifact_after_proposal_review
+  - command: git diff --check -- docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_after_proposal_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md
+    result: pass_validated_2_lifecycle_artifacts_after_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0_after_spec_authoring
+  - command: git diff --check -- docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md specs/review-skill-family-consistency-parser-owned-finding-shape.md docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r1.md
+    result: pass_validated_2_lifecycle_artifacts_after_spec_review_r1
+  - command: git diff --check -- specs/review-skill-family-consistency-parser-owned-finding-shape.md docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_after_spec_review_r1
+  - command: rg -n "non-enum|severity-enum|Severity|RSF-R20|RSF-R21|EC2|AC-RSF-010" specs/review-skill-family-consistency-parser-owned-finding-shape.md docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md
+    result: pass_after_rsf_sr1_resolution_only_remaining_non_enum_mentions_are_explicit_non_requirements
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_rsf_sr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_rsf_sr1_resolution
+  - command: git diff --check -- specs/review-skill-family-consistency-parser-owned-finding-shape.md docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_after_rsf_sr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r2.md
+    result: pass_validated_2_lifecycle_artifacts_after_spec_review_r2
+  - command: git diff --check -- specs/review-skill-family-consistency-parser-owned-finding-shape.md docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_after_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_plan_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plan.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r2.md
+    result: pass_validated_2_lifecycle_artifacts_after_plan_authoring
+  - command: git diff --check -- specs/review-skill-family-consistency-parser-owned-finding-shape.md docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md docs/plan.md docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plan.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r2.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/plan-review-r1.md
+    result: pass_validated_2_lifecycle_artifacts_after_plan_review_r1
+  - command: git diff --check -- docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.test.md --path docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plan.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r2.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/plan-review-r1.md
+    result: pass_validated_3_lifecycle_artifacts_after_test_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_test_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_test_spec_authoring
+  - command: git diff --check -- specs/review-skill-family-consistency-parser-owned-finding-shape.test.md docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md docs/plan.md docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_after_test_spec_authoring
+  - command: python scripts/test-skill-validator.py
+    result: pass_156_tests_after_m1
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_38_tests_after_m1
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_m1
+  - command: git diff --check --
+    result: pass_after_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.test.md --path docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plan.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r2.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/plan-review-r1.md
+    result: pass_validated_3_lifecycle_artifacts_after_m1
+changed_files:
+  - docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
+  - specs/review-skill-family-consistency-parser-owned-finding-shape.md
+  - docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
+  - specs/review-skill-family-consistency-parser-owned-finding-shape.test.md
+  - docs/plan.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/skill-contract-sufficiency.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r1.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r2.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/plan-review-r1.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - scripts/test-review-artifact-validator.py
+review:
+  status: clean
+  reviewed_artifact: docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
+  review_log: docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md
+  unresolved_items: 0

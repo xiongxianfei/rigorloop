@@ -606,6 +606,23 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             include_metadata=include_metadata,
         )
 
+    def review_family_asset_text(
+        self,
+        *,
+        template: str,
+        skill: str,
+        status: str = "normative",
+        body: str = "| <field> | <value> |\n",
+        include_metadata: bool = True,
+    ) -> str:
+        return self.spec_family_asset_text(
+            template=template,
+            skill=skill,
+            status=status,
+            body=body,
+            include_metadata=include_metadata,
+        )
+
     def assertFixturePasses(self, relative_path: str) -> None:
         result = run_validator(FIXTURES / relative_path)
         self.assertEqual(
@@ -1497,6 +1514,163 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "Generated output for skill 'proposal-review' is missing mapped asset "
                     "'assets/material-finding.md' in generated adapter output"
                 ],
+            )
+
+    def test_review_family_asset_resource_map_requires_finding_id_confirmation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "code-review",
+                {
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Finding ID: <finding id>\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                            "- needs-decision rationale: <needs-decision rationale>\n"
+                        ),
+                    ),
+                    "assets/review-result-skeleton.md": self.review_family_asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
+                        body="- Review status: <review status>\n",
+                    ),
+                },
+                resource_entries=textwrap.dedent(
+                    """\
+                    - COPY `assets/material-finding.md` when recording each material finding.
+                      Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path.
+                      Do not emit unfilled placeholders.
+                    - COPY `assets/review-result-skeleton.md` when recording the review result.
+                      Fill: review result fields.
+                      Do not emit unfilled placeholders.
+                    """
+                ),
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "Resource map entry for 'assets/material-finding.md' must instruct agents to confirm the literal Finding ID line before linking",
+                result.stdout + result.stderr,
+            )
+
+    def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "code-review",
+                {
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Finding: <finding id>\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                        ),
+                    ),
+                    "assets/review-result-skeleton.md": self.review_family_asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
+                        body="- Review status: <review status>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "review-family material-finding must include parser-owned label 'Finding ID:'",
+                result.stdout + result.stderr,
+            )
+
+    def test_review_family_material_finding_field_block_must_match_across_skills(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            common_finding = (
+                "## Finding <finding id>\n\n"
+                "- Finding ID: <finding id>\n"
+                "- Severity: <severity>\n"
+                "- Location: <location>\n"
+                "- Evidence: <evidence>\n"
+                "- Required outcome: <required outcome>\n"
+                "- Safe resolution path: <safe resolution path>\n"
+                "- needs-decision rationale: <needs-decision rationale>\n"
+            )
+            changed_finding = common_finding.replace(
+                "- Evidence: <evidence>\n- Required outcome: <required outcome>\n",
+                "- Required outcome: <required outcome>\n- Evidence: <evidence>\n",
+            )
+            for skill_name, finding_body in (
+                ("code-review", common_finding),
+                ("proposal-review", common_finding),
+                ("spec-review", changed_finding),
+            ):
+                result_body = "- Review status: <review status>\n"
+                if skill_name == "proposal-review":
+                    result_body = "## Result\n\n- Skill: proposal-review\n- Review status: <review status>\n"
+                self.write_spec_family_asset_fixture(
+                    root,
+                    skill_name,
+                    {
+                        "assets/material-finding.md": self.review_family_asset_text(
+                            template=f"{skill_name}-material-finding-v1",
+                            skill=skill_name,
+                            body=finding_body,
+                        ),
+                        "assets/review-result-skeleton.md": self.review_family_asset_text(
+                            template=f"{skill_name}-result-skeleton-v1",
+                            skill=skill_name,
+                            body=result_body,
+                        ),
+                    },
+                )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "review-family material-finding parser-owned field block must be byte-identical across first-slice review skills",
+                result.stdout + result.stderr,
+            )
+
+    def test_review_family_asset_policy_field_labels_fail(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "code-review",
+                {
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
+                        body="- Severity: <severity>\n",
+                    ),
+                    "assets/review-result-skeleton.md": self.review_family_asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
+                        body="- Severity policy: <policy>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "review-family asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
+                result.stdout + result.stderr,
             )
 
     def test_proposal_family_baseline_summary_records_required_surfaces(self) -> None:
