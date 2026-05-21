@@ -1041,7 +1041,8 @@ def _path_category(path: str) -> str | None:
             return "change-metadata"
         if parts[3] in {"review-log.md", "review-resolution.md"} or parts[3] == "reviews":
             return "review-artifacts"
-        if parts[3] in {
+        change_local_name = parts[3]
+        if change_local_name in {
             "explain-change.md",
             "architecture.md",
             "verify-report.md",
@@ -1057,7 +1058,11 @@ def _path_category(path: str) -> str | None:
             "routing-coverage.md",
             "skill-audit.md",
             "token-cost.md",
-        } or parts[3] == "diagrams":
+        } or (
+            change_local_name.endswith("-preservation.md")
+            or change_local_name.endswith("-generated-token-cold-read-evidence.md")
+            or change_local_name == "skill-contract-sufficiency.md"
+        ) or parts[3] == "diagrams":
             return "change-local-lifecycle"
         return "change-local-unsupported"
     if path == "docs/plan.md":

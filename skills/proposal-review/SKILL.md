@@ -72,7 +72,8 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
   Fill: review status, material findings, recording status, recording blocker, review record, review log, review resolution, open blockers, immediate next stage, review dimensions, scope-preservation result, recommended edits, and recommendation.
   Do not emit unfilled placeholders.
 - COPY `assets/material-finding.md` once per material finding.
-  Fill: finding ID, severity, location, evidence, required outcome, safe resolution path, and needs-decision rationale when needed.
+  Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed.
+  Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
   Do not emit unfilled placeholders.
 
 ## Review dimensions

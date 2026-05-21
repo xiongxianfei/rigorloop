@@ -146,7 +146,7 @@ SPEC_FAMILY_ASSET_APPROVED_ASSETS = {
     },
     "spec-review": {
         "assets/review-result-skeleton.md",
-        "assets/review-finding.md",
+        "assets/material-finding.md",
     },
     "test-spec": {
         "assets/test-spec-skeleton.md",
@@ -246,6 +246,39 @@ PROPOSAL_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN = re.compile(
     r"scope[- ]preservation[- ]rules?|scope[- ]budget[- ]review|"
     r"vision[- ]fit[- ]review|standing[- ]artifact[- ]gate[- ]review|"
     r"review[- ]dimension[- ]guidance)\b",
+    re.IGNORECASE,
+)
+REVIEW_FAMILY_FIRST_SLICE_SKILLS = {
+    "code-review",
+    "proposal-review",
+    "spec-review",
+}
+REVIEW_FAMILY_ASSET_APPROVED_ASSETS = {
+    skill_name: {
+        "assets/material-finding.md",
+        "assets/review-result-skeleton.md",
+    }
+    for skill_name in REVIEW_FAMILY_FIRST_SLICE_SKILLS
+}
+REVIEW_FAMILY_PARSER_FIELD_LABELS = (
+    "Finding ID",
+    "Severity",
+    "Location",
+    "Evidence",
+    "Required outcome",
+    "Safe resolution path",
+)
+REVIEW_FAMILY_MATERIAL_FINDING_ALLOWED_LABELS = {
+    *REVIEW_FAMILY_PARSER_FIELD_LABELS,
+    "needs-decision rationale",
+}
+REVIEW_FAMILY_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
+    r"\b(?:must|should|review[- ]dimension definitions?|review[- ]dimension guidance|"
+    r"severity[- ]policy|review[- ]status[- ]policy|material[- ]finding[- ]sufficiency|"
+    r"safe[- ]resolution[- ]decision(?:[- ]rule)?|recording[- ]status[- ]rules?|"
+    r"isolation[- ]rules?|scope[- ]preservation[- ]rules?|vision[- ]fit[- ]review|"
+    r"standing[- ]artifact[- ]gate[- ]review|workflow[- ]handoff|"
+    r"lifecycle[- ]boundary)\b",
     re.IGNORECASE,
 )
 ASSET_ROLLOUT_APPROVED_ASSETS = {
@@ -754,6 +787,196 @@ def _proposal_review_asset_baseline_errors(
     if not re.search(r"(?m)^- Skill:\s*proposal-review$", asset_body):
         errors.append(
             f"{path}: proposal-review review-result-skeleton must include baseline field: Skill"
+        )
+
+    return errors
+
+
+def _review_family_should_validate(
+    skill_name: str | None,
+    relative_assets: set[str],
+    resource_map: str | None,
+) -> bool:
+    if skill_name not in REVIEW_FAMILY_FIRST_SLICE_SKILLS:
+        return False
+    if "assets/material-finding.md" not in relative_assets:
+        return False
+    if skill_name in {"code-review", "spec-review"}:
+        return True
+    return bool(resource_map and "Finding ID:" in resource_map)
+
+
+def _asset_field_labels(asset_body: str) -> list[str]:
+    labels: list[str] = []
+    for line in asset_body.splitlines():
+        field_label_match = SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN.match(line)
+        if field_label_match is not None:
+            labels.append(field_label_match.group("label"))
+    return labels
+
+
+def _review_family_material_finding_field_block(asset_body: str) -> str:
+    block_lines: list[str] = []
+    for line in asset_body.splitlines():
+        field_label_match = SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN.match(line)
+        if field_label_match is None:
+            continue
+        label = field_label_match.group("label")
+        if label in REVIEW_FAMILY_MATERIAL_FINDING_ALLOWED_LABELS:
+            block_lines.append(line.strip())
+    return "\n".join(block_lines)
+
+
+def _validate_review_family_asset_file(
+    path: Path,
+    relative_resource: str,
+    skill_name: str,
+    text: str,
+) -> list[str]:
+    errors: list[str] = []
+    metadata = _asset_metadata(text)
+
+    missing = sorted(SPEC_FAMILY_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
+    for field in missing:
+        errors.append(f"{path}: asset metadata missing required field '{field}'")
+
+    if missing:
+        return errors
+
+    if metadata["Skill"] != skill_name:
+        errors.append(
+            f"{path}: review-family asset '{relative_resource}' must declare Skill: {skill_name}"
+        )
+
+    if metadata["Template status"] != "normative":
+        errors.append(
+            f"{path}: review-family asset '{relative_resource}' Template status must be normative"
+        )
+
+    maintained_alongside = metadata["Maintained alongside"]
+    expected_maintained_alongside = f"skills/{skill_name}/SKILL.md"
+    if maintained_alongside != expected_maintained_alongside:
+        errors.append(
+            f"{path}: review-family asset '{relative_resource}' must be maintained alongside {expected_maintained_alongside}"
+        )
+
+    asset_body = _asset_body_without_metadata(text)
+    if not SPEC_FAMILY_ASSET_PLACEHOLDER_PATTERN.search(asset_body):
+        errors.append(
+            f"{path}: asset '{relative_resource}' must include a visible placeholder"
+        )
+
+    if SPEC_FAMILY_ASSET_FILLER_PATTERN.search(asset_body):
+        errors.append(
+            f"{path}: asset '{relative_resource}' must not use filler placeholder text"
+        )
+
+    if REVIEW_FAMILY_ASSET_FORBIDDEN_POLICY_PATTERN.search(asset_body):
+        errors.append(
+            f"{path}: review-family asset '{relative_resource}' must not contain review-policy labels or guidance"
+        )
+
+    if relative_resource != "assets/material-finding.md":
+        return errors
+
+    labels = _asset_field_labels(asset_body)
+    for label in REVIEW_FAMILY_PARSER_FIELD_LABELS:
+        if label not in labels:
+            errors.append(
+                f"{path}: review-family material-finding must include parser-owned label '{label}:'"
+            )
+
+    extra_labels = [
+        label
+        for label in labels
+        if label not in REVIEW_FAMILY_MATERIAL_FINDING_ALLOWED_LABELS
+    ]
+    for label in extra_labels:
+        errors.append(
+            f"{path}: review-family material-finding label is not parser-owned: {label}"
+        )
+
+    return errors
+
+
+def _validate_review_family_asset_rollout(
+    path: Path,
+    body: str,
+    skill_name: str | None,
+) -> list[str]:
+    if skill_name not in REVIEW_FAMILY_FIRST_SLICE_SKILLS:
+        return []
+
+    skill_dir = path.parent
+    assets = [
+        asset
+        for asset in sorted((skill_dir / "assets").rglob("*"))
+        if asset.is_file() and asset.name != ".gitkeep"
+    ] if (skill_dir / "assets").is_dir() else []
+    relative_assets = {asset.relative_to(skill_dir).as_posix() for asset in assets}
+    section = _extract_markdown_section(body, "Resource map")
+    if not _review_family_should_validate(skill_name, relative_assets, section):
+        return []
+
+    errors: list[str] = []
+    resources = _resource_files(skill_dir)
+    unexpected_resource_classes = [
+        resource.relative_to(skill_dir).as_posix()
+        for resource in resources
+        if not resource.relative_to(skill_dir).as_posix().startswith("assets/")
+    ]
+    for relative_resource in unexpected_resource_classes:
+        errors.append(
+            f"{path}: review-family asset rollout must not ship packaged non-asset resource '{relative_resource}'"
+        )
+
+    approved_assets = REVIEW_FAMILY_ASSET_APPROVED_ASSETS[skill_name]
+    if relative_assets != approved_assets:
+        expected = ", ".join(sorted(approved_assets))
+        actual = ", ".join(sorted(relative_assets)) or "none"
+        errors.append(
+            f"{path}: review-family asset rollout must ship exactly approved assets: expected {expected}; found {actual}"
+        )
+
+    if section is None:
+        return errors
+
+    for relative_resource in sorted(relative_assets & approved_assets):
+        entry = _resource_entry_text(section, relative_resource)
+        if entry is None:
+            continue
+        expected_prefix = f"- COPY `{relative_resource}`"
+        if not entry.startswith(expected_prefix):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must use literal COPY"
+            )
+        if not RESOURCE_LOAD_CONDITION_PATTERN.search(entry):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must include a trigger condition"
+            )
+        if not PLAN_ASSET_FIELDS_TO_FILL_PATTERN.search(entry):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must name fields or structures to fill"
+            )
+        if "Do not emit unfilled placeholders" not in entry:
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must instruct agents not to emit unfilled placeholders"
+            )
+        if (
+            relative_resource == "assets/material-finding.md"
+            and "Finding ID:" not in entry
+        ):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must instruct agents to confirm the literal Finding ID line before linking"
+            )
+
+    for asset in assets:
+        relative_resource = asset.relative_to(skill_dir).as_posix()
+        if relative_resource not in approved_assets:
+            continue
+        text = asset.read_text(encoding="utf-8")
+        errors.extend(
+            _validate_review_family_asset_file(asset, relative_resource, skill_name, text)
         )
 
     return errors
@@ -1367,6 +1590,13 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
             name.strip() if isinstance(name, str) else None,
         )
     )
+    errors.extend(
+        _validate_review_family_asset_rollout(
+            path,
+            body,
+            name.strip() if isinstance(name, str) else None,
+        )
+    )
 
     return errors, name.strip() if isinstance(name, str) and name.strip() else None
 
@@ -1390,6 +1620,7 @@ def validate_skill_tree(target: Path, *, allow_generated: bool = False) -> Valid
     errors: list[str] = []
     owners: dict[str, Path] = {}
     checked_files: list[Path] = []
+    review_family_material_blocks: dict[str, str] = {}
 
     for directory in skill_dirs:
         path = directory if directory.is_file() else directory / "SKILL.md"
@@ -1399,11 +1630,31 @@ def validate_skill_tree(target: Path, *, allow_generated: bool = False) -> Valid
         checked_files.append(path)
         file_errors, name = validate_skill_file(path, schema)
         errors.extend(file_errors)
+        if (
+            name in REVIEW_FAMILY_FIRST_SLICE_SKILLS
+            and (path.parent / "assets" / "material-finding.md").is_file()
+        ):
+            material_finding_text = (path.parent / "assets" / "material-finding.md").read_text(
+                encoding="utf-8"
+            )
+            material_finding_body = _asset_body_without_metadata(material_finding_text)
+            review_family_material_blocks[name] = (
+                _review_family_material_finding_field_block(material_finding_body)
+            )
         if not name:
             continue
         if name in owners:
             errors.append(f"duplicate skill name: {name} in {owners[name]} and {path}")
             continue
         owners[name] = path
+
+    if len(review_family_material_blocks) > 1:
+        unique_blocks = set(review_family_material_blocks.values())
+        if len(unique_blocks) > 1:
+            skills = ", ".join(sorted(review_family_material_blocks))
+            errors.append(
+                "review-family material-finding parser-owned field block must be byte-identical "
+                f"across first-slice review skills: {skills}"
+            )
 
     return ValidationResult(checked_files=checked_files, errors=errors)

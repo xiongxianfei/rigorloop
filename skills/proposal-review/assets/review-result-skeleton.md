@@ -6,7 +6,7 @@
 ## Result
 
 - Skill: proposal-review
-- Review status: <review status>
+- Review status: <approved | changes-requested | blocked | inconclusive>
 - Material findings: <finding IDs or none>
 - Recording status: <recording status>
 - Recording blocker: <blocker or none>
