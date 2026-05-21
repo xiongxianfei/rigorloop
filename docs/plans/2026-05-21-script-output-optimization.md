@@ -65,13 +65,13 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Current Handoff Summary
 
 - Current milestone: M3. Test-select-validation output shaping
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M2. Output contract tests
-- Review status: M3 implemented and ready for code-review
-- Remaining in-scope implementation milestones: M3, M4 when triggered, M5
-- Next stage: code-review M3
+- Review status: `code-review-m3-r1` requested changes for `SRO-M3-CR1`
+- Remaining in-scope implementation milestones: M3 resolution, M4 when triggered, M5
+- Next stage: review-resolution for `SRO-M3-CR1`
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 needs code-review; conditional M4, M5, explain-change, final verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: M3 has an open code-review finding; conditional M4, M5, explain-change, final verify, and PR handoff have not happened.
 
 ## Milestones
 
@@ -204,7 +204,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 
 ### M3. Test-select-validation output shaping
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Implement the approved default, verbose, quiet, conflict-flag, zero-test, rerun, and JSON-deferral behavior in `scripts/test-select-validation.py`.
 - Requirements: R1 through R24, R27, R32 through R35, AC1 through AC11, AC14
 - Files/components likely touched:
@@ -239,6 +239,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - Result: Implemented. Added a script-local unittest runner adapter that parses `--verbose` / `-v`, `--quiet` / `-q`, `-k`, and explicit test names, rejects conflicting output flags before loading tests, captures result and duration for compact default/quiet output, preserves full unittest pass-list output under verbose mode, fails zero-test runs, omits scoped rerun commands for unreliable loader failures, and keeps `--json` unsupported.
 - Evidence updates: `behavior-preservation.md` now records M3 new proof for `scripts/test-select-validation.py`; `script-output-audit.md` records post-change observations; `output-contract-red-test.md` records the red-test command passing after M3.
 - Aligned surface note: `scripts/ci.sh` remains untouched in M3. M4 still owns the conditional wrapper no-code/patch decision.
+- Review result: `code-review-m3-r1` requested changes for `SRO-M3-CR1`; the required output-contract tests still run only through an explicit command and are excluded from ordinary post-M3 validation.
 - Commit message: `M3: shape test-select-validation output`
 - Milestone closeout:
   - validation passed
@@ -383,6 +384,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: `SRO-M2-CR1` resolved by removing expected-failure masking, adding explicit red-test proof at `output-contract-red-test.md`, and keeping ordinary M2 validation separate from the pre-M3 red-test command.
 - 2026-05-21: `code-review-m2-r2` closed M2 cleanly with no material findings; M3 is the next implementation milestone.
 - 2026-05-21: M3 implemented `scripts/test-select-validation.py` output shaping and moved to code-review.
+- 2026-05-21: M3 code-review found `SRO-M3-CR1`; output-contract tests must become part of ordinary post-M3 validation or an equivalent default-suite guard before M3 can close.
 
 ## Decision log
 
@@ -482,6 +484,12 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - M3 validation `git diff --check --` passed.
 - M3 selector inspection with `script-output-audit.md` and `output-contract-red-test.md` included blocked those files as `change-local-unsupported`; it had no unclassified paths. Manual route `git diff --check -- docs/changes/2026-05-21-script-output-optimization/script-output-audit.md docs/changes/2026-05-21-script-output-optimization/output-contract-red-test.md` passed.
 - M3 selected CI excluding manually routed evidence files passed: selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- Code-review M3 R1 found `SRO-M3-CR1`; `ScriptOutputContractTests` are still excluded from ordinary post-M3 validation and must be routed into ordinary validation or an equivalent default-suite guard before M3 can close.
+- Code-review M3 R1 recording validation `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-script-output-optimization` passed: 11 reviews, 10 findings, 11 log entries, 10 resolution entries.
+- Code-review M3 R1 recording validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Code-review M3 R1 recording validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m3-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- Code-review M3 R1 recording validation `git diff --check --` passed.
+- Code-review M3 R1 selected CI passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
@@ -490,4 +498,4 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M3 only. Readiness is not Done; M3 review, conditional M4, M5, explain-change, final verify, and PR handoff remain open.
+- Ready for review-resolution for `SRO-M3-CR1` only. Readiness is not Done; M3 resolution and re-review, conditional M4, M5, explain-change, final verify, and PR handoff remain open.
