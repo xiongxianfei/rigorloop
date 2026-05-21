@@ -27,12 +27,12 @@ This matrix records baseline evidence before changing presentation. Later implem
 
 | Behavior | Baseline proof | New proof | Preservation result |
 | --- | --- | --- | --- |
-| selected checks | `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh` selected `selector.regression` | pending M4 | pending |
-| exit code on pass | same command exited `0` | pending M4 | pending |
-| successful child output hidden by default | same command emitted 10 stdout lines and did not include the child `unittest` pass list | pending M4 | pending |
-| successful child output exposed with wrapper `--verbose` | `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --verbose` exited `0` and emitted 81 stdout lines including child pass-list output | pending M4 | pending |
-| failed selected-check evidence | existing `scripts/test-select-validation.py` regressions cover wrapper failure attribution for selected command failure, unavailable command, timeout, signal, decode failure, and malformed selector output | pending M4 if touched | pending |
-| CI semantics if touched | baseline wrapper modes and child-process exit behavior are unchanged in M1 because no wrapper code was edited | pending M4 if touched | pending |
+| selected checks | `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh` selected `selector.regression` | M4 same command selected `selector.regression` | unchanged |
+| exit code on pass | same command exited `0` | M4 same command exited `0` | unchanged |
+| successful child output hidden by default | same command emitted 10 stdout lines and did not include the child `unittest` pass list | M4 same command emitted 10 stdout lines and did not include child `[PASS] test-select-validation: 73 passed ...` output | preserved |
+| successful child output exposed with wrapper `--verbose` | `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --verbose` exited `0` and emitted 81 stdout lines including child pass-list output | M4 same command with `--verbose` exited `0`, emitted 15 stdout lines, and exposed child output under `Selected check output` with `Command: python scripts/test-select-validation.py` | preserved |
+| failed selected-check evidence | existing `scripts/test-select-validation.py` regressions cover wrapper failure attribution for selected command failure, unavailable command, timeout, signal, decode failure, and malformed selector output | M4 focused wrapper proof `python scripts/test-select-validation.py ValidationSelectionTests.test_ci_wrapper_jobs_one_uses_stable_summary_and_hides_success_output ValidationSelectionTests.test_ci_wrapper_run_to_completion_reports_failed_output_after_summary ValidationSelectionTests.test_ci_wrapper_verbose_prints_successful_output_in_stable_order` passed `3` tests | preserved by existing regression coverage |
+| CI semantics if touched | baseline wrapper modes and child-process exit behavior are unchanged in M1 because no wrapper code was edited | M4 did not touch `scripts/ci.sh`; no wrapper patch was triggered | unchanged; R29 not triggered |
 
 ## Selected test/check set baseline
 
@@ -75,6 +75,15 @@ M3 implements presentation-only output shaping around the existing unittest load
 - `python scripts/test-select-validation.py -k definitely_no_script_output_tests` exits `1` with a zero-test `[FAIL]` diagnostic.
 - `python scripts/test-select-validation.py --json` remains unsupported and exits `2`.
 - The original M1 baseline `ValidationSelectionTests` identifiers remain present in the same order. The current full-suite ordered identifier hash is `sha256:878bd8dfce24e987ee50ab36d686f54e8d821bf4a5b11fe831d381c57d164047`.
+
+## M4 CI wrapper preservation proof
+
+M4 records no-code proof for the conditional wrapper boundary.
+
+- `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --jobs 1` exits `0`, selects `selector.regression`, prints the stable wrapper summary, and hides successful child output by default.
+- `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --jobs 1 --verbose` exits `0`, selects `selector.regression`, and exposes child `[PASS] test-select-validation: 73 passed ...` output under `Selected check output`.
+- Focused wrapper regression tests for default success hiding, failed child output expansion, and verbose successful output exposure pass.
+- `scripts/ci.sh` remains unchanged because no post-M3 wrapper gap was found.
 
 ## M1 conclusion
 

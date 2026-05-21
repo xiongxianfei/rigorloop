@@ -169,3 +169,56 @@ Result:
 - exit code: `2`
 - current behavior: `unrecognized arguments: --json`
 - first-slice implication: JSON support remains deferred
+
+## M4 post-change wrapper observation
+
+M4 leaves `scripts/ci.sh` unchanged. Post-M3 wrapper evidence shows the existing wrapper still preserves quiet-success and loud-failure behavior.
+
+Command:
+
+```bash
+bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --jobs 1
+```
+
+Result:
+
+- exit code: `0`
+- stdout lines: `10`
+- selected check IDs: `selector.regression`
+- wrapper output includes stable selector status, selected check identity, summary row, elapsed runtime, and final pass line
+- successful child output is hidden by default; the child `[PASS] test-select-validation: 73 passed ...` line is not printed
+
+Command:
+
+```bash
+bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --jobs 1 --verbose
+```
+
+Result:
+
+- exit code: `0`
+- stdout lines: `15`
+- selected check IDs: `selector.regression`
+- wrapper output exposes the successful child output in stable order under `Selected check output`
+- child command evidence is shown as `Command: python scripts/test-select-validation.py`
+
+Focused wrapper regression proof:
+
+```bash
+python scripts/test-select-validation.py \
+  ValidationSelectionTests.test_ci_wrapper_jobs_one_uses_stable_summary_and_hides_success_output \
+  ValidationSelectionTests.test_ci_wrapper_run_to_completion_reports_failed_output_after_summary \
+  ValidationSelectionTests.test_ci_wrapper_verbose_prints_successful_output_in_stable_order
+```
+
+Result:
+
+- exit code: `0`
+- selected tests: `3`
+- proves successful child output is hidden by default, failed child output is expanded after the summary with check ID/status/output evidence, and wrapper `--verbose` exposes successful child output in stable order
+
+M4 conclusion:
+
+- `scripts/ci.sh` remains unchanged.
+- No wrapper gap was found after M3.
+- The conditional wrapper boundary is satisfied by no-code evidence.

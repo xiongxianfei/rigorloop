@@ -40,6 +40,7 @@ tests:
   - Code-review M3 found SRO-M3-CR1 requiring output-contract tests to be part of ordinary post-M3 validation.
   - SRO-M3-CR1 resolution includes ScriptOutputContractTests in ordinary validation and records the updated selected-test proof.
   - Code-review M3 R2 closed M3 with no material findings after SRO-M3-CR1 resolution.
+  - M4 records no-code CI wrapper preservation evidence; scripts/ci.sh remains unchanged because post-M3 wrapper behavior already satisfies TSRO-011.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
     result: pass_reviews_5_findings_7_log_entries_5_resolution_entries_7_after_plan_authoring
@@ -273,6 +274,26 @@ validation:
     result: pass_after_code_review_m3_r2
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m3-r2.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --jobs 1
     result: pass_selected_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_m3_r2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --jobs 1
+    result: pass_selected_selector_regression_10_stdout_lines_child_output_hidden_after_m4
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --jobs 1 --verbose
+    result: pass_selected_selector_regression_15_stdout_lines_child_pass_output_exposed_after_m4
+  - command: python scripts/test-select-validation.py ValidationSelectionTests.test_ci_wrapper_jobs_one_uses_stable_summary_and_hides_success_output ValidationSelectionTests.test_ci_wrapper_run_to_completion_reports_failed_output_after_summary ValidationSelectionTests.test_ci_wrapper_verbose_prints_successful_output_in_stable_order
+    result: pass_3_focused_ci_wrapper_regression_tests_after_m4
+  - command: python scripts/test-select-validation.py
+    result: pass_73_tests_after_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml
+    result: pass_after_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md
+    result: pass_validated_4_artifact_files_after_m4
+  - command: git diff --check --
+    result: pass_after_m4
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md
+    result: blocked_manual_routing_required_for_script_output_audit_change_local_unsupported_no_unclassified_paths_after_m4
+  - command: git diff --check -- docs/changes/2026-05-21-script-output-optimization/script-output-audit.md
+    result: pass_manual_route_for_script_output_audit_after_m4
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --jobs 1
+    result: pass_selected_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_m4
 changed_files:
   - docs/proposals/2026-05-21-script-output-optimization.md
   - specs/script-output-optimization.md
@@ -302,5 +323,5 @@ changed_files:
   - docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m3-r2.md
   - scripts/test-select-validation.py
 review:
-  status: m3_closed_m4_next
+  status: m4_ready_for_code_review
   unresolved_items: 0
