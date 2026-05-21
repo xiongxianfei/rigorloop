@@ -1,0 +1,105 @@
+change_id: 2026-05-21-script-output-optimization
+title: Script output optimization
+classification: planned
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-21-script-output-optimization.md
+  spec: specs/script-output-optimization.md
+  test_spec: specs/script-output-optimization.test.md
+  architecture: docs/architecture/system/architecture.md
+  plan: docs/plans/2026-05-21-script-output-optimization.md
+  review_resolution: docs/changes/2026-05-21-script-output-optimization/review-resolution.md
+requirements:
+  - specs/script-output-optimization.md R1 through R8 default success and failure output
+  - specs/script-output-optimization.md R9 through R15d verbose, quiet, exit-code, and conflicting-flag behavior
+  - specs/script-output-optimization.md R16 through R18 zero-test behavior
+  - specs/script-output-optimization.md R19 through R22 reliable-only rerun command behavior
+  - specs/script-output-optimization.md R23 through R24 JSON deferral and preservation
+  - specs/script-output-optimization.md R25 through R26 script-output audit
+  - specs/script-output-optimization.md R27 first-slice target
+  - specs/script-output-optimization.md R28 through R31 conditional CI wrapper boundary
+  - specs/script-output-optimization.md R32 through R35 behavior-preservation and output-shape tests
+tests:
+  - Proposal-review R1 found SOO-PR1 through SOO-PR5 and required first-slice, proof-route, quiet-mode, zero-test, and preservation-proof clarifications.
+  - Proposal-review R2 approved the revised proposal.
+  - Spec-review R1 found SRO-SR1 and SRO-SR2 and required deterministic conflicting-flag and quiet-success behavior.
+  - Spec-review R2 approved the revised spec.
+  - Architecture-review R1 approved the canonical architecture update with no material findings.
+  - Plan-review R1 approved the execution plan with no material findings.
+  - Focused test spec maps every approved requirement, example, edge case, and acceptance criterion to proof.
+  - User approved the active test spec for implementation use.
+  - M1 records the script-output audit and baseline behavior-preservation evidence before output-shaping code changes.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
+    result: pass_reviews_5_findings_7_log_entries_5_resolution_entries_7_after_plan_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md
+    result: pass_validated_3_artifact_files_after_plan_authoring
+  - command: git diff --check --
+    result: pass_after_plan_authoring
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/architecture-review-r1.md
+    result: pass_selected_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/architecture-review-r1.md --jobs 1
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
+    result: pass_reviews_6_findings_7_log_entries_6_resolution_entries_7_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/plan-review-r1.md
+    result: pass_validated_3_artifact_files_after_plan_review_r1
+  - command: git diff --check --
+    result: pass_after_plan_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/architecture-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/plan-review-r1.md
+    result: pass_selected_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_plan_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/architecture-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/plan-review-r1.md --jobs 1
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml
+    result: pass_after_test_spec_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/plan-review-r1.md
+    result: pass_validated_4_artifact_files_after_test_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
+    result: pass_reviews_6_findings_7_log_entries_6_resolution_entries_7_after_test_spec_authoring
+  - command: git diff --check --
+    result: pass_after_test_spec_authoring
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/architecture-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/plan-review-r1.md
+    result: pass_selected_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_test_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r2.md --path docs/changes/2026-05-21-script-output-optimization/reviews/architecture-review-r1.md --path docs/changes/2026-05-21-script-output-optimization/reviews/plan-review-r1.md --jobs 1
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_test_spec_authoring
+  - command: python scripts/test-select-validation.py
+    result: pass_62_tests_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --verbose
+    result: pass_selected_selector_regression_after_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml
+    result: pass_after_m1
+  - command: git diff --check -- docs/changes/2026-05-21-script-output-optimization
+    result: pass_after_m1
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md
+    result: blocked_manual_routing_required_for_script_output_audit_change_local_unsupported_no_unclassified_paths
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path specs/script-output-optimization.test.md --path specs/script-output-optimization.md
+    result: pass_validated_4_artifact_files_after_m1
+  - command: git diff --check -- docs/changes/2026-05-21-script-output-optimization/script-output-audit.md
+    result: pass_manual_route_for_script_output_audit_after_m1
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md
+    result: pass_selected_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --jobs 1
+    result: pass_selected_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_m1
+changed_files:
+  - docs/proposals/2026-05-21-script-output-optimization.md
+  - specs/script-output-optimization.md
+  - specs/script-output-optimization.test.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-05-21-script-output-optimization.md
+  - docs/plan.md
+  - docs/changes/2026-05-21-script-output-optimization/change.yaml
+  - docs/changes/2026-05-21-script-output-optimization/script-output-audit.md
+  - docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md
+  - docs/changes/2026-05-21-script-output-optimization/review-log.md
+  - docs/changes/2026-05-21-script-output-optimization/review-resolution.md
+  - docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-21-script-output-optimization/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r1.md
+  - docs/changes/2026-05-21-script-output-optimization/reviews/spec-review-r2.md
+  - docs/changes/2026-05-21-script-output-optimization/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-21-script-output-optimization/reviews/plan-review-r1.md
+review:
+  status: m1_ready_for_code_review
+  unresolved_items: 0
