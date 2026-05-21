@@ -298,7 +298,7 @@ class ScriptOutputFixtureTests(unittest.TestCase):
 
 
 class ScriptOutputContractTests(unittest.TestCase):
-    """Red-test proof for the approved script-output contract before M3."""
+    """Acceptance coverage for the approved script-output contract."""
 
     PASSING_TEST = "ValidationSelectionTests.test_catalog_matches_v1_contract"
     FAILING_TEST = "ScriptOutputFixtureTests.fixture_contract_failure"
@@ -2965,18 +2965,6 @@ raise SystemExit(3)
 
         self.assertNotIn("@unittest.expectedFailure", contract_section)
         self.assertIn("class ScriptOutputContractTests", source)
-
-
-def load_tests(loader: unittest.TestLoader, standard_tests: unittest.TestSuite, pattern: str | None):
-    filtered = unittest.TestSuite()
-    for suite in standard_tests:
-        kept = []
-        for test in suite:
-            if not isinstance(test, ScriptOutputContractTests):
-                kept.append(test)
-        if kept:
-            filtered.addTests(kept)
-    return filtered
 
 
 if __name__ == "__main__":
