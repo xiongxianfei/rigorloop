@@ -725,7 +725,14 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
 
     def test_non_enum_severity_is_not_structure_validated(self) -> None:
         root = self.fixture()
-        replace_field(root / "reviews" / "code-review-r1.md", "Severity", "not-a-current-enum")
+        review_path = root / "reviews" / "code-review-r1.md"
+        text = review_path.read_text(encoding="utf-8")
+        self.assertIn("Finding ID: CR1-F1", text)
+        self.assertNotIn("Severity:", text)
+        review_path.write_text(
+            text.replace("Finding ID: CR1-F1", "Finding ID: CR1-F1\nSeverity: not-a-current-enum"),
+            encoding="utf-8",
+        )
         self.assertPasses(root)
 
     def test_review_log_canonical_blocks_are_required(self) -> None:

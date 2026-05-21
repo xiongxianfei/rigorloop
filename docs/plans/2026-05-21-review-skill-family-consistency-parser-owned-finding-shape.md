@@ -56,10 +56,10 @@ The review-artifact parser contract remains unchanged. The implementation must p
 
 - Current milestone: M1. Validator foundation and contract sufficiency assessment
 - Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation ready for code-review
+- Last reviewed milestone: M1. Validator foundation and contract sufficiency assessment
+- Review status: RSF-M1-CR1 resolved; M1 ready for code-review rerun
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review M1
+- Next stage: code-review M1 rerun
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff are still outstanding.
 
@@ -310,6 +310,8 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: Plan-review approved the execution plan and active test spec was created; no implementation has started.
 - 2026-05-21: M1 implementation started. Scope is validator/test foundation and the skill-contract sufficiency assessment only; no review-skill asset edits are part of M1.
 - 2026-05-21: M1 implemented review-family validator foundation, review-artifact parser-owned identity fixture proof, and skill-contract sufficiency assessment. M1 is ready for code-review.
+- 2026-05-21: First-pass code-review for M1 requested changes for `RSF-M1-CR1`; M1 is in review-resolution before M2 can start.
+- 2026-05-21: `RSF-M1-CR1` accepted and fixed. The non-enum severity test now inserts an actual `Severity: not-a-current-enum` field before asserting structure validation passes. M1 is ready for code-review rerun.
 
 ## Decision log
 
@@ -330,6 +332,8 @@ The review-artifact parser contract remains unchanged. The implementation must p
 
 - 2026-05-21: Plan authoring, plan-review recording, and active test-spec authoring validation passed.
 - 2026-05-21: M1 targeted validation passed: `python scripts/test-skill-validator.py`; `python scripts/test-review-artifact-validator.py`; `python scripts/validate-skills.py`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape`; `git diff --check --`.
+- 2026-05-21: M1 code-review found the non-enum severity validation proof was vacuous because the fixture did not contain a `Severity:` field before replacement. Corrected proof is required before M1 closeout.
+- 2026-05-21: After `RSF-M1-CR1` fix, focused validation passed: `python scripts/test-review-artifact-validator.py`; `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`.
 
 ## Outcome and retrospective
 
@@ -338,5 +342,5 @@ The review-artifact parser contract remains unchanged. The implementation must p
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M1`.
+- Ready for `code-review M1 rerun`.
 - Not ready for final closeout or PR; implementation, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
