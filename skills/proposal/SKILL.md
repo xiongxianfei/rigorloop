@@ -75,6 +75,13 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Resource map
+
+- COPY `assets/proposal-skeleton.md` when creating a new proposal artifact.
+  Fill: required proposal sections, plus `Initial intent preservation` and
+  `Scope budget` when this skill's trigger rules apply.
+  Do not emit unfilled placeholders.
+
 ## Required proposal sections
 
 | Section | Purpose |
@@ -264,50 +271,14 @@ Read the full file when the whole file is the review target, context can change 
 ## Output skeleton
 
 ```md
-# <Proposal title>
-## Status
-<one proposal status value>
-## Problem
-<problem>
-## Goals
-<goals>
-## Non-goals
-<non-goals>
-## Vision fit
-<one Vision fit value and rationale>
-## Context
-<context>
-## Options Considered
-<at least three options or exploration link>
-## Recommended Direction
-<direction and rationale>
-## Expected Behavior Changes
-<observable changes>
-## Architecture Impact
-<impact>
-## Testing and Verification Strategy
-<strategy>
-## Rollout and Rollback
-<rollout and rollback>
-## Risks and Mitigations
-<risks and mitigations>
-## Open Questions
-<questions or None>
-## Decision Log
-<decisions>
-## Next Artifacts
-<planned artifacts>
-## Follow-on Artifacts
-None yet
-## Readiness
-<next-stage status>
+COPY `assets/proposal-skeleton.md` for <proposal path>.
+Fill every section named in Required proposal sections.
+Add Initial intent preservation or Scope budget when their triggers apply.
+Do not emit unfilled placeholders.
 ```
 
 ## Expected output
 
-- proposal file path;
-- clear recommended direction;
-- alternatives and rationale;
-- non-goals and risks;
-- open questions;
-- readiness statement for `proposal-review` or blocker state.
+Use `assets/proposal-skeleton.md` to include the proposal path, recommendation,
+rationale, risks, open questions, and readiness for `proposal-review` or blocker
+state.
