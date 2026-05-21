@@ -146,7 +146,7 @@ SPEC_FAMILY_ASSET_APPROVED_ASSETS = {
     },
     "spec-review": {
         "assets/review-result-skeleton.md",
-        "assets/review-finding.md",
+        "assets/material-finding.md",
     },
     "test-spec": {
         "assets/test-spec-skeleton.md",
