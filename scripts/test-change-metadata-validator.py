@@ -113,6 +113,35 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
                     msg=f"expected {value!r} to be unsafe",
                 )
 
+    def test_compact_bundle_command_helper_rejects_unsafe_values(self) -> None:
+        validator = load_validator_module()
+        cases = [
+            (
+                "python $HOME/private/validate.py",
+                "unsafe machine-local path",
+            ),
+            (
+                r"python C:\Users\alice\validate.py",
+                "unsafe machine-local path",
+            ),
+            (
+                "curl https://user:password@example.com/validate",
+                "credential-bearing URL",
+            ),
+            (
+                "python scripts/check.py --token ghp_example_secret",
+                "secret-like value",
+            ),
+        ]
+        for command, expected in cases:
+            with self.subTest(command=command):
+                errors = validator.validate_compact_bundle_command_safety(
+                    "validation_bundles.example",
+                    command,
+                    {},
+                )
+                self.assertTrue(any(expected in error for error in errors), errors)
+
     def test_compact_invalid_fixtures_fail(self) -> None:
         cases = [
             (
@@ -190,6 +219,18 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
             (
                 "compact-invalid-unknown-path-var",
                 "path_vars.mystery: unknown compact path variable",
+            ),
+            (
+                "compact-invalid-unsafe-bundle-command-local-path",
+                "validation_bundles.unsafe_local_path.command contains unsafe machine-local path",
+            ),
+            (
+                "compact-invalid-unsafe-bundle-command-credential-url",
+                "validation_bundles.unsafe_credentials.command contains credential-bearing URL",
+            ),
+            (
+                "compact-invalid-unsafe-bundle-command-secret",
+                "validation_bundles.unsafe_secret.command contains secret-like value",
             ),
         ]
         for fixture, expected in cases:

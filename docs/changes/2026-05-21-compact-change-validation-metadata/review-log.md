@@ -24,7 +24,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: CVM-M2-CR1
-Open findings: CVM-M2-CR1
+Open findings: none
 
 ### Review entry
 

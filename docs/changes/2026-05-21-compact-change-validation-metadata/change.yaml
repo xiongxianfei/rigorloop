@@ -24,6 +24,7 @@ tests:
   - Code-review M1 R1 returned clean-with-notes with no material findings; M1 is closed.
   - M2 added compact path-variable, lifecycle-stage, first-exists, canonical spec/test-spec path, and transcript-reference validator coverage; M2 is ready for code-review.
   - Code-review M2 R1 found CVM-M2-CR1; M2 requires review-resolution before re-review.
+  - Review-resolution accepted CVM-M2-CR1 and added compact bundle-command safety validation; M2 is ready for code-review rerun.
 review:
   status: clean
   unresolved_items: 0
@@ -148,6 +149,28 @@ validation:
     result: pass_after_code_review_m2_r1_recording
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md
     result: pass_after_code_review_m2_r1_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: fail_expected_before_cvm_m2_cr1_resolution_then_pass_after_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-local-path/change.yaml
+    result: expected_fail_unsafe_machine_local_bundle_command_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-credential-url/change.yaml
+    result: expected_fail_credential_bearing_bundle_command_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-secret/change.yaml
+    result: expected_fail_secret_like_bundle_command_after_cvm_m2_cr1_resolution
+  - command: python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: git diff --check --
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_6_findings_4_log_entries_6_resolution_entries_4_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md
+    result: pass_after_cvm_m2_cr1_resolution
 changed_files:
   - docs/proposals/2026-05-21-compact-change-validation-metadata.md
   - specs/compact-change-validation-metadata.md
@@ -173,6 +196,9 @@ changed_files:
   - tests/fixtures/change-metadata/compact-invalid-unresolved-var/change.yaml
   - tests/fixtures/change-metadata/compact-invalid-brace-syntax/change.yaml
   - tests/fixtures/change-metadata/compact-invalid-unsafe-path/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-local-path/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-credential-url/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-secret/change.yaml
   - tests/fixtures/change-metadata/compact-invalid-dated-spec-path/change.yaml
   - tests/fixtures/change-metadata/compact-invalid-dated-test-spec-path/change.yaml
   - tests/fixtures/change-metadata/compact-invalid-lifecycle-stage/change.yaml

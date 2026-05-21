@@ -2,9 +2,10 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
+Review closeout: code-review-m2-r1
 
 ## Resolution Entries
 
@@ -16,7 +17,7 @@ Review closeout: spec-review-r1
 
 Finding ID: CVM-M2-CR1
 Disposition: accepted
-Status: pending
+Status: resolved
 Owner: implement
 Owning stage: review-resolution
 Chosen action: Add compact bundle-command safety validation and a focused unsafe-command regression fixture.
@@ -24,6 +25,8 @@ Rationale: The approved spec's security/privacy boundary includes bundle command
 Required outcome: Compact validation rejects unsafe bundle command strings containing machine-local paths, hostnames, credentials, proxy URLs, or secret-like values, without executing commands or changing selected validation behavior.
 Safe resolution path: Add a fixture with an unsafe `validation_bundles.<id>.command`, assert the validator rejects it, extend bundle validation to apply the approved safety checks to command strings, and rerun M2 targeted validation.
 Validation target: `scripts/test-change-metadata-validator.py` includes an unsafe bundle-command fixture, and `scripts/validate-change-metadata.py` rejects that fixture with a stable actionable message.
+Resolution: Extended compact bundle validation to run string-level command safety checks against `validation_bundles.<id>.command`. The validator now rejects unsafe machine-local paths, credential-bearing URLs, and secret-like values without executing bundle commands or changing command-selection behavior. Added fixture-backed coverage for unsafe local paths, credential-bearing URLs, secret-like command tokens, and a valid repo-relative command with a compact path variable.
+Validation evidence: `python scripts/test-change-metadata-validator.py`, `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml`, `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml`, direct expected-failure checks for `compact-invalid-unsafe-bundle-command-local-path`, `compact-invalid-unsafe-bundle-command-credential-url`, and `compact-invalid-unsafe-bundle-command-secret`, `python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py`, and `git diff --check --` passed after the fix.
 
 ### spec-review-r1
 
