@@ -85,6 +85,17 @@ M4 records no-code proof for the conditional wrapper boundary.
 - Focused wrapper regression tests for default success hiding, failed child output expansion, and verbose successful output exposure pass.
 - `scripts/ci.sh` remains unchanged because no post-M3 wrapper gap was found.
 
+## M5 final preservation and scope proof
+
+M5 closes the implementation evidence surface for code-review handoff.
+
+- Runtime behavior changes are limited to `scripts/test-select-validation.py`.
+- `scripts/ci.sh` remains unchanged because M4 proved the wrapper already preserves quiet-success and loud-failure behavior after M3.
+- `scripts/test-select-validation.py` preserves pass and failure exit codes, failure detection, failure evidence, selected baseline tests, verbose output access, and JSON deferral. The approved differences are the compact default presentation, explicit quiet/verbose flag behavior, output-contract tests, and zero-test safety failure.
+- The selected test/check set is reviewable through ordered identifier lists and hashes: M1 baseline `selected-tests-baseline.txt` / `sha256:af470dd836f5b1b44c702be35206934f77621a1477d88cafae923e50a7f492bd`, and M3 final ordinary suite `selected-tests-m3.txt` / `sha256:878bd8dfce24e987ee50ab36d686f54e8d821bf4a5b11fe831d381c57d164047`.
+- Scope-boundary proof: no generated adapters, public skill files, workflow specs, or validation-selection logic are part of this change. M5 validation uses selector-selected checks for supported paths and manual `git diff --check` routing for change-local evidence files classified as unsupported by the selector.
+- Final selected smoke passed after manual routing for `script-output-audit.md`: selected checks were `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+
 ## M1 conclusion
 
 Baseline evidence supports the approved first-slice boundary:

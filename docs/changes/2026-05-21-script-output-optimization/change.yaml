@@ -42,6 +42,7 @@ tests:
   - Code-review M3 R2 closed M3 with no material findings after SRO-M3-CR1 resolution.
   - M4 records no-code CI wrapper preservation evidence; scripts/ci.sh remains unchanged because post-M3 wrapper behavior already satisfies TSRO-011.
   - Code-review M4 R1 closed M4 with no material findings.
+  - M5 records final behavior-preservation, scope-boundary, and lifecycle handoff evidence for code-review.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
     result: pass_reviews_5_findings_7_log_entries_5_resolution_entries_7_after_plan_authoring
@@ -305,6 +306,22 @@ validation:
     result: pass_after_code_review_m4_r1
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m4-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --jobs 1
     result: pass_selected_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_m4_r1
+  - command: python scripts/test-select-validation.py
+    result: pass_73_tests_after_m5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
+    result: pass_reviews_13_findings_10_log_entries_13_resolution_entries_10_after_m5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml
+    result: pass_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md
+    result: pass_validated_4_artifact_files_after_m5
+  - command: git diff --check --
+    result: pass_after_m5
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --jobs 1
+    result: blocked_manual_routing_required_for_script_output_audit_change_local_unsupported_no_unclassified_paths_after_m5
+  - command: git diff --check -- docs/changes/2026-05-21-script-output-optimization/script-output-audit.md
+    result: pass_manual_route_for_script_output_audit_after_m5
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/ci.sh --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --jobs 1
+    result: pass_selected_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_after_m5
 changed_files:
   - docs/proposals/2026-05-21-script-output-optimization.md
   - specs/script-output-optimization.md
@@ -335,5 +352,5 @@ changed_files:
   - docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m4-r1.md
   - scripts/test-select-validation.py
 review:
-  status: m4_closed_m5_next
+  status: m5_ready_for_code_review
   unresolved_items: 0
