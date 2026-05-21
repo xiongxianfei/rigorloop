@@ -27,6 +27,7 @@ requirements:
   - Implement M2 by adding `code-review` review-family assets, resource-map entries, focused validator coverage, and preservation evidence.
   - Close M2 only after clean code-review and hand off to M3.
   - Implement M3 by conforming existing `proposal-review` assets, resource-map entries, focused validator coverage, and preservation evidence.
+  - Close M3 only after clean code-review and hand off to M4.
 tests:
   - Proposal-review checks problem framing, option quality, scope boundaries, vision fit, risks, and readiness for spec.
   - Review artifact structure validation for clean proposal-review receipt.
@@ -44,6 +45,7 @@ tests:
   - Code-review M2 validator coverage confirms `code-review` asset presence and status vocabulary preservation.
   - Code-review M2 clean review confirms code-review asset extraction is structurally safe.
   - Proposal-review M3 validator coverage confirms gate-review status vocabulary and material-finding field-block parity.
+  - Code-review M3 clean review confirms proposal-review conformance is structurally safe.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
     result: pass_before_proposal_review
@@ -183,6 +185,14 @@ validation:
     result: pass_reviews_7_findings_2_log_entries_7_resolution_entries_2_after_m3
   - command: git diff --check --
     result: pass_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_8_findings_2_log_entries_8_resolution_entries_2_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.test.md --path docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plan.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/proposal-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/spec-review-r2.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/plan-review-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m1-r2.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m3-r1.md
+    result: pass_validated_3_lifecycle_artifacts_after_code_review_m3_r1
+  - command: git diff --check --
+    result: pass_after_code_review_m3_r1
 changed_files:
   - docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
   - specs/review-skill-family-consistency-parser-owned-finding-shape.md
@@ -200,6 +210,7 @@ changed_files:
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m1-r2.md
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/m2-code-review-preservation.md
   - skills/code-review/SKILL.md
   - skills/code-review/assets/material-finding.md
