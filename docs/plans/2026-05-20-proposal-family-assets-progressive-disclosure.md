@@ -4,7 +4,7 @@
 - Owner: maintainers
 - Start date: 2026-05-20
 - Last updated: 2026-05-20
-- Related issue or PR: none yet
+- Related issue or PR: PR #81
 - Supersedes: none
 
 ## Purpose / big picture
@@ -58,9 +58,9 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - Last reviewed milestone: M4. Generated Output, Token, Cold-Read, and Lifecycle Evidence
 - Review status: code-review M4 R1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted CI and human review for PR #81
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: branch-ready verification passed, but PR handoff evidence does not exist.
+- Reason final closeout is or is not ready: PR #81 is open; hosted CI and human review are pending.
 
 ## Milestones
 
@@ -330,6 +330,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - 2026-05-20: code-review M4 R1 returned clean-with-notes; all implementation milestones are closed and the next stage is final closeout sequence starting with explain-change.
 - 2026-05-20: Explain-change recorded durable rationale in `docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/explain-change.md`; next stage is verify.
 - 2026-05-20: Final local verify passed, `verify-report.md` was recorded, and the branch is ready for PR handoff.
+- 2026-05-20: Opened PR #81 for hosted CI and human review.
 
 ## Decision log
 
@@ -437,9 +438,9 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 
 ## Outcome and retrospective
 
-- Pending until all implementation milestones and downstream gates complete.
+- PR #81 is open. Final plan closeout remains pending until hosted CI and human review complete.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Branch-ready and ready for PR handoff. Final closeout remains incomplete until PR handoff closes.
+- PR #81 is open for hosted CI and human review. Final closeout remains incomplete until those downstream checks close.
