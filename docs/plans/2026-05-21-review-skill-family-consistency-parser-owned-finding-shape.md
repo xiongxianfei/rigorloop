@@ -59,9 +59,9 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - Last reviewed milestone: M5. Generated output, token, cold-read, and lifecycle closeout
 - Review status: M5 clean-with-notes; no open findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted CI and human review for PR #82
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR handoff is still outstanding.
+- Reason final closeout is or is not ready: PR #82 is open; hosted CI and human review are still outstanding.
 
 ## Milestones
 
@@ -324,6 +324,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: M5 code-review returned clean-with-notes. All implementation milestones are closed and the active handoff is `explain-change`.
 - 2026-05-21: Explain-change recorded durable rationale linking the diff to the proposal, spec requirements, test spec, plan milestones, review-resolution findings, validation evidence, rejected alternatives, scope controls, and follow-ups. Active handoff is `verify`.
 - 2026-05-21: Final local verify passed and recorded branch-ready evidence. Active handoff is `pr`.
+- 2026-05-21: PR #82 opened for hosted CI and human review.
 
 ## Decision log
 
@@ -365,5 +366,5 @@ The review-artifact parser contract remains unchanged. The implementation must p
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `pr`.
-- Not ready for final lifecycle closeout until PR handoff is recorded.
+- PR #82 is open for hosted CI and human review.
+- Not ready for final lifecycle closeout until hosted CI and human review complete.
