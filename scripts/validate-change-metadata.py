@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import re
+import shlex
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -83,6 +84,12 @@ COMPACT_ARTIFACT_FIRST_EXISTS = {
 }
 COMPACT_NON_ARTIFACT_PATH_VARS = {"change_id", "slug", "reviews_root"}
 COMPACT_FORBIDDEN_OPT_OUT_KEYS = {"optional", "not_yet_created"}
+COMPACT_CREDENTIAL_URL_RE = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*://[^/\s]+@")
+COMPACT_SECRET_VALUE_RE = re.compile(
+    r"(?i)(?:^|[=&\s])(?:password|passwd|token|secret|private[_-]?key)[=:][^\s]+|gh[pousr]_[A-Za-z0-9_]+"
+)
+COMPACT_HOME_PATH_TOKEN_RE = re.compile(r"(?:^|\s)(?:~|\$HOME|\$\{HOME\})(?:[/\\]|$)")
+COMPACT_WINDOWS_ABSOLUTE_PATH_RE = re.compile(r"(?:^|\s)[A-Za-z]:[\\/]")
 
 
 class MetadataValidationError(Exception):
@@ -487,6 +494,76 @@ def validate_repo_relative_path(value: str, path: str) -> list[str]:
     return errors
 
 
+def command_token_is_path_like(token: str) -> bool:
+    return (
+        "/" in token
+        or "\\" in token
+        or token.startswith(("~", "$HOME", "${HOME}"))
+        or re.match(r"^[A-Za-z]:[\\/]", token) is not None
+    )
+
+
+def validate_compact_bundle_command_safety(
+    bundle_path: str,
+    command: str,
+    variables: dict[str, str],
+) -> list[str]:
+    command_path = f"{bundle_path}.command"
+    errors: list[str] = []
+
+    if COMPACT_CREDENTIAL_URL_RE.search(command):
+        errors.append(f"{command_path} contains credential-bearing URL")
+    if COMPACT_SECRET_VALUE_RE.search(command):
+        errors.append(f"{command_path} contains secret-like value")
+    if COMPACT_HOME_PATH_TOKEN_RE.search(command):
+        errors.append(f"{command_path} contains unsafe machine-local path")
+    if COMPACT_WINDOWS_ABSOLUTE_PATH_RE.search(command):
+        errors.append(f"{command_path} contains unsafe machine-local path")
+
+    try:
+        tokens = shlex.split(command)
+    except ValueError as exc:
+        errors.append(f"{command_path}: malformed command string: {exc}")
+        return errors
+
+    for token in tokens:
+        try:
+            resolved_token = resolve_compact_path_template(token, variables)
+        except MetadataValidationError as exc:
+            errors.append(f"{command_path}: {exc}")
+            continue
+
+        token_path_errors = validate_repo_relative_path(resolved_token, command_path)
+        if resolved_token.startswith(("$HOME", "${HOME}")):
+            errors.append(f"{command_path} contains unsafe machine-local path")
+            continue
+        if any(
+            category in error
+            for error in token_path_errors
+            for category in (
+                "absolute path",
+                "home-directory path",
+                "parent-directory path",
+                "machine-local path",
+            )
+        ):
+            errors.append(f"{command_path} contains unsafe machine-local path")
+            continue
+        if any("credential-bearing" in error for error in token_path_errors):
+            errors.append(f"{command_path} contains credential-bearing URL")
+            continue
+        if any("URL or hostname" in error or "hostname path" in error for error in token_path_errors):
+            errors.append(f"{command_path} contains unsafe hostname or URL")
+            continue
+        if any("secret-like" in error for error in token_path_errors):
+            errors.append(f"{command_path} contains secret-like value")
+            continue
+        if command_token_is_path_like(resolved_token) and token_path_errors:
+            errors.extend(token_path_errors)
+
+    return list(dict.fromkeys(errors))
+
+
 def resolve_compact_path_vars(path_vars: dict[str, Any]) -> tuple[dict[str, str], list[str]]:
     errors: list[str] = []
     raw_change_id = path_vars.get("change_id")
@@ -639,6 +716,7 @@ def validate_compact_top_level_shape(data: dict[str, Any]) -> list[str]:
 
 def validate_compact_bundle_definitions(
     validation_bundles: dict[str, Any],
+    variables: dict[str, str],
 ) -> list[str]:
     errors: list[str] = []
     for bundle_id, definition in validation_bundles.items():
@@ -649,6 +727,10 @@ def validate_compact_bundle_definitions(
         command = definition.get("command")
         if not is_nonempty_string(command):
             errors.append(f"{bundle_path}.command: missing required field")
+        else:
+            errors.extend(
+                validate_compact_bundle_command_safety(bundle_path, command, variables)
+            )
         for optional_field in ("description", "expands_with", "required_for"):
             if optional_field in definition and not is_nonempty_string(definition[optional_field]):
                 errors.append(f"{bundle_path}.{optional_field}: expected string")
@@ -859,7 +941,7 @@ def validate_compact_metadata_semantics(data: Any) -> list[str]:
 
     validation_bundles = data.get("validation_bundles")
     if isinstance(validation_bundles, dict):
-        errors.extend(validate_compact_bundle_definitions(validation_bundles))
+        errors.extend(validate_compact_bundle_definitions(validation_bundles, resolved_vars))
 
     validation_events = data.get("validation_events")
     if isinstance(validation_events, list) and isinstance(validation_bundles, dict):

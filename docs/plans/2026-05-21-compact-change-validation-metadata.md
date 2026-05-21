@@ -49,13 +49,13 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 ## Current Handoff Summary
 
 - Current milestone: M2. Path Variables, Lifecycle Stages, And Transcript References
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: code-review-m2-r1 changes-requested
-- Remaining in-scope implementation milestones: M2 fixes, M3
-- Next stage: review-resolution for CVM-M2-CR1
+- Review status: CVM-M2-CR1 resolved; rerun code-review pending
+- Remaining in-scope implementation milestones: M3
+- Next stage: code-review M2 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 has an unresolved code-review finding, M3 is not implemented or reviewed, final explain-change and verify have not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 is awaiting code-review rerun after review-resolution, M3 is not implemented or reviewed, final explain-change and verify have not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -117,7 +117,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 
 ### M2. Path Variables, Lifecycle Stages, And Transcript References
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Implement deterministic path-variable expansion, slug derivation, doubled-brace escaping, path safety, lifecycle-stage ordering, first-exists filesystem checks, canonical spec/test-spec paths, and optional transcript reference validation.
 - Requirements: R8-R24, R51-R56, R63-R75, R83; AC10-AC21, AC25-AC26.
 - Files/components likely touched:
@@ -173,6 +173,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
   - Preserved the legacy metadata path and the M1 compact shape checks.
   - M2 implementation is complete and ready for code-review.
   - Code-review M2 R1 found CVM-M2-CR1; M2 requires review-resolution and a same-milestone fix before re-review.
+  - Review-resolution accepted CVM-M2-CR1 and added bundle-command safety validation, unsafe command fixtures, and targeted validation evidence. M2 is ready for code-review rerun.
 
 ### M3. Reconstruction, Summary Derivation, Review Counts, And Compactness Proof
 
@@ -268,6 +269,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-21: M2 tests were added first and failed against the M1-only compact validator path; implementation then added path-variable, lifecycle-stage, first-exists, canonical durable-contract path, and transcript-reference validation.
 - 2026-05-21: M2 moved to `review-requested` after targeted validation passed.
 - 2026-05-21: Code-review M2 R1 recorded CVM-M2-CR1; M2 moved to `resolution-needed`.
+- 2026-05-21: Review-resolution for CVM-M2-CR1 added unsafe bundle-command validation and returned M2 to `review-requested`.
 
 ## Decision log
 
@@ -302,6 +304,13 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-21: `python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py` passed for M2.
 - 2026-05-21: `git diff --check --` passed for M2.
 - 2026-05-21: `git diff --check --`, `python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-compact-change-validation-metadata`, and `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md` passed after code-review M2 R1 recording. Review-artifact closeout is intentionally not run as passing because CVM-M2-CR1 is open.
+- 2026-05-21: `python scripts/test-change-metadata-validator.py` passed after CVM-M2-CR1 resolution.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml` passed after CVM-M2-CR1 resolution.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml` passed after CVM-M2-CR1 resolution.
+- 2026-05-21: Direct expected-failure checks for `compact-invalid-unsafe-bundle-command-local-path`, `compact-invalid-unsafe-bundle-command-credential-url`, and `compact-invalid-unsafe-bundle-command-secret` failed with stable unsafe bundle-command diagnostics after CVM-M2-CR1 resolution.
+- 2026-05-21: `python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py` passed after CVM-M2-CR1 resolution.
+- 2026-05-21: `git diff --check --` passed after CVM-M2-CR1 resolution.
+- 2026-05-21: `python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata`, and `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md` passed after CVM-M2-CR1 resolution evidence was recorded.
 
 ## Outcome and retrospective
 
@@ -310,4 +319,4 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for review-resolution for CVM-M2-CR1; not ready for M3, final closeout, verify, or PR handoff.
+- Ready for `code-review M2` rerun; not ready for M3, final closeout, verify, or PR handoff.
