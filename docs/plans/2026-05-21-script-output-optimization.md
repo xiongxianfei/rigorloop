@@ -65,13 +65,13 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Current Handoff Summary
 
 - Current milestone: Final closeout
-- Current milestone state: selector-routing-reviewed-ready-for-explain-change-refresh
+- Current milestone state: explain-change-refreshed-ready-for-verify
 - Last reviewed milestone: M5. Lifecycle evidence and closeout handoff
 - Review status: `code-review-ci-routing-r1` closed the selector-routing maintenance fix with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change refresh
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed and the post-verify selector-routing maintenance fix has clean code-review; explain-change must be refreshed before final verify and PR handoff.
+- Reason final closeout is or is not ready: all implementation milestones are closed, the post-verify selector-routing maintenance fix has clean code-review, and explain-change has been refreshed; final verify and PR handoff have not happened.
 
 ## Milestones
 
@@ -400,6 +400,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: Explain-change recorded the decision trail, diff rationale, tests, validation evidence, review-resolution summary, scope controls, risks, and verify handoff.
 - 2026-05-21: Verify found PR-mode CI blocked by four change-local evidence files classified as `change-local-unsupported`; a narrow selector-routing maintenance fix routed those files to `artifact_lifecycle.validate`.
 - 2026-05-21: `code-review-ci-routing-r1` closed the selector-routing maintenance fix cleanly with no material findings; explain-change needs refresh before final verify.
+- 2026-05-21: Explain-change refreshed the durable rationale to include the selector-routing maintenance fix and its clean review.
 
 ## Decision log
 
@@ -574,6 +575,12 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - Code-review CI routing R1 recording validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-ci-routing-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
 - Code-review CI routing R1 recording validation `git diff --check --` passed.
 - Code-review CI routing R1 selected CI passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- Explain-change refresh updated `explain-change.md` with the selector-routing maintenance rationale, review outcome, validation evidence, scope-control correction, and remaining risks.
+- Explain-change refresh validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Explain-change refresh validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/explain-change.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- Explain-change refresh validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 15 reviews, 10 findings, 15 log entries, 10 resolution entries.
+- Explain-change refresh validation `git diff --check --` passed.
+- Explain-change refresh selected CI passed: selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
@@ -582,4 +589,4 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for explain-change refresh only. Readiness is not Done; final verify and PR handoff remain open.
+- Ready for verify only. Readiness is not Done; final verify and PR handoff remain open.
