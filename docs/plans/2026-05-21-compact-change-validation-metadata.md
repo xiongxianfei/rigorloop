@@ -49,19 +49,19 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 ## Current Handoff Summary
 
 - Current milestone: M1. Compact Shape Recognition And Legacy Compatibility
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation complete; code-review pending
+- Current milestone state: closed
+- Last reviewed milestone: M1
+- Review status: code-review-m1-r1 clean-with-notes
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M1
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is awaiting code-review, M2 and M3 are not implemented or reviewed, final explain-change and verify have not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 and M3 are not implemented or reviewed, final explain-change and verify have not run, and PR handoff is not prepared.
 
 ## Milestones
 
 ### M1. Compact Shape Recognition And Legacy Compatibility
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add compact `schema_version: 2` recognition, keep legacy files valid, reject in-file mixed shape, and validate the compact top-level skeleton, bundle/event/result/count basics, and required failure details.
 - Requirements: R1-R7, R25-R28, R33-R42, R57-R58, R62; AC1-AC7, AC24.
 - Files/components likely touched:
@@ -113,6 +113,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
   - Added explicit compact metadata validation branch for required compact sections, mixed-shape rejection, bundle definitions, event bundle references, result enum values, integer counts, and required failure details for `fail` and `blocked` events.
   - Preserved legacy schema and clean-review metadata semantics for non-compact files.
   - M1 implementation is complete and ready for code-review.
+  - Code-review M1 R1 returned `clean-with-notes` with no material findings, so M1 is closed.
 
 ### M2. Path Variables, Lifecycle Stages, And Transcript References
 
@@ -256,6 +257,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-21: Test spec authored at `specs/compact-change-validation-metadata.test.md` and approved by maintainer; next stage is implement M1.
 - 2026-05-21: M1 tests were added first and failed against the legacy-only validator path; implementation then added compact shape recognition and M1 semantic checks.
 - 2026-05-21: M1 moved to `review-requested` after targeted validation passed.
+- 2026-05-21: Code-review M1 R1 recorded `clean-with-notes`; M1 closed and next stage is implement M2.
 
 ## Decision log
 
@@ -289,4 +291,4 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M1`; not ready for M2, final closeout, verify, or PR handoff.
+- Ready for `implement M2`; not ready for final closeout, verify, or PR handoff.
