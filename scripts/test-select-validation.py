@@ -126,7 +126,7 @@ class ScriptOutputFixtureTests(unittest.TestCase):
 
 
 class ScriptOutputContractTests(unittest.TestCase):
-    """Expected-failure tests for the approved script-output contract."""
+    """Red-test proof for the approved script-output contract before M3."""
 
     PASSING_TEST = "ValidationSelectionTests.test_catalog_matches_v1_contract"
     FAILING_TEST = "ScriptOutputFixtureTests.fixture_contract_failure"
@@ -147,7 +147,6 @@ class ScriptOutputContractTests(unittest.TestCase):
     def combined_output(self, result: subprocess.CompletedProcess[str]) -> str:
         return result.stdout + result.stderr
 
-    @unittest.expectedFailure
     def test_output_contract_default_success_is_single_summary_line(self) -> None:
         result = self.run_runner(self.PASSING_TEST)
 
@@ -158,7 +157,6 @@ class ScriptOutputContractTests(unittest.TestCase):
         self.assertNotIn(self.PASSING_TEST, self.combined_output(result))
         self.assertEqual(result.stderr, "")
 
-    @unittest.expectedFailure
     def test_output_contract_default_failure_expands_failures_only(self) -> None:
         result = self.run_runner(self.PASSING_TEST, self.FAILING_TEST)
         output = self.combined_output(result)
@@ -181,7 +179,6 @@ class ScriptOutputContractTests(unittest.TestCase):
                 self.assertIn(self.PASSING_TEST, output)
                 self.assertIn("ok", output)
 
-    @unittest.expectedFailure
     def test_output_contract_quiet_success_is_silent(self) -> None:
         for flag in ("--quiet", "-q"):
             with self.subTest(flag=flag):
@@ -191,7 +188,6 @@ class ScriptOutputContractTests(unittest.TestCase):
                 self.assertEqual(result.stdout, "")
                 self.assertEqual(result.stderr, "")
 
-    @unittest.expectedFailure
     def test_output_contract_quiet_failure_remains_actionable(self) -> None:
         result = self.run_runner("--quiet", self.PASSING_TEST, self.FAILING_TEST)
         output = self.combined_output(result)
@@ -203,7 +199,6 @@ class ScriptOutputContractTests(unittest.TestCase):
         self.assertIn("scripts/test-select-validation.py", output)
         self.assertNotIn("[PASS]", output)
 
-    @unittest.expectedFailure
     def test_output_contract_conflicting_output_flags_fail_before_tests_run(self) -> None:
         for args in (("--verbose", "--quiet"), ("--quiet", "--verbose")):
             with self.subTest(args=args):
@@ -219,7 +214,6 @@ class ScriptOutputContractTests(unittest.TestCase):
                 self.assertNotIn("Ran 1 test", result.stderr)
                 self.assertNotIn(self.PASSING_TEST, result.stderr)
 
-    @unittest.expectedFailure
     def test_output_contract_zero_executed_tests_fail_with_summary(self) -> None:
         result = self.run_runner("-k", "definitely_no_script_output_tests")
         output = self.combined_output(result)
@@ -229,7 +223,6 @@ class ScriptOutputContractTests(unittest.TestCase):
         self.assertIn("0 tests", output)
         self.assertIn("expected at least 1", output)
 
-    @unittest.expectedFailure
     def test_output_contract_reliable_failure_includes_scoped_rerun(self) -> None:
         result = self.run_runner(self.FAILING_TEST)
         output = self.combined_output(result)
@@ -2790,6 +2783,28 @@ raise SystemExit(3)
         normalized = normalize_path(str(outside), repo_root=temp_root)
         self.assertFalse(normalized.ok)
         self.assertEqual(normalized.blocking_code, "outside-repository-path")
+
+    def test_output_contract_red_tests_are_unmasked_and_separate(self) -> None:
+        source = Path(__file__).read_text(encoding="utf-8")
+        contract_section = source.split("class ScriptOutputContractTests", 1)[1].split(
+            "class ValidationSelectionTests",
+            1,
+        )[0]
+
+        self.assertNotIn("@unittest.expectedFailure", contract_section)
+        self.assertIn("class ScriptOutputContractTests", source)
+
+
+def load_tests(loader: unittest.TestLoader, standard_tests: unittest.TestSuite, pattern: str | None):
+    filtered = unittest.TestSuite()
+    for suite in standard_tests:
+        kept = []
+        for test in suite:
+            if not isinstance(test, ScriptOutputContractTests):
+                kept.append(test)
+        if kept:
+            filtered.addTests(kept)
+    return filtered
 
 
 if __name__ == "__main__":
