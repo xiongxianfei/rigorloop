@@ -1,6 +1,6 @@
 # Review-Skill Family Consistency and Parser-Owned Finding Shape
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-21
 - Last updated: 2026-05-21
@@ -59,9 +59,9 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - Last reviewed milestone: M5. Generated output, token, cold-read, and lifecycle closeout
 - Review status: M5 clean-with-notes; no open findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #82
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR #82 is open; hosted CI and human review are still outstanding.
+- Next stage: done
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #82 merged on 2026-05-21 after hosted CI and human review.
 
 ## Milestones
 
@@ -326,6 +326,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: Final local verify passed and recorded branch-ready evidence. Active handoff is `pr`.
 - 2026-05-21: PR #82 opened for hosted CI and human review.
 - 2026-05-21: PR-mode CI initially failed because the selector treated milestone-scoped change-local evidence files as unsupported. Added deterministic routing for those evidence filenames and reran PR-mode CI locally; selected CI checks now pass.
+- 2026-05-21: PR #82 merged after hosted CI passed; plan closed.
 
 ## Decision log
 
@@ -360,13 +361,13 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: Explain-change artifact created at `docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/explain-change.md`; local validation pending verify.
 - 2026-05-21: Final local verify passed: skill validator fixtures, review-artifact validator fixtures, skill validation, review-artifact closeout, generated skill mirror check, temporary `v0.1.5` adapter archive build/validation, token measurement, change metadata validation, lifecycle validation, selected regression checks, and broad smoke.
 - 2026-05-21: PR-mode CI reproduction passed after selector routing fix: `python scripts/test-select-validation.py`; `python scripts/select-validation.py --mode pr --base $(git merge-base HEAD main) --head HEAD`; `bash scripts/ci.sh --mode pr --base $(git merge-base HEAD main) --head HEAD`; `git diff --check --`.
+- 2026-05-21: Hosted CI passed for PR #82 before merge.
 
 ## Outcome and retrospective
 
-- Pending. This section will be filled after implementation, review, verification, and PR handoff complete.
+- Completed. PR #82 merged on 2026-05-21 after hosted CI and human review.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #82 is open for hosted CI and human review.
-- Not ready for final lifecycle closeout until hosted CI and human review complete.
+- PR #82 merged; no downstream plan closeout remains.
