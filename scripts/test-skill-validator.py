@@ -1596,6 +1596,41 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertIn("- Milestone closeout:", result_skeleton)
         self.assertNotIn("approved | changes-requested", result_skeleton)
 
+    def test_proposal_review_family_assets_preserve_gate_status_vocabulary(self) -> None:
+        skills_dir = ROOT / "skills"
+        skill_text = (skills_dir / "proposal-review" / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertIn("- COPY `assets/material-finding.md`", skill_text)
+        self.assertIn("- COPY `assets/review-result-skeleton.md`", skill_text)
+        self.assertIn("Finding ID:", skill_text)
+
+        material_finding = (
+            skills_dir / "proposal-review" / "assets" / "material-finding.md"
+        ).read_text(encoding="utf-8")
+        code_review_finding = (
+            skills_dir / "code-review" / "assets" / "material-finding.md"
+        ).read_text(encoding="utf-8")
+        for label in [
+            "Finding ID:",
+            "Severity:",
+            "Location:",
+            "Evidence:",
+            "Required outcome:",
+            "Safe resolution path:",
+            "needs-decision rationale:",
+        ]:
+            self.assertIn(label, material_finding)
+        self.assertEqual(
+            skill_validation._review_family_material_finding_field_block(material_finding),
+            skill_validation._review_family_material_finding_field_block(code_review_finding),
+        )
+
+        result_skeleton = (
+            skills_dir / "proposal-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("approved | changes-requested | blocked | inconclusive", result_skeleton)
+        self.assertNotIn("clean-with-notes", result_skeleton)
+
     def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
