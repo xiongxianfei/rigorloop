@@ -1,0 +1,15 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-missing-first-exists
+  spec: specs/{slug}.md
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+validation_events:
+  - stage: spec-review-r1
+    lifecycle_stage: spec-review
+    bundles:
+      - lifecycle
+    result: pass
+    not_yet_created: true
+validation_summary: {}

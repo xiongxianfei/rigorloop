@@ -48,14 +48,14 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Compact Shape Recognition And Legacy Compatibility
-- Current milestone state: closed
+- Current milestone: M2. Path Variables, Lifecycle Stages, And Transcript References
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: code-review-m1-r1 clean-with-notes
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Review status: M2 implementation complete; code-review pending
+- Remaining in-scope implementation milestones: M3
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 and M3 are not implemented or reviewed, final explain-change and verify have not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 is awaiting code-review, M3 is not implemented or reviewed, final explain-change and verify have not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -117,7 +117,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 
 ### M2. Path Variables, Lifecycle Stages, And Transcript References
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Implement deterministic path-variable expansion, slug derivation, doubled-brace escaping, path safety, lifecycle-stage ordering, first-exists filesystem checks, canonical spec/test-spec paths, and optional transcript reference validation.
 - Requirements: R8-R24, R51-R56, R63-R75, R83; AC10-AC21, AC25-AC26.
 - Files/components likely touched:
@@ -166,6 +166,12 @@ Implement the approved compact `change.yaml` validation metadata contract while 
   - Path safety checks could be too loose and allow machine-local or credential-bearing paths.
 - Rollback/recovery:
   - Disable compact path/lifecycle validation while keeping M1 legacy-compatible shape recognition intact, or revert M2 as a standalone patch.
+- Result:
+  - Added M2 compact fixtures and helper coverage for `change_id` slug derivation, `{var}` interpolation, doubled-brace escaping, unsafe path detection, lifecycle-stage enums, first-exists checks, canonical `specs/{slug}.md` and `specs/{slug}.test.md` paths, per-path opt-out rejection, and transcript reference existence.
+  - Confirmed the new M2 invalid fixtures failed before implementation because compact validation did not yet inspect path variables, lifecycle-stage values, artifact existence, canonical durable-contract paths, or transcript references.
+  - Added deterministic compact path-variable resolution, derived `slug`, recursive/unresolved variable rejection, closed interpolation syntax, repo-relative safety checks, lifecycle-stage ordering, stage-derived first-exists checks, event path validation, and optional transcript-reference validation without validating transcript internals.
+  - Preserved the legacy metadata path and the M1 compact shape checks.
+  - M2 implementation is complete and ready for code-review.
 
 ### M3. Reconstruction, Summary Derivation, Review Counts, And Compactness Proof
 
@@ -258,6 +264,8 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-21: M1 tests were added first and failed against the legacy-only validator path; implementation then added compact shape recognition and M1 semantic checks.
 - 2026-05-21: M1 moved to `review-requested` after targeted validation passed.
 - 2026-05-21: Code-review M1 R1 recorded `clean-with-notes`; M1 closed and next stage is implement M2.
+- 2026-05-21: M2 tests were added first and failed against the M1-only compact validator path; implementation then added path-variable, lifecycle-stage, first-exists, canonical durable-contract path, and transcript-reference validation.
+- 2026-05-21: M2 moved to `review-requested` after targeted validation passed.
 
 ## Decision log
 
@@ -269,7 +277,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 
 ## Surprises and discoveries
 
-- none yet
+- 2026-05-21: The early M2 validation command list included `compact-invalid-summary-conflict`, but stored-summary derivation and blocker consistency are explicitly assigned to M3 by this plan and the test spec. M2 validation covers the named M2 invalid fixtures through `scripts/test-change-metadata-validator.py` and direct unresolved-variable expected-failure proof.
 
 ## Validation notes
 
@@ -283,6 +291,14 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml` passed for M1.
 - 2026-05-21: `git diff --check --` passed for M1.
 - 2026-05-21: `python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md`, and `python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py` passed for M1.
+- 2026-05-21: `python scripts/test-change-metadata-validator.py` passed for M2 after initially failing on M2 compact fixtures before implementation.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml` passed for M2.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml` passed for M2.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-unresolved-var/change.yaml` failed as expected for M2 with `path_vars.change_root: unknown variable 'missing'`.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-transcript-missing/change.yaml` failed as expected for M2 with a missing transcript reference.
+- 2026-05-21: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-lifecycle-stage/change.yaml` failed as expected for M2 with an unknown lifecycle stage.
+- 2026-05-21: `python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py` passed for M2.
+- 2026-05-21: `git diff --check --` passed for M2.
 
 ## Outcome and retrospective
 
@@ -291,4 +307,4 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M2`; not ready for final closeout, verify, or PR handoff.
+- Ready for `code-review M2`; not ready for final closeout, verify, or PR handoff.

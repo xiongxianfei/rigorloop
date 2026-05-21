@@ -37,6 +37,52 @@ COMPACT_REQUIRED_FIELDS = {
 }
 LEGACY_VALIDATION_FIELDS = {"validation"}
 VALIDATION_EVENT_RESULTS = {"pass", "fail", "blocked", "skipped", "not-run"}
+COMPACT_CHANGE_ID_RE = re.compile(
+    r"^[0-9]{4}-[0-9]{2}-[0-9]{2}-(?P<slug>[a-z0-9][a-z0-9-]*[a-z0-9])$"
+)
+COMPACT_LIFECYCLE_STAGES = [
+    "change-created",
+    "proposal",
+    "proposal-review",
+    "spec",
+    "spec-review",
+    "architecture",
+    "architecture-review",
+    "plan",
+    "plan-review",
+    "test-spec",
+    "implement",
+    "code-review",
+    "review-resolution",
+    "ci-maintenance",
+    "explain-change",
+    "verify",
+    "pr",
+]
+COMPACT_LIFECYCLE_INDEX = {
+    stage: index for index, stage in enumerate(COMPACT_LIFECYCLE_STAGES)
+}
+COMPACT_ARTIFACT_FIRST_EXISTS = {
+    "change_root": "change-created",
+    "change_metadata": "change-created",
+    "proposal": "proposal",
+    "proposal_review": "proposal-review",
+    "review_log": "proposal-review",
+    "review_resolution": "review-resolution",
+    "spec": "spec",
+    "spec_review": "spec-review",
+    "architecture": "architecture",
+    "adr": "architecture",
+    "plan": "plan",
+    "plan_review": "plan-review",
+    "test_spec": "test-spec",
+    "code_review": "code-review",
+    "explain_change": "explain-change",
+    "verify": "verify",
+    "pr": "pr",
+}
+COMPACT_NON_ARTIFACT_PATH_VARS = {"change_id", "slug", "reviews_root"}
+COMPACT_FORBIDDEN_OPT_OUT_KEYS = {"optional", "not_yet_created"}
 
 
 class MetadataValidationError(Exception):
@@ -358,6 +404,207 @@ def is_nonempty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
+def derive_compact_slug(change_id: str) -> str:
+    match = COMPACT_CHANGE_ID_RE.fullmatch(change_id)
+    if match is None:
+        raise MetadataValidationError(
+            "path_vars.change_id: expected dated identifier '<YYYY-MM-DD>-<slug>'"
+        )
+    return match.group("slug")
+
+
+def resolve_compact_path_template(template: str, variables: dict[str, str]) -> str:
+    for unsupported in ("${", "$(", "%"):
+        if unsupported in template:
+            raise MetadataValidationError(
+                f"unsupported interpolation syntax '{unsupported}'"
+            )
+
+    output: list[str] = []
+    index = 0
+    while index < len(template):
+        char = template[index]
+        if char == "{":
+            if template.startswith("{{", index):
+                output.append("{")
+                index += 2
+                continue
+            end = template.find("}", index + 1)
+            if end == -1:
+                raise MetadataValidationError("unmatched '{'")
+            name = template[index + 1 : end]
+            if not name or "{" in name or "}" in name:
+                raise MetadataValidationError("nested or malformed interpolation")
+            if name not in variables:
+                raise MetadataValidationError(f"unknown variable '{name}'")
+            output.append(variables[name])
+            index = end + 1
+            continue
+        if char == "}":
+            if template.startswith("}}", index):
+                output.append("}")
+                index += 2
+                continue
+            raise MetadataValidationError("unmatched '}'")
+        output.append(char)
+        index += 1
+    return "".join(output)
+
+
+def validate_repo_relative_path(value: str, path: str) -> list[str]:
+    errors: list[str] = []
+    lower_value = value.lower()
+    if value.startswith("/"):
+        errors.append(f"{path}: unsafe absolute path")
+    if value.startswith("~"):
+        errors.append(f"{path}: unsafe home-directory path")
+    if re.match(r"^[A-Za-z][A-Za-z0-9+.-]*://", value):
+        errors.append(f"{path}: unsafe URL or hostname path")
+    if re.match(r"^[A-Za-z0-9.-]+\.[A-Za-z]{2,}(/|$)", value):
+        errors.append(f"{path}: unsafe hostname path")
+    if "@" in value.split("/", 1)[0] or re.search(r"://[^/\s]+@", value):
+        errors.append(f"{path}: unsafe credential-bearing path")
+    if any(part == ".." for part in value.split("/")):
+        errors.append(f"{path}: unsafe parent-directory path")
+    if (
+        lower_value.startswith(("home/", "users/"))
+        or "/home/" in lower_value
+        or "/users/" in lower_value
+    ):
+        errors.append(f"{path}: unsafe machine-local path")
+    secret_markers = (
+        "password=",
+        "passwd=",
+        "token=",
+        "secret=",
+        "private_key",
+        "private-key",
+        "http_proxy=",
+        "https_proxy=",
+    )
+    if any(marker in lower_value for marker in secret_markers):
+        errors.append(f"{path}: unsafe secret-like value")
+    return errors
+
+
+def resolve_compact_path_vars(path_vars: dict[str, Any]) -> tuple[dict[str, str], list[str]]:
+    errors: list[str] = []
+    raw_change_id = path_vars.get("change_id")
+    if not is_nonempty_string(raw_change_id):
+        return {}, ["path_vars.change_id: missing required field"]
+
+    try:
+        derived_slug = derive_compact_slug(raw_change_id)
+    except MetadataValidationError as exc:
+        errors.append(str(exc))
+        derived_slug = ""
+
+    explicit_slug = path_vars.get("slug")
+    if explicit_slug is not None:
+        if not is_nonempty_string(explicit_slug):
+            errors.append("path_vars.slug: expected string")
+        elif derived_slug and explicit_slug != derived_slug:
+            errors.append(
+                f"path_vars.slug: must match derived slug '{derived_slug}'"
+            )
+
+    for key, value in path_vars.items():
+        variable_path = path_label("path_vars", key)
+        if (
+            key not in COMPACT_ARTIFACT_FIRST_EXISTS
+            and key not in COMPACT_NON_ARTIFACT_PATH_VARS
+        ):
+            errors.append(f"{variable_path}: unknown compact path variable")
+        if not isinstance(value, str):
+            errors.append(f"{variable_path}: expected string")
+
+    resolved: dict[str, str] = {
+        "change_id": raw_change_id if isinstance(raw_change_id, str) else "",
+        "slug": derived_slug,
+    }
+    resolving: set[str] = set()
+
+    def resolve_key(key: str) -> str:
+        if key in resolved:
+            return resolved[key]
+        if key not in path_vars:
+            raise MetadataValidationError(f"unknown variable '{key}'")
+        if key in resolving:
+            raise MetadataValidationError(f"recursive variable reference '{key}'")
+        value = path_vars[key]
+        if not isinstance(value, str):
+            raise MetadataValidationError("expected string")
+        if re.search(r"(?<!{){" + re.escape(key) + r"}(?!})", value):
+            raise MetadataValidationError(f"recursive variable reference '{key}'")
+        resolving.add(key)
+
+        def resolve_template_reference(template: str) -> str:
+            referenced_variables = dict(resolved)
+            for referenced_key in path_vars:
+                if referenced_key not in referenced_variables and referenced_key != key:
+                    try:
+                        referenced_variables[referenced_key] = resolve_key(referenced_key)
+                    except MetadataValidationError:
+                        pass
+            return resolve_compact_path_template(template, referenced_variables)
+
+        try:
+            value = resolve_template_reference(value)
+        finally:
+            resolving.remove(key)
+        resolved[key] = value
+        return value
+
+    for key in path_vars:
+        if key in {"change_id", "slug"}:
+            continue
+        try:
+            resolve_key(key)
+        except MetadataValidationError as exc:
+            errors.append(f"{path_label('path_vars', key)}: {exc}")
+
+    for key, value in resolved.items():
+        if key in {"change_id", "slug"}:
+            continue
+        errors.extend(validate_repo_relative_path(value, path_label("path_vars", key)))
+
+    slug = resolved.get("slug", "")
+    if "spec" in resolved and slug and resolved["spec"] != f"specs/{slug}.md":
+        errors.append(
+            f"path_vars.spec: expected canonical spec path 'specs/{slug}.md'"
+        )
+    if (
+        "test_spec" in resolved
+        and slug
+        and resolved["test_spec"] != f"specs/{slug}.test.md"
+    ):
+        errors.append(
+            f"path_vars.test_spec: expected canonical test spec path 'specs/{slug}.test.md'"
+        )
+
+    return resolved, errors
+
+
+def compact_stage_reaches(current: str, required: str) -> bool:
+    return COMPACT_LIFECYCLE_INDEX[current] >= COMPACT_LIFECYCLE_INDEX[required]
+
+
+def validate_no_compact_path_opt_outs(value: Any, path: str = "$") -> list[str]:
+    errors: list[str] = []
+    if isinstance(value, dict):
+        for key, child in value.items():
+            child_path = path_label(path, key)
+            if key in COMPACT_FORBIDDEN_OPT_OUT_KEYS:
+                errors.append(
+                    f"{child_path}: per-path existence opt-out flags are not allowed"
+                )
+            errors.extend(validate_no_compact_path_opt_outs(child, child_path))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            errors.extend(validate_no_compact_path_opt_outs(child, path_label(path, index)))
+    return errors
+
+
 def validate_compact_required_fields(data: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     for field in sorted(COMPACT_REQUIRED_FIELDS):
@@ -428,10 +675,103 @@ def validate_compact_failure_details(event: dict[str, Any], event_path: str) -> 
     return []
 
 
+def validate_compact_lifecycle_stage(event: dict[str, Any], event_path: str) -> list[str]:
+    lifecycle_stage = event.get("lifecycle_stage")
+    if lifecycle_stage is None or not isinstance(lifecycle_stage, str):
+        return []
+    if lifecycle_stage not in COMPACT_LIFECYCLE_INDEX:
+        allowed = ", ".join(COMPACT_LIFECYCLE_STAGES)
+        return [f"{event_path}.lifecycle_stage: expected one of: {allowed}"]
+    return []
+
+
+def resolve_compact_event_path(
+    template: Any,
+    variables: dict[str, str],
+    path: str,
+) -> tuple[str | None, list[str]]:
+    if not is_nonempty_string(template):
+        return None, [f"{path}: expected string"]
+    try:
+        resolved = resolve_compact_path_template(template, variables)
+    except MetadataValidationError as exc:
+        return None, [f"{path}: {exc}"]
+    return resolved, validate_repo_relative_path(resolved, path)
+
+
+def iter_compact_paths_added(value: Any, path: str) -> list[tuple[str, Any]]:
+    paths: list[tuple[str, Any]] = []
+    if isinstance(value, str):
+        paths.append((path, value))
+        return paths
+    if isinstance(value, list):
+        for index, child in enumerate(value):
+            paths.extend(iter_compact_paths_added(child, path_label(path, index)))
+        return paths
+    if isinstance(value, dict):
+        for key, child in value.items():
+            paths.extend(iter_compact_paths_added(child, path_label(path, key)))
+        return paths
+    paths.append((path, value))
+    return paths
+
+
+def validate_compact_event_paths(
+    event: dict[str, Any],
+    event_path: str,
+    variables: dict[str, str],
+) -> list[str]:
+    errors: list[str] = []
+    if "paths_added" not in event:
+        return errors
+    paths_added = iter_compact_paths_added(
+        event["paths_added"], f"{event_path}.paths_added"
+    )
+    for path, template in paths_added:
+        resolved, path_errors = resolve_compact_event_path(template, variables, path)
+        errors.extend(path_errors)
+        if resolved and not (ROOT / resolved).exists():
+            errors.append(f"{path}: referenced artifact does not exist: {resolved}")
+    return errors
+
+
+def validate_compact_transcript_reference(
+    event: dict[str, Any],
+    event_path: str,
+    variables: dict[str, str],
+) -> list[str]:
+    evidence = event.get("evidence")
+    if evidence is None:
+        return []
+    if not isinstance(evidence, dict):
+        return [f"{event_path}.evidence: expected object"]
+    if "transcript" not in evidence or evidence["transcript"] is None:
+        return []
+
+    transcript_path = f"{event_path}.evidence.transcript"
+    transcript = evidence["transcript"]
+    if not is_nonempty_string(transcript):
+        return [f"{transcript_path}: expected string"]
+    if transcript.count("#") > 1:
+        return [f"{transcript_path}: malformed transcript reference"]
+    file_template, _, anchor = transcript.partition("#")
+    if not file_template or (transcript.endswith("#") and not anchor):
+        return [f"{transcript_path}: malformed transcript reference"]
+    resolved, errors = resolve_compact_event_path(file_template, variables, transcript_path)
+    if errors:
+        return errors
+    if resolved and not (ROOT / resolved).exists():
+        return [
+            f"{transcript_path}: referenced transcript file does not exist: {resolved}"
+        ]
+    return []
+
+
 def validate_compact_event(
     event: Any,
     index: int,
     validation_bundles: dict[str, Any],
+    variables: dict[str, str] | None = None,
 ) -> list[str]:
     event_path = path_label("validation_events", index)
     if not isinstance(event, dict):
@@ -445,6 +785,7 @@ def validate_compact_event(
     for field in ("stage", "lifecycle_stage"):
         if field in event and not is_nonempty_string(event[field]):
             errors.append(f"{event_path}.{field}: expected string")
+    errors.extend(validate_compact_lifecycle_stage(event, event_path))
 
     bundles = event.get("bundles")
     if "bundles" in event:
@@ -470,6 +811,35 @@ def validate_compact_event(
         errors.extend(validate_compact_counts(event["counts"], event_path))
 
     errors.extend(validate_compact_failure_details(event, event_path))
+    if variables is not None:
+        errors.extend(validate_compact_event_paths(event, event_path, variables))
+        errors.extend(validate_compact_transcript_reference(event, event_path, variables))
+    return errors
+
+
+def validate_compact_first_exists(
+    resolved_vars: dict[str, str],
+    validation_events: list[Any],
+) -> list[str]:
+    errors: list[str] = []
+    valid_lifecycle_stages = [
+        event.get("lifecycle_stage")
+        for event in validation_events
+        if isinstance(event, dict) and event.get("lifecycle_stage") in COMPACT_LIFECYCLE_INDEX
+    ]
+    if not valid_lifecycle_stages:
+        return errors
+
+    for key, first_stage in COMPACT_ARTIFACT_FIRST_EXISTS.items():
+        if key not in resolved_vars:
+            continue
+        if not any(compact_stage_reaches(stage, first_stage) for stage in valid_lifecycle_stages):
+            continue
+        resolved = resolved_vars[key]
+        if not (ROOT / resolved).exists():
+            errors.append(
+                f"{path_label('path_vars', key)}: required artifact does not exist: {resolved}"
+            )
     return errors
 
 
@@ -479,6 +849,13 @@ def validate_compact_metadata_semantics(data: Any) -> list[str]:
 
     errors = validate_compact_required_fields(data)
     errors.extend(validate_compact_top_level_shape(data))
+    errors.extend(validate_no_compact_path_opt_outs(data))
+
+    path_vars = data.get("path_vars")
+    resolved_vars: dict[str, str] = {}
+    if isinstance(path_vars, dict):
+        resolved_vars, path_var_errors = resolve_compact_path_vars(path_vars)
+        errors.extend(path_var_errors)
 
     validation_bundles = data.get("validation_bundles")
     if isinstance(validation_bundles, dict):
@@ -487,7 +864,10 @@ def validate_compact_metadata_semantics(data: Any) -> list[str]:
     validation_events = data.get("validation_events")
     if isinstance(validation_events, list) and isinstance(validation_bundles, dict):
         for index, event in enumerate(validation_events):
-            errors.extend(validate_compact_event(event, index, validation_bundles))
+            errors.extend(
+                validate_compact_event(event, index, validation_bundles, resolved_vars)
+            )
+        errors.extend(validate_compact_first_exists(resolved_vars, validation_events))
 
     return errors
 
