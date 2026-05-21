@@ -1053,9 +1053,13 @@ def _path_category(path: str) -> str | None:
             "behavior-parity-report.md",
             "behavior-parity.md",
             "behavior-preservation.md",
+            "output-contract-red-test.md",
+            "script-output-audit.md",
             "generated-output-proof.md",
             "historical-coverage.md",
             "routing-coverage.md",
+            "selected-tests-baseline.txt",
+            "selected-tests-m3.txt",
             "skill-audit.md",
             "token-cost.md",
         } or (
