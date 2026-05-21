@@ -49,10 +49,11 @@ The ordered list was derived from the baseline `ValidationSelectionTests` unitte
 M2 intentionally extends `scripts/test-select-validation.py` with output-contract tests before the formatter is implemented. This is an approved test-suite change, not a validation-selection behavior change.
 
 - M2 adds `ScriptOutputContractTests` to cover default success, default failure, verbose success, quiet success/failure, conflicting flags, zero-test failure, rerun behavior, and JSON deferral.
-- M2 keeps formatter-dependent cases as `unittest.expectedFailure` so the suite remains runnable before M3 while still proving the old output does not satisfy the approved contract.
+- M2 excludes `ScriptOutputContractTests` from ordinary validation through `load_tests` and runs the class explicitly as red-test proof before M3.
 - M2 adds `ScriptOutputFixtureTests.fixture_contract_failure` as a named failure fixture that is not discovered by default because the method name does not start with `test`.
-- M2 validation ran `python scripts/test-select-validation.py`: `72` tests, `7` expected failures.
-- M3 must turn the expected-failure contract tests into ordinary passing tests when the output formatter is implemented.
+- M2 ordinary validation ran `python scripts/test-select-validation.py`: `63` tests.
+- M2 red-test proof ran `python scripts/test-select-validation.py ScriptOutputContractTests`: nonzero exit with `FAILED (failures=9)` before M3.
+- M3 must make the explicit output-contract red-test command pass when the output formatter is implemented.
 
 ## M1 conclusion
 

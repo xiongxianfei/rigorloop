@@ -67,11 +67,11 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - Current milestone: M2. Output contract tests
 - Current milestone state: review-requested
 - Last reviewed milestone: M1. Audit and baseline preservation evidence
-- Review status: M2 implementation complete; awaiting code-review
-- Remaining in-scope implementation milestones: M2, M3, M4 when triggered, M5
-- Next stage: code-review M2
+- Review status: `SRO-M2-CR1` resolved with explicit red-test proof; awaiting code-review rerun
+- Remaining in-scope implementation milestones: M2 re-review, M3, M4 when triggered, M5
+- Next stage: code-review M2 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2, M3, conditional M4, M5, explain-change, final verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: M2 resolution needs code-review rerun; M3, conditional M4, M5, explain-change, final verify, and PR handoff have not happened.
 
 ## Milestones
 
@@ -186,6 +186,8 @@ The implementation must create durable first-slice evidence under `docs/changes/
   - `git diff --check -- scripts/test-select-validation.py specs/script-output-optimization.test.md docs/changes/2026-05-21-script-output-optimization docs/plans/2026-05-21-script-output-optimization.md docs/plan.md`
 - Expected observable result: tests fail for the old noisy default output and pass only when the approved output contract and preservation checks are satisfied.
 - Result: Implemented. Added `ScriptOutputContractTests` and `ScriptOutputFixtureTests` in `scripts/test-select-validation.py`. Formatter-dependent tests are marked `unittest.expectedFailure` for M2, proving the current runner output does not satisfy the approved contract while keeping the suite runnable before M3. JSON deferral, verbose compatibility, and unreliable-rerun guard tests pass now.
+- Review result: `code-review-m2-r1` requested changes for `SRO-M2-CR1`; expected-failure decorators mask required output-contract failures in normal validation.
+- Resolution result: Removed expected-failure masking, split ordinary validation from explicit red-test proof, added a default guard against expected-failure masking, and recorded `output-contract-red-test.md`.
 - Aligned surface note: `behavior-preservation.md` records the intentional M2 test-suite extension and preserves the M1 selected-test baseline for M3 comparison.
 - Commit message: `M2: add script output contract tests`
 - Milestone closeout:
@@ -373,6 +375,8 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: `SRO-M1-CR1` resolved by adding `selected-tests-baseline.txt` with 62 ordered unittest identifiers and selected-set hash `sha256:af470dd836f5b1b44c702be35206934f77621a1477d88cafae923e50a7f492bd`; M1 is ready for code-review rerun.
 - 2026-05-21: `code-review-m1-r2` closed M1 cleanly with no material findings; M2 is the next implementation milestone.
 - 2026-05-21: M2 implemented output-contract tests in `scripts/test-select-validation.py`; 7 formatter-dependent cases are expected failures until M3 implements output shaping.
+- 2026-05-21: M2 code-review found `SRO-M2-CR1`; expected-failure decorators mask required output-contract failures and need resolution before M2 can close.
+- 2026-05-21: `SRO-M2-CR1` resolved by removing expected-failure masking, adding explicit red-test proof at `output-contract-red-test.md`, and keeping ordinary M2 validation separate from the pre-M3 red-test command.
 
 ## Decision log
 
@@ -437,6 +441,19 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - M2 selector inspection for `scripts/test-select-validation.py`, active plan, plan index, and change metadata selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 - M2 validation `git diff --check -- scripts/test-select-validation.py specs/script-output-optimization.test.md docs/changes/2026-05-21-script-output-optimization docs/plans/2026-05-21-script-output-optimization.md docs/plan.md` passed.
 - M2 selected CI `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --jobs 1` passed: selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- Code-review M2 R1 recording validation `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-script-output-optimization` passed: 9 reviews, 9 findings, 9 log entries, 9 resolution entries. Review-resolution remains open because `SRO-M2-CR1` is unresolved.
+- Code-review M2 R1 recording validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Code-review M2 R1 recording validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m2-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- Code-review M2 R1 recording validation `git diff --check --` passed.
+- Code-review M2 R1 selected CI passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- `SRO-M2-CR1` validation `python scripts/test-select-validation.py` passed: 63 tests.
+- `SRO-M2-CR1` red-test proof `python scripts/test-select-validation.py ScriptOutputContractTests` exited nonzero before M3 with `FAILED (failures=9)`.
+- `SRO-M2-CR1` validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- `SRO-M2-CR1` validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 9 reviews, 9 findings, 9 log entries, 9 resolution entries.
+- `SRO-M2-CR1` validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/output-contract-red-test.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- `SRO-M2-CR1` validation `git diff --check --` passed.
+- `SRO-M2-CR1` selector inspection with `output-contract-red-test.md` included blocked that file as `change-local-unsupported`; it had no unclassified paths. Manual route `git diff --check -- docs/changes/2026-05-21-script-output-optimization/output-contract-red-test.md` passed.
+- `SRO-M2-CR1` selected CI excluding the manually routed red-test evidence file passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 
 ## Outcome and retrospective
 
@@ -445,4 +462,4 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M2 only. Readiness is not Done; M2 is not closed until code-review and any required resolution complete.
+- Ready for code-review M2 rerun only. Readiness is not Done; M2 is not closed until the resolution is re-reviewed.

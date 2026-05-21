@@ -12,6 +12,7 @@ Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m2-r1
 
 ## Resolution Entries
 
@@ -158,3 +159,21 @@ Validation evidence: `python scripts/validate-change-metadata.py docs/changes/20
 ### code-review-m1-r2
 
 No material findings.
+
+### code-review-m2-r1
+
+## Findings
+
+#### SRO-M2-CR1
+
+Finding ID: SRO-M2-CR1
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement
+Chosen action: Removed `@unittest.expectedFailure` masking from `ScriptOutputContractTests`, excluded that class from ordinary validation through `load_tests`, added `ValidationSelectionTests.test_output_contract_red_tests_are_unmasked_and_separate` as a default guard, and recorded explicit red-test proof in `output-contract-red-test.md`.
+Rationale: The approved M2 proof route requires tests that fail for old noisy output and pass only when the approved output contract is satisfied. `unittest.expectedFailure` makes the normal test command pass while required formatter behavior is still absent.
+Required outcome: M2 must expose unmet output-contract behavior as failing proof or otherwise ensure M3 validation fails if any required output-contract case remains expected-failing.
+Safe resolution path: Remove `@unittest.expectedFailure` from acceptance tests, or move pre-M3 red proof into a separate explicit command/artifact and add a guard that prevents M3 handoff while expected-failure output-contract cases remain.
+Validation target: Rerun `python scripts/test-select-validation.py`, explicit red-test proof, selected CI, lifecycle validation, change metadata validation, and diff check after the M2 test proof is revised.
+Validation evidence: `python scripts/test-select-validation.py` passed with 63 tests; `python scripts/test-select-validation.py ScriptOutputContractTests` exited nonzero with `FAILED (failures=9)` as pre-M3 red-test proof; lifecycle validation, change metadata validation, selected CI, and `git diff --check --` passed after the test-proof update.
