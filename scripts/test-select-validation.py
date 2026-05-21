@@ -925,6 +925,30 @@ raise SystemExit({exit_code})
                 "checks": {"artifact_lifecycle.validate"},
             },
             {
+                "path": "docs/changes/2026-04-25-example/output-contract-red-test.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/script-output-audit.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/selected-tests-baseline.txt",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/selected-tests-m3.txt",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
                 "path": "docs/changes/2026-04-25-example/baseline.md",
                 "category": "change-local-lifecycle",
                 "status": "ok",
