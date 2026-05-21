@@ -64,14 +64,14 @@ The implementation must create durable first-slice evidence under `docs/changes/
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Audit and baseline preservation evidence
-- Current milestone state: review-requested
-- Last reviewed milestone: M0. Plan review and test-spec handoff
-- Review status: M1 implementation complete; awaiting code-review
-- Remaining in-scope implementation milestones: M1 awaiting review, M2, M3, M4 when triggered, M5
-- Next stage: code-review M1
+- Current milestone: M2. Output contract tests
+- Current milestone state: ready
+- Last reviewed milestone: M1. Audit and baseline preservation evidence
+- Review status: `code-review-m1-r2` clean-with-notes; M1 closed
+- Remaining in-scope implementation milestones: M2, M3, M4 when triggered, M5
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is implemented and awaiting code-review; M2, M3, conditional M4, M5, explain-change, final verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: M2, M3, conditional M4, M5, explain-change, final verify, and PR handoff have not happened.
 
 ## Milestones
 
@@ -115,7 +115,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 
 ### M1. Audit and baseline preservation evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Record the first-slice audit and baseline behavior evidence before changing runner output.
 - Requirements: R23, R24, R25, R26, R28 through R34, AC9 through AC14
 - Files/components likely touched:
@@ -140,6 +140,9 @@ The implementation must create durable first-slice evidence under `docs/changes/
   - `git diff --check -- docs/changes/2026-05-21-script-output-optimization`
 - Expected observable result: the audit identifies `scripts/test-select-validation.py` as the implementation target, records conditional `scripts/ci.sh` treatment, and preserves a baseline against which presentation-only behavior can be reviewed.
 - Result: Implemented. Added `script-output-audit.md` and `behavior-preservation.md` with baseline runner, JSON, failure, and wrapper evidence. No production code changed in M1.
+- Review result: `code-review-m1-r1` requested changes for `SRO-M1-CR1`; selected tests/checks baseline proof is count-only and must be made durable before M1 closes.
+- Resolution result: Added `selected-tests-baseline.txt`, recorded the selected-set hash in `behavior-preservation.md`, and updated the selected tests/checks row to reference the durable list and hash. No production code changed.
+- Re-review result: `code-review-m1-r2` clean-with-notes; M1 closed.
 - Commit message: `M1: audit script output baseline`
 - Milestone closeout:
   - validation passed
@@ -154,7 +157,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 
 ### M2. Output contract tests
 
-- Milestone state: planned
+- Milestone state: ready
 - Goal: Add focused output-shape and preservation tests before changing the runner implementation.
 - Requirements: R1 through R24, R27, R32 through R35, AC1 through AC11
 - Files/components likely touched:
@@ -364,6 +367,9 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: plan-review-r1 approved the plan with no material findings.
 - 2026-05-21: active test spec created at `specs/script-output-optimization.test.md` and user-approved for implementation use; implementation is ready to start at M1.
 - 2026-05-21: M1 implemented by adding the script-output audit and baseline behavior-preservation matrix; no production code changed.
+- 2026-05-21: M1 code-review found `SRO-M1-CR1`; behavior-preservation selected tests/checks proof is count-only and needs resolution before M1 can close.
+- 2026-05-21: `SRO-M1-CR1` resolved by adding `selected-tests-baseline.txt` with 62 ordered unittest identifiers and selected-set hash `sha256:af470dd836f5b1b44c702be35206934f77621a1477d88cafae923e50a7f492bd`; M1 is ready for code-review rerun.
+- 2026-05-21: `code-review-m1-r2` closed M1 cleanly with no material findings; M2 is the next implementation milestone.
 
 ## Decision log
 
@@ -403,6 +409,25 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - M1 validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path specs/script-output-optimization.test.md --path specs/script-output-optimization.md` passed: 4 artifact files validated.
 - M1 selector inspection with `script-output-audit.md` included blocked that path as `change-local-unsupported`; it had no unclassified paths. Manual M1 routing for `script-output-audit.md` is `git diff --check -- docs/changes/2026-05-21-script-output-optimization/script-output-audit.md`, which passed.
 - M1 selected validation excluding the manually routed audit path passed: selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- Code-review M1 R1 recording validation `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-script-output-optimization` passed: 7 reviews, 8 findings, 7 log entries, 8 resolution entries. Review-resolution remains open because `SRO-M1-CR1` is unresolved.
+- Code-review M1 R1 recording validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Code-review M1 R1 recording validation `git diff --check --` passed.
+- Code-review M1 R1 recording validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m1-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- Code-review M1 R1 selected validation passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- `SRO-M1-CR1` hash verification command confirmed `selected-tests-baseline.txt` has 62 lines, one trailing newline, and `sha256:af470dd836f5b1b44c702be35206934f77621a1477d88cafae923e50a7f492bd`.
+- `SRO-M1-CR1` validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- `SRO-M1-CR1` validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 7 reviews, 8 findings, 7 log entries, 8 resolution entries.
+- `SRO-M1-CR1` validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/selected-tests-baseline.txt --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- `SRO-M1-CR1` validation `git diff --check --` passed.
+- `SRO-M1-CR1` selector inspection with `script-output-audit.md` and `selected-tests-baseline.txt` included blocked those paths as `change-local-unsupported`; it had no unclassified paths. Manual routing for those supporting evidence files is `git diff --check -- docs/changes/2026-05-21-script-output-optimization/script-output-audit.md docs/changes/2026-05-21-script-output-optimization/selected-tests-baseline.txt`, which passed.
+- `SRO-M1-CR1` selected validation excluding manually routed evidence files passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- `SRO-M1-CR1` validation `python scripts/test-select-validation.py` passed: 62 tests.
+- Code-review M1 R2 validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 8 reviews, 8 findings, 8 log entries, 8 resolution entries.
+- Code-review M1 R2 validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Code-review M1 R2 validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/selected-tests-baseline.txt --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m1-r2.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- Code-review M1 R2 validation `git diff --check --` passed.
+- Code-review M1 R2 selected CI with `selected-tests-baseline.txt` included blocked that file as `change-local-unsupported`; manual route `git diff --check -- docs/changes/2026-05-21-script-output-optimization/selected-tests-baseline.txt` passed.
+- Code-review M1 R2 selected CI excluding the manually routed evidence file passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
@@ -411,4 +436,4 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M1 only. Readiness is not Done; M1 is not closed until code-review and any required resolution complete.
+- Ready for implement M2 only. Readiness is not Done; M2, M3, conditional M4, M5, explain-change, final verify, and PR handoff remain open.
