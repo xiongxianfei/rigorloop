@@ -15,6 +15,7 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
+Review closeout: code-review-m3-r2
 
 ## Resolution Entries
 
@@ -201,3 +202,7 @@ Required outcome: Ordinary post-M3 validation must execute the required output-c
 Safe resolution path: Remove or revise the `load_tests` filter now that the formatter exists, or add an equivalent default-suite guard that invokes `ScriptOutputContractTests`; update behavior-preservation evidence and rerun M3 validation.
 Validation target: Rerun `python scripts/test-select-validation.py`, output-contract proof if retained, selected CI, lifecycle validation, change metadata validation, and `git diff --check --` after the test-routing fix.
 Validation evidence: `python scripts/test-select-validation.py` passed with `73` tests, including `10` `ScriptOutputContractTests`; `python scripts/test-select-validation.py ScriptOutputContractTests` passed as a focused diagnostic command; selected CI, lifecycle validation, change metadata validation, and `git diff --check --` passed after the test-routing fix.
+
+### code-review-m3-r2
+
+No material findings.

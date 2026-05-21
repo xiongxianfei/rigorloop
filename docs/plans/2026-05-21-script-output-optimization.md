@@ -64,14 +64,14 @@ The implementation must create durable first-slice evidence under `docs/changes/
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Test-select-validation output shaping
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Output contract tests
-- Review status: `SRO-M3-CR1` resolved; awaiting code-review rerun
-- Remaining in-scope implementation milestones: M3 re-review, M4 when triggered, M5
-- Next stage: code-review M3 rerun
+- Current milestone: M4. Conditional CI wrapper preservation
+- Current milestone state: ready
+- Last reviewed milestone: M3. Test-select-validation output shaping
+- Review status: `code-review-m3-r2` closed M3 with no material findings
+- Remaining in-scope implementation milestones: M4 when triggered, M5
+- Next stage: implement M4 conditional CI wrapper preservation
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 resolution needs code-review rerun; conditional M4, M5, explain-change, final verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: conditional M4, M5, explain-change, final verify, and PR handoff have not happened.
 
 ## Milestones
 
@@ -204,7 +204,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 
 ### M3. Test-select-validation output shaping
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Implement the approved default, verbose, quiet, conflict-flag, zero-test, rerun, and JSON-deferral behavior in `scripts/test-select-validation.py`.
 - Requirements: R1 through R24, R27, R32 through R35, AC1 through AC11, AC14
 - Files/components likely touched:
@@ -241,6 +241,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - Aligned surface note: `scripts/ci.sh` remains untouched in M3. M4 still owns the conditional wrapper no-code/patch decision.
 - Review result: `code-review-m3-r1` requested changes for `SRO-M3-CR1`; the required output-contract tests still run only through an explicit command and are excluded from ordinary post-M3 validation.
 - Resolution result: Removed the `load_tests` exclusion so `ScriptOutputContractTests` run in ordinary validation. `python scripts/test-select-validation.py` now runs `73` tests, including all `10` output-contract acceptance tests. The explicit output-contract command remains a focused diagnostic rerun.
+- Re-review result: `code-review-m3-r2` closed M3 with no material findings.
 - Commit message: `M3: shape test-select-validation output`
 - Milestone closeout:
   - validation passed
@@ -387,6 +388,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: M3 implemented `scripts/test-select-validation.py` output shaping and moved to code-review.
 - 2026-05-21: M3 code-review found `SRO-M3-CR1`; output-contract tests must become part of ordinary post-M3 validation or an equivalent default-suite guard before M3 can close.
 - 2026-05-21: `SRO-M3-CR1` resolved by removing the `load_tests` exclusion and recording the updated ordinary selected-test list/hash.
+- 2026-05-21: `code-review-m3-r2` closed M3 cleanly with no material findings; M4 conditional CI wrapper preservation is the next implementation milestone.
 
 ## Decision log
 
@@ -506,6 +508,12 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - `SRO-M3-CR1` validation `git diff --check --` passed.
 - `SRO-M3-CR1` selector inspection with `script-output-audit.md`, `output-contract-red-test.md`, and `selected-tests-m3.txt` included blocked those files as `change-local-unsupported`; it had no unclassified paths. Manual route `git diff --check -- docs/changes/2026-05-21-script-output-optimization/script-output-audit.md docs/changes/2026-05-21-script-output-optimization/output-contract-red-test.md docs/changes/2026-05-21-script-output-optimization/selected-tests-m3.txt` passed.
 - `SRO-M3-CR1` selected CI excluding manually routed evidence files passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- Code-review M3 R2 recorded no material findings and closed M3.
+- Code-review M3 R2 recording validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 12 reviews, 10 findings, 12 log entries, 10 resolution entries.
+- Code-review M3 R2 recording validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Code-review M3 R2 recording validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m3-r2.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- Code-review M3 R2 recording validation `git diff --check --` passed.
+- Code-review M3 R2 selected CI passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
@@ -514,4 +522,4 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M3 rerun only. Readiness is not Done; M3 is not closed until the resolution is re-reviewed. Conditional M4, M5, explain-change, final verify, and PR handoff remain open.
+- Ready for implement M4 conditional CI wrapper preservation only. Readiness is not Done; M4, M5, explain-change, final verify, and PR handoff remain open.
