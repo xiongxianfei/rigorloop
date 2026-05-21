@@ -29,6 +29,14 @@ CANONICAL_ARTIFACT_KEYS = {
     "test_spec",
     "verify_report",
 }
+COMPACT_REQUIRED_FIELDS = {
+    "path_vars",
+    "validation_bundles",
+    "validation_events",
+    "validation_summary",
+}
+LEGACY_VALIDATION_FIELDS = {"validation"}
+VALIDATION_EVENT_RESULTS = {"pass", "fail", "blocked", "skipped", "not-run"}
 
 
 class MetadataValidationError(Exception):
@@ -342,8 +350,152 @@ def validate_metadata_semantics(data: Any) -> list[str]:
     return errors
 
 
+def is_compact_metadata(data: Any) -> bool:
+    return isinstance(data, dict) and data.get("schema_version") == 2
+
+
+def is_nonempty_string(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def validate_compact_required_fields(data: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    for field in sorted(COMPACT_REQUIRED_FIELDS):
+        if field not in data:
+            errors.append(f"{field}: missing required compact field")
+    return errors
+
+
+def validate_compact_top_level_shape(data: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if any(field in data for field in LEGACY_VALIDATION_FIELDS):
+        errors.append("validation: mixed legacy and compact validation metadata")
+
+    path_vars = data.get("path_vars")
+    if path_vars is not None and not isinstance(path_vars, dict):
+        errors.append("path_vars: expected object")
+
+    validation_bundles = data.get("validation_bundles")
+    if validation_bundles is not None and not isinstance(validation_bundles, dict):
+        errors.append("validation_bundles: expected object")
+
+    validation_events = data.get("validation_events")
+    if validation_events is not None and not isinstance(validation_events, list):
+        errors.append("validation_events: expected array")
+
+    validation_summary = data.get("validation_summary")
+    if validation_summary is not None and not isinstance(validation_summary, dict):
+        errors.append("validation_summary: expected object")
+
+    return errors
+
+
+def validate_compact_bundle_definitions(
+    validation_bundles: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    for bundle_id, definition in validation_bundles.items():
+        bundle_path = path_label("validation_bundles", bundle_id)
+        if not isinstance(definition, dict):
+            errors.append(f"{bundle_path}: expected object")
+            continue
+        command = definition.get("command")
+        if not is_nonempty_string(command):
+            errors.append(f"{bundle_path}.command: missing required field")
+        for optional_field in ("description", "expands_with", "required_for"):
+            if optional_field in definition and not is_nonempty_string(definition[optional_field]):
+                errors.append(f"{bundle_path}.{optional_field}: expected string")
+    return errors
+
+
+def validate_compact_counts(counts: Any, event_path: str) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(counts, dict):
+        return [f"{event_path}.counts: expected object"]
+    for key, value in counts.items():
+        if not isinstance(value, int) or isinstance(value, bool):
+            errors.append(f"{event_path}.counts.{key}: expected integer")
+    return errors
+
+
+def validate_compact_failure_details(event: dict[str, Any], event_path: str) -> list[str]:
+    result = event.get("result")
+    if result not in {"fail", "blocked"}:
+        return []
+    failures = event.get("failures")
+    if not isinstance(failures, list) or not failures:
+        return [f"{event_path}.failures: required when result is {result}"]
+    return []
+
+
+def validate_compact_event(
+    event: Any,
+    index: int,
+    validation_bundles: dict[str, Any],
+) -> list[str]:
+    event_path = path_label("validation_events", index)
+    if not isinstance(event, dict):
+        return [f"{event_path}: expected object"]
+
+    errors: list[str] = []
+    for field in ("stage", "lifecycle_stage", "bundles", "result"):
+        if field not in event:
+            errors.append(f"{event_path}.{field}: missing required field")
+
+    for field in ("stage", "lifecycle_stage"):
+        if field in event and not is_nonempty_string(event[field]):
+            errors.append(f"{event_path}.{field}: expected string")
+
+    bundles = event.get("bundles")
+    if "bundles" in event:
+        if not isinstance(bundles, list):
+            errors.append(f"{event_path}.bundles: expected array")
+        else:
+            for bundle_index, bundle_id in enumerate(bundles):
+                bundle_path = path_label(path_label(event_path, "bundles"), bundle_index)
+                if not is_nonempty_string(bundle_id):
+                    errors.append(f"{bundle_path}: expected string")
+                    continue
+                if bundle_id not in validation_bundles:
+                    errors.append(
+                        f"{bundle_path}: unknown validation bundle '{bundle_id}'"
+                    )
+
+    result = event.get("result")
+    if "result" in event and result not in VALIDATION_EVENT_RESULTS:
+        allowed = ", ".join(sorted(VALIDATION_EVENT_RESULTS))
+        errors.append(f"{event_path}.result: expected one of: {allowed}")
+
+    if "counts" in event:
+        errors.extend(validate_compact_counts(event["counts"], event_path))
+
+    errors.extend(validate_compact_failure_details(event, event_path))
+    return errors
+
+
+def validate_compact_metadata_semantics(data: Any) -> list[str]:
+    if not isinstance(data, dict):
+        return []
+
+    errors = validate_compact_required_fields(data)
+    errors.extend(validate_compact_top_level_shape(data))
+
+    validation_bundles = data.get("validation_bundles")
+    if isinstance(validation_bundles, dict):
+        errors.extend(validate_compact_bundle_definitions(validation_bundles))
+
+    validation_events = data.get("validation_events")
+    if isinstance(validation_events, list) and isinstance(validation_bundles, dict):
+        for index, event in enumerate(validation_events):
+            errors.extend(validate_compact_event(event, index, validation_bundles))
+
+    return errors
+
+
 def validate_file(path: Path) -> list[str]:
     data = load_yaml(path)
+    if is_compact_metadata(data):
+        return validate_compact_metadata_semantics(data)
     schema = load_schema()
     schema_errors = validate_against_schema(schema, data)
     if schema_errors:

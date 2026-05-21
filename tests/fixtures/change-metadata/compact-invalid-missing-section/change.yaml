@@ -1,0 +1,7 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-invalid-missing-section
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+validation_summary: {}
