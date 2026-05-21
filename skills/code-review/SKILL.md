@@ -114,6 +114,16 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when present in the project-local workflow guide, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Resource map
+
+- COPY `assets/material-finding.md` once per material finding.
+  Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed.
+  Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
+  Do not emit unfilled placeholders.
+- COPY `assets/review-result-skeleton.md` when producing the review result block.
+  Fill: status, artifacts changed, blockers, next stage, review status, material findings, recording fields, review paths, milestone fields, required review-resolution, finding IDs, and verify-readiness field.
+  Do not emit unfilled placeholders.
+
 ## Outputs
 
 Produce a first-pass review record with status, inputs, diff summary, findings or no-finding rationale, checklist coverage, and a milestone-aware next-stage decision.
@@ -371,30 +381,13 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ## Output skeleton
 
-Fill placeholders such as `<review record paths or none>` with concrete review evidence.
+Use the mapped assets as the copy-and-fill structure for code-review artifacts.
 
 ```md
-## Result
-
-- Skill: code-review
-- Status: completed | blocked | inconclusive
-- Artifacts changed: <review record paths or none>
-- Open blockers: <blockers or none>
-- Next stage: <review-resolution | implement next milestone | final closeout | blocked>
-- Review status: clean-with-notes | changes-requested | blocked | inconclusive
-- Material findings: <IDs or none>
-- Recording status: recorded | blocked
-- Recording blocker:
-- Review record:
-- Review log:
-- Review resolution: <path | not-required | blocked>
-- Reviewed milestone:
-- Milestone closeout:
-- Remaining implementation milestones:
-- Required review-resolution:
-
-## Review record
-<inputs, diff summary, findings, checklist coverage, no-finding rationale, and handoff>
+COPY `assets/review-result-skeleton.md` for the review result block.
+COPY `assets/material-finding.md` once per material finding.
+Fill <code-review artifact fields> required by this skill.
+Do not emit unfilled placeholders.
 ```
 
 ## Expected output

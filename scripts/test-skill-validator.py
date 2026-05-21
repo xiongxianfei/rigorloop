@@ -1562,6 +1562,40 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 result.stdout + result.stderr,
             )
 
+    def test_code_review_family_assets_are_installed_and_preserve_status_vocabulary(self) -> None:
+        skills_dir = ROOT / "skills"
+        skill_path = skills_dir / "code-review" / "SKILL.md"
+        skill_text = skill_path.read_text(encoding="utf-8")
+
+        self.assertIn("- COPY `assets/material-finding.md`", skill_text)
+        self.assertIn("- COPY `assets/review-result-skeleton.md`", skill_text)
+        self.assertIn("Finding ID:", skill_text)
+
+        material_finding = (skills_dir / "code-review" / "assets" / "material-finding.md").read_text(
+            encoding="utf-8"
+        )
+        for label in [
+            "Finding ID:",
+            "Severity:",
+            "Location:",
+            "Evidence:",
+            "Required outcome:",
+            "Safe resolution path:",
+            "needs-decision rationale:",
+        ]:
+            self.assertIn(label, material_finding)
+
+        result_skeleton = (
+            skills_dir / "code-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn(
+            "clean-with-notes | changes-requested | blocked | inconclusive",
+            result_skeleton,
+        )
+        self.assertIn("- Reviewed milestone:", result_skeleton)
+        self.assertIn("- Milestone closeout:", result_skeleton)
+        self.assertNotIn("approved | changes-requested", result_skeleton)
+
     def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
