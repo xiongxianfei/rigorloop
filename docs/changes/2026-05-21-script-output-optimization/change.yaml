@@ -52,6 +52,7 @@ tests:
   - Explain-change refresh records the selector-routing maintenance rationale, clean review, validation evidence, scope-control correction, risks, and verify handoff.
   - Final local verify passed with targeted runner checks, PR-mode selected CI, broad smoke, lifecycle/review/metadata validation, direct edge checks, selected-test hash proof, and patch hygiene.
   - PR #83 opened for hosted CI and human review.
+  - Hosted CI passed for PR #83, and PR #83 merged on 2026-05-21.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
     result: pass_reviews_5_findings_7_log_entries_5_resolution_entries_7_after_plan_authoring
