@@ -12,14 +12,14 @@ This matrix records baseline evidence before changing presentation. Later implem
 
 | Behavior | Baseline proof | New proof | Preservation result |
 | --- | --- | --- | --- |
-| exit code on pass | `python scripts/test-select-validation.py` exited `0` | pending M3 | pending |
-| exit code on failure | `python scripts/test-select-validation.py NoSuchTest` exited `1` | pending M3 | pending |
-| selected tests/checks | `python scripts/test-select-validation.py` ran the `62` ordered unittest identifiers listed in `selected-tests-baseline.txt`; selected-set SHA-256 is `sha256:af470dd836f5b1b44c702be35206934f77621a1477d88cafae923e50a7f492bd` | pending M3 | M3 must preserve the same ordered selected-test set unless an intentional selection change is separately approved |
-| failure detection | `python scripts/test-select-validation.py NoSuchTest` reported `ERROR` and `FAILED (errors=1)` | pending M3 | pending |
-| failure evidence | `NoSuchTest` failure output included failed identifier, error status, exception type/message, run count, and failed summary | pending M3 | pending |
-| verbose output | `python scripts/test-select-validation.py --verbose` exited `0`, ran `62` tests, and emitted the current full pass-list output | pending M3 | pending |
-| quiet failure output | not available in baseline; `--quiet` is new first-slice behavior | pending M3 | pending |
-| JSON behavior | `python scripts/test-select-validation.py --json` exited `2` with `unrecognized arguments: --json` | pending M3 | pending |
+| exit code on pass | `python scripts/test-select-validation.py` exited `0` | M3 `python scripts/test-select-validation.py` exited `0` with `[PASS] test-select-validation: 63 passed ...` | unchanged success exit code |
+| exit code on failure | `python scripts/test-select-validation.py NoSuchTest` exited `1` | M3 `python scripts/test-select-validation.py NoSuchTest` exited `1` with `[FAIL] test-select-validation: 1 failed, 0 passed ...` | unchanged failure exit code |
+| selected tests/checks | `python scripts/test-select-validation.py` ran the `62` ordered unittest identifiers listed in `selected-tests-baseline.txt`; selected-set SHA-256 is `sha256:af470dd836f5b1b44c702be35206934f77621a1477d88cafae923e50a7f492bd` | M3 ordinary validation ran `63` tests: the original `62` baseline identifiers in the same order plus the approved M2 guard `ValidationSelectionTests.test_output_contract_red_tests_are_unmasked_and_separate`; current full-suite SHA-256 is `sha256:425feac0e0ea777c474032b954e6aa375b0f9d2986d82b9fd7053ac119e5a104`; baseline subset order still matches `selected-tests-baseline.txt` | preserved, with the approved M2 test-suite extension |
+| failure detection | `python scripts/test-select-validation.py NoSuchTest` reported `ERROR` and `FAILED (errors=1)` | M3 `python scripts/test-select-validation.py NoSuchTest` reports a nonzero `[FAIL]` summary and failed identifier `unittest.loader._FailedTest.NoSuchTest` | preserved |
+| failure evidence | `NoSuchTest` failure output included failed identifier, error status, exception type/message, run count, and failed summary | M3 `NoSuchTest` failure output includes failed identifier, exception type/message, failed count, passed count, and duration; no scoped rerun is emitted because loader failures are not reliable exact filters | same or more actionable |
+| verbose output | `python scripts/test-select-validation.py --verbose` exited `0`, ran `62` tests, and emitted the current full pass-list output | M3 `python scripts/test-select-validation.py --verbose` exited `0`, ran `63` tests, and emitted the full pass-list output plus unittest footer | preserved behind `--verbose` |
+| quiet failure output | not available in baseline; `--quiet` is new first-slice behavior | M3 `python scripts/test-select-validation.py --quiet ScriptOutputFixtureTests.fixture_contract_failure` exited `1` and printed `[FAIL]`, failed test name, assertion message, file location, and reliable scoped rerun command | new behavior satisfies the approved first-slice contract |
+| JSON behavior | `python scripts/test-select-validation.py --json` exited `2` with `unrecognized arguments: --json` | M3 `python scripts/test-select-validation.py --json` exits `2` with `unrecognized arguments: --json` | unchanged; no JSON support added |
 
 ## `scripts/ci.sh`
 
@@ -54,6 +54,18 @@ M2 intentionally extends `scripts/test-select-validation.py` with output-contrac
 - M2 ordinary validation ran `python scripts/test-select-validation.py`: `63` tests.
 - M2 red-test proof ran `python scripts/test-select-validation.py ScriptOutputContractTests`: nonzero exit with `FAILED (failures=9)` before M3.
 - M3 must make the explicit output-contract red-test command pass when the output formatter is implemented.
+
+## M3 output shaping proof
+
+M3 implements presentation-only output shaping around the existing unittest loader and runner result.
+
+- `python scripts/test-select-validation.py` exits `0` and prints one default success line: `[PASS] test-select-validation: 63 passed ...`.
+- `python scripts/test-select-validation.py ScriptOutputContractTests` exits `0`; the M2 red-test proof now passes as ordinary contract coverage.
+- `python scripts/test-select-validation.py --quiet` exits `0` with empty stdout and stderr.
+- `python scripts/test-select-validation.py --verbose --quiet` exits `2`, writes no stdout, names both flags in stderr, and runs no tests.
+- `python scripts/test-select-validation.py -k definitely_no_script_output_tests` exits `1` with a zero-test `[FAIL]` diagnostic.
+- `python scripts/test-select-validation.py --json` remains unsupported and exits `2`.
+- The original M1 baseline `ValidationSelectionTests` identifiers remain present in the same order; M3 adds no selection behavior beyond the approved M2 guard test. The current full-suite ordered identifier hash is `sha256:425feac0e0ea777c474032b954e6aa375b0f9d2986d82b9fd7053ac119e5a104`.
 
 ## M1 conclusion
 

@@ -116,3 +116,56 @@ Result:
 ## JSON status
 
 `scripts/test-select-validation.py` currently lacks `--json`. The first slice must not add JSON support. If a later script touched in this change has stable JSON support, that behavior must be separately recorded and preserved.
+
+## M3 post-change observation
+
+M3 changed `scripts/test-select-validation.py` only. The CI wrapper remains conditional for M4.
+
+Command:
+
+```bash
+python scripts/test-select-validation.py
+```
+
+Result:
+
+- exit code: `0`
+- stdout lines: `1`
+- stderr lines: `0`
+- selected/executed tests: `63`
+- current success shape: `[PASS] test-select-validation: 63 passed ...`
+
+Command:
+
+```bash
+python scripts/test-select-validation.py --quiet
+```
+
+Result:
+
+- exit code: `0`
+- stdout lines: `0`
+- stderr lines: `0`
+
+Command:
+
+```bash
+python scripts/test-select-validation.py --verbose
+```
+
+Result:
+
+- exit code: `0`
+- current verbose shape: full unittest pass-list output remains available
+
+Command:
+
+```bash
+python scripts/test-select-validation.py --json
+```
+
+Result:
+
+- exit code: `2`
+- current behavior: `unrecognized arguments: --json`
+- first-slice implication: JSON support remains deferred

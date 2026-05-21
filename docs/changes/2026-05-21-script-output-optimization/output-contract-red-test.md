@@ -73,3 +73,11 @@ After M3 implements output shaping:
 - ordinary validation must not be able to pass if required output-contract tests are still masked.
 
 M3 must update behavior-preservation evidence with the post-change proof.
+
+Observed M3 result:
+
+```text
+[PASS] test-select-validation: 10 passed in 1.26s
+```
+
+The explicit red-test command now exits `0`; the contract tests remain ordinary tests and are not marked with `@unittest.expectedFailure`.
