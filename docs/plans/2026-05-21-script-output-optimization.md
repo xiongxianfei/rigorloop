@@ -64,14 +64,14 @@ The implementation must create durable first-slice evidence under `docs/changes/
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Conditional CI wrapper preservation
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Test-select-validation output shaping
-- Review status: `code-review-m3-r2` closed M3 with no material findings
-- Remaining in-scope implementation milestones: M4 review, M5
-- Next stage: code-review M4 conditional CI wrapper preservation
+- Current milestone: M5. Lifecycle evidence and closeout handoff
+- Current milestone state: ready
+- Last reviewed milestone: M4. Conditional CI wrapper preservation
+- Review status: `code-review-m4-r1` closed M4 with no material findings
+- Remaining in-scope implementation milestones: M5
+- Next stage: implement M5 lifecycle evidence and closeout handoff
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 code-review, M5, explain-change, final verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: M5, explain-change, final verify, and PR handoff have not happened.
 
 ## Milestones
 
@@ -257,7 +257,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 
 ### M4. Conditional CI wrapper preservation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Make no `scripts/ci.sh` change unless M1 or M3 proves the wrapper must be adjusted to preserve quiet-success and loud-failure behavior.
 - Requirements: R28 through R31, R32 through R35 when wrapper is touched, AC12 through AC14
 - Files/components likely touched:
@@ -283,6 +283,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
   - `git diff --check --`
 - Expected observable result: CI wrapper behavior is either unchanged with recorded proof or minimally patched with tests that preserve selected-check execution semantics and failure evidence.
 - Result: Implemented as a no-code milestone. Post-M3 wrapper proof shows `scripts/ci.sh` still hides successful child output by default, exposes successful child output with wrapper `--verbose`, preserves `selector.regression` selected-check semantics, and has existing focused regression coverage for failed child output expansion. No wrapper patch was triggered.
+- Review result: `code-review-m4-r1` closed M4 with no material findings.
 - Commit message: `M4: preserve CI wrapper output boundary`
 - Milestone closeout:
   - validation passed
@@ -391,6 +392,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: `SRO-M3-CR1` resolved by removing the `load_tests` exclusion and recording the updated ordinary selected-test list/hash.
 - 2026-05-21: `code-review-m3-r2` closed M3 cleanly with no material findings; M4 conditional CI wrapper preservation is the next implementation milestone.
 - 2026-05-21: M4 recorded no-code wrapper-preservation evidence; `scripts/ci.sh` remains unchanged and M4 is ready for code-review.
+- 2026-05-21: `code-review-m4-r1` closed M4 cleanly with no material findings; M5 lifecycle evidence and closeout handoff is the next implementation milestone.
 
 ## Decision log
 
@@ -525,6 +527,12 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - M4 validation `git diff --check --` passed.
 - M4 selector inspection with `script-output-audit.md` included blocked that path as `change-local-unsupported`; it had no unclassified paths. Manual route `git diff --check -- docs/changes/2026-05-21-script-output-optimization/script-output-audit.md` passed.
 - M4 selected CI excluding the manually routed audit path passed: selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- Code-review M4 R1 recorded no material findings and closed M4.
+- Code-review M4 R1 recording validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 13 reviews, 10 findings, 13 log entries, 10 resolution entries.
+- Code-review M4 R1 recording validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Code-review M4 R1 recording validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m4-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- Code-review M4 R1 recording validation `git diff --check --` passed.
+- Code-review M4 R1 selected CI passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
@@ -533,4 +541,4 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M4 conditional CI wrapper preservation only. Readiness is not Done; M4 is not closed until code-review completes. M5, explain-change, final verify, and PR handoff remain open.
+- Ready for implement M5 lifecycle evidence and closeout handoff only. Readiness is not Done; M5, explain-change, final verify, and PR handoff remain open.
