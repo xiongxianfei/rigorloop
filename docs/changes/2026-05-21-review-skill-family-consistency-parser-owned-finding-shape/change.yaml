@@ -24,6 +24,7 @@ requirements:
   - Resolve code-review M1 finding RSF-M1-CR1 before starting M2.
   - Rerun code-review M1 after resolving RSF-M1-CR1.
   - Close M1 only after clean code-review rerun and hand off to M2.
+  - Implement M2 by adding `code-review` review-family assets, resource-map entries, focused validator coverage, and preservation evidence.
 tests:
   - Proposal-review checks problem framing, option quality, scope boundaries, vision fit, risks, and readiness for spec.
   - Review artifact structure validation for clean proposal-review receipt.
@@ -38,6 +39,7 @@ tests:
   - Code-review M1 must confirm the non-enum severity proof is non-vacuous before M1 can close.
   - RSF-M1-CR1 resolution updates the non-enum severity test so the fixture contains a real Severity field before validation.
   - Code-review M1 rerun confirms M1 is clean after RSF-M1-CR1 resolution.
+  - Code-review M2 validator coverage confirms `code-review` asset presence and status vocabulary preservation.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
     result: pass_before_proposal_review
@@ -153,6 +155,14 @@ validation:
     result: pass_validated_3_lifecycle_artifacts_after_code_review_m1_r2
   - command: git diff --check --
     result: pass_after_code_review_m1_r2
+  - command: python scripts/test-skill-validator.py
+    result: pass_157_tests_after_m2
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m2
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_6_findings_2_log_entries_6_resolution_entries_2_after_m2
+  - command: git diff --check --
+    result: pass_after_m2
 changed_files:
   - docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
   - specs/review-skill-family-consistency-parser-owned-finding-shape.md
@@ -169,6 +179,10 @@ changed_files:
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/plan-review-r1.md
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m1-r2.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/m2-code-review-preservation.md
+  - skills/code-review/SKILL.md
+  - skills/code-review/assets/material-finding.md
+  - skills/code-review/assets/review-result-skeleton.md
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
   - scripts/test-review-artifact-validator.py
