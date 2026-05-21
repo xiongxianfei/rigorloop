@@ -65,13 +65,13 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Current Handoff Summary
 
 - Current milestone: Final closeout
-- Current milestone state: ready-for-explain-change
-- Last reviewed milestone: M4. Conditional CI wrapper preservation
+- Current milestone state: explain-change-recorded-ready-for-verify
+- Last reviewed milestone: M5. Lifecycle evidence and closeout handoff
 - Review status: `code-review-m5-r1` closed M5 with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed; explain-change, final verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded; final verify and PR handoff have not happened.
 
 ## Milestones
 
@@ -397,6 +397,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: `code-review-m4-r1` closed M4 cleanly with no material findings; M5 lifecycle evidence and closeout handoff is the next implementation milestone.
 - 2026-05-21: M5 recorded final behavior-preservation and scope-boundary evidence and is ready for code-review.
 - 2026-05-21: `code-review-m5-r1` closed M5 cleanly with no material findings; explain-change is the next stage.
+- 2026-05-21: Explain-change recorded the decision trail, diff rationale, tests, validation evidence, review-resolution summary, scope controls, risks, and verify handoff.
 
 ## Decision log
 
@@ -551,6 +552,12 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - Code-review M5 R1 recording validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m5-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
 - Code-review M5 R1 recording validation `git diff --check --` passed.
 - Code-review M5 R1 selected CI passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- Explain-change added `docs/changes/2026-05-21-script-output-optimization/explain-change.md` and synchronized the active plan and change metadata for verify handoff.
+- Explain-change validation `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Explain-change validation `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/explain-change.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md` passed: 4 artifact files validated.
+- Explain-change validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 14 reviews, 10 findings, 14 log entries, 10 resolution entries.
+- Explain-change validation `git diff --check --` passed.
+- Explain-change selected CI passed: selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
@@ -559,4 +566,4 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for explain-change only. Readiness is not Done; explain-change, final verify, and PR handoff remain open.
+- Ready for verify only. Readiness is not Done; final verify and PR handoff remain open.
