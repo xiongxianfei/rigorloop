@@ -22,6 +22,9 @@ Expected before M3:
 - excludes `ScriptOutputContractTests` from the default unittest suite;
 - includes `ValidationSelectionTests.test_output_contract_red_tests_are_unmasked_and_separate`, which fails if the required contract tests are hidden behind `@unittest.expectedFailure`.
 
+After M3, this M2-only exclusion is removed. Ordinary validation now includes
+`ScriptOutputContractTests`.
+
 ## Explicit Red-Test Proof
 
 Command:
@@ -81,3 +84,17 @@ Observed M3 result:
 ```
 
 The explicit red-test command now exits `0`; the contract tests remain ordinary tests and are not marked with `@unittest.expectedFailure`.
+
+## M3 Resolution
+
+`SRO-M3-CR1` closed the red-test-only phase.
+
+- Before M3, `python scripts/test-select-validation.py ScriptOutputContractTests` was explicit red-test evidence.
+- After M3 resolution, `python scripts/test-select-validation.py` includes `ScriptOutputContractTests` in ordinary validation.
+- The explicit `python scripts/test-select-validation.py ScriptOutputContractTests` command remains available as a focused diagnostic rerun, not as the only output-contract proof.
+
+Observed ordinary post-M3 validation:
+
+```text
+[PASS] test-select-validation: 73 passed ...
+```

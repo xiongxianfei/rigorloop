@@ -132,8 +132,8 @@ Result:
 - exit code: `0`
 - stdout lines: `1`
 - stderr lines: `0`
-- selected/executed tests: `63`
-- current success shape: `[PASS] test-select-validation: 63 passed ...`
+- selected/executed tests: `73`
+- current success shape: `[PASS] test-select-validation: 73 passed ...`
 
 Command:
 

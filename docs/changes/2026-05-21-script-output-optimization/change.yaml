@@ -38,6 +38,7 @@ tests:
   - Code-review M2 R2 closed M2 with no material findings after SRO-M2-CR1 resolution.
   - M3 implements output shaping for scripts/test-select-validation.py and records behavior-preservation evidence.
   - Code-review M3 found SRO-M3-CR1 requiring output-contract tests to be part of ordinary post-M3 validation.
+  - SRO-M3-CR1 resolution includes ScriptOutputContractTests in ordinary validation and records the updated selected-test proof.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization
     result: pass_reviews_5_findings_7_log_entries_5_resolution_entries_7_after_plan_authoring
@@ -231,6 +232,36 @@ validation:
     result: pass_after_code_review_m3_r1
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m3-r1.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --jobs 1
     result: pass_selected_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_m3_r1
+  - command: python scripts/test-select-validation.py
+    result: pass_73_tests_including_10_output_contract_tests_after_sro_m3_cr1_resolution
+  - command: python scripts/test-select-validation.py ScriptOutputContractTests
+    result: pass_10_output_contract_tests_after_sro_m3_cr1_resolution
+  - command: python scripts/test-select-validation.py --verbose > /tmp/sro-m3-resolution-verbose-full.out && python - <<'PY' ... parse ordered identifiers and hash
+    result: pass_count_73_sha256_878bd8dfce24e987ee50ab36d686f54e8d821bf4a5b11fe831d381c57d164047_after_sro_m3_cr1_resolution
+  - command: python scripts/test-select-validation.py --quiet
+    result: pass_exit_0_empty_stdout_empty_stderr_after_sro_m3_cr1_resolution
+  - command: python scripts/test-select-validation.py --verbose --quiet
+    result: expected_usage_error_exit_2_empty_stdout_names_both_flags_after_sro_m3_cr1_resolution
+  - command: python scripts/test-select-validation.py --json
+    result: expected_usage_error_exit_2_json_still_unsupported_after_sro_m3_cr1_resolution
+  - command: python scripts/test-select-validation.py -k definitely_no_script_output_tests
+    result: expected_zero_test_failure_exit_1_after_sro_m3_cr1_resolution
+  - command: python scripts/test-select-validation.py --quiet ScriptOutputFixtureTests.fixture_contract_failure
+    result: expected_failure_exit_1_actionable_quiet_failure_after_sro_m3_cr1_resolution
+  - command: python scripts/test-select-validation.py NoSuchTest
+    result: expected_failure_exit_1_unreliable_loader_failure_no_scoped_rerun_after_sro_m3_cr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml
+    result: pass_after_sro_m3_cr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/output-contract-red-test.md --path docs/changes/2026-05-21-script-output-optimization/selected-tests-m3.txt --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md
+    result: pass_validated_4_artifact_files_after_sro_m3_cr1_resolution
+  - command: git diff --check --
+    result: pass_after_sro_m3_cr1_resolution
+  - command: python scripts/select-validation.py --mode explicit --path scripts/test-select-validation.py --path docs/changes/2026-05-21-script-output-optimization/script-output-audit.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/output-contract-red-test.md --path docs/changes/2026-05-21-script-output-optimization/selected-tests-m3.txt --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md
+    result: blocked_manual_routing_required_for_script_output_audit_output_contract_red_test_and_selected_tests_m3_change_local_unsupported_no_unclassified_paths_after_sro_m3_cr1_resolution
+  - command: git diff --check -- docs/changes/2026-05-21-script-output-optimization/script-output-audit.md docs/changes/2026-05-21-script-output-optimization/output-contract-red-test.md docs/changes/2026-05-21-script-output-optimization/selected-tests-m3.txt
+    result: pass_manual_route_for_change_local_unsupported_evidence_after_sro_m3_cr1_resolution
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --jobs 1
+    result: pass_selected_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_after_sro_m3_cr1_resolution
 changed_files:
   - docs/proposals/2026-05-21-script-output-optimization.md
   - specs/script-output-optimization.md
@@ -242,6 +273,7 @@ changed_files:
   - docs/changes/2026-05-21-script-output-optimization/script-output-audit.md
   - docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md
   - docs/changes/2026-05-21-script-output-optimization/selected-tests-baseline.txt
+  - docs/changes/2026-05-21-script-output-optimization/selected-tests-m3.txt
   - docs/changes/2026-05-21-script-output-optimization/output-contract-red-test.md
   - docs/changes/2026-05-21-script-output-optimization/review-log.md
   - docs/changes/2026-05-21-script-output-optimization/review-resolution.md
@@ -258,5 +290,5 @@ changed_files:
   - docs/changes/2026-05-21-script-output-optimization/reviews/code-review-m3-r1.md
   - scripts/test-select-validation.py
 review:
-  status: m3_resolution_needed
-  unresolved_items: 1
+  status: m3_ready_for_code_review_rerun
+  unresolved_items: 0

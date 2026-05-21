@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -192,12 +192,12 @@ No material findings.
 
 Finding ID: SRO-M3-CR1
 Disposition: accepted
-Status: unresolved
+Status: resolved
 Owner: implementer
 Owning stage: implement
-Chosen action: pending
+Chosen action: Removed the post-M3 `load_tests` exclusion so `ScriptOutputContractTests` run as part of ordinary `python scripts/test-select-validation.py` validation. Kept the explicit `python scripts/test-select-validation.py ScriptOutputContractTests` command as a focused diagnostic rerun.
 Rationale: The required output-contract tests pass only through an explicit command after M3, while the ordinary selector regression command still excludes `ScriptOutputContractTests`.
 Required outcome: Ordinary post-M3 validation must execute the required output-contract acceptance cases, or an equivalent ordinary validation guard must fail when any required output-contract case fails.
 Safe resolution path: Remove or revise the `load_tests` filter now that the formatter exists, or add an equivalent default-suite guard that invokes `ScriptOutputContractTests`; update behavior-preservation evidence and rerun M3 validation.
 Validation target: Rerun `python scripts/test-select-validation.py`, output-contract proof if retained, selected CI, lifecycle validation, change metadata validation, and `git diff --check --` after the test-routing fix.
-Validation evidence: pending
+Validation evidence: `python scripts/test-select-validation.py` passed with `73` tests, including `10` `ScriptOutputContractTests`; `python scripts/test-select-validation.py ScriptOutputContractTests` passed as a focused diagnostic command; selected CI, lifecycle validation, change metadata validation, and `git diff --check --` passed after the test-routing fix.
