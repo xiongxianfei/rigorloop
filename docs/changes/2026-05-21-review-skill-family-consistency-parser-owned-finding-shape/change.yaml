@@ -28,6 +28,7 @@ requirements:
   - Close M2 only after clean code-review and hand off to M3.
   - Implement M3 by conforming existing `proposal-review` assets, resource-map entries, focused validator coverage, and preservation evidence.
   - Close M3 only after clean code-review and hand off to M4.
+  - Implement M4 by conforming `spec-review`, replacing `review-finding.md` with `material-finding.md`, updating validator inventory, focused validator coverage, and preservation evidence.
 tests:
   - Proposal-review checks problem framing, option quality, scope boundaries, vision fit, risks, and readiness for spec.
   - Review artifact structure validation for clean proposal-review receipt.
@@ -46,6 +47,7 @@ tests:
   - Code-review M2 clean review confirms code-review asset extraction is structurally safe.
   - Proposal-review M3 validator coverage confirms gate-review status vocabulary and material-finding field-block parity.
   - Code-review M3 clean review confirms proposal-review conformance is structurally safe.
+  - Spec-review M4 validator coverage confirms material-finding asset rename, status vocabulary, and eventual test-spec readiness preservation.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
     result: pass_before_proposal_review
@@ -193,6 +195,14 @@ validation:
     result: pass_validated_3_lifecycle_artifacts_after_code_review_m3_r1
   - command: git diff --check --
     result: pass_after_code_review_m3_r1
+  - command: python scripts/test-skill-validator.py
+    result: pass_159_tests_after_m4
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m4
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_8_findings_2_log_entries_8_resolution_entries_2_after_m4
+  - command: git diff --check --
+    result: pass_after_m4
 changed_files:
   - docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
   - specs/review-skill-family-consistency-parser-owned-finding-shape.md
@@ -211,6 +221,11 @@ changed_files:
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m1-r2.md
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/m4-spec-review-preservation.md
+  - skills/spec-review/SKILL.md
+  - skills/spec-review/assets/material-finding.md
+  - skills/spec-review/assets/review-result-skeleton.md
+  - scripts/skill_validation.py
   - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/m2-code-review-preservation.md
   - skills/code-review/SKILL.md
   - skills/code-review/assets/material-finding.md

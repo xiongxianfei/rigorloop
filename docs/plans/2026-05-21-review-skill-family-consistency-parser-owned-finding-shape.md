@@ -55,11 +55,11 @@ The review-artifact parser contract remains unchanged. The implementation must p
 ## Current Handoff Summary
 
 - Current milestone: M4. Spec-review asset conformance and material-finding rename
-- Current milestone state: ready
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Proposal-review asset conformance
-- Review status: M3 clean-with-notes; no open findings
+- Review status: M4 implementation ready for code-review
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff are still outstanding.
 
@@ -184,7 +184,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 
 ### M4. Spec-review asset conformance and material-finding rename
 
-- Milestone state: ready
+- Milestone state: review-requested
 - Goal: Bring `spec-review` under the review-family asset contract, including the approved `assets/material-finding.md` name, while preserving spec-review readiness and status behavior.
 - Requirements: RSF-R1 through RSF-R30, RSF-R43, AC-RSF-001 through AC-RSF-013
 - Files/components likely touched:
@@ -317,6 +317,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: M2 code-review returned clean-with-notes. M2 is closed and the active handoff is `implement M3`.
 - 2026-05-21: M3 conformed proposal-review's existing assets by adding literal `Finding ID:` resource-map confirmation, explicit gate-review status vocabulary, focused validator coverage, and preservation evidence. M3 is ready for code-review.
 - 2026-05-21: M3 code-review returned clean-with-notes. M3 is closed and the active handoff is `implement M4`.
+- 2026-05-21: M4 replaced spec-review `review-finding.md` with `material-finding.md`, updated references, aligned spec-family validator inventory, added focused validator coverage, and recorded preservation evidence. M4 is ready for code-review.
 
 ## Decision log
 
@@ -344,6 +345,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: M2 code-review recorded clean-with-notes with no material findings.
 - 2026-05-21: M3 targeted validation passed: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape`; `git diff --check --`.
 - 2026-05-21: M3 code-review recorded clean-with-notes with no material findings.
+- 2026-05-21: M4 targeted validation passed: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape`; `git diff --check --`.
 
 ## Outcome and retrospective
 
@@ -352,5 +354,5 @@ The review-artifact parser contract remains unchanged. The implementation must p
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M4`.
+- Ready for `code-review M4`.
 - Not ready for final closeout or PR; implementation, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain.

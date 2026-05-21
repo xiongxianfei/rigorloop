@@ -862,17 +862,32 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                             "- Recording status: <recording status>\n"
                         ),
                     ),
-                    "assets/review-finding.md": self.spec_family_asset_text(
-                        template="spec-review-finding-v1",
+                    "assets/material-finding.md": self.spec_family_asset_text(
+                        template="spec-review-material-finding-v1",
                         skill="spec-review",
                         body=(
                             "## Finding <finding id>\n\n"
+                            "- Finding ID: <finding id>\n"
                             "- Severity: <severity>\n"
                             "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
                             "- Safe resolution path: <safe resolution path>\n"
+                            "- needs-decision rationale: <needs-decision rationale>\n"
                         ),
                     ),
                 },
+                resource_entries=textwrap.dedent(
+                    """\
+                    - COPY `assets/material-finding.md` when recording each material finding.
+                      Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path.
+                      Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
+                      Do not emit unfilled placeholders.
+                    - COPY `assets/review-result-skeleton.md` when recording the review result.
+                      Fill: review result fields.
+                      Do not emit unfilled placeholders.
+                    """
+                ),
             )
             self.write_spec_family_asset_fixture(
                 root,
@@ -935,10 +950,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                         skill="spec-review",
                         body="## Result\n\n- Review status: <review status>\n",
                     ),
-                    "assets/review-finding.md": self.spec_family_asset_text(
-                        template="spec-review-finding-v1",
+                    "assets/material-finding.md": self.spec_family_asset_text(
+                        template="spec-review-material-finding-v1",
                         skill="spec-review",
-                        body="## Finding <finding id>\n\n- Severity: <severity>\n",
+                        body="## Finding <finding id>\n\n- Finding ID: <finding id>\n- Severity: <severity>\n",
                     ),
                 },
             )
@@ -958,7 +973,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 errors,
                 [
                     "Generated output for skill 'spec-review' is missing mapped asset "
-                    "'assets/review-finding.md' in generated adapter output"
+                    "'assets/material-finding.md' in generated adapter output"
                 ],
             )
 
@@ -972,8 +987,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "assets/review-result-skeleton.md": self.spec_family_asset_text(
                         template="spec-review-result-skeleton-v1", skill="spec-review"
                     ),
-                    "assets/review-finding.md": self.spec_family_asset_text(
-                        template="spec-review-finding-v1", skill="spec-review"
+                    "assets/material-finding.md": self.spec_family_asset_text(
+                        template="spec-review-material-finding-v1", skill="spec-review"
                     ),
                     "assets/review-dimension-row.md": self.spec_family_asset_text(
                         template="spec-review-dimension-row-v1", skill="spec-review"
@@ -1086,8 +1101,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                         skill="spec-review",
                         body="This asset MUST define severity policy for reviewers.\n<field>\n",
                     ),
-                    "assets/review-finding.md": self.spec_family_asset_text(
-                        template="spec-review-finding-v1", skill="spec-review"
+                    "assets/material-finding.md": self.spec_family_asset_text(
+                        template="spec-review-material-finding-v1", skill="spec-review"
                     ),
                 },
             )
@@ -1122,8 +1137,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                                 skill="spec-review",
                                 body=f"- {forbidden_label}: <policy>\n",
                             ),
-                            "assets/review-finding.md": self.spec_family_asset_text(
-                                template="spec-review-finding-v1", skill="spec-review"
+                            "assets/material-finding.md": self.spec_family_asset_text(
+                                template="spec-review-material-finding-v1", skill="spec-review"
                             ),
                         },
                     )
@@ -1629,6 +1644,34 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             skills_dir / "proposal-review" / "assets" / "review-result-skeleton.md"
         ).read_text(encoding="utf-8")
         self.assertIn("approved | changes-requested | blocked | inconclusive", result_skeleton)
+        self.assertNotIn("clean-with-notes", result_skeleton)
+
+    def test_spec_review_family_assets_use_material_finding_and_preserve_readiness(self) -> None:
+        skills_dir = ROOT / "skills"
+        skill_text = (skills_dir / "spec-review" / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertIn("- COPY `assets/material-finding.md`", skill_text)
+        self.assertIn("- COPY `assets/review-result-skeleton.md`", skill_text)
+        self.assertIn("Finding ID:", skill_text)
+        self.assertNotIn("assets/review-finding.md", skill_text)
+        self.assertFalse((skills_dir / "spec-review" / "assets" / "review-finding.md").exists())
+
+        material_finding = (
+            skills_dir / "spec-review" / "assets" / "material-finding.md"
+        ).read_text(encoding="utf-8")
+        code_review_finding = (
+            skills_dir / "code-review" / "assets" / "material-finding.md"
+        ).read_text(encoding="utf-8")
+        self.assertEqual(
+            skill_validation._review_family_material_finding_field_block(material_finding),
+            skill_validation._review_family_material_finding_field_block(code_review_finding),
+        )
+
+        result_skeleton = (
+            skills_dir / "spec-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("approved | changes-requested | blocked | inconclusive", result_skeleton)
+        self.assertIn("Eventual test-spec readiness", result_skeleton)
         self.assertNotIn("clean-with-notes", result_skeleton)
 
     def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
