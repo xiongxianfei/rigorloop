@@ -65,13 +65,13 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Current Handoff Summary
 
 - Current milestone: Final closeout
-- Current milestone state: explain-change-refreshed-ready-for-verify
+- Current milestone state: final-local-verify-passed-ready-for-pr
 - Last reviewed milestone: M5. Lifecycle evidence and closeout handoff
 - Review status: `code-review-ci-routing-r1` closed the selector-routing maintenance fix with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, the post-verify selector-routing maintenance fix has clean code-review, and explain-change has been refreshed; final verify and PR handoff have not happened.
+- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, explain-change is current, and final local verify passed; PR handoff has not happened.
 
 ## Milestones
 
@@ -401,6 +401,7 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - 2026-05-21: Verify found PR-mode CI blocked by four change-local evidence files classified as `change-local-unsupported`; a narrow selector-routing maintenance fix routed those files to `artifact_lifecycle.validate`.
 - 2026-05-21: `code-review-ci-routing-r1` closed the selector-routing maintenance fix cleanly with no material findings; explain-change needs refresh before final verify.
 - 2026-05-21: Explain-change refreshed the durable rationale to include the selector-routing maintenance fix and its clean review.
+- 2026-05-21: Final local verify passed; branch-ready evidence is recorded and the next stage is PR handoff.
 
 ## Decision log
 
@@ -581,6 +582,16 @@ The implementation must create durable first-slice evidence under `docs/changes/
 - Explain-change refresh validation `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 15 reviews, 10 findings, 15 log entries, 10 resolution entries.
 - Explain-change refresh validation `git diff --check --` passed.
 - Explain-change refresh selected CI passed: selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- Final verify `python scripts/test-select-validation.py` passed: `[PASS] test-select-validation: 73 passed ...`.
+- Final verify `python scripts/test-select-validation.py ScriptOutputContractTests` passed: `[PASS] test-select-validation: 10 passed ...`.
+- Final verify `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed: 15 reviews, 10 findings, 15 log entries, 10 resolution entries.
+- Final verify `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+- Final verify `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-script-output-optimization.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/changes/2026-05-21-script-output-optimization/review-log.md --path docs/changes/2026-05-21-script-output-optimization/review-resolution.md --path docs/changes/2026-05-21-script-output-optimization/behavior-preservation.md --path docs/changes/2026-05-21-script-output-optimization/explain-change.md` passed.
+- Final verify `git diff --check --` passed.
+- Final verify selected-test hash check passed for `selected-tests-baseline.txt` count `62` / `sha256:af470dd836f5b1b44c702be35206934f77621a1477d88cafae923e50a7f492bd` and `selected-tests-m3.txt` count `73` / `sha256:878bd8dfce24e987ee50ab36d686f54e8d821bf4a5b11fe831d381c57d164047`.
+- Final verify `bash scripts/ci.sh --mode pr --base $(git merge-base HEAD main) --head HEAD --jobs 1` passed: selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- Final verify direct edge checks passed for quiet success silence, conflicting `--verbose --quiet`, zero-test failure, quiet failure details and rerun, JSON deferral, and no misleading `NoSuchTest` scoped rerun.
+- Final verify `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 1` passed. It emitted unrelated baseline warnings for older draft proposal artifacts, then completed with `CI broad smoke checks passed`.
 
 ## Outcome and retrospective
 
@@ -589,4 +600,4 @@ The implementation must create durable first-slice evidence under `docs/changes/
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for verify only. Readiness is not Done; final verify and PR handoff remain open.
+- Ready for PR handoff. Readiness is not Done; PR handoff and hosted CI remain open.
