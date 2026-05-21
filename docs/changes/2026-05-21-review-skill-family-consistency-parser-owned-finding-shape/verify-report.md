@@ -57,11 +57,13 @@ python scripts/validate-change-metadata.py docs/changes/2026-05-21-review-skill-
 python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.test.md --path docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md --path docs/plan.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/change.yaml --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-log.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/review-resolution.md --path docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/explain-change.md
 git diff --check --
 python scripts/select-validation.py --mode pr --base $(git merge-base HEAD main) --head HEAD --broad-smoke
+python scripts/select-validation.py --mode pr --base $(git merge-base HEAD main) --head HEAD
 python scripts/test-build-skills.py
 python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
 python scripts/test-change-metadata-validator.py
 python scripts/validate-review-artifacts.py docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/
 bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+bash scripts/ci.sh --mode pr --base $(git merge-base HEAD main) --head HEAD
 ```
 
 ## Command Results
@@ -79,16 +81,18 @@ bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
 | `python scripts/validate-change-metadata.py .../change.yaml` | pass |
 | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` | pass, 3 artifact files |
 | `git diff --check --` | pass |
-| `python scripts/select-validation.py --mode pr --base $(git merge-base HEAD main) --head HEAD --broad-smoke` | blocked by manual-routing-required for change-local evidence Markdown; selected checks were run and manual proof is recorded below |
+| `python scripts/select-validation.py --mode pr --base $(git merge-base HEAD main) --head HEAD --broad-smoke` | previously blocked by manual-routing-required for change-local evidence Markdown; fixed by routing the evidence filenames as `change-local-lifecycle` |
+| `python scripts/select-validation.py --mode pr --base $(git merge-base HEAD main) --head HEAD` | pass, selector status ok after routing fix |
 | `python scripts/test-build-skills.py` | pass, 5 tests |
 | `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives` | pass, 1 test |
 | `python scripts/test-change-metadata-validator.py` | pass, 8 tests |
 | `python scripts/validate-review-artifacts.py docs/changes/.../` | pass, structure mode |
 | `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped` | pass |
+| `bash scripts/ci.sh --mode pr --base $(git merge-base HEAD main) --head HEAD` | pass, selected CI checks passed |
 
-## Selector Manual-Routing Notes
+## Selector Routing Notes
 
-The PR-mode selector reported `manual-routing-required` for these change-local proof files because they are not deterministic v1 selector categories:
+The first hosted PR workflow failed because the PR-mode selector reported `manual-routing-required` for these change-local proof files:
 
 ```text
 m2-code-review-preservation.md
@@ -98,7 +102,9 @@ m5-generated-token-cold-read-evidence.md
 skill-contract-sufficiency.md
 ```
 
-This is resolved for verify by direct manual inspection plus lifecycle/review evidence:
+The fix classifies milestone preservation files, generated/token/cold-read evidence files, and `skill-contract-sufficiency.md` as `change-local-lifecycle`, so PR-mode CI routes them through artifact lifecycle validation instead of blocking before checks run.
+
+Manual evidence remains relevant to the review claim:
 
 - `skill-contract-sufficiency.md` records the M1 stop-or-proceed assessment required before skill edits.
 - `m2-code-review-preservation.md`, `m3-proposal-review-preservation.md`, and `m4-spec-review-preservation.md` are the required behavior-preservation and parity evidence for the three first-slice review skills.

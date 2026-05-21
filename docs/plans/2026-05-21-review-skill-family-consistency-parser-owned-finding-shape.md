@@ -325,6 +325,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: Explain-change recorded durable rationale linking the diff to the proposal, spec requirements, test spec, plan milestones, review-resolution findings, validation evidence, rejected alternatives, scope controls, and follow-ups. Active handoff is `verify`.
 - 2026-05-21: Final local verify passed and recorded branch-ready evidence. Active handoff is `pr`.
 - 2026-05-21: PR #82 opened for hosted CI and human review.
+- 2026-05-21: PR-mode CI initially failed because the selector treated milestone-scoped change-local evidence files as unsupported. Added deterministic routing for those evidence filenames and reran PR-mode CI locally; selected CI checks now pass.
 
 ## Decision log
 
@@ -358,6 +359,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: M5 code-review recorded clean-with-notes with no material findings.
 - 2026-05-21: Explain-change artifact created at `docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/explain-change.md`; local validation pending verify.
 - 2026-05-21: Final local verify passed: skill validator fixtures, review-artifact validator fixtures, skill validation, review-artifact closeout, generated skill mirror check, temporary `v0.1.5` adapter archive build/validation, token measurement, change metadata validation, lifecycle validation, selected regression checks, and broad smoke.
+- 2026-05-21: PR-mode CI reproduction passed after selector routing fix: `python scripts/test-select-validation.py`; `python scripts/select-validation.py --mode pr --base $(git merge-base HEAD main) --head HEAD`; `bash scripts/ci.sh --mode pr --base $(git merge-base HEAD main) --head HEAD`; `git diff --check --`.
 
 ## Outcome and retrospective
 

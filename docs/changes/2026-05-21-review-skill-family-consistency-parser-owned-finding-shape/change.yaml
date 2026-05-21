@@ -35,6 +35,7 @@ requirements:
   - Record durable explain-change rationale before final verify.
   - Run final local verify and hand off to PR only if branch-ready evidence passes.
   - Open PR #82 after PR readiness passes and record active lifecycle handoff.
+  - Fix PR-mode CI selector routing for milestone-scoped change-local evidence files.
 tests:
   - Proposal-review checks problem framing, option quality, scope boundaries, vision fit, risks, and readiness for spec.
   - Review artifact structure validation for clean proposal-review receipt.
@@ -62,6 +63,7 @@ tests:
   - Explain-change artifact links the actual diff to proposal, spec, test spec, plan milestones, review-resolution, validation evidence, alternatives, scope control, and follow-ups.
   - Final verify confirms branch-ready local evidence, lifecycle coherence, selected-check coverage, manual evidence routing, and broad smoke.
   - PR #82 is open for hosted CI and human review.
+  - PR-mode CI selector now routes preservation, generated/token/cold-read evidence, and skill-contract sufficiency files through lifecycle validation.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
     result: pass_before_proposal_review
@@ -297,6 +299,16 @@ validation:
     result: pass_validated_3_lifecycle_artifacts_after_pr_handoff
   - command: git diff --check --
     result: pass_after_pr_handoff
+  - command: bash scripts/ci.sh --mode pr --base $(git merge-base HEAD main) --head HEAD
+    result: fail_before_selector_routing_fix_manual_routing_required_for_change_local_evidence_files
+  - command: python scripts/test-select-validation.py
+    result: pass_62_tests_after_selector_routing_fix
+  - command: python scripts/select-validation.py --mode pr --base $(git merge-base HEAD main) --head HEAD
+    result: pass_selector_status_ok_after_selector_routing_fix
+  - command: bash scripts/ci.sh --mode pr --base $(git merge-base HEAD main) --head HEAD
+    result: pass_selected_ci_checks_after_selector_routing_fix
+  - command: git diff --check --
+    result: pass_after_selector_routing_fix
 changed_files:
   - docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
   - specs/review-skill-family-consistency-parser-owned-finding-shape.md
@@ -335,6 +347,8 @@ changed_files:
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
   - scripts/test-review-artifact-validator.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
 review:
   status: clean
   reviewed_artifact: docs/plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
