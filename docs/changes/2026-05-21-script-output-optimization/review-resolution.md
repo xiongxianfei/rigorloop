@@ -13,6 +13,7 @@ Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
 ## Resolution Entries
 
@@ -177,3 +178,7 @@ Required outcome: M2 must expose unmet output-contract behavior as failing proof
 Safe resolution path: Remove `@unittest.expectedFailure` from acceptance tests, or move pre-M3 red proof into a separate explicit command/artifact and add a guard that prevents M3 handoff while expected-failure output-contract cases remain.
 Validation target: Rerun `python scripts/test-select-validation.py`, explicit red-test proof, selected CI, lifecycle validation, change metadata validation, and diff check after the M2 test proof is revised.
 Validation evidence: `python scripts/test-select-validation.py` passed with 63 tests; `python scripts/test-select-validation.py ScriptOutputContractTests` exited nonzero with `FAILED (failures=9)` as pre-M3 red-test proof; lifecycle validation, change metadata validation, selected CI, and `git diff --check --` passed after the test-proof update.
+
+### code-review-m2-r2
+
+No material findings.
