@@ -26,6 +26,7 @@ requirements:
   - Close M1 only after clean code-review rerun and hand off to M2.
   - Implement M2 by adding `code-review` review-family assets, resource-map entries, focused validator coverage, and preservation evidence.
   - Close M2 only after clean code-review and hand off to M3.
+  - Implement M3 by conforming existing `proposal-review` assets, resource-map entries, focused validator coverage, and preservation evidence.
 tests:
   - Proposal-review checks problem framing, option quality, scope boundaries, vision fit, risks, and readiness for spec.
   - Review artifact structure validation for clean proposal-review receipt.
@@ -42,6 +43,7 @@ tests:
   - Code-review M1 rerun confirms M1 is clean after RSF-M1-CR1 resolution.
   - Code-review M2 validator coverage confirms `code-review` asset presence and status vocabulary preservation.
   - Code-review M2 clean review confirms code-review asset extraction is structurally safe.
+  - Proposal-review M3 validator coverage confirms gate-review status vocabulary and material-finding field-block parity.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
     result: pass_before_proposal_review
@@ -173,6 +175,14 @@ validation:
     result: pass_validated_3_lifecycle_artifacts_after_code_review_m2_r1
   - command: git diff --check --
     result: pass_after_code_review_m2_r1
+  - command: python scripts/test-skill-validator.py
+    result: pass_158_tests_after_m3
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape
+    result: pass_reviews_7_findings_2_log_entries_7_resolution_entries_2_after_m3
+  - command: git diff --check --
+    result: pass_after_m3
 changed_files:
   - docs/proposals/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md
   - specs/review-skill-family-consistency-parser-owned-finding-shape.md
@@ -194,6 +204,9 @@ changed_files:
   - skills/code-review/SKILL.md
   - skills/code-review/assets/material-finding.md
   - skills/code-review/assets/review-result-skeleton.md
+  - docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/m3-proposal-review-preservation.md
+  - skills/proposal-review/SKILL.md
+  - skills/proposal-review/assets/review-result-skeleton.md
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
   - scripts/test-review-artifact-validator.py
