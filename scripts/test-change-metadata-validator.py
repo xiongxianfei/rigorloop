@@ -50,6 +50,44 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
     def test_valid_basic_fixture_passes(self) -> None:
         self.assertPathPasses(FIXTURES / "valid-basic" / "change.yaml")
 
+    def test_compact_valid_fixture_passes(self) -> None:
+        self.assertPathPasses(FIXTURES / "compact-valid" / "change.yaml")
+
+    def test_compact_invalid_fixtures_fail(self) -> None:
+        cases = [
+            (
+                "compact-invalid-missing-section",
+                "validation_events: missing required compact field",
+            ),
+            (
+                "compact-invalid-mixed-shape",
+                "mixed legacy and compact validation metadata",
+            ),
+            (
+                "compact-invalid-undefined-bundle",
+                "validation_events[0].bundles[0]: unknown validation bundle 'metadata'",
+            ),
+            (
+                "compact-invalid-result-enum",
+                "validation_events[0].result: expected one of",
+            ),
+            (
+                "compact-invalid-noninteger-count",
+                "validation_events[0].counts.reviews: expected integer",
+            ),
+            (
+                "compact-invalid-fail-without-details",
+                "validation_events[0].failures: required when result is fail",
+            ),
+            (
+                "compact-invalid-blocked-without-details",
+                "validation_events[0].failures: required when result is blocked",
+            ),
+        ]
+        for fixture, expected in cases:
+            with self.subTest(fixture=fixture):
+                self.assertPathFails(FIXTURES / fixture / "change.yaml", expected)
+
     def test_clean_receipt_root_metadata_passes(self) -> None:
         self.assertPathPasses(CLEAN_RECEIPT_ROOT)
 
