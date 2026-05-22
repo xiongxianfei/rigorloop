@@ -60,14 +60,14 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Registration debt and actual changed-path proof
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Evidence class registry and registered selector routing
-- Review status: `CRM-M2-CR1` fix implemented and validation passed; awaiting M2 code-review rerun
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review
+- Current milestone: M3. Bounded change-record query helper
+- Current milestone state: planned
+- Last reviewed milestone: M2. Registration debt and actual changed-path proof
+- Review status: M2 code-review rerun clean; `CRM-M2-CR1` resolved and closed
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 has an open code-review finding pending re-review; M2 closeout, M3 through M5, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M3 through M5, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -161,7 +161,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ### M2. Registration debt and actual changed-path proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Make unregistered deterministic evidence produce stable registration debt and require actual changed-path selector proof before verify.
 - Requirements: CRM-R7 through CRM-R21, CRM-R49 through CRM-R52; AC-CRM-003 through AC-CRM-005, AC-CRM-015, AC-CRM-017.
 - Files/components likely touched:
@@ -436,6 +436,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: M2 selector validation passed: `python scripts/test-select-validation.py`; `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-25-example/notes.md` blocked with `manual-routing-required` registration debt; `python scripts/select-validation.py --mode local` routed actual M2 changed paths and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`; `bash scripts/ci.sh --mode local` passed selected local checks; `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/select-validation.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md` passed supplemental explicit selected CI; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `git diff --check --`.
 - 2026-05-22: Code-review M2 R1 recording validation passed with review artifact structure validation, change metadata validation, artifact lifecycle validation, explicit selected CI, and whitespace check.
 - 2026-05-22: `CRM-M2-CR1` resolution validation passed: `python scripts/test-select-validation.py`; `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/unregistered-evidence.md`; `python scripts/select-validation.py --mode local`; `bash scripts/ci.sh --mode local`; `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `git diff --check --`.
+- 2026-05-22: Code-review M2 R2 found no material findings and closed M2 after `CRM-M2-CR1` resolution. Review reran `python scripts/test-select-validation.py` and direct unregistered-evidence selector proof; post-recording validation passed with review artifact closeout, change metadata validation, artifact lifecycle validation, explicit selected CI, and whitespace check.
 
 ## Outcome and retrospective
 

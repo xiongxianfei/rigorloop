@@ -1,6 +1,6 @@
 # Review Resolution
 
-Closeout status: open
+Closeout status: closed
 
 ### spec-review-r1
 
@@ -82,11 +82,24 @@ Validation evidence: `python scripts/validate-review-artifacts.py --mode closeou
 
 Finding ID: CRM-M2-CR1
 Disposition: accepted
-Status: resolved pending re-review
+Status: resolved after re-review
 Owner: implementer
 Owning stage: implement
 Chosen action: Added an owner-approved deferral evidence shape and tests proving complete deferrals satisfy CRM-R18 while incomplete deferrals remain blocking.
 Rationale: Code-review M2 R1 found that M2 emits registration debt but does not implement or test the approved owner-approved deferral path required by CRM-R17 through CRM-R19 and CRM-T009.
 Validation target: Rerun M2 selector tests, direct unregistered evidence proof, local changed-path proof, selected CI, lifecycle validation, change metadata validation, review artifact validation, and whitespace checks after the fix.
 Validation evidence: `python scripts/test-select-validation.py`; `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/unregistered-evidence.md`; `python scripts/select-validation.py --mode local`; `bash scripts/ci.sh --mode local`; `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `git diff --check --`.
-Follow-up: Return M2 to code review. M3 through M5 remain separate implementation milestones and are not claimed ready from this fix alone.
+Follow-up: `code-review-m2-r2` found no material findings. M2 is closed; M3 through M5 remain separate implementation milestones and are not claimed ready from this review.
+
+### code-review-m2-r2
+
+Finding closeout for `code-review-m2-r2`.
+
+Material findings: None
+Disposition: accepted
+Owner: code-review
+Owning stage: code-review
+Chosen action: Record clean M2 re-review after CRM-M2-CR1 resolution.
+Rationale: R2 found no material findings and confirmed the accepted owner-approved deferral fix satisfies CRM-R17 through CRM-R19 and CRM-T009.
+Validation target: Review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation for the touched review, plan, and lifecycle artifacts.
+Validation evidence: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m2-r2.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `git diff --check --`.
