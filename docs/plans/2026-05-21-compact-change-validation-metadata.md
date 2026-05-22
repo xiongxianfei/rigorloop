@@ -53,9 +53,9 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r2 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: All implementation milestones are closed, but final explain-change and verify have not run, selected CI has not been recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: All implementation milestones and explain-change are closed, but final verify has not run, selected CI has not been recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -289,6 +289,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-21: Code-review M3 R1 recorded CVM-M3-CR1, CVM-M3-CR2, and CVM-M3-CR3; M3 moved to `resolution-needed`.
 - 2026-05-21: Review-resolution for CVM-M3-CR1, CVM-M3-CR2, and CVM-M3-CR3 added exact blocker derivation, representative compactness fixture proof, and an effective no-execution sentinel test, then returned M3 to `review-requested`.
 - 2026-05-21: Code-review M3 R2 recorded `clean-with-notes`; M3 is closed and the next stage is explain-change.
+- 2026-05-22: Explain-change recorded the rationale for the compact metadata branch and handed off to verify.
 
 ## Decision log
 
@@ -346,12 +347,13 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-21: `python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py scripts/review_artifact_validation.py` passed after M3 review-resolution fixes.
 - 2026-05-21: `git diff --check --`, `python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata`, and `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md` passed after M3 review-resolution fixes.
 - 2026-05-21: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata`, `git diff --check --`, `python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`, and `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md` passed after code-review M3 R2 recording.
+- 2026-05-22: `git diff --check --`, `python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata`, and `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/explain-change.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md` passed after explain-change recording.
 
 ## Outcome and retrospective
 
-- Implementation milestones M1, M2, and M3 are closed after code review. Final explain-change, verify, selected CI, and PR handoff remain pending.
+- Implementation milestones M1, M2, and M3 are closed after code review, and explain-change is recorded. Final verify, selected CI, and PR handoff remain pending.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `explain-change`; not ready for verify or PR handoff.
+- Ready for `verify`; not ready for PR handoff.
