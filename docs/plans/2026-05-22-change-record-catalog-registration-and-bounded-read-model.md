@@ -65,9 +65,9 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - Last reviewed milestone: M5. Lifecycle evidence and final closeout closed by `code-review-m5-r2`
 - Review status: `code-review-m5-r2` found no material findings after `CRM-M5-CR1` resolution.
 - Remaining in-scope implementation milestones: none
-- Next stage: final closeout
-- Final closeout readiness: ready for final closeout sequence; verify and PR readiness are not claimed.
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed; downstream closeout still owns final validation, verify, and PR handoff.
+- Next stage: verify
+- Final closeout readiness: final closeout rationale refreshed; verify and PR readiness are not claimed.
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed and explain-change is current; downstream verify still owns final validation and PR handoff remains after verify.
 
 ## Milestones
 
@@ -416,6 +416,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: `code-review-m5-r1` recorded material finding `CRM-M5-CR1`; M5 moved to `resolution-needed`.
 - 2026-05-22: `CRM-M5-CR1` accepted and fixed by replacing final `bash scripts/ci.sh --mode selected` proof references with repository-supported `bash scripts/ci.sh --mode local` references in the test spec and active plan. M5 moved back to `review-requested`.
 - 2026-05-22: `code-review-m5-r2` recorded clean re-review for `CRM-M5-CR1`; M5 closed and handoff moved to final closeout.
+- 2026-05-22: Final closeout refreshed `explain-change.md` after M5 re-review and moved handoff to verify.
 
 ## Decision log
 
@@ -459,6 +460,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: Code-review M5 R1 recording validation passed with review artifact structure validation, change metadata validation, artifact lifecycle validation, explicit selected CI, and whitespace check.
 - 2026-05-22: `CRM-M5-CR1` resolution validation passed: `bash scripts/ci.sh --mode local`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; artifact lifecycle explicit-path validation over the touched test spec, plan, change metadata, review artifacts, explain-change, and plan index; review artifact closeout; and whitespace check.
 - 2026-05-22: Code-review M5 R2 found no material findings after `CRM-M5-CR1` resolution. Review recording validation passed with review artifact closeout, change metadata validation, artifact lifecycle validation, selected local CI, and whitespace check.
+- 2026-05-22: Explain-change refresh validation passed with review artifact closeout, change metadata validation, artifact lifecycle validation, selected local CI, and whitespace check.
 
 ## Outcome and retrospective
 
@@ -467,4 +469,4 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for final closeout; not ready for verify, PR handoff, or Done.
+- Ready for verify; not ready for PR handoff or Done.

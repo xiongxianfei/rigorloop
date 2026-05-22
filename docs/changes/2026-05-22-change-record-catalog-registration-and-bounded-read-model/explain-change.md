@@ -78,7 +78,8 @@ A change record is a queried catalog, not a transcript.
 ### M5. Lifecycle Evidence
 
 - This file is the durable Markdown rationale for the change-local baseline pack.
-- The active plan, plan index, and change metadata are synchronized for M5 code-review handoff.
+- The active plan, plan index, and change metadata are synchronized after clean M5 re-review.
+- Code-review finding `CRM-M5-CR1` was accepted and resolved by updating the governing final selected-CI proof from unsupported `bash scripts/ci.sh --mode selected` references to the repository-supported `bash scripts/ci.sh --mode local` command.
 - Final `verify`, branch readiness, PR body readiness, and PR opening remain downstream lifecycle gates.
 
 ## Compatibility And Non-Goals Preserved
@@ -95,10 +96,10 @@ A change record is a queried catalog, not a transcript.
 
 Review resolution is closed in `docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md`.
 
-- Material findings resolved: 4.
+- Material findings resolved: 5.
 - Unresolved findings: 0.
-- Accepted and resolved findings: `CRM-M1-CR1`, `CRM-M2-CR1`, `CRM-M3-CR1`, and `CRM-SR1`.
-- M4 code-review had no material findings.
+- Accepted and resolved findings: `CRM-SR1`, `CRM-M1-CR1`, `CRM-M2-CR1`, `CRM-M3-CR1`, and `CRM-M5-CR1`.
+- M4 code-review and M5 re-review had no material findings.
 
 ## Validation Evidence
 
@@ -114,6 +115,7 @@ Important proof surfaces include:
 - skill validator proof for bounded-read guidance and query-helper command references;
 - canonical skill validation and generated skill checks;
 - current archive-based adapter generation and adapter validation;
+- final selected-CI proof through `bash scripts/ci.sh --mode local`, the supported branch-local wrapper mode;
 - review artifact closeout validation with all material findings resolved;
 - artifact lifecycle and change metadata validation for the active change.
 
