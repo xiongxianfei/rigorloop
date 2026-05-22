@@ -28,7 +28,7 @@ tests:
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: commit 8fe07bb
+  reviewed_artifact: commit e0ca12b
   review_log: docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
@@ -163,6 +163,16 @@ validation:
     result: pass_structure_reviews_6_findings_2_log_entries_6_resolution_entries_2_after_crm_m1_cr1
   - command: git diff --check --
     result: pass_after_crm_m1_cr1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_7_findings_2_log_entries_7_resolution_entries_2_after_code_review_m1_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m1_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r2.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_m1_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m1_r2
+  - command: git diff --check --
+    result: pass_after_code_review_m1_r2
 changed_files:
   - docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md
   - specs/change-record-catalog-registration-and-bounded-read-model.md
@@ -176,6 +186,7 @@ changed_files:
   - scripts/test-select-validation.py
   - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md
   - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r2.md
   - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
   - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md
   - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md
