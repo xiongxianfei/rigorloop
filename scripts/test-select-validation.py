@@ -59,6 +59,7 @@ EXPECTED_CATALOG = {
     "artifact_lifecycle.validate": "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <path>...",
     "change_metadata.regression": "python scripts/test-change-metadata-validator.py",
     "change_metadata.validate": "python scripts/validate-change-metadata.py <change-yaml>...",
+    "change_record_query.regression": "python scripts/test-query-change-record.py",
     "release.validate": "python scripts/validate-release-ci.py --version <version>",
     "readme.validate": "python scripts/validate-readme.py README.md",
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
@@ -1124,6 +1125,7 @@ raise SystemExit({exit_code})
         expected_parallel_safe = {
             "adapters.regression",
             "artifact_lifecycle.regression",
+            "change_record_query.regression",
             "change_metadata.regression",
             "review_artifacts.regression",
             "selector.regression",
@@ -1328,6 +1330,12 @@ raise SystemExit({exit_code})
                 "category": "validator-change-metadata",
                 "status": "ok",
                 "checks": {"change_metadata.regression"},
+            },
+            {
+                "path": "scripts/query-change-record.py",
+                "category": "change-record-query",
+                "status": "ok",
+                "checks": {"change_record_query.regression", "change_metadata.regression"},
             },
             {
                 "path": "scripts/build-skills.py",
@@ -1577,6 +1585,12 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "tests/fixtures/change-metadata/compact-valid/change.yaml",
+                "category": "change-metadata-fixtures",
+                "status": "ok",
+                "checks": {"change_metadata.regression"},
+            },
+            {
+                "path": "tests/fixtures/change-metadata",
                 "category": "change-metadata-fixtures",
                 "status": "ok",
                 "checks": {"change_metadata.regression"},
