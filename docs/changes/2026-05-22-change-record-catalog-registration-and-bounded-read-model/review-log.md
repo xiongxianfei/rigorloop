@@ -151,3 +151,15 @@ Resolution: review-resolution.md#code-review-m5-r1
 Material findings: CRM-M5-CR1
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m5-r2
+Stage: code-review
+Round: 2
+Status: clean-with-notes
+Detailed record: reviews/code-review-m5-r2.md
+Resolution: review-resolution.md#code-review-m5-r2
+Material findings: None
+Open findings: None
+Recording status: recorded

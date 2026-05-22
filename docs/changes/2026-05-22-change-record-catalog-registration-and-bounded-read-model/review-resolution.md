@@ -1,7 +1,7 @@
 # Review Resolution
 
 Closeout status: closed
-Review closeout: code-review-m5-r1
+Review closeout: code-review-m5-r2
 
 ### spec-review-r1
 
@@ -155,3 +155,16 @@ Chosen action: Update the matching test spec and active plan so final changed-pa
 Rationale: Code-review M5 R1 found that M5 records the unsupported `--mode selected` failure and uses `--mode local` as the working equivalent, but leaves `--mode selected` in governing test-spec and active-plan command references.
 Validation target: Rerun change metadata validation, artifact lifecycle validation for the touched test spec, plan, review artifacts, and change metadata, `bash scripts/ci.sh --mode local`, review artifact validation, and whitespace checks after the fix.
 Validation evidence: `bash scripts/ci.sh --mode local`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/explain-change.md --path docs/plan.md`; final review artifact closeout and whitespace validation are recorded in `change.yaml`.
+
+### code-review-m5-r2
+
+Finding closeout for `code-review-m5-r2`.
+
+Material findings: None
+Disposition: accepted
+Owner: code-review
+Owning stage: code-review
+Chosen action: Record clean M5 re-review after `CRM-M5-CR1` resolution.
+Rationale: R2 found no material findings and confirmed the accepted governing-artifact command correction satisfies `CRM-M5-CR1`: final selected-CI proof now uses `bash scripts/ci.sh --mode local`, while `bash scripts/ci.sh --mode selected` is retained only as historical diagnostic evidence.
+Validation target: Review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation for the touched review, plan, test-spec, and lifecycle artifacts.
+Validation evidence: Final review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation are recorded in `change.yaml`.

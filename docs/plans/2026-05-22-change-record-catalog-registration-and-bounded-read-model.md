@@ -61,13 +61,13 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Current Handoff Summary
 
 - Current milestone: M5. Lifecycle evidence and final closeout
-- Current milestone state: review-requested
-- Last reviewed milestone: M4. Stage-skill read guidance and generated adapter proof
-- Review status: `CRM-M5-CR1` resolved; M5 returned to code-review.
-- Remaining in-scope implementation milestones: M5
-- Next stage: code-review
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M5 re-review, verify, and PR handoff remain.
+- Current milestone state: closed
+- Last reviewed milestone: M5. Lifecycle evidence and final closeout closed by `code-review-m5-r2`
+- Review status: `code-review-m5-r2` found no material findings after `CRM-M5-CR1` resolution.
+- Remaining in-scope implementation milestones: none
+- Next stage: final closeout
+- Final closeout readiness: ready for final closeout sequence; verify and PR readiness are not claimed.
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed; downstream closeout still owns final validation, verify, and PR handoff.
 
 ## Milestones
 
@@ -311,7 +311,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ### M5. Lifecycle evidence and final closeout
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Complete downstream lifecycle evidence after all implementation milestones are closed.
 - Requirements: CRM-R49 through CRM-R52; AC-CRM-015, AC-CRM-017.
 - Files/components likely touched:
@@ -415,6 +415,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: M5 recorded `explain-change.md`, updated change metadata and active plan state, and prepared lifecycle evidence for code-review handoff.
 - 2026-05-22: `code-review-m5-r1` recorded material finding `CRM-M5-CR1`; M5 moved to `resolution-needed`.
 - 2026-05-22: `CRM-M5-CR1` accepted and fixed by replacing final `bash scripts/ci.sh --mode selected` proof references with repository-supported `bash scripts/ci.sh --mode local` references in the test spec and active plan. M5 moved back to `review-requested`.
+- 2026-05-22: `code-review-m5-r2` recorded clean re-review for `CRM-M5-CR1`; M5 closed and handoff moved to final closeout.
 
 ## Decision log
 
@@ -457,6 +458,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: M5 recorded that `python scripts/build-adapters.py --check` still fails against retired tracked adapter-tree expectations, and `bash scripts/ci.sh --mode selected` is no longer a supported wrapper mode. The current equivalents used for M5 are release-archive adapter validation and `bash scripts/ci.sh --mode local`.
 - 2026-05-22: Code-review M5 R1 recording validation passed with review artifact structure validation, change metadata validation, artifact lifecycle validation, explicit selected CI, and whitespace check.
 - 2026-05-22: `CRM-M5-CR1` resolution validation passed: `bash scripts/ci.sh --mode local`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; artifact lifecycle explicit-path validation over the touched test spec, plan, change metadata, review artifacts, explain-change, and plan index; review artifact closeout; and whitespace check.
+- 2026-05-22: Code-review M5 R2 found no material findings after `CRM-M5-CR1` resolution. Review recording validation passed with review artifact closeout, change metadata validation, artifact lifecycle validation, selected local CI, and whitespace check.
 
 ## Outcome and retrospective
 
@@ -465,4 +467,4 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M5 code-review; not ready for final closeout, verify, PR handoff, or Done.
+- Ready for final closeout; not ready for verify, PR handoff, or Done.
