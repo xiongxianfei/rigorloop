@@ -1,0 +1,150 @@
+change_id: 2026-05-22-bounded-plan-index-and-completed-plan-archive
+title: Bounded Plan Index and Completed-Plan Archive
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-22-bounded-plan-index-and-completed-plan-archive.md
+  spec: specs/plan-index-lifecycle-ownership.md
+  test_spec: specs/plan-index-lifecycle-ownership.test.md
+  plan: docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md
+  review_resolution: docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/review-resolution.md
+  explain_change: docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md
+requirements:
+  - R3
+  - R3a
+  - R3c
+  - R3g
+  - R3h
+  - R3i
+  - R3j
+  - R3k
+  - R3l
+  - R3m
+  - R3n
+  - R3o
+  - R3p
+  - R4
+  - R5
+  - R6
+  - R6a
+  - R6b
+  - R7
+  - R7a
+  - R8
+  - R8a
+  - R10
+  - R10a
+  - R11
+  - R12
+  - R13
+  - R14
+  - R15
+  - R15a
+  - R15b
+  - R15c
+  - R15d
+  - R16
+  - R17
+  - R17a
+  - R17b
+  - R17d
+  - R17e
+  - R17h
+tests:
+  - T1
+  - T2
+  - T3
+  - T4
+  - T5
+  - T6
+  - T7
+  - T8
+  - T9
+  - T10
+  - T11
+  - T12
+  - T13
+  - T14
+  - T15
+  - T16
+  - T17
+  - T18
+validation:
+  - command: python - <<'PY' ... R8a direct ownership audit
+    result: pass
+  - command: python - <<'PY' ... M4 guidance audit
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path AGENTS.md --path docs/examples/plans/example-plan.md --path specs/plan-index-lifecycle-ownership.test.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md
+    result: pass
+  - command: python scripts/validate-skills.py skills/plan/SKILL.md
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir> && python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md
+    result: pass
+  - command: python - <<'PY' ... migration proof count/link assertion
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md
+    result: pass
+  - command: python -m py_compile scripts/artifact_lifecycle_validation.py scripts/artifact_lifecycle_contracts.py
+    result: pass
+  - command: python scripts/test-select-validation.py ValidationSelectionTests.test_plan_index_surfaces_select_lifecycle_validation_with_both_surfaces ValidationSelectionTests.test_plan_index_migration_proof_routes_with_metadata_and_index_surfaces ValidationSelectionTests.test_first_slice_representative_categories_route_or_block_safely ValidationSelectionTests.test_workflow_refactor_surface_set_selects_expected_checks
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python -m py_compile scripts/validation_selection.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md
+    result: pass
+  - command: bash scripts/ci.sh
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md --path skills/plan/SKILL.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md --path skills/plan/SKILL.md
+    result: pass
+  - command: bash scripts/ci.sh
+    result: pass
+  - command: git diff --check --
+    result: pass
+changed_files:
+  - AGENTS.md
+  - docs/workflows.md
+  - docs/examples/plans/example-plan.md
+  - specs/plan-index-lifecycle-ownership.test.md
+  - skills/plan/SKILL.md
+  - scripts/artifact_lifecycle_validation.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml
+  - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md
+  - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
+  - docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md
+  - docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md
+  - docs/plan.md
+  - docs/plan-archive.md
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md
+  review_log: docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/review-log.md

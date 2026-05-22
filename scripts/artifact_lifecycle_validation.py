@@ -98,6 +98,24 @@ class ArtifactInspection:
     errors: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class PlanLifecycleMarker:
+    state: str | None
+    disposition: str | None
+    explicit: bool
+    errors: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class PlanSurfaceEntry:
+    source: Path
+    section: str
+    location: str
+    line_number: int
+    line: str
+    plan_path: Path | None
+
+
 def _is_relative_to(path: Path, other: Path) -> bool:
     try:
         path.relative_to(other)
@@ -151,7 +169,73 @@ def _extract_plan_refs(root: Path, path: Path, tracked_revision: str | None = No
     return {ref for ref in refs if _is_lifecycle_reference_path(root, ref)}
 
 
+PLAN_LIFECYCLE_STATES = frozenset({"active", "blocked", "done", "abandoned", "superseded"})
+PLAN_TERMINAL_LIFECYCLE_STATES = frozenset({"done", "abandoned", "superseded"})
+PLAN_NONTERMINAL_LIFECYCLE_STATES = frozenset({"active", "blocked"})
+PLAN_TERMINAL_DISPOSITIONS = frozenset({"merged", "closed", "abandoned", "superseded"})
+PLAN_DISPOSITIONS = PLAN_TERMINAL_DISPOSITIONS | {"none"}
+DONE_RECENT_CAP = 10
+PLAN_ARCHIVE_PATH = "docs/plan-archive.md"
+
+
+def _extract_plan_lifecycle_marker(text: str) -> PlanLifecycleMarker:
+    status_body = _get_section(_parse_sections(text), "Status")
+    if status_body is None:
+        return PlanLifecycleMarker(state=None, disposition=None, explicit=False, errors=())
+
+    state_values: list[str] = []
+    disposition_values: list[str] = []
+    malformed: list[str] = []
+    for line in status_body.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        lowered = stripped.lower()
+        if lowered.startswith("plan lifecycle state:"):
+            state_values.append(stripped.split(":", 1)[1].strip().lower())
+        elif lowered.startswith("terminal disposition:"):
+            disposition_values.append(stripped.split(":", 1)[1].strip().lower())
+        elif "plan lifecycle state" in lowered or "terminal disposition" in lowered:
+            malformed.append(stripped)
+
+    explicit = bool(state_values or disposition_values or malformed)
+    if not explicit:
+        return PlanLifecycleMarker(state=None, disposition=None, explicit=False, errors=())
+
+    errors: list[str] = []
+    if malformed:
+        errors.append("malformed plan lifecycle-state marker field")
+    if len(state_values) != 1:
+        errors.append("plan lifecycle-state marker requires exactly one Plan lifecycle state field")
+    if len(disposition_values) != 1:
+        errors.append("plan lifecycle-state marker requires exactly one Terminal disposition field")
+
+    state = state_values[0] if len(state_values) == 1 else None
+    disposition = disposition_values[0] if len(disposition_values) == 1 else None
+
+    if state is not None and state not in PLAN_LIFECYCLE_STATES:
+        errors.append(f"unknown Plan lifecycle state: {state}")
+    if disposition is not None and disposition not in PLAN_DISPOSITIONS:
+        errors.append(f"unknown Terminal disposition: {disposition}")
+
+    if state in PLAN_NONTERMINAL_LIFECYCLE_STATES and disposition != "none":
+        errors.append("Terminal disposition must be none for nonterminal lifecycle state")
+    if state in PLAN_TERMINAL_LIFECYCLE_STATES and disposition not in PLAN_TERMINAL_DISPOSITIONS:
+        errors.append("Terminal disposition must be merged, closed, abandoned, or superseded for terminal lifecycle state")
+
+    return PlanLifecycleMarker(
+        state=state,
+        disposition=disposition,
+        explicit=True,
+        errors=tuple(errors),
+    )
+
+
 def _extract_plan_body_status(text: str) -> str | None:
+    marker = _extract_plan_lifecycle_marker(text)
+    if marker.explicit:
+        return marker.state
+
     section_status = _extract_status(_parse_sections(text))
     if section_status:
         return section_status.lower()
@@ -178,30 +262,150 @@ def _is_plan_index_path(root: Path, path: Path) -> bool:
         return False
 
 
+def _is_plan_archive_path(root: Path, path: Path) -> bool:
+    try:
+        return path.relative_to(root).as_posix() == PLAN_ARCHIVE_PATH
+    except ValueError:
+        return False
+
+
+def _is_plan_index_surface_path(root: Path, path: Path) -> bool:
+    return _is_plan_index_path(root, path) or _is_plan_archive_path(root, path)
+
+
+def _section_line_offsets(text: str) -> dict[str, int]:
+    offsets: dict[str, int] = {}
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        if line.startswith("## "):
+            offsets[line[3:].strip()] = line_number
+    return offsets
+
+
+def _normalize_plan_link(root: Path, source: Path, raw_path: str) -> Path | None:
+    clean_path = raw_path.split("#", 1)[0]
+    if clean_path.startswith("plans/"):
+        resolved = (source.parent / clean_path).resolve()
+    else:
+        resolved = _normalize_repo_path(root, source, clean_path)
+    if resolved is None or not _is_relative_to(resolved, root):
+        return None
+    return resolved if _is_plan_body_path(root, resolved) else None
+
+
+def _section_location(source: Path, section: str) -> str | None:
+    source_name = source.as_posix()
+    if source_name.endswith("docs/plan.md"):
+        normalized = section.casefold()
+        if normalized == "active":
+            return "active"
+        if normalized == "blocked":
+            return "blocked"
+        if normalized in {"done", "done (recent)"}:
+            return "done_recent"
+        if normalized == "superseded":
+            return "superseded"
+    if source_name.endswith(PLAN_ARCHIVE_PATH) and section.casefold() in {"done", "done (archive)"}:
+        return "done_archive"
+    return None
+
+
+def _parse_plan_surface_entries(
+    root: Path,
+    source: Path,
+    tracked_revision: str | None = None,
+) -> tuple[list[PlanSurfaceEntry], list[ValidationFinding]]:
+    if not _path_exists(root, source, tracked_revision):
+        return [], []
+
+    text = _read_repo_text(root, source, tracked_revision)
+    sections = _parse_sections(text)
+    line_offsets = _section_line_offsets(text)
+    entries: list[PlanSurfaceEntry] = []
+    findings: list[ValidationFinding] = []
+
+    for section, body in sections.items():
+        location = _section_location(source, section)
+        if location is None:
+            continue
+        section_start = line_offsets.get(section, 0)
+        for offset, line in enumerate(body.splitlines(), start=1):
+            stripped = line.strip()
+            if not stripped or not stripped.startswith("- "):
+                continue
+            if stripped.lower() == "- none yet":
+                continue
+
+            links = list(PLAN_INDEX_LINK_PATTERN.finditer(line))
+            plan_links = [
+                resolved
+                for match in links
+                if (resolved := _normalize_plan_link(root, source, match.group("path"))) is not None
+            ]
+            plan_path = plan_links[0] if plan_links else None
+            line_number = section_start + offset
+            if location in {"done_recent", "done_archive"}:
+                if plan_path is None:
+                    findings.append(
+                        ValidationFinding(
+                            severity="block",
+                            path=source,
+                            artifact_class="plan-index",
+                            status=None,
+                            message=f"{section} terminal entry must link to an existing docs/plans file",
+                        )
+                    )
+                elif not _path_exists(root, plan_path, tracked_revision):
+                    findings.append(
+                        ValidationFinding(
+                            severity="block",
+                            path=source,
+                            artifact_class="plan-index",
+                            status=None,
+                            message=f"terminal entry links to missing plan file: {plan_path.relative_to(root)}",
+                        )
+                    )
+                if len(stripped.splitlines()) != 1:
+                    findings.append(
+                        ValidationFinding(
+                            severity="block",
+                            path=source,
+                            artifact_class="plan-index",
+                            status=None,
+                            message="terminal entries must be one-line summaries",
+                        )
+                    )
+
+            entries.append(
+                PlanSurfaceEntry(
+                    source=source,
+                    section=section,
+                    location=location,
+                    line_number=line_number,
+                    line=line,
+                    plan_path=plan_path,
+                )
+            )
+
+    return entries, findings
+
+
 def _parse_plan_index(root: Path, tracked_revision: str | None = None) -> dict[Path, tuple[str, ...]]:
     plan_index_path = root / "docs" / "plan.md"
     if not _path_exists(root, plan_index_path, tracked_revision):
         return {}
 
-    sections = _parse_sections(_read_repo_text(root, plan_index_path, tracked_revision))
     entries: dict[Path, list[str]] = {}
-    for section, status in PLAN_INDEX_SECTIONS.items():
-        body = sections.get(section, "")
-        for line in body.splitlines():
-            if not line.lstrip().startswith("- "):
-                continue
-            if line.strip().lower() == "- none yet":
-                continue
-            for match in PLAN_INDEX_LINK_PATTERN.finditer(line):
-                raw_path = match.group("path").split("#", 1)[0]
-                if raw_path.startswith("plans/"):
-                    resolved = (plan_index_path.parent / raw_path).resolve()
-                    if not _is_relative_to(resolved, root):
-                        resolved = None
-                else:
-                    resolved = _normalize_repo_path(root, plan_index_path, raw_path)
-                if resolved is not None and _is_plan_body_path(root, resolved):
-                    entries.setdefault(resolved, []).append(status)
+    surface_entries, _ = _parse_plan_surface_entries(root, plan_index_path, tracked_revision)
+    for entry in surface_entries:
+        if entry.plan_path is None:
+            continue
+        if entry.location == "done_recent":
+            status = "done"
+        elif entry.location in {"active", "blocked", "superseded"}:
+            status = entry.location
+        else:
+            continue
+        entries.setdefault(entry.plan_path, []).append(status)
     return {path: tuple(statuses) for path, statuses in entries.items()}
 
 
@@ -253,20 +457,238 @@ def _plan_lifecycle_candidate_paths(
     index_statuses_by_path: dict[Path, tuple[str, ...]],
 ) -> set[Path]:
     candidates: set[Path] = set()
-    plan_index_in_scope = False
+    plan_surface_in_scope = False
     for path in (*scope.changed_paths, *scope.related_artifact_paths):
         if _is_plan_body_path(root, path) and _path_exists(root, path, scope.tracked_revision):
             candidates.add(path)
-        elif _is_plan_index_path(root, path):
-            plan_index_in_scope = True
+        elif _is_plan_index_surface_path(root, path):
+            plan_surface_in_scope = True
 
-    if plan_index_in_scope and not candidates:
+    if plan_surface_in_scope and not candidates:
         candidates.update(
             plan_path
             for plan_path in index_statuses_by_path
             if _path_exists(root, plan_path, scope.tracked_revision)
         )
     return candidates
+
+
+def _all_plan_body_paths(root: Path, tracked_revision: str | None = None) -> list[Path]:
+    if tracked_revision is not None:
+        candidates = _tracked_markdown_paths(root, tracked_revision)
+    else:
+        plan_root = root / "docs" / "plans"
+        candidates = list(plan_root.glob("*.md")) if plan_root.exists() else []
+    return sorted(path.resolve() for path in candidates if _is_plan_body_path(root, path.resolve()))
+
+
+def _plan_index_surface_in_scope(root: Path, scope: ValidationScope) -> bool:
+    return any(
+        _is_plan_index_surface_path(root, path)
+        for path in (*scope.changed_paths, *scope.related_artifact_paths)
+    )
+
+
+def _explicit_terminal_plan_body_in_scope(root: Path, scope: ValidationScope) -> bool:
+    for path in (*scope.changed_paths, *scope.related_artifact_paths):
+        if not _is_plan_body_path(root, path) or not _path_exists(root, path, scope.tracked_revision):
+            continue
+        marker = _extract_plan_lifecycle_marker(_read_repo_text(root, path, scope.tracked_revision))
+        if marker.explicit and marker.state in PLAN_TERMINAL_LIFECYCLE_STATES:
+            return True
+    return False
+
+
+def _validate_plan_surface_shape(
+    root: Path,
+    scope: ValidationScope,
+    surface_entries: list[PlanSurfaceEntry],
+) -> list[ValidationFinding]:
+    findings: list[ValidationFinding] = []
+    plan_index_path = root / "docs" / "plan.md"
+    archive_path = root / PLAN_ARCHIVE_PATH
+
+    if _path_exists(root, plan_index_path, scope.tracked_revision):
+        text = _read_repo_text(root, plan_index_path, scope.tracked_revision)
+        sections = _parse_sections(text)
+        heading_order = list(sections)
+        for required in ("Active", "Blocked"):
+            if not any(section.casefold() == required.casefold() for section in heading_order):
+                findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=plan_index_path,
+                        artifact_class="plan-index",
+                        status=None,
+                        message=f"docs/plan.md missing required {required} section",
+                    )
+                )
+        lowered_order = [section.casefold() for section in heading_order]
+        done_positions = [
+            index for index, section in enumerate(lowered_order) if section in {"done", "done (recent)"}
+        ]
+        for live_section in ("active", "blocked"):
+            if live_section in lowered_order and done_positions and lowered_order.index(live_section) > min(done_positions):
+                findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=plan_index_path,
+                        artifact_class="plan-index",
+                        status=None,
+                        message="Active and Blocked sections must appear before Done history",
+                    )
+                )
+                break
+
+        recent_entries = [entry for entry in surface_entries if entry.source == plan_index_path and entry.location == "done_recent"]
+        if len(recent_entries) > DONE_RECENT_CAP:
+            findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=plan_index_path,
+                    artifact_class="plan-index",
+                    status=None,
+                    message=f"Done (recent) exceeds approved cap of {DONE_RECENT_CAP}",
+                )
+            )
+
+        archive_entries = [entry for entry in surface_entries if entry.source == archive_path and entry.location == "done_archive"]
+        if archive_entries and "plan-archive.md" not in text:
+            findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=plan_index_path,
+                    artifact_class="plan-index",
+                    status=None,
+                    message="docs/plan.md must link to docs/plan-archive.md when older terminal history exists",
+                )
+            )
+
+    for entry in surface_entries:
+        if entry.location != "superseded" or entry.source != plan_index_path:
+            continue
+        if entry.plan_path is None:
+            findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=entry.source,
+                    artifact_class="plan-index",
+                    status=None,
+                    message="superseded entry in docs/plan.md requires a superseded plan link",
+                )
+            )
+        if "superseded by:" not in entry.line.lower():
+            findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=entry.source,
+                    artifact_class="plan-index",
+                    status=None,
+                    message="superseded entry in docs/plan.md requires superseded by replacement link",
+                )
+            )
+        active_context = re.search(r"active-context:\s*(?P<value>.+)", entry.line, re.IGNORECASE)
+        if active_context is None or not active_context.group("value").strip().rstrip(".;"):
+            findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=entry.source,
+                    artifact_class="plan-index",
+                    status=None,
+                    message="superseded entry in docs/plan.md requires non-empty active-context",
+                )
+            )
+
+    for entry in surface_entries:
+        if entry.location == "done_archive" and "active-context:" in entry.line.lower():
+            findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=entry.source,
+                    artifact_class="plan-index",
+                    status=None,
+                    message="archived superseded entries must not retain active-context",
+                )
+            )
+
+    return findings
+
+
+def _validate_terminal_plan_conservation(
+    root: Path,
+    scope: ValidationScope,
+    surface_entries: list[PlanSurfaceEntry],
+) -> list[ValidationFinding]:
+    findings: list[ValidationFinding] = []
+    if not (_plan_index_surface_in_scope(root, scope) or _explicit_terminal_plan_body_in_scope(root, scope)):
+        return findings
+
+    by_plan: dict[Path, list[PlanSurfaceEntry]] = {}
+    for entry in surface_entries:
+        if entry.plan_path is not None:
+            by_plan.setdefault(entry.plan_path, []).append(entry)
+
+    for plan_path in _all_plan_body_paths(root, scope.tracked_revision):
+        text = _read_repo_text(root, plan_path, scope.tracked_revision)
+        marker = _extract_plan_lifecycle_marker(text)
+        if marker.errors:
+            for error in marker.errors:
+                findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=plan_path,
+                        artifact_class="plan",
+                        status=marker.state,
+                        message=error,
+                    )
+                )
+            continue
+        if not marker.explicit or marker.state is None:
+            continue
+
+        entries = by_plan.get(plan_path, [])
+        terminal_locations = [
+            entry
+            for entry in entries
+            if entry.location in {"done_recent", "done_archive"}
+            or (marker.state == "superseded" and entry.location == "superseded" and "active-context:" in entry.line.lower())
+        ]
+        archive_locations = [entry for entry in entries if entry.location == "done_archive"]
+        live_locations = [entry for entry in entries if entry.location in {"active", "blocked", "superseded"}]
+
+        if marker.state in PLAN_TERMINAL_LIFECYCLE_STATES:
+            if not terminal_locations:
+                findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=plan_path,
+                        artifact_class="plan",
+                        status=marker.state,
+                        message="terminal plan missing from Done (recent) and Done (archive)",
+                    )
+                )
+            elif len(terminal_locations) > 1:
+                findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=plan_path,
+                        artifact_class="plan",
+                        status=marker.state,
+                        message="terminal plan appears more than once across Done (recent) and Done (archive)",
+                    )
+                )
+        elif marker.state in PLAN_NONTERMINAL_LIFECYCLE_STATES and archive_locations and not live_locations:
+            findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=plan_path,
+                    artifact_class="plan",
+                    status=marker.state,
+                    message="nonterminal plan must not be stored only in docs/plan-archive.md",
+                )
+            )
+
+    return findings
 
 
 def _validate_plan_lifecycle_consistency(
@@ -279,19 +701,23 @@ def _validate_plan_lifecycle_consistency(
 
     for plan_path in sorted(_plan_lifecycle_candidate_paths(root, scope, index_statuses_by_path)):
         text = _read_repo_text(root, plan_path, scope.tracked_revision)
-        body_status = _extract_plan_body_status(text)
+        marker = _extract_plan_lifecycle_marker(text)
+        if marker.errors:
+            for error in marker.errors:
+                blocking.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=plan_path,
+                        artifact_class="plan",
+                        status=marker.state,
+                        message=error,
+                    )
+                )
+            continue
+        body_status = marker.state if marker.explicit else _extract_plan_body_status(text)
         index_statuses = index_statuses_by_path.get(plan_path, ())
 
         if body_status is None:
-            blocking.append(
-                ValidationFinding(
-                    severity="block",
-                    path=plan_path,
-                    artifact_class="plan",
-                    status=None,
-                    message="plan body missing lifecycle status",
-                )
-            )
             continue
 
         if "active" in index_statuses and body_status in PLAN_TERMINAL_STATUSES:
@@ -839,6 +1265,17 @@ def validate_repository(
     plan_blockers, plan_warnings = _validate_plan_lifecycle_consistency(root_resolved, scope)
     blocking_findings.extend(plan_blockers)
     warning_findings.extend(plan_warnings)
+    if _plan_index_surface_in_scope(root_resolved, scope) or _explicit_terminal_plan_body_in_scope(root_resolved, scope):
+        surface_entries: list[PlanSurfaceEntry] = []
+        surface_findings: list[ValidationFinding] = []
+        for surface_path in (root_resolved / "docs" / "plan.md", root_resolved / PLAN_ARCHIVE_PATH):
+            entries, findings = _parse_plan_surface_entries(root_resolved, surface_path, scope.tracked_revision)
+            surface_entries.extend(entries)
+            surface_findings.extend(findings)
+        if _plan_index_surface_in_scope(root_resolved, scope):
+            blocking_findings.extend(surface_findings)
+            blocking_findings.extend(_validate_plan_surface_shape(root_resolved, scope, surface_entries))
+        blocking_findings.extend(_validate_terminal_plan_conservation(root_resolved, scope, surface_entries))
     warning_findings.extend(_validate_merge_dependent_language_warnings(root_resolved, scope))
 
     return ValidationResult(
