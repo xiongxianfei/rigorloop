@@ -21,6 +21,7 @@ Index policy:
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-05-22 Broad-Smoke and Fixture-Suite Output Compaction](plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md) - done; terminal state: done; PR #85 merged.
 - [2026-05-21 Script Output Optimization](plans/2026-05-21-script-output-optimization.md) - done; terminal state: done; PR #83 merged.
 - [2026-05-21 Review-Skill Family Consistency and Parser-Owned Finding Shape](plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md) - done; terminal state: done; PR #82 merged.
 - [2026-05-20 Spec-Family Assets Progressive Disclosure](plans/2026-05-20-spec-family-assets-progressive-disclosure.md) - done; terminal state: done; PR #80 merged.
@@ -30,7 +31,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-05-19 Assets-First Progressive Disclosure Pilot](plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) - done; terminal state: done; PR #75 passed hosted CI.
 - [2026-05-19 Published Skill Design Plan Family Rollout](plans/2026-05-19-published-skill-design-plan-family.md) - done; terminal state: done; PR #74 merged.
 - [2026-05-19 Published Skill Design Implement And Code-Review Rollout](plans/2026-05-19-published-skill-design-implement-code-review.md) - done; terminal state: done; PR #73 merged.
-- [2026-05-19 Published Skill Design Spec Family Rollout](plans/2026-05-19-published-skill-design-spec-family.md) - done; terminal state: done; PR #72 merged.
 
 ## Superseded
 - none yet

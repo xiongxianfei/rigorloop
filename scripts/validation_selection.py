@@ -1071,6 +1071,7 @@ def _path_category(path: str) -> str | None:
             "behavior-preservation.md",
             "output-contract-red-test.md",
             "script-output-audit.md",
+            "script-output-layer-audit.md",
             "generated-output-proof.md",
             "historical-coverage.md",
             "plan-index-migration.md",
@@ -1082,6 +1083,14 @@ def _path_category(path: str) -> str | None:
         } or (
             change_local_name.endswith("-preservation.md")
             or change_local_name.endswith("-generated-token-cold-read-evidence.md")
+            or (
+                change_local_name.startswith("broad-smoke-child-commands-")
+                and change_local_name.endswith(".txt")
+            )
+            or (
+                change_local_name.startswith("change-metadata-validator-tests-")
+                and change_local_name.endswith(".txt")
+            )
             or change_local_name == "skill-contract-sufficiency.md"
         ) or parts[3] == "diagrams":
             return "change-local-lifecycle"

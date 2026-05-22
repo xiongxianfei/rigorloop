@@ -1,0 +1,12 @@
+Validate canonical skills	python scripts/validate-skills.py
+Run skill validator fixtures	python scripts/test-skill-validator.py
+Run local skill mirror generation fixtures	python scripts/test-build-skills.py
+Validate generated skill mirror output	python scripts/build-skills.py --check
+Run adapter distribution fixtures	python scripts/test-adapter-distribution.py
+Build generated adapter archives	python scripts/build-adapters.py --version v0.1.3 --output-dir ${adapter_release_output}
+Validate generated adapter archives	python scripts/validate-adapters.py --root ${adapter_release_output} --version v0.1.3
+Run change metadata validator fixtures	python scripts/test-change-metadata-validator.py
+Run artifact lifecycle validator fixtures	python scripts/test-artifact-lifecycle-validator.py
+Run review artifact validator fixtures	python scripts/test-review-artifact-validator.py
+Validate review artifacts (changed roots)	python scripts/validate-review-artifacts.py ${changed_review_roots}
+Validate artifact lifecycle (explicit-paths from tracked diff)	python scripts/validate-artifact-lifecycle.py --mode explicit-paths ${tracked_authored_diff_paths}

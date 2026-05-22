@@ -4,6 +4,7 @@ Completed plan history moved out of the common-read plan index.
 
 ## Done (archive)
 
+- [2026-05-19 Published Skill Design Spec Family Rollout](plans/2026-05-19-published-skill-design-spec-family.md) - done; terminal state: done; PR #72 merged.
 - [2026-05-19 RigorLoop Published Skill Design Contract](plans/2026-05-19-rigorloop-published-skill-design-contract.md) - done; terminal state: done; PR #71 merged.
 - [2026-05-18 Skill readability and self-containment](plans/2026-05-18-skill-readability-self-containment.md) - done; terminal state: done; PR #69 merged.
 - [2026-05-18 Multi-adapter init and proxy-aware adapter download](plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md) - done; terminal state: done; PR #68 opened.
