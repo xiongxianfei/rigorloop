@@ -23,8 +23,15 @@ requirements:
   - R3n
   - R3o
   - R3p
+  - R4
+  - R5
+  - R6
+  - R6a
+  - R6b
   - R7
   - R7a
+  - R8
+  - R8a
   - R10
   - R10a
   - R11
@@ -57,9 +64,27 @@ tests:
   - T11
   - T12
   - T13
+  - T14
   - T15
   - T16
+  - T17
 validation:
+  - command: python - <<'PY' ... M4 guidance audit
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path AGENTS.md --path docs/examples/plans/example-plan.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md
+    result: pass
+  - command: python scripts/validate-skills.py skills/plan/SKILL.md
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir> && python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md
+    result: pass
   - command: python - <<'PY' ... migration proof count/link assertion
     result: pass
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
@@ -75,6 +100,10 @@ validation:
   - command: git diff --check --
     result: pass
 changed_files:
+  - AGENTS.md
+  - docs/workflows.md
+  - docs/examples/plans/example-plan.md
+  - skills/plan/SKILL.md
   - scripts/artifact_lifecycle_validation.py
   - scripts/test-artifact-lifecycle-validator.py
   - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml

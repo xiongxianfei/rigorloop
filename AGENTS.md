@@ -77,11 +77,13 @@ Use `bugfix` for bugs, `ci` for ci-maintenance when GitHub Actions or related au
 ## Plan file policy
 
 - `docs/roadmap.md` stores future ideas and unapproved work.
-- `docs/plan.md` is the lifecycle index of active, blocked, done, and superseded execution plans. It is not the body of a plan.
+- `docs/plan.md` is the bounded lifecycle index of active, blocked, recent done, and active supersession context. It is not the body of a plan.
+- `docs/plan-archive.md` stores older terminal plan history. Do not move active, blocked, review-requested, resolution-needed, or otherwise nonterminal work there.
 - Concrete plan files under `docs/plans/` are the plan bodies that carry initiative detail.
+- Plan bodies use the explicit `## Status` lifecycle marker fields `Plan lifecycle state` and `Terminal disposition`; do not infer terminal state from prose.
 - Every approved initiative gets its own living plan file under `docs/plans/YYYY-MM-DD-slug.md`.
 - Never overwrite an older plan when starting a new initiative.
-- If a new plan replaces an older one, keep the older file and mark it as superseded.
+- If a new plan replaces an older one, keep the older file and mark it as superseded. Keep superseded entries in `docs/plan.md` only while they include `superseded by:` and non-empty `active-context:`; otherwise archive terminal superseded history.
 - Execution plans should follow `docs/examples/plans/example-plan.md`; examples under `docs/examples/` are illustrative and are not active lifecycle state.
 
 ## Required reading before implementation
@@ -128,7 +130,7 @@ If the work changes externally observable behavior and no relevant spec exists, 
 - When repo-owned validation scripts exist, run those named commands before PR instead of inventing substitute checks.
 - For adapter package work, ordinary contributors do not need all supported tools installed locally; non-smoke validation is repository-owned through adapter generation, adapter validation, release metadata validation, and `scripts/release-verify.sh`.
 - Release automation must use tracked release notes under `docs/releases/<tag>/release-notes.md`; do not rely on generated release notes for adapter compatibility claims.
-- For planned initiatives, final lifecycle closeout updates both `docs/plan.md` and the plan body when lifecycle state changes. Synchronize that lifecycle state inside the PR that performs the transition before review opens; merge is not a routine trigger for later lifecycle closeout. `verify` treats stale lifecycle state between the index and plan body as blocking PR readiness.
+- For planned initiatives, final lifecycle closeout updates the plan index surfaces and the plan body when lifecycle state changes. Synchronize that lifecycle state inside the PR that performs the transition before review opens; merge is not a routine trigger for later lifecycle closeout. `verify` treats stale lifecycle state between the index surfaces and plan body as blocking PR readiness.
 - Do not report success without naming the commands actually run.
 
 ## Change management
