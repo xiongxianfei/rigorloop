@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -20,7 +20,7 @@ Review closeout: code-review-m4-r1
 
 Finding ID: BPIX-M4-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementer
 Owning stage: review-resolution
 Chosen action: Update plan guidance to include the missing R8a lifecycle ownership points.
@@ -28,7 +28,8 @@ Rationale: The finding is directly supported by the approved spec and is fixable
 Required outcome: Plan guidance must explicitly include the missing R8a ownership points or record a spec-backed rationale for why another plan-guidance surface satisfies `R8a`.
 Safe resolution path: Add concise wording to `skills/plan/SKILL.md` near the existing plan authoring rules that says `implement` owns ongoing plan-body progress/decision/validation updates, final lifecycle closeout owns lifecycle state transitions across the plan index surfaces and plan body, and `verify` challenges stale lifecycle state before `branch-ready`; then rerun the M4 skill, generated-output, adapter, metadata, lifecycle, and diff validation commands.
 Validation target: `skills/plan/SKILL.md` includes all five R8a plan-guidance ownership points and the M4 validation commands pass after the fix.
-Validation evidence: pending
+Resolution: Added the three missing R8a ownership points to `skills/plan/SKILL.md`, mirroring the workflow-summary ownership model without adding new obligations. Strengthened T14 so R8a verification confirms each required ownership point in each named surface rather than relying on keyword or marker presence alone.
+Validation evidence: `python - <<'PY' ... R8a direct ownership audit`, `python scripts/validate-skills.py skills/plan/SKILL.md`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir> && python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path AGENTS.md --path docs/examples/plans/example-plan.md --path specs/plan-index-lifecycle-ownership.test.md`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md`, and `git diff --check --` passed after the fix.
 
 ### code-review-m3-r1
 

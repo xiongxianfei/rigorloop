@@ -69,9 +69,11 @@ tests:
   - T16
   - T17
 validation:
+  - command: python - <<'PY' ... R8a direct ownership audit
+    result: pass
   - command: python - <<'PY' ... M4 guidance audit
     result: pass
-  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path AGENTS.md --path docs/examples/plans/example-plan.md
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path AGENTS.md --path docs/examples/plans/example-plan.md --path specs/plan-index-lifecycle-ownership.test.md
     result: pass
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md
     result: pass
@@ -103,6 +105,7 @@ changed_files:
   - AGENTS.md
   - docs/workflows.md
   - docs/examples/plans/example-plan.md
+  - specs/plan-index-lifecycle-ownership.test.md
   - skills/plan/SKILL.md
   - scripts/artifact_lifecycle_validation.py
   - scripts/test-artifact-lifecycle-validator.py

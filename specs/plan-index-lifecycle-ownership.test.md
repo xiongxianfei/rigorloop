@@ -318,6 +318,13 @@
   - `skills/plan/SKILL.md` if changed
 - Steps:
   - Review touched guidance for plan/index/archive ownership.
+  - For each surface named by `R8a`, the workflow summary and plan guidance, confirm all required ownership points are explicit:
+    - `docs/plan.md` is an index rather than a plan body.
+    - `docs/plan-archive.md` stores older terminal plan history.
+    - `implement` owns ongoing plan-body updates.
+    - final lifecycle closeout owns state transitions in both the plan index surfaces and the plan body.
+    - `verify` challenges stale lifecycle state before `branch-ready`.
+  - Do not treat keyword or marker presence alone as sufficient proof for `R8a`; the check must confirm each ownership point appears in each named surface.
   - Confirm unplanned work is not forced into plan lifecycle indexing.
   - Confirm closeout, blocked, superseded, and merge-gated done timing are discoverable.
   - Run skill validation and build checks if canonical skill text changes.

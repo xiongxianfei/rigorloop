@@ -36,11 +36,16 @@ M4 makes the archive contract discoverable in contributor-facing surfaces.
 
 `skills/plan/SKILL.md` now tells plan authors to keep the index bounded, update the archive when archiving terminal history, use explicit lifecycle marker fields, and keep active supersession context structurally labeled.
 
+BPIX-M4-CR1 was resolved by adding the three missing R8a ownership points to `skills/plan/SKILL.md`: `implement` owns ongoing plan-body progress, decision, discovery, and validation-note updates; final lifecycle closeout owns lifecycle state transitions across plan index surfaces and the plan body; and `verify` challenges stale lifecycle state before `branch-ready`.
+
+T14 was strengthened so future guidance checks must verify each R8a ownership point in each named surface, rather than accepting keyword or marker presence alone.
+
 ## Validation
 
 - `python scripts/test-artifact-lifecycle-validator.py` passed.
+- `python - <<'PY' ... R8a direct ownership audit` passed after BPIX-M4-CR1 fix.
 - `python - <<'PY' ... M4 guidance audit` passed after M4 guidance updates.
-- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path AGENTS.md --path docs/examples/plans/example-plan.md` passed after M4 guidance updates.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path AGENTS.md --path docs/examples/plans/example-plan.md --path specs/plan-index-lifecycle-ownership.test.md` passed after BPIX-M4-CR1 fix.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md` passed after M4 plan-index state update.
 - `python scripts/validate-skills.py skills/plan/SKILL.md` passed after M4 guidance updates.
 - `python scripts/validate-skills.py` passed after M4 guidance updates.

@@ -68,11 +68,11 @@ The main implementation surfaces are:
 ## Current Handoff Summary
 
 - Current milestone: M4. Contributor guidance and skill alignment
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Index/archive migration and preservation proof
-- Review status: code-review M4 R1 changes-requested; open finding BPIX-M4-CR1
+- Review status: BPIX-M4-CR1 resolved; code-review M4 R2 requested
 - Remaining in-scope implementation milestones: M4, M5, M6
-- Next stage: review-resolution for BPIX-M4-CR1
+- Next stage: code-review M4 R2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
 
@@ -198,7 +198,7 @@ The main implementation surfaces are:
 
 ### M4. Contributor guidance and skill alignment
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Make archive maintenance, lifecycle markers, and active supersession structure discoverable in contributor-facing guidance.
 - Requirements: `R4`, `R5`, `R6`, `R6a`, `R6b`, `R8`, `R8a`, `R17`, `R17a`-`R17i`
 - Files/components likely touched:
@@ -369,6 +369,7 @@ The main implementation surfaces are:
 - 2026-05-22: Began M4 guidance alignment, updated workflow guidance, root agent guidance, the example plan, and the `plan` skill with archive maintenance, explicit lifecycle marker, and active supersession wording.
 - 2026-05-22: M4 implementation reached `review-requested`; next stage is code-review for M4 before validation selector routing work begins.
 - 2026-05-22: Code-review M4 R1 found BPIX-M4-CR1; plan guidance does not explicitly cover all R8a ownership bullets.
+- 2026-05-22: Resolved BPIX-M4-CR1 by adding the missing R8a ownership bullets to `skills/plan/SKILL.md` and strengthening T14 to require direct per-surface ownership checks.
 
 ## Decision log
 
@@ -425,6 +426,14 @@ The main implementation surfaces are:
 - 2026-05-22: `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir> && python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5` passed after M4 guidance updates.
 - 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md` passed after M4 handoff state update with the existing lifecycle-language warning for merge-state wording in the spec.
 - 2026-05-22: `git diff --check --` passed after M4 guidance updates.
+- 2026-05-22: `python - <<'PY' ... R8a direct ownership audit` passed after BPIX-M4-CR1 fix, confirming every R8a ownership point appears in `docs/workflows.md` and `skills/plan/SKILL.md`.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path AGENTS.md --path docs/examples/plans/example-plan.md --path specs/plan-index-lifecycle-ownership.test.md` passed after BPIX-M4-CR1 fix.
+- 2026-05-22: `python scripts/validate-skills.py skills/plan/SKILL.md` passed after BPIX-M4-CR1 fix.
+- 2026-05-22: `python scripts/validate-skills.py` passed after BPIX-M4-CR1 fix.
+- 2026-05-22: `python scripts/build-skills.py --check` passed after BPIX-M4-CR1 fix.
+- 2026-05-22: `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir> && python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5` passed after BPIX-M4-CR1 fix.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md` passed after BPIX-M4-CR1 fix.
+- 2026-05-22: `git diff --check --` passed after BPIX-M4-CR1 fix.
 
 ## Outcome and retrospective
 
@@ -433,4 +442,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- M4 needs review-resolution for BPIX-M4-CR1; not ready for final closeout.
+- Ready for M4 code-review R2; not ready for final closeout.
