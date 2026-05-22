@@ -67,14 +67,14 @@ The main implementation surfaces are:
 
 ## Current Handoff Summary
 
-- Current milestone: final verification
+- Current milestone: PR handoff
 - Current milestone state: pending
 - Last reviewed milestone: M6. Lifecycle closeout and handoff evidence
 - Review status: code-review M6 R1 clean-with-notes; no open findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change is refreshed after the post-merge sync; downstream verify and PR handoff remain.
+- Next stage: pr
+- Final closeout readiness: branch-ready
+- Reason final closeout is or is not ready: explain-change is current, review-resolution is closed, final selected CI and broad smoke passed from the synced branch, and PR handoff remains.
 
 ## Milestones
 
@@ -382,6 +382,7 @@ The main implementation surfaces are:
 - 2026-05-22: M6 implementation reached `review-requested`; next stage is code-review for M6 before final downstream closeout.
 - 2026-05-22: Code-review M6 R1 passed clean-with-notes; all in-scope implementation milestones are closed and downstream final closeout is next.
 - 2026-05-22: Explain-change refreshed after syncing merged PR #85; next stage is `verify`.
+- 2026-05-22: Final verify passed from the synced branch; next stage is `pr`.
 
 ## Decision log
 
@@ -468,6 +469,17 @@ The main implementation surfaces are:
 - 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md` passed during M6 implementation with the existing lifecycle-language warning for merge-state wording in the spec.
 - 2026-05-22: `bash scripts/ci.sh` passed during M6 implementation.
 - 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md` passed after explain-change refresh with lifecycle-language warnings for the documented post-merge sync.
+- 2026-05-22: `python scripts/test-artifact-lifecycle-validator.py` passed during final verify.
+- 2026-05-22: `python scripts/test-select-validation.py` passed during final verify.
+- 2026-05-22: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive` passed during final verify.
+- 2026-05-22: `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed during final verify.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-bounded-plan-index-and-completed-plan-archive.md --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed during final verify with lifecycle-language warnings for documented merge-dependent wording.
+- 2026-05-22: `python scripts/validate-skills.py skills/plan/SKILL.md && python scripts/validate-skills.py && python scripts/build-skills.py --check` passed during final verify.
+- 2026-05-22: `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir> && python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5` passed during final verify.
+- 2026-05-22: `python scripts/select-validation.py --mode explicit --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md --path skills/plan/SKILL.md` selected skills, adapter, artifact lifecycle, and selector checks during final verify.
+- 2026-05-22: `bash scripts/ci.sh --mode explicit --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md --path skills/plan/SKILL.md` passed during final verify.
+- 2026-05-22: `bash scripts/ci.sh` passed during final verify.
+- 2026-05-22: `git diff --check --` passed during final verify.
 
 ## Outcome and retrospective
 
@@ -476,4 +488,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `verify`; not ready for PR handoff until verify runs.
+- Branch-ready for `pr`; not Done until PR handoff and downstream completion settle the final lifecycle state.

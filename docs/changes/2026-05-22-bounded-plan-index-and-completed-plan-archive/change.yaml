@@ -118,6 +118,12 @@ validation:
     result: pass
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md
     result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md --path skills/plan/SKILL.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md --path skills/plan/SKILL.md
+    result: pass
+  - command: bash scripts/ci.sh
+    result: pass
   - command: git diff --check --
     result: pass
 changed_files:
