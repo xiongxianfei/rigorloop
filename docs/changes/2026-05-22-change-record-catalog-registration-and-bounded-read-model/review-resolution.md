@@ -1,6 +1,6 @@
 # Review Resolution
 
-Closeout status: closed
+Closeout status: open
 
 ### spec-review-r1
 
@@ -103,3 +103,16 @@ Chosen action: Record clean M2 re-review after CRM-M2-CR1 resolution.
 Rationale: R2 found no material findings and confirmed the accepted owner-approved deferral fix satisfies CRM-R17 through CRM-R19 and CRM-T009.
 Validation target: Review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation for the touched review, plan, and lifecycle artifacts.
 Validation evidence: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m2-r2.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `git diff --check --`.
+
+### code-review-m3-r1
+
+Finding ID: CRM-M3-CR1
+Disposition: accepted
+Status: resolution-needed
+Owner: implementer
+Owning stage: implement
+Chosen action: Update the M3 query helper so compact artifact path metadata is returned from accepted compact `path_vars` shapes, then add direct fixture proof.
+Rationale: Code-review M3 R1 found that the helper returns an empty successful artifact list for an accepted compact metadata shape whose artifact paths live in `path_vars`, violating CRM-R29, CRM-R36, and CRM-T016.
+Validation target: Rerun query helper tests, metadata validator regression, active query commands, selected CI for query/helper/metadata paths, lifecycle validation, review-artifact validation, and whitespace checks after the fix.
+Validation evidence: Pending implementation.
+Follow-up: Return M3 to code review after compact artifact path support and validation evidence are recorded. M4 and M5 remain separate implementation milestones and are not claimed ready from this finding.
