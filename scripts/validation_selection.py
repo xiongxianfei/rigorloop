@@ -17,6 +17,9 @@ DEFAULT_ADAPTER_VERSION = "0.1.1"
 STATUSES = frozenset({"ok", "blocked", "fallback", "error"})
 EXIT_CODES = {"ok": 0, "blocked": 2, "fallback": 3, "error": 4}
 ROOT_VISION_PATH = "VISION.md"
+REQUIRED_EVIDENCE_DEFERRAL_FIELDS = frozenset(
+    {"owner", "path", "reason", "validation_impact", "follow_up"}
+)
 
 
 @dataclass(frozen=True)
@@ -166,6 +169,14 @@ class EvidenceClassRegistration:
     allowed_when: tuple[str, ...] = ()
     required_when: tuple[str, ...] = ()
     forbidden_when: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class EvidenceDeferralStatus:
+    status: str
+    missing_fields: tuple[str, ...] = ()
+    invalid_fields: tuple[str, ...] = ()
+    deferral: dict[str, str] = field(default_factory=dict)
 
 
 EVIDENCE_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
@@ -326,6 +337,7 @@ class SelectionResult:
     affected_roots: tuple[str, ...]
     broad_smoke_required: bool
     blocking_results: tuple[dict[str, str], ...]
+    registration_debt: tuple[dict[str, Any], ...]
     rationale: tuple[str, ...]
     broad_smoke: dict[str, Any]
 
@@ -341,6 +353,7 @@ class SelectionResult:
             "broad_smoke_required": self.broad_smoke_required,
             "broad_smoke": self.broad_smoke,
             "blocking_results": list(self.blocking_results),
+            "registration_debt": list(self.registration_debt),
             "rationale": list(self.rationale),
         }
 
@@ -508,6 +521,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
     affected_roots: set[str] = set()
     blocking_results: list[dict[str, str]] = []
     blocking_results.extend(normalization_blocks)
+    registration_debt: list[dict[str, Any]] = []
 
     release_versions: set[str] = set()
     for path in changed_paths:
@@ -531,7 +545,9 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             selected=selected,
             affected_roots=affected_roots,
             blocking_results=blocking_results,
+            registration_debt=registration_debt,
             release_versions=release_versions,
+            repo_root=repo_root,
         )
 
     if _readme_marker_validation_required(tuple(changed_paths), repo_root=repo_root):
@@ -564,6 +580,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
         affected_roots=affected_roots,
         broad_smoke_sources=broad_smoke_sources,
         blocking_results=blocking_results,
+        registration_debt=registration_debt,
         status=status,
         adapter_version=request.adapter_version,
     )
@@ -651,7 +668,9 @@ def _apply_path_selection(
     selected: dict[str, SelectedCheckDraft],
     affected_roots: set[str],
     blocking_results: list[dict[str, str]],
+    registration_debt: list[dict[str, Any]],
     release_versions: set[str],
+    repo_root: Path,
 ) -> None:
     if category == "skills":
         root = _skill_root(path)
@@ -817,20 +836,17 @@ def _apply_path_selection(
         root = _change_root(path)
         if root:
             affected_roots.add(root)
-        blocking_results.append(
-            {
-                "code": "manual-routing-required",
-                "path": path,
-                "debt": "evidence-registration",
-                "verify_readiness": "blocked",
-                "next_action": (
-                    "Register an evidence class for this deterministic change-local evidence path "
-                    "or record an owner-approved deferral before verify with owner, path, reason, "
-                    "validation impact, and follow-up."
-                ),
-                "message": "unregistered deterministic change-local evidence creates registration debt",
-            }
+        governing_change_yaml = _change_root_change_yaml(path)
+        deferral = evaluate_evidence_registration_deferral(
+            evidence_path=path,
+            change_yaml_path=repo_root / governing_change_yaml if governing_change_yaml else None,
+            change_root=root,
         )
+        debt_result = _evidence_registration_debt_result(path, deferral)
+        if deferral.status == "complete":
+            registration_debt.append(debt_result)
+        else:
+            blocking_results.append(debt_result)
         return
 
     if category == "architecture-diagram":
@@ -1123,6 +1139,129 @@ def _add_lifecycle_warning_check(
     _add_check(selected, "artifact_lifecycle.validate", reason, path=path)
 
 
+def _evidence_registration_debt_result(
+    evidence_path: str,
+    deferral: EvidenceDeferralStatus,
+) -> dict[str, Any]:
+    result: dict[str, Any] = {
+        "code": "manual-routing-required",
+        "path": evidence_path,
+        "manual_routing_required": True,
+        "debt": "evidence-registration",
+        "verify_readiness": "owner-deferred" if deferral.status == "complete" else "blocked",
+        "deferral_status": deferral.status,
+        "next_action": (
+            "Register an evidence class for this deterministic change-local evidence path "
+            "or record a complete owner-approved deferral before verify with owner, path, "
+            "reason, validation impact, and follow-up."
+        ),
+        "message": "unregistered deterministic change-local evidence creates registration debt",
+    }
+    if deferral.missing_fields:
+        result["missing_deferral_fields"] = list(deferral.missing_fields)
+    if deferral.invalid_fields:
+        result["invalid_deferral_fields"] = list(deferral.invalid_fields)
+    if deferral.status == "complete":
+        result["owner"] = deferral.deferral.get("owner", "")
+        result["follow_up"] = deferral.deferral.get("follow_up", "")
+        result["deferral"] = dict(deferral.deferral)
+    return result
+
+
+def evaluate_evidence_registration_deferral(
+    *,
+    evidence_path: str,
+    change_yaml_path: Path | None,
+    change_root: str | None,
+) -> EvidenceDeferralStatus:
+    if change_yaml_path is None or change_root is None or not change_yaml_path.exists():
+        return EvidenceDeferralStatus(status="none")
+
+    deferrals = load_evidence_registration_deferrals(change_yaml_path)
+    matching = [entry for entry in deferrals if entry.get("path") == evidence_path]
+    if not matching:
+        return EvidenceDeferralStatus(status="none")
+    if len(matching) > 1:
+        return EvidenceDeferralStatus(status="invalid", invalid_fields=("duplicate:path",))
+
+    entry = matching[0]
+    missing = tuple(sorted(field for field in REQUIRED_EVIDENCE_DEFERRAL_FIELDS if not entry.get(field, "").strip()))
+    invalid = tuple(
+        sorted(
+            field
+            for field in ("path", "follow_up")
+            if entry.get(field) and not _is_safe_repo_relative_path(entry[field])
+        )
+    )
+    path = entry.get("path", "")
+    if path and not path.startswith(change_root):
+        invalid = tuple(sorted((*invalid, "path")))
+
+    if missing:
+        return EvidenceDeferralStatus(status="incomplete", missing_fields=missing, invalid_fields=invalid)
+    if invalid:
+        return EvidenceDeferralStatus(status="invalid", invalid_fields=invalid)
+
+    return EvidenceDeferralStatus(
+        status="complete",
+        deferral={field: entry[field].strip() for field in sorted(REQUIRED_EVIDENCE_DEFERRAL_FIELDS)},
+    )
+
+
+def load_evidence_registration_deferrals(change_yaml_path: Path) -> list[dict[str, str]]:
+    lines = change_yaml_path.read_text(encoding="utf-8").splitlines()
+    start_index: int | None = None
+    for index, raw_line in enumerate(lines):
+        if raw_line.strip() == "evidence_registration_deferrals:" and not raw_line.startswith(" "):
+            start_index = index + 1
+            break
+    if start_index is None:
+        return []
+
+    deferrals: list[dict[str, str]] = []
+    current: dict[str, str] | None = None
+    index = start_index
+    while index < len(lines):
+        line = lines[index]
+        if line and not line.startswith(" "):
+            break
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            index += 1
+            continue
+        if line.startswith("  - "):
+            if current is not None:
+                deferrals.append(current)
+            current = {}
+            remainder = line[4:].strip()
+            if remainder:
+                key, value = _split_selector_yaml_pair(remainder)
+                current[key] = value
+            index += 1
+            continue
+        if line.startswith("    ") and current is not None:
+            key, value = _split_selector_yaml_pair(stripped)
+            current[key] = value
+        index += 1
+    if current is not None:
+        deferrals.append(current)
+    return deferrals
+
+
+def _split_selector_yaml_pair(text: str) -> tuple[str, str]:
+    if ":" not in text:
+        return text.strip(), ""
+    key, value = text.split(":", 1)
+    return key.strip(), value.strip().strip("\"'")
+
+
+def _is_safe_repo_relative_path(value: str) -> bool:
+    if not value or value.startswith(("/", "~")) or "\\" in value or "://" in value:
+        return False
+    path = PurePosixPath(value)
+    return not path.is_absolute() and ".." not in path.parts
+
+
 def _build_result(
     *,
     mode: str,
@@ -1133,6 +1272,7 @@ def _build_result(
     affected_roots: set[str],
     broad_smoke_sources: list[dict[str, str]],
     blocking_results: list[dict[str, str]],
+    registration_debt: list[dict[str, Any]] | None = None,
     status: str,
     adapter_version: str = DEFAULT_ADAPTER_VERSION,
 ) -> SelectionResult:
@@ -1190,6 +1330,7 @@ def _build_result(
             "sources": list(broad_smoke_sources),
         },
         blocking_results=tuple(combined_blocking),
+        registration_debt=tuple(registration_debt or []),
         rationale=tuple(entry["reason"] for entry in selected_checks),
     )
 
