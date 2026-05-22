@@ -1,0 +1,78 @@
+change_id: 2026-05-22-bounded-plan-index-and-completed-plan-archive
+title: Bounded Plan Index and Completed-Plan Archive
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-22-bounded-plan-index-and-completed-plan-archive.md
+  spec: specs/plan-index-lifecycle-ownership.md
+  test_spec: specs/plan-index-lifecycle-ownership.test.md
+  plan: docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md
+  review_resolution: docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/review-resolution.md
+  explain_change: docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md
+requirements:
+  - R3
+  - R3a
+  - R3c
+  - R3g
+  - R3h
+  - R3i
+  - R3j
+  - R3k
+  - R3l
+  - R3m
+  - R3n
+  - R3o
+  - R3p
+  - R7
+  - R7a
+  - R10
+  - R10a
+  - R11
+  - R12
+  - R13
+  - R14
+  - R15
+  - R15a
+  - R15b
+  - R15c
+  - R15d
+  - R17
+  - R17a
+  - R17b
+  - R17d
+  - R17e
+  - R17h
+tests:
+  - T1
+  - T2
+  - T3
+  - T4
+  - T5
+  - T6
+  - T7
+  - T8
+  - T9
+  - T10
+  - T11
+  - T12
+  - T13
+  - T16
+validation:
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md
+    result: pass
+  - command: python -m py_compile scripts/artifact_lifecycle_validation.py scripts/artifact_lifecycle_contracts.py
+    result: pass
+  - command: git diff --check --
+    result: pass
+changed_files:
+  - scripts/artifact_lifecycle_validation.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml
+  - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md
+  - docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md
+  - docs/plan.md
+review:
+  status: pending
+  unresolved_items: 0
