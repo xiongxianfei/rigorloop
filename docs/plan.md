@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-21 Compact Change Validation Metadata](plans/2026-05-21-compact-change-validation-metadata.md) - active execution plan for implementing compact `schema_version: 2` change validation metadata while preserving legacy compatibility, exact command/path reconstruction, path-variable safety, stage-derived existence checks, review-artifact count cross-checks, and compactness proof; M1 and M2 are closed after clean code reviews, M3 is ready for code-review rerun after review-resolution, and explain-change, verify, and PR handoff are still pending.
+- [2026-05-21 Compact Change Validation Metadata](plans/2026-05-21-compact-change-validation-metadata.md) - active execution plan for implementing compact `schema_version: 2` change validation metadata while preserving legacy compatibility, exact command/path reconstruction, path-variable safety, stage-derived existence checks, review-artifact count cross-checks, and compactness proof; M1, M2, and M3 are closed after clean code reviews, and explain-change, verify, selected CI, and PR handoff are still pending.
 - [2026-05-20 Proposal-Family Assets Progressive Disclosure](plans/2026-05-20-proposal-family-assets-progressive-disclosure.md) - active execution plan for adding assets-only progressive disclosure to `proposal` and `proposal-review`; M2, M3, and M4 are closed after clean code reviews, explain-change and verify are recorded, and PR #81 is open for hosted CI and human review.
 
 ## Blocked
