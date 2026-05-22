@@ -65,9 +65,9 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - Last reviewed milestone: M5. Lifecycle evidence and final closeout closed by `code-review-m5-r2`
 - Review status: `code-review-m5-r2` found no material findings after `CRM-M5-CR1` resolution.
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: final closeout rationale refreshed; verify and PR readiness are not claimed.
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed and explain-change is current; downstream verify still owns final validation and PR handoff remains after verify.
+- Next stage: pr
+- Final closeout readiness: verify passed; PR handoff is next.
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, explain-change is current, final local verification passed, and PR handoff remains.
 
 ## Milestones
 
@@ -286,12 +286,12 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
   - Avoid broad "read `change.yaml`" wording when a bounded query exists.
   - Keep current live workflow state owned by active plans, not query helper output.
   - Add or update static proof for command-name drift if no existing validator covers it.
-  - Run skill and adapter generation checks required for canonical skill changes.
+  - Run skill checks and repository-supported adapter archive validation required for canonical skill changes.
 - Validation commands:
   - `python scripts/validate-skills.py`
   - `python scripts/test-skill-validator.py`
   - `python scripts/build-skills.py --check`
-  - `python scripts/build-adapters.py --check`
+  - `tmp=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmp" && python scripts/validate-adapters.py --root "$tmp" --version v0.1.5`
   - `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary`
   - `bash scripts/ci.sh --mode explicit --path skills/proposal-review/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path scripts/query-change-record.py`
   - `git diff --check --`
@@ -338,7 +338,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
   - `python scripts/validate-skills.py`
   - `python scripts/test-skill-validator.py`
   - `python scripts/build-skills.py --check`
-  - `python scripts/build-adapters.py --check`
+  - `tmp=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmp" && python scripts/validate-adapters.py --root "$tmp" --version v0.1.5`
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md`
@@ -369,7 +369,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - `python scripts/test-query-change-record.py`: query helper regression suite once M3 adds it.
 - `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary`: active change bounded read smoke after M3.
 - `python scripts/test-change-metadata-validator.py`: legacy and compact metadata compatibility proof.
-- `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `python scripts/build-skills.py --check`, and `python scripts/build-adapters.py --check`: canonical skill and generated adapter proof when M4 edits skills.
+- `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `python scripts/build-skills.py --check`, and release-archive adapter generation plus `python scripts/validate-adapters.py --root "$tmp" --version v0.1.5`: canonical skill and generated adapter proof when M4 edits skills.
 - `bash scripts/ci.sh --mode local`: final branch-local changed-path selected-CI proof over the branch changed paths.
 - `git diff --check --`: whitespace and patch hygiene.
 
@@ -417,6 +417,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: `CRM-M5-CR1` accepted and fixed by replacing final `bash scripts/ci.sh --mode selected` proof references with repository-supported `bash scripts/ci.sh --mode local` references in the test spec and active plan. M5 moved back to `review-requested`.
 - 2026-05-22: `code-review-m5-r2` recorded clean re-review for `CRM-M5-CR1`; M5 closed and handoff moved to final closeout.
 - 2026-05-22: Final closeout refreshed `explain-change.md` after M5 re-review and moved handoff to verify.
+- 2026-05-22: Verify passed after replacing stale adapter `--check` proof references with current release-archive adapter validation. Handoff moved to PR.
 
 ## Decision log
 
@@ -461,6 +462,8 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: `CRM-M5-CR1` resolution validation passed: `bash scripts/ci.sh --mode local`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; artifact lifecycle explicit-path validation over the touched test spec, plan, change metadata, review artifacts, explain-change, and plan index; review artifact closeout; and whitespace check.
 - 2026-05-22: Code-review M5 R2 found no material findings after `CRM-M5-CR1` resolution. Review recording validation passed with review artifact closeout, change metadata validation, artifact lifecycle validation, selected local CI, and whitespace check.
 - 2026-05-22: Explain-change refresh validation passed with review artifact closeout, change metadata validation, artifact lifecycle validation, selected local CI, and whitespace check.
+- 2026-05-22: Verify discovered that the test spec and active plan still listed `python scripts/build-adapters.py --check`, which fails against retired tracked adapter-tree expectations. The governing adapter proof references were updated to the current release-archive validation path from `AGENTS.md` and `dist/adapters/README.md`.
+- 2026-05-22: Final verify passed: selector regression, query-helper regression, metadata validator regression, skill validation, skill validator regression, generated skill check, adapter distribution tests, release-archive adapter generation and validation, active query summary smoke, local selector proof, review artifact closeout, change metadata validation, artifact lifecycle validation over governing lifecycle artifacts, local selected CI, and whitespace check.
 
 ## Outcome and retrospective
 
@@ -469,4 +472,4 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for verify; not ready for PR handoff or Done.
+- Ready for PR handoff; not Done.

@@ -339,8 +339,8 @@ active
 - Covers: CRM-R48, E9, EC17, AC-CRM-016
 - Level: integration
 - Fixture/setup: Canonical skill edits from M4 and generated adapter check surfaces.
-- Steps: Run `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `python scripts/build-skills.py --check`, and `python scripts/build-adapters.py --check`.
-- Expected result: Canonical skill text validates and generated adapter output is reproducible.
+- Steps: Run `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `python scripts/build-skills.py --check`, and the repository-supported adapter archive proof for the current tracked adapter version, for example `python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmp"` followed by `python scripts/validate-adapters.py --root "$tmp" --version v0.1.5`.
+- Expected result: Canonical skill text validates and generated adapter archive output is reproducible and valid for the tracked adapter version.
 - Failure proves: Public adapter guidance can drift after bounded-read skill edits.
 - Automation location: skill and adapter validation commands in M4.
 
@@ -385,7 +385,7 @@ bash scripts/ci.sh --mode local
 - Do not mock selector output for selector tests; call selector functions or CLI paths that exercise the real routing logic.
 - Do not mock query-helper metadata loading for integration tests; use real fixture `change.yaml` files.
 - Subprocess execution may be stubbed only to prove `scripts/query-change-record.py` does not execute validation commands from metadata.
-- Generated adapter checks must use the repository-owned build/check scripts, not hand-authored expected output.
+- Generated adapter checks must use the repository-owned build and validation scripts, not hand-authored expected output.
 - Avoid snapshots for full command output; assert stable labels, required fields, omitted fields, selected check IDs, affected roots, and exit status.
 
 ## Migration or compatibility tests
