@@ -60,14 +60,14 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Evidence class registry and registered selector routing
-- Current milestone state: review-requested
+- Current milestone: M2. Registration debt and actual changed-path proof
+- Current milestone state: planned
 - Last reviewed milestone: M1. Evidence class registry and registered selector routing
-- Review status: `CRM-M1-CR1` fix implemented and validation passed; awaiting M1 code-review rerun
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review
+- Review status: code-review-m1-r2 clean-with-notes; `CRM-M1-CR1` resolved after re-review
+- Remaining in-scope implementation milestones: M2, M3, M4, M5
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 has an open code-review finding pending re-review; M1 closeout, remaining implementation milestones, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 is closed, but M2 through M5, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -112,7 +112,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ### M1. Evidence class registry and registered selector routing
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add the evidence-class registry behavior and deterministic selector routing for registered recurring change-local evidence files.
 - Requirements: CRM-R1 through CRM-R11, CRM-R20, CRM-R50 through CRM-R52, CRM-R54, CRM-R55; AC-CRM-001, AC-CRM-002, AC-CRM-005 through AC-CRM-007, AC-CRM-015, AC-CRM-017.
 - Files/components likely touched:
@@ -405,6 +405,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: M1 implemented selector-owned evidence class registry, registered evidence routing, registry validation tests, representative route fixture updates, and `behavior-preservation.md`.
 - 2026-05-22: `code-review-m1-r1` recorded material finding `CRM-M1-CR1`; M1 moved to `resolution-needed`.
 - 2026-05-22: `CRM-M1-CR1` accepted and fixed by adding governing change-root output to registered evidence routing and extending selector regression coverage; M1 moved back to `review-requested`.
+- 2026-05-22: `code-review-m1-r2` recorded clean re-review for `CRM-M1-CR1`; M1 closed and handoff moved to M2 implementation.
 
 ## Decision log
 
@@ -428,6 +429,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: M1 post-recording selected CI passed with `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 - 2026-05-22: Code-review M1 R1 recording validation passed with review artifact structure validation, change metadata validation, artifact lifecycle validation, whitespace check, and explicit selected CI.
 - 2026-05-22: `CRM-M1-CR1` resolution validation passed: `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md`; `python scripts/test-select-validation.py`; `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `git diff --check --`.
+- 2026-05-22: Code-review M1 R2 recording validation passed: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r2.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `git diff --check --`.
 
 ## Outcome and retrospective
 
@@ -436,4 +438,4 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M1 code-review rerun after `CRM-M1-CR1` implementation; not ready for M1 closeout, M2, final closeout, verify, PR handoff, or Done.
+- Ready for M2 implementation; not ready for final closeout, verify, PR handoff, or Done.
