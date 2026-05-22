@@ -1,0 +1,449 @@
+change_id: 2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+title: Broad-smoke and fixture-suite output compaction
+classification: planned
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md
+  spec: specs/script-output-optimization.md
+  test_spec: specs/script-output-optimization.test.md
+  plan: docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md
+  review_resolution: docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md
+  explain_change: docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/explain-change.md
+requirements:
+  - Revise the broad-smoke and fixture-suite output compaction proposal after proposal-review R1.
+  - Record proposal-review R1 findings and dispositions in durable change-local artifacts.
+  - Settle the approved proposal status to accepted before downstream spec reliance.
+  - Amend the script-output optimization spec for broad-smoke wrapper behavior and the first targeted direct-run producer.
+  - Keep downstream readiness limited to spec-review until the spec amendment is reviewed.
+tests:
+  - Proposal-review R1 found BSO-PR1 through BSO-PR4 and required proof-route, acceptance-criteria, producer/verbosity, and preservation-proof clarification.
+  - Proposal revision accepts all four proposal-review findings.
+  - Follow-up observations tightened wrapper-mode consistency into a checkable downstream guard and seeded aggregate broad-smoke success as the recommended default.
+  - Proposal-review R2 approved the revised proposal with no material findings.
+  - Spec amendment records broad-smoke capture, aggregate success, failure evidence, verbose output, wrapper-mode consistency guard, targeted producer output, and stable identity proof requirements.
+  - Spec-review R1 found SRO-BSO-SR1 requiring the producer `--quiet` compatibility contract to match current behavior.
+  - SRO-BSO-SR1 resolution preserves existing unittest-compatible `--quiet` and `-q` behavior while keeping custom compact quiet formatting out of scope.
+  - Spec-review R2 approved the revised spec with no material findings.
+  - Plan authoring creates an active milestone plan with M1 audit/baseline proof, M2 broad-smoke capture, M3 targeted producer compaction, and M4 preservation/lifecycle closeout.
+  - Plan authoring records that architecture is not required for this presentation-only wrapper/producer formatting slice.
+  - Plan-review R1 approved the plan with no material findings and kept implementation blocked until focused test-spec amendment.
+  - Focused test-spec amendment adds TSRO-015 through TSRO-027 for broad-smoke capture, wrapper-mode consistency, command identity proof, targeted producer output, quiet compatibility, ordinary-validation guard, selected-CI regression, and final smoke coverage.
+  - Owner approved the active focused test-spec amendment for implementation use.
+  - M1 adds the output-layer audit, behavior-preservation baseline, broad-smoke normalized command identity list, and targeted producer selected-test identity list.
+  - M1 records broad-smoke command identity hash 8b1e4d0d7f36fccc0b7d0e2fa3ad5efedc39f7f41f935bb117c8c9f6eda9565f.
+  - M1 records test-change-metadata-validator selected-test identity hash fbb2230ef0c90ae64d7d0eb34966b994f318d8e042ca56fabaa4d39edbbe108e.
+  - Code-review M1 R1 found no material findings and closed M1 with clean-with-notes.
+  - M2 adds broad-smoke output-contract tests for default success capture, failure evidence, verbose output, and wrapper-mode consistency.
+  - M2 changes broad-smoke `run_check` to capture child stdout/stderr, hide successful child output by default, show captured output on failure or verbose, and print one aggregate `[PASS] broad-smoke` success line.
+  - M2 records unchanged broad-smoke child command identity hash 8b1e4d0d7f36fccc0b7d0e2fa3ad5efedc39f7f41f935bb117c8c9f6eda9565f after wrapper capture.
+  - Code-review M2 R1 found BSO-M2-CR1 requiring the wrapper-mode consistency guard to check every validation-producing orchestration mode, not only the `run_check` helper body.
+  - BSO-M2-CR1 resolution broadens the wrapper-mode consistency guard to keep the helper-level `run_check()` capture assertion, verify selected-CI and broad-smoke mode dispatch policies, document the selected-CI exception, scan `run_*` orchestration functions for direct validation producer calls outside `run_check`, and reject direct bare `"$@"` streaming outside `run_check`.
+  - BSO-M2-CR1 adds negative fixture coverage for a new validation-producing mode outside `run_check()` and a direct bare `"$@"` streaming mode outside `run_check()`.
+  - Code-review M2 R2 found no material findings after BSO-M2-CR1 resolution and closed M2.
+  - M3 adds compact direct-run default output for scripts/test-change-metadata-validator.py while preserving full detail under --verbose and -v.
+  - M3 preserves scripts/test-change-metadata-validator.py --quiet and -q as existing unittest-compatible invocations without custom compact quiet formatting.
+  - M3 records unchanged test-change-metadata-validator selected-test identity hash fbb2230ef0c90ae64d7d0eb34966b994f318d8e042ca56fabaa4d39edbbe108e after producer runner compaction.
+  - Code-review M3 R1 found BSO-M3-CR1 and BSO-M3-CR2 requiring replayable producer identity extraction evidence and complete changed_files inventory before M3 can close.
+  - BSO-M3-CR1 resolution updates the producer selected-test extraction evidence to register the module in sys.modules before exec_module and replays the unchanged hash.
+  - BSO-M3-CR2 resolution adds scripts/test-change-metadata-validator.py to changed_files.
+  - Code-review M3 R2 found no material findings after BSO-M3-CR1 and BSO-M3-CR2 resolution and closed M3.
+  - M4 records final broad-smoke command identity hash 8b1e4d0d7f36fccc0b7d0e2fa3ad5efedc39f7f41f935bb117c8c9f6eda9565f after wrapper and producer changes.
+  - M4 records final test-change-metadata-validator selected-test identity hash fbb2230ef0c90ae64d7d0eb34966b994f318d8e042ca56fabaa4d39edbbe108e after wrapper and producer changes.
+  - M4 records ordinary-validation coverage, selected-CI regression proof, and no generated artifact, skill, adapter, JSON, validation selection, or validation coverage scope expansion.
+  - Code-review M4 R1 found BSO-M4-CR1 requiring M4 lifecycle state synchronization before M4 can close.
+  - BSO-M4-CR1 resolution synchronizes M4 lifecycle state across the active plan, plan index, change metadata, review log, and review resolution without changing runtime behavior or identity evidence.
+  - Code-review M4 R2 found no material findings after BSO-M4-CR1 resolution and closed M4.
+  - Explain-change records the rationale from the accepted proposal, spec requirements, test spec, implementation diff, validation evidence, and review-resolution outcomes before final verify.
+  - CI-maintenance routes the new deterministic change-local evidence file classes through selected validation so local and PR CI no longer block with manual-routing-required.
+  - Artifact lifecycle, review-artifact, change-metadata, selected CI, and patch hygiene validation cover the revised proposal and change-local review records.
+  - Selector regression and local selected CI prove script-output layer audit, broad-smoke command identity, and change-metadata-validator selected-test identity evidence files route deterministically as change-local lifecycle artifacts.
+  - Final verify passes local selected CI, explicit selected CI, broad-smoke default and verbose, direct producer default/verbose/quiet compatibility, identity hash proof, lifecycle validation, review closeout, and patch hygiene before PR handoff.
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m4-r2.md
+  review_log: docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md
+  location: docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_1_findings_4_log_entries_1_resolution_entries_4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r1.md
+    result: pass_validated_1_artifact_file
+  - command: git diff --check -- docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_2_findings_4_log_entries_2_resolution_entries_4_after_proposal_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r2.md
+    result: pass_validated_1_artifact_file_after_proposal_review_r2
+  - command: git diff --check -- docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_after_proposal_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r2.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path specs/script-output-optimization.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_spec_authoring
+  - command: git diff --check -- docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md specs/script-output-optimization.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_after_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path specs/script-output-optimization.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r2.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_spec_authoring
+  - command: python scripts/test-change-metadata-validator.py --quiet
+    result: observed_current_behavior_exit_0_stdout_0_lines_stderr_quiet_unittest_summary_for_sro_bso_sr1
+  - command: python scripts/test-change-metadata-validator.py -q
+    result: observed_current_behavior_exit_0_stdout_0_lines_stderr_quiet_unittest_summary_for_sro_bso_sr1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_4_findings_5_log_entries_4_resolution_entries_5_after_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_3_findings_5_log_entries_3_resolution_entries_5_after_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/script-output-optimization.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1
+  - command: git diff --check -- specs/script-output-optimization.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_after_spec_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path specs/script-output-optimization.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/spec-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path specs/script-output-optimization.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_after_plan_authoring
+  - command: git diff --check -- docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/plan.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_plan_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path specs/script-output-optimization.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path specs/script-output-optimization.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/plan-review-r1.md
+    result: pass_after_plan_review_r1
+  - command: git diff --check -- docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_after_plan_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path specs/script-output-optimization.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/plan-review-r1.md
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/plan-review-r1.md
+    result: pass_after_test_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_after_test_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_test_spec_authoring
+  - command: git diff --check -- specs/script-output-optimization.test.md docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/plan.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_test_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path specs/script-output-optimization.test.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path specs/script-output-optimization.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/plan-review-r1.md
+    result: pass_after_test_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_test_spec_owner_approval
+  - command: git diff --check -- docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_test_spec_owner_approval
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: blocked_initial_m1_dirty_worktree_untracked_lifecycle_artifacts_hidden_from_git_diff_caused_unrelated_historical_plan_lifecycle_blocks
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_18_tests_after_m1
+  - command: python scripts/test-change-metadata-validator.py --quiet
+    result: pass_18_tests_exit_0_stdout_empty_stderr_unittest_quiet_summary_after_m1
+  - command: python scripts/test-change-metadata-validator.py -q
+    result: pass_18_tests_exit_0_stdout_empty_stderr_unittest_quiet_summary_after_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_m1_initial
+  - command: git diff --check -- docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/script-output-layer-audit.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/behavior-preservation.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-baseline.txt --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-baseline.txt --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md
+    result: pass_validated_3_artifact_files_after_m1
+  - command: sha256sum docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-baseline.txt docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-baseline.txt
+    result: pass_broad_smoke_hash_8b1e4d0d7f36fccc0b7d0e2fa3ad5efedc39f7f41f935bb117c8c9f6eda9565f_change_metadata_hash_fbb2230ef0c90ae64d7d0eb34966b994f318d8e042ca56fabaa4d39edbbe108e_after_m1
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: pass_diagnostic_after_m1
+  - command: git add -N docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_intent_to_add_new_lifecycle_artifacts_for_dirty_worktree_broad_smoke_scope_after_m1
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/script-output-layer-audit.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/behavior-preservation.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-baseline.txt --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-baseline.txt --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md
+    result: blocked_manual_routing_required_for_script_output_layer_audit_and_identity_baseline_files_change_local_unsupported_after_m1
+  - command: git diff --check -- docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/script-output-layer-audit.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-baseline.txt docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-baseline.txt
+    result: pass_manual_route_for_change_local_unsupported_evidence_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/behavior-preservation.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md
+    result: pass_selected_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_m1
+  - command: code-review M1 R1
+    result: clean_with_notes_no_material_findings_m1_closed
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_6_findings_5_log_entries_6_resolution_entries_5_after_code_review_m1_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m1-r1.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_code_review_m1_r1
+  - command: git diff --check -- docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/plan.md
+    result: pass_after_code_review_m1_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m1-r1.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_m1_r1
+  - command: python scripts/test-select-validation.py --verbose -k broad_smoke
+    result: fail_expected_before_m2_then_pass_8_tests_after_m2
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_m2_aggregate_success_12_checks
+  - command: bash scripts/ci.sh --mode broad-smoke --verbose
+    result: pass_after_m2_verbose_child_output_preserved
+  - command: bash scripts/ci.sh --mode explicit --path scripts/ci.sh --jobs 1
+    result: pass_selected_selector_regression_after_m2
+  - command: python scripts/test-select-validation.py
+    result: pass_77_tests_after_m2
+  - command: sha256sum docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-baseline.txt docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-post-m2.txt
+    result: pass_both_hashes_8b1e4d0d7f36fccc0b7d0e2fa3ad5efedc39f7f41f935bb117c8c9f6eda9565f_after_m2
+  - command: bash scripts/ci.sh --mode selected --jobs 1
+    result: blocked_unsupported_mode_selected_plan_command_corrected_to_explicit_selected_ci_after_m2
+  - command: bash scripts/ci.sh --mode local --jobs 1
+    result: blocked_manual_routing_required_for_change_local_unsupported_evidence_files_after_m2
+  - command: bash -n scripts/ci.sh
+    result: pass_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_m2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_6_findings_5_log_entries_6_resolution_entries_5_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/ci.sh --path scripts/test-select-validation.py --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/behavior-preservation.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md
+    result: pass_validated_3_artifact_files_after_m2
+  - command: git diff --check -- scripts/ci.sh scripts/test-select-validation.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/plan.md
+    result: pass_after_m2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/behavior-preservation.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --jobs 1
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_after_m2
+  - command: code-review M2 R1
+    result: changes_requested_bso_m2_cr1_wrapper_mode_consistency_guard_scope
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_7_findings_6_log_entries_7_resolution_entries_6_after_code_review_m2_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_code_review_m2_r1
+  - command: git diff --check -- docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m2-r1.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/plan.md
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/test-select-validation.py --verbose -k broad_smoke_wrapper_mode_consistency_guard_is_enforced
+    result: pass_after_bso_m2_cr1_resolution
+  - command: python scripts/test-select-validation.py --verbose -k broad_smoke
+    result: pass_8_tests_after_bso_m2_cr1_resolution
+  - command: python scripts/test-select-validation.py
+    result: pass_77_tests_after_bso_m2_cr1_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_bso_m2_cr1_resolution_aggregate_success_12_checks
+  - command: bash scripts/ci.sh --mode broad-smoke --verbose
+    result: pass_after_bso_m2_cr1_resolution_verbose_child_output_preserved
+  - command: bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path scripts/test-change-metadata-validator.py
+    result: pass_selected_checks_change_metadata_regression_selector_regression_after_bso_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_bso_m2_cr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_bso_m2_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_7_findings_6_log_entries_7_resolution_entries_6_after_bso_m2_cr1_resolution
+  - command: git diff --check --
+    result: pass_after_bso_m2_cr1_resolution
+  - command: code-review M2 R2
+    result: clean_with_notes_no_material_findings_m2_closed
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_after_code_review_m2_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_code_review_m2_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m2-r2.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_code_review_m2_r2
+  - command: git diff --check -- docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m2-r2.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/plan.md
+    result: pass_after_code_review_m2_r2
+  - command: python scripts/test-select-validation.py --verbose -k change_metadata_validator
+    result: fail_expected_before_m3_then_pass_5_tests_after_m3
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m3_compact_success_18_tests
+  - command: python scripts/test-change-metadata-validator.py --verbose
+    result: pass_after_m3_verbose_full_detail_18_tests
+  - command: python scripts/test-change-metadata-validator.py -v
+    result: pass_after_m3_verbose_alias_full_detail_18_tests
+  - command: python scripts/test-change-metadata-validator.py --quiet
+    result: pass_after_m3_quiet_compatibility_stdout_empty_stderr_unittest_summary
+  - command: python scripts/test-change-metadata-validator.py -q
+    result: pass_after_m3_quiet_alias_compatibility_stdout_empty_stderr_unittest_summary
+  - command: RIGORLOOP_CHANGE_METADATA_FAILURE_FIXTURE=1 python scripts/test-change-metadata-validator.py ChangeMetadataValidatorFixtureTests.test_output_contract_fixture_failure
+    result: fail_expected_after_m3_exit_1_actionable_failure_summary
+  - command: python scripts/test-change-metadata-validator.py -k no_such_test_name
+    result: fail_expected_after_m3_exit_1_zero_tests_diagnostic
+  - command: sha256sum docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-baseline.txt docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-post-m3.txt
+    result: pass_both_hashes_fbb2230ef0c90ae64d7d0eb34966b994f318d8e042ca56fabaa4d39edbbe108e_after_m3
+  - command: python scripts/test-select-validation.py
+    result: pass_82_tests_after_m3
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-change-metadata-validator.py --path scripts/test-select-validation.py --jobs 1
+    result: pass_selected_checks_change_metadata_regression_selector_regression_after_m3
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-change-metadata-validator.py --jobs 1
+    result: pass_selected_check_change_metadata_regression_after_m3
+  - command: code-review M3 R1
+    result: changes_requested_bso_m3_cr1_replayable_identity_extraction_bso_m3_cr2_changed_files_inventory
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_9_findings_8_log_entries_9_resolution_entries_8_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m3-r1.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_code_review_m3_r1
+  - command: git diff --check -- docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m3-r1.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/plan.md
+    result: pass_after_code_review_m3_r1
+  - command: producer selected-test identity extraction replay after BSO-M3-CR1
+    result: pass_count_18_sha256_fbb2230ef0c90ae64d7d0eb34966b994f318d8e042ca56fabaa4d39edbbe108e
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_bso_m3_cr1_cr2_resolution
+  - command: python scripts/test-change-metadata-validator.py --verbose
+    result: pass_after_bso_m3_cr1_cr2_resolution
+  - command: python scripts/test-change-metadata-validator.py --quiet
+    result: pass_after_bso_m3_cr1_cr2_resolution
+  - command: python scripts/test-select-validation.py
+    result: pass_82_tests_after_bso_m3_cr1_cr2_resolution
+  - command: bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path scripts/test-change-metadata-validator.py
+    result: pass_selected_checks_change_metadata_regression_selector_regression_after_bso_m3_cr1_cr2_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_bso_m3_cr1_cr2_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/script-output-layer-audit.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/behavior-preservation.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_bso_m3_cr1_cr2_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_9_findings_8_log_entries_9_resolution_entries_8_after_bso_m3_cr1_cr2_resolution
+  - command: git diff --check --
+    result: pass_after_bso_m3_cr1_cr2_resolution
+  - command: code-review M3 R2
+    result: clean_with_notes_no_material_findings_m3_closed
+  - command: producer selected-test identity extraction replay during code-review M3 R2
+    result: pass_count_18_sha256_fbb2230ef0c90ae64d7d0eb34966b994f318d8e042ca56fabaa4d39edbbe108e
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_10_findings_8_log_entries_10_resolution_entries_8_during_code_review_m3_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_during_code_review_m3_r2
+  - command: git diff --check --
+    result: pass_during_code_review_m3_r2
+  - command: sha256sum docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-baseline.txt docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-post-m4.txt docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-baseline.txt docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-post-m4.txt
+    result: pass_broad_smoke_hash_8b1e4d0d7f36fccc0b7d0e2fa3ad5efedc39f7f41f935bb117c8c9f6eda9565f_change_metadata_hash_fbb2230ef0c90ae64d7d0eb34966b994f318d8e042ca56fabaa4d39edbbe108e_after_m4
+  - command: producer selected-test identity extraction replay after M4
+    result: pass_count_18_sha256_fbb2230ef0c90ae64d7d0eb34966b994f318d8e042ca56fabaa4d39edbbe108e
+  - command: python scripts/test-select-validation.py
+    result: pass_82_tests_after_m4
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m4
+  - command: python scripts/test-change-metadata-validator.py --verbose
+    result: pass_after_m4
+  - command: python scripts/test-change-metadata-validator.py --quiet
+    result: pass_after_m4
+  - command: python scripts/test-change-metadata-validator.py -q
+    result: pass_after_m4
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_m4_aggregate_success_12_checks
+  - command: bash scripts/ci.sh --mode broad-smoke --verbose
+    result: pass_after_m4_verbose_child_output_preserved
+  - command: bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-change-metadata-validator.py --path scripts/test-select-validation.py --jobs 1
+    result: pass_selected_checks_change_metadata_regression_selector_regression_after_m4
+  - command: bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-change-metadata-validator.py --path scripts/test-select-validation.py --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --jobs 1
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_after_m4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_10_findings_8_log_entries_10_resolution_entries_8_after_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md
+    result: pass_validated_3_artifact_files_after_m4
+  - command: git diff --check --
+    result: pass_after_m4
+  - command: code-review M4 R1
+    result: changes_requested_bso_m4_cr1_lifecycle_state_synchronization
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_11_findings_9_log_entries_11_resolution_entries_9_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m4-r1.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_code_review_m4_r1
+  - command: git diff --check -- docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m4-r1.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/plan.md
+    result: pass_after_code_review_m4_r1
+  - command: BSO-M4-CR1 review-resolution lifecycle state sync
+    result: resolved_m4_body_and_handoff_summary_record_resolution_needed_no_runtime_files_changed
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_bso_m4_cr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/script-output-layer-audit.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/behavior-preservation.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_bso_m4_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_11_findings_9_log_entries_11_resolution_entries_9_after_bso_m4_cr1_resolution
+  - command: git diff --check --
+    result: pass_after_bso_m4_cr1_resolution
+  - command: code-review M4 R2
+    result: clean_with_notes_no_material_findings_m4_closed
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_during_code_review_m4_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/script-output-layer-audit.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/behavior-preservation.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_during_code_review_m4_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_12_findings_9_log_entries_12_resolution_entries_9_during_code_review_m4_r2
+  - command: git diff --check --
+    result: pass_during_code_review_m4_r2
+  - command: explain-change
+    result: recorded_docs_changes_explain_change_before_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/explain-change.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/explain-change.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --jobs 1
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_explain_change
+  - command: git diff --check -- docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/explain-change.md docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md docs/plan.md
+    result: pass_after_explain_change
+  - command: python scripts/test-select-validation.py
+    result: pass_82_selector_tests_after_final_selector_routing_ci_maintenance
+  - command: bash scripts/ci.sh --mode local --jobs 1
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_after_final_selector_routing_ci_maintenance
+  - command: python scripts/test-select-validation.py
+    result: pass_82_selector_tests_during_final_verify
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_18_tests_compact_success_during_final_verify
+  - command: python scripts/test-change-metadata-validator.py --verbose
+    result: pass_18_tests_verbose_unittest_detail_during_final_verify
+  - command: python scripts/test-change-metadata-validator.py --quiet && python scripts/test-change-metadata-validator.py -q
+    result: pass_quiet_and_q_compatibility_during_final_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction
+    result: pass_reviews_12_findings_9_log_entries_12_resolution_entries_9_during_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+    result: pass_during_final_verify
+  - command: sha256sum docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-baseline.txt docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-post-m4.txt docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-baseline.txt docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-post-m4.txt
+    result: pass_broad_smoke_hashes_match_8b1e4d0d7f36fccc0b7d0e2fa3ad5efedc39f7f41f935bb117c8c9f6eda9565f_and_producer_hashes_match_fbb2230ef0c90ae64d7d0eb34966b994f318d8e042ca56fabaa4d39edbbe108e_during_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/script-output-layer-audit.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/behavior-preservation.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/explain-change.md --path docs/learn/sessions/2026-05-22-change-local-selector-routing.md --path docs/learn/topics/ci-selector-routing.md --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md
+    result: pass_validated_3_artifact_files_during_final_verify
+  - command: bash scripts/ci.sh --mode local --jobs 1
+    result: pass_selector_status_ok_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_during_final_verify
+  - command: bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-change-metadata-validator.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path specs/script-output-optimization.md --path specs/script-output-optimization.test.md --path docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml --path docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md --path docs/plan.md --path docs/learn/sessions/2026-05-22-change-local-selector-routing.md --path docs/learn/topics/ci-selector-routing.md --jobs 1
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_during_final_verify
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_aggregate_success_12_checks_during_final_verify
+  - command: bash scripts/ci.sh --mode broad-smoke --verbose
+    result: pass_verbose_child_output_preserved_aggregate_success_12_checks_during_final_verify
+changed_files:
+  - docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md
+  - specs/script-output-optimization.md
+  - specs/script-output-optimization.test.md
+  - docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md
+  - docs/plan.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change.yaml
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/explain-change.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/script-output-layer-audit.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/behavior-preservation.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-baseline.txt
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-post-m2.txt
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/broad-smoke-child-commands-post-m4.txt
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-baseline.txt
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-post-m3.txt
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/change-metadata-validator-tests-post-m4.txt
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-log.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/review-resolution.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/spec-review-r1.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/spec-review-r2.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/plan-review-r1.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m3-r2.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m4-r1.md
+  - docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/code-review-m4-r2.md
+  - scripts/ci.sh
+  - scripts/validation_selection.py
+  - scripts/test-change-metadata-validator.py
+  - scripts/test-select-validation.py
+  - docs/learn/sessions/2026-05-22-change-local-selector-routing.md
+  - docs/learn/topics/ci-selector-routing.md
