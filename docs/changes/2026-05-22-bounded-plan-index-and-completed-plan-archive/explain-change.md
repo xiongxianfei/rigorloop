@@ -2,7 +2,7 @@
 
 ## Status
 
-M2 implementation notes; final explain-change is completed in M6.
+M6 implementation explanation recorded; final verify and PR handoff remain downstream.
 
 ## M2 validator contract and fixtures
 
@@ -50,6 +50,16 @@ The selector now treats `docs/changes/<change-id>/plan-index-migration.md` as a 
 
 `scripts/test-select-validation.py` adds regression coverage for archive-surface routing, migration-proof routing, representative path classification, and the larger workflow surface set. The CI wrapper did not need a code change because `scripts/ci.sh --mode explicit` already executes the selected `artifact_lifecycle.validate` and `selector.regression` checks.
 
+## M6 lifecycle closeout and handoff evidence
+
+M6 records final implementation evidence without moving the initiative to Done or claiming PR readiness.
+
+The active plan and `docs/plan.md` remain in Active state. The current handoff is for M6 code-review, and final closeout remains blocked on M6 review, downstream verify, and PR handoff.
+
+Final validation for the implementation slice includes lifecycle validator fixtures, selector fixtures, review-artifact closeout validation, explicit lifecycle validation for the plan index surfaces and governing spec/test spec, and broad smoke through `bash scripts/ci.sh`.
+
+The implementation does not add a generated registry, background synchronization, CLI scaffolding, fake merge state, fake CI state, or host-only state.
+
 ## Validation
 
 - `python scripts/test-artifact-lifecycle-validator.py` passed.
@@ -72,4 +82,7 @@ The selector now treats `docs/changes/<change-id>/plan-index-migration.md` as a 
 - `python -m py_compile scripts/validation_selection.py` passed after M5 implementation.
 - `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` selected `selector.regression` and `artifact_lifecycle.validate` with `docs/plan.md`, `docs/plan-archive.md`, the migration proof, and its `change.yaml`.
 - `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` passed after M5 implementation.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive` passed during M6 implementation.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md` passed during M6 implementation with the existing lifecycle-language warning in the spec.
+- `bash scripts/ci.sh` passed during M6 implementation.
 - `git diff --check --` passed.

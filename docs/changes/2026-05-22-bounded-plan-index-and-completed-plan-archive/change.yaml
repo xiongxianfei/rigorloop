@@ -68,6 +68,7 @@ tests:
   - T15
   - T16
   - T17
+  - T18
 validation:
   - command: python - <<'PY' ... R8a direct ownership audit
     result: pass
@@ -108,6 +109,12 @@ validation:
   - command: python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
     result: pass
   - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md
+    result: pass
+  - command: bash scripts/ci.sh
     result: pass
   - command: git diff --check --
     result: pass
