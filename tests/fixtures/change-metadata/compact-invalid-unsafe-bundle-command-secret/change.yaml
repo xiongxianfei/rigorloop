@@ -1,0 +1,13 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-change-validation-metadata
+validation_bundles:
+  unsafe_secret:
+    command: python scripts/check.py --token ghp_example_secret
+validation_events:
+  - stage: proposal-review-r1
+    lifecycle_stage: proposal-review
+    bundles:
+      - unsafe_secret
+    result: pass
+validation_summary: {}

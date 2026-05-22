@@ -1,0 +1,58 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-change-validation-metadata
+  change_root: tests/fixtures/change-metadata/compact-valid
+  spec: specs/{slug}.md
+  test_spec: specs/{slug}.test.md
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    description: lifecycle validation
+    expands_with: validation_events[].paths_added.lifecycle
+  metadata:
+    command: python scripts/validate-change-metadata.py {change_root}/change.yaml
+validation_events:
+  - stage: proposal-review-r1
+    lifecycle_stage: proposal-review
+    bundles:
+      - lifecycle
+      - metadata
+    paths_added:
+      lifecycle:
+        - docs/proposals/{change_id}.md
+        - {change_root}/change.yaml
+    result: pass
+    counts:
+      reviews: 0
+      findings: 0
+      log_entries: 0
+      resolution_entries: 0
+  - stage: test-spec-r1
+    lifecycle_stage: test-spec
+    bundles:
+      - lifecycle
+      - metadata
+    paths_added:
+      lifecycle:
+        - specs/{slug}.md
+        - specs/{slug}.test.md
+        - {change_root}/change.validation-log.yaml
+    result: pass
+    counts:
+      reviews: 1
+      findings: 0
+      log_entries: 0
+      resolution_entries: 0
+    evidence:
+      transcript: tests/fixtures/change-metadata/compact-valid/change.validation-log.yaml#test-spec-r1
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - proposal-review-r1
+    - test-spec-r1
+  final_counts:
+    reviews: 1
+    findings: 0
+    log_entries: 0
+    resolution_entries: 0
+  open_validation_blockers: []

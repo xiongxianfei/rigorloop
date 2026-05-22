@@ -1,0 +1,13 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-change-validation-metadata
+validation_bundles:
+  unsafe_credentials:
+    command: curl https://user:password@proxy.corp.example/validate
+validation_events:
+  - stage: proposal-review-r1
+    lifecycle_stage: proposal-review
+    bundles:
+      - unsafe_credentials
+    result: pass
+validation_summary: {}

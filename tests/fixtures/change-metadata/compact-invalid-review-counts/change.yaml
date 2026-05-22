@@ -1,0 +1,29 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-change-validation-metadata
+  change_root: tests/fixtures/review-artifacts/valid-clean-receipt-root
+  review_log: {change_root}/review-log.md
+validation_bundles:
+  reviews:
+    command: python scripts/validate-review-artifacts.py --mode closeout {change_root}
+validation_events:
+  - stage: spec-review-r1
+    lifecycle_stage: spec-review
+    bundles:
+      - reviews
+    result: pass
+    counts:
+      reviews: 2
+      findings: 0
+      log_entries: 1
+      resolution_entries: 0
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - spec-review-r1
+  final_counts:
+    reviews: 2
+    findings: 0
+    log_entries: 1
+    resolution_entries: 0
+  open_validation_blockers: []

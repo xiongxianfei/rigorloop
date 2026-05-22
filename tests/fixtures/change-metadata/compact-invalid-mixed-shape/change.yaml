@@ -1,0 +1,27 @@
+schema_version: 2
+change_id: 2026-05-21-compact-invalid-mixed-shape
+title: Mixed compact and legacy shape
+classification: test
+risk: low
+artifacts: {}
+requirements: []
+tests: []
+validation:
+  - command: python scripts/validate-change-metadata.py change.yaml
+    result: pass
+changed_files: []
+review:
+  status: pending
+  unresolved_items: 0
+path_vars:
+  change_id: 2026-05-21-compact-invalid-mixed-shape
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+validation_events:
+  - stage: proposal-review-r1
+    lifecycle_stage: proposal-review
+    bundles:
+      - lifecycle
+    result: pass
+validation_summary: {}
