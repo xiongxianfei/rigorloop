@@ -18,7 +18,7 @@ active
 
 - Unit tests exercise isolated selector registry behavior, bounded filename matching, broad-pattern rejection, ambiguous-match detection, query output construction, metadata shape detection, and query command parsing where those functions can be tested without subprocess overhead.
 - Integration tests execute repository-owned CLIs: `scripts/select-validation.py`, `scripts/ci.sh`, `scripts/query-change-record.py`, metadata validators, skill validators, and generated adapter checks.
-- End-to-end proof is milestone-scoped selected CI over the changed files plus final `bash scripts/ci.sh --mode selected`; no external service or UI e2e path is required.
+- End-to-end proof is milestone-scoped selected CI over the changed files plus final branch-local changed-path proof through `bash scripts/ci.sh --mode local`; no external service or UI e2e path is required.
 - Smoke tests run the new query helper against the active change record after M3 and run selector local mode after Workstream A creates deterministic evidence files.
 - Manual verification is limited to reviewing behavior-preservation and selector-routing proof artifacts, confirming full-read escalation guidance remains available, and checking that no workflow semantics are claimed as changed.
 - Contract tests assert selector safety, selected-check coverage, command exit behavior, query/validation separation, repo-relative path output, and generated adapter boundaries.
@@ -352,7 +352,15 @@ active
 - Steps: Run milestone-selected CI and final selected CI; run existing selector and metadata regression suites.
 - Expected result: Stage order, statuses, lifecycle semantics, readiness semantics, selected-check coverage, command exit behavior, and existing valid change records remain valid.
 - Failure proves: The feature changed governance or validation semantics beyond the approved scope.
-- Automation location: `python scripts/test-select-validation.py`; `python scripts/test-change-metadata-validator.py`; `bash scripts/ci.sh --mode selected`.
+- Automation location: `python scripts/test-select-validation.py`; `python scripts/test-change-metadata-validator.py`; `bash scripts/ci.sh --mode local`.
+
+Final branch-local changed-path selected-CI proof uses the repository-supported local wrapper mode:
+
+```bash
+bash scripts/ci.sh --mode local
+```
+
+`bash scripts/ci.sh --mode selected` is not a supported `scripts/ci.sh` mode in the current repository interface and must not be listed as the final verification proof command.
 
 ### CRM-T024. Spec dependency references remain authoritative
 

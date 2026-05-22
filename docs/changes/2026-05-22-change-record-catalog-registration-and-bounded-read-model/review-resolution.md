@@ -1,6 +1,7 @@
 # Review Resolution
 
-Closeout status: open
+Closeout status: closed
+Review closeout: code-review-m5-r1
 
 ### spec-review-r1
 
@@ -147,10 +148,10 @@ Validation evidence: Final review artifact closeout, change metadata, artifact l
 
 Finding ID: CRM-M5-CR1
 Disposition: accepted
-Status: pending implementation
+Status: resolved after governing-artifact update
 Owner: implementer
 Owning stage: implement
 Chosen action: Update the matching test spec and active plan so final changed-path selected-CI proof uses the repository-supported `bash scripts/ci.sh --mode local` command rather than the unsupported `bash scripts/ci.sh --mode selected` command.
 Rationale: Code-review M5 R1 found that M5 records the unsupported `--mode selected` failure and uses `--mode local` as the working equivalent, but leaves `--mode selected` in governing test-spec and active-plan command references.
 Validation target: Rerun change metadata validation, artifact lifecycle validation for the touched test spec, plan, review artifacts, and change metadata, `bash scripts/ci.sh --mode local`, review artifact validation, and whitespace checks after the fix.
-Validation evidence: Pending.
+Validation evidence: `bash scripts/ci.sh --mode local`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/explain-change.md --path docs/plan.md`; final review artifact closeout and whitespace validation are recorded in `change.yaml`.

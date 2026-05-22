@@ -396,6 +396,18 @@ validation:
     result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m5_r1
   - command: git diff --check --
     result: pass_after_code_review_m5_r1
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_artifact_lifecycle_after_crm_m5_cr1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_crm_m5_cr1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/explain-change.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_crm_m5_cr1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_13_findings_5_log_entries_13_resolution_entries_5_after_crm_m5_cr1
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_crm_m5_cr1
+  - command: git diff --check --
+    result: pass_after_crm_m5_cr1
 changed_files:
   - docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md
   - specs/change-record-catalog-registration-and-bounded-read-model.md
