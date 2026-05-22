@@ -762,7 +762,10 @@ def _apply_path_selection(
             )
             return
         evidence_class = matches[0]
+        governing_change_root = _change_root(path)
         governing_change_yaml = _change_root_change_yaml(path)
+        if governing_change_root:
+            affected_roots.add(governing_change_root)
         for route in evidence_class.selector_routes:
             if route == "artifact_lifecycle.validate":
                 if governing_change_yaml:

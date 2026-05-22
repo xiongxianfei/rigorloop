@@ -946,6 +946,7 @@ raise SystemExit({exit_code})
         lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
         self.assertIn("docs/changes/2026-04-25-example/behavior-preservation.md", lifecycle_check["paths"])
         self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
+        self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
 
     def test_selector_registry_changes_select_selector_regression(self) -> None:
         result = self.select(["scripts/validation_selection.py", "scripts/test-select-validation.py"])
