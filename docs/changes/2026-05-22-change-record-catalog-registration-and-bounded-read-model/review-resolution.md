@@ -1,6 +1,6 @@
 # Review Resolution
 
-Closeout status: closed
+Closeout status: open
 
 ### spec-review-r1
 
@@ -77,3 +77,15 @@ Chosen action: Record clean M1 re-review after CRM-M1-CR1 resolution.
 Rationale: R2 found no material findings and confirmed the accepted affected-root fix satisfies CRM-R9 and CRM-T004.
 Validation target: Review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation for the touched review, plan, and lifecycle artifacts.
 Validation evidence: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r2.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `git diff --check --`.
+
+### code-review-m2-r1
+
+Finding ID: CRM-M2-CR1
+Disposition: accepted
+Status: pending implementation
+Owner: implementer
+Owning stage: implement
+Chosen action: Add an owner-approved deferral evidence shape and tests proving complete deferrals satisfy CRM-R18 while incomplete deferrals remain blocking.
+Rationale: Code-review M2 R1 found that M2 emits registration debt but does not implement or test the approved owner-approved deferral path required by CRM-R17 through CRM-R19 and CRM-T009.
+Validation target: Rerun M2 selector tests, direct unregistered evidence proof, local changed-path proof, selected CI, lifecycle validation, change metadata validation, review artifact validation, and whitespace checks after the fix.
+Validation evidence: pending
