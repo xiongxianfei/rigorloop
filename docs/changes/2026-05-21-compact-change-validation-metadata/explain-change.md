@@ -2,13 +2,15 @@
 
 Date: 2026-05-22
 Change ID: `2026-05-21-compact-change-validation-metadata`
-Status: recorded before final verify
+Status: refreshed after ci-maintenance, before final verify rerun
 
 ## Summary
 
 This change adds compact `schema_version: 2` validation metadata support to `validate-change-metadata.py` while keeping legacy change metadata valid. Compact metadata stores path variables, validation bundles, stage events, structured counts, derived summaries, and optional transcript references instead of repeating long command paths and prose result strings in every validation entry.
 
 The implementation keeps the core audit invariant intact: compact storage is allowed only when reviewers can still reconstruct what validation bundles ran, which paths were checked at each stage, what the result was, what counts were observed, and whether blockers remain.
+
+After initial verify, selected CI exposed a routing gap: changed files under `tests/fixtures/change-metadata/**` were unclassified by the validation selector. CI-maintenance now classifies those fixture paths and routes them to the change metadata regression suite, so selected CI covers compact metadata fixture changes without trying to validate intentionally invalid fixtures as passing metadata files.
 
 ## Problem
 
@@ -44,6 +46,7 @@ Because `validate-change-metadata.py` owns the metadata contract, the fix had to
 | Review count cross-checking | `scripts/validate-change-metadata.py` | Reused existing review-artifact parser output when referenced review artifacts exist. | Avoid copied count drift and keep parser output authoritative. | R43-R44, R49, R82, TCVM-017. |
 | No-execution proof | `scripts/test-change-metadata-validator.py` | Added a sentinel command that would create a file if the validator executed bundle commands. | Prove metadata validation inspects command strings only and does not run validation bundles. | R57-R58, AC24, TCVM-020, `CVM-M3-CR3`. |
 | Fixtures | `tests/fixtures/change-metadata/**` | Added valid compact metadata, invalid compact cases, unsafe path/command cases, review-count fixtures, transcript fixture, and representative compactness fixture pair. | Exercise the public CLI against real metadata shapes instead of relying only on helper-level assertions. | TCVM-001 through TCVM-020. |
+| Selected CI routing | `scripts/validation_selection.py`, `scripts/test-select-validation.py` | Added `change-metadata-fixtures` classification for `tests/fixtures/change-metadata/**` and routed it to `change_metadata.regression`. | Selected CI previously blocked on compact metadata fixture paths. Fixture directories contain intentionally invalid files, so the safe CI behavior is to run the regression suite that knows expected-pass and expected-fail cases. | CI-maintenance commit `70cdc77`; `python scripts/test-select-validation.py`; full branch changed-file selected CI. |
 
 ## Tests Added Or Changed
 
@@ -54,8 +57,11 @@ Because `validate-change-metadata.py` owns the metadata contract, the fix had to
 - `TCVM-014` through `TCVM-017` prove summary derivation, blockers, skipped/not-run handling, and review-count cross-checks.
 - `TCVM-019` proves material compactness only after reconstruction passes.
 - `TCVM-020` proves the validator does not execute bundle commands.
+- `scripts/test-select-validation.py` now proves a changed `tests/fixtures/change-metadata/compact-valid/change.yaml` path is classified as `change-metadata-fixtures` and selects `change_metadata.regression`.
 
 The test level is mostly fixture-driven integration because the public contract is the behavior of `scripts/validate-change-metadata.py` against real `change.yaml` files. Helper-level checks are used only for parsing, safety helpers, reconstruction, and compactness measurement where direct assertions are clearer.
+
+The selector test is a focused CI-routing regression because the behavior belongs to validation selection, not the metadata validator itself.
 
 ## Validation Evidence Available Before Final Verify
 
@@ -71,8 +77,14 @@ Validation recorded during implementation and review-resolution includes:
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`
 - lifecycle explicit-path validation over the proposal, spec, test spec, plan, plan index, change metadata, review log, review-resolution, and code-review records
 - `git diff --check --`
+- `python scripts/test-select-validation.py`
+- `python scripts/select-validation.py --mode explicit --path tests/fixtures/change-metadata/compact-valid/change.yaml --json`
+- representative selected CI with compact metadata fixture input:
+  `bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/change_metadata_semantics.py --path scripts/test-change-metadata-validator.py --path schemas/change.schema.json --path tests/fixtures/change-metadata/compact-valid/change.yaml --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`
+- full branch changed-file selected CI:
+  `bash scripts/ci.sh --mode explicit <branch-changed-files>`
 
-Final verify and selected CI are still pending and are not claimed by this explanation.
+Final verify rerun is still pending and is not claimed by this explanation.
 
 ## Review Resolution Summary
 
@@ -94,6 +106,7 @@ See `docs/changes/2026-05-21-compact-change-validation-metadata/review-resolutio
 - Allow mixed legacy and compact evidence in one file: rejected because it creates ambiguous precedence between conflicting evidence.
 - Standardize transcript internals in this slice: deferred because the first slice only needs optional reference syntax and target existence.
 - Bulk-migrate historical `change.yaml` files: deferred until validator support exists and a separate migration proposal justifies it.
+- Validate changed metadata fixture files one-by-one in selected CI: rejected because many fixtures are intentionally invalid and must be exercised through `scripts/test-change-metadata-validator.py`, which owns expected-failure assertions.
 
 ## Scope Control
 
@@ -106,17 +119,17 @@ The implementation preserves these non-goals:
 - Transcript internals were not standardized.
 - No CLI scaffolding was added for writing compact metadata.
 - Compactness proof is subordinate to reconstruction and count-preservation checks.
+- CI-maintenance changed selector routing only; it did not change validation bundle selection, validator semantics, command exit behavior, or failure detection.
 
 Unrelated local lifecycle-validator edits and untracked learn artifacts are present in the worktree but are not part of this committed branch diff or this explanation.
 
 ## Risks And Follow-Ups
 
-- Final selected CI has not run yet.
-- Final verify has not run yet.
+- Final verify rerun has not run yet after the CI-maintenance selector change.
 - PR handoff has not been prepared.
 - Compactness proof uses a representative fixture pair, so future changes to fixture formatting should keep reconstruction and count preservation ahead of byte-count assertions.
 - Follow-on work remains possible for bulk migration, a standardized `change.validation-log.yaml` internal schema, and CLI scaffolding that writes compact metadata automatically.
 
 ## Current Readiness
 
-All implementation milestones are closed after clean code review. This explanation records the rationale needed before final verification. The next workflow stage is `verify`; this artifact does not claim verify, CI, branch, or PR readiness.
+All implementation milestones are closed after clean code review, and ci-maintenance has fixed the selected-CI fixture routing blocker found during verify. This refreshed explanation records the selector change rationale needed before final verification rerun. The next workflow stage is `verify`; this artifact does not claim verify, branch, or PR readiness.
