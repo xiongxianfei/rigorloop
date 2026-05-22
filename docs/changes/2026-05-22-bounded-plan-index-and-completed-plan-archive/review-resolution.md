@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -10,8 +10,25 @@ Review closeout: plan-review-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
+Review closeout: code-review-m4-r1
 
 ## Resolution Entries
+
+### code-review-m4-r1
+
+#### BPIX-M4-CR1
+
+Finding ID: BPIX-M4-CR1
+Disposition: accepted
+Status: open
+Owner: implementer
+Owning stage: review-resolution
+Chosen action: Update plan guidance to include the missing R8a lifecycle ownership points.
+Rationale: The finding is directly supported by the approved spec and is fixable inside the current M4 scope without a new product, architecture, or spec decision.
+Required outcome: Plan guidance must explicitly include the missing R8a ownership points or record a spec-backed rationale for why another plan-guidance surface satisfies `R8a`.
+Safe resolution path: Add concise wording to `skills/plan/SKILL.md` near the existing plan authoring rules that says `implement` owns ongoing plan-body progress/decision/validation updates, final lifecycle closeout owns lifecycle state transitions across the plan index surfaces and plan body, and `verify` challenges stale lifecycle state before `branch-ready`; then rerun the M4 skill, generated-output, adapter, metadata, lifecycle, and diff validation commands.
+Validation target: `skills/plan/SKILL.md` includes all five R8a plan-guidance ownership points and the M4 validation commands pass after the fix.
+Validation evidence: pending
 
 ### code-review-m3-r1
 

@@ -68,11 +68,11 @@ The main implementation surfaces are:
 ## Current Handoff Summary
 
 - Current milestone: M4. Contributor guidance and skill alignment
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M3. Index/archive migration and preservation proof
-- Review status: M4 implementation complete; code-review requested
+- Review status: code-review M4 R1 changes-requested; open finding BPIX-M4-CR1
 - Remaining in-scope implementation milestones: M4, M5, M6
-- Next stage: code-review M4
+- Next stage: review-resolution for BPIX-M4-CR1
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
 
@@ -198,7 +198,7 @@ The main implementation surfaces are:
 
 ### M4. Contributor guidance and skill alignment
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Make archive maintenance, lifecycle markers, and active supersession structure discoverable in contributor-facing guidance.
 - Requirements: `R4`, `R5`, `R6`, `R6a`, `R6b`, `R8`, `R8a`, `R17`, `R17a`-`R17i`
 - Files/components likely touched:
@@ -368,6 +368,7 @@ The main implementation surfaces are:
 - 2026-05-22: Code-review M3 R1 passed clean-with-notes; M3 closed and M4 is next.
 - 2026-05-22: Began M4 guidance alignment, updated workflow guidance, root agent guidance, the example plan, and the `plan` skill with archive maintenance, explicit lifecycle marker, and active supersession wording.
 - 2026-05-22: M4 implementation reached `review-requested`; next stage is code-review for M4 before validation selector routing work begins.
+- 2026-05-22: Code-review M4 R1 found BPIX-M4-CR1; plan guidance does not explicitly cover all R8a ownership bullets.
 
 ## Decision log
 
@@ -432,4 +433,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M4 code-review; not ready for final closeout.
+- M4 needs review-resolution for BPIX-M4-CR1; not ready for final closeout.
