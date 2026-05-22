@@ -67,12 +67,12 @@ The main implementation surfaces are:
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Index/archive migration and preservation proof
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Validator contract and fixtures
-- Review status: M3 implementation complete; code-review requested
-- Remaining in-scope implementation milestones: M3, M4, M5, M6
-- Next stage: code-review M3
+- Current milestone: M4. Contributor guidance and skill alignment
+- Current milestone state: planned
+- Last reviewed milestone: M3. Index/archive migration and preservation proof
+- Review status: code-review M3 R1 clean-with-notes; no open findings
+- Remaining in-scope implementation milestones: M4, M5, M6
+- Next stage: implement M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
 
@@ -159,7 +159,7 @@ The main implementation surfaces are:
 
 ### M3. Index/archive migration and preservation proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Create `docs/plan-archive.md`, compact `docs/plan.md`, move older terminal history, add plan-body lifecycle markers where needed, and record migration proof.
 - Requirements: `R3c`, `R3d`, `R3e`, `R3f`, `R3g`-`R3p`, `R9`, `R10`, `R10a`, `R11`, `R11a`, `R12`, `R13`, `R14`, `R16`, `R17`, `R17a`-`R17i`
 - Files/components likely touched:
@@ -189,7 +189,8 @@ The main implementation surfaces are:
   - progress updated
   - decision log updated if needed
   - validation notes updated
-  - milestone commit pending
+  - milestone committed in `ab69942`
+  - code-review M3 R1 clean-with-notes
 - Risks:
   - Risk: a dense historical Done entry loses useful disposition during compaction.
 - Rollback/recovery:
@@ -364,6 +365,7 @@ The main implementation surfaces are:
 - 2026-05-22: Began M3 migration, compacted `docs/plan.md` to Active, Blocked, Done (recent), and Superseded, created `docs/plan-archive.md`, and recorded `plan-index-migration.md`.
 - 2026-05-22: Preserved all 75 pre-migration Done entries: 10 remain in `docs/plan.md` Done (recent), 65 moved to `docs/plan-archive.md`, and the migration table records every link with duplicate status.
 - 2026-05-22: M3 implementation reached `review-requested`; next stage is code-review for M3 before contributor guidance work begins.
+- 2026-05-22: Code-review M3 R1 passed clean-with-notes; M3 closed and M4 is next.
 
 ## Decision log
 
@@ -406,6 +408,10 @@ The main implementation surfaces are:
 - 2026-05-22: `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed after M3 migration.
 - 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md` passed after M3 handoff state update with the existing lifecycle-language warning for merge-state wording in the spec.
 - 2026-05-22: `git diff --check --` passed after M3 migration.
+- 2026-05-22: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive` passed after code-review M3 R1 recording.
+- 2026-05-22: `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed after code-review M3 R1 recording.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md` passed after code-review M3 R1 recording with the existing lifecycle-language warning for merge-state wording in the spec.
+- 2026-05-22: `git diff --check --` passed after code-review M3 R1 recording.
 
 ## Outcome and retrospective
 
@@ -414,4 +420,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M3 code-review; not ready for final closeout.
+- Ready for M4 implementation; not ready for final closeout.
