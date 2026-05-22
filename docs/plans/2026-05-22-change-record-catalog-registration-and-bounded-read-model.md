@@ -60,14 +60,14 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Stage-skill read guidance and generated adapter proof
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Bounded change-record query helper
-- Review status: M4 implementation complete; awaiting code-review
-- Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review
+- Current milestone: M5. Lifecycle evidence and final closeout
+- Current milestone state: planned
+- Last reviewed milestone: M4. Stage-skill read guidance and generated adapter proof
+- Review status: M4 code-review recorded clean-with-notes; no material findings.
+- Remaining in-scope implementation milestones: M5
+- Next stage: implement M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 code-review, M5, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M5, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -261,7 +261,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ### M4. Stage-skill read guidance and generated adapter proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Update affected stage skills to name bounded change-record slices or query-helper commands after helper command names are stable, then validate generated adapter output.
 - Requirements: CRM-R44 through CRM-R48, CRM-R49 through CRM-R52; AC-CRM-013, AC-CRM-014, AC-CRM-016, AC-CRM-017.
 - Files/components likely touched:
@@ -409,6 +409,9 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: M2 implemented `unregistered-change-evidence` classification, stable registration-debt diagnostics for deterministic unregistered evidence, registered `selector-routing-proof.md` as routing-coverage evidence, and added actual local changed-path proof distinguishing local routing from explicit-path selection.
 - 2026-05-22: `code-review-m2-r1` recorded material finding `CRM-M2-CR1`; M2 moved to `resolution-needed`.
 - 2026-05-22: `CRM-M2-CR1` accepted and fixed by adding owner-approved deferral parsing/evaluation, no-deferral, incomplete-deferral, mismatched-path, and complete-deferral selector tests; M2 moved back to `review-requested`.
+- 2026-05-22: M3 implemented the bounded change-record query helper and resolved `CRM-M3-CR1`; `code-review-m3-r2` closed M3 and handoff moved to M4 implementation.
+- 2026-05-22: M4 implemented bounded change-record read guidance in `proposal-review`, `code-review`, `verify`, `pr`, and `plan`, with static skill proof and adapter validation evidence.
+- 2026-05-22: `code-review-m4-r1` recorded clean review for bounded change-record read guidance. M4 closed and handoff moved to M5 implementation.
 
 ## Decision log
 
@@ -446,6 +449,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: M4 validation passed: `python scripts/test-skill-validator.py` initially failed before skill edits on missing bounded-read guidance, then passed 161 tests after updates; `python scripts/validate-skills.py`; `python scripts/build-skills.py --check`; `python scripts/test-adapter-distribution.py`; archive adapter proof with `python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmp"` plus `python scripts/validate-adapters.py --root "$tmp" --version v0.1.5`; active query-helper summary smoke; explicit selected CI for changed skill, skill-test, and query-helper paths; `git diff --check --`.
 - 2026-05-22: `python scripts/build-adapters.py --check` still fails against baseline retired tracked adapter-tree expectations: default version `0.1.1` mismatches tracked `v0.1.5`, and `v0.1.5 --check` expects repository-tree adapter skill bodies that current `AGENTS.md` and `dist/adapters/README.md` say are release archives for `v0.1.3` and later. M4 used release-archive generation and validation as the current supported adapter proof and recorded the baseline check mismatch for code-review visibility.
 - 2026-05-22: M4 implemented bounded change-record read guidance in `proposal-review`, `code-review`, `verify`, `pr`, and `plan` skills. Added static regression proof that affected skills name bounded slices or query commands and full-read escalation conditions. M4 moved to `review-requested`.
+- 2026-05-22: Code-review M4 R1 found no material findings. Review recording validation passed with review artifact closeout, change metadata validation, artifact lifecycle validation, explicit selected CI, and whitespace check.
 
 ## Outcome and retrospective
 
@@ -454,4 +458,4 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M4 code-review; not ready for final closeout, verify, PR handoff, or Done.
+- Ready for M5 implementation; not ready for final closeout, verify, PR handoff, or Done.

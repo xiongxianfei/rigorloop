@@ -129,3 +129,16 @@ Chosen action: Record clean M3 re-review after CRM-M3-CR1 resolution.
 Rationale: R2 found no material findings and confirmed the accepted compact `path_vars` artifact extraction fix satisfies CRM-R29, CRM-R32, CRM-R33, CRM-R36, CRM-T016, and the CRM-M3-CR1 regression.
 Validation target: Review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation for the touched review, plan, query-helper, and lifecycle artifacts.
 Validation evidence: `python scripts/test-query-change-record.py`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model artifacts`; direct compact `path_vars` fixture proof using `tests/fixtures/change-metadata/compact-valid/change.yaml` copied under a temporary `docs/changes/compact-valid/change.yaml`; final review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation are recorded in `change.yaml`.
+
+### code-review-m4-r1
+
+Finding closeout for `code-review-m4-r1`.
+
+Material findings: None
+Disposition: accepted
+Owner: code-review
+Owning stage: code-review
+Chosen action: Record clean M4 review after bounded change-record read guidance and generated adapter proof.
+Rationale: R1 found no material findings and confirmed the M4 skill guidance satisfies CRM-R44 through CRM-R48 and CRM-T021 through CRM-T022 while preserving current workflow, validation, and readiness semantics.
+Validation target: Review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation for the touched review, plan, skill-guidance, and lifecycle artifacts.
+Validation evidence: Final review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation are recorded in `change.yaml`.
