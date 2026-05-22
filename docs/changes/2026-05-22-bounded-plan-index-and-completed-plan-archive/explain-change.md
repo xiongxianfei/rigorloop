@@ -2,87 +2,159 @@
 
 ## Status
 
-M6 implementation explanation recorded; final verify and PR handoff remain downstream.
+Explain-change recorded for implementation closeout. Final `verify` and PR handoff remain downstream and are not claimed here.
 
-## M2 validator contract and fixtures
+## Summary
 
-M2 adds structural validation for the approved plan-index archive contract before the historical migration runs.
+This change turns `docs/plan.md` back into a bounded common-read index for active, blocked, recent done, and active supersession context. Older terminal plan history now lives in `docs/plan-archive.md`, with validator and selector support so completed plans remain findable after both the first migration and future routine archival.
 
-The validator now detects explicit plan-body lifecycle markers, checks terminal plan conservation across `Done (recent)` and `Done (archive)`, rejects archive-only nonterminal plans, enforces the recent Done cap, validates terminal entry links, and enforces active supersession fields.
+The implementation also adds explicit plan-body lifecycle markers, structural supersession rules, contributor guidance, selection routing, migration proof, and durable review evidence. A post-merge sync also updated the newly merged PR #85 plan body and index entry so `origin/main`'s merged state does not conflict with this branch's bounded index contract.
 
-The test suite adds fixture-driven coverage for valid and invalid archive states, lifecycle marker contradictions and unknown values, legacy prose-only status with no terminal inference, and active supersession context.
+## Problem
 
-## M3 index/archive migration
+The original `docs/plan.md` carried both live orientation state and an unbounded `Done` history. That made the file grow with accumulated project history instead of with the active working set, while the completed entries still needed to remain recoverable for provenance.
 
-M3 applies the approved archive split to the real plan index.
+The accepted invariant was: keep Active and Blocked first and cheap to read, preserve every completed plan, cap recent Done history, and move older terminal history to an archive without changing plan lifecycle facts.
 
-`docs/plan.md` now keeps Active and Blocked first, adds the index policy comment, points to `docs/plan-archive.md`, and keeps only the 10 most recent completed plans in `Done (recent)`.
+## Decision Trail
 
-`docs/plan-archive.md` stores the older 65 completed-plan entries newest-first as compact one-line terminal summaries.
+The proposal selected a summary/archive split: `docs/plan.md` stays the first-read plan index, and `docs/plan-archive.md` stores older terminal history. The proposal also settled the open questions: the first cap is 10 recent Done entries, ordering is newest-first, the common-read budget is structural rather than a separate line count, terminal superseded history is archived unless it carries active supersession context, and validators enforce structural shape while code review owns semantic quality.
 
-`docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` records the preservation proof: 75 pre-migration Done entries, 10 recent entries, 65 archived entries, no duplicates, and every pre-migration entry marked preserved.
+Spec-review added two blocking clarifications before implementation: `BPIX-SR1` required deterministic terminal lifecycle detection, and `BPIX-SR2` required a testable supersession boundary. The spec now uses explicit `Plan lifecycle state` and `Terminal disposition` fields in the plan body and requires `superseded by:` plus non-empty `active-context:` for superseded entries kept in the main index.
 
-Legacy prose-only completed plan bodies were not bulk-edited with lifecycle markers in this migration. Per the approved compatibility rule, the initial migration preserves those historical terminal entries through the migration table instead of prose-based terminal inference.
+Implementation followed the reviewed plan milestones:
 
-## M4 contributor guidance and skill alignment
+- M1 refreshed the test spec for the archive contract.
+- M2 implemented validator support and fixtures, then resolved `BPIX-M2-CR1` by making terminal conservation run when a scoped plan body has an explicit terminal marker.
+- M3 migrated historical Done entries into the bounded index/archive split and recorded count preservation.
+- M4 updated contributor guidance and the `plan` skill, then resolved `BPIX-M4-CR1` by adding the missing R8a lifecycle ownership bullets.
+- M5 updated validation selection so plan index/archive changes and migration proof changes select lifecycle validation.
+- M6 recorded final implementation evidence and kept the active plan in the correct downstream handoff state.
 
-M4 makes the archive contract discoverable in contributor-facing surfaces.
+No separate architecture artifact was created because the approved plan records this as a workflow/validator/artifact contract change, not a new runtime architecture, persistence, deployment, or API boundary.
 
-`docs/workflows.md` now names `docs/plan-archive.md` in artifact locations and planned-work guidance, explains the recent Done window, points terminal history to the archive, and names the explicit plan-body lifecycle marker and active supersession fields.
+## Diff Rationale By Area
 
-`AGENTS.md` now distinguishes `docs/plan.md` from `docs/plan-archive.md`, warns that nonterminal work must not be archived, and records the lifecycle marker and active supersession rules in the plan file policy.
+| File or area | Change | Reason | Source artifact | Test/evidence |
+| --- | --- | --- | --- | --- |
+| `docs/plan.md` | Added an index policy comment, kept Active and Blocked first, renamed Done to `Done (recent)`, capped it at 10 entries, added the archive pointer, and compacted terminal entries to one line. | Satisfies the bounded common-read index contract while preserving recent completion context. | Proposal; `R2`, `R3c`-`R3f`, `R10`, `R10a`, `R11`, `R12`, `R15c`, `R15d` | Migration assertion; lifecycle validation over plan surfaces |
+| `docs/plan-archive.md` | Added the archive and moved older terminal Done entries there newest-first. | Preserves completed-plan provenance without keeping all history in the common-read file. | Proposal; `R2a`, `R3c`, `R11`, `R12`, `R14`, `R16` | Migration proof: 75 pre-migration Done entries = 10 recent + 65 archive |
+| `docs/changes/.../plan-index-migration.md` | Recorded pre/post counts, duplicate status, link preservation, and per-entry location. | Proves the first migration archived rather than deleted historical Done entries. | `R16`, proposal migration proof | Count/link assertion and lifecycle validation |
+| `specs/plan-index-lifecycle-ownership.md` | Added archive definitions, structural common-read budget, explicit lifecycle marker, terminal conservation, active supersession context, cap, ordering, archive ownership, and validation obligations. | Converts the proposal into a testable lifecycle contract and resolves spec-review blockers. | `BPIX-SR1`, `BPIX-SR2`; `R3g`-`R3p`, `R10`-`R17i` | Spec lifecycle validation; spec-review R2 approval |
+| `specs/plan-index-lifecycle-ownership.test.md` | Added traceable tests `T1`-`T18`, including terminal marker cases, conservation, archive cap, link checks, supersession structure, migration proof, guidance, and selector routing. | Makes every archive/lifecycle rule testable before and during implementation. | Test-spec from approved spec | Implemented in validator and selector test suites |
+| `scripts/artifact_lifecycle_validation.py` | Parses explicit plan-body lifecycle markers, validates marker contradictions, checks recent/archive entries, enforces the cap and one-line terminal shape, checks links, rejects archive-only nonterminal plans, enforces supersession markers, and triggers conservation for explicit terminal plan bodies in scope. | Makes completed-plan conservation a standing invariant, not only a one-time migration proof. | `R3g`-`R3p`, `R7a`, `R15`-`R15d`, `R17d`, `R17e`, `BPIX-M2-CR1` | `python scripts/test-artifact-lifecycle-validator.py` |
+| `scripts/test-artifact-lifecycle-validator.py` | Added fixture coverage for valid terminal placement, missing terminal entries, duplicates, cap overflow, nonterminal archive-only placement, malformed markers, legacy prose-only status, active supersession context, and archived `active-context:` rejection. | Proves the validator catches the archive failure modes the proposal identified while preserving legacy prose-only exemption. | `T1`-`T13`, `T15`-`T16`; `BPIX-M2-CR1` | Full lifecycle validator regression passed |
+| `scripts/validation_selection.py` | Classifies `docs/plan.md` and `docs/plan-archive.md` as paired plan-index surfaces and routes migration proof changes with `docs/plan.md`, `docs/plan-archive.md`, and the owning `change.yaml`. | Ensures routine edits run the conservation checks over the union of recent and archived terminal entries. | `R15`, `R16`, M5 plan | Selector tests and explicit selected CI |
+| `scripts/test-select-validation.py` | Added selector regressions for plan archive surfaces, migration proof routing, representative path categories, and workflow surface sets. | Prevents the archive file or migration proof from becoming invisible to selected validation. | `T17`, `T18`, M5 plan | `python scripts/test-select-validation.py` |
+| `docs/workflows.md`, `AGENTS.md`, `docs/examples/plans/example-plan.md` | Documented the archive surface, bounded index shape, lifecycle marker, active supersession marker, and lifecycle ownership expectations. | Makes the new contract discoverable to contributors and future agents. | `R8`, `R8a`, M4 plan | M4 guidance audit; lifecycle validation |
+| `skills/plan/SKILL.md` | Updated plan-authoring guidance for bounded index maintenance, archive updates, lifecycle markers, supersession markers, and the R8a ownership bullets. | Keeps the adopter-facing plan guidance self-contained instead of relying only on repository workflow docs. | `R8a`, `BPIX-M4-CR1` | Skill validation, build-skills check, adapter build/validation, R8a direct audit |
+| `docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md` | Added the execution plan and kept Current Handoff Summary, progress, milestones, decisions, risks, and validation notes current through M6. | The plan owns current milestone and downstream handoff state for this planned initiative. | Active plan policy; M1-M6 | Code-review M6 clean-with-notes |
+| `docs/changes/.../change.yaml`, `review-log.md`, review records, `review-resolution.md` | Recorded artifacts, requirements/tests, validation commands, review events, material findings, and dispositions. | Preserves durable workflow evidence and proves material findings were resolved before downstream handoff. | Workflow contract; review skills | Review-artifact closeout validation |
+| `docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md` | During sync with merged PR #85, changed its plan body from stale active/open wording to explicit `done` with `merged` disposition. | The merge brought in a plan that still said PR #85 was open; the bounded index now lists that plan in Done (recent), so the plan body needed to stop contradicting reality. | Plan lifecycle ownership `R3`, `R3b`, `R5`, `R7a` | Post-merge lifecycle validation over the plan body and index surfaces |
 
-`docs/examples/plans/example-plan.md` now includes the explicit `## Status` marker and points closeout updates to the plan index surfaces rather than only `docs/plan.md`.
+## Tests Added Or Changed
 
-`skills/plan/SKILL.md` now tells plan authors to keep the index bounded, update the archive when archiving terminal history, use explicit lifecycle marker fields, and keep active supersession context structurally labeled.
+The lifecycle validator tests cover:
 
-BPIX-M4-CR1 was resolved by adding the three missing R8a ownership points to `skills/plan/SKILL.md`: `implement` owns ongoing plan-body progress, decision, discovery, and validation-note updates; final lifecycle closeout owns lifecycle state transitions across plan index surfaces and the plan body; and `verify` challenges stale lifecycle state before `branch-ready`.
+- explicit terminal and nonterminal marker parsing;
+- malformed, contradictory, duplicated, and unknown marker fields;
+- no terminal inference from legacy prose-only status;
+- terminal plan missing from both Done surfaces;
+- terminal plan duplicated across recent and archive;
+- recent Done cap enforcement;
+- broken terminal entry links;
+- archive-only nonterminal placement;
+- one-line terminal entry shape;
+- active supersession context structure;
+- archived superseded entries without `active-context:`.
 
-T14 was strengthened so future guidance checks must verify each R8a ownership point in each named surface, rather than accepting keyword or marker presence alone.
+The selector tests cover:
 
-## M5 selection and CI routing
+- plan index surface changes selecting lifecycle validation with both `docs/plan.md` and `docs/plan-archive.md`;
+- migration proof changes selecting lifecycle validation with the migration proof, `change.yaml`, and both index surfaces;
+- representative lifecycle/workflow path routing;
+- unchanged broad-smoke selected-validation behavior around the new surfaces.
 
-M5 makes selected validation understand the new archive surfaces.
+This level is appropriate because the risky behavior is structural artifact validation and selection routing, not application runtime behavior. Fixture-based validator tests directly exercise the failure modes, and selector tests prove the checks run when the relevant files change.
 
-`scripts/validation_selection.py` now classifies both `docs/plan.md` and `docs/plan-archive.md` as plan-index surfaces. A change to either surface selects `artifact_lifecycle.validate` with both surfaces, so routine archival validates the recent/archive union rather than only the edited file.
+## Validation Evidence Available Before Final Verify
 
-The selector now treats `docs/changes/<change-id>/plan-index-migration.md` as a change-local lifecycle artifact and adds `docs/plan.md`, `docs/plan-archive.md`, and the governing `change.yaml` to the lifecycle validation command. This keeps migration proof checks tied to the index/archive state they prove.
+Implementation and review recorded these passing commands:
 
-`scripts/test-select-validation.py` adds regression coverage for archive-surface routing, migration-proof routing, representative path classification, and the larger workflow surface set. The CI wrapper did not need a code change because `scripts/ci.sh --mode explicit` already executes the selected `artifact_lifecycle.validate` and `selector.regression` checks.
+- `python scripts/test-artifact-lifecycle-validator.py`
+- `python -m py_compile scripts/artifact_lifecycle_validation.py scripts/artifact_lifecycle_contracts.py`
+- `python scripts/test-select-validation.py`
+- `python -m py_compile scripts/validation_selection.py`
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml`
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive`
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md`
+- `python scripts/validate-skills.py skills/plan/SKILL.md`
+- `python scripts/validate-skills.py`
+- `python scripts/build-skills.py --check`
+- `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir> && python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`
+- `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md`
+- `bash scripts/ci.sh`
+- `git diff --check --`
 
-## M6 lifecycle closeout and handoff evidence
+Additional manual/scripted checks recorded:
 
-M6 records final implementation evidence without moving the initiative to Done or claiming PR readiness.
+- migration proof count/link assertion: 75 pre-migration Done entries, 10 recent, 65 archived, no duplicates, no broken links;
+- M4 guidance audit for archive, lifecycle marker, and active-context guidance;
+- R8a direct ownership audit for `docs/workflows.md` and `skills/plan/SKILL.md`;
+- post-merge sync validation: conflict marker scan, `git diff --check --`, and explicit lifecycle validation over `docs/plan.md`, `docs/plan-archive.md`, and the PR #85 plan body.
 
-The active plan and `docs/plan.md` remain in Active state. The current handoff is for M6 code-review, and final closeout remains blocked on M6 review, downstream verify, and PR handoff.
+Some lifecycle validation runs reported the existing lifecycle-language warning for merge-state wording in the governing spec. That warning was recorded in the plan validation notes and did not block the implementation milestones.
 
-Final validation for the implementation slice includes lifecycle validator fixtures, selector fixtures, review-artifact closeout validation, explicit lifecycle validation for the plan index surfaces and governing spec/test spec, and broad smoke through `bash scripts/ci.sh`.
+## Review Resolution Summary
 
-The implementation does not add a generated registry, background synchronization, CLI scaffolding, fake merge state, fake CI state, or host-only state.
+Detailed review evidence is in `docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/review-log.md` and `docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/review-resolution.md`.
 
-## Validation
+Material findings resolved:
 
-- `python scripts/test-artifact-lifecycle-validator.py` passed.
-- `python - <<'PY' ... R8a direct ownership audit` passed after BPIX-M4-CR1 fix.
-- `python - <<'PY' ... M4 guidance audit` passed after M4 guidance updates.
-- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path AGENTS.md --path docs/examples/plans/example-plan.md --path specs/plan-index-lifecycle-ownership.test.md` passed after BPIX-M4-CR1 fix.
-- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md` passed after M4 plan-index state update.
-- `python scripts/validate-skills.py skills/plan/SKILL.md` passed after M4 guidance updates.
-- `python scripts/validate-skills.py` passed after M4 guidance updates.
-- `python scripts/build-skills.py --check` passed after M4 guidance updates.
-- `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir> && python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5` passed after M4 guidance updates.
-- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md` passed after M4 handoff state update with the existing lifecycle-language warning in the spec.
-- `python - <<'PY' ... migration proof count/link assertion` passed after M3 migration.
-- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` passed after M3 migration.
-- `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed after M3 migration.
-- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md` passed with the existing lifecycle-language warning in the spec.
-- `python -m py_compile scripts/artifact_lifecycle_validation.py scripts/artifact_lifecycle_contracts.py` passed.
-- `python scripts/test-select-validation.py ValidationSelectionTests.test_plan_index_surfaces_select_lifecycle_validation_with_both_surfaces ValidationSelectionTests.test_plan_index_migration_proof_routes_with_metadata_and_index_surfaces ValidationSelectionTests.test_first_slice_representative_categories_route_or_block_safely ValidationSelectionTests.test_workflow_refactor_surface_set_selects_expected_checks` passed after M5 implementation.
-- `python scripts/test-select-validation.py` passed after M5 implementation.
-- `python -m py_compile scripts/validation_selection.py` passed after M5 implementation.
-- `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` selected `selector.regression` and `artifact_lifecycle.validate` with `docs/plan.md`, `docs/plan-archive.md`, the migration proof, and its `change.yaml`.
-- `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` passed after M5 implementation.
-- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive` passed during M6 implementation.
-- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md` passed during M6 implementation with the existing lifecycle-language warning in the spec.
-- `bash scripts/ci.sh` passed during M6 implementation.
-- `git diff --check --` passed.
+- `BPIX-SR1`: accepted and resolved by defining explicit plan-body lifecycle-state markers and forbidding prose-based terminal inference.
+- `BPIX-SR2`: accepted and resolved by defining structural active supersession context in `docs/plan.md`.
+- `BPIX-M2-CR1`: accepted and resolved by adding the plan-body-only terminal conservation regression and trigger.
+- `BPIX-M4-CR1`: accepted and resolved by adding missing R8a ownership guidance to `skills/plan/SKILL.md` and strengthening T14.
+
+Clean review events with no material findings were recorded for spec-review R2, plan-review R1, code-review M2 R2, code-review M3 R1, code-review M4 R2, code-review M5 R1, and code-review M6 R1. `review-resolution.md` reports closeout status as closed with no unresolved material findings.
+
+## Alternatives Rejected
+
+- Keep the unbounded single-file Done history: rejected because it keeps common orientation cost proportional to historical volume.
+- Delete old Done entries: rejected because it destroys provenance.
+- Move Done lower in the same file: rejected because it does not bound file growth.
+- Generate the plan index from a machine-readable registry now: rejected as larger mechanism than needed for this slice.
+- Infer terminal lifecycle state from arbitrary plan prose: rejected by `BPIX-SR1` because prose-heavy plans are not deterministic enough for validation.
+- Treat supersession placement as unlabeled prose: rejected by `BPIX-SR2` because the main-index/archive boundary must be structurally testable.
+- Bulk-edit legacy plan bodies with lifecycle markers: rejected for this migration; legacy completed history is preserved through the migration proof as required by the spec.
+- Hand-edit generated adapter output: not done; adapter proof used temporary generated output validation.
+- Add CLI/scaffolding for automatic archive maintenance: deferred as a follow-up because validator and guidance are sufficient for the first slice.
+
+## Scope Control
+
+The implementation preserves the non-goals:
+
+- It does not delete completed plan records.
+- It does not remove plan files from `docs/plans/`.
+- It does not bulk-rewrite individual legacy plan bodies solely for archival.
+- It does not change milestone, PR, review, verify, or closeout semantics beyond the approved lifecycle/index contract.
+- It does not hide active, blocked, review-requested, resolution-needed, or ambiguous work in the archive.
+- It does not turn `docs/plan.md` into a long-form plan body.
+- It does not add a generated registry, background synchronization, or CLI scaffolding.
+
+The only non-core synced change is the PR #85 plan-body cleanup required after merging `origin/main`; it makes the plan body's lifecycle state match the newly merged PR and the bounded Done entry.
+
+## Risks And Follow-Ups
+
+Remaining risks:
+
+- Manual archive maintenance can still drift if future contributors bypass validation.
+- Code review still owns semantic quality of one-line summaries and `active-context:` rationales.
+- Legacy prose-only completed plans remain migration-proof-owned unless they later receive explicit lifecycle markers.
+- Final branch readiness is not claimed until the downstream `verify` stage reruns the required validation from the current synced branch.
+
+Follow-ups already identified:
+
+- Consider a generated plan-index registry if manual archive maintenance remains costly.
+- Consider CLI/scaffolding support that updates `docs/plan.md` and `docs/plan-archive.md` together.
+- Consider applying the compact index/archive pattern to other lifecycle indexes if similar growth appears.
