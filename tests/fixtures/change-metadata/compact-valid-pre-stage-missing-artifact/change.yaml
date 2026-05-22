@@ -1,0 +1,19 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-missing-before-stage
+  spec: specs/{slug}.md
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+validation_events:
+  - stage: proposal-review-r1
+    lifecycle_stage: proposal-review
+    bundles:
+      - lifecycle
+    result: pass
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - proposal-review-r1
+  final_counts: {}
+  open_validation_blockers: []

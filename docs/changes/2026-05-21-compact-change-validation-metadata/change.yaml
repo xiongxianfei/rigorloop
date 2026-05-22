@@ -1,0 +1,433 @@
+change_id: 2026-05-21-compact-change-validation-metadata
+title: Compact change validation metadata
+classification: proposal-review-recording
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-21-compact-change-validation-metadata.md
+  spec: specs/compact-change-validation-metadata.md
+  test_spec: specs/compact-change-validation-metadata.test.md
+  plan: docs/plans/2026-05-21-compact-change-validation-metadata.md
+  explain_change: docs/changes/2026-05-21-compact-change-validation-metadata/explain-change.md
+  review_resolution: docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md
+requirements:
+  - Review compact change validation metadata proposal for readiness for spec.
+tests:
+  - Proposal-review R1 approved the proposal with no material findings and one non-blocking cleanup recommendation.
+  - Spec authoring created the compact change validation metadata contract and settled the approved proposal status to accepted.
+  - Spec-review R1 found CVM-SR1, CVM-SR2, and CVM-SR3 requiring spec clarification before downstream reliance.
+  - Spec revision resolved CVM-SR1, CVM-SR2, and CVM-SR3; formal spec-review rerun remains the next gate.
+  - Spec-review R2 approved the revised spec with no material findings.
+  - Plan authoring normalized the approved spec status and created the active execution plan.
+  - Plan-review R1 approved the execution plan with no material findings.
+  - Test-spec authoring created the fixture-driven proof plan for compact change metadata validation.
+  - Maintainer approved the active test spec for implementation reliance.
+  - M1 added compact shape recognition and legacy compatibility validator coverage; M1 is ready for code-review.
+  - Code-review M1 R1 returned clean-with-notes with no material findings; M1 is closed.
+  - M2 added compact path-variable, lifecycle-stage, first-exists, canonical spec/test-spec path, and transcript-reference validator coverage; M2 is ready for code-review.
+  - Code-review M2 R1 found CVM-M2-CR1; M2 requires review-resolution before re-review.
+  - Review-resolution accepted CVM-M2-CR1 and added compact bundle-command safety validation; M2 is ready for code-review rerun.
+  - Code-review M2 R2 returned clean-with-notes with no material findings; M2 is closed.
+  - M3 added compact reconstruction, summary derivation, review-count cross-checking, compactness, and no-execution validator coverage; M3 is ready for code-review.
+  - Code-review M3 R1 found CVM-M3-CR1, CVM-M3-CR2, and CVM-M3-CR3; M3 requires review-resolution before re-review.
+  - Review-resolution accepted and resolved CVM-M3-CR1, CVM-M3-CR2, and CVM-M3-CR3; M3 is ready for code-review rerun.
+  - Code-review M3 R2 returned clean-with-notes with no material findings; M3 is closed and next stage is explain-change.
+  - Explain-change recorded the branch rationale, file-level traceability, review-resolution summary, alternatives, non-goals, validation evidence, and remaining verify/PR risks.
+  - Verify found focused validator proof and broad smoke passing, but selected CI is blocked because `tests/fixtures/change-metadata/**` fixture paths are unclassified by the validation selector.
+  - CI-maintenance added `tests/fixtures/change-metadata/**` selector routing to the change metadata regression suite and selected CI now passes for the full branch changed-file set.
+  - Explain-change was refreshed after ci-maintenance to include selector-routing rationale, selected-CI evidence, and the remaining verify/PR risks.
+  - Verify rerun found selected CI still blocked on case-sensitive lifecycle heading matching for the accepted proposal's title-case `Recommended Direction`; the lifecycle validator now accepts lifecycle section headings case-insensitively with regression coverage.
+  - Final verify rerun passed from clean tracked branch state, including metadata regressions, lifecycle regression, selector regression, representative and full branch selected CI, broad smoke, active metadata validation, review closeout validation, and lifecycle validation.
+  - After final verify evidence was recorded, post-commit branch-tip selected CI and artifact checks also passed.
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/proposals/2026-05-21-compact-change-validation-metadata.md
+  review_log: docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_proposal_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_proposal_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md
+    result: pass_after_proposal_review_r1_recording
+  - command: git diff --check -- docs/proposals/2026-05-21-compact-change-validation-metadata.md docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_proposal_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md
+    result: pass_after_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_spec_authoring
+  - command: git diff --check -- docs/proposals/2026-05-21-compact-change-validation-metadata.md specs/compact-change-validation-metadata.md docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_spec_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_spec_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/compact-change-validation-metadata.md --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md
+    result: pass_after_spec_review_r1_recording
+  - command: git diff --check -- docs/changes/2026-05-21-compact-change-validation-metadata specs/compact-change-validation-metadata.md docs/proposals/2026-05-21-compact-change-validation-metadata.md
+    result: pass_after_spec_review_r1_recording
+  - command: git diff --check --
+    result: pass_after_spec_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_spec_review_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md
+    result: pass_after_spec_review_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_2_findings_3_log_entries_2_resolution_entries_3_after_spec_review_resolution
+  - command: git diff --check --
+    result: pass_after_spec_review_r2_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_spec_review_r2_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_3_findings_3_log_entries_3_resolution_entries_3_after_spec_review_r2_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/spec-review-r2.md
+    result: pass_after_spec_review_r2_recording
+  - command: git diff --check --
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_3_findings_3_log_entries_3_resolution_entries_3_after_plan_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md
+    result: pass_after_plan_authoring
+  - command: git diff --check --
+    result: pass_after_plan_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_plan_review_r1_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_4_findings_3_log_entries_4_resolution_entries_3_after_plan_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/plan-review-r1.md
+    result: pass_after_plan_review_r1_recording
+  - command: git diff --check --
+    result: pass_after_test_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_test_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_4_findings_3_log_entries_4_resolution_entries_3_after_test_spec_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md
+    result: pass_after_test_spec_authoring
+  - command: python scripts/test-change-metadata-validator.py
+    result: fail_expected_before_m1_implementation_then_pass_after_m1_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml
+    result: pass_after_m1_implementation
+  - command: git diff --check --
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_4_findings_3_log_entries_4_resolution_entries_3_after_m1_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md
+    result: pass_after_m1_implementation
+  - command: python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py
+    result: pass_after_m1_implementation
+  - command: git diff --check --
+    result: pass_after_code_review_m1_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_code_review_m1_r1_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_5_findings_3_log_entries_5_resolution_entries_3_after_code_review_m1_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md
+    result: pass_after_code_review_m1_r1_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: fail_expected_before_m2_implementation_then_pass_after_m2_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-unresolved-var/change.yaml
+    result: expected_fail_unresolved_variable_after_m2_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-transcript-missing/change.yaml
+    result: expected_fail_missing_transcript_after_m2_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-lifecycle-stage/change.yaml
+    result: expected_fail_unknown_lifecycle_stage_after_m2_implementation
+  - command: python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py
+    result: pass_after_m2_implementation
+  - command: git diff --check --
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_m2_handoff_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_5_findings_3_log_entries_5_resolution_entries_3_after_m2_handoff_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md
+    result: pass_after_m2_handoff_recording
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_code_review_m2_r1_recording
+  - command: git diff --check --
+    result: pass_after_code_review_m2_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_code_review_m2_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md
+    result: pass_after_code_review_m2_r1_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: fail_expected_before_cvm_m2_cr1_resolution_then_pass_after_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-local-path/change.yaml
+    result: expected_fail_unsafe_machine_local_bundle_command_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-credential-url/change.yaml
+    result: expected_fail_credential_bearing_bundle_command_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-secret/change.yaml
+    result: expected_fail_secret_like_bundle_command_after_cvm_m2_cr1_resolution
+  - command: python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: git diff --check --
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_6_findings_4_log_entries_6_resolution_entries_4_after_cvm_m2_cr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md
+    result: pass_after_cvm_m2_cr1_resolution
+  - command: git diff --check --
+    result: pass_after_code_review_m2_r2_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_code_review_m2_r2_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_7_findings_4_log_entries_7_resolution_entries_4_after_code_review_m2_r2_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md
+    result: pass_after_code_review_m2_r2_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: fail_expected_before_m3_implementation_then_pass_after_m3_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml
+    result: pass_after_m3_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-summary-conflict/change.yaml
+    result: expected_fail_summary_conflict_after_m3_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid-review-counts/change.yaml
+    result: pass_after_m3_implementation
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-review-counts/change.yaml
+    result: expected_fail_review_count_mismatch_after_m3_implementation
+  - command: python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py scripts/review_artifact_validation.py
+    result: pass_after_m3_implementation
+  - command: git diff --check --
+    result: pass_after_m3_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_m3_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_7_findings_4_log_entries_7_resolution_entries_4_after_m3_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md
+    result: pass_after_m3_implementation
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_code_review_m3_r1_recording
+  - command: git diff --check --
+    result: pass_after_code_review_m3_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_code_review_m3_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3_r1_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-extra-summary-blocker/change.yaml
+    result: expected_fail_extra_summary_blocker_after_cvm_m3_cr1_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compactness-representative-compact/change.yaml
+    result: pass_after_cvm_m3_cr2_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compactness-representative-legacy/change.yaml
+    result: pass_after_cvm_m3_cr2_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-summary-conflict/change.yaml
+    result: expected_fail_summary_conflict_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid-review-counts/change.yaml
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-review-counts/change.yaml
+    result: expected_fail_review_count_mismatch_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py scripts/review_artifact_validation.py
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: git diff --check --
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_8_findings_7_log_entries_8_resolution_entries_7_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_9_findings_7_log_entries_9_resolution_entries_7_after_code_review_m3_r2_recording
+  - command: git diff --check --
+    result: pass_after_code_review_m3_r2_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_code_review_m3_r2_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md
+    result: pass_after_code_review_m3_r2_recording
+  - command: git diff --check --
+    result: pass_after_explain_change_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_explain_change_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_9_findings_7_log_entries_9_resolution_entries_7_after_explain_change_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/explain-change.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md
+    result: pass_after_explain_change_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_during_verify
+  - command: python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py scripts/review_artifact_validation.py
+    result: pass_during_verify
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml
+    result: pass_during_verify
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml
+    result: pass_during_verify
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-summary-conflict/change.yaml
+    result: expected_fail_summary_conflict_during_verify
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid-review-counts/change.yaml
+    result: pass_during_verify
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-review-counts/change.yaml
+    result: expected_fail_review_count_mismatch_during_verify
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-extra-summary-blocker/change.yaml
+    result: expected_fail_extra_summary_blocker_during_verify
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compactness-representative-compact/change.yaml
+    result: pass_during_verify
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compactness-representative-legacy/change.yaml
+    result: pass_during_verify
+  - command: git diff --check --
+    result: pass_during_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_73_tests_during_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_during_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_9_findings_7_log_entries_9_resolution_entries_7_during_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/explain-change.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md
+    result: pass_during_verify
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/change_metadata_semantics.py --path scripts/test-change-metadata-validator.py --path schemas/change.schema.json --path tests/fixtures/change-metadata --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: blocked_unclassified_tests_fixtures_change_metadata_path_during_verify
+  - command: bash scripts/ci.sh --mode explicit <branch-changed-files>
+    result: blocked_unclassified_tests_fixtures_change_metadata_files_during_verify
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: pass_with_unrelated_baseline_lifecycle_warnings_during_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_after_ci_maintenance
+  - command: python scripts/select-validation.py --mode explicit --path tests/fixtures/change-metadata/compact-valid/change.yaml --json
+    result: pass_classifies_change_metadata_fixture_and_selects_regression_after_ci_maintenance
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/change_metadata_semantics.py --path scripts/test-change-metadata-validator.py --path schemas/change.schema.json --path tests/fixtures/change-metadata/compact-valid/change.yaml --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_ci_maintenance
+  - command: bash scripts/ci.sh --mode explicit <branch-changed-files>
+    result: pass_after_ci_maintenance
+  - command: git diff --check --
+    result: pass_after_explain_change_refresh
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_explain_change_refresh
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_explain_change_refresh
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/explain-change.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md
+    result: pass_after_explain_change_refresh
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_lifecycle_title_case_fix
+  - command: python -m py_compile scripts/artifact_lifecycle_contracts.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_lifecycle_title_case_fix
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_during_final_verify_clean_head
+  - command: python scripts/test-select-validation.py
+    result: pass_during_final_verify_clean_head
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_during_final_verify_clean_head
+  - command: python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py scripts/review_artifact_validation.py scripts/artifact_lifecycle_contracts.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py
+    result: pass_during_final_verify_clean_head
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml
+    result: pass_during_final_verify_clean_head
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml
+    result: pass_during_final_verify_clean_head
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compactness-representative-compact/change.yaml
+    result: pass_during_final_verify_clean_head
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compactness-representative-legacy/change.yaml
+    result: pass_during_final_verify_clean_head
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-summary-conflict/change.yaml
+    result: expected_fail_during_final_verify_clean_head
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-review-counts/change.yaml
+    result: expected_fail_during_final_verify_clean_head
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-extra-summary-blocker/change.yaml
+    result: expected_fail_during_final_verify_clean_head
+  - command: python scripts/select-validation.py --mode explicit --path tests/fixtures/change-metadata/compact-valid/change.yaml --json
+    result: pass_classifies_change_metadata_fixture_and_selects_regression_during_final_verify_clean_head
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/change_metadata_semantics.py --path scripts/test-change-metadata-validator.py --path schemas/change.schema.json --path tests/fixtures/change-metadata/compact-valid/change.yaml --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_during_final_verify_clean_head
+  - command: bash scripts/ci.sh --mode explicit <branch-changed-files>
+    result: pass_during_final_verify_clean_head
+  - command: git diff --check --
+    result: pass_during_final_verify_clean_head
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_during_final_verify_clean_head
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_9_findings_7_log_entries_9_resolution_entries_7_during_final_verify_clean_head
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/explain-change.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md
+    result: pass_during_final_verify_clean_head
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: pass_with_unrelated_baseline_lifecycle_warnings_during_final_verify_clean_head
+  - command: git diff --check --
+    result: pass_after_final_verify_evidence_commit
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_final_verify_evidence_commit
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_final_verify_evidence_commit
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/explain-change.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md
+    result: pass_after_final_verify_evidence_commit
+  - command: bash scripts/ci.sh --mode explicit <branch-changed-files>
+    result: pass_after_final_verify_evidence_commit
+changed_files:
+  - docs/proposals/2026-05-21-compact-change-validation-metadata.md
+  - specs/compact-change-validation-metadata.md
+  - specs/compact-change-validation-metadata.test.md
+  - docs/plans/2026-05-21-compact-change-validation-metadata.md
+  - docs/plan.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+  - docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/explain-change.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/spec-review-r1.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/spec-review-r2.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/plan-review-r1.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md
+  - scripts/artifact_lifecycle_contracts.py
+  - scripts/artifact_lifecycle_validation.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - scripts/validate-change-metadata.py
+  - scripts/validation_selection.py
+  - scripts/test-change-metadata-validator.py
+  - scripts/test-select-validation.py
+  - tests/fixtures/change-metadata/compact-valid/change.validation-log.yaml
+  - tests/fixtures/change-metadata/compact-valid/change.yaml
+  - tests/fixtures/change-metadata/compact-valid-pre-stage-missing-artifact/change.yaml
+  - tests/fixtures/change-metadata/compact-valid-skipped-with-decision/change.yaml
+  - tests/fixtures/change-metadata/compact-valid-review-counts/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-summary-conflict/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-stages-validated-drift/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-duplicate-stage/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-skipped-without-decision/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-not-run-without-blocker/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-missing-path-delta/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-final-count-drift/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-review-counts/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-review-count-precondition/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-extra-summary-blocker/change.yaml
+  - tests/fixtures/change-metadata/compactness-representative-compact/change.yaml
+  - tests/fixtures/change-metadata/compactness-representative-legacy/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-conflicting-slug/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-recursive-var/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-unresolved-var/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-brace-syntax/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-unsafe-path/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-local-path/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-credential-url/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-unsafe-bundle-command-secret/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-dated-spec-path/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-dated-test-spec-path/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-lifecycle-stage/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-missing-first-exists/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-path-opt-out/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-transcript-missing/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-unknown-path-var/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-missing-section/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-mixed-shape/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-undefined-bundle/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-result-enum/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-noninteger-count/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-fail-without-details/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-blocked-without-details/change.yaml

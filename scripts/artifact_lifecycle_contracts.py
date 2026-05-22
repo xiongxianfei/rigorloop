@@ -90,8 +90,13 @@ ADR_CONTRACT = ArtifactContract(
 )
 
 
+def _has_markdown_heading(text: str, heading: str) -> bool:
+    pattern = re.compile(rf"^{re.escape(heading)}\s*$", re.IGNORECASE | re.MULTILINE)
+    return pattern.search(text) is not None
+
+
 def _is_lifecycle_managed_spec(text: str) -> bool:
-    matches = sum(1 for heading in SPEC_CONTRACT_HEADINGS if heading in text)
+    matches = sum(1 for heading in SPEC_CONTRACT_HEADINGS if _has_markdown_heading(text, heading))
     return matches >= 2
 
 

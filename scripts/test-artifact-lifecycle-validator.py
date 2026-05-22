@@ -227,6 +227,57 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
             "docs/proposals/2026-04-20-draft-proposal.md",
         )
 
+    def test_title_case_proposal_headings_pass(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-title-case-"))
+        self.addCleanupTree(fixture_root)
+        target = fixture_root / "docs" / "proposals" / "2026-04-20-title-case-proposal.md"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(
+            """# Title Case Proposal
+
+## Status
+
+draft
+
+## Problem
+
+The validator should accept common formal document heading style.
+
+## Goals
+
+- Allow title-case lifecycle headings.
+
+## Non-Goals
+
+- Change lifecycle status semantics.
+
+## Recommended Direction
+
+Match headings case-insensitively for lifecycle validation.
+
+## Next Artifacts
+
+- proposal-review
+
+## Follow-on Artifacts
+
+None yet
+
+## Readiness
+
+Ready for proposal-review.
+""",
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[target.relative_to(fixture_root).as_posix()],
+        )
+
+        self.assertFalse(result.blocking_findings)
+
     def test_valid_spec_passes(self) -> None:
         self.assertFixturePasses("valid-spec", "specs/valid-spec.md")
 
