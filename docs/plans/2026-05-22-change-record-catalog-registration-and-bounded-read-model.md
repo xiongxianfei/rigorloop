@@ -60,14 +60,14 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Bounded change-record query helper
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Registration debt and actual changed-path proof
-- Review status: `CRM-M3-CR1` fix implemented and validation passed; awaiting M3 code-review rerun
-- Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: code-review
+- Current milestone: M4. Stage-skill read guidance and generated adapter proof
+- Current milestone state: planned
+- Last reviewed milestone: M3. Bounded change-record query helper
+- Review status: M3 clean re-review recorded after `CRM-M3-CR1` resolution
+- Remaining in-scope implementation milestones: M4, M5
+- Next stage: implement M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 has a code-review finding pending re-review; M3 closeout, M4, M5, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M4, M5, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -209,7 +209,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ### M3. Bounded change-record query helper
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add the repository-owned query helper for bounded `summary`, `artifacts`, `validation --latest`, and `validation --stage <stage>` reads.
 - Requirements: CRM-R22 through CRM-R43, CRM-R49 through CRM-R53, CRM-R56; AC-CRM-008 through AC-CRM-012, AC-CRM-014, AC-CRM-015, AC-CRM-017.
 - Files/components likely touched:
@@ -442,6 +442,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: M3 active query proof passed: `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model artifacts`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model validation --latest`.
 - 2026-05-22: Code-review M3 R1 found `CRM-M3-CR1`: the query helper returns an empty artifact list for an accepted compact metadata shape whose artifact paths live in `path_vars`; M3 remains `resolution-needed`.
 - 2026-05-22: `CRM-M3-CR1` resolution validation passed: `python scripts/test-query-change-record.py`; direct compact `path_vars` fixture proof using `tests/fixtures/change-metadata/compact-valid/change.yaml` copied under a temporary `docs/changes/compact-valid/change.yaml`; `python scripts/test-change-metadata-validator.py`; `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml`; active `summary`, `artifacts`, and `validation --latest` query commands; explicit selected CI for query/helper/metadata paths. M3 returned to `review-requested`.
+- 2026-05-22: `code-review-m3-r2` recorded clean re-review for `CRM-M3-CR1`; M3 closed and handoff moved to M4 implementation.
 
 ## Outcome and retrospective
 
@@ -450,4 +451,4 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M2 code-review rerun after `CRM-M2-CR1` implementation; not ready for M2 closeout, M3, final closeout, verify, PR handoff, or Done.
+- Ready for M4 implementation; not ready for final closeout, verify, PR handoff, or Done.
