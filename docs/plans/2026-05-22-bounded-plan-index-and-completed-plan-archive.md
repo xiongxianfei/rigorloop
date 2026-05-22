@@ -67,12 +67,12 @@ The main implementation surfaces are:
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Selection and CI routing
-- Current milestone state: review-requested
-- Last reviewed milestone: M4. Contributor guidance and skill alignment
-- Review status: M5 implementation complete; code-review M5 requested
-- Remaining in-scope implementation milestones: M5, M6
-- Next stage: code-review M5
+- Current milestone: M6. Lifecycle closeout and handoff evidence
+- Current milestone state: planned
+- Last reviewed milestone: M5. Selection and CI routing
+- Review status: code-review M5 R1 clean-with-notes; no open findings
+- Remaining in-scope implementation milestones: M6
+- Next stage: implement M6
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
 
@@ -242,7 +242,7 @@ The main implementation surfaces are:
 
 ### M5. Selection and CI routing
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Ensure selected validation routes changes to `docs/plan-archive.md`, lifecycle markers, migration proof, and plan-index changes through the right local checks.
 - Requirements: `R7`, `R7a`, `R15`, `R15a`-`R15d`, `R16`
 - Files/components likely touched:
@@ -271,7 +271,8 @@ The main implementation surfaces are:
   - progress updated
   - decision log updated if needed; no new decision
   - validation notes updated
-  - milestone commit is the M5 handoff commit
+  - milestone committed in `ffa9826`
+  - code-review M5 R1 clean-with-notes
 - Risks:
   - Risk: selector changes accidentally broaden CI for unrelated docs.
 - Rollback/recovery:
@@ -375,6 +376,7 @@ The main implementation surfaces are:
 - 2026-05-22: Code-review M4 R2 passed clean-with-notes; M4 closed and M5 is next.
 - 2026-05-22: Began M5 selection routing, added selector regressions for plan archive surfaces and migration proof routing, and updated validation selection to route those paths through lifecycle validation.
 - 2026-05-22: M5 implementation reached `review-requested`; next stage is code-review for M5 before lifecycle closeout work begins.
+- 2026-05-22: Code-review M5 R1 passed clean-with-notes; M5 closed and M6 is next.
 
 ## Decision log
 
@@ -451,6 +453,10 @@ The main implementation surfaces are:
 - 2026-05-22: `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed after M5 handoff updates.
 - 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md --path docs/plan.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md` passed after M5 handoff updates with the existing lifecycle-language warning for merge-state wording in the spec.
 - 2026-05-22: `git diff --check --` passed after M5 implementation.
+- 2026-05-22: `python scripts/select-validation.py --mode explicit --path docs/plan.md` passed during code-review M5 R1 and selected `artifact_lifecycle.validate` with `docs/plan.md` and `docs/plan-archive.md`.
+- 2026-05-22: `python scripts/select-validation.py --mode explicit --path docs/plan-archive.md` passed during code-review M5 R1 and selected `artifact_lifecycle.validate` with `docs/plan.md` and `docs/plan-archive.md`.
+- 2026-05-22: `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` passed during code-review M5 R1 and selected lifecycle validation with the migration proof, its `change.yaml`, `docs/plan.md`, and `docs/plan-archive.md`.
+- 2026-05-22: `python scripts/test-select-validation.py ValidationSelectionTests.test_plan_index_surfaces_select_lifecycle_validation_with_both_surfaces ValidationSelectionTests.test_plan_index_migration_proof_routes_with_metadata_and_index_surfaces` passed during code-review M5 R1.
 
 ## Outcome and retrospective
 
@@ -459,4 +465,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M5 code-review; not ready for final closeout.
+- Ready for M6 implementation; not ready for final closeout.
