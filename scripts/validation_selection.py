@@ -723,6 +723,14 @@ def _apply_path_selection(
             )
         return
 
+    if category == "change-metadata-fixtures":
+        _add_check(
+            selected,
+            "change_metadata.regression",
+            "Changed change metadata fixture requires change metadata regression fixtures.",
+        )
+        return
+
     if category == "validator-artifact-lifecycle":
         _add_check(
             selected,
@@ -946,6 +954,8 @@ def _path_category(path: str) -> str | None:
         return "artifact-lifecycle-fixtures"
     if path.startswith("tests/fixtures/review-artifacts/"):
         return "review-artifact-fixtures"
+    if path.startswith("tests/fixtures/change-metadata/"):
+        return "change-metadata-fixtures"
     if path.startswith("tests/fixtures/adapters/"):
         return "adapters"
     if path.startswith("tests/fixtures/skills/"):

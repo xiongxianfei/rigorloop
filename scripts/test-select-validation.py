@@ -1033,6 +1033,12 @@ raise SystemExit({exit_code})
                 "checks": {"review_artifacts.regression", "change_metadata.regression"},
             },
             {
+                "path": "tests/fixtures/change-metadata/compact-valid/change.yaml",
+                "category": "change-metadata-fixtures",
+                "status": "ok",
+                "checks": {"change_metadata.regression"},
+            },
+            {
                 "path": "scripts/measure-skill-tokens.py",
                 "category": "token-cost",
                 "status": "ok",
