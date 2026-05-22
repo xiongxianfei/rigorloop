@@ -61,13 +61,13 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Current Handoff Summary
 
 - Current milestone: M5. Lifecycle evidence and final closeout
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Stage-skill read guidance and generated adapter proof
-- Review status: code-review M5 R1 recorded `CRM-M5-CR1`; resolution needed.
+- Review status: `CRM-M5-CR1` resolved; M5 returned to code-review.
 - Remaining in-scope implementation milestones: M5
-- Next stage: review-resolution / implement M5 fix
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: `CRM-M5-CR1` resolution, M5 re-review, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M5 re-review, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -311,7 +311,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ### M5. Lifecycle evidence and final closeout
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Complete downstream lifecycle evidence after all implementation milestones are closed.
 - Requirements: CRM-R49 through CRM-R52; AC-CRM-015, AC-CRM-017.
 - Files/components likely touched:
@@ -342,7 +342,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md`
-  - `bash scripts/ci.sh --mode selected`
+  - `bash scripts/ci.sh --mode local`
   - `git diff --check --`
 - Expected observable result: all in-scope implementation milestones are closed, final rationale and verification evidence exist, plan state is synchronized, and PR handoff can proceed.
 - Commit message: `M5: close change record catalog lifecycle`
@@ -370,7 +370,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary`: active change bounded read smoke after M3.
 - `python scripts/test-change-metadata-validator.py`: legacy and compact metadata compatibility proof.
 - `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `python scripts/build-skills.py --check`, and `python scripts/build-adapters.py --check`: canonical skill and generated adapter proof when M4 edits skills.
-- `bash scripts/ci.sh --mode selected`: final selected-CI proof over the branch changed paths.
+- `bash scripts/ci.sh --mode local`: final branch-local changed-path selected-CI proof over the branch changed paths.
 - `git diff --check --`: whitespace and patch hygiene.
 
 ## Risks and recovery
@@ -414,6 +414,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: `code-review-m4-r1` recorded clean review for bounded change-record read guidance. M4 closed and handoff moved to M5 implementation.
 - 2026-05-22: M5 recorded `explain-change.md`, updated change metadata and active plan state, and prepared lifecycle evidence for code-review handoff.
 - 2026-05-22: `code-review-m5-r1` recorded material finding `CRM-M5-CR1`; M5 moved to `resolution-needed`.
+- 2026-05-22: `CRM-M5-CR1` accepted and fixed by replacing final `bash scripts/ci.sh --mode selected` proof references with repository-supported `bash scripts/ci.sh --mode local` references in the test spec and active plan. M5 moved back to `review-requested`.
 
 ## Decision log
 
@@ -455,6 +456,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: M5 validation passed: `python scripts/test-select-validation.py`; `python scripts/test-query-change-record.py`; `python scripts/test-change-metadata-validator.py`; `python scripts/validate-skills.py`; `python scripts/test-skill-validator.py`; `python scripts/build-skills.py --check`; release archive adapter proof with `python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmp"` plus `python scripts/validate-adapters.py --root "$tmp" --version v0.1.5`; review artifact closeout; change metadata validation; artifact lifecycle validation; local selected CI with `bash scripts/ci.sh --mode local`; and `git diff --check --`.
 - 2026-05-22: M5 recorded that `python scripts/build-adapters.py --check` still fails against retired tracked adapter-tree expectations, and `bash scripts/ci.sh --mode selected` is no longer a supported wrapper mode. The current equivalents used for M5 are release-archive adapter validation and `bash scripts/ci.sh --mode local`.
 - 2026-05-22: Code-review M5 R1 recording validation passed with review artifact structure validation, change metadata validation, artifact lifecycle validation, explicit selected CI, and whitespace check.
+- 2026-05-22: `CRM-M5-CR1` resolution validation passed: `bash scripts/ci.sh --mode local`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; artifact lifecycle explicit-path validation over the touched test spec, plan, change metadata, review artifacts, explain-change, and plan index; review artifact closeout; and whitespace check.
 
 ## Outcome and retrospective
 
@@ -463,4 +465,4 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Readiness
 
 - See `Current Handoff Summary`.
-- M5 is in `resolution-needed`; not ready for final closeout, verify, PR handoff, or Done.
+- Ready for M5 code-review; not ready for final closeout, verify, PR handoff, or Done.
