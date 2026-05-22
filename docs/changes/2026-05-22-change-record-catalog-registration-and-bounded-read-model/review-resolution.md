@@ -56,9 +56,11 @@ Validation evidence: `python scripts/validate-review-artifacts.py --mode closeou
 
 Finding ID: CRM-M1-CR1
 Disposition: accepted
+Status: resolved pending re-review
 Owner: implementer
 Owning stage: implement
-Chosen action: Add affected-root output for registered evidence routing and direct test coverage for the affected root assertion.
+Chosen action: Added affected-root output for registered evidence routing and direct test coverage for the affected root assertion.
 Rationale: The first-pass code review identified that registered evidence selected lifecycle validation paths but omitted the affected change root required by CRM-R9 and CRM-T004.
 Validation target: Rerun M1 selector tests, explicit registered-evidence routing, selected CI for selector/evidence paths, lifecycle validation, change metadata validation, and whitespace checks after the fix.
-Validation evidence: pending
+Validation evidence: `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md`; `python scripts/test-select-validation.py`; `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `git diff --check --`.
+Follow-up: Return M1 to code review. M2 through M5 remain separate implementation milestones and are not claimed ready from this fix alone.
