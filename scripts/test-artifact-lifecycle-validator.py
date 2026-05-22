@@ -215,6 +215,72 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertTrue(result.warning_findings, msg=f"expected fixture '{relative_fixture}' to warn")
         self.assertIn(expected_text, combined_warnings)
 
+    def write_plan_archive_contract_fixture(
+        self,
+        root: Path,
+        *,
+        plan_index: str,
+        archive: str = "# Plan archive\n\n## Done (archive)\n\n",
+        plans: dict[str, str],
+    ) -> None:
+        (root / "docs" / "plans").mkdir(parents=True, exist_ok=True)
+        (root / "docs" / "plan.md").write_text(plan_index, encoding="utf-8")
+        (root / "docs" / "plan-archive.md").write_text(archive, encoding="utf-8")
+        for name, body in plans.items():
+            (root / "docs" / "plans" / name).write_text(body, encoding="utf-8")
+
+    def assertPlanArchiveContractFails(
+        self,
+        *,
+        plan_index: str,
+        archive: str = "# Plan archive\n\n## Done (archive)\n\n",
+        plans: dict[str, str],
+        paths: list[str] | None = None,
+        expected_text: str,
+    ) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="plan-archive-contract-"))
+        self.addCleanupTree(fixture_root)
+        self.write_plan_archive_contract_fixture(
+            fixture_root,
+            plan_index=plan_index,
+            archive=archive,
+            plans=plans,
+        )
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=paths or ["docs/plan.md", "docs/plan-archive.md"],
+        )
+        combined_messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertTrue(result.blocking_findings, msg="expected plan archive contract fixture to fail")
+        self.assertIn(expected_text, combined_messages)
+
+    def assertPlanArchiveContractPasses(
+        self,
+        *,
+        plan_index: str,
+        archive: str = "# Plan archive\n\n## Done (archive)\n\n",
+        plans: dict[str, str],
+        paths: list[str] | None = None,
+    ) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="plan-archive-contract-"))
+        self.addCleanupTree(fixture_root)
+        self.write_plan_archive_contract_fixture(
+            fixture_root,
+            plan_index=plan_index,
+            archive=archive,
+            plans=plans,
+        )
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=paths or ["docs/plan.md", "docs/plan-archive.md"],
+        )
+        self.assertFalse(
+            result.blocking_findings,
+            msg=f"expected plan archive contract fixture to pass, got blockers: {result.blocking_findings}",
+        )
+
     def test_valid_proposal_passes(self) -> None:
         self.assertFixturePasses(
             "valid-proposal",
@@ -741,6 +807,15 @@ artifacts:
 
 ## Active
 - [Related plan](plans/2026-04-20-related-plan.md)
+
+## Blocked
+- none yet
+
+## Done
+- none yet
+
+## Superseded
+- none yet
 """,
             encoding="utf-8",
         )
@@ -874,6 +949,346 @@ artifacts:
             "merge-dependent-language-warning",
             "docs/plans/2026-05-01-merge-language-plan.md",
             "merge-dependent lifecycle language requires reviewer attention",
+        )
+
+    def test_plan_archive_contract_accepts_terminal_once_across_recent_and_archive(self) -> None:
+        self.assertPlanArchiveContractPasses(
+            plan_index="""# Plan index
+
+## Active
+
+- [2026-05-03 Active Plan](plans/2026-05-03-active-plan.md) - active; next: implement; blockers: none.
+
+## Blocked
+
+- none yet
+
+## Done (recent)
+
+Full completed history: see [Plan archive](plan-archive.md).
+
+- [2026-05-02 Done Plan](plans/2026-05-02-done-plan.md) - done; terminal state: merged.
+
+## Superseded
+
+- none yet
+""",
+            archive="""# Plan archive
+
+Completed plan history moved out of the common-read plan index.
+
+## Done (archive)
+
+- [2026-05-01 Old Done](plans/2026-05-01-old-done.md) - done; terminal state: merged.
+""",
+            plans={
+                "2026-05-03-active-plan.md": """# Active Plan
+
+## Status
+
+Plan lifecycle state: active
+Terminal disposition: none
+""",
+                "2026-05-02-done-plan.md": """# Done Plan
+
+## Status
+
+Plan lifecycle state: done
+Terminal disposition: merged
+""",
+                "2026-05-01-old-done.md": """# Old Done
+
+## Status
+
+Plan lifecycle state: done
+Terminal disposition: merged
+""",
+            },
+        )
+
+    def test_plan_archive_contract_rejects_missing_terminal_entry(self) -> None:
+        self.assertPlanArchiveContractFails(
+            plan_index="""# Plan index
+
+## Active
+
+- none yet
+
+## Blocked
+
+- none yet
+
+## Done (recent)
+
+Full completed history: see [Plan archive](plan-archive.md).
+
+- none yet
+""",
+            plans={
+                "2026-05-02-done-plan.md": """# Done Plan
+
+## Status
+
+Plan lifecycle state: done
+Terminal disposition: merged
+""",
+            },
+            expected_text="terminal plan missing from Done (recent) and Done (archive)",
+        )
+
+    def test_plan_body_terminal_marker_alone_requires_done_location(self) -> None:
+        self.assertPlanArchiveContractFails(
+            plan_index="""# Plan index
+
+## Active
+
+- none yet
+
+## Blocked
+
+- none yet
+
+## Done (recent)
+
+- none yet
+""",
+            plans={
+                "2026-05-02-done-plan.md": """# Done Plan
+
+## Status
+
+Plan lifecycle state: done
+Terminal disposition: merged
+""",
+            },
+            paths=["docs/plans/2026-05-02-done-plan.md"],
+            expected_text="terminal plan missing from Done (recent) and Done (archive)",
+        )
+
+    def test_plan_archive_contract_rejects_duplicate_terminal_entry(self) -> None:
+        plan = """# Done Plan
+
+## Status
+
+Plan lifecycle state: done
+Terminal disposition: merged
+"""
+        self.assertPlanArchiveContractFails(
+            plan_index="""# Plan index
+
+## Active
+
+- none yet
+
+## Blocked
+
+- none yet
+
+## Done (recent)
+
+Full completed history: see [Plan archive](plan-archive.md).
+
+- [2026-05-02 Done Plan](plans/2026-05-02-done-plan.md) - done; terminal state: merged.
+""",
+            archive="""# Plan archive
+
+## Done (archive)
+
+- [2026-05-02 Done Plan](plans/2026-05-02-done-plan.md) - done; terminal state: merged.
+""",
+            plans={"2026-05-02-done-plan.md": plan},
+            expected_text="terminal plan appears more than once across Done (recent) and Done (archive)",
+        )
+
+    def test_plan_archive_contract_rejects_recent_done_over_cap(self) -> None:
+        entries = "\n".join(
+            f"- [2026-05-{day:02d} Done {day}](plans/2026-05-{day:02d}-done-{day}.md) - done; terminal state: merged."
+            for day in range(1, 12)
+        )
+        plans = {
+            f"2026-05-{day:02d}-done-{day}.md": f"""# Done {day}
+
+## Status
+
+Plan lifecycle state: done
+Terminal disposition: merged
+"""
+            for day in range(1, 12)
+        }
+        self.assertPlanArchiveContractFails(
+            plan_index=f"""# Plan index
+
+## Active
+
+- none yet
+
+## Blocked
+
+- none yet
+
+## Done (recent)
+
+Full completed history: see [Plan archive](plan-archive.md).
+
+{entries}
+""",
+            plans=plans,
+            expected_text="Done (recent) exceeds approved cap of 10",
+        )
+
+    def test_plan_archive_contract_rejects_archive_only_nonterminal_plan(self) -> None:
+        self.assertPlanArchiveContractFails(
+            plan_index="""# Plan index
+
+## Active
+
+- none yet
+
+## Blocked
+
+- none yet
+
+## Done (recent)
+
+Full completed history: see [Plan archive](plan-archive.md).
+
+- none yet
+""",
+            archive="""# Plan archive
+
+## Done (archive)
+
+- [2026-05-03 Active Plan](plans/2026-05-03-active-plan.md) - done; terminal state: closed.
+""",
+            plans={
+                "2026-05-03-active-plan.md": """# Active Plan
+
+## Status
+
+Plan lifecycle state: active
+Terminal disposition: none
+""",
+            },
+            expected_text="nonterminal plan must not be stored only in docs/plan-archive.md",
+        )
+
+    def test_plan_lifecycle_marker_rejects_contradictory_and_unknown_values(self) -> None:
+        self.assertPlanArchiveContractFails(
+            plan_index="# Plan index\n\n## Active\n\n- [Bad Plan](plans/2026-05-03-bad-plan.md) - active.\n",
+            plans={
+                "2026-05-03-bad-plan.md": """# Bad Plan
+
+## Status
+
+Plan lifecycle state: active
+Terminal disposition: merged
+""",
+            },
+            paths=["docs/plans/2026-05-03-bad-plan.md"],
+            expected_text="Terminal disposition must be none for nonterminal lifecycle state",
+        )
+        self.assertPlanArchiveContractFails(
+            plan_index="# Plan index\n\n## Active\n\n- [Bad Plan](plans/2026-05-03-bad-plan.md) - active.\n",
+            plans={
+                "2026-05-03-bad-plan.md": """# Bad Plan
+
+## Status
+
+Plan lifecycle state: waiting
+Terminal disposition: none
+""",
+            },
+            paths=["docs/plans/2026-05-03-bad-plan.md"],
+            expected_text="unknown Plan lifecycle state",
+        )
+
+    def test_plan_lifecycle_marker_does_not_infer_terminal_state_from_prose(self) -> None:
+        self.assertPlanArchiveContractPasses(
+            plan_index="# Plan index\n\n## Active\n\n- none yet\n",
+            plans={
+                "2026-05-03-prose-plan.md": """# Prose Plan
+
+## Status
+
+This plan finished after PR #80 merged.
+""",
+            },
+            paths=["docs/plans/2026-05-03-prose-plan.md"],
+        )
+
+    def test_plan_supersession_context_requires_structural_fields(self) -> None:
+        self.assertPlanArchiveContractPasses(
+            plan_index="""# Plan index
+
+## Active
+
+- [2026-05-04 Replacement](plans/2026-05-04-replacement.md) - active; next: implement; blockers: none.
+
+## Blocked
+
+- none yet
+
+## Done (recent)
+
+- none yet
+
+## Superseded
+
+- [2026-05-03 Old Plan](plans/2026-05-03-old-plan.md) - superseded by: [2026-05-04 Replacement](plans/2026-05-04-replacement.md); active-context: replacement is the active plan for this workstream.
+""",
+            plans={
+                "2026-05-04-replacement.md": """# Replacement
+
+## Status
+
+Plan lifecycle state: active
+Terminal disposition: none
+""",
+                "2026-05-03-old-plan.md": """# Old Plan
+
+## Status
+
+Plan lifecycle state: superseded
+Terminal disposition: superseded
+""",
+            },
+        )
+        self.assertPlanArchiveContractFails(
+            plan_index="""# Plan index
+
+## Superseded
+
+- [2026-05-03 Old Plan](plans/2026-05-03-old-plan.md) - superseded by: [2026-05-04 Replacement](plans/2026-05-04-replacement.md).
+""",
+            plans={
+                "2026-05-03-old-plan.md": """# Old Plan
+
+## Status
+
+Plan lifecycle state: superseded
+Terminal disposition: superseded
+""",
+            },
+            expected_text="superseded entry in docs/plan.md requires non-empty active-context",
+        )
+        self.assertPlanArchiveContractFails(
+            plan_index="# Plan index\n\n## Active\n\n- none yet\n",
+            archive="""# Plan archive
+
+## Done (archive)
+
+- [2026-05-03 Old Plan](plans/2026-05-03-old-plan.md) - terminal state: superseded; active-context: old replacement pointer.
+""",
+            plans={
+                "2026-05-03-old-plan.md": """# Old Plan
+
+## Status
+
+Plan lifecycle state: superseded
+Terminal disposition: superseded
+""",
+            },
+            expected_text="archived superseded entries must not retain active-context",
         )
 
     def test_local_mode_blocks_related_and_warns_unrelated_baseline(self) -> None:

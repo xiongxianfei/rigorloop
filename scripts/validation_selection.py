@@ -766,6 +766,14 @@ def _apply_path_selection(
                 "Changed change-local lifecycle artifact requires its governing change metadata for lifecycle validation.",
                 path=governing_change_yaml,
             )
+        if _is_plan_index_migration_proof(path):
+            for index_path in _plan_index_surface_paths():
+                _add_check(
+                    selected,
+                    "artifact_lifecycle.validate",
+                    "Changed plan-index migration proof requires plan index surface validation.",
+                    path=index_path,
+                )
         _add_check(
             selected,
             "artifact_lifecycle.validate",
@@ -867,15 +875,13 @@ def _apply_path_selection(
 
     if category == "plan-index":
         context_paths = _plan_index_context_paths(changed_paths)
-        if not context_paths:
-            blocking_results.append(
-                {
-                    "code": "manual-routing-required",
-                    "path": path,
-                    "message": "changed plan index requires an active plan or change metadata context",
-                }
+        for index_path in _plan_index_surface_paths():
+            _add_check(
+                selected,
+                "artifact_lifecycle.validate",
+                "Changed plan index surface requires paired plan index surface lifecycle validation.",
+                path=index_path,
             )
-            return
         _add_check(
             selected,
             "artifact_lifecycle.validate",
@@ -1477,6 +1483,24 @@ def _path_category(path: str) -> str | None:
             "explain-change.md",
             "architecture.md",
             "verify-report.md",
+            "implementation-notes.md",
+            "cold-read-report.md",
+            "adapter-packaging.md",
+            "baseline.md",
+            "behavior-parity-report.md",
+            "behavior-parity.md",
+            "behavior-preservation.md",
+            "output-contract-red-test.md",
+            "script-output-audit.md",
+            "script-output-layer-audit.md",
+            "generated-output-proof.md",
+            "historical-coverage.md",
+            "plan-index-migration.md",
+            "routing-coverage.md",
+            "selected-tests-baseline.txt",
+            "selected-tests-m3.txt",
+            "skill-audit.md",
+            "token-cost.md",
         } or (
             parts[3] == "diagrams"
         ):
@@ -1484,7 +1508,7 @@ def _path_category(path: str) -> str | None:
         if len(parts) == 4:
             return "unregistered-change-evidence"
         return "change-local-unsupported"
-    if path == "docs/plan.md":
+    if path in _plan_index_surface_paths():
         return "plan-index"
     if path.startswith("docs/architecture/") and path.endswith(".mmd"):
         return "architecture-diagram"
@@ -1578,6 +1602,14 @@ def _change_root_change_yaml(path: str) -> str | None:
     if root:
         return f"{root}change.yaml"
     return None
+
+
+def _is_plan_index_migration_proof(path: str) -> bool:
+    return path.startswith("docs/changes/") and path.endswith("/plan-index-migration.md")
+
+
+def _plan_index_surface_paths() -> tuple[str, str]:
+    return ("docs/plan-archive.md", "docs/plan.md")
 
 
 def _architecture_doc_for_diagram(path: str) -> str | None:

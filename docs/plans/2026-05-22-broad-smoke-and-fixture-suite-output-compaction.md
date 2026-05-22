@@ -2,7 +2,8 @@
 
 ## Status
 
-active
+Plan lifecycle state: done
+Terminal disposition: merged
 
 ## Purpose / big picture
 
@@ -67,9 +68,9 @@ The implementation must create durable evidence under `docs/changes/2026-05-22-b
 - Last reviewed milestone: M4. Preservation evidence and lifecycle closeout
 - Review status: code-review M4 R2 completed clean-with-notes after `BSO-M4-CR1` review-resolution
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #85
-- Final closeout readiness: PR open
-- Reason final closeout is or is not ready: M1, M2, M3, and M4 are closed after code-review, review-resolution is closed with no open findings, CI-maintenance cleared the local selector blocker, explain-change is refreshed, final local verify passed, and PR #85 is open. Hosted CI and human review are pending.
+- Next stage: done
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: M1, M2, M3, and M4 are closed after code-review, review-resolution is closed with no open findings, CI-maintenance cleared the local selector blocker, explain-change is refreshed, final local verify passed, and PR #85 merged on 2026-05-22.
 
 ## Milestones
 
@@ -398,6 +399,7 @@ The implementation must create durable evidence under `docs/changes/2026-05-22-b
 - 2026-05-22: CI-maintenance fixed local/PR selector routing for the new change-local evidence files, refreshed explain-change, and reran local selected CI; next stage remains `verify`.
 - 2026-05-22: Final local verify passed, including selector regression, producer default/verbose/quiet compatibility, identity hashes, local and explicit selected CI, broad-smoke default and verbose runs, review-artifact closeout, change metadata, artifact lifecycle, and patch hygiene. Next stage is `pr`.
 - 2026-05-22: PR #85 opened for hosted CI and human review.
+- 2026-05-22: PR #85 merged; lifecycle state updated to done.
 
 ## Decision log
 
@@ -433,9 +435,9 @@ The implementation must create durable evidence under `docs/changes/2026-05-22-b
 
 ## Outcome and retrospective
 
-- PR #85 is open. Hosted CI and human review are pending.
+- PR #85 merged on 2026-05-22.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #85 is open after final local verify. Hosted CI success, human review, merge, and Done are not claimed.
+- PR #85 merged; Done is claimed.
