@@ -20,6 +20,7 @@ requirements:
   - Implement M1 evidence class registry and registered selector routing while preserving selected lifecycle validation behavior.
   - Implement M2 registration-debt diagnostics and actual changed-path selector proof before verify.
   - Implement M3 bounded change-record query helper for summary, artifacts, validation latest, and validation stage reads.
+  - Implement M4 bounded change-record read guidance in affected stage skills after query-helper commands are stable.
 tests:
   - Proposal-review clean receipt validates through review artifact validation.
   - Artifact lifecycle validation covers the proposal and review evidence.
@@ -29,6 +30,7 @@ tests:
   - Selector regression covers registered evidence entries, bounded patterns, broad-pattern rejection, ambiguity rejection, and registered evidence routing.
   - Selector regression covers unregistered deterministic evidence registration debt and local changed-path proof.
   - Query helper regression covers compact and legacy summary reads, artifact-only reads, latest and stage-scoped validation slices, stable diagnostics, unsafe path handling, deterministic output, read-only behavior, and active change summary.
+  - Skill regression covers bounded change-record read guidance, full-read escalation conditions, and query-helper command references in affected stage skills.
 review:
   status: clean
   unresolved_items: 0
@@ -311,6 +313,38 @@ validation:
     result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m3_r2
   - command: git diff --check --
     result: pass_after_code_review_m3_r2
+  - command: python scripts/test-skill-validator.py
+    result: fail_missing_bounded_read_guidance_before_m4_skill_updates
+  - command: python scripts/test-skill-validator.py
+    result: pass_161_tests_after_m4
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m4
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_check_after_m4
+  - command: python scripts/build-adapters.py --check
+    result: fail_baseline_retired_tracked_adapter_tree_expectation_after_m4
+  - command: python scripts/build-adapters.py --version v0.1.5 --check
+    result: fail_baseline_archive_only_adapter_tree_expectation_after_m4
+  - command: tmp=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmp" && python scripts/validate-adapters.py --root "$tmp" --version v0.1.5
+    result: pass_release_archive_adapter_validation_after_m4
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_101_tests_after_m4
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary
+    result: pass_active_summary_after_m4
+  - command: bash scripts/ci.sh --mode explicit --path skills/proposal-review/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/plan/SKILL.md --path scripts/test-skill-validator.py --path scripts/query-change-record.py
+    result: pass_selected_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_change_metadata_regression_change_record_query_regression_after_m4
+  - command: git diff --check --
+    result: pass_after_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_m4_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path skills/proposal-review/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/plan/SKILL.md
+    result: pass_validated_5_artifact_files_after_m4_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_11_findings_4_log_entries_11_resolution_entries_4_after_m4_recording
+  - command: bash scripts/ci.sh --mode explicit --path skills/proposal-review/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/plan/SKILL.md --path scripts/test-skill-validator.py --path scripts/query-change-record.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_change_metadata_regression_change_metadata_validate_change_record_query_regression_after_m4_recording
+  - command: git diff --check --
+    result: pass_after_m4_recording
 changed_files:
   - docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md
   - specs/change-record-catalog-registration-and-bounded-read-model.md
@@ -322,8 +356,14 @@ changed_files:
   - docs/plan.md
   - scripts/query-change-record.py
   - scripts/test-query-change-record.py
+  - scripts/test-skill-validator.py
   - scripts/validation_selection.py
   - scripts/test-select-validation.py
+  - skills/proposal-review/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/pr/SKILL.md
+  - skills/plan/SKILL.md
   - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md
   - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md
   - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r1.md

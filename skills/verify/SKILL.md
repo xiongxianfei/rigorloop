@@ -76,6 +76,12 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Change-record bounded reads
+
+For planned change records, use the active plan `Current Handoff Summary` for current workflow state. When the project provides the helper, use `scripts/query-change-record.py <change-id> summary` for artifact paths, review state, latest validation state, blockers, and detail pointers; use `scripts/query-change-record.py <change-id> artifacts` for canonical artifact paths only; and use `scripts/query-change-record.py <change-id> validation --latest` for latest validation evidence.
+
+Escalate from bounded helper output to full `change.yaml` when verifying forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing behavior, migration compatibility, or whole-record review. Do not treat bounded helper output as a replacement for required final validation commands or the active plan's live state.
+
 ## Outputs
 
 Produce a verification verdict, traceability and drift assessment, validation evidence summary, blocker list if any, and the next valid handoff toward `pr` or stop.

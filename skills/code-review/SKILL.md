@@ -114,6 +114,12 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when present in the project-local workflow guide, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Change-record bounded reads
+
+For planned change records, use the active plan `Current Handoff Summary` for current milestone state and handoff. Use `scripts/query-change-record.py <change-id> artifacts` for canonical artifact paths when the project provides the helper. Use `scripts/query-change-record.py <change-id> validation --stage <stage>` only when reviewing validation evidence for a specific stage. Use `review-resolution.md` for the finding disposition under re-review.
+
+Do not read all validation history by default when reviewing code behavior. Escalate to full `change.yaml` reads for forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing debugging, and whole-record review.
+
 ## Resource map
 
 - COPY `assets/material-finding.md` once per material finding.
