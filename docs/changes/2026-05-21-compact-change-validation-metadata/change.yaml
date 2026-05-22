@@ -37,6 +37,7 @@ tests:
   - Explain-change was refreshed after ci-maintenance to include selector-routing rationale, selected-CI evidence, and the remaining verify/PR risks.
   - Verify rerun found selected CI still blocked on case-sensitive lifecycle heading matching for the accepted proposal's title-case `Recommended Direction`; the lifecycle validator now accepts lifecycle section headings case-insensitively with regression coverage.
   - Final verify rerun passed from clean tracked branch state, including metadata regressions, lifecycle regression, selector regression, representative and full branch selected CI, broad smoke, active metadata validation, review closeout validation, and lifecycle validation.
+  - After final verify evidence was recorded, post-commit branch-tip selected CI and artifact checks also passed.
 review:
   status: clean
   unresolved_items: 0
@@ -355,6 +356,16 @@ validation:
     result: pass_during_final_verify_clean_head
   - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
     result: pass_with_unrelated_baseline_lifecycle_warnings_during_final_verify_clean_head
+  - command: git diff --check --
+    result: pass_after_final_verify_evidence_commit
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_final_verify_evidence_commit
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_final_verify_evidence_commit
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/explain-change.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md
+    result: pass_after_final_verify_evidence_commit
+  - command: bash scripts/ci.sh --mode explicit <branch-changed-files>
+    result: pass_after_final_verify_evidence_commit
 changed_files:
   - docs/proposals/2026-05-21-compact-change-validation-metadata.md
   - specs/compact-change-validation-metadata.md
