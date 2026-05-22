@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import json
+import fnmatch
+import re
 import shlex
 import subprocess
 from dataclasses import dataclass, field
@@ -154,6 +156,130 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
 
 
 @dataclass(frozen=True)
+class EvidenceClassRegistration:
+    evidence_class_id: str
+    patterns: tuple[str, ...]
+    selector_routes: tuple[str, ...]
+    required_validator: str
+    lifecycle_stage: str
+    allowed_root: str = "docs/changes/{change_id}/"
+    allowed_when: tuple[str, ...] = ()
+    required_when: tuple[str, ...] = ()
+    forbidden_when: tuple[str, ...] = ()
+
+
+EVIDENCE_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
+BROAD_EVIDENCE_PATTERNS = frozenset({"*.md", "*.txt", "*.yaml", "*.yml"})
+
+CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
+    EvidenceClassRegistration(
+        evidence_class_id="audit",
+        patterns=("*-audit.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("audit evidence is recorded for a milestone or review",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="identity",
+        patterns=("*-identity.txt",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("identity proof is recorded for command or output evidence",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="preservation",
+        patterns=("*-preservation.md", "behavior-preservation.md"),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("behavior preservation evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="baseline",
+        patterns=("baseline.md", "selected-tests-baseline.txt"),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("baseline evidence is recorded for a comparison",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="token-cost",
+        patterns=("token-cost.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("token-cost evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="behavior-parity",
+        patterns=("behavior-parity.md", "behavior-parity-report.md"),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("behavior parity evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="generated-output",
+        patterns=("generated-output-proof.md", "*-generated-token-cold-read-evidence.md"),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("generated-output evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="routing-coverage",
+        patterns=("routing-coverage.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("routing coverage evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="skill-audit",
+        patterns=("skill-contract-sufficiency.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("skill audit evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="script-output",
+        patterns=("output-contract-red-test.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("script-output behavior evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="command-output",
+        patterns=("broad-smoke-child-commands-*.txt", "change-metadata-validator-tests-*.txt", "selected-tests-m3.txt"),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("command-output evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="historical-coverage",
+        patterns=("historical-coverage.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("historical coverage evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="implementation-note",
+        patterns=("implementation-notes.md", "cold-read-report.md", "adapter-packaging.md"),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("implementation support evidence is recorded",),
+    ),
+)
+
+
+@dataclass(frozen=True)
 class SelectionRequest:
     mode: str
     paths: tuple[str, ...] = ()
@@ -277,6 +403,46 @@ def normalize_path(raw_path: str, *, repo_root: Path | str) -> NormalizedPath:
 def classify_path(path: str) -> PathClassification:
     category = _path_category(path)
     return PathClassification(path=path, category=category)
+
+
+def validate_evidence_class_registry(
+    registry: tuple[EvidenceClassRegistration, ...] | list[EvidenceClassRegistration] = CHANGE_EVIDENCE_CLASSES,
+    *,
+    sample_paths: tuple[str, ...] = (),
+) -> list[str]:
+    errors: list[str] = []
+    seen_ids: set[str] = set()
+    for entry in registry:
+        if not EVIDENCE_ID_PATTERN.fullmatch(entry.evidence_class_id):
+            errors.append(f"evidence class ID is not stable ASCII: {entry.evidence_class_id}")
+        if entry.evidence_class_id in seen_ids:
+            errors.append(f"duplicate evidence class ID: {entry.evidence_class_id}")
+        seen_ids.add(entry.evidence_class_id)
+        if entry.allowed_root != "docs/changes/{change_id}/":
+            errors.append(f"{entry.evidence_class_id}: unsupported allowed root {entry.allowed_root}")
+        if not entry.patterns:
+            errors.append(f"{entry.evidence_class_id}: missing filename pattern or exact filename")
+        for pattern in entry.patterns:
+            if _is_broad_evidence_pattern(pattern):
+                errors.append(f"{entry.evidence_class_id}: evidence pattern {pattern} is too broad")
+        if not entry.selector_routes:
+            errors.append(f"{entry.evidence_class_id}: missing selector route")
+        for route in entry.selector_routes:
+            if route not in CHECK_CATALOG:
+                errors.append(f"{entry.evidence_class_id}: unknown selector route {route}")
+        if not entry.required_validator:
+            errors.append(f"{entry.evidence_class_id}: missing required validator")
+        if not entry.lifecycle_stage:
+            errors.append(f"{entry.evidence_class_id}: missing lifecycle stage")
+        if not (entry.allowed_when or entry.required_when or entry.forbidden_when):
+            errors.append(f"{entry.evidence_class_id}: missing allowed/required/forbidden conditions")
+
+    for sample_path in sample_paths:
+        matches = _matching_evidence_classes(sample_path, registry=tuple(registry))
+        if len(matches) > 1:
+            class_ids = ", ".join(entry.evidence_class_id for entry in matches)
+            errors.append(f"{sample_path}: ambiguous evidence class match: {class_ids}")
+    return errors
 
 
 def catalog_command(
@@ -580,6 +746,67 @@ def _apply_path_selection(
             "artifact_lifecycle.validate",
             "Changed change-local lifecycle artifact requires artifact lifecycle validation.",
             path=path,
+        )
+        return
+
+    if category == "registered-change-evidence":
+        evidence_name = path.split("/")[3]
+        matches = _matching_evidence_classes(evidence_name)
+        if len(matches) != 1:
+            blocking_results.append(
+                {
+                    "code": "manual-routing-required",
+                    "path": path,
+                    "message": "registered change evidence could not be resolved to exactly one evidence class",
+                }
+            )
+            return
+        evidence_class = matches[0]
+        governing_change_yaml = _change_root_change_yaml(path)
+        for route in evidence_class.selector_routes:
+            if route == "artifact_lifecycle.validate":
+                if governing_change_yaml:
+                    _add_check(
+                        selected,
+                        route,
+                        f"Registered change evidence class {evidence_class.evidence_class_id} requires governing change metadata for lifecycle validation.",
+                        path=governing_change_yaml,
+                    )
+                _add_check(
+                    selected,
+                    route,
+                    f"Registered change evidence class {evidence_class.evidence_class_id} requires lifecycle validation.",
+                    path=path,
+                )
+            elif route == "change_metadata.validate":
+                if governing_change_yaml:
+                    _add_check(
+                        selected,
+                        route,
+                        f"Registered change evidence class {evidence_class.evidence_class_id} requires change metadata validation.",
+                        path=governing_change_yaml,
+                    )
+                    _add_check(
+                        selected,
+                        "change_metadata.regression",
+                        "Registered change evidence with metadata route requires validator regression fixtures.",
+                    )
+            else:
+                _add_check(
+                    selected,
+                    route,
+                    f"Registered change evidence class {evidence_class.evidence_class_id} requires {route}.",
+                    path=path,
+                )
+        return
+
+    if category == "ambiguous-change-evidence":
+        blocking_results.append(
+            {
+                "code": "ambiguous-evidence-class",
+                "path": path,
+                "message": "changed evidence path matches more than one registered evidence class",
+            }
         )
         return
 
@@ -1051,41 +1278,20 @@ def _path_category(path: str) -> str | None:
             return "change-metadata"
         if parts[3] in {"review-log.md", "review-resolution.md"} or parts[3] == "reviews":
             return "review-artifacts"
+        if len(parts) == 4:
+            matches = _matching_evidence_classes(parts[3])
+            if len(matches) == 1:
+                return "registered-change-evidence"
+            if len(matches) > 1:
+                return "ambiguous-change-evidence"
         change_local_name = parts[3]
         if change_local_name in {
             "explain-change.md",
             "architecture.md",
             "verify-report.md",
-            "implementation-notes.md",
-            "cold-read-report.md",
-            "adapter-packaging.md",
-            "baseline.md",
-            "behavior-parity-report.md",
-            "behavior-parity.md",
-            "behavior-preservation.md",
-            "output-contract-red-test.md",
-            "script-output-audit.md",
-            "script-output-layer-audit.md",
-            "generated-output-proof.md",
-            "historical-coverage.md",
-            "routing-coverage.md",
-            "selected-tests-baseline.txt",
-            "selected-tests-m3.txt",
-            "skill-audit.md",
-            "token-cost.md",
         } or (
-            change_local_name.endswith("-preservation.md")
-            or change_local_name.endswith("-generated-token-cold-read-evidence.md")
-            or (
-                change_local_name.startswith("broad-smoke-child-commands-")
-                and change_local_name.endswith(".txt")
-            )
-            or (
-                change_local_name.startswith("change-metadata-validator-tests-")
-                and change_local_name.endswith(".txt")
-            )
-            or change_local_name == "skill-contract-sufficiency.md"
-        ) or parts[3] == "diagrams":
+            parts[3] == "diagrams"
+        ):
             return "change-local-lifecycle"
         return "change-local-unsupported"
     if path == "docs/plan.md":
@@ -1111,6 +1317,26 @@ def _path_category(path: str) -> str | None:
     if path.startswith("scripts/"):
         return "script-unsupported"
     return None
+
+
+def _matching_evidence_classes(
+    filename: str,
+    *,
+    registry: tuple[EvidenceClassRegistration, ...] = CHANGE_EVIDENCE_CLASSES,
+) -> list[EvidenceClassRegistration]:
+    return [
+        entry
+        for entry in registry
+        if any(fnmatch.fnmatchcase(filename, pattern) for pattern in entry.patterns)
+    ]
+
+
+def _is_broad_evidence_pattern(pattern: str) -> bool:
+    if pattern in BROAD_EVIDENCE_PATTERNS:
+        return True
+    if pattern.startswith("*.") and pattern.count("*") == 1:
+        return True
+    return False
 
 
 def _is_lifecycle_path(path: str) -> bool:
