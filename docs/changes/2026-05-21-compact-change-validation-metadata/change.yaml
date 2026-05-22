@@ -28,6 +28,7 @@ tests:
   - Code-review M2 R2 returned clean-with-notes with no material findings; M2 is closed.
   - M3 added compact reconstruction, summary derivation, review-count cross-checking, compactness, and no-execution validator coverage; M3 is ready for code-review.
   - Code-review M3 R1 found CVM-M3-CR1, CVM-M3-CR2, and CVM-M3-CR3; M3 requires review-resolution before re-review.
+  - Review-resolution accepted and resolved CVM-M3-CR1, CVM-M3-CR2, and CVM-M3-CR3; M3 is ready for code-review rerun.
 review:
   status: clean
   unresolved_items: 0
@@ -210,6 +211,32 @@ validation:
     result: pass_after_code_review_m3_r1_recording
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md
     result: pass_after_code_review_m3_r1_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-extra-summary-blocker/change.yaml
+    result: expected_fail_extra_summary_blocker_after_cvm_m3_cr1_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compactness-representative-compact/change.yaml
+    result: pass_after_cvm_m3_cr2_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compactness-representative-legacy/change.yaml
+    result: pass_after_cvm_m3_cr2_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-summary-conflict/change.yaml
+    result: expected_fail_summary_conflict_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid-review-counts/change.yaml
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-review-counts/change.yaml
+    result: expected_fail_review_count_mismatch_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py scripts/review_artifact_validation.py
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: git diff --check --
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_8_findings_7_log_entries_8_resolution_entries_7_after_cvm_m3_cr1_cr2_cr3_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md
+    result: pass_after_cvm_m3_cr1_cr2_cr3_resolution
 changed_files:
   - docs/proposals/2026-05-21-compact-change-validation-metadata.md
   - specs/compact-change-validation-metadata.md
@@ -243,6 +270,9 @@ changed_files:
   - tests/fixtures/change-metadata/compact-invalid-final-count-drift/change.yaml
   - tests/fixtures/change-metadata/compact-invalid-review-counts/change.yaml
   - tests/fixtures/change-metadata/compact-invalid-review-count-precondition/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-extra-summary-blocker/change.yaml
+  - tests/fixtures/change-metadata/compactness-representative-compact/change.yaml
+  - tests/fixtures/change-metadata/compactness-representative-legacy/change.yaml
   - tests/fixtures/change-metadata/compact-invalid-conflicting-slug/change.yaml
   - tests/fixtures/change-metadata/compact-invalid-recursive-var/change.yaml
   - tests/fixtures/change-metadata/compact-invalid-unresolved-var/change.yaml

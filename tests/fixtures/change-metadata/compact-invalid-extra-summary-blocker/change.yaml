@@ -1,0 +1,22 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-change-validation-metadata
+  change_root: tests/fixtures/change-metadata/compact-invalid-extra-summary-blocker
+validation_bundles:
+  metadata:
+    command: python scripts/validate-change-metadata.py {change_root}/change.yaml
+validation_events:
+  - stage: proposal-review-r1
+    lifecycle_stage: proposal-review
+    bundles:
+      - metadata
+    result: pass
+validation_summary:
+  all_passed: false
+  stages_validated:
+    - proposal-review-r1
+  final_counts: {}
+  open_validation_blockers:
+    - stage: fake-blocker
+      kind: arbitrary
+      message: should not be accepted

@@ -763,6 +763,20 @@ def measure_compact_common_read_reduction(legacy_common_read: str, compact_commo
     return (before - after) / before
 
 
+def extract_change_validation_common_read_surface(data: dict[str, Any]) -> str:
+    compact_keys = (
+        "path_vars",
+        "validation_bundles",
+        "validation_events",
+        "validation_summary",
+    )
+    if data.get("schema_version") == 2:
+        surface = {key: data.get(key) for key in compact_keys if key in data}
+    else:
+        surface = {"validation": data.get("validation", [])}
+    return json.dumps(surface, sort_keys=True, separators=(",", ":"))
+
+
 def compact_bundle_expands_with(bundle_id: str, definition: Any) -> str | None:
     if not isinstance(definition, dict):
         return None
@@ -1057,6 +1071,28 @@ def compact_blocker_stages(blockers: Any) -> set[str]:
     return stages
 
 
+def compact_expected_blocker_stages(validation_events: list[Any]) -> set[str]:
+    expected: set[str] = set()
+    for event in validation_events:
+        if not isinstance(event, dict):
+            continue
+        stage = event.get("stage")
+        result = event.get("result")
+        if not isinstance(stage, str):
+            continue
+        if result in {"fail", "blocked", "not-run"}:
+            expected.add(stage)
+            continue
+        if result == "skipped":
+            accepted = (
+                is_nonempty_string(event.get("skip_reason"))
+                and event.get("owner_decision") == "accepted"
+            )
+            if not accepted:
+                expected.add(stage)
+    return expected
+
+
 def latest_compact_event_counts(validation_events: list[Any]) -> dict[str, int]:
     latest: dict[str, int] = {}
     for event in validation_events:
@@ -1183,26 +1219,15 @@ def validate_compact_summary(
                 )
 
     blocker_stages = compact_blocker_stages(blockers)
-    for event in validation_events:
-        if not isinstance(event, dict):
-            continue
-        stage = event.get("stage")
-        result = event.get("result")
-        if not isinstance(stage, str):
-            continue
-        if result in {"fail", "blocked", "not-run"} and stage not in blocker_stages:
-            errors.append(
-                f"validation_summary.open_validation_blockers: missing blocker for stage '{stage}'"
-            )
-        if result == "skipped":
-            accepted = (
-                is_nonempty_string(event.get("skip_reason"))
-                and event.get("owner_decision") == "accepted"
-            )
-            if not accepted and stage not in blocker_stages:
-                errors.append(
-                    f"validation_summary.open_validation_blockers: missing blocker for stage '{stage}'"
-                )
+    expected_blocker_stages = compact_expected_blocker_stages(validation_events)
+    for stage in sorted(expected_blocker_stages - blocker_stages):
+        errors.append(
+            f"validation_summary.open_validation_blockers: missing blocker for stage '{stage}'"
+        )
+    for stage in sorted(blocker_stages - expected_blocker_stages):
+        errors.append(
+            f"validation_summary.open_validation_blockers: extra blocker not derived from validation_events: {stage}"
+        )
 
     expected_all_passed = (
         all(

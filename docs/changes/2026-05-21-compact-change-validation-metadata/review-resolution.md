@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: code-review-m2-r1
@@ -17,7 +17,7 @@ Review closeout: code-review-m2-r1
 
 Finding ID: CVM-M3-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: review-resolution
 Chosen action: Reject compact summary blocker entries that are not derived from non-pass validation events.
@@ -25,12 +25,14 @@ Rationale: M3 currently checks for missing blockers but allows arbitrary extra b
 Required outcome: Compact validation rejects `open_validation_blockers` entries that do not correspond to non-pass events requiring blocker representation.
 Safe resolution path: Derive expected blocker stages from `validation_events`, compare stored blocker stages exactly against that derived set, and add an invalid fixture proving all-pass events with an extra blocker fail.
 Validation target: `scripts/test-change-metadata-validator.py` includes an invalid extra-blocker fixture and `scripts/validate-change-metadata.py` rejects it with a stable summary-drift diagnostic.
+Resolution: Updated compact summary validation to derive expected blocker stages from `validation_events` and reject both missing blockers and extra blockers not derived from event truth. Added `compact-invalid-extra-summary-blocker` to prove all-pass events with an arbitrary summary blocker fail validation.
+Validation evidence: `python scripts/test-change-metadata-validator.py` passed, and `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-invalid-extra-summary-blocker/change.yaml` failed as expected with `extra blocker not derived from validation_events: fake-blocker`.
 
 #### CVM-M3-CR2
 
 Finding ID: CVM-M3-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: review-resolution
 Chosen action: Replace the inline compactness measurement with representative reconstruction-gated fixture proof.
@@ -38,12 +40,14 @@ Rationale: The current compactness test measures inline strings that are not a v
 Required outcome: M3 proves material compactness on a representative high-rerun legacy/compact fixture or equivalent tracked fixture surfaces only after compact reconstruction preservation passes.
 Safe resolution path: Add a representative legacy/compact fixture pair or equivalent tracked fixture surfaces, validate/reconstruct the compact evidence first, then assert the compact common-read surface is at least 30% smaller.
 Validation target: `scripts/test-change-metadata-validator.py` proves reconstruction passes before evaluating compactness and reports the measured reduction for a representative high-rerun fixture.
+Resolution: Replaced the inline-string compactness proof with representative legacy and compact fixture files. The test now validates both fixtures, reconstructs the compact accumulated lifecycle path set through `reconstruct_compact_path_sets`, and only then measures the compact common-read surface against the legacy common-read validation surface.
+Validation evidence: `python scripts/test-change-metadata-validator.py` passed, including `test_compact_common_read_reduction_helper`. Direct fixture validation passed for `tests/fixtures/change-metadata/compactness-representative-compact/change.yaml` and `tests/fixtures/change-metadata/compactness-representative-legacy/change.yaml`.
 
 #### CVM-M3-CR3
 
 Finding ID: CVM-M3-CR3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: review-resolution
 Chosen action: Make the no-execution sentinel command create the sentinel if it is ever executed.
@@ -51,6 +55,8 @@ Rationale: The current sentinel command raises a Python error if run and would n
 Required outcome: The no-execution proof fails if metadata validation executes bundle commands.
 Safe resolution path: Replace the inert sentinel command with a valid compact command string that writes a repo-relative sentinel file if executed, then assert validation leaves the file absent.
 Validation target: `scripts/test-change-metadata-validator.py::test_compact_validator_does_not_execute_bundle_commands` would fail if bundle commands are executed during metadata validation.
+Resolution: Replaced the inert no-execution sentinel command with a valid compact command string that writes `tests/fixtures/change-metadata/compact-command-sentinel` if executed. The test removes the sentinel before validation, validates metadata, and asserts the sentinel remains absent.
+Validation evidence: `python scripts/test-change-metadata-validator.py` passed, including `test_compact_validator_does_not_execute_bundle_commands`.
 
 ### code-review-m2-r1
 

@@ -1,0 +1,130 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-change-validation-metadata
+  change_root: tests/fixtures/change-metadata/compactness-representative-compact
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    expands_with: validation_events[].paths_added.lifecycle
+validation_events:
+  - stage: proposal-review-r1
+    lifecycle_stage: proposal-review
+    bundles:
+      - lifecycle
+    paths_added:
+      lifecycle:
+        - docs/proposals/{change_id}.md
+    result: pass
+    counts:
+      reviews: 1
+      findings: 0
+      log_entries: 1
+      resolution_entries: 0
+  - stage: spec-review-r1
+    lifecycle_stage: spec-review
+    bundles:
+      - lifecycle
+    paths_added:
+      lifecycle:
+        - specs/{slug}.md
+    result: pass
+    counts:
+      reviews: 2
+      findings: 0
+      log_entries: 2
+      resolution_entries: 0
+  - stage: test-spec-r1
+    lifecycle_stage: test-spec
+    bundles:
+      - lifecycle
+    paths_added:
+      lifecycle:
+        - specs/{slug}.test.md
+    result: pass
+    counts:
+      reviews: 3
+      findings: 0
+      log_entries: 3
+      resolution_entries: 0
+  - stage: plan-review-r1
+    lifecycle_stage: plan-review
+    bundles:
+      - lifecycle
+    paths_added:
+      lifecycle:
+        - docs/plans/{change_id}.md
+    result: pass
+    counts:
+      reviews: 4
+      findings: 0
+      log_entries: 4
+      resolution_entries: 0
+  - stage: code-review-m1-r1
+    lifecycle_stage: code-review
+    bundles:
+      - lifecycle
+    paths_added:
+      lifecycle:
+        - docs/changes/{change_id}/reviews/code-review-m1-r1.md
+    result: pass
+    counts:
+      reviews: 5
+      findings: 0
+      log_entries: 5
+      resolution_entries: 0
+  - stage: code-review-m2-r1
+    lifecycle_stage: code-review
+    bundles:
+      - lifecycle
+    paths_added:
+      lifecycle:
+        - docs/changes/{change_id}/reviews/code-review-m2-r1.md
+    result: pass
+    counts:
+      reviews: 6
+      findings: 0
+      log_entries: 6
+      resolution_entries: 0
+  - stage: code-review-m2-r2
+    lifecycle_stage: code-review
+    bundles:
+      - lifecycle
+    paths_added:
+      lifecycle:
+        - docs/changes/{change_id}/reviews/code-review-m2-r2.md
+    result: pass
+    counts:
+      reviews: 7
+      findings: 0
+      log_entries: 7
+      resolution_entries: 0
+  - stage: code-review-m3-r1
+    lifecycle_stage: code-review
+    bundles:
+      - lifecycle
+    paths_added:
+      lifecycle:
+        - docs/changes/{change_id}/reviews/code-review-m3-r1.md
+    result: pass
+    counts:
+      reviews: 8
+      findings: 0
+      log_entries: 8
+      resolution_entries: 0
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - proposal-review-r1
+    - spec-review-r1
+    - test-spec-r1
+    - plan-review-r1
+    - code-review-m1-r1
+    - code-review-m2-r1
+    - code-review-m2-r2
+    - code-review-m3-r1
+  final_counts:
+    reviews: 8
+    findings: 0
+    log_entries: 8
+    resolution_entries: 0
+  open_validation_blockers: []

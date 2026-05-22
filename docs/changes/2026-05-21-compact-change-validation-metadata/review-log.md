@@ -25,7 +25,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r1.md
 Resolution: review-resolution.md#code-review-m3-r1
 Material findings: CVM-M3-CR1, CVM-M3-CR2, CVM-M3-CR3
-Open findings: CVM-M3-CR1, CVM-M3-CR2, CVM-M3-CR3
+Open findings: none
 
 ### Review entry
 
