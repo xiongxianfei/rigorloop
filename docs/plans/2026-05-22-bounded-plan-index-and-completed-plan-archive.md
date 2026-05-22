@@ -67,14 +67,14 @@ The main implementation surfaces are:
 
 ## Current Handoff Summary
 
-- Current milestone: lifecycle closeout
-- Current milestone state: planned
-- Last reviewed milestone: M5. Selection and CI routing
+- Current milestone: final verification
+- Current milestone state: pending
+- Last reviewed milestone: M6. Lifecycle closeout and handoff evidence
 - Review status: code-review M6 R1 clean-with-notes; no open findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change final closeout
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: downstream explain-change finalization, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: explain-change is refreshed after the post-merge sync; downstream verify and PR handoff remain.
 
 ## Milestones
 
@@ -381,6 +381,7 @@ The main implementation surfaces are:
 - 2026-05-22: Began M6 lifecycle closeout evidence, ran final implementation validation including broad smoke, and kept the plan Active pending M6 code-review, verify, and PR handoff.
 - 2026-05-22: M6 implementation reached `review-requested`; next stage is code-review for M6 before final downstream closeout.
 - 2026-05-22: Code-review M6 R1 passed clean-with-notes; all in-scope implementation milestones are closed and downstream final closeout is next.
+- 2026-05-22: Explain-change refreshed after syncing merged PR #85; next stage is `verify`.
 
 ## Decision log
 
@@ -466,6 +467,7 @@ The main implementation surfaces are:
 - 2026-05-22: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive` passed during M6 implementation.
 - 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md` passed during M6 implementation with the existing lifecycle-language warning for merge-state wording in the spec.
 - 2026-05-22: `bash scripts/ci.sh` passed during M6 implementation.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md` passed after explain-change refresh with lifecycle-language warnings for the documented post-merge sync.
 
 ## Outcome and retrospective
 
@@ -474,4 +476,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for downstream final closeout; not ready for verify or PR handoff until that sequence runs.
+- Ready for `verify`; not ready for PR handoff until verify runs.
