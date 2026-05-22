@@ -68,13 +68,13 @@ The main implementation surfaces are:
 ## Current Handoff Summary
 
 - Current milestone: PR handoff
-- Current milestone state: pending
+- Current milestone state: closed
 - Last reviewed milestone: M6. Lifecycle closeout and handoff evidence
 - Review status: code-review M6 R1 clean-with-notes; no open findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: explain-change is current, review-resolution is closed, final selected CI and broad smoke passed from the synced branch, and PR handoff remains.
+- Next stage: hosted CI and human review for PR #86
+- Final closeout readiness: PR open
+- Reason final closeout is or is not ready: explain-change is current, review-resolution is closed, final selected CI and broad smoke passed from the synced branch, and PR #86 is open. Hosted CI and human review remain.
 
 ## Milestones
 
@@ -383,6 +383,7 @@ The main implementation surfaces are:
 - 2026-05-22: Code-review M6 R1 passed clean-with-notes; all in-scope implementation milestones are closed and downstream final closeout is next.
 - 2026-05-22: Explain-change refreshed after syncing merged PR #85; next stage is `verify`.
 - 2026-05-22: Final verify passed from the synced branch; next stage is `pr`.
+- 2026-05-22: PR #86 opened for hosted CI and human review.
 
 ## Decision log
 
@@ -488,4 +489,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Branch-ready for `pr`; not Done until PR handoff and downstream completion settle the final lifecycle state.
+- PR #86 is open after final local verify. Hosted CI success, human review, merge, and Done are not claimed.
