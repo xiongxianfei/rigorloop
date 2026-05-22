@@ -67,9 +67,9 @@ The implementation must create durable evidence under `docs/changes/2026-05-22-b
 - Last reviewed milestone: M4. Preservation evidence and lifecycle closeout
 - Review status: code-review M4 R2 completed clean-with-notes after `BSO-M4-CR1` review-resolution
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: M1, M2, M3, and M4 are closed after code-review, review-resolution is closed with no open findings, CI-maintenance cleared the local selector blocker, explain-change is refreshed, and final local verify passed. PR body/open readiness and hosted CI remain owned by the PR stage.
+- Next stage: hosted CI and human review for PR #85
+- Final closeout readiness: PR open
+- Reason final closeout is or is not ready: M1, M2, M3, and M4 are closed after code-review, review-resolution is closed with no open findings, CI-maintenance cleared the local selector blocker, explain-change is refreshed, final local verify passed, and PR #85 is open. Hosted CI and human review are pending.
 
 ## Milestones
 
@@ -397,6 +397,7 @@ The implementation must create durable evidence under `docs/changes/2026-05-22-b
 - 2026-05-22: Explain-change recorded under `docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/explain-change.md`; next stage is `verify`.
 - 2026-05-22: CI-maintenance fixed local/PR selector routing for the new change-local evidence files, refreshed explain-change, and reran local selected CI; next stage remains `verify`.
 - 2026-05-22: Final local verify passed, including selector regression, producer default/verbose/quiet compatibility, identity hashes, local and explicit selected CI, broad-smoke default and verbose runs, review-artifact closeout, change metadata, artifact lifecycle, and patch hygiene. Next stage is `pr`.
+- 2026-05-22: PR #85 opened for hosted CI and human review.
 
 ## Decision log
 
@@ -432,9 +433,9 @@ The implementation must create durable evidence under `docs/changes/2026-05-22-b
 
 ## Outcome and retrospective
 
-- Pending PR handoff. Hosted CI is not claimed before PR.
+- PR #85 is open. Hosted CI and human review are pending.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Branch-ready for `pr` handoff after final local verify. This is not PR body readiness, PR open readiness, hosted CI success, or Done.
+- PR #85 is open after final local verify. Hosted CI success, human review, merge, and Done are not claimed.
