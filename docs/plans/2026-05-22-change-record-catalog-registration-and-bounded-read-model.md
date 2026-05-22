@@ -61,13 +61,13 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Current Handoff Summary
 
 - Current milestone: M1. Evidence class registry and registered selector routing
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation complete and ready for code-review
+- Current milestone state: resolution-needed
+- Last reviewed milestone: M1. Evidence class registry and registered selector routing
+- Review status: code-review-m1-r1 changes-requested with `CRM-M1-CR1`
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is awaiting code-review; remaining implementation milestones, code-review loops, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 has an open code-review finding; review-resolution, re-implementation, re-review, remaining implementation milestones, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -112,7 +112,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ### M1. Evidence class registry and registered selector routing
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add the evidence-class registry behavior and deterministic selector routing for registered recurring change-local evidence files.
 - Requirements: CRM-R1 through CRM-R11, CRM-R20, CRM-R50 through CRM-R52, CRM-R54, CRM-R55; AC-CRM-001, AC-CRM-002, AC-CRM-005 through AC-CRM-007, AC-CRM-015, AC-CRM-017.
 - Files/components likely touched:
@@ -403,6 +403,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: Clean plan-review recorded in `docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/plan-review-r1.md`.
 - 2026-05-22: Test spec created at `specs/change-record-catalog-registration-and-bounded-read-model.test.md`; ready for M1 implementation.
 - 2026-05-22: M1 implemented selector-owned evidence class registry, registered evidence routing, registry validation tests, representative route fixture updates, and `behavior-preservation.md`.
+- 2026-05-22: `code-review-m1-r1` recorded material finding `CRM-M1-CR1`; M1 moved to `resolution-needed`.
 
 ## Decision log
 
@@ -424,6 +425,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: Test-spec authoring validation passed: review artifact closeout, change metadata, artifact lifecycle explicit paths, whitespace, and explicit selected CI.
 - 2026-05-22: M1 validation passed: `python scripts/test-select-validation.py`; `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md`; `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`.
 - 2026-05-22: M1 post-recording selected CI passed with `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- 2026-05-22: Code-review M1 R1 recording validation passed with review artifact structure validation, change metadata validation, artifact lifecycle validation, whitespace check, and explicit selected CI.
 
 ## Outcome and retrospective
 
@@ -432,4 +434,4 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review of M1; not ready for final closeout, verify, PR handoff, or Done.
+- Ready for review-resolution of `CRM-M1-CR1`; not ready for M2, final closeout, verify, PR handoff, or Done.
