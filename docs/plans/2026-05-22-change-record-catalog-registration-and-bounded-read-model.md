@@ -61,13 +61,13 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Current Handoff Summary
 
 - Current milestone: M4. Stage-skill read guidance and generated adapter proof
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Bounded change-record query helper
-- Review status: M3 clean re-review recorded after `CRM-M3-CR1` resolution
+- Review status: M4 implementation complete; awaiting code-review
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: implement M4
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4, M5, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M4 code-review, M5, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -261,7 +261,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ### M4. Stage-skill read guidance and generated adapter proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Update affected stage skills to name bounded change-record slices or query-helper commands after helper command names are stable, then validate generated adapter output.
 - Requirements: CRM-R44 through CRM-R48, CRM-R49 through CRM-R52; AC-CRM-013, AC-CRM-014, AC-CRM-016, AC-CRM-017.
 - Files/components likely touched:
@@ -443,6 +443,9 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: Code-review M3 R1 found `CRM-M3-CR1`: the query helper returns an empty artifact list for an accepted compact metadata shape whose artifact paths live in `path_vars`; M3 remains `resolution-needed`.
 - 2026-05-22: `CRM-M3-CR1` resolution validation passed: `python scripts/test-query-change-record.py`; direct compact `path_vars` fixture proof using `tests/fixtures/change-metadata/compact-valid/change.yaml` copied under a temporary `docs/changes/compact-valid/change.yaml`; `python scripts/test-change-metadata-validator.py`; `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml`; active `summary`, `artifacts`, and `validation --latest` query commands; explicit selected CI for query/helper/metadata paths. M3 returned to `review-requested`.
 - 2026-05-22: `code-review-m3-r2` recorded clean re-review for `CRM-M3-CR1`; M3 closed and handoff moved to M4 implementation.
+- 2026-05-22: M4 validation passed: `python scripts/test-skill-validator.py` initially failed before skill edits on missing bounded-read guidance, then passed 161 tests after updates; `python scripts/validate-skills.py`; `python scripts/build-skills.py --check`; `python scripts/test-adapter-distribution.py`; archive adapter proof with `python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmp"` plus `python scripts/validate-adapters.py --root "$tmp" --version v0.1.5`; active query-helper summary smoke; explicit selected CI for changed skill, skill-test, and query-helper paths; `git diff --check --`.
+- 2026-05-22: `python scripts/build-adapters.py --check` still fails against baseline retired tracked adapter-tree expectations: default version `0.1.1` mismatches tracked `v0.1.5`, and `v0.1.5 --check` expects repository-tree adapter skill bodies that current `AGENTS.md` and `dist/adapters/README.md` say are release archives for `v0.1.3` and later. M4 used release-archive generation and validation as the current supported adapter proof and recorded the baseline check mismatch for code-review visibility.
+- 2026-05-22: M4 implemented bounded change-record read guidance in `proposal-review`, `code-review`, `verify`, `pr`, and `plan` skills. Added static regression proof that affected skills name bounded slices or query commands and full-read escalation conditions. M4 moved to `review-requested`.
 
 ## Outcome and retrospective
 
@@ -451,4 +454,4 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M4 implementation; not ready for final closeout, verify, PR handoff, or Done.
+- Ready for M4 code-review; not ready for final closeout, verify, PR handoff, or Done.

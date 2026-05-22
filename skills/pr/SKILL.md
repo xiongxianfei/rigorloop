@@ -92,6 +92,12 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Change-record bounded reads
+
+For planned change records, summarize current workflow state from the active plan `Current Handoff Summary`. When the project provides the helper, use `scripts/query-change-record.py <change-id> summary` for artifact paths, review state, latest validation state, blockers, and detail pointers; use `scripts/query-change-record.py <change-id> artifacts` for canonical artifact paths only; and use `scripts/query-change-record.py <change-id> validation --latest` for latest validation evidence.
+
+Escalate from bounded helper output to full `change.yaml` when PR handoff depends on forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing behavior, migration compatibility, or whole-record review. Do not treat the PR body as the authoritative state owner for active plan status.
+
 ## Outputs
 
 Produce a PR readiness check, title, body, reviewer notes, risks, follow-ups, and the opened PR URL when the repository/tooling permits opening the PR.
