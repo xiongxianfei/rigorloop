@@ -27,6 +27,7 @@ tests:
   - Review-resolution accepted CVM-M2-CR1 and added compact bundle-command safety validation; M2 is ready for code-review rerun.
   - Code-review M2 R2 returned clean-with-notes with no material findings; M2 is closed.
   - M3 added compact reconstruction, summary derivation, review-count cross-checking, compactness, and no-execution validator coverage; M3 is ready for code-review.
+  - Code-review M3 R1 found CVM-M3-CR1, CVM-M3-CR2, and CVM-M3-CR3; M3 requires review-resolution before re-review.
 review:
   status: clean
   unresolved_items: 0
@@ -201,6 +202,14 @@ validation:
     result: pass_reviews_7_findings_4_log_entries_7_resolution_entries_4_after_m3_implementation
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md
     result: pass_after_m3_implementation
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_after_code_review_m3_r1_recording
+  - command: git diff --check --
+    result: pass_after_code_review_m3_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_code_review_m3_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3_r1_recording
 changed_files:
   - docs/proposals/2026-05-21-compact-change-validation-metadata.md
   - specs/compact-change-validation-metadata.md
@@ -217,6 +226,7 @@ changed_files:
   - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md
   - scripts/validate-change-metadata.py
   - scripts/test-change-metadata-validator.py
   - tests/fixtures/change-metadata/compact-valid/change.validation-log.yaml
