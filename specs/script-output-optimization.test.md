@@ -8,10 +8,15 @@
 
 - Spec: [Script Output Optimization](script-output-optimization.md), approved.
 - Proposal: [RigorLoop Script Output Optimization](../docs/proposals/2026-05-21-script-output-optimization.md), accepted.
-- Plan: [Script Output Optimization](../docs/plans/2026-05-21-script-output-optimization.md), active.
+- Proposal: [Broad-Smoke and Fixture-Suite Output Compaction](../docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md), accepted.
+- Plan: [Script Output Optimization](../docs/plans/2026-05-21-script-output-optimization.md), done.
+- Plan: [Broad-Smoke and Fixture-Suite Output Compaction](../docs/plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md), active.
 - Architecture: [System architecture](../docs/architecture/system/architecture.md), updated and approved by `architecture-review-r1`.
 - Spec review: `spec-review-r2` approved the spec after `SRO-SR1` and `SRO-SR2` were resolved.
 - Plan review: `plan-review-r1` approved the plan with no material findings.
+- Broad-smoke proposal review: `docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/proposal-review-r2.md`, approved.
+- Broad-smoke spec review: `docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/spec-review-r2.md`, approved.
+- Broad-smoke plan review: `docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/reviews/plan-review-r1.md`, approved.
 
 ## Testing strategy
 
@@ -22,6 +27,10 @@
 - Manual verification is limited to durable audit and behavior-preservation evidence where baseline/new comparison is review evidence rather than pure executable behavior.
 - Contract tests inspect the audit, behavior-preservation matrix, and changed-path set to prove no generated adapter output, public skill files, workflow specs, validation-selection logic, or broad CI behavior changed outside the approved scope.
 - Migration/compatibility tests prove the old full pass/check detail remains available through `--verbose` and that JSON support is not newly introduced.
+- Broad-smoke integration tests exercise the `scripts/ci.sh --mode broad-smoke` orchestration path with deterministic noisy and failing child fixtures so capture, aggregate success, failure evidence, verbose output, and exit behavior are observable.
+- Wrapper-mode consistency tests statically or structurally inspect `scripts/ci.sh` orchestration modes that run validation producers and fail when a mode streams child output directly without an approved exception.
+- Producer integration tests execute `scripts/test-change-metadata-validator.py` as a subprocess for default, `--verbose` / `-v`, `--quiet` / `-q`, zero-test, pass/fail exit, and selected-test identity proof.
+- Ordinary-validation guard tests prove broad-smoke and producer output-contract tests are included in ordinary post-implementation validation or that a normal validation command fails when they fail.
 
 ## Requirement coverage map
 
@@ -67,6 +76,39 @@
 | R33 | TSRO-010 | manual, contract | Asserts behavior-preservation matrix exists for each touched script. |
 | R34 | TSRO-010 | manual, contract | Asserts matrix compares pass/fail exits, selected checks, failure detection/evidence, verbose output, quiet failure, and conditional CI semantics. |
 | R35 | TSRO-002, TSRO-003, TSRO-004, TSRO-005, TSRO-006, TSRO-007, TSRO-008, TSRO-009, TSRO-011, TSRO-012 | integration, contract | Covers all required output-shape cases. |
+| R36 | TSRO-015 | manual, contract | Asserts output-layer audit exists at the broad-smoke change-local path. |
+| R37 | TSRO-015 | manual, contract | Asserts audit records producer, direct-run, orchestrator, capture-policy, high-use, and treatment fields. |
+| R38 | TSRO-015 | manual, contract | Asserts selected-CI and broad-smoke are separate orchestrator paths. |
+| R39 | TSRO-017 | integration | Asserts broad-smoke `run_check` captures child stdout/stderr by default. |
+| R40 | TSRO-017 | integration | Asserts successful child stdout/stderr is not streamed in default broad-smoke success. |
+| R41 | TSRO-017 | integration | Asserts aggregate `[PASS] broad-smoke` summary with count and duration. |
+| R42 | TSRO-017 | integration, contract | Asserts default success is not one line per child. |
+| R43 | TSRO-018 | integration | Asserts failed child check name is shown. |
+| R44 | TSRO-018 | integration | Asserts failed child command is shown. |
+| R45 | TSRO-018 | integration | Asserts child exit code or exit reason is shown. |
+| R46 | TSRO-018 | integration | Asserts failed child duration is shown. |
+| R47 | TSRO-018 | integration | Asserts captured stdout/stderr is shown with combined ordering preserved or separated streams labeled. |
+| R48 | TSRO-019 | integration | Asserts broad-smoke `--verbose` emits successful child output in stable check order. |
+| R49 | TSRO-016, TSRO-018, TSRO-019, TSRO-026 | integration, contract | Asserts broad-smoke command selection/order, child exit behavior, failure detection, and wrapper exit behavior are preserved. |
+| R50 | TSRO-016 | manual, contract | Asserts ordered broad-smoke command list and SHA-256 hash exist before and after. |
+| R51 | TSRO-020 | unit, integration | Asserts wrapper-mode consistency guard checks each `scripts/ci.sh` orchestration mode that runs validation producers. |
+| R52 | TSRO-020 | unit, integration | Asserts checked modes use capture policy or have a documented exception. |
+| R53 | TSRO-015, TSRO-021 | contract, integration | Asserts the first targeted producer is `scripts/test-change-metadata-validator.py` unless an approved audit exception exists. |
+| R54 | TSRO-021 | integration | Asserts default producer success is one `[PASS]` summary with name, nonzero count, and duration. |
+| R55 | TSRO-021 | integration | Asserts producer default success hides individual passing tests. |
+| R56 | TSRO-021 | integration | Asserts producer default failure includes `[FAIL]`, failed names, messages, and locations when available. |
+| R57 | TSRO-021 | integration | Asserts producer default failure collapses passing detail into counts. |
+| R58 | TSRO-022 | integration | Asserts producer accepts `--verbose` and `-v`. |
+| R59 | TSRO-022 | integration, migration | Asserts producer verbose mode preserves full pass/check listing. |
+| R60 | TSRO-023 | integration, migration | Asserts producer `--quiet` and `-q` remain accepted. |
+| R60a | TSRO-023 | contract, migration | Asserts no custom compact quiet formatter is added for the producer. |
+| R60b | TSRO-023 | integration, migration | Asserts `--quiet` and `-q` are not converted into unsupported invocations. |
+| R60c | TSRO-023 | contract | Asserts future custom quiet formatting requires a new approved output contract and preservation proof. |
+| R61 | TSRO-024 | integration | Asserts producer zero executed tests fail unless an explicit mode allows zero selection. |
+| R62 | TSRO-024 | manual, contract | Asserts producer selected test/check identity list and SHA-256 hash exist before and after. |
+| R63 | TSRO-025 | integration, contract | Asserts output-contract tests run in ordinary validation or are guarded by ordinary validation. |
+| R64 | TSRO-026 | integration, contract | Asserts selected-CI behavior does not regress. |
+| R65 | TSRO-026, TSRO-027 | contract, smoke | Asserts no generated artifacts, skills, adapters, JSON support, validation selection logic, or validation coverage changes. |
 
 ## Example coverage map
 
@@ -81,6 +123,12 @@
 | E7 | TSRO-007 | Zero executed tests fail instead of looking like success. |
 | E8 | TSRO-011, TSRO-012 | Wrapper stays failure-focused, with conditional wrapper patch coverage. |
 | E9 | TSRO-006 | Conflicting flags fail before selection/execution. |
+| E10 | TSRO-017 | Broad-smoke success is aggregate and does not stream successful child output. |
+| E11 | TSRO-018 | Broad-smoke failure shows failed child identity, command, exit reason, duration, and captured output. |
+| E12 | TSRO-019 | Broad-smoke `--verbose` preserves successful child detail in stable order. |
+| E13 | TSRO-021 | Direct producer success is compact. |
+| E14 | TSRO-021 | Direct producer failure remains actionable. |
+| E15 | TSRO-020 | Wrapper-mode consistency guard checks every applicable orchestration mode. |
 
 ## Edge case coverage
 
@@ -99,6 +147,16 @@
 | EC11 | TSRO-009 | Existing JSON is preserved if present; absent JSON is not added. |
 | EC12 | TSRO-011 | `scripts/ci.sh` remains unchanged when existing behavior is sufficient. |
 | EC13 | TSRO-012 | Any `scripts/ci.sh` change is minimal and preserves default success hiding. |
+| EC14 | TSRO-017 | Broad-smoke child checks pass while emitting stdout/stderr; default output is aggregate only. |
+| EC15 | TSRO-018 | Broad-smoke child fails while emitting stdout/stderr; failure output includes labeled or ordered captured output. |
+| EC16 | TSRO-019 | Broad-smoke verbose prints successful child output in stable order. |
+| EC17 | TSRO-020 | New non-capturing orchestration mode without documented exception fails the consistency guard. |
+| EC18 | TSRO-021 | Producer passing run with many tests emits one summary line. |
+| EC19 | TSRO-021 | Producer failing run expands failed tests and collapses passing tests into counts. |
+| EC20 | TSRO-022 | Producer `--verbose` passes and includes full pass/check detail. |
+| EC21 | TSRO-023 | Producer `--quiet` passes, writes no stdout, and may write normal unittest quiet summary to stderr. |
+| EC21a | TSRO-023 | Producer `-q` matches `--quiet` when accepted in baseline. |
+| EC22 | TSRO-016 | Non-deterministic broad-smoke command-list extraction blocks preservation claims. |
 
 ## Acceptance criteria coverage
 
@@ -119,6 +177,28 @@
 | AC12 | TSRO-011, TSRO-012 | Conditional wrapper default and verbose success-output behavior. |
 | AC13 | TSRO-011, TSRO-012 | Conditional wrapper failed-child output evidence. |
 | AC14 | TSRO-013 | No generated adapters, public skill files, workflow specs, or selector logic changes. |
+| AC15 | TSRO-015 | Output-layer audit maps producers, orchestrators, capture policy, high-use status, and first-slice treatment. |
+| AC16 | TSRO-017 | Broad-smoke `run_check` captures child stdout/stderr by default. |
+| AC17 | TSRO-017 | Broad-smoke default success does not stream successful child output. |
+| AC18 | TSRO-017 | Broad-smoke default success reports aggregate `[PASS] broad-smoke` summary with count and duration. |
+| AC19 | TSRO-018 | Broad-smoke default failure includes child name, command, exit code/reason, duration, and captured stdout/stderr. |
+| AC20 | TSRO-019 | Broad-smoke `--verbose` emits full successful child output in stable order. |
+| AC21 | TSRO-016 | Broad-smoke selected child command list and exit-code behavior are unchanged with ordered list plus SHA-256 hash proof. |
+| AC22 | TSRO-020 | Wrapper-mode consistency is checked for every validation-producing `scripts/ci.sh` mode or documented exception. |
+| AC23 | TSRO-021 | Producer default success is one `[PASS]` summary with name, nonzero count, and duration. |
+| AC24 | TSRO-021 | Producer default success hides individual passing checks. |
+| AC25 | TSRO-021 | Producer default failure includes `[FAIL]`, failed names, messages, and locations when available. |
+| AC26 | TSRO-022 | Producer `--verbose` exposes full pass/check detail. |
+| AC27 | TSRO-024 | Producer selected test/check identity and pass/fail exit codes are unchanged with ordered list plus SHA-256 hash proof. |
+| AC28 | TSRO-025 | Broad-smoke and producer output-contract tests run in ordinary validation or are guarded by ordinary validation. |
+| AC29 | TSRO-026 | Selected-CI behavior does not regress. |
+| AC30 | TSRO-026, TSRO-027 | No generated artifacts, skills, adapters, JSON support, validation selection logic, or validation coverage changes. |
+| AC31 | TSRO-023 | Producer `--quiet` remains accepted. |
+| AC32 | TSRO-023 | Producer `-q` remains accepted when accepted in baseline. |
+| AC33 | TSRO-023 | Producer quiet success preserves current unittest-compatible stdout/stderr behavior. |
+| AC34 | TSRO-023 | Spec does not claim producer `--quiet` is unsupported. |
+| AC35 | TSRO-017, TSRO-023 | Broad-smoke compaction is implemented through `run_check` capture, not producer quiet. |
+| AC36 | TSRO-023 | Future custom producer quiet formatting requires a new approved output contract and preservation proof. |
 
 ## Test cases
 
@@ -341,6 +421,225 @@
 - Failure proves: The implementation is not ready for code-review closeout or final lifecycle handoff.
 - Automation location: Commands listed in the active plan M5 validation section.
 
+### TSRO-015. Output-layer audit records producers and orchestrators
+
+- Covers: R36, R37, R38, R53, R60, R60a, R60b, AC15, AC31, AC32, AC33, AC34, AC35
+- Level: manual, contract
+- Fixture/setup: `docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/script-output-layer-audit.md`.
+- Steps:
+  - Inspect the audit after M1.
+  - Confirm it includes `scripts/test-select-validation.py`, `scripts/test-change-metadata-validator.py`, selected-CI, and broad-smoke.
+  - Confirm selected-CI and broad-smoke are separate orchestrator paths, not one combined wrapper row.
+  - Confirm each assessed producer records direct-run success shape, direct-run failure usefulness, orchestrators, orchestrator capture policy, high-use direct-run status, and first-slice treatment.
+  - Confirm the first targeted producer is `scripts/test-change-metadata-validator.py` unless the audit records owner approval for a replacement.
+  - Confirm the audit records current `scripts/test-change-metadata-validator.py --quiet` and `-q` compatibility and does not treat those flags as unsupported.
+  - Confirm broad-smoke compaction is assigned to `run_check` capture rather than producer-level quiet flags.
+- Expected result: The audit proves the slice is reasoning about every printing layer and wrapper path before implementation.
+- Failure proves: The implementation can fix one noisy path while leaving another unenumerated output layer to diverge.
+- Automation location: Manual review evidence plus `git diff --check -- docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/script-output-layer-audit.md`.
+
+### TSRO-016. Broad-smoke command identity proof is deterministic
+
+- Covers: R49, R50, AC21, EC22
+- Level: manual, contract
+- Fixture/setup: Broad-smoke command-list extraction method and durable evidence under `docs/changes/2026-05-22-broad-smoke-and-fixture-suite-output-compaction/`.
+- Steps:
+  - Run or inspect the deterministic broad-smoke command-list extraction method defined by implementation.
+  - Capture the ordered broad-smoke child command list before output changes.
+  - Compute and record a SHA-256 hash over the ordered list.
+  - Repeat the extraction after broad-smoke capture is implemented.
+  - Assert the post-change ordered list and hash match baseline.
+  - If extraction is non-deterministic or depends on streamed output formatting, block behavior-preservation closeout.
+- Expected result: Reviewers can prove broad-smoke selected child commands and order did not change independently from output text.
+- Failure proves: Shorter broad-smoke logs may have changed command selection or order.
+- Automation location: Repository-owned extraction helper or documented command in `behavior-preservation.md`; lifecycle validation for the evidence artifact.
+
+### TSRO-017. Broad-smoke default success captures noisy child output
+
+- Covers: R39, R40, R41, R42, R49, AC16, AC17, AC18, AC35, E10, EC14
+- Level: integration
+- Fixture/setup: Deterministic broad-smoke fixture or stub child checks that pass while writing recognizable stdout and stderr markers.
+- Steps:
+  - Run `bash scripts/ci.sh --mode broad-smoke` against the noisy passing fixture.
+  - Capture stdout, stderr, and exit code.
+  - Assert success exit code matches baseline.
+  - Assert child stdout and stderr marker lines are absent from default output.
+  - Assert output includes exactly one aggregate `[PASS] broad-smoke` summary with passed child-check count and duration.
+  - Assert output does not print one success line per child.
+  - Assert the command does not invoke producer-level `--quiet` to achieve broad-smoke compaction.
+- Expected result: Broad-smoke success output is constant-size aggregate evidence owned by the wrapper.
+- Failure proves: Broad-smoke still streams child success output, reintroduces output growth with child count, or relies on producer quiet behavior instead of wrapper capture.
+- Automation location: `scripts/test-select-validation.py` wrapper tests or another repository-owned script-output test selected by ordinary validation.
+
+### TSRO-018. Broad-smoke failure emits captured child evidence
+
+- Covers: R43, R44, R45, R46, R47, R49, AC19, E11, EC15
+- Level: integration
+- Fixture/setup: Deterministic broad-smoke fixture with one failing child that writes recognizable stdout and stderr and exits nonzero.
+- Steps:
+  - Run `bash scripts/ci.sh --mode broad-smoke` against the failing fixture.
+  - Capture stdout, stderr, and exit code.
+  - Assert the wrapper exits nonzero with the same failure semantics as baseline.
+  - Assert output identifies the failed child check name.
+  - Assert output includes the failed child command.
+  - Assert output includes child exit code or exit reason.
+  - Assert output includes failed child duration.
+  - Assert captured stdout and stderr are included.
+  - If stdout and stderr are separated, assert streams are clearly labeled; if combined, assert child emission ordering is preserved.
+- Expected result: Broad-smoke is quiet on success but fully actionable on failure.
+- Failure proves: Capture hides failure evidence, loses stderr, reorders diagnostically important output without labels, or changes failure semantics.
+- Automation location: `scripts/test-select-validation.py` wrapper tests or another repository-owned script-output test selected by ordinary validation.
+
+### TSRO-019. Broad-smoke verbose preserves successful child detail
+
+- Covers: R48, R49, AC20, E12, EC16
+- Level: integration, migration
+- Fixture/setup: Deterministic broad-smoke fixture with two or more successful child checks that write ordered stdout/stderr markers.
+- Steps:
+  - Run `bash scripts/ci.sh --mode broad-smoke --verbose` against the fixture.
+  - Assert success exit code matches default mode.
+  - Assert successful child output appears.
+  - Assert child output appears in stable child-check order.
+  - Assert the selected child command list matches default broad-smoke mode.
+- Expected result: `--verbose` remains the escape hatch for full broad-smoke child output without changing what runs.
+- Failure proves: Wrapper capture removed maintainers' access to successful child detail or made verbose output non-deterministic.
+- Automation location: `scripts/test-select-validation.py` wrapper tests or another repository-owned script-output test selected by ordinary validation.
+
+### TSRO-020. Wrapper-mode consistency guard is enforceable
+
+- Covers: R51, R52, AC22, E15, EC17
+- Level: unit, integration
+- Fixture/setup: Static or structural fixture for `scripts/ci.sh` orchestration modes, plus a negative fixture that introduces a validation-producing mode without capture or documented exception.
+- Steps:
+  - Run the wrapper-mode consistency guard against current `scripts/ci.sh`.
+  - Assert every orchestration mode that runs validation producers either uses capture-on-success/show-on-failure-or-verbose behavior or has a documented spec/test-spec exception.
+  - Run the guard against the negative fixture.
+  - Assert the guard fails and identifies the non-capturing mode.
+  - Assert the guard is part of ordinary validation or covered by TSRO-025.
+- Expected result: Wrapper-mode consistency is enforced as a regression guard, not only documented.
+- Failure proves: The broad-smoke divergence class remains open for the next orchestration mode.
+- Automation location: Repository-owned static/structural test selected by ordinary validation.
+
+### TSRO-021. Change metadata validator default output is compact and actionable
+
+- Covers: R53, R54, R55, R56, R57, AC23, AC24, AC25, E13, E14, EC18, EC19
+- Level: integration
+- Fixture/setup: Deterministic passing and failing invocations of `scripts/test-change-metadata-validator.py`, with failure fixture exposing failed test names, messages, and locations when available.
+- Steps:
+  - Run `python scripts/test-change-metadata-validator.py` against the passing suite.
+  - Assert success exit code.
+  - Assert stdout contains one `[PASS] test-change-metadata-validator` summary with nonzero passed count and duration.
+  - Assert default success does not list individual passing tests.
+  - Run the failing fixture in default mode.
+  - Assert nonzero failure exit code.
+  - Assert output includes a `[FAIL] test-change-metadata-validator` summary.
+  - Assert failed test names, assertion/error messages, and file locations appear when available.
+  - Assert passing test detail is collapsed into counts.
+- Expected result: Direct producer runs are compact on success and still repair-oriented on failure.
+- Failure proves: The direct producer remains noisy, loses failure evidence, or changes pass/fail exit behavior.
+- Automation location: `scripts/test-change-metadata-validator.py` self-tests or a repository-owned subprocess test selected by ordinary validation.
+
+### TSRO-022. Change metadata validator verbose mode preserves full detail
+
+- Covers: R58, R59, AC26, EC20
+- Level: integration, migration
+- Fixture/setup: Passing `scripts/test-change-metadata-validator.py` suite with known individual test/check names.
+- Steps:
+  - Run `python scripts/test-change-metadata-validator.py --verbose`.
+  - Run `python scripts/test-change-metadata-validator.py -v`.
+  - Assert both commands exit successfully.
+  - Assert both outputs include the full pass/check listing that default mode suppresses.
+  - Assert verbose mode does not change selected test/check identity compared with default mode.
+- Expected result: Maintainers can still request full unittest-style detail through `--verbose` and `-v`.
+- Failure proves: Producer compaction removed the compatibility escape hatch or changed selected tests.
+- Automation location: `scripts/test-change-metadata-validator.py` self-tests or a repository-owned subprocess test selected by ordinary validation.
+
+### TSRO-023. Change metadata validator quiet compatibility is preserved
+
+- Covers: R60, R60a, R60b, R60c, AC31, AC32, AC33, AC34, AC35, AC36, EC21, EC21a
+- Level: integration, migration, contract
+- Fixture/setup: Current unittest-compatible `scripts/test-change-metadata-validator.py --quiet` and `-q` behavior.
+- Steps:
+  - Run `python scripts/test-change-metadata-validator.py --quiet` against the passing suite.
+  - Assert exit code is `0`.
+  - Assert stdout is empty.
+  - Assert stderr may contain the normal unittest quiet success summary.
+  - Run `python scripts/test-change-metadata-validator.py -q` when accepted in baseline.
+  - Assert `-q` behavior matches `--quiet`.
+  - Assert neither flag is converted to an unsupported usage error.
+  - Inspect producer output changes and assert no custom compact quiet formatter from `scripts/test-select-validation.py` is introduced for this producer.
+  - Inspect broad-smoke behavior and assert success compaction does not depend on invoking this producer with `--quiet`.
+  - Confirm any future custom quiet formatting remains out of scope and would require a new approved output contract and preservation proof.
+- Expected result: Quiet compatibility is preserved exactly as a compatibility boundary, while broad-smoke compaction stays owned by the wrapper layer.
+- Failure proves: The slice accidentally breaks an accepted producer invocation or solves wrapper noise at the wrong layer.
+- Automation location: Subprocess tests plus behavior-preservation evidence.
+
+### TSRO-024. Change metadata validator selected-test identity and zero-test safety are preserved
+
+- Covers: R61, R62, AC27
+- Level: integration, manual, contract
+- Fixture/setup: Deterministic producer selected test/check identifier extraction method and zero-test fixture if implementation supports filtered selection.
+- Steps:
+  - Extract and record the ordered producer selected test/check identifier list before output changes.
+  - Compute and record a SHA-256 hash over that ordered list.
+  - Repeat extraction after producer output shaping.
+  - Assert post-change ordered list and hash match baseline.
+  - Run default passing and failing producer fixtures and assert pass/fail exit codes match baseline.
+  - If a zero-test condition can be produced through an accepted invocation, assert it exits nonzero unless an explicit audit/list/dry-run mode documents zero selection as allowed.
+- Expected result: Producer output formatting does not change which checks run or how pass/fail exits are reported.
+- Failure proves: Compact output masked selected-test drift, exit-code drift, or a zero-test false success.
+- Automation location: Repository-owned extraction helper or documented command in `behavior-preservation.md`; subprocess tests where feasible.
+
+### TSRO-025. Output-contract tests are covered by ordinary validation
+
+- Covers: R63, AC28
+- Level: integration, contract
+- Fixture/setup: Ordinary post-implementation validation command named by the plan and this test spec.
+- Steps:
+  - Identify the repository-owned output-contract tests for broad-smoke and `scripts/test-change-metadata-validator.py`.
+  - Run the ordinary validation command expected after implementation, such as `python scripts/test-select-validation.py`, `python scripts/test-change-metadata-validator.py`, or the test-spec-named output-contract command.
+  - Confirm the output-contract tests are included in ordinary validation, or that a normal guard fails when those tests fail.
+  - Record the command and result in the active plan and change metadata.
+- Expected result: Required output-contract proof cannot pass only as a separate diagnostic command that ordinary validation skips.
+- Failure proves: A prior failure pattern recurred: special output tests can be green in isolation while ordinary validation excludes them.
+- Automation location: Ordinary validation command named by the implementation and selected CI for changed files.
+
+### TSRO-026. Selected-CI behavior and out-of-scope surfaces do not regress
+
+- Covers: R49, R64, R65, AC29, AC30
+- Level: integration, contract
+- Fixture/setup: Final implementation diff and selected-CI invocation for touched files.
+- Steps:
+  - Run `bash scripts/ci.sh --mode selected --jobs 1` or the selected-CI command named by the active plan.
+  - Assert selected-CI exits successfully on a passing workspace.
+  - Compare selected-CI output and child-output policy to first-slice behavior when `scripts/ci.sh` is touched.
+  - Inspect the changed file list.
+  - Assert no generated artifacts, skill files, adapter files, JSON support, validation selection logic, or validation coverage changed unless an approved artifact explicitly expands scope.
+- Expected result: Broad-smoke and producer compaction do not regress selected-CI or silently broaden the slice.
+- Failure proves: A wrapper/shared-helper change leaked into selected-CI or out-of-scope repository surfaces.
+- Automation location: `bash scripts/ci.sh --mode selected --jobs 1`, selected explicit CI, and code-review diff evidence.
+
+### TSRO-027. Final broad-smoke fixture-suite smoke covers the coordinated slice
+
+- Covers: R65, AC30
+- Level: smoke
+- Fixture/setup: Final implementation diff after M1 through M4.
+- Steps:
+  - Run the output-contract command named by this test spec or implementation, if one is added.
+  - Run `python scripts/test-select-validation.py`.
+  - Run `python scripts/test-change-metadata-validator.py`.
+  - Run `python scripts/test-change-metadata-validator.py --verbose`.
+  - Run `python scripts/test-change-metadata-validator.py --quiet`.
+  - Run `python scripts/test-change-metadata-validator.py -q`.
+  - Run `bash scripts/ci.sh --mode broad-smoke`.
+  - Run `bash scripts/ci.sh --mode broad-smoke --verbose`.
+  - Run selected explicit CI for `scripts/ci.sh`, `scripts/test-change-metadata-validator.py`, `scripts/test-select-validation.py`, `specs/script-output-optimization.md`, `specs/script-output-optimization.test.md`, the active plan, `docs/plan.md`, and change-local evidence.
+  - Run lifecycle, review-artifact, and change-metadata validators for the change root.
+  - Run `git diff --check --`.
+- Expected result: The coordinated wrapper-plus-producer slice passes repository-owned focused and smoke validation without changing out-of-scope surfaces.
+- Failure proves: The implementation is not ready for final code-review closeout or downstream explain-change/verify handoff.
+- Automation location: Commands listed in the active broad-smoke plan M4 validation section.
+
 ## Fixtures and data
 
 - Passing runner fixture: a deterministic invocation or internal fixture that exercises multiple passing checks without depending on external services, network, or local machine state.
@@ -349,6 +648,11 @@
 - Rerun fixtures: failure IDs for exact stable filter, unmappable filter, and unsafe quoting cases.
 - CI wrapper fixtures: existing selector and temporary workspace helpers in `scripts/test-select-validation.py`, including fake selected-check commands where wrapper behavior must be deterministic.
 - Change-local evidence files: `script-output-audit.md` and `behavior-preservation.md`.
+- Broad-smoke noisy child fixture: a deterministic broad-smoke child that passes while emitting recognizable stdout and stderr markers.
+- Broad-smoke failing child fixture: a deterministic broad-smoke child that exits nonzero while emitting recognizable stdout and stderr markers.
+- Wrapper-mode consistency negative fixture: a synthetic `scripts/ci.sh` mode or parseable fixture that runs validation producers without capture and without a documented exception.
+- Producer selected-test identity fixture: ordered `scripts/test-change-metadata-validator.py` test/check identifiers and SHA-256 hash before and after output shaping.
+- Broad-smoke command identity fixture: ordered broad-smoke child commands and SHA-256 hash before and after wrapper output shaping.
 
 ## Mocking/stubbing policy
 
@@ -364,6 +668,10 @@
 - `TSRO-009` proves JSON support is not newly added, and any existing JSON behavior is preserved.
 - `TSRO-010` proves pass/failure exit codes, selected tests/checks, failure detection, and failure evidence are unchanged except for the approved zero-test safety boundary.
 - `TSRO-011` and `TSRO-012` preserve existing CI wrapper selected-check semantics.
+- `TSRO-019` proves broad-smoke `--verbose` preserves full successful child output after wrapper capture is added.
+- `TSRO-022` proves `scripts/test-change-metadata-validator.py --verbose` and `-v` preserve full pass/check detail after producer compaction.
+- `TSRO-023` proves `scripts/test-change-metadata-validator.py --quiet` and `-q` remain accepted with existing unittest-compatible behavior.
+- `TSRO-026` proves selected-CI behavior does not regress.
 
 ## Observability verification
 
@@ -372,17 +680,25 @@
 - Quiet success must emit no stdout or stderr.
 - Audit and behavior-preservation artifacts must record baseline and new evidence for code-review.
 - CI wrapper output must continue to report selected check IDs, statuses, exit reasons, elapsed runtime, and command information for failed checks.
+- Broad-smoke default success must report aggregate broad-smoke identity, passed child-check count, and duration.
+- Broad-smoke default failure must identify failed child name, command, exit reason, duration, and captured stdout/stderr.
+- Wrapper-mode consistency guard results must be reviewable through ordinary validation output or recorded evidence.
+- Producer quiet compatibility evidence must distinguish accepted unittest-compatible quiet behavior from custom compact quiet formatting.
 
 ## Security/privacy verification
 
 - Failure output tests must not introduce environment dumps, secrets, credentials, tokens, private keys, or unnecessary machine-local debug data.
 - Rerun-command tests must prove shell-sensitive names are safely quoted or omitted.
 - CI wrapper failure-output tests must preserve existing bounded command evidence and must not print raw environment values.
+- Broad-smoke capture must not persist child output outside normal command output unless a later approved artifact defines storage and privacy handling.
+- Captured broad-smoke output tests must use synthetic marker text, not secrets or machine-local environment dumps.
 
 ## Performance checks
 
 - Duration measurement must use the actual script execution interval and must not rerun tests solely for timing.
 - `TSRO-014` smoke validation should compare gross runtime against baseline review notes only to catch obvious formatter-induced reruns or hangs; no hard performance gate is introduced.
+- Broad-smoke capture should use existing validation output volume and must not require child checks to run more than once.
+- `TSRO-027` should catch obvious wrapper or producer hangs but does not add a hard timing threshold.
 - Any added output-shape tests should use deterministic fixtures rather than sleeping for real durations unless needed for existing wrapper timing behavior.
 
 ## Manual QA checklist
@@ -393,33 +709,42 @@
 - Confirm quiet success produces no stdout or stderr.
 - Confirm a representative failure is repairable without rerunning with `--verbose`.
 - Confirm the final diff does not touch generated adapter output, public skill files, workflow specs, or validation-selection logic outside an approved follow-up.
+- Confirm the broad-smoke output-layer audit names selected-CI and broad-smoke separately.
+- Confirm broad-smoke success is aggregate, not per-child success lines.
+- Confirm broad-smoke failure includes captured stderr.
+- Confirm broad-smoke verbose output includes successful child output in stable order.
+- Confirm wrapper-mode consistency is enforced by an ordinary guard.
+- Confirm `scripts/test-change-metadata-validator.py --quiet` and `-q` remain accepted and are not changed to custom compact quiet formatting.
+- Confirm command/test identity hashes are recorded before and after output changes.
 
 ## What not to test and why
 
 - Do not test a new JSON schema because new JSON support is explicitly deferred.
 - Do not test a common script-output helper library because helper extraction is out of scope.
 - Do not add broad tests for every repository script because the first slice targets `scripts/test-select-validation.py` and conditional `scripts/ci.sh` behavior.
+- Do not rewrite this test spec to require every verbose unittest producer to be compacted; the broad-smoke slice targets `scripts/test-change-metadata-validator.py` only.
+- Do not test custom compact quiet formatting for `scripts/test-change-metadata-validator.py` because the approved contract preserves existing unittest-compatible quiet behavior instead.
+- Do not require per-child broad-smoke success lines; the approved broad-smoke success contract is aggregate.
+- Do not use producer-level `--quiet` as the broad-smoke success-compaction proof because broad-smoke owns capture through `run_check`.
 - Do not require exact duration values; assert duration presence and valid shape because wall-clock time is inherently variable.
 - Do not snapshot entire output logs; assert stable behavioral fields so failures identify contract drift rather than harmless formatting movement.
-- Do not require broad smoke unless the selector or a later lifecycle trigger requires it.
+- Do not require broad smoke for the first script-output slice; the broad-smoke and fixture-suite slice does require broad-smoke validation.
 
 ## Uncovered gaps
 
-None. Requirements that depend on conditional `scripts/ci.sh` changes have both no-change proof and triggered-change proof paths.
+None. First-slice requirements that depend on conditional selected-CI wrapper changes have both no-change proof and triggered-change proof paths. Broad-smoke requirements have dedicated wrapper capture, consistency-guard, command-identity, and final smoke proof paths.
 
 ## Next artifacts
 
 ```text
-implement M1 audit and baseline preservation
+implement M1 output-layer audit and baseline identity proof
 code-review M1
-implement M2 output contract tests
+implement M2 broad-smoke capture and wrapper-mode consistency guard
 code-review M2
-implement M3 runner output shaping
+implement M3 first producer compact default and verbose compatibility
 code-review M3
-implement or close M4 conditional CI wrapper preservation
-code-review M4 if code changes
-implement M5 lifecycle evidence and closeout handoff
-code-review M5
+implement M4 preservation evidence and lifecycle closeout
+code-review M4
 explain-change
 verify
 pr
@@ -431,4 +756,4 @@ None yet.
 
 ## Readiness
 
-This test spec is active and ready to guide implementation. Implementation may start with M1 from the active plan; branch readiness, code-review approval, final verification, and PR readiness remain downstream gates.
+This test spec is active and ready to guide implementation for the approved broad-smoke and fixture-suite output compaction plan. Implementation may start with M1 from the active plan; branch readiness, code-review approval, final verification, and PR readiness remain downstream gates.

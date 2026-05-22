@@ -22,6 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SELECTOR = ROOT / "scripts" / "select-validation.py"
 CI = ROOT / "scripts" / "ci.sh"
+CHANGE_METADATA_TEST = ROOT / "scripts" / "test-change-metadata-validator.py"
 README_VALIDATOR = ROOT / "scripts" / "validate-readme.py"
 sys.path.insert(0, str(ROOT / "scripts"))
 
@@ -68,6 +69,18 @@ EXPECTED_CATALOG = {
     "npm_package_publication.test": "python scripts/test-npm-package-publication.py",
 }
 
+CI_SELECTED_POLICY_EXCEPTION = {
+    "reason": "selected-CI already captures child stdout/stderr and prints successful output only under --verbose",
+    "spec": "specs/script-output-optimization.md R29-R31, R51-R52",
+    "test": "specs/script-output-optimization.test.md TSRO-020, TSRO-026",
+}
+
+VALIDATION_PRODUCER_PATTERN = re.compile(
+    r"\bpython\s+scripts/(?:test|validate|build)-[\w-]+\.py\b"
+)
+CHANGE_METADATA_PASSING_TEST = "ChangeMetadataValidatorFixtureTests.test_valid_basic_fixture_passes"
+CHANGE_METADATA_FAILING_TEST = "ChangeMetadataValidatorFixtureTests.test_output_contract_fixture_failure"
+
 
 def run_selector(*args: str, cwd: Path = ROOT) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
@@ -109,6 +122,22 @@ def run_ci_bytes(
         ["bash", str(script), *args],
         cwd=cwd,
         capture_output=True,
+        env=run_env,
+    )
+
+
+def run_change_metadata_test(
+    *args: str,
+    env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    run_env = os.environ.copy()
+    if env:
+        run_env.update(env)
+    return subprocess.run(
+        [sys.executable, str(CHANGE_METADATA_TEST), *args],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
         env=run_env,
     )
 
@@ -504,6 +533,66 @@ class ValidationSelectionTests(unittest.TestCase):
         shutil.copy2(ROOT / "scripts" / "validation_selection.py", workspace / "scripts" / "validation_selection.py")
         return workspace
 
+    def make_broad_smoke_workspace(self, *, failing_child: str | None = None) -> Path:
+        workspace = self.make_ci_workspace()
+        child_scripts = [
+            "scripts/validate-skills.py",
+            "scripts/test-skill-validator.py",
+            "scripts/test-build-skills.py",
+            "scripts/build-skills.py",
+            "scripts/test-adapter-distribution.py",
+            "scripts/build-adapters.py",
+            "scripts/validate-adapters.py",
+            "scripts/test-change-metadata-validator.py",
+            "scripts/test-artifact-lifecycle-validator.py",
+            "scripts/test-review-artifact-validator.py",
+            "scripts/validate-review-artifacts.py",
+            "scripts/validate-artifact-lifecycle.py",
+        ]
+        for relative_path in child_scripts:
+            name = Path(relative_path).name
+            exit_code = 7 if relative_path == failing_child else 0
+            self.write_fake_script(
+                workspace,
+                relative_path,
+                f"""
+import sys
+
+print("{name} STDOUT marker", flush=True)
+print("{name} STDERR marker", file=sys.stderr)
+raise SystemExit({exit_code})
+""".lstrip(),
+            )
+
+        change_yaml = workspace / "docs" / "changes" / "example" / "change.yaml"
+        change_yaml.parent.mkdir(parents=True)
+        change_yaml.write_text("change_id: example\n", encoding="utf-8")
+        subprocess.run(["git", "init"], cwd=workspace, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "config", "user.email", "tester@example.com"],
+            cwd=workspace,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "Fixture Tester"],
+            cwd=workspace,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        subprocess.run(["git", "add", "."], cwd=workspace, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "baseline"],
+            cwd=workspace,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        change_yaml.write_text("change_id: example\nstatus: draft\n", encoding="utf-8")
+        return workspace
+
     def write_fake_script(self, workspace: Path, relative_path: str, body: str) -> Path:
         script = workspace / relative_path
         script.parent.mkdir(parents=True, exist_ok=True)
@@ -600,6 +689,112 @@ raise SystemExit({exit_code})
             script=workspace / "scripts" / "ci.sh",
             cwd=workspace,
         )
+
+    def extract_ci_functions(self, ci_text: str) -> dict[str, str]:
+        functions: dict[str, str] = {}
+        for match in re.finditer(
+            r"(?ms)^(?P<name>[A-Za-z_][A-Za-z0-9_]*)\(\) \{\n(?P<body>.*?)\n\}",
+            ci_text,
+        ):
+            functions[match.group("name")] = match.group("body")
+        return functions
+
+    def assert_run_check_captures_output(self, ci_text: str) -> None:
+        match = re.search(r"run_check\(\) \{\n(?P<body>.*?)\n\}", ci_text, re.DOTALL)
+        self.assertIsNotNone(match)
+        assert match is not None
+        body = match.group("body")
+        self.assertIn('"$@" 2>&1', body)
+        self.assertIn("Captured output:", body)
+        self.assertIn("verbose", body)
+        self.assertNotRegex(body, r'(?m)^\s*"\$@"\s*$')
+
+    def assert_selected_ci_policy_exception_is_documented(self) -> None:
+        for field in ("reason", "spec", "test"):
+            self.assertIn(field, CI_SELECTED_POLICY_EXCEPTION)
+            self.assertTrue(CI_SELECTED_POLICY_EXCEPTION[field])
+        self.assertIn("selected-CI", CI_SELECTED_POLICY_EXCEPTION["reason"])
+        self.assertIn("specs/script-output-optimization.md", CI_SELECTED_POLICY_EXCEPTION["spec"])
+        self.assertIn("specs/script-output-optimization.test.md", CI_SELECTED_POLICY_EXCEPTION["test"])
+
+    def assert_ci_mode_dispatch_has_documented_policies(self, ci_text: str) -> None:
+        self.assertRegex(
+            ci_text,
+            r"(?ms)^case \"\$mode\" in.*local\|explicit\|pr\|main\|release\)\n\s*run_selected_mode",
+        )
+        self.assertRegex(
+            ci_text,
+            r"(?ms)^case \"\$mode\" in.*broad-smoke\)\n\s*run_broad_smoke",
+        )
+        self.assert_selected_ci_policy_exception_is_documented()
+
+    def producer_line_uses_capture_helper(self, lines: list[str], index: int) -> bool:
+        if re.search(r"\brun_check\b", lines[index]):
+            return True
+
+        current = index - 1
+        while current >= 0 and lines[current].rstrip().endswith("\\"):
+            if re.search(r"\brun_check\b", lines[current]):
+                return True
+            current -= 1
+        return False
+
+    def producer_line_is_command_array_assignment(self, lines: list[str], index: int) -> bool:
+        inside_array_assignment = False
+        for current, line in enumerate(lines[: index + 1]):
+            stripped = line.strip()
+            if re.match(r"^[A-Za-z_][A-Za-z0-9_]*=\($", stripped):
+                inside_array_assignment = True
+            if current == index:
+                return inside_array_assignment
+            if inside_array_assignment and stripped == ")":
+                inside_array_assignment = False
+        return False
+
+    def assert_ci_orchestration_modes_have_capture_policy(self, ci_text: str) -> None:
+        functions = self.extract_ci_functions(ci_text)
+        self.assertIn("run_broad_smoke", functions)
+
+        for name, body in functions.items():
+            if not name.startswith("run_") or name == "run_check":
+                continue
+
+            direct_stream = re.search(r'(?m)^\s*"\$@"\s*$', body)
+            if direct_stream:
+                raise AssertionError(
+                    f"scripts/ci.sh mode '{name.removeprefix('run_')}' streams child command directly"
+                )
+
+            lines = body.splitlines()
+            for index, line in enumerate(lines):
+                if not VALIDATION_PRODUCER_PATTERN.search(line):
+                    continue
+                if self.producer_line_is_command_array_assignment(lines, index):
+                    continue
+                if self.producer_line_uses_capture_helper(lines, index):
+                    continue
+                raise AssertionError(
+                    f"scripts/ci.sh mode '{name.removeprefix('run_')}' runs validation producer "
+                    f"without capture policy: {line.strip()}"
+                )
+
+    def assert_ci_wrapper_consistency_guard_passes(self, ci_text: str) -> None:
+        self.assert_run_check_captures_output(ci_text)
+        self.assert_ci_mode_dispatch_has_documented_policies(ci_text)
+        self.assert_ci_orchestration_modes_have_capture_policy(ci_text)
+
+    def assert_ci_wrapper_consistency_guard_fails(
+        self,
+        ci_text: str,
+        expected_message: str | None = None,
+    ) -> None:
+        context = (
+            self.assertRaisesRegex(AssertionError, expected_message)
+            if expected_message is not None
+            else self.assertRaises(AssertionError)
+        )
+        with context:
+            self.assert_ci_wrapper_consistency_guard_passes(ci_text)
 
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
         return select_validation(SelectionRequest(mode=mode, paths=tuple(paths), repo_root=ROOT, **kwargs))
@@ -932,6 +1127,36 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/script-output-audit.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/script-output-layer-audit.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/broad-smoke-child-commands-baseline.txt",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/broad-smoke-child-commands-post-m4.txt",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/change-metadata-validator-tests-baseline.txt",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/change-metadata-validator-tests-post-m4.txt",
                 "category": "change-local-lifecycle",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
@@ -2431,6 +2656,211 @@ print("SECOND_STDOUT")
         self.assertIn("SKILL_VERBOSE_STDOUT", output)
         self.assertIn("SKILL_VERBOSE_STDERR", output)
         self.assertIn("ADAPTER_VERBOSE_STDOUT", output)
+
+    def test_broad_smoke_default_success_captures_child_output_and_prints_aggregate(self) -> None:
+        workspace = self.make_broad_smoke_workspace()
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        nonempty_lines = [line for line in output.splitlines() if line.strip()]
+        self.assertEqual(len(nonempty_lines), 1, msg=output)
+        self.assertRegex(nonempty_lines[0], r"^\[PASS\] broad-smoke: 12 checks passed in \d+(?:\.\d+)?s$")
+        self.assertNotIn("STDOUT marker", output)
+        self.assertNotIn("STDERR marker", output)
+        self.assertNotIn("==>", output)
+        self.assertNotIn("--quiet", output)
+
+    def test_broad_smoke_failure_prints_command_exit_duration_and_captured_output(self) -> None:
+        workspace = self.make_broad_smoke_workspace(failing_child="scripts/test-skill-validator.py")
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 7, msg=output)
+        self.assertRegex(output, r"\[FAIL\] Run skill validator fixtures: exit 7 in \d+(?:\.\d+)?s")
+        self.assertIn("Command:\npython scripts/test-skill-validator.py", output)
+        self.assertIn("Captured output:", output)
+        stdout_index = output.index("test-skill-validator.py STDOUT marker")
+        stderr_index = output.index("test-skill-validator.py STDERR marker")
+        self.assertLess(stdout_index, stderr_index)
+
+    def test_broad_smoke_verbose_prints_successful_child_output_in_order(self) -> None:
+        workspace = self.make_broad_smoke_workspace()
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--verbose",
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        self.assertRegex(output, r"\[PASS\] broad-smoke: 12 checks passed in \d+(?:\.\d+)?s")
+        self.assertLess(output.index("validate-skills.py STDOUT marker"), output.index("test-skill-validator.py STDOUT marker"))
+        self.assertIn("validate-skills.py STDERR marker", output)
+        self.assertIn("test-skill-validator.py STDERR marker", output)
+
+    def test_broad_smoke_wrapper_mode_consistency_guard_is_enforced(self) -> None:
+        self.assert_ci_wrapper_consistency_guard_passes(CI.read_text(encoding="utf-8"))
+        self.assert_ci_wrapper_consistency_guard_fails(
+            """
+run_check() {
+  local label="$1"
+  shift
+
+  echo "==> $label"
+  "$@"
+}
+""".lstrip()
+        )
+        self.assert_ci_wrapper_consistency_guard_fails(
+            """
+run_check() {
+  local label="$1"
+  shift
+  output="$("$@" 2>&1)"
+  status=$?
+  if [ "$status" -ne 0 ]; then
+    printf '%s\n' "Captured output:"
+    printf '%s\n' "$output"
+  fi
+  if [ "$verbose" -eq 1 ]; then
+    printf '%s\n' "$output"
+  fi
+  return "$status"
+}
+
+run_broad_smoke() {
+  run_check "metadata" python scripts/test-change-metadata-validator.py
+}
+
+run_new_validation_mode() {
+  python scripts/test-change-metadata-validator.py
+}
+
+case "$mode" in
+  local|explicit|pr|main|release)
+    run_selected_mode
+    ;;
+  broad-smoke)
+    run_broad_smoke
+    ;;
+esac
+""".lstrip(),
+            r"mode 'new_validation_mode' runs validation producer without capture policy",
+        )
+        self.assert_ci_wrapper_consistency_guard_fails(
+            """
+run_check() {
+  local label="$1"
+  shift
+  output="$("$@" 2>&1)"
+  status=$?
+  if [ "$status" -ne 0 ]; then
+    printf '%s\n' "Captured output:"
+    printf '%s\n' "$output"
+  fi
+  if [ "$verbose" -eq 1 ]; then
+    printf '%s\n' "$output"
+  fi
+  return "$status"
+}
+
+run_broad_smoke() {
+  run_check "metadata" python scripts/test-change-metadata-validator.py
+}
+
+run_direct_streaming_mode() {
+  "$@"
+}
+
+case "$mode" in
+  local|explicit|pr|main|release)
+    run_selected_mode
+    ;;
+  broad-smoke)
+    run_broad_smoke
+    ;;
+esac
+""".lstrip(),
+            r"mode 'direct_streaming_mode' streams child command directly",
+        )
+
+    def test_change_metadata_validator_default_success_is_compact(self) -> None:
+        result = run_change_metadata_test(CHANGE_METADATA_PASSING_TEST)
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        self.assertEqual(result.stderr, "")
+        nonempty_lines = [line for line in result.stdout.splitlines() if line.strip()]
+        self.assertEqual(len(nonempty_lines), 1, msg=output)
+        self.assertRegex(
+            nonempty_lines[0],
+            r"^\[PASS\] test-change-metadata-validator: 1 passed in \d+(?:\.\d+)?s$",
+        )
+        self.assertNotIn("test_valid_basic_fixture_passes", output)
+        self.assertNotIn(" ... ok", output)
+
+    def test_change_metadata_validator_default_failure_is_actionable(self) -> None:
+        result = run_change_metadata_test(
+            CHANGE_METADATA_FAILING_TEST,
+            env={"RIGORLOOP_CHANGE_METADATA_FAILURE_FIXTURE": "1"},
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 1, msg=output)
+        self.assertIn("[FAIL] test-change-metadata-validator: 1 failed, 0 passed", output)
+        self.assertIn("FAILED ChangeMetadataValidatorFixtureTests.test_output_contract_fixture_failure", output)
+        self.assertIn("AssertionError: intentional output-contract failure", output)
+        self.assertIn("scripts/test-change-metadata-validator.py:", output)
+        self.assertNotIn("test_valid_basic_fixture_passes", output)
+
+    def test_change_metadata_validator_verbose_preserves_full_detail(self) -> None:
+        for flag in ("--verbose", "-v"):
+            with self.subTest(flag=flag):
+                result = run_change_metadata_test(flag, CHANGE_METADATA_PASSING_TEST)
+                output = result.stdout + result.stderr
+
+                self.assertEqual(result.returncode, 0, msg=output)
+                self.assertIn("test_valid_basic_fixture_passes", output)
+                self.assertIn(" ... ok", output)
+                self.assertIn("Ran 1 test", output)
+                self.assertIn("OK", output)
+
+    def test_change_metadata_validator_quiet_compatibility_is_preserved(self) -> None:
+        for flag in ("--quiet", "-q"):
+            with self.subTest(flag=flag):
+                result = run_change_metadata_test(flag, CHANGE_METADATA_PASSING_TEST)
+
+                self.assertEqual(result.returncode, 0, msg=result.stdout + result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assertIn("Ran 1 test", result.stderr)
+                self.assertIn("OK", result.stderr)
+                self.assertNotIn("[PASS] test-change-metadata-validator", result.stderr)
+
+    def test_change_metadata_validator_zero_selected_tests_fail(self) -> None:
+        result = run_change_metadata_test("-k", "no_such_test_name")
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 1, msg=output)
+        self.assertIn(
+            "[FAIL] test-change-metadata-validator: 0 tests run; expected at least 1 selected test",
+            output,
+        )
 
     def test_ci_wrapper_reports_decode_failures_without_emitting_invalid_bytes(self) -> None:
         workspace = self.make_ci_workspace()

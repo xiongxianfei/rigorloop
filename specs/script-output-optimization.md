@@ -7,10 +7,13 @@ approved
 ## Related proposal
 
 - [RigorLoop Script Output Optimization](../docs/proposals/2026-05-21-script-output-optimization.md), accepted.
+- [Broad-Smoke and Fixture-Suite Output Compaction](../docs/proposals/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md), accepted.
 
 ## Goal and context
 
-RigorLoop validation and test scripts should make passing evidence compact and failure evidence actionable. This spec defines the first-slice behavior for user-facing script output around `scripts/test-select-validation.py` and the minimal `scripts/ci.sh` wrapper boundary needed to preserve quiet-success and loud-failure behavior.
+RigorLoop validation and test scripts should make passing evidence compact and failure evidence actionable. This spec defines script-output behavior for user-facing validation producers and repository-owned orchestration paths.
+
+The first slice covers `scripts/test-select-validation.py` and the minimal selected-CI wrapper boundary needed to preserve quiet-success and loud-failure behavior. The broad-smoke and fixture-suite output compaction slice extends the contract to broad-smoke `run_check` behavior and the first targeted direct-run producer, `scripts/test-change-metadata-validator.py`.
 
 The change is presentation-only. It must not change validation coverage, selected checks, failure detection, or exit-code semantics.
 
@@ -23,6 +26,13 @@ The change is presentation-only. It must not change validation coverage, selecte
 - **Failure detail**: Failed test/check name, assertion or error message, file location when available, and reliable rerun command when available.
 - **Scoped rerun command**: A rerun command that targets the failed check through a stable, exact filter.
 - **Behavior-preservation matrix**: Change evidence comparing baseline and new behavior for exit codes, selected checks, failure detection, failure evidence, verbose output, quiet failure output, and CI semantics when touched.
+- **Producer**: A script or command that directly validates behavior and prints output.
+- **Orchestrator**: A repository-owned wrapper or mode that runs one or more producers.
+- **Broad-smoke mode**: The `scripts/ci.sh --mode broad-smoke` orchestration path.
+- **Capture policy**: Orchestrator behavior that captures child stdout/stderr by default, suppresses successful child output in normal mode, and emits captured output on failure or under `--verbose`.
+- **Wrapper-mode consistency guard**: A test or static check proving each `scripts/ci.sh` orchestration mode that runs validation producers either uses the capture policy or documents a deliberate exception.
+- **Command identity proof**: An ordered command list plus SHA-256 hash used to prove broad-smoke selected child commands did not change.
+- **Test identity proof**: An ordered test/check identifier list plus SHA-256 hash used to prove producer selected tests or checks did not change.
 
 ## Examples first
 
@@ -86,6 +96,43 @@ And stdout is empty
 And stderr names both `--verbose` and `--quiet`
 And no tests are selected or run
 And no success, failure, or selected-check summaries are printed.
+
+Example E10: broad-smoke success is aggregate and quiet
+Given `bash scripts/ci.sh --mode broad-smoke` runs all broad-smoke child checks successfully
+When broad-smoke runs in default mode
+Then successful child stdout and stderr are not streamed
+And output includes an aggregate broad-smoke success summary such as `[PASS] broad-smoke: 11 checks passed in 12.34s`
+And the command exits with the same success code as before the output change.
+
+Example E11: broad-smoke failure shows captured child evidence
+Given a broad-smoke child check fails
+When broad-smoke runs in default mode
+Then output identifies the failed child check, command, exit code or exit reason, duration, and captured child stdout/stderr
+And the broad-smoke command exits nonzero with the same failure semantics as before the output change.
+
+Example E12: broad-smoke verbose preserves successful child detail
+Given broad-smoke child checks pass and emit output
+When `bash scripts/ci.sh --mode broad-smoke --verbose` runs
+Then successful child output is emitted in stable check order
+And the same child commands run as default broad-smoke mode.
+
+Example E13: direct producer success is compact
+Given `scripts/test-change-metadata-validator.py` runs its selected tests successfully
+When the producer runs in default mode
+Then output contains one summary line like `[PASS] test-change-metadata-validator: 75 passed in 2.11s`
+And output does not list every passing test.
+
+Example E14: direct producer failure remains actionable
+Given `scripts/test-change-metadata-validator.py` has one or more failing tests
+When the producer runs in default mode
+Then output starts with a `[FAIL] test-change-metadata-validator` summary
+And output includes failed test names, failure messages, and file locations when available
+And passing test detail is collapsed into counts.
+
+Example E15: wrapper-mode consistency is checked
+Given `scripts/ci.sh` contains orchestration modes that run validation producers
+When the wrapper-mode consistency guard runs
+Then every such mode uses the capture policy or identifies a documented exception.
 
 ## Requirements
 
@@ -169,11 +216,78 @@ R34. The behavior-preservation matrix MUST compare baseline and new proof for pa
 
 R35. Output-shape tests MUST cover default success, default failure, verbose success, quiet success, quiet failure, zero-test failure, reliable scoped rerun behavior, unreliable rerun omission or broader rerun behavior, and JSON deferral/preservation behavior.
 
+R36. The broad-smoke and fixture-suite output compaction slice MUST include an output-layer audit under `docs/changes/<change-id>/script-output-layer-audit.md`.
+
+R37. The output-layer audit MUST record each assessed producer, direct-run success shape, direct-run failure usefulness, orchestrators, orchestrator capture policy, high-use direct-run status, and first-slice treatment.
+
+R38. The output-layer audit MUST identify selected-CI and broad-smoke as separate orchestrator paths.
+
+R39. Broad-smoke `run_check` behavior MUST capture child stdout and stderr by default.
+
+R40. Broad-smoke default success MUST NOT stream successful child stdout or stderr.
+
+R41. Broad-smoke default success MUST print an aggregate broad-smoke success summary containing `[PASS]`, broad-smoke identity, passed child-check count, and duration.
+
+R42. Broad-smoke default success MUST NOT print one line per successful child unless a later approved spec amendment records why per-child success output is acceptable despite scaling with child count.
+
+R43. Broad-smoke default failure MUST identify each failed child check by name.
+
+R44. Broad-smoke default failure MUST include the failed child command.
+
+R45. Broad-smoke default failure MUST include the child exit code or exit reason.
+
+R46. Broad-smoke default failure MUST include the failed child duration.
+
+R47. Broad-smoke default failure MUST include captured child stdout and stderr. If stdout and stderr are captured separately, output MUST label the streams clearly; if they are captured together, output MUST preserve their combined ordering as emitted by the child process.
+
+R48. Broad-smoke `--verbose` MUST emit full captured output for successful child checks in stable child-check order.
+
+R49. Broad-smoke output shaping MUST preserve broad-smoke child command selection, child command order, child exit-code semantics, failure detection, and wrapper exit-code behavior.
+
+R50. Broad-smoke behavior-preservation evidence MUST include an ordered child command list plus SHA-256 hash before and after the change.
+
+R51. A wrapper-mode consistency guard MUST check every `scripts/ci.sh` orchestration mode that runs validation producers.
+
+R52. Each checked `scripts/ci.sh` orchestration mode that runs validation producers MUST either use capture-on-success/show-on-failure-or-verbose behavior or carry a documented exception in the governing spec or test spec.
+
+R53. The first targeted direct-run producer for this slice MUST be `scripts/test-change-metadata-validator.py` unless the output-layer audit records owner approval for a higher-value replacement.
+
+R54. Default successful output for `scripts/test-change-metadata-validator.py` MUST be one summary line containing `[PASS]`, `test-change-metadata-validator`, nonzero passed count, and duration.
+
+R55. Default successful output for `scripts/test-change-metadata-validator.py` MUST NOT list individual passing tests.
+
+R56. Default failure output for `scripts/test-change-metadata-validator.py` MUST include a `[FAIL]` summary, failed test names, assertion or error messages when available, and file locations when available.
+
+R57. Passing test detail in `scripts/test-change-metadata-validator.py` default failure output MUST collapse into summary counts.
+
+R58. `scripts/test-change-metadata-validator.py` MUST support `--verbose` and `-v`.
+
+R59. Verbose mode for `scripts/test-change-metadata-validator.py` MUST preserve access to the full pass/check listing that default mode suppresses.
+
+R60. `scripts/test-change-metadata-validator.py` MUST preserve existing unittest-compatible `--quiet` and `-q` invocation compatibility in this slice.
+
+R60a. The broad-smoke and fixture-suite output compaction slice MUST NOT add custom compact quiet formatting for `scripts/test-change-metadata-validator.py`.
+
+R60b. `scripts/test-change-metadata-validator.py --quiet` and `scripts/test-change-metadata-validator.py -q` MUST NOT be changed into unsupported invocations by this slice.
+
+R60c. If a later change adds custom compact quiet formatting for `scripts/test-change-metadata-validator.py`, that change MUST define a new output contract and behavior-preservation proof.
+
+R61. Zero executed tests MUST be a failure for `scripts/test-change-metadata-validator.py` unless an explicit audit, list, or dry-run mode documents zero selection as allowed.
+
+R62. Behavior-preservation evidence for `scripts/test-change-metadata-validator.py` MUST include an ordered selected test/check identifier list plus SHA-256 hash before and after the change.
+
+R63. Output-contract tests for broad-smoke and `scripts/test-change-metadata-validator.py` MUST run in ordinary post-implementation validation or be covered by an ordinary validation guard that fails when those tests fail.
+
+R64. The broad-smoke and fixture-suite output compaction slice MUST NOT change selected-CI behavior except where a shared helper or interface is explicitly needed and compatible behavior is proven.
+
+R65. The broad-smoke and fixture-suite output compaction slice MUST NOT change generated artifacts, skills, adapters, JSON support, validation selection logic, or validation coverage.
+
 ## Inputs and outputs
 
 Inputs:
 
 - Command-line invocation of `scripts/test-select-validation.py`.
+- Command-line invocation of `scripts/test-change-metadata-validator.py`.
 - Optional `--verbose` / `-v`.
 - Optional `--quiet` / `-q`.
 - Existing `scripts/ci.sh` invocations, including explicit, local, PR, main, release, and broad-smoke modes when wrapper behavior is relevant.
@@ -182,9 +296,9 @@ Outputs:
 
 - Human-readable stdout/stderr summaries and failure details.
 - Process exit code.
-- Change-local audit and behavior-preservation evidence.
+- Change-local audit, wrapper-mode consistency proof, and behavior-preservation evidence.
 
-No new machine-readable JSON output is introduced in the first slice.
+No new machine-readable JSON output is introduced by these slices.
 
 ## State and invariants
 
@@ -194,6 +308,9 @@ No new machine-readable JSON output is introduced in the first slice.
 - Verbose mode remains the escape hatch for full pass/check detail.
 - Quiet mode never hides failure reasons.
 - A shorter success log is not valid if it changes selected checks, exit codes, or failure detection.
+- Broad-smoke default success output is aggregate by default so success output does not grow with child-check count.
+- Repository-owned orchestration modes that run validation producers use the capture policy unless an approved spec or test spec documents an exception.
+- Direct producer compaction does not substitute for orchestration capture, and orchestration capture does not substitute for direct producer compaction.
 
 ## Error and boundary behavior
 
@@ -203,31 +320,40 @@ No new machine-readable JSON output is introduced in the first slice.
 - Zero executed tests fail unless an explicit mode documents zero selection as allowed.
 - Rerun commands are omitted or broadened when exact safe quoting cannot be generated.
 - CI wrapper failures continue to identify the responsible check ID and failure reason.
+- Broad-smoke child stderr remains visible on failure.
+- Captured stdout/stderr output is either combined in emitted order or separated with clear labels.
+- `scripts/test-change-metadata-validator.py --quiet` and `scripts/test-change-metadata-validator.py -q` remain accepted as existing unittest-compatible invocations unless a later approved spec amendment intentionally changes that compatibility contract.
+- The existing unittest quiet success behavior for `scripts/test-change-metadata-validator.py` is compatibility-preserved: success may emit the normal unittest quiet summary to stderr and no stdout.
+- `scripts/test-change-metadata-validator.py` quiet failure behavior follows existing unittest quiet failure behavior.
+- Broad-smoke compaction does not rely on producer-level `--quiet`; broad-smoke owns success-output capture through `run_check`.
 
 ## Compatibility and migration
 
-This is a presentation change for user-facing script output. Existing validation semantics, selector behavior, check coverage, CI wrapper modes, and exit-code behavior remain compatible except for the defined zero-test failure boundary.
+This is a presentation change for user-facing script output and repository-owned orchestration output. Existing validation semantics, selector behavior, check coverage, CI wrapper modes, and exit-code behavior remain compatible except for the defined zero-test failure boundary.
 
-Local users who need the old full pass-list behavior use `--verbose`. CI logs become shorter on success but retain failure output. Rollback restores the previous output formatter while preserving validation behavior and any tests that still match the restored contract.
+Local users who need the old full pass-list behavior use `--verbose` where supported. CI logs become shorter on success but retain failure output. Rollback restores the previous output formatter while preserving validation behavior and any tests that still match the restored contract.
+
+For broad-smoke, rollback may revert wrapper capture independently from producer formatting. For `scripts/test-change-metadata-validator.py`, rollback may restore previous direct-run output independently from broad-smoke capture. Rollback must not alter selected commands, selected tests, exit-code semantics, generated artifacts, skills, adapters, JSON behavior, or validation selection.
 
 ## Observability
 
 - Success output reports suite/check identity, counts, and duration.
 - Failure output reports failed names, messages, locations when available, and reliable rerun guidance when available.
 - CI wrapper output continues to report selected check IDs, statuses, exit reasons, elapsed runtime, and relevant command information.
-- The audit and behavior-preservation matrix provide durable review evidence for the presentation-only claim.
+- Broad-smoke default success reports aggregate broad-smoke identity, passed child-check count, and duration.
+- The audit, wrapper-mode consistency guard, command/test identity hashes, and behavior-preservation matrix provide durable review evidence for the presentation-only claim.
 
 ## Security and privacy
 
-The change must not introduce secrets, credentials, private keys, tokens, machine-local paths, or unnecessary environment dumps into output. Failure output may include existing file paths and command text needed for repair, but new output formatting must not expand sensitive data exposure beyond underlying validation output.
+The change must not introduce secrets, credentials, private keys, tokens, machine-local paths, or unnecessary environment dumps into output. Failure output may include existing file paths and command text needed for repair, but new output formatting must not expand sensitive data exposure beyond underlying validation output. Capturing child output must not persist failure logs outside normal command output unless a later approved artifact defines storage and privacy handling.
 
 ## Accessibility and UX
 
-First-slice status markers use ASCII words rather than glyph-only signals so logs remain readable in terminals, CI systems, plain text, and copied excerpts. Color must not be required to understand status.
+Status markers use ASCII words rather than glyph-only signals so logs remain readable in terminals, CI systems, plain text, and copied excerpts. Color must not be required to understand status. Aggregate broad-smoke success should remain readable as a single copied line.
 
 ## Performance expectations
 
-Output shaping must not materially increase validation runtime. Duration measurement should use the script's actual execution interval and should not require rerunning tests or checks.
+Output shaping must not materially increase validation runtime. Duration measurement should use the script's actual execution interval and should not require rerunning tests or checks. Capturing child output should use bounded in-memory or temporary storage appropriate for existing validation output volume and must not require child checks to run more than once.
 
 ## Edge cases
 
@@ -257,6 +383,26 @@ EC12. `scripts/ci.sh` is unchanged when the audit proves wrapper behavior alread
 
 EC13. `scripts/ci.sh` is touched only minimally when needed and continues to hide successful child output by default.
 
+EC14. Broad-smoke child checks pass while emitting stdout and stderr; default broad-smoke output prints only the aggregate success summary.
+
+EC15. Broad-smoke child check fails while emitting stdout and stderr; failure output identifies the failed child and includes labeled or ordered captured output.
+
+EC16. Broad-smoke runs with `--verbose`; successful child output appears in stable child-check order.
+
+EC17. A new `scripts/ci.sh` orchestration mode runs validation producers without capture and lacks a documented exception; wrapper-mode consistency guard fails.
+
+EC18. `scripts/test-change-metadata-validator.py` passes with many tests; default output is one summary line.
+
+EC19. `scripts/test-change-metadata-validator.py` fails with one or more passing tests; default failure output expands failed tests and collapses passing tests into counts.
+
+EC20. `scripts/test-change-metadata-validator.py --verbose` passes; verbose output includes full pass/check detail.
+
+EC21. `python scripts/test-change-metadata-validator.py --quiet` runs against a passing suite; the command exits `0`, writes no stdout, may write the normal unittest quiet success summary to stderr, and does not use the custom compact quiet formatter from `scripts/test-select-validation.py`.
+
+EC21a. `python scripts/test-change-metadata-validator.py -q` runs against a passing suite; when `-q` is accepted in the baseline, behavior matches `--quiet`.
+
+EC22. Broad-smoke command-list extraction cannot be performed deterministically; implementation cannot claim behavior preservation until the extraction method is fixed or the spec/test-spec is amended.
+
 ## Non-goals
 
 - Do not change what any script validates.
@@ -269,6 +415,10 @@ EC13. `scripts/ci.sh` is touched only minimally when needed and continues to hid
 - Do not replace the existing test framework.
 - Do not add new JSON output support in the first slice.
 - Do not introduce a common script-output helper library in the first slice.
+- Do not add custom compact quiet formatting to `scripts/test-change-metadata-validator.py` in the broad-smoke and fixture-suite output compaction slice. Preserve its existing unittest-compatible `--quiet` and `-q` behavior instead of treating the flags as unsupported.
+- Do not switch broad-smoke default success to per-child success lines unless a later approved spec amendment accepts that output-growth tradeoff.
+- Do not change selected-CI behavior beyond proven-compatible shared helper/interface changes if needed.
+- Do not add persistent output logs or new output storage.
 
 ## Acceptance criteria
 
@@ -302,6 +452,50 @@ AC13. If `scripts/ci.sh` is touched, failed child output is expanded with respon
 
 AC14. No generated adapters, public skill files, workflow specs, or validation selection logic are changed unless a later approved artifact expands scope.
 
+AC15. Output-layer audit exists under `docs/changes/<change-id>/script-output-layer-audit.md` and maps producers, orchestrators, capture policy, high-use direct-run status, and first-slice treatment.
+
+AC16. Broad-smoke `run_check` captures child stdout and stderr by default.
+
+AC17. Broad-smoke default success does not stream successful child output.
+
+AC18. Broad-smoke default success reports one aggregate `[PASS] broad-smoke` summary with passed child-check count and duration.
+
+AC19. Broad-smoke default failure reports failed child name, command, exit code or exit reason, duration, and captured stdout/stderr.
+
+AC20. Broad-smoke `--verbose` emits full captured output for successful children in stable child-check order.
+
+AC21. Broad-smoke selected child command list and exit-code behavior are unchanged and proven by ordered command list plus SHA-256 hash.
+
+AC22. Wrapper-mode consistency is checked for every `scripts/ci.sh` orchestration mode that runs validation producers, with documented exceptions required for any non-capturing path.
+
+AC23. `scripts/test-change-metadata-validator.py` default success output is one `[PASS]` summary line with suite name, nonzero pass count, and duration.
+
+AC24. `scripts/test-change-metadata-validator.py` default success output hides individual passing checks.
+
+AC25. `scripts/test-change-metadata-validator.py` default failure output includes `[FAIL]` summary, failed names, failure messages, and locations when available.
+
+AC26. `scripts/test-change-metadata-validator.py --verbose` exposes full pass/check detail.
+
+AC27. `scripts/test-change-metadata-validator.py` selected test/check identity and pass/fail exit codes are unchanged and proven by ordered identifier list plus SHA-256 hash.
+
+AC28. Output-contract tests for broad-smoke and `scripts/test-change-metadata-validator.py` run in ordinary post-implementation validation or are guarded by ordinary validation.
+
+AC29. Selected-CI behavior does not regress.
+
+AC30. No generated artifacts, skills, adapters, JSON support, validation selection logic, or validation coverage changes are introduced by the broad-smoke and fixture-suite output compaction slice.
+
+AC31. `python scripts/test-change-metadata-validator.py --quiet` remains an accepted invocation.
+
+AC32. `python scripts/test-change-metadata-validator.py -q` remains accepted when it is accepted in the baseline.
+
+AC33. Quiet success for `scripts/test-change-metadata-validator.py` preserves current unittest-compatible behavior: stdout is empty and the normal unittest quiet summary may appear on stderr.
+
+AC34. The spec does not claim `--quiet` is unsupported for `scripts/test-change-metadata-validator.py`.
+
+AC35. Broad-smoke success compaction is implemented through `run_check` capture rather than relying on producer-level `--quiet`.
+
+AC36. Any future custom quiet formatting for `scripts/test-change-metadata-validator.py` requires a new approved output contract and preservation proof.
+
 ## Open questions
 
 None.
@@ -310,7 +504,7 @@ None.
 
 ```text
 spec-review
-test-spec for output-shape and behavior-preservation behavior
+focused test-spec amendment for broad-smoke and first targeted producer behavior
 plan
 plan-review
 implementation
@@ -322,8 +516,8 @@ pr
 
 ## Follow-on artifacts
 
-- Canonical architecture update: `docs/architecture/system/architecture.md`
+- Existing first-slice canonical architecture update: `docs/architecture/system/architecture.md`
 
 ## Readiness
 
-Approved after `spec-review-r2`. Ready for architecture handling, then downstream planning and test-spec work.
+Approved after `spec-review-r2`. Ready for architecture decision or plan route before focused test-spec if architecture is not required.
