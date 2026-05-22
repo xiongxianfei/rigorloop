@@ -36,6 +36,7 @@ requirements:
   - R15b
   - R15c
   - R15d
+  - R16
   - R17
   - R17a
   - R17b
@@ -56,9 +57,16 @@ tests:
   - T11
   - T12
   - T13
+  - T15
   - T16
 validation:
+  - command: python - <<'PY' ... migration proof count/link assertion
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
+    result: pass
   - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml
     result: pass
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md
     result: pass
@@ -71,8 +79,10 @@ changed_files:
   - scripts/test-artifact-lifecycle-validator.py
   - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml
   - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md
+  - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
   - docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md
   - docs/plan.md
+  - docs/plan-archive.md
 review:
   status: clean
   unresolved_items: 0

@@ -68,11 +68,11 @@ The main implementation surfaces are:
 ## Current Handoff Summary
 
 - Current milestone: M3. Index/archive migration and preservation proof
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Validator contract and fixtures
-- Review status: code-review M2 R2 clean-with-notes; no open findings
+- Review status: M3 implementation complete; code-review requested
 - Remaining in-scope implementation milestones: M3, M4, M5, M6
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
 
@@ -159,7 +159,7 @@ The main implementation surfaces are:
 
 ### M3. Index/archive migration and preservation proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Create `docs/plan-archive.md`, compact `docs/plan.md`, move older terminal history, add plan-body lifecycle markers where needed, and record migration proof.
 - Requirements: `R3c`, `R3d`, `R3e`, `R3f`, `R3g`-`R3p`, `R9`, `R10`, `R10a`, `R11`, `R11a`, `R12`, `R13`, `R14`, `R16`, `R17`, `R17a`-`R17i`
 - Files/components likely touched:
@@ -185,11 +185,11 @@ The main implementation surfaces are:
 - Expected observable result: every pre-migration Done entry is present in either `docs/plan.md` recent Done or `docs/plan-archive.md`, no terminal entry is duplicated, and active/blocked work remains in `docs/plan.md`.
 - Commit message: `M3: migrate completed plan history to archive`
 - Milestone closeout:
-  - validation passed
+  - validation passed on 2026-05-22
   - progress updated
   - decision log updated if needed
   - validation notes updated
-  - milestone committed
+  - milestone commit pending
 - Risks:
   - Risk: a dense historical Done entry loses useful disposition during compaction.
 - Rollback/recovery:
@@ -361,6 +361,9 @@ The main implementation surfaces are:
 - 2026-05-22: Code-review M2 R1 found BPIX-M2-CR1; terminal conservation does not run for plan-body-only explicit terminal marker changes.
 - 2026-05-22: Resolved BPIX-M2-CR1 by adding the plan-body-only terminal conservation regression and extending the conservation trigger to scoped explicit terminal plan bodies.
 - 2026-05-22: Code-review M2 R2 passed clean-with-notes; M2 closed and M3 is next.
+- 2026-05-22: Began M3 migration, compacted `docs/plan.md` to Active, Blocked, Done (recent), and Superseded, created `docs/plan-archive.md`, and recorded `plan-index-migration.md`.
+- 2026-05-22: Preserved all 75 pre-migration Done entries: 10 remain in `docs/plan.md` Done (recent), 65 moved to `docs/plan-archive.md`, and the migration table records every link with duplicate status.
+- 2026-05-22: M3 implementation reached `review-requested`; next stage is code-review for M3 before contributor guidance work begins.
 
 ## Decision log
 
@@ -375,6 +378,7 @@ The main implementation surfaces are:
 
 - PR #84 changed lifecycle validation internals before this plan was authored; the branch was synced to `origin/main` before planning.
 - Existing `specs/plan-index-lifecycle-ownership.test.md` is archived and needs a focused refresh for the archive contract.
+- Legacy prose-only completed plan bodies were not bulk-edited with lifecycle markers in M3; preservation for historical Done entries is recorded in the migration proof as required by EC10.
 
 ## Validation notes
 
@@ -396,6 +400,12 @@ The main implementation surfaces are:
 - 2026-05-22: `python -m py_compile scripts/artifact_lifecycle_validation.py scripts/artifact_lifecycle_contracts.py` passed after BPIX-M2-CR1 fix.
 - 2026-05-22: `git diff --check --` passed after BPIX-M2-CR1 fix.
 - 2026-05-22: Code-review M2 R2 recorded clean-with-notes after reviewing the fix and validation evidence.
+- 2026-05-22: `python - <<'PY' ... migration proof count/link assertion` passed after M3 migration, confirming 10 recent entries, 65 archived entries, 75 proof rows, and 75 unique linked plan files.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` passed after M3 migration.
+- 2026-05-22: `python scripts/test-artifact-lifecycle-validator.py` passed after M3 migration.
+- 2026-05-22: `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed after M3 migration.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md` passed after M3 handoff state update with the existing lifecycle-language warning for merge-state wording in the spec.
+- 2026-05-22: `git diff --check --` passed after M3 migration.
 
 ## Outcome and retrospective
 
@@ -404,4 +414,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M3 implementation; not ready for final closeout.
+- Ready for M3 code-review; not ready for final closeout.
