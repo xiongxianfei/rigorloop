@@ -4,10 +4,16 @@
 from __future__ import annotations
 
 import importlib.util
+import os
+import re
+import shlex
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
+from dataclasses import dataclass
+from io import StringIO
 from pathlib import Path
 
 
@@ -23,6 +29,15 @@ CLEAN_RECEIPT_ROOT = (
     / "valid-clean-receipt-root"
     / "change.yaml"
 )
+SUITE_NAME = "test-change-metadata-validator"
+
+
+@dataclass(frozen=True)
+class RunnerConfig:
+    verbose: bool
+    quiet: bool
+    names: list[str]
+    pattern: str | None
 
 
 def load_validator_module():
@@ -42,6 +57,166 @@ def run_validator(*targets: Path) -> subprocess.CompletedProcess[str]:
         text=True,
         cwd=ROOT,
     )
+
+
+def parse_runner_args(argv: list[str]) -> tuple[RunnerConfig | None, int]:
+    if ("--verbose" in argv or "-v" in argv) and ("--quiet" in argv or "-q" in argv):
+        print("error: --verbose and --quiet are mutually exclusive", file=sys.stderr)
+        return None, 2
+
+    verbose = False
+    quiet = False
+    names: list[str] = []
+    pattern: str | None = None
+    index = 0
+    while index < len(argv):
+        arg = argv[index]
+        if arg in ("--verbose", "-v"):
+            verbose = True
+        elif arg in ("--quiet", "-q"):
+            quiet = True
+        elif arg == "-k":
+            index += 1
+            if index >= len(argv):
+                print("error: -k requires a pattern", file=sys.stderr)
+                return None, 2
+            pattern = argv[index]
+        elif arg.startswith("-"):
+            print(f"error: unrecognized arguments: {arg}", file=sys.stderr)
+            return None, 2
+        else:
+            names.append(arg)
+        index += 1
+
+    return RunnerConfig(verbose=verbose, quiet=quiet, names=names, pattern=pattern), 0
+
+
+def build_test_suite(config: RunnerConfig) -> unittest.TestSuite:
+    loader = unittest.defaultTestLoader
+    previous_patterns = loader.testNamePatterns
+    if config.pattern is not None:
+        loader.testNamePatterns = [f"*{config.pattern}*"]
+    try:
+        if config.names:
+            return loader.loadTestsFromNames(config.names, sys.modules[__name__])
+        return loader.loadTestsFromModule(sys.modules[__name__])
+    finally:
+        loader.testNamePatterns = previous_patterns
+
+
+def format_duration(seconds: float) -> str:
+    return f"{seconds:.2f}s"
+
+
+def short_test_id(test: unittest.case.TestCase) -> str:
+    test_id = test.id()
+    for prefix in (f"{Path(__file__).stem}.", "__main__."):
+        if test_id.startswith(prefix):
+            return test_id[len(prefix) :]
+    return test_id
+
+
+def failure_message(trace: str) -> str:
+    for line in reversed(trace.strip().splitlines()):
+        stripped = line.strip()
+        if stripped:
+            return stripped
+    return "failure details unavailable"
+
+
+def failure_location(trace: str) -> str | None:
+    for line in trace.splitlines():
+        match = re.search(r'File "([^"]+)", line ([0-9]+)', line)
+        if not match:
+            continue
+        path = Path(match.group(1))
+        try:
+            display = path.relative_to(ROOT)
+        except ValueError:
+            display = path
+        return f"{display}:{match.group(2)}"
+    return None
+
+
+def can_emit_scoped_rerun(test_id: str) -> bool:
+    if "._FailedTest." in test_id:
+        return False
+    return bool(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)+", test_id))
+
+
+def format_failure_detail(test: unittest.case.TestCase, trace: str) -> str:
+    test_id = short_test_id(test)
+    lines = [
+        "",
+        f"FAILED {test_id}",
+        f"  {failure_message(trace)}",
+    ]
+    location = failure_location(trace)
+    if location:
+        lines.append(f"  {location}")
+    if can_emit_scoped_rerun(test_id):
+        quoted = shlex.quote(test_id)
+        if quoted == test_id:
+            quoted = f'"{test_id}"'
+        lines.append(f"  Re-run: python scripts/test-change-metadata-validator.py -k {quoted}")
+    return "\n".join(lines)
+
+
+def format_result(result: unittest.TestResult, elapsed: float) -> str:
+    failed = len(result.failures) + len(result.errors)
+    passed = result.testsRun - failed - len(result.skipped)
+    duration = format_duration(elapsed)
+
+    if result.testsRun == 0:
+        return f"[FAIL] {SUITE_NAME}: 0 tests run; expected at least 1 selected test in {duration}"
+
+    if result.wasSuccessful():
+        return f"[PASS] {SUITE_NAME}: {passed} passed in {duration}"
+
+    lines = [f"[FAIL] {SUITE_NAME}: {failed} failed, {max(passed, 0)} passed in {duration}"]
+    for test, trace in [*result.failures, *result.errors]:
+        lines.append(format_failure_detail(test, trace))
+    return "\n".join(lines)
+
+
+def add_output_contract_failure_fixture() -> None:
+    if os.environ.get("RIGORLOOP_CHANGE_METADATA_FAILURE_FIXTURE") != "1":
+        return
+
+    def test_output_contract_fixture_failure(self: unittest.TestCase) -> None:
+        self.fail("intentional output-contract failure")
+
+    setattr(
+        ChangeMetadataValidatorFixtureTests,
+        "test_output_contract_fixture_failure",
+        test_output_contract_fixture_failure,
+    )
+
+
+def main(argv: list[str]) -> int:
+    add_output_contract_failure_fixture()
+    config, parse_exit = parse_runner_args(argv)
+    if config is None:
+        return parse_exit
+
+    suite = build_test_suite(config)
+    if suite.countTestCases() == 0:
+        print(f"[FAIL] {SUITE_NAME}: 0 tests run; expected at least 1 selected test in 0.00s")
+        return 1
+
+    if config.quiet:
+        runner = unittest.TextTestRunner(stream=sys.stderr, verbosity=0)
+        result = runner.run(suite)
+        return 0 if result.wasSuccessful() else 1
+
+    stream = sys.stderr if config.verbose else StringIO()
+    runner = unittest.TextTestRunner(stream=stream, verbosity=2 if config.verbose else 1)
+    started = time.monotonic()
+    result = runner.run(suite)
+    elapsed = time.monotonic() - started
+    if not config.verbose:
+        print(format_result(result, elapsed))
+    return 0 if result.wasSuccessful() else 1
 
 
 class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
@@ -498,4 +673,4 @@ review:
 
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    raise SystemExit(main(sys.argv[1:]))

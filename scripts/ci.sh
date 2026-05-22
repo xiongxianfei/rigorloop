@@ -17,6 +17,7 @@ timeout_seconds="$DEFAULT_TIMEOUT_SECONDS"
 fail_fast=0
 verbose=0
 paths=()
+broad_smoke_passed_checks=0
 
 usage() {
   cat <<'EOF'
@@ -97,13 +98,48 @@ default_jobs() {
 run_check() {
   local label="$1"
   shift
+  local started="$SECONDS"
+  local command_text=""
+  local output=""
+  local status=0
+  local elapsed=0
 
-  echo "==> $label"
-  printf '+'
-  printf ' %q' "$@"
-  printf '\n'
-  "$@"
-  echo
+  printf -v command_text '%q ' "$@"
+  command_text="${command_text% }"
+
+  set +e
+  output="$("$@" 2>&1)"
+  status=$?
+  set -e
+  elapsed=$((SECONDS - started))
+
+  if [[ "$status" -ne 0 ]]; then
+    echo "[FAIL] $label: exit $status in ${elapsed}s"
+    echo
+    echo "Command:"
+    echo "$command_text"
+    echo
+    echo "Captured output:"
+    if [[ -n "$output" ]]; then
+      printf '%s\n' "$output"
+    fi
+    echo
+    echo "Re-run:"
+    echo "$command_text"
+    return "$status"
+  fi
+
+  broad_smoke_passed_checks=$((broad_smoke_passed_checks + 1))
+  if [[ "$verbose" -eq 1 ]]; then
+    echo "==> $label (passed)"
+    echo "Command:"
+    echo "$command_text"
+    echo "Captured output:"
+    if [[ -n "$output" ]]; then
+      printf '%s\n' "$output"
+    fi
+    echo
+  fi
 }
 
 artifact_lifecycle_label=""
@@ -201,6 +237,9 @@ run_broad_smoke() {
     return 0
   fi
 
+  local started="$SECONDS"
+  broad_smoke_passed_checks=0
+
   local review_artifact_available=0
   if [[ "$skip_diff_scoped" != "1" ]]; then
     if determine_review_artifact_command; then
@@ -257,14 +296,16 @@ run_broad_smoke() {
     run_check "$review_artifact_label" \
       "${review_artifact_cmd[@]}"
   else
-    echo "No changed review artifact roots to validate."
-    echo
+    if [[ "$verbose" -eq 1 ]]; then
+      echo "No changed review artifact roots to validate."
+      echo
+    fi
   fi
 
   run_check "$artifact_lifecycle_label" \
     "${artifact_lifecycle_cmd[@]}"
 
-  echo "CI broad smoke checks passed."
+  echo "[PASS] broad-smoke: ${broad_smoke_passed_checks} checks passed in $((SECONDS - started))s"
 }
 
 parse_args() {
