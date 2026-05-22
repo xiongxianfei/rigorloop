@@ -55,7 +55,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - Remaining in-scope implementation milestones: none
 - Next stage: pr
 - Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: Final verify passed from clean tracked branch state at `df7ee8d`, including compact metadata regressions, lifecycle heading compatibility, selector regression, representative and full branch selected CI, broad smoke, active change metadata validation, review-artifact closeout validation, and artifact lifecycle validation. PR handoff is the next stage.
+- Reason final closeout is or is not ready: Final verify passed from clean tracked branch state after the lifecycle heading fix, including compact metadata regressions, lifecycle heading compatibility, selector regression, representative and full branch selected CI, broad smoke, active change metadata validation, review-artifact closeout validation, and artifact lifecycle validation. After recording verify evidence, post-commit branch-tip selected CI and artifact checks also passed. PR handoff is the next stage.
 
 ## Milestones
 
@@ -370,6 +370,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-22: Final verify rerun passed `python scripts/select-validation.py --mode explicit --path tests/fixtures/change-metadata/compact-valid/change.yaml --json`, classifying the fixture as `change-metadata-fixtures` and selecting `change_metadata.regression`.
 - 2026-05-22: Final verify rerun passed representative selected CI and full branch changed-file selected CI from clean tracked state. Full branch selected CI selected and passed `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 - 2026-05-22: Final verify rerun passed `git diff --check --`, active change metadata validation, review-artifact closeout validation, artifact lifecycle explicit-path validation, and `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped`. Broad smoke reported unrelated baseline warnings for older proposal files.
+- 2026-05-22: After recording final verify evidence, post-commit branch-tip checks passed: `git diff --check --`, active change metadata validation, review-artifact closeout validation, artifact lifecycle explicit-path validation, and full branch changed-file selected CI.
 
 ## Outcome and retrospective
 
