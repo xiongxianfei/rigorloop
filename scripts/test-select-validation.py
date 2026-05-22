@@ -948,6 +948,66 @@ raise SystemExit({exit_code})
         self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
         self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
 
+    def test_unregistered_change_evidence_produces_registration_debt(self) -> None:
+        result = self.select(["docs/changes/2026-04-25-example/notes.md"])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "blocked")
+        self.assertIn(
+            {
+                "path": "docs/changes/2026-04-25-example/notes.md",
+                "category": "unregistered-change-evidence",
+            },
+            payload["classified_paths"],
+        )
+        self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
+        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        debt = next(item for item in payload["blocking_results"] if item["code"] == "manual-routing-required")
+        self.assertEqual(debt["path"], "docs/changes/2026-04-25-example/notes.md")
+        self.assertEqual(debt["debt"], "evidence-registration")
+        self.assertEqual(debt["verify_readiness"], "blocked")
+        self.assertIn("owner-approved deferral", debt["next_action"])
+        for required_term in ("owner", "path", "reason", "validation impact", "follow-up"):
+            self.assertIn(required_term, debt["next_action"])
+
+    def test_local_mode_discovers_registered_evidence_not_named_by_explicit_paths(self) -> None:
+        repo = self.make_git_repo()
+        change_root = repo / "docs" / "changes" / "2026-04-25-local"
+        change_root.mkdir(parents=True)
+        (change_root / "change.yaml").write_text("change_id: 2026-04-25-local\n", encoding="utf-8")
+        (change_root / "selector-routing-proof.md").write_text("# Selector routing proof\n", encoding="utf-8")
+
+        explicit_result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("docs/changes/2026-04-25-local/change.yaml",),
+                repo_root=repo,
+            )
+        )
+        local_result = select_validation(SelectionRequest(mode="local", repo_root=repo))
+        explicit_payload = explicit_result.to_json_dict()
+        local_payload = local_result.to_json_dict()
+
+        self.assertEqual(explicit_result.status, "ok")
+        self.assertNotIn(
+            "docs/changes/2026-04-25-local/selector-routing-proof.md",
+            explicit_payload["changed_paths"],
+        )
+        self.assertEqual(local_result.status, "ok")
+        self.assertIn(
+            "docs/changes/2026-04-25-local/selector-routing-proof.md",
+            local_payload["changed_paths"],
+        )
+        self.assertIn(
+            {
+                "path": "docs/changes/2026-04-25-local/selector-routing-proof.md",
+                "category": "registered-change-evidence",
+            },
+            local_payload["classified_paths"],
+        )
+        self.assertIn("artifact_lifecycle.validate", selected_ids(local_payload))
+        self.assertIn("docs/changes/2026-04-25-local/", local_payload["affected_roots"])
+
     def test_selector_registry_changes_select_selector_regression(self) -> None:
         result = self.select(["scripts/validation_selection.py", "scripts/test-select-validation.py"])
         payload = result.to_json_dict()
@@ -1350,6 +1410,12 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/routing-coverage.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/selector-routing-proof.md",
                 "category": "registered-change-evidence",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},

@@ -230,7 +230,7 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
     ),
     EvidenceClassRegistration(
         evidence_class_id="routing-coverage",
-        patterns=("routing-coverage.md",),
+        patterns=("routing-coverage.md", "selector-routing-proof.md"),
         selector_routes=("artifact_lifecycle.validate",),
         required_validator="validate-artifact-lifecycle",
         lifecycle_stage="implementation",
@@ -813,6 +813,26 @@ def _apply_path_selection(
         )
         return
 
+    if category == "unregistered-change-evidence":
+        root = _change_root(path)
+        if root:
+            affected_roots.add(root)
+        blocking_results.append(
+            {
+                "code": "manual-routing-required",
+                "path": path,
+                "debt": "evidence-registration",
+                "verify_readiness": "blocked",
+                "next_action": (
+                    "Register an evidence class for this deterministic change-local evidence path "
+                    "or record an owner-approved deferral before verify with owner, path, reason, "
+                    "validation impact, and follow-up."
+                ),
+                "message": "unregistered deterministic change-local evidence creates registration debt",
+            }
+        )
+        return
+
     if category == "architecture-diagram":
         architecture_doc = _architecture_doc_for_diagram(path)
         _add_check(
@@ -1296,6 +1316,8 @@ def _path_category(path: str) -> str | None:
             parts[3] == "diagrams"
         ):
             return "change-local-lifecycle"
+        if len(parts) == 4:
+            return "unregistered-change-evidence"
         return "change-local-unsupported"
     if path == "docs/plan.md":
         return "plan-index"
