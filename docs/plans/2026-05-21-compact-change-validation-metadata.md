@@ -53,9 +53,9 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r2 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: CI-maintenance fixed selected-CI routing for `tests/fixtures/change-metadata/**` and explain-change has been refreshed for that selector change, but verify must be rerun before branch readiness or PR handoff.
+- Next stage: pr
+- Final closeout readiness: branch-ready
+- Reason final closeout is or is not ready: Final verify passed from clean tracked branch state at `df7ee8d`, including compact metadata regressions, lifecycle heading compatibility, selector regression, representative and full branch selected CI, broad smoke, active change metadata validation, review-artifact closeout validation, and artifact lifecycle validation. PR handoff is the next stage.
 
 ## Milestones
 
@@ -294,6 +294,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-22: CI-maintenance added selected-CI routing for change-metadata fixture paths and proved the full branch changed-file selected CI command now passes. Next stage is explain-change refresh.
 - 2026-05-22: Explain-change was refreshed after ci-maintenance to include selector-routing rationale and selected-CI evidence. Next stage is verify rerun.
 - 2026-05-22: Verify rerun found selected CI still blocked on title-case lifecycle headings in the accepted proposal. The lifecycle validator now matches lifecycle section headings case-insensitively and includes a title-case proposal regression test.
+- 2026-05-22: Final verify rerun passed from clean tracked branch state after the title-case lifecycle heading fix. Next stage is PR handoff.
 
 ## Decision log
 
@@ -363,12 +364,18 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-22: Clean-HEAD verify rerun found the representative selected CI command still failed in `artifact_lifecycle.validate` because `docs/proposals/2026-05-21-compact-change-validation-metadata.md` uses title-case `Recommended Direction`.
 - 2026-05-22: `python scripts/test-artifact-lifecycle-validator.py` passed after adding title-case lifecycle heading support.
 - 2026-05-22: `python -m py_compile scripts/artifact_lifecycle_contracts.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py` passed after adding title-case lifecycle heading support.
+- 2026-05-22: Final verify rerun from clean worktree `/tmp/rigorloop-verify.F8JKx3` at `df7ee8d` passed `python scripts/test-change-metadata-validator.py`, `python scripts/test-select-validation.py`, `python scripts/test-artifact-lifecycle-validator.py`, and `python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py scripts/review_artifact_validation.py scripts/artifact_lifecycle_contracts.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py`.
+- 2026-05-22: Final verify rerun passed direct valid fixture checks for `compact-valid`, `valid-basic`, `compactness-representative-compact`, and `compactness-representative-legacy`.
+- 2026-05-22: Final verify rerun confirmed expected failures for `compact-invalid-summary-conflict`, `compact-invalid-review-counts`, and `compact-invalid-extra-summary-blocker`.
+- 2026-05-22: Final verify rerun passed `python scripts/select-validation.py --mode explicit --path tests/fixtures/change-metadata/compact-valid/change.yaml --json`, classifying the fixture as `change-metadata-fixtures` and selecting `change_metadata.regression`.
+- 2026-05-22: Final verify rerun passed representative selected CI and full branch changed-file selected CI from clean tracked state. Full branch selected CI selected and passed `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- 2026-05-22: Final verify rerun passed `git diff --check --`, active change metadata validation, review-artifact closeout validation, artifact lifecycle explicit-path validation, and `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped`. Broad smoke reported unrelated baseline warnings for older proposal files.
 
 ## Outcome and retrospective
 
-- Implementation milestones M1, M2, and M3 are closed after code review, ci-maintenance fixed selected-CI fixture routing, and explain-change has been refreshed. Verify must rerun before branch readiness or PR handoff can be claimed.
+- Implementation milestones M1, M2, and M3 are closed after code review, ci-maintenance fixed selected-CI fixture routing, explain-change has been refreshed, and final verify passed from clean tracked branch state. The branch is ready for PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `verify`; not ready for PR handoff.
+- Branch-ready for `pr` handoff.
