@@ -405,8 +405,23 @@ def _parse_sections(text: str) -> dict[str, str]:
     return sections
 
 
+def _get_section(sections: dict[str, str], name: str) -> str | None:
+    if name in sections:
+        return sections[name]
+
+    normalized_name = name.casefold()
+    for section_name, body in sections.items():
+        if section_name.casefold() == normalized_name:
+            return body
+    return None
+
+
+def _has_section(sections: dict[str, str], name: str) -> bool:
+    return _get_section(sections, name) is not None
+
+
 def _extract_status(sections: dict[str, str]) -> str | None:
-    raw = sections.get("Status")
+    raw = _get_section(sections, "Status")
     if raw is None:
         return None
     for line in raw.splitlines():
@@ -435,7 +450,7 @@ def _has_replacement_pointer(text: str) -> bool:
 
 
 def _has_terminal_closeout(sections: dict[str, str]) -> bool:
-    return "Follow-on artifacts" in sections or "Closeout" in sections
+    return _has_section(sections, "Follow-on artifacts") or _has_section(sections, "Closeout")
 
 
 def _is_lifecycle_reference_path(root: Path, path: Path) -> bool:
@@ -513,10 +528,11 @@ def _validate_status_and_sections(
         errors.append("placeholder text is not allowed")
 
     for section_name in contract.required_sections:
-        if section_name not in sections:
+        section_body = _get_section(sections, section_name)
+        if section_body is None:
             errors.append(f"missing required '{section_name}' section")
             continue
-        if not sections[section_name].strip():
+        if not section_body.strip():
             errors.append(f"required '{section_name}' section must not be empty")
 
     identifier = _extract_identifier(contract, path)
@@ -526,23 +542,25 @@ def _validate_status_and_sections(
     if status in contract.terminal_statuses:
         if not _has_terminal_closeout(sections):
             errors.append("terminal artifacts must include a Closeout or Follow-on artifacts section")
-        follow_on = sections.get("Follow-on artifacts")
+        follow_on = _get_section(sections, "Follow-on artifacts")
         if follow_on is not None and not follow_on.strip():
             errors.append("Follow-on artifacts section must not be empty")
         if status.lower() == "superseded" and not _has_replacement_pointer(text):
             errors.append("superseded artifacts must identify a replacement")
 
-    if "Next artifacts" in sections and not sections["Next artifacts"].strip():
+    next_artifacts = _get_section(sections, "Next artifacts")
+    if next_artifacts is not None and not next_artifacts.strip():
         errors.append("Next artifacts section must not be empty")
 
-    if "Follow-on artifacts" in sections:
-        follow_on_body = sections["Follow-on artifacts"].strip()
+    follow_on = _get_section(sections, "Follow-on artifacts")
+    if follow_on is not None:
+        follow_on_body = follow_on.strip()
         if not follow_on_body:
             errors.append("Follow-on artifacts section must not be empty")
         elif follow_on_body.lower() == "none yet":
             pass
 
-    readiness = sections.get("Readiness", "")
+    readiness = _get_section(sections, "Readiness") or ""
     if readiness and _requires_readiness_consistency_check(contract, status) and STALE_READINESS_PATTERN.search(
         readiness
     ):

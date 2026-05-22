@@ -293,6 +293,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-22: Verify ran focused validator proof and broad smoke, but selected CI blocked because the validation selector does not classify the new `tests/fixtures/change-metadata/**` fixture paths. Next stage is ci-maintenance.
 - 2026-05-22: CI-maintenance added selected-CI routing for change-metadata fixture paths and proved the full branch changed-file selected CI command now passes. Next stage is explain-change refresh.
 - 2026-05-22: Explain-change was refreshed after ci-maintenance to include selector-routing rationale and selected-CI evidence. Next stage is verify rerun.
+- 2026-05-22: Verify rerun found selected CI still blocked on title-case lifecycle headings in the accepted proposal. The lifecycle validator now matches lifecycle section headings case-insensitively and includes a title-case proposal regression test.
 
 ## Decision log
 
@@ -359,6 +360,9 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-22: `python scripts/select-validation.py --mode explicit --path tests/fixtures/change-metadata/compact-valid/change.yaml --json` classified the path as `change-metadata-fixtures` and selected `change_metadata.regression`.
 - 2026-05-22: `bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/change_metadata_semantics.py --path scripts/test-change-metadata-validator.py --path schemas/change.schema.json --path tests/fixtures/change-metadata/compact-valid/change.yaml --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml` passed after selector routing fix.
 - 2026-05-22: `bash scripts/ci.sh --mode explicit <branch-changed-files>` passed after selector routing fix, selecting review artifact validation, artifact lifecycle validation, change metadata regression, and change metadata validation.
+- 2026-05-22: Clean-HEAD verify rerun found the representative selected CI command still failed in `artifact_lifecycle.validate` because `docs/proposals/2026-05-21-compact-change-validation-metadata.md` uses title-case `Recommended Direction`.
+- 2026-05-22: `python scripts/test-artifact-lifecycle-validator.py` passed after adding title-case lifecycle heading support.
+- 2026-05-22: `python -m py_compile scripts/artifact_lifecycle_contracts.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py` passed after adding title-case lifecycle heading support.
 
 ## Outcome and retrospective
 

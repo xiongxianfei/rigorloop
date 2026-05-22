@@ -35,6 +35,7 @@ tests:
   - Verify found focused validator proof and broad smoke passing, but selected CI is blocked because `tests/fixtures/change-metadata/**` fixture paths are unclassified by the validation selector.
   - CI-maintenance added `tests/fixtures/change-metadata/**` selector routing to the change metadata regression suite and selected CI now passes for the full branch changed-file set.
   - Explain-change was refreshed after ci-maintenance to include selector-routing rationale, selected-CI evidence, and the remaining verify/PR risks.
+  - Verify rerun found selected CI still blocked on case-sensitive lifecycle heading matching for the accepted proposal's title-case `Recommended Direction`; the lifecycle validator now accepts lifecycle section headings case-insensitively with regression coverage.
 review:
   status: clean
   unresolved_items: 0
@@ -311,6 +312,10 @@ validation:
     result: pass_after_explain_change_refresh
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/explain-change.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md
     result: pass_after_explain_change_refresh
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_lifecycle_title_case_fix
+  - command: python -m py_compile scripts/artifact_lifecycle_contracts.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_lifecycle_title_case_fix
 changed_files:
   - docs/proposals/2026-05-21-compact-change-validation-metadata.md
   - specs/compact-change-validation-metadata.md
@@ -330,6 +335,9 @@ changed_files:
   - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md
   - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r2.md
+  - scripts/artifact_lifecycle_contracts.py
+  - scripts/artifact_lifecycle_validation.py
+  - scripts/test-artifact-lifecycle-validator.py
   - scripts/validate-change-metadata.py
   - scripts/validation_selection.py
   - scripts/test-change-metadata-validator.py

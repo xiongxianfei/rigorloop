@@ -12,6 +12,8 @@ The implementation keeps the core audit invariant intact: compact storage is all
 
 After initial verify, selected CI exposed a routing gap: changed files under `tests/fixtures/change-metadata/**` were unclassified by the validation selector. CI-maintenance now classifies those fixture paths and routes them to the change metadata regression suite, so selected CI covers compact metadata fixture changes without trying to validate intentionally invalid fixtures as passing metadata files.
 
+The verify rerun then exposed a second CI-readiness blocker in the artifact lifecycle validator: the accepted proposal uses title-case section headings such as `Recommended Direction`, but the lifecycle check matched required sections case-sensitively. The validator now accepts Markdown lifecycle headings case-insensitively while preserving the same required-section names, status rules, and non-empty checks.
+
 ## Problem
 
 The accepted proposal identified that durable `change.yaml` validation evidence had become transcript-like: repeated long change IDs, repeated validation commands, growing lifecycle path lists, and prose-encoded pass strings made common review expensive. The goal was not to hide evidence, but to make the common read cheaper while preserving reconstructable proof.
@@ -47,6 +49,7 @@ Because `validate-change-metadata.py` owns the metadata contract, the fix had to
 | No-execution proof | `scripts/test-change-metadata-validator.py` | Added a sentinel command that would create a file if the validator executed bundle commands. | Prove metadata validation inspects command strings only and does not run validation bundles. | R57-R58, AC24, TCVM-020, `CVM-M3-CR3`. |
 | Fixtures | `tests/fixtures/change-metadata/**` | Added valid compact metadata, invalid compact cases, unsafe path/command cases, review-count fixtures, transcript fixture, and representative compactness fixture pair. | Exercise the public CLI against real metadata shapes instead of relying only on helper-level assertions. | TCVM-001 through TCVM-020. |
 | Selected CI routing | `scripts/validation_selection.py`, `scripts/test-select-validation.py` | Added `change-metadata-fixtures` classification for `tests/fixtures/change-metadata/**` and routed it to `change_metadata.regression`. | Selected CI previously blocked on compact metadata fixture paths. Fixture directories contain intentionally invalid files, so the safe CI behavior is to run the regression suite that knows expected-pass and expected-fail cases. | CI-maintenance commit `70cdc77`; `python scripts/test-select-validation.py`; full branch changed-file selected CI. |
+| Lifecycle heading compatibility | `scripts/artifact_lifecycle_contracts.py`, `scripts/artifact_lifecycle_validation.py`, `scripts/test-artifact-lifecycle-validator.py` | Made lifecycle-managed Markdown section lookup case-insensitive and added a title-case proposal regression test. | The accepted compact metadata proposal uses title-case headings, which are common for formal document sections, and selected CI must not reject them solely for case. | `python scripts/test-artifact-lifecycle-validator.py`; `python -m py_compile scripts/artifact_lifecycle_contracts.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py`. |
 
 ## Tests Added Or Changed
 
@@ -58,10 +61,11 @@ Because `validate-change-metadata.py` owns the metadata contract, the fix had to
 - `TCVM-019` proves material compactness only after reconstruction passes.
 - `TCVM-020` proves the validator does not execute bundle commands.
 - `scripts/test-select-validation.py` now proves a changed `tests/fixtures/change-metadata/compact-valid/change.yaml` path is classified as `change-metadata-fixtures` and selects `change_metadata.regression`.
+- `scripts/test-artifact-lifecycle-validator.py::test_title_case_proposal_headings_pass` proves title-case lifecycle headings satisfy the same required-section contract.
 
 The test level is mostly fixture-driven integration because the public contract is the behavior of `scripts/validate-change-metadata.py` against real `change.yaml` files. Helper-level checks are used only for parsing, safety helpers, reconstruction, and compactness measurement where direct assertions are clearer.
 
-The selector test is a focused CI-routing regression because the behavior belongs to validation selection, not the metadata validator itself.
+The selector test is a focused CI-routing regression because the behavior belongs to validation selection, not the metadata validator itself. The lifecycle heading test is a focused compatibility regression because the behavior belongs to artifact lifecycle parsing, not compact metadata semantics.
 
 ## Validation Evidence Available Before Final Verify
 
@@ -83,6 +87,8 @@ Validation recorded during implementation and review-resolution includes:
   `bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/change_metadata_semantics.py --path scripts/test-change-metadata-validator.py --path schemas/change.schema.json --path tests/fixtures/change-metadata/compact-valid/change.yaml --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml`
 - full branch changed-file selected CI:
   `bash scripts/ci.sh --mode explicit <branch-changed-files>`
+- `python scripts/test-artifact-lifecycle-validator.py`
+- `python -m py_compile scripts/artifact_lifecycle_contracts.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py`
 
 Final verify rerun is still pending and is not claimed by this explanation.
 
@@ -107,6 +113,7 @@ See `docs/changes/2026-05-21-compact-change-validation-metadata/review-resolutio
 - Standardize transcript internals in this slice: deferred because the first slice only needs optional reference syntax and target existence.
 - Bulk-migrate historical `change.yaml` files: deferred until validator support exists and a separate migration proposal justifies it.
 - Validate changed metadata fixture files one-by-one in selected CI: rejected because many fixtures are intentionally invalid and must be exercised through `scripts/test-change-metadata-validator.py`, which owns expected-failure assertions.
+- Rename the accepted proposal headings to lowercase: rejected because title case is a valid formal heading style and the lifecycle validator should check semantic section presence rather than exact heading capitalization.
 
 ## Scope Control
 
@@ -120,12 +127,13 @@ The implementation preserves these non-goals:
 - No CLI scaffolding was added for writing compact metadata.
 - Compactness proof is subordinate to reconstruction and count-preservation checks.
 - CI-maintenance changed selector routing only; it did not change validation bundle selection, validator semantics, command exit behavior, or failure detection.
+- The lifecycle heading change is intentionally limited to case-insensitive section matching; it does not relax required-section presence, required-section non-empty checks, status validation, or lifecycle artifact placement.
 
 Unrelated local lifecycle-validator edits and untracked learn artifacts are present in the worktree but are not part of this committed branch diff or this explanation.
 
 ## Risks And Follow-Ups
 
-- Final verify rerun has not run yet after the CI-maintenance selector change.
+- Final verify rerun has not completed yet after the lifecycle heading compatibility fix.
 - PR handoff has not been prepared.
 - Compactness proof uses a representative fixture pair, so future changes to fixture formatting should keep reconstruction and count preservation ahead of byte-count assertions.
 - Follow-on work remains possible for bulk migration, a standardized `change.validation-log.yaml` internal schema, and CLI scaffolding that writes compact metadata automatically.
