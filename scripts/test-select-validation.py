@@ -964,11 +964,106 @@ raise SystemExit({exit_code})
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
         debt = next(item for item in payload["blocking_results"] if item["code"] == "manual-routing-required")
         self.assertEqual(debt["path"], "docs/changes/2026-04-25-example/notes.md")
+        self.assertTrue(debt["manual_routing_required"])
         self.assertEqual(debt["debt"], "evidence-registration")
         self.assertEqual(debt["verify_readiness"], "blocked")
+        self.assertEqual(debt["deferral_status"], "none")
         self.assertIn("owner-approved deferral", debt["next_action"])
         for required_term in ("owner", "path", "reason", "validation impact", "follow-up"):
             self.assertIn(required_term, debt["next_action"])
+
+    def write_change_with_evidence_deferral(
+        self,
+        *,
+        deferral_fields: dict[str, str],
+        change_id: str = "2026-04-25-deferral",
+    ) -> tuple[Path, str]:
+        repo = self.make_git_repo()
+        evidence_path = f"docs/changes/{change_id}/unregistered-evidence.md"
+        change_root = repo / "docs" / "changes" / change_id
+        change_root.mkdir(parents=True, exist_ok=True)
+        (change_root / "unregistered-evidence.md").write_text("manual evidence\n", encoding="utf-8")
+        field_lines = "\n".join(
+            f"    {field}: {value}"
+            for field, value in deferral_fields.items()
+        )
+        (change_root / "change.yaml").write_text(
+            "change_id: 2026-04-25-deferral\n"
+            "evidence_registration_deferrals:\n"
+            f"  - {field_lines.lstrip()}\n",
+            encoding="utf-8",
+        )
+        return repo, evidence_path
+
+    def test_unregistered_change_evidence_with_complete_deferral_unblocks_readiness(self) -> None:
+        repo, evidence_path = self.write_change_with_evidence_deferral(
+            deferral_fields={
+                "path": "docs/changes/2026-04-25-deferral/unregistered-evidence.md",
+                "owner": "plan-review",
+                "reason": "intentionally unsupported fixture",
+                "validation_impact": "explicit lifecycle coverage required",
+                "follow_up": "docs/plans/2026-04-25-deferral.md#M3",
+            }
+        )
+
+        result = select_validation(SelectionRequest(mode="explicit", paths=(evidence_path,), repo_root=repo))
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertIn(
+            {"path": evidence_path, "category": "unregistered-change-evidence"},
+            payload["classified_paths"],
+        )
+        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertEqual(payload["blocking_results"], [])
+        debt = next(item for item in payload["registration_debt"] if item["path"] == evidence_path)
+        self.assertTrue(debt["manual_routing_required"])
+        self.assertEqual(debt["debt"], "evidence-registration")
+        self.assertEqual(debt["verify_readiness"], "owner-deferred")
+        self.assertEqual(debt["deferral_status"], "complete")
+        self.assertEqual(debt["deferral"]["owner"], "plan-review")
+        self.assertEqual(debt["deferral"]["path"], evidence_path)
+        self.assertEqual(debt["deferral"]["reason"], "intentionally unsupported fixture")
+        self.assertEqual(debt["deferral"]["validation_impact"], "explicit lifecycle coverage required")
+        self.assertEqual(debt["deferral"]["follow_up"], "docs/plans/2026-04-25-deferral.md#M3")
+
+    def test_unregistered_change_evidence_with_incomplete_deferral_remains_blocking(self) -> None:
+        repo, evidence_path = self.write_change_with_evidence_deferral(
+            deferral_fields={
+                "path": "docs/changes/2026-04-25-deferral/unregistered-evidence.md",
+                "owner": "plan-review",
+                "reason": "missing fields fixture",
+            }
+        )
+
+        result = select_validation(SelectionRequest(mode="explicit", paths=(evidence_path,), repo_root=repo))
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "blocked")
+        debt = next(item for item in payload["blocking_results"] if item["path"] == evidence_path)
+        self.assertEqual(debt["deferral_status"], "incomplete")
+        self.assertEqual(debt["verify_readiness"], "blocked")
+        self.assertIn("validation_impact", debt["missing_deferral_fields"])
+        self.assertIn("follow_up", debt["missing_deferral_fields"])
+
+    def test_owner_deferral_for_different_path_does_not_unblock_evidence(self) -> None:
+        repo, evidence_path = self.write_change_with_evidence_deferral(
+            deferral_fields={
+                "path": "docs/changes/2026-04-25-deferral/other-evidence.md",
+                "owner": "plan-review",
+                "reason": "wrong path fixture",
+                "validation_impact": "explicit lifecycle coverage required",
+                "follow_up": "docs/plans/2026-04-25-deferral.md#M3",
+            }
+        )
+
+        result = select_validation(SelectionRequest(mode="explicit", paths=(evidence_path,), repo_root=repo))
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "blocked")
+        debt = next(item for item in payload["blocking_results"] if item["path"] == evidence_path)
+        self.assertEqual(debt["deferral_status"], "none")
+        self.assertEqual(debt["verify_readiness"], "blocked")
 
     def test_local_mode_discovers_registered_evidence_not_named_by_explicit_paths(self) -> None:
         repo = self.make_git_repo()

@@ -20,6 +20,23 @@ The M2 selector tests add direct coverage for:
 
 The implementation registers `selector-routing-proof.md` as routing-coverage evidence so this proof file itself routes deterministically through changed-path selection.
 
+## Owner-approved deferral proof
+
+The `CRM-M2-CR1` resolution adds selector-owned deferral evaluation for deterministic unregistered change-local evidence. A complete owner-approved deferral is read from the governing `change.yaml` field `evidence_registration_deferrals` and must include:
+
+- `owner`
+- `path`
+- `reason`
+- `validation_impact`
+- `follow_up`
+
+Selector regression covers four cases:
+
+- no deferral remains `manual-routing-required` with `verify_readiness: blocked`;
+- incomplete deferral remains blocked and names missing fields;
+- mismatched deferral path does not unblock the evidence path;
+- complete deferral remains visible as `manual-routing-required` and `debt: evidence-registration`, but reports `verify_readiness: owner-deferred`.
+
 ## Validation evidence
 
 `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-25-example/notes.md` returned `status: blocked`, `category: unregistered-change-evidence`, `code: manual-routing-required`, `debt: evidence-registration`, and `verify_readiness: blocked`.
