@@ -867,8 +867,20 @@ raise SystemExit({exit_code})
             {
                 "path": "docs/plan.md",
                 "category": "plan-index",
-                "status": "blocked",
-                "blocking_code": "manual-routing-required",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/plan-archive.md",
+                "category": "plan-index",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/plan-index-migration.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
             },
             {
                 "path": "docs/changes/2026-04-25-example/explain-change.md",
@@ -1241,6 +1253,44 @@ raise SystemExit({exit_code})
         self.assertIn({"path": path, "category": "follow-up-register"}, payload["classified_paths"])
         self.assertEqual({"skills.regression"}, selected_ids(payload))
 
+    def test_plan_index_surfaces_select_lifecycle_validation_with_both_surfaces(self) -> None:
+        result = self.select(["docs/plan-archive.md"])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertIn({"path": "docs/plan-archive.md", "category": "plan-index"}, payload["classified_paths"])
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        self.assertEqual(lifecycle_check["paths"], ["docs/plan-archive.md", "docs/plan.md"])
+
+    def test_plan_index_migration_proof_routes_with_metadata_and_index_surfaces(self) -> None:
+        result = self.select(["docs/changes/2026-04-25-example/plan-index-migration.md"])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertIn(
+            {
+                "path": "docs/changes/2026-04-25-example/plan-index-migration.md",
+                "category": "change-local-lifecycle",
+            },
+            payload["classified_paths"],
+        )
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        self.assertEqual(
+            lifecycle_check["paths"],
+            [
+                "docs/changes/2026-04-25-example/change.yaml",
+                "docs/changes/2026-04-25-example/plan-index-migration.md",
+                "docs/plan-archive.md",
+                "docs/plan.md",
+            ],
+        )
+
     def test_retained_skill_validator_fixture_rationale_has_deterministic_routing(self) -> None:
         path = "docs/changes/0001-skill-validator/README.md"
 
@@ -1435,6 +1485,7 @@ raise SystemExit({exit_code})
             "README.md",
             "docs/workflows.md",
             "docs/plan.md",
+            "docs/plan-archive.md",
             "docs/plans/2026-05-03-workflow-refactor.md",
             "docs/vision/strategic-positioning.md",
             "docs/proposals/2026-05-01-workflow-refactor.md",
@@ -1467,6 +1518,7 @@ raise SystemExit({exit_code})
             "README.md": "readme",
             "docs/workflows.md": "workflow-guidance",
             "docs/plan.md": "plan-index",
+            "docs/plan-archive.md": "plan-index",
             "docs/plans/2026-05-03-workflow-refactor.md": "lifecycle",
             "docs/vision/strategic-positioning.md": "lifecycle",
             "docs/proposals/2026-05-01-workflow-refactor.md": "lifecycle",
@@ -1512,6 +1564,7 @@ raise SystemExit({exit_code})
         self.assertFalse(payload["broad_smoke_required"])
         lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
         self.assertIn("docs/plan.md", lifecycle_check["paths"])
+        self.assertIn("docs/plan-archive.md", lifecycle_check["paths"])
         self.assertIn("docs/plans/2026-05-03-workflow-refactor.md", lifecycle_check["paths"])
         self.assertIn("docs/proposals/2026-05-01-workflow-refactor.md", lifecycle_check["paths"])
         self.assertIn("specs/rigorloop-workflow.md", lifecycle_check["paths"])

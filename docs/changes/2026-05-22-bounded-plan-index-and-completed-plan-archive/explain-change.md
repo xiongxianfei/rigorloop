@@ -40,6 +40,16 @@ BPIX-M4-CR1 was resolved by adding the three missing R8a ownership points to `sk
 
 T14 was strengthened so future guidance checks must verify each R8a ownership point in each named surface, rather than accepting keyword or marker presence alone.
 
+## M5 selection and CI routing
+
+M5 makes selected validation understand the new archive surfaces.
+
+`scripts/validation_selection.py` now classifies both `docs/plan.md` and `docs/plan-archive.md` as plan-index surfaces. A change to either surface selects `artifact_lifecycle.validate` with both surfaces, so routine archival validates the recent/archive union rather than only the edited file.
+
+The selector now treats `docs/changes/<change-id>/plan-index-migration.md` as a change-local lifecycle artifact and adds `docs/plan.md`, `docs/plan-archive.md`, and the governing `change.yaml` to the lifecycle validation command. This keeps migration proof checks tied to the index/archive state they prove.
+
+`scripts/test-select-validation.py` adds regression coverage for archive-surface routing, migration-proof routing, representative path classification, and the larger workflow surface set. The CI wrapper did not need a code change because `scripts/ci.sh --mode explicit` already executes the selected `artifact_lifecycle.validate` and `selector.regression` checks.
+
 ## Validation
 
 - `python scripts/test-artifact-lifecycle-validator.py` passed.
@@ -57,4 +67,9 @@ T14 was strengthened so future guidance checks must verify each R8a ownership po
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed after M3 migration.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md` passed with the existing lifecycle-language warning in the spec.
 - `python -m py_compile scripts/artifact_lifecycle_validation.py scripts/artifact_lifecycle_contracts.py` passed.
+- `python scripts/test-select-validation.py ValidationSelectionTests.test_plan_index_surfaces_select_lifecycle_validation_with_both_surfaces ValidationSelectionTests.test_plan_index_migration_proof_routes_with_metadata_and_index_surfaces ValidationSelectionTests.test_first_slice_representative_categories_route_or_block_safely ValidationSelectionTests.test_workflow_refactor_surface_set_selects_expected_checks` passed after M5 implementation.
+- `python scripts/test-select-validation.py` passed after M5 implementation.
+- `python -m py_compile scripts/validation_selection.py` passed after M5 implementation.
+- `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` selected `selector.regression` and `artifact_lifecycle.validate` with `docs/plan.md`, `docs/plan-archive.md`, the migration proof, and its `change.yaml`.
+- `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` passed after M5 implementation.
 - `git diff --check --` passed.

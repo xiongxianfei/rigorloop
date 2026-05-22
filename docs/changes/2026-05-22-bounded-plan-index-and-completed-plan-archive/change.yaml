@@ -99,6 +99,16 @@ validation:
     result: pass
   - command: python -m py_compile scripts/artifact_lifecycle_validation.py scripts/artifact_lifecycle_contracts.py
     result: pass
+  - command: python scripts/test-select-validation.py ValidationSelectionTests.test_plan_index_surfaces_select_lifecycle_validation_with_both_surfaces ValidationSelectionTests.test_plan_index_migration_proof_routes_with_metadata_and_index_surfaces ValidationSelectionTests.test_first_slice_representative_categories_route_or_block_safely ValidationSelectionTests.test_workflow_refactor_surface_set_selects_expected_checks
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python -m py_compile scripts/validation_selection.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md
+    result: pass
   - command: git diff --check --
     result: pass
 changed_files:
@@ -109,6 +119,8 @@ changed_files:
   - skills/plan/SKILL.md
   - scripts/artifact_lifecycle_validation.py
   - scripts/test-artifact-lifecycle-validator.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
   - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml
   - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md
   - docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md

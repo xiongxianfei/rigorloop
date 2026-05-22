@@ -68,11 +68,11 @@ The main implementation surfaces are:
 ## Current Handoff Summary
 
 - Current milestone: M5. Selection and CI routing
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Contributor guidance and skill alignment
-- Review status: code-review M4 R2 clean-with-notes; no open findings
+- Review status: M5 implementation complete; code-review M5 requested
 - Remaining in-scope implementation milestones: M5, M6
-- Next stage: implement M5
+- Next stage: code-review M5
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
 
@@ -242,7 +242,7 @@ The main implementation surfaces are:
 
 ### M5. Selection and CI routing
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Ensure selected validation routes changes to `docs/plan-archive.md`, lifecycle markers, migration proof, and plan-index changes through the right local checks.
 - Requirements: `R7`, `R7a`, `R15`, `R15a`-`R15d`, `R16`
 - Files/components likely touched:
@@ -267,11 +267,11 @@ The main implementation surfaces are:
 - Expected observable result: changed plan index/archive surfaces select the validator checks needed to enforce the archive contract.
 - Commit message: `M5: route plan archive validation`
 - Milestone closeout:
-  - validation passed
+  - validation passed on 2026-05-22
   - progress updated
-  - decision log updated if needed
+  - decision log updated if needed; no new decision
   - validation notes updated
-  - milestone committed
+  - milestone commit is the M5 handoff commit
 - Risks:
   - Risk: selector changes accidentally broaden CI for unrelated docs.
 - Rollback/recovery:
@@ -373,6 +373,8 @@ The main implementation surfaces are:
 - 2026-05-22: Code-review M4 R1 found BPIX-M4-CR1; plan guidance does not explicitly cover all R8a ownership bullets.
 - 2026-05-22: Resolved BPIX-M4-CR1 by adding the missing R8a ownership bullets to `skills/plan/SKILL.md` and strengthening T14 to require direct per-surface ownership checks.
 - 2026-05-22: Code-review M4 R2 passed clean-with-notes; M4 closed and M5 is next.
+- 2026-05-22: Began M5 selection routing, added selector regressions for plan archive surfaces and migration proof routing, and updated validation selection to route those paths through lifecycle validation.
+- 2026-05-22: M5 implementation reached `review-requested`; next stage is code-review for M5 before lifecycle closeout work begins.
 
 ## Decision log
 
@@ -441,6 +443,14 @@ The main implementation surfaces are:
 - 2026-05-22: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive` passed during code-review M4 R2.
 - 2026-05-22: `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed during code-review M4 R2.
 - 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md` passed during code-review M4 R2 with the existing lifecycle-language warning for merge-state wording in the spec.
+- 2026-05-22: `python scripts/test-select-validation.py ValidationSelectionTests.test_plan_index_surfaces_select_lifecycle_validation_with_both_surfaces ValidationSelectionTests.test_plan_index_migration_proof_routes_with_metadata_and_index_surfaces ValidationSelectionTests.test_first_slice_representative_categories_route_or_block_safely ValidationSelectionTests.test_workflow_refactor_surface_set_selects_expected_checks` passed after M5 implementation.
+- 2026-05-22: `python scripts/test-select-validation.py` passed after M5 implementation.
+- 2026-05-22: `python -m py_compile scripts/validation_selection.py` passed after M5 implementation.
+- 2026-05-22: `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` selected `selector.regression` and `artifact_lifecycle.validate` with `docs/plan.md`, `docs/plan-archive.md`, the migration proof, and its `change.yaml`.
+- 2026-05-22: `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plan-archive.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/plan-index-migration.md` passed after M5 implementation.
+- 2026-05-22: `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed after M5 handoff updates.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md --path docs/plan.md --path docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/explain-change.md` passed after M5 handoff updates with the existing lifecycle-language warning for merge-state wording in the spec.
+- 2026-05-22: `git diff --check --` passed after M5 implementation.
 
 ## Outcome and retrospective
 
@@ -449,4 +459,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M5 implementation; not ready for final closeout.
+- Ready for M5 code-review; not ready for final closeout.
