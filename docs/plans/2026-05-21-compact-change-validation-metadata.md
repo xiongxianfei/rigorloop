@@ -53,9 +53,9 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r2 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: CI-maintenance fixed selected-CI routing for `tests/fixtures/change-metadata/**`, but explain-change must be updated for the selector change and verify must be rerun before branch readiness or PR handoff.
+- Reason final closeout is or is not ready: CI-maintenance fixed selected-CI routing for `tests/fixtures/change-metadata/**` and explain-change has been refreshed for that selector change, but verify must be rerun before branch readiness or PR handoff.
 
 ## Milestones
 
@@ -292,6 +292,7 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 - 2026-05-22: Explain-change recorded the rationale for the compact metadata branch and handed off to verify.
 - 2026-05-22: Verify ran focused validator proof and broad smoke, but selected CI blocked because the validation selector does not classify the new `tests/fixtures/change-metadata/**` fixture paths. Next stage is ci-maintenance.
 - 2026-05-22: CI-maintenance added selected-CI routing for change-metadata fixture paths and proved the full branch changed-file selected CI command now passes. Next stage is explain-change refresh.
+- 2026-05-22: Explain-change was refreshed after ci-maintenance to include selector-routing rationale and selected-CI evidence. Next stage is verify rerun.
 
 ## Decision log
 
@@ -361,9 +362,9 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 
 ## Outcome and retrospective
 
-- Implementation milestones M1, M2, and M3 are closed after code review, explain-change is recorded, and ci-maintenance fixed selected-CI fixture routing. Explain-change and verify must rerun before branch readiness or PR handoff can be claimed.
+- Implementation milestones M1, M2, and M3 are closed after code review, ci-maintenance fixed selected-CI fixture routing, and explain-change has been refreshed. Verify must rerun before branch readiness or PR handoff can be claimed.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `explain-change` refresh; not ready for verify or PR handoff.
+- Ready for `verify`; not ready for PR handoff.
