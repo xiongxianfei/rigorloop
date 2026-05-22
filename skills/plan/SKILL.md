@@ -138,7 +138,10 @@ Use `Readiness is not Done` as the default interpretation for handoff lines. Kee
 - Do not hide risky work in vague milestones.
 - Do not omit validation commands.
 - Keep `docs/plan.md` as an index, not a second long-form plan body.
-- Update `docs/plan.md` and the plan body together when starting, replacing, transitioning, or before the PR opens for review.
+- Keep `docs/plan.md` bounded: Active and Blocked first, at most the recent completed window in `Done (recent)`, and older terminal history in `docs/plan-archive.md`.
+- Use the plan body's explicit `## Status` lifecycle marker fields `Plan lifecycle state` and `Terminal disposition`; do not infer terminal state from prose.
+- Update the plan index surfaces and the plan body together when starting, replacing, transitioning, archiving older terminal history, or before the PR opens for review.
+- Keep superseded entries in `docs/plan.md` only while they include `superseded by:` and non-empty `active-context:`; move terminal superseded history without active context to `docs/plan-archive.md`.
 - If completion depends on a true downstream completion event, keep the plan `Active` and name that event; merge itself is not that event.
 - Do not create a plan that only the current chat context can understand.
 - Do not proceed to implementation until `plan-review` and `test-spec` are ready unless an isolated manual invocation is requested and recorded.
@@ -208,7 +211,7 @@ Result
 Plan
 
 - Plan file: <docs/plans/YYYY-MM-DD-slug.md>
-- Plan index: <docs/plan.md updated | not-needed with rationale>
+- Plan index surfaces: <docs/plan.md updated | docs/plan-archive.md updated | not-needed with rationale>
 - Current milestone: <milestone or not-started>
 - Remaining completion gates: <gates>
 ```

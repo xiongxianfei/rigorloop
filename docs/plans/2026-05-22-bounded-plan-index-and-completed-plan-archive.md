@@ -68,11 +68,11 @@ The main implementation surfaces are:
 ## Current Handoff Summary
 
 - Current milestone: M4. Contributor guidance and skill alignment
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Index/archive migration and preservation proof
-- Review status: code-review M3 R1 clean-with-notes; no open findings
+- Review status: M4 implementation complete; code-review requested
 - Remaining in-scope implementation milestones: M4, M5, M6
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
 
@@ -198,7 +198,7 @@ The main implementation surfaces are:
 
 ### M4. Contributor guidance and skill alignment
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Make archive maintenance, lifecycle markers, and active supersession structure discoverable in contributor-facing guidance.
 - Requirements: `R4`, `R5`, `R6`, `R6a`, `R6b`, `R8`, `R8a`, `R17`, `R17a`-`R17i`
 - Files/components likely touched:
@@ -228,11 +228,11 @@ The main implementation surfaces are:
 - Expected observable result: contributors can discover when to update `docs/plan.md`, when to update `docs/plan-archive.md`, and how to mark plan lifecycle state without chat history.
 - Commit message: `M4: document plan archive maintenance`
 - Milestone closeout:
-  - validation passed
+  - validation passed on 2026-05-22
   - progress updated
   - decision log updated if needed
   - validation notes updated
-  - milestone committed
+  - milestone commit pending
 - Risks:
   - Risk: guidance duplicates too much spec detail.
 - Rollback/recovery:
@@ -366,6 +366,8 @@ The main implementation surfaces are:
 - 2026-05-22: Preserved all 75 pre-migration Done entries: 10 remain in `docs/plan.md` Done (recent), 65 moved to `docs/plan-archive.md`, and the migration table records every link with duplicate status.
 - 2026-05-22: M3 implementation reached `review-requested`; next stage is code-review for M3 before contributor guidance work begins.
 - 2026-05-22: Code-review M3 R1 passed clean-with-notes; M3 closed and M4 is next.
+- 2026-05-22: Began M4 guidance alignment, updated workflow guidance, root agent guidance, the example plan, and the `plan` skill with archive maintenance, explicit lifecycle marker, and active supersession wording.
+- 2026-05-22: M4 implementation reached `review-requested`; next stage is code-review for M4 before validation selector routing work begins.
 
 ## Decision log
 
@@ -381,6 +383,7 @@ The main implementation surfaces are:
 - PR #84 changed lifecycle validation internals before this plan was authored; the branch was synced to `origin/main` before planning.
 - Existing `specs/plan-index-lifecycle-ownership.test.md` is archived and needs a focused refresh for the archive contract.
 - Legacy prose-only completed plan bodies were not bulk-edited with lifecycle markers in M3; preservation for historical Done entries is recorded in the migration proof as required by EC10.
+- M4 did not change generated adapter source in-tree; adapter proof used a temporary output directory for build/validation instead.
 
 ## Validation notes
 
@@ -412,6 +415,15 @@ The main implementation surfaces are:
 - 2026-05-22: `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed after code-review M3 R1 recording.
 - 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md` passed after code-review M3 R1 recording with the existing lifecycle-language warning for merge-state wording in the spec.
 - 2026-05-22: `git diff --check --` passed after code-review M3 R1 recording.
+- 2026-05-22: `python - <<'PY' ... M4 guidance audit` passed after M4 guidance updates, confirming archive, lifecycle marker, and active-context guidance appears in `docs/workflows.md`, `AGENTS.md`, `docs/examples/plans/example-plan.md`, and `skills/plan/SKILL.md`.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path AGENTS.md --path docs/examples/plans/example-plan.md` passed after M4 guidance updates.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md` passed after M4 plan-index state update.
+- 2026-05-22: `python scripts/validate-skills.py skills/plan/SKILL.md` passed after M4 guidance updates.
+- 2026-05-22: `python scripts/validate-skills.py` passed after M4 guidance updates.
+- 2026-05-22: `python scripts/build-skills.py --check` passed after M4 guidance updates.
+- 2026-05-22: `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir> && python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5` passed after M4 guidance updates.
+- 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md` passed after M4 handoff state update with the existing lifecycle-language warning for merge-state wording in the spec.
+- 2026-05-22: `git diff --check --` passed after M4 guidance updates.
 
 ## Outcome and retrospective
 
@@ -420,4 +432,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M4 implementation; not ready for final closeout.
+- Ready for M4 code-review; not ready for final closeout.

@@ -218,6 +218,7 @@ If this project customizes artifact locations, update this table. Skills use the
 | ADRs | `docs/adr/ADR-YYYYMMDD-slug.md` | `architecture` |
 | Plans | `docs/plans/YYYY-MM-DD-slug.md` | `plan` |
 | Plan index | `docs/plan.md` | `plan` / workflow bookkeeping |
+| Plan archive | `docs/plan-archive.md` | lifecycle closeout / archive maintenance |
 | Change root | `docs/changes/<change-id>/` | current change lifecycle |
 | Change metadata | `docs/changes/<change-id>/change.yaml` | relevant stage / workflow |
 | Formal review records | `docs/changes/<change-id>/reviews/<stage>-r<n>.md`; default location only; exact receipt/root rules are owned by the formal review recording contract | review skills |
@@ -285,7 +286,10 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 ## Planned Milestone Work
 
 - Use a concrete plan under `docs/plans/` for multi-file, risky, ambiguous, migration-heavy, or milestone-based work.
-- `docs/plan.md` is the lifecycle index for planned initiatives; concrete plan bodies live under `docs/plans/`.
+- `docs/plan.md` is the bounded lifecycle index for planned initiatives; concrete plan bodies live under `docs/plans/`.
+- Keep Active and Blocked complete and first in `docs/plan.md`; keep only the recent completed window in `Done (recent)` and move older terminal history to `docs/plan-archive.md`.
+- Plan bodies use the explicit `## Status` lifecycle marker fields `Plan lifecycle state` and `Terminal disposition`; do not infer terminal state from prose.
+- Superseded entries remain in `docs/plan.md` only while they carry `superseded by:` and non-empty `active-context:`; terminal superseded history without active context belongs in `docs/plan-archive.md`.
 - For planned initiatives, the active plan `Current Handoff Summary` is the live state owner.
 - `Readiness` points to `Current Handoff Summary` for current live state instead of duplicating the current next stage.
 - Each implementation milestone has one `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
@@ -299,7 +303,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout.
 - During execution, `implement` keeps the active plan body's progress, decisions, discoveries, and validation notes current.
 - When a planned initiative changes lifecycle state, final lifecycle closeout updates both `docs/plan.md` and the plan body.
-- If a PR completes a planned initiative, move it to `Done` in both `docs/plan.md` and the plan body before opening the PR for review.
+- If a PR completes a planned initiative, move it to `Done (recent)` or `docs/plan-archive.md` as the recent window requires, and update the plan body before opening the PR for review.
 - If completion depends on a true downstream event such as release, deploy, package publication, external migration, or an observed hosted result, keep the plan `Active` and name the downstream event or follow-up condition.
 - Do not use merge itself as a routine downstream completion event.
 - `verify` blocks PR readiness when stale lifecycle state remains between the plan index and the plan body.
@@ -411,7 +415,8 @@ When a change updates canonical `skills/`, use `python scripts/build-skills.py -
 
 - `README.md`: public project overview
 - `docs/workflows.md`: operational workflow summary
-- `docs/plan.md`: index of active, blocked, done, and superseded plans
+- `docs/plan.md`: bounded index of active, blocked, recent done, and active supersession context
+- `docs/plan-archive.md`: older terminal plan history
 - `docs/plans/*.md`: concrete execution plans
 - `specs/*.md`: normative behavior contract
 - `specs/*.test.md`: contract-to-test mapping
