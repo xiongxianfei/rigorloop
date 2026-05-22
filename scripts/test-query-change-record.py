@@ -126,6 +126,37 @@ changed_files:
   - scripts/query-change-record.py
 """
 
+    def compact_path_vars_change_yaml(
+        self,
+        *,
+        path_vars: str | None = None,
+    ) -> str:
+        path_vars_block = path_vars if path_vars is not None else """
+  change_id: 2026-05-21-compact-fixture
+  slug: compact-fixture
+  change_root: docs/changes/{change_id}
+  spec: specs/{slug}.md
+  test_spec: specs/{slug}.test.md
+  plan: docs/plans/{change_id}.md
+"""
+        return f"""schema_version: 2
+path_vars:{path_vars_block}
+validation_bundles:
+  metadata:
+    command: python scripts/validate-change-metadata.py {{change_root}}/change.yaml
+validation_events:
+  - stage: spec-review-r1
+    lifecycle_stage: spec-review
+    bundles:
+      - metadata
+    result: pass
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - spec-review-r1
+  open_validation_blockers: []
+"""
+
     def test_summary_returns_common_read_slice_for_compact_metadata(self) -> None:
         repo = self.make_change("2026-05-22-query-fixture", self.compact_change_yaml())
 
@@ -178,6 +209,91 @@ changed_files:
                 "specs/query-fixture.test.md",
             ],
         )
+
+    def test_compact_path_vars_artifacts_are_expanded_without_top_level_artifacts(self) -> None:
+        repo = self.make_change(
+            "2026-05-21-compact-fixture",
+            self.compact_path_vars_change_yaml(),
+        )
+
+        result = run_query("2026-05-21-compact-fixture", "artifacts", repo_root=repo)
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(
+            payload["artifact_paths"],
+            [
+                "docs/plans/2026-05-21-compact-fixture.md",
+                "specs/compact-fixture.md",
+                "specs/compact-fixture.test.md",
+            ],
+        )
+
+    def test_compact_path_vars_summary_includes_expanded_artifacts(self) -> None:
+        repo = self.make_change(
+            "2026-05-21-compact-fixture",
+            self.compact_path_vars_change_yaml(),
+        )
+
+        result = run_query("2026-05-21-compact-fixture", "summary", repo_root=repo)
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("specs/compact-fixture.md", payload["artifact_paths"])
+        self.assertIn("specs/compact-fixture.test.md", payload["artifact_paths"])
+        self.assertIn("docs/plans/2026-05-21-compact-fixture.md", payload["artifact_paths"])
+
+    def test_compact_artifact_paths_exclude_expansion_only_path_vars(self) -> None:
+        repo = self.make_change(
+            "2026-05-21-compact-fixture",
+            self.compact_path_vars_change_yaml(),
+        )
+
+        result = run_query("2026-05-21-compact-fixture", "artifacts", repo_root=repo)
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertNotIn("2026-05-21-compact-fixture", payload["artifact_paths"])
+        self.assertNotIn("compact-fixture", payload["artifact_paths"])
+        self.assertNotIn("docs/changes/2026-05-21-compact-fixture", payload["artifact_paths"])
+
+    def test_compact_path_var_artifact_with_unsafe_path_fails_closed(self) -> None:
+        repo = self.make_change(
+            "2026-05-21-compact-fixture",
+            self.compact_path_vars_change_yaml(
+                path_vars="""
+  change_id: 2026-05-21-compact-fixture
+  slug: compact-fixture
+  spec: /Users/alice/spec.md
+"""
+            ),
+        )
+
+        result = run_query("2026-05-21-compact-fixture", "artifacts", repo_root=repo)
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["code"], "unsupported-shape")
+        self.assertIn("path_vars.spec", payload["detail"])
+
+    def test_compact_path_var_artifact_with_unresolved_variable_fails_closed(self) -> None:
+        repo = self.make_change(
+            "2026-05-21-compact-fixture",
+            self.compact_path_vars_change_yaml(
+                path_vars="""
+  change_id: 2026-05-21-compact-fixture
+  slug: compact-fixture
+  spec: specs/{missing}.md
+"""
+            ),
+        )
+
+        result = run_query("2026-05-21-compact-fixture", "summary", repo_root=repo)
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["code"], "unsupported-shape")
+        self.assertIn("path_vars.spec", payload["detail"])
 
     def test_validation_latest_returns_only_latest_compact_event(self) -> None:
         repo = self.make_change("2026-05-22-query-fixture", self.compact_change_yaml())

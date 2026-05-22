@@ -13,6 +13,23 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATION_HELPER = ROOT / "scripts" / "validate-change-metadata.py"
 SUPPORTED_QUERIES = {"summary", "artifacts", "validation"}
+COMPACT_ARTIFACT_PATH_VAR_KEYS = {
+    "proposal",
+    "spec",
+    "test_spec",
+    "architecture",
+    "adr",
+    "plan",
+    "review_log",
+    "review_resolution",
+    "explain_change",
+    "verify",
+    "pr",
+}
+
+
+class QueryShapeError(Exception):
+    """Raised when metadata is valid enough to parse but unsafe to query."""
 
 
 def load_metadata_parser() -> Any:
@@ -108,7 +125,17 @@ def validate_supported_shape(
     metadata_path: Path,
     repo_root: Path,
 ) -> dict[str, Any] | None:
-    for path in artifact_paths(data):
+    try:
+        paths = artifact_paths(data)
+    except QueryShapeError as exc:
+        return error_payload(
+            "unsupported-shape",
+            "change metadata contains unsupported artifact path metadata",
+            change_id=change_id,
+            detail=str(exc),
+            detail_pointers={"change_metadata": repo_relative(metadata_path, repo_root)},
+        )
+    for path in paths:
         if not is_safe_repo_path(path):
             return error_payload(
                 "unsupported-shape",
@@ -137,7 +164,7 @@ def repo_relative(path: Path, repo_root: Path) -> str:
         return path.as_posix()
 
 
-def artifact_paths(data: dict[str, Any]) -> list[str]:
+def artifact_paths_from_top_level(data: dict[str, Any]) -> list[str]:
     artifacts = data.get("artifacts")
     paths: list[str] = []
     if isinstance(artifacts, dict):
@@ -148,6 +175,38 @@ def artifact_paths(data: dict[str, Any]) -> list[str]:
                 path = value.get("path")
                 if isinstance(path, str):
                     paths.append(path)
+    return paths
+
+
+def artifact_paths_from_compact_path_vars(data: dict[str, Any]) -> list[str]:
+    path_vars = data.get("path_vars")
+    if not isinstance(path_vars, dict):
+        return []
+    parser = load_metadata_parser()
+    resolved, errors = parser.resolve_compact_path_vars(path_vars)
+    artifact_errors = [
+        error
+        for error in errors
+        if any(error.startswith(f"path_vars.{key}:") for key in COMPACT_ARTIFACT_PATH_VAR_KEYS)
+    ]
+    if artifact_errors:
+        raise QueryShapeError("; ".join(f"query artifact path {error}" for error in artifact_errors))
+
+    paths: list[str] = []
+    for key in sorted(COMPACT_ARTIFACT_PATH_VAR_KEYS):
+        value = resolved.get(key)
+        if value is None:
+            continue
+        if not is_safe_repo_path(value):
+            raise QueryShapeError(f"query artifact path path_vars.{key} is unsafe: {value}")
+        paths.append(value)
+    return paths
+
+
+def artifact_paths(data: dict[str, Any]) -> list[str]:
+    paths: list[str] = []
+    paths.extend(artifact_paths_from_top_level(data))
+    paths.extend(artifact_paths_from_compact_path_vars(data))
     return sorted(dict.fromkeys(paths))
 
 
