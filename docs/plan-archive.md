@@ -1,0 +1,72 @@
+# Plan archive
+
+Completed plan history moved out of the common-read plan index.
+
+## Done (archive)
+
+- [2026-05-19 Published Skill Design Spec Family Rollout](plans/2026-05-19-published-skill-design-spec-family.md) - done; terminal state: done; PR #72 merged.
+- [2026-05-19 RigorLoop Published Skill Design Contract](plans/2026-05-19-rigorloop-published-skill-design-contract.md) - done; terminal state: done; PR #71 merged.
+- [2026-05-18 Skill readability and self-containment](plans/2026-05-18-skill-readability-self-containment.md) - done; terminal state: done; PR #69 merged.
+- [2026-05-18 Multi-adapter init and proxy-aware adapter download](plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md) - done; terminal state: done; PR #68 opened.
+- [2026-05-18 Customer-portable public skills](plans/2026-05-18-customer-portable-public-skills.md) - done; terminal state: done; PR #67 opened.
+- [2026-05-16 RigorLoop npm publication](plans/2026-05-16-rigorloop-npm-publication.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-05-16 RigorLoop CLI new-change](plans/2026-05-16-rigorloop-cli-new-change.md) - done; terminal state: done; PR #64 merged.
+- [2026-05-16 RigorLoop CLI durable lockfile](plans/2026-05-16-rigorloop-cli-lockfile.md) - done; terminal state: done; PR #63 merged.
+- [2026-05-15 RigorLoop CLI package and Codex init](plans/2026-05-15-rigorloop-cli-package-and-codex-init.md) - done; terminal state: done; PR #62 merged.
+- [2026-05-15 Stage evidence access contracts M3/M4 static validation and measurement](plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md) - done; terminal state: done; PR #61 merged.
+- [2026-05-14 Stage evidence access contracts M2 execution/review evidence access](plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md) - done; terminal state: done; PR #60 merged.
+- [2026-05-14 Stage evidence access contracts for cost-bounded rigor](plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md) - done; terminal state: done; PR #59 opened.
+- [2026-05-14 Cost-bounded rigor M5 progressive-loading follow-through](plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md) - done; terminal state: done; PR #58 merged.
+- [2026-05-14 Cost-bounded rigor M4 lifecycle token-cost summary](plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md) - done; terminal state: done; PR #57 merged.
+- [2026-05-14 Cost-bounded rigor M3 validation-budget guidance](plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md) - done; terminal state: done; PR #56 merged.
+- [2026-05-14 Cost-bounded rigor M2 selected skill reminders](plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md) - done; terminal state: done; PR #55 merged.
+- [2026-05-14 Cost-bounded rigor first slice](plans/2026-05-14-cost-bounded-rigor-first-slice.md) - done; terminal state: done; PR #54 merged.
+- [2026-05-13 Follow-up ownership and deferred work register](plans/2026-05-13-follow-up-ownership-and-deferred-work-register.md) - done; terminal state: done; PR #53 merged.
+- [2026-05-13 Stop tracking generated public adapter skill bodies for v0.1.3](plans/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies.md) - done; terminal state: done; PR #52 merged.
+- [2026-05-13 Public adapter artifact migration, examples relocation, and concise skill release](plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md) - done; terminal state: done; PR #51 merged.
+- [2026-05-13 Project artifact location guide and examples surface](plans/2026-05-13-project-artifact-location-guide-and-examples-surface.md) - done; terminal state: done; PR #50 merged.
+- [2026-05-13 Publish next release with single authored skill source](plans/2026-05-13-publish-next-release-with-single-authored-skill-source.md) - done; terminal state: done; PR #49 merged.
+- [2026-05-12 Record every formal review](plans/2026-05-12-record-every-formal-review.md) - done; terminal state: done; PR #48 merged.
+- [2026-05-12 Single authored skill source first slice](plans/2026-05-12-single-authored-skill-source-first-slice.md) - done; terminal state: done; PR #47 merged.
+- [2026-05-12 Downstream status settlement before reliance](plans/2026-05-12-downstream-status-settlement-before-reliance.md) - done; terminal state: done; PR #46 opened.
+- [2026-05-12 Review recording guardrail and examples cleanup](plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md) - done; terminal state: done; PR #45 opened.
+- [2026-05-11 Progressive loading for high-cost public skills](plans/2026-05-11-progressive-loading-high-cost-public-skills.md) - done; terminal state: done; PR #43 opened.
+- [2026-05-11 Expand dynamic token-friendliness benchmarks for core skills](plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md) - done; terminal state: done; PR #42 opened.
+- [2026-05-11 Release token-friendliness benchmark for skills](plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md) - done; terminal state: done; PR #41 merged.
+- [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - done; terminal state: done; PR #40 merged.
+- [2026-05-09 Skill token cost optimization](plans/2026-05-09-skill-token-cost-optimization.md) - done; terminal state: done; PR #39 opened.
+- [2026-05-09 Single source of workflow state](plans/2026-05-09-single-source-of-workflow-state.md) - done; terminal state: done; PR #38 opened.
+- [2026-05-09 Simplify architecture skill surfaces](plans/2026-05-09-simplify-architecture-skill-surfaces.md) - done; terminal state: done; PR #37 opened.
+- [2026-05-08 Single workflow lane, explain-change before verify, and public skill surface boundary](plans/2026-05-08-single-workflow-lane-explain-before-verify.md) - done; terminal state: done; PR #35 opened.
+- [2026-05-08 Skill contract optimization](plans/2026-05-08-skill-contract-optimization.md) - done; terminal state: done; PR #34 opened.
+- [2026-05-07 Milestone-aware review handoff](plans/2026-05-07-milestone-aware-review-handoff.md) - done; terminal state: done; PR #33 opened.
+- [2026-05-07 Review skill material finding recording](plans/2026-05-07-review-skill-material-finding-recording.md) - done; terminal state: done; PR #32 opened.
+- [2026-05-06 Optimize vision skill strategic positioning quality](plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md) - done; terminal state: done; PR #31 opened.
+- [2026-05-05 PR-self-contained lifecycle completion](plans/2026-05-05-pr-self-contained-lifecycle-completion.md) - done; terminal state: done; PR #30 opened.
+- [2026-05-04 Test and CI speed optimization](plans/2026-05-04-test-and-ci-speed-optimization.md) - done; terminal state: done; PR #29 merged.
+- [2026-05-04 Formal review recording](plans/2026-05-04-formal-review-recording.md) - done; terminal state: done; PR #28 merged.
+- [2026-05-04 Learn artifact model](plans/2026-05-04-learn-artifact-model.md) - done; terminal state: done; PR #27 merged.
+- [2026-05-03 Workflow refactor](plans/2026-05-03-workflow-refactor.md) - done; terminal state: done; PR #26 merged.
+- [2026-05-01 Vision skill simplification and VISION.md migration](plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md) - done; terminal state: done; PR #25 merged.
+- [2026-04-30 Vision skill quality refinement](plans/2026-04-30-vision-skill-quality-refinement.md) - done; terminal state: done; PR #24 merged.
+- [2026-04-29 Vision skill](plans/2026-04-29-vision-skill.md) - done; terminal state: done; PR #23 merged.
+- [2026-04-29 C4 arc42 package quality refinement](plans/2026-04-29-c4-arc42-package-quality.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-28 Legacy architecture lifecycle normalization](plans/2026-04-28-legacy-architecture-lifecycle-normalization.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-28 Architecture skills C4 arc42 ADR](plans/2026-04-28-architecture-skills-c4-arc42-adr.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-28 Token and runtime efficient scanning](plans/2026-04-28-token-and-runtime-efficient-scanning.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-25 Test layering and change-scoped validation](plans/2026-04-25-test-layering-and-change-scoped-validation.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-25 Review finding resolution contract implementation](plans/2026-04-25-review-finding-resolution-contract.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-24 Skill invocation commands for adapter packages](plans/2026-04-24-skill-invocation-commands-for-adapters.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-24 Multi-agent adapters and first public release](plans/2026-04-24-multi-agent-adapters-first-public-release.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-23 Implement first-attempt correctness](plans/2026-04-23-implement-first-attempt-correctness.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-22 Code review branch reality and traceability](plans/2026-04-22-code-review-branch-reality-and-traceability.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-22 Test-spec readiness and skill workflow alignment](plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-22 README user value positioning](plans/2026-04-22-readme-user-value-positioning.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-19 RigorLoop first-release implementation](plans/2026-04-19-rigorloop-first-release-implementation.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-20 Constitution governance migration](plans/2026-04-20-constitution-governance-migration.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-20 Plan index lifecycle ownership](plans/2026-04-20-plan-index-lifecycle-ownership.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-20 Artifact status lifecycle ownership](plans/2026-04-20-artifact-status-lifecycle-ownership.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-21 Workflow stage autoprogression](plans/2026-04-21-workflow-stage-autoprogression.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-21 Docs changes usage policy](plans/2026-04-21-docs-changes-usage-policy.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-21 Docs changes skill enforcement](plans/2026-04-21-docs-changes-skill-enforcement.md) - done; terminal state: done; disposition recorded in plan body.
+- [2026-04-22 Code review independence under autoprogression](plans/2026-04-22-code-review-independence-under-autoprogression.md) - done; terminal state: done; disposition recorded in plan body.
