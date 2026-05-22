@@ -13,8 +13,13 @@ Review closeout: code-review-m3-r1
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m5-r1
+Review closeout: code-review-m6-r1
 
 ## Resolution Entries
+
+### code-review-m6-r1
+
+No material findings.
 
 ### code-review-m5-r1
 

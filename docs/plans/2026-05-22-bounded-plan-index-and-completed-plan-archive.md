@@ -67,14 +67,14 @@ The main implementation surfaces are:
 
 ## Current Handoff Summary
 
-- Current milestone: M6. Lifecycle closeout and handoff evidence
-- Current milestone state: review-requested
+- Current milestone: lifecycle closeout
+- Current milestone state: planned
 - Last reviewed milestone: M5. Selection and CI routing
-- Review status: M6 implementation complete; code-review M6 requested
-- Remaining in-scope implementation milestones: M6
-- Next stage: code-review M6
+- Review status: code-review M6 R1 clean-with-notes; no open findings
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change final closeout
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones, code review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: downstream explain-change finalization, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -280,7 +280,7 @@ The main implementation surfaces are:
 
 ### M6. Lifecycle closeout and handoff evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Complete explanation, final validation, lifecycle state synchronization, and PR handoff without claiming Done before required gates are complete.
 - Requirements: `R3`, `R3a`-`R3p`, `R4`, `R5`, `R7`, `R7a`, `R8`, `R8a`, `R15`, `R15a`-`R15d`
 - Files/components likely touched:
@@ -312,7 +312,8 @@ The main implementation surfaces are:
   - progress updated
   - decision log updated if needed; no new decision
   - validation notes updated
-  - milestone commit is the M6 handoff commit
+  - milestone committed in `6a1eab0`
+  - code-review M6 R1 clean-with-notes
 - Risks:
   - Risk: final lifecycle state between `docs/plan.md` and this plan drifts.
 - Rollback/recovery:
@@ -379,6 +380,7 @@ The main implementation surfaces are:
 - 2026-05-22: Code-review M5 R1 passed clean-with-notes; M5 closed and M6 is next.
 - 2026-05-22: Began M6 lifecycle closeout evidence, ran final implementation validation including broad smoke, and kept the plan Active pending M6 code-review, verify, and PR handoff.
 - 2026-05-22: M6 implementation reached `review-requested`; next stage is code-review for M6 before final downstream closeout.
+- 2026-05-22: Code-review M6 R1 passed clean-with-notes; all in-scope implementation milestones are closed and downstream final closeout is next.
 
 ## Decision log
 
@@ -472,4 +474,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M6 code-review; not ready for final closeout.
+- Ready for downstream final closeout; not ready for verify or PR handoff until that sequence runs.
