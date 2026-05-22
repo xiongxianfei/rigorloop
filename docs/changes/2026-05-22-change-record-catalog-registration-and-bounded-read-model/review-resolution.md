@@ -1,6 +1,6 @@
 # Review Resolution
 
-Closeout status: closed
+Closeout status: open
 
 ### spec-review-r1
 
@@ -51,3 +51,14 @@ Chosen action: Record clean plan-review approval for the execution plan.
 Rationale: Plan-review found no material findings and no required plan changes.
 Validation target: Review artifact, change metadata, artifact lifecycle, whitespace, and selected-CI validation for the touched plan and review artifacts.
 Validation evidence: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/plan-review-r1.md`; `git diff --check -- docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md docs/plan.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/plan-review-r1.md` passed.
+
+### code-review-m1-r1
+
+Finding ID: CRM-M1-CR1
+Disposition: accepted
+Owner: implementer
+Owning stage: implement
+Chosen action: Add affected-root output for registered evidence routing and direct test coverage for the affected root assertion.
+Rationale: The first-pass code review identified that registered evidence selected lifecycle validation paths but omitted the affected change root required by CRM-R9 and CRM-T004.
+Validation target: Rerun M1 selector tests, explicit registered-evidence routing, selected CI for selector/evidence paths, lifecycle validation, change metadata validation, and whitespace checks after the fix.
+Validation evidence: pending
