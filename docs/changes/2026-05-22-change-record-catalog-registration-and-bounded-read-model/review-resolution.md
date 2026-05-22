@@ -1,6 +1,6 @@
 # Review Resolution
 
-Closeout status: closed
+Closeout status: open
 
 ### spec-review-r1
 
@@ -142,3 +142,15 @@ Chosen action: Record clean M4 review after bounded change-record read guidance 
 Rationale: R1 found no material findings and confirmed the M4 skill guidance satisfies CRM-R44 through CRM-R48 and CRM-T021 through CRM-T022 while preserving current workflow, validation, and readiness semantics.
 Validation target: Review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation for the touched review, plan, skill-guidance, and lifecycle artifacts.
 Validation evidence: Final review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation are recorded in `change.yaml`.
+
+### code-review-m5-r1
+
+Finding ID: CRM-M5-CR1
+Disposition: accepted
+Status: pending implementation
+Owner: implementer
+Owning stage: implement
+Chosen action: Update the matching test spec and active plan so final changed-path selected-CI proof uses the repository-supported `bash scripts/ci.sh --mode local` command rather than the unsupported `bash scripts/ci.sh --mode selected` command.
+Rationale: Code-review M5 R1 found that M5 records the unsupported `--mode selected` failure and uses `--mode local` as the working equivalent, but leaves `--mode selected` in governing test-spec and active-plan command references.
+Validation target: Rerun change metadata validation, artifact lifecycle validation for the touched test spec, plan, review artifacts, and change metadata, `bash scripts/ci.sh --mode local`, review artifact validation, and whitespace checks after the fix.
+Validation evidence: Pending.

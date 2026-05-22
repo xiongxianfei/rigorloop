@@ -139,3 +139,15 @@ Resolution: review-resolution.md#code-review-m4-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m5-r1
+Stage: code-review
+Round: 1
+Status: changes-requested
+Detailed record: reviews/code-review-m5-r1.md
+Resolution: review-resolution.md#code-review-m5-r1
+Material findings: CRM-M5-CR1
+Open findings: CRM-M5-CR1
+Recording status: recorded
