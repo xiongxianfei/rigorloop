@@ -119,9 +119,9 @@ Important proof surfaces include:
 - review artifact closeout validation with all material findings resolved;
 - artifact lifecycle and change metadata validation for the active change.
 
-Known validation caveat:
+Validation compatibility note:
 
-- `python scripts/build-adapters.py --check` still reflects a retired tracked adapter-tree expectation. Current repository guidance for v0.1.3 and later treats public adapter skill bodies as release archives, so M4 and M5 use temporary v0.1.5 archive generation plus `scripts/validate-adapters.py` as the supported adapter proof. This change records the caveat but does not change adapter packaging semantics.
+- Current repository guidance for v0.1.3 and later treats public adapter skill bodies as release archives. M4, M5, and final verify therefore use temporary v0.1.5 archive generation plus `scripts/validate-adapters.py` as the supported adapter proof. This change does not alter adapter packaging semantics.
 
 ## Risks And Follow-Ups
 
@@ -129,7 +129,7 @@ Known validation caveat:
 - Automated scaffolding for registered evidence files remains a follow-on, not part of this implementation.
 - Bulk migration of historical evidence filenames remains out of scope.
 - Broader workflow-skill read-model conventions beyond change records remain a follow-on.
-- The stale adapter `--check` baseline is separate validation debt and should not be solved by this feature.
+- The retired adapter-tree `--check` mismatch is kept out of this feature's final proof path because the repository's current public adapter contract is release-archive based.
 
 ## Current Handoff
 
