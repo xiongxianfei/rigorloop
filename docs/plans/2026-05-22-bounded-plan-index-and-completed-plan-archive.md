@@ -68,11 +68,11 @@ The main implementation surfaces are:
 ## Current Handoff Summary
 
 - Current milestone: M2. Validator contract and fixtures
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M1. Test-spec refresh
-- Review status: M2 implementation ready for code-review
+- Review status: code-review M2 R1 changes-requested; BPIX-M2-CR1 open
 - Remaining in-scope implementation milestones: M2, M3, M4, M5, M6
-- Next stage: code-review M2
+- Next stage: review-resolution for BPIX-M2-CR1, then implement M2 fix
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
 
@@ -113,7 +113,7 @@ The main implementation surfaces are:
 
 ### M2. Validator contract and fixtures
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Implement structural validation for plan index surfaces, explicit plan-body lifecycle markers, terminal-plan conservation, recent Done cap, one-line terminal entries, and active supersession markers.
 - Requirements: `R3`, `R3a`-`R3p`, `R7`, `R7a`, `R10`, `R10a`, `R11`, `R11a`, `R12`, `R13`, `R14`, `R15`, `R15a`-`R15d`, `R17`, `R17a`-`R17i`
 - Files/components likely touched:
@@ -358,6 +358,7 @@ The main implementation surfaces are:
 - 2026-05-22: Began M2 implementation.
 - 2026-05-22: Added artifact-lifecycle validator support and tests for plan-body lifecycle markers, `docs/plan-archive.md`, terminal conservation, recent Done cap, terminal entry links, archive-only nonterminal rejection, and active supersession markers.
 - 2026-05-22: M2 implementation reached `review-requested`; next stage is code-review for M2 before M3 migration begins.
+- 2026-05-22: Code-review M2 R1 found BPIX-M2-CR1; terminal conservation does not run for plan-body-only explicit terminal marker changes.
 
 ## Decision log
 
@@ -387,6 +388,7 @@ The main implementation surfaces are:
 - 2026-05-22: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/plan-index-lifecycle-ownership.md --path specs/plan-index-lifecycle-ownership.test.md` passed after M2 implementation with the existing lifecycle-language warning for merge-state wording in the spec.
 - 2026-05-22: `python scripts/validate-change-metadata.py docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/change.yaml` passed after adding change metadata.
 - 2026-05-22: `git diff --check --` passed after M2 implementation.
+- 2026-05-22: Code-review M2 R1 direct probe showed `validate_repository(... paths=["docs/plans/2026-05-03-done-plan.md"])` returned no blocker for an explicit terminal plan missing from recent/archive.
 
 ## Outcome and retrospective
 
@@ -395,4 +397,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M2 code-review; not ready for M3 migration until M2 code-review is clean or review-resolution is closed.
+- M2 requires review-resolution for BPIX-M2-CR1; not ready for M3 migration.

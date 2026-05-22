@@ -2,13 +2,30 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: plan-review-r1
+Review closeout: code-review-m2-r1
 
 ## Resolution Entries
+
+### code-review-m2-r1
+
+#### BPIX-M2-CR1
+
+Finding ID: BPIX-M2-CR1
+Disposition: accepted
+Status: open
+Owner: implementer
+Owning stage: implement
+Chosen action: Extend terminal conservation validation to scoped plan-body lifecycle marker changes.
+Rationale: A plan body can acquire `Plan lifecycle state: done`, `abandoned`, or `superseded` without `docs/plan.md` or `docs/plan-archive.md` being in the explicit validation path. The validator must catch missing recent/archive placement for that scoped plan body.
+Required outcome: Explicit terminal plan-body markers in validation scope must require exactly one valid recent/archive terminal location, except legacy prose-only plans remain unknown and migration-proof-owned.
+Safe resolution path: Add a failing fixture for plan-body-only terminal conservation, update the conservation trigger to include scoped explicit terminal plan bodies, rerun targeted lifecycle tests and validation, and return M2 to code-review.
+Validation target: `python scripts/test-artifact-lifecycle-validator.py` includes the new plan-body-only terminal conservation regression and passes.
+Validation evidence: pending
 
 ### plan-review-r1
 
