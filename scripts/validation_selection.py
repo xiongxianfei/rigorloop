@@ -102,6 +102,12 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-change-metadata.py <change-yaml>...",
         "change-metadata",
     ),
+    "change_record_query.regression": CheckCatalogEntry(
+        "change_record_query.regression",
+        "python scripts/test-query-change-record.py",
+        "change-record-query",
+        parallel_safe=True,
+    ),
     "release.validate": CheckCatalogEntry(
         "release.validate",
         "python scripts/validate-release-ci.py --version <version>",
@@ -997,6 +1003,19 @@ def _apply_path_selection(
         )
         return
 
+    if category == "change-record-query":
+        _add_check(
+            selected,
+            "change_record_query.regression",
+            "Changed change-record query helper requires query regression fixtures.",
+        )
+        _add_check(
+            selected,
+            "change_metadata.regression",
+            "Changed change-record query helper depends on supported change metadata shapes.",
+        )
+        return
+
     if category == "validator-artifact-lifecycle":
         _add_check(
             selected,
@@ -1345,7 +1364,7 @@ def _path_category(path: str) -> str | None:
         return "artifact-lifecycle-fixtures"
     if path.startswith("tests/fixtures/review-artifacts/"):
         return "review-artifact-fixtures"
-    if path.startswith("tests/fixtures/change-metadata/"):
+    if path == "tests/fixtures/change-metadata" or path.startswith("tests/fixtures/change-metadata/"):
         return "change-metadata-fixtures"
     if path.startswith("tests/fixtures/adapters/"):
         return "adapters"
@@ -1394,6 +1413,11 @@ def _path_category(path: str) -> str | None:
         "scripts/test-change-metadata-validator.py",
     }:
         return "validator-change-metadata"
+    if path in {
+        "scripts/query-change-record.py",
+        "scripts/test-query-change-record.py",
+    }:
+        return "change-record-query"
     if path in {
         "scripts/build-skills.py",
         "scripts/validate-skills.py",

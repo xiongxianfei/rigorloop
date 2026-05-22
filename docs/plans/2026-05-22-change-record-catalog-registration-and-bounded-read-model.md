@@ -61,11 +61,11 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Current Handoff Summary
 
 - Current milestone: M3. Bounded change-record query helper
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Registration debt and actual changed-path proof
-- Review status: M2 code-review rerun clean; `CRM-M2-CR1` resolved and closed
+- Review status: M3 implementation complete; awaiting code-review
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: implement M3
+- Next stage: code-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M3 through M5, explain-change, verify, and PR handoff remain.
 
@@ -209,7 +209,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 
 ### M3. Bounded change-record query helper
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add the repository-owned query helper for bounded `summary`, `artifacts`, `validation --latest`, and `validation --stage <stage>` reads.
 - Requirements: CRM-R22 through CRM-R43, CRM-R49 through CRM-R53, CRM-R56; AC-CRM-008 through AC-CRM-012, AC-CRM-014, AC-CRM-015, AC-CRM-017.
 - Files/components likely touched:
@@ -437,6 +437,9 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: Code-review M2 R1 recording validation passed with review artifact structure validation, change metadata validation, artifact lifecycle validation, explicit selected CI, and whitespace check.
 - 2026-05-22: `CRM-M2-CR1` resolution validation passed: `python scripts/test-select-validation.py`; `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/unregistered-evidence.md`; `python scripts/select-validation.py --mode local`; `bash scripts/ci.sh --mode local`; `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `git diff --check --`.
 - 2026-05-22: Code-review M2 R2 found no material findings and closed M2 after `CRM-M2-CR1` resolution. Review reran `python scripts/test-select-validation.py` and direct unregistered-evidence selector proof; post-recording validation passed with review artifact closeout, change metadata validation, artifact lifecycle validation, explicit selected CI, and whitespace check.
+- 2026-05-22: M3 query helper tests were written before implementation and initially failed because `scripts/query-change-record.py` did not exist. After implementation, `python scripts/test-query-change-record.py` passed 11 tests covering compact and legacy summary queries, artifact-only output, validation latest and stage-scoped reads, no-validation and stage-not-found diagnostics, unknown change/query diagnostics, unsafe path fail-closed behavior, read-only behavior, deterministic output, and active change summary.
+- 2026-05-22: M3 selector support was added for `scripts/query-change-record.py` and `scripts/test-query-change-record.py` so selected CI routes query-helper changes through `change_record_query.regression` and supported metadata-shape regression. `python scripts/test-select-validation.py` passed after the selector update.
+- 2026-05-22: M3 active query proof passed: `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model artifacts`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model validation --latest`.
 
 ## Outcome and retrospective
 
