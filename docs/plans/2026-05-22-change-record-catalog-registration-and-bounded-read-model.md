@@ -65,9 +65,9 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - Last reviewed milestone: M5. Lifecycle evidence and final closeout closed by `code-review-m5-r2`
 - Review status: `code-review-m5-r2` found no material findings after `CRM-M5-CR1` resolution.
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: verify passed; PR handoff is next.
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, explain-change is current, final local verification passed, and PR handoff remains.
+- Next stage: hosted CI and human review for PR #87
+- Final closeout readiness: PR #87 is open for hosted CI and human review.
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, explain-change is current, final local verification passed, and PR #87 is open; hosted CI and human review remain outside local verification.
 
 ## Milestones
 
@@ -418,6 +418,7 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 - 2026-05-22: `code-review-m5-r2` recorded clean re-review for `CRM-M5-CR1`; M5 closed and handoff moved to final closeout.
 - 2026-05-22: Final closeout refreshed `explain-change.md` after M5 re-review and moved handoff to verify.
 - 2026-05-22: Verify passed after replacing stale adapter `--check` proof references with current release-archive adapter validation. Handoff moved to PR.
+- 2026-05-22: PR #87 opened for hosted CI and human review.
 
 ## Decision log
 
@@ -472,4 +473,4 @@ The plan keeps the proposal's separation discipline: Workstream A ships first an
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for PR handoff; not Done.
+- PR #87 is open for hosted CI and human review; not Done.
