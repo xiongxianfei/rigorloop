@@ -67,12 +67,12 @@ The main implementation surfaces are:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Validator contract and fixtures
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Test-spec refresh
-- Review status: BPIX-M2-CR1 resolved; M2 ready for code-review rerun
-- Remaining in-scope implementation milestones: M2, M3, M4, M5, M6
-- Next stage: code-review M2 rerun
+- Current milestone: M3. Index/archive migration and preservation proof
+- Current milestone state: planned
+- Last reviewed milestone: M2. Validator contract and fixtures
+- Review status: code-review M2 R2 clean-with-notes; no open findings
+- Remaining in-scope implementation milestones: M3, M4, M5, M6
+- Next stage: implement M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
 
@@ -113,7 +113,7 @@ The main implementation surfaces are:
 
 ### M2. Validator contract and fixtures
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Implement structural validation for plan index surfaces, explicit plan-body lifecycle markers, terminal-plan conservation, recent Done cap, one-line terminal entries, and active supersession markers.
 - Requirements: `R3`, `R3a`-`R3p`, `R7`, `R7a`, `R10`, `R10a`, `R11`, `R11a`, `R12`, `R13`, `R14`, `R15`, `R15a`-`R15d`, `R17`, `R17a`-`R17i`
 - Files/components likely touched:
@@ -360,6 +360,7 @@ The main implementation surfaces are:
 - 2026-05-22: M2 implementation reached `review-requested`; next stage is code-review for M2 before M3 migration begins.
 - 2026-05-22: Code-review M2 R1 found BPIX-M2-CR1; terminal conservation does not run for plan-body-only explicit terminal marker changes.
 - 2026-05-22: Resolved BPIX-M2-CR1 by adding the plan-body-only terminal conservation regression and extending the conservation trigger to scoped explicit terminal plan bodies.
+- 2026-05-22: Code-review M2 R2 passed clean-with-notes; M2 closed and M3 is next.
 
 ## Decision log
 
@@ -394,6 +395,7 @@ The main implementation surfaces are:
 - 2026-05-22: `python scripts/test-artifact-lifecycle-validator.py` passed after BPIX-M2-CR1 fix.
 - 2026-05-22: `python -m py_compile scripts/artifact_lifecycle_validation.py scripts/artifact_lifecycle_contracts.py` passed after BPIX-M2-CR1 fix.
 - 2026-05-22: `git diff --check --` passed after BPIX-M2-CR1 fix.
+- 2026-05-22: Code-review M2 R2 recorded clean-with-notes after reviewing the fix and validation evidence.
 
 ## Outcome and retrospective
 
@@ -402,4 +404,4 @@ The main implementation surfaces are:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M2 code-review rerun; not ready for M3 migration until M2 code-review is clean.
+- Ready for M3 implementation; not ready for final closeout.

@@ -2,14 +2,19 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: plan-review-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
 ## Resolution Entries
+
+### code-review-m2-r2
+
+No material findings.
 
 ### code-review-m2-r1
 
