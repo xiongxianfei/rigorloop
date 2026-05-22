@@ -1036,6 +1036,35 @@ Terminal disposition: merged
             expected_text="terminal plan missing from Done (recent) and Done (archive)",
         )
 
+    def test_plan_body_terminal_marker_alone_requires_done_location(self) -> None:
+        self.assertPlanArchiveContractFails(
+            plan_index="""# Plan index
+
+## Active
+
+- none yet
+
+## Blocked
+
+- none yet
+
+## Done (recent)
+
+- none yet
+""",
+            plans={
+                "2026-05-02-done-plan.md": """# Done Plan
+
+## Status
+
+Plan lifecycle state: done
+Terminal disposition: merged
+""",
+            },
+            paths=["docs/plans/2026-05-02-done-plan.md"],
+            expected_text="terminal plan missing from Done (recent) and Done (archive)",
+        )
+
     def test_plan_archive_contract_rejects_duplicate_terminal_entry(self) -> None:
         plan = """# Done Plan
 

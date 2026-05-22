@@ -17,7 +17,7 @@ Review closeout: code-review-m2-r1
 
 Finding ID: BPIX-M2-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementer
 Owning stage: implement
 Chosen action: Extend terminal conservation validation to scoped plan-body lifecycle marker changes.
@@ -25,7 +25,8 @@ Rationale: A plan body can acquire `Plan lifecycle state: done`, `abandoned`, or
 Required outcome: Explicit terminal plan-body markers in validation scope must require exactly one valid recent/archive terminal location, except legacy prose-only plans remain unknown and migration-proof-owned.
 Safe resolution path: Add a failing fixture for plan-body-only terminal conservation, update the conservation trigger to include scoped explicit terminal plan bodies, rerun targeted lifecycle tests and validation, and return M2 to code-review.
 Validation target: `python scripts/test-artifact-lifecycle-validator.py` includes the new plan-body-only terminal conservation regression and passes.
-Validation evidence: pending
+Resolution: Added a failing regression for a plan body scoped alone with `Plan lifecycle state: done` missing from both Done surfaces. Updated the conservation trigger so terminal conservation runs when either a plan index surface is in scope or any scoped plan body has an explicit terminal lifecycle marker. Legacy prose-only status remains exempt because the trigger only uses explicit marker state.
+Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k plan_body_terminal_marker_alone_requires_done_location -k plan_lifecycle_marker_does_not_infer_terminal_state_from_prose`, `python scripts/test-artifact-lifecycle-validator.py`, `python -m py_compile scripts/artifact_lifecycle_validation.py scripts/artifact_lifecycle_contracts.py`, and `git diff --check --` passed after the fix.
 
 ### plan-review-r1
 

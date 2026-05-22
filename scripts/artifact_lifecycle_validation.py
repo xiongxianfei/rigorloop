@@ -489,6 +489,16 @@ def _plan_index_surface_in_scope(root: Path, scope: ValidationScope) -> bool:
     )
 
 
+def _explicit_terminal_plan_body_in_scope(root: Path, scope: ValidationScope) -> bool:
+    for path in (*scope.changed_paths, *scope.related_artifact_paths):
+        if not _is_plan_body_path(root, path) or not _path_exists(root, path, scope.tracked_revision):
+            continue
+        marker = _extract_plan_lifecycle_marker(_read_repo_text(root, path, scope.tracked_revision))
+        if marker.explicit and marker.state in PLAN_TERMINAL_LIFECYCLE_STATES:
+            return True
+    return False
+
+
 def _validate_plan_surface_shape(
     root: Path,
     scope: ValidationScope,
@@ -610,7 +620,7 @@ def _validate_terminal_plan_conservation(
     surface_entries: list[PlanSurfaceEntry],
 ) -> list[ValidationFinding]:
     findings: list[ValidationFinding] = []
-    if not _plan_index_surface_in_scope(root, scope):
+    if not (_plan_index_surface_in_scope(root, scope) or _explicit_terminal_plan_body_in_scope(root, scope)):
         return findings
 
     by_plan: dict[Path, list[PlanSurfaceEntry]] = {}
@@ -1255,15 +1265,16 @@ def validate_repository(
     plan_blockers, plan_warnings = _validate_plan_lifecycle_consistency(root_resolved, scope)
     blocking_findings.extend(plan_blockers)
     warning_findings.extend(plan_warnings)
-    if _plan_index_surface_in_scope(root_resolved, scope):
+    if _plan_index_surface_in_scope(root_resolved, scope) or _explicit_terminal_plan_body_in_scope(root_resolved, scope):
         surface_entries: list[PlanSurfaceEntry] = []
         surface_findings: list[ValidationFinding] = []
         for surface_path in (root_resolved / "docs" / "plan.md", root_resolved / PLAN_ARCHIVE_PATH):
             entries, findings = _parse_plan_surface_entries(root_resolved, surface_path, scope.tracked_revision)
             surface_entries.extend(entries)
             surface_findings.extend(findings)
-        blocking_findings.extend(surface_findings)
-        blocking_findings.extend(_validate_plan_surface_shape(root_resolved, scope, surface_entries))
+        if _plan_index_surface_in_scope(root_resolved, scope):
+            blocking_findings.extend(surface_findings)
+            blocking_findings.extend(_validate_plan_surface_shape(root_resolved, scope, surface_entries))
         blocking_findings.extend(_validate_terminal_plan_conservation(root_resolved, scope, surface_entries))
     warning_findings.extend(_validate_merge_dependent_language_warnings(root_resolved, scope))
 
