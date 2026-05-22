@@ -142,6 +142,9 @@ Use `Readiness is not Done` as the default interpretation for handoff lines. Kee
 - Use the plan body's explicit `## Status` lifecycle marker fields `Plan lifecycle state` and `Terminal disposition`; do not infer terminal state from prose.
 - Update the plan index surfaces and the plan body together when starting, replacing, transitioning, archiving older terminal history, or before the PR opens for review.
 - Keep superseded entries in `docs/plan.md` only while they include `superseded by:` and non-empty `active-context:`; move terminal superseded history without active context to `docs/plan-archive.md`.
+- `implement` owns ongoing plan-body progress, decision, discovery, and validation-note updates during execution.
+- Final lifecycle closeout owns lifecycle state transitions across the plan index surfaces and the plan body.
+- `verify` challenges stale lifecycle state before `branch-ready`.
 - If completion depends on a true downstream completion event, keep the plan `Active` and name that event; merge itself is not that event.
 - Do not create a plan that only the current chat context can understand.
 - Do not proceed to implementation until `plan-review` and `test-spec` are ready unless an isolated manual invocation is requested and recorded.
