@@ -268,6 +268,10 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
                 "compact-invalid-review-count-precondition",
                 "review artifact count cross-check blocked",
             ),
+            (
+                "compact-invalid-extra-summary-blocker",
+                "validation_summary.open_validation_blockers: extra blocker not derived from validation_events: fake-blocker",
+            ),
         ]
         for fixture, expected in cases:
             with self.subTest(fixture=fixture):
@@ -315,24 +319,39 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
 
     def test_compact_common_read_reduction_helper(self) -> None:
         validator = load_validator_module()
-        legacy = "\n".join(
-            f"- command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-r{i}.md\n  result: pass_reviews_{i}_findings_0_log_entries_{i}_resolution_entries_0"
-            for i in range(1, 9)
+        legacy_path = FIXTURES / "compactness-representative-legacy" / "change.yaml"
+        compact_path = FIXTURES / "compactness-representative-compact" / "change.yaml"
+        self.assertPathPasses(legacy_path)
+        self.assertPathPasses(compact_path)
+
+        compact_data = validator.load_yaml(compact_path)
+        variables, errors = validator.resolve_compact_path_vars(compact_data["path_vars"])
+        self.assertEqual(errors, [])
+        reconstructed, errors = validator.reconstruct_compact_path_sets(
+            compact_data["validation_bundles"],
+            compact_data["validation_events"],
+            variables,
         )
-        compact = """validation_bundles:
-  lifecycle:
-    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
-    expands_with: validation_events[].paths_added.lifecycle
-validation_events:
-  - stage: proposal-review-r1
-    bundles: [lifecycle]
-    paths_added:
-      lifecycle:
-        - docs/proposals/{change_id}.md
-validation_summary:
-  all_passed: true
-"""
-        reduction = validator.measure_compact_common_read_reduction(legacy, compact)
+        self.assertEqual(errors, [])
+        self.assertEqual(
+            reconstructed[("code-review-m3-r1", "lifecycle")],
+            [
+                "docs/proposals/2026-05-21-compact-change-validation-metadata.md",
+                "specs/compact-change-validation-metadata.md",
+                "specs/compact-change-validation-metadata.test.md",
+                "docs/plans/2026-05-21-compact-change-validation-metadata.md",
+                "docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md",
+                "docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r1.md",
+                "docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m2-r2.md",
+                "docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m3-r1.md",
+            ],
+        )
+        reduction = validator.measure_compact_common_read_reduction(
+            validator.extract_change_validation_common_read_surface(
+                validator.load_yaml(legacy_path)
+            ),
+            validator.extract_change_validation_common_read_surface(compact_data),
+        )
         self.assertGreaterEqual(reduction, 0.30)
 
     def test_compact_validator_does_not_execute_bundle_commands(self) -> None:
@@ -348,7 +367,7 @@ path_vars:
   change_root: tests/fixtures/change-metadata/compact-valid
 validation_bundles:
   sentinel:
-    command: python -c create_compact_command_sentinel
+    command: python -c "from pathlib import Path; Path('tests/fixtures/change-metadata/compact-command-sentinel').write_text('executed')"
 validation_events:
   - stage: proposal-review-r1
     lifecycle_stage: proposal-review
@@ -366,6 +385,8 @@ validation_summary:
             )
             self.assertPathPasses(target)
         self.assertFalse(sentinel.exists(), "bundle command was executed")
+        if sentinel.exists():
+            sentinel.unlink()
 
     def test_clean_receipt_root_metadata_passes(self) -> None:
         self.assertPathPasses(CLEAN_RECEIPT_ROOT)
