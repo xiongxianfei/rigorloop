@@ -1,6 +1,6 @@
 # Review Resolution
 
-Closeout status: open
+Closeout status: closed
 
 ### spec-review-r1
 
@@ -108,11 +108,24 @@ Validation evidence: `python scripts/validate-review-artifacts.py --mode closeou
 
 Finding ID: CRM-M3-CR1
 Disposition: accepted
-Status: resolved pending re-review
+Status: resolved after re-review
 Owner: implementer
 Owning stage: implement
 Chosen action: Updated the M3 query helper so compact artifact path metadata is returned from accepted compact `path_vars` shapes, with direct fixture proof.
 Rationale: Code-review M3 R1 found that the helper returns an empty successful artifact list for an accepted compact metadata shape whose artifact paths live in `path_vars`, violating CRM-R29, CRM-R36, and CRM-T016.
 Validation target: Rerun query helper tests, metadata validator regression, active query commands, selected CI for query/helper/metadata paths, lifecycle validation, review-artifact validation, and whitespace checks after the fix.
 Validation evidence: `python scripts/test-query-change-record.py`; `tmp=$(mktemp -d) && mkdir -p "$tmp/docs/changes/compact-valid" && cp tests/fixtures/change-metadata/compact-valid/change.yaml "$tmp/docs/changes/compact-valid/change.yaml" && python scripts/query-change-record.py compact-valid artifacts --repo-root "$tmp" && python scripts/query-change-record.py compact-valid summary --repo-root "$tmp"`; `python scripts/test-change-metadata-validator.py`; `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model artifacts`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model validation --latest`; `bash scripts/ci.sh --mode explicit --path scripts/query-change-record.py --path scripts/test-query-change-record.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py`; `python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model`; `bash scripts/ci.sh --mode explicit --path scripts/query-change-record.py --path scripts/test-query-change-record.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md`; `git diff --check --`.
-Follow-up: Return M3 to code review after compact artifact path support and validation evidence are recorded. M4 and M5 remain separate implementation milestones and are not claimed ready from this finding.
+Follow-up: `code-review-m3-r2` found no material findings. M3 is closed; M4 and M5 remain separate implementation milestones and are not claimed ready from this review.
+
+### code-review-m3-r2
+
+Finding closeout for `code-review-m3-r2`.
+
+Material findings: None
+Disposition: accepted
+Owner: code-review
+Owning stage: code-review
+Chosen action: Record clean M3 re-review after CRM-M3-CR1 resolution.
+Rationale: R2 found no material findings and confirmed the accepted compact `path_vars` artifact extraction fix satisfies CRM-R29, CRM-R32, CRM-R33, CRM-R36, CRM-T016, and the CRM-M3-CR1 regression.
+Validation target: Review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation for the touched review, plan, query-helper, and lifecycle artifacts.
+Validation evidence: `python scripts/test-query-change-record.py`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary`; `python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model artifacts`; direct compact `path_vars` fixture proof using `tests/fixtures/change-metadata/compact-valid/change.yaml` copied under a temporary `docs/changes/compact-valid/change.yaml`; final review artifact closeout, change metadata, artifact lifecycle, selected CI, and whitespace validation are recorded in `change.yaml`.
