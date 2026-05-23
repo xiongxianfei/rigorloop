@@ -76,13 +76,13 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Current Handoff Summary
 
 - Current milestone: M2. Explicit-path lifecycle cache integration and cache-hit evidence
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Cache identity primitives and local cache contract
-- Review status: `code-review-m2-r1` requested changes for `VIC-CR-M2-R1-F1` and `VIC-CR-M2-R1-F2`; `code-review-m1-r2` approved M1 with no material findings after `VIC-CR-M1-R1-F1` resolution.
-- Remaining in-scope implementation milestones: M2 pending review-resolution; M3 and M4 remain planned.
-- Next stage: review-resolution for M2
+- Review status: review-resolution for `code-review-m2-r1` resolved `VIC-CR-M2-R1-F1` and `VIC-CR-M2-R1-F2`; M2 is ready for code-review rerun.
+- Remaining in-scope implementation milestones: M2 pending code-review rerun; M3 and M4 remain planned.
+- Next stage: code-review M2 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 has open code-review findings, M3 and M4 are not implemented or reviewed, final validation has not run, explain-change and verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 is implemented but awaiting code-review rerun, M3 and M4 are not implemented or reviewed, final validation has not run, explain-change and verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -178,7 +178,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ### M2. Explicit-path lifecycle cache integration and cache-hit evidence
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Wire cache lookup and prior-pass recording into `validate-artifact-lifecycle.py --mode explicit-paths` while preserving actual-run behavior and producing reviewable cache-hit evidence only when formal workflow claims cite a skip.
 - Requirements: R1 through R17, R32 through R50, R56, R60 through R77; AC1 through AC10, AC13, AC15, AC16, AC18.
 - Files/components likely touched:
@@ -421,6 +421,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: Code-review M1 R2 approved M1 with no material findings; M1 is closed and next stage is implement M2.
 - 2026-05-23: M2 added opt-in lifecycle cache integration for `validate-artifact-lifecycle.py --mode explicit-paths`, local pass-record storage, bounded `[CACHE HIT]` output, formal cache-hit evidence writing when explicitly requested, and behavior-preservation evidence. Unsupported modes, closeout context, CI, cache-identity uncertainty, and non-pass prior records fall back to actual validation.
 - 2026-05-23: Code-review M2 R1 recorded `VIC-CR-M2-R1-F1` and `VIC-CR-M2-R1-F2`; M2 needs review-resolution for local cache record identity checks and formal evidence preservation before it can close.
+- 2026-05-23: Review-resolution for `VIC-CR-M2-R1-F1` made local cache-hit eligibility require matching `cache_key`, `validator_id`, and `command_family`, with malformed records treated as cache misses. Review-resolution for `VIC-CR-M2-R1-F2` made formal cache-hit evidence writes preserve unrelated records, replace only matching IDs, and reject malformed existing evidence. M2 is ready for code-review rerun.
 
 ## Decision log
 
@@ -479,6 +480,15 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed after recording code-review M2 R1.
 - 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m2-r1.md` passed after recording code-review M2 R1.
 - 2026-05-23: `git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md` passed after recording code-review M2 R1.
+- 2026-05-23: `python scripts/test-validation-cache.py` passed with 20 tests after resolving code-review M2 R1.
+- 2026-05-23: `python scripts/test-artifact-lifecycle-validator.py` passed with 62 tests after resolving code-review M2 R1.
+- 2026-05-23: `python scripts/test-select-validation.py` passed with 94 tests after resolving code-review M2 R1.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed after resolving code-review M2 R1.
+- 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md` passed after resolving code-review M2 R1.
+- 2026-05-23: `bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/validate-artifact-lifecycle.py --path scripts/test-validation-cache.py --path scripts/test-artifact-lifecycle-validator.py --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md` passed selected checks `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, and `validation_cache.regression`.
+- 2026-05-23: `git diff --check --` passed after resolving code-review M2 R1.
+- 2026-05-23: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed after closing M2 review-resolution.
+- 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md` passed after closing M2 review-resolution.
 
 ## Outcome and retrospective
 
@@ -487,4 +497,4 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for review-resolution M2. M3, M4, explain-change, verify, PR readiness, and final closeout remain incomplete.
+- Ready for code-review M2 rerun. M3, M4, explain-change, verify, PR readiness, and final closeout remain incomplete.

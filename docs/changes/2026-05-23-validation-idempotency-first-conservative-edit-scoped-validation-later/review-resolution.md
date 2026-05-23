@@ -4,7 +4,7 @@
 
 This record closes formal lifecycle review findings for the validation idempotency and cache-hit safety proposal revision.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -169,22 +169,24 @@ No material findings.
 
 Finding ID: VIC-CR-M2-R1-F1
 Disposition: accepted
-Status: unresolved
+Status: resolved after implementation
 Owner: implementer
 Owning stage: implement M2 review-resolution
 Required outcome: Local cache hit eligibility must fail closed when the stored cache key is missing or differs from the current computed key, and when the stored validator ID is missing, malformed, unsupported, or different from the first-slice validator ID.
-Stop state: M2 remains resolution-needed until local cache record identity checks and direct regression tests are added.
+Chosen action: Updated local cache records and contexts to require `cache_key`, `validator_id`, and `command_family`; local cache eligibility now rejects missing, malformed, or mismatched cache keys, unsupported or mismatched validator IDs, and mismatched command families before comparing component hashes.
 Rationale: Spec `R11` requires actual validation when any cache-key component is unknown, missing, malformed, unsupported, or changed; accepting records without stored cache key or validator identity can allow unsafe cache skips.
-Expected proof: Tests cover missing `cache_key`, mismatched `cache_key`, unsupported stored `validator_id`, and a valid matching record; M2 validation reruns.
+Validation target: Missing or malformed local cache identity fields produce cache misses, while valid matching records still produce cache hits.
+Validation evidence: `python scripts/test-validation-cache.py` passed with 20 tests; `python scripts/test-artifact-lifecycle-validator.py` passed with 62 tests; `python scripts/test-select-validation.py` passed with 94 tests; selected CI passed `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, and `validation_cache.regression`; `git diff --check --` passed.
 
 #### VIC-CR-M2-R1-F2
 
 Finding ID: VIC-CR-M2-R1-F2
 Disposition: accepted
-Status: unresolved
+Status: resolved after implementation
 Owner: implementer
 Owning stage: implement M2 review-resolution
 Required outcome: Writing a cache-hit evidence record must preserve existing cache-hit records unless the same stable cache-hit ID is intentionally replaced.
-Stop state: M2 remains resolution-needed until formal cache-hit evidence writes preserve existing records and direct regression tests cover multiple cache-hit IDs.
+Chosen action: Updated formal cache-hit evidence writing to load and validate an existing `schema_version: 1` evidence file, preserve unrelated `cache_hits`, replace only a matching stable ID, append new IDs, and fail closed on malformed files or duplicate existing IDs.
 Rationale: Formal workflow cache-hit evidence is the reviewable trail for skipped validators; overwriting the file can erase earlier formal cache-hit claims.
-Expected proof: Tests write two distinct cache-hit IDs and prove both remain; if same-ID replacement is supported, tests prove only the matching ID is replaced; M2 validation reruns.
+Validation target: Multiple formal cache-hit evidence records remain reviewable across sequential writes, same-ID replacement is bounded to the matching record, and malformed existing formal evidence fails closed.
+Validation evidence: `python scripts/test-validation-cache.py` passed with 20 tests; `python scripts/test-artifact-lifecycle-validator.py` passed with 62 tests; `python scripts/test-select-validation.py` passed with 94 tests; selected CI passed `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, and `validation_cache.regression`; `git diff --check --` passed.

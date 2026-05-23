@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import shutil
 import tempfile
 import time
@@ -13,6 +14,21 @@ import validation_cache
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SHA_KEY = "sha256:" + "a" * 64
+SHA_OTHER_KEY = "sha256:" + "b" * 64
+SHA_FAILED_KEY = "sha256:" + "c" * 64
+
+
+def as_local_cache_payload(record: validation_cache.LocalCacheRecord) -> dict[str, object]:
+    return dict(record.__dict__)
+
+
+def write_raw_local_cache(cache_dir: Path, record: dict[str, object]) -> None:
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    (cache_dir / "validation-cache.json").write_text(
+        json.dumps({"schema_version": 1, "records": [record]}, sort_keys=True),
+        encoding="utf-8",
+    )
 
 
 class ValidationCacheIdentityTests(unittest.TestCase):
@@ -289,6 +305,9 @@ class ValidationCacheIdentityTests(unittest.TestCase):
     def test_local_execution_cache_is_branch_worktree_and_change_local(self) -> None:
         now = time.time()
         record = validation_cache.LocalCacheRecord(
+            cache_key=SHA_KEY,
+            validator_id="artifact-lifecycle",
+            command_family="validate-artifact-lifecycle-explicit-paths",
             repository_id="repo",
             branch="feature",
             worktree_id="/local/worktree",
@@ -301,6 +320,9 @@ class ValidationCacheIdentityTests(unittest.TestCase):
             created_at=now,
         )
         context = validation_cache.LocalCacheContext(
+            cache_key=SHA_KEY,
+            validator_id="artifact-lifecycle",
+            command_family="validate-artifact-lifecycle-explicit-paths",
             repository_id="repo",
             branch="feature",
             worktree_id="/local/worktree",
@@ -315,6 +337,9 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         self.assertTrue(validation_cache.local_cache_entry_eligible(record, context).eligible)
 
         mismatches = {
+            "cache_key": SHA_OTHER_KEY,
+            "validator_id": "other-validator",
+            "command_family": "other-family",
             "branch": "other",
             "worktree_id": "/other/worktree",
             "change_id": "2026-05-23-other",
@@ -372,6 +397,9 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         cache_dir = self.temp_root / ".rigorloop-validation-cache"
         now = time.time()
         record = validation_cache.LocalCacheRecord(
+            cache_key=SHA_KEY,
+            validator_id="artifact-lifecycle",
+            command_family="validate-artifact-lifecycle-explicit-paths",
             repository_id="repo",
             branch="feature",
             worktree_id="/local/worktree",
@@ -382,12 +410,13 @@ class ValidationCacheIdentityTests(unittest.TestCase):
             policy_hash="sha256:policy",
             result="pass",
             created_at=now,
-            cache_key="sha256:key",
-            validator_id="artifact-lifecycle",
             prior_event_stage="unit-pass",
             prior_event_evidence="docs/changes/change/change.yaml#validation-events",
         )
         context = validation_cache.LocalCacheContext(
+            cache_key=SHA_KEY,
+            validator_id="artifact-lifecycle",
+            command_family="validate-artifact-lifecycle-explicit-paths",
             repository_id="repo",
             branch="feature",
             worktree_id="/local/worktree",
@@ -403,14 +432,54 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         validation_cache.store_local_cache_record(cache_dir, record)
         lookup = validation_cache.find_local_cache_hit(cache_dir, context)
         self.assertIsNotNone(lookup.record)
-        self.assertEqual(lookup.record.cache_key, "sha256:key")
+        self.assertEqual(lookup.record.cache_key, SHA_KEY)
 
         failed_dir = self.temp_root / ".rigorloop-validation-cache-failed"
-        failed = record.with_updates(result="fail", cache_key="sha256:failed")
+        failed = record.with_updates(result="fail", cache_key=SHA_FAILED_KEY)
         validation_cache.store_local_cache_record(failed_dir, failed)
         failed_lookup = validation_cache.find_local_cache_hit(failed_dir, context)
         self.assertIsNone(failed_lookup.record)
         self.assertEqual(failed_lookup.reason, "previous result was not pass")
+
+        for field, value, reason in (
+            ("cache_key", SHA_OTHER_KEY, "cache_key changed"),
+            ("validator_id", "other-validator", "validator_id changed"),
+            ("command_family", "other-family", "command_family changed"),
+        ):
+            with self.subTest(field=field):
+                mismatch_dir = self.temp_root / f".rigorloop-validation-cache-{field}"
+                validation_cache.store_local_cache_record(
+                    mismatch_dir,
+                    record.with_updates(**{field: value}),
+                )
+                mismatch_lookup = validation_cache.find_local_cache_hit(mismatch_dir, context)
+                self.assertIsNone(mismatch_lookup.record)
+                self.assertEqual(mismatch_lookup.reason, reason)
+
+        missing_key_dir = self.temp_root / ".rigorloop-validation-cache-missing-key"
+        missing_key_record = as_local_cache_payload(record)
+        del missing_key_record["cache_key"]
+        write_raw_local_cache(missing_key_dir, missing_key_record)
+        self.assertIsNone(validation_cache.find_local_cache_hit(missing_key_dir, context).record)
+
+        missing_family_dir = self.temp_root / ".rigorloop-validation-cache-missing-family"
+        missing_family_record = as_local_cache_payload(record)
+        del missing_family_record["command_family"]
+        write_raw_local_cache(missing_family_dir, missing_family_record)
+        self.assertIsNone(validation_cache.find_local_cache_hit(missing_family_dir, context).record)
+
+        missing_validator_dir = self.temp_root / ".rigorloop-validation-cache-missing-validator"
+        missing_validator_record = as_local_cache_payload(record)
+        del missing_validator_record["validator_id"]
+        write_raw_local_cache(missing_validator_dir, missing_validator_record)
+        self.assertIsNone(validation_cache.find_local_cache_hit(missing_validator_dir, context).record)
+
+        malformed = validation_cache.local_cache_entry_eligible(
+            record.with_updates(cache_key="not-a-sha-key"),
+            context.with_updates(cache_key="not-a-sha-key"),
+        )
+        self.assertFalse(malformed.eligible)
+        self.assertEqual(malformed.reason, "cache_key malformed")
 
     def test_formal_cache_hit_evidence_file_has_required_shape(self) -> None:
         self.write_file("scripts/validate-artifact-lifecycle.py", "VALUE = 1\n")
@@ -429,6 +498,9 @@ class ValidationCacheIdentityTests(unittest.TestCase):
             ],
         )
         record = validation_cache.LocalCacheRecord(
+            cache_key=identity.cache_key,
+            validator_id=identity.validator_id,
+            command_family=identity.command_family,
             repository_id="repo",
             branch="feature",
             worktree_id="/local/worktree",
@@ -439,8 +511,6 @@ class ValidationCacheIdentityTests(unittest.TestCase):
             policy_hash=identity.policy.manifest_hash,
             result="pass",
             created_at=time.time(),
-            cache_key=identity.cache_key,
-            validator_id=identity.validator_id,
             prior_event_stage="unit-pass",
             prior_event_evidence="docs/changes/example/change.yaml#validation-events",
         )
@@ -464,6 +534,150 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         self.assertIn("closeout_evidence: false", text)
         self.assertNotIn("/local/worktree", text)
 
+    def test_formal_cache_hit_evidence_merges_and_replaces_by_id(self) -> None:
+        self.write_file("scripts/validate-artifact-lifecycle.py", "VALUE = 1\n")
+        self.write_file("scripts/validation_cache.py", "VALUE = 1\n")
+        self.write_file("docs/changes/example/change.yaml", "schema_version: 2\n")
+        self.write_file("docs/plan.md", "plan\n")
+        identity = validation_cache.build_lifecycle_cache_identity(
+            self.temp_root,
+            [
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths",
+                "--path",
+                "docs/plan.md",
+            ],
+        )
+        record = validation_cache.LocalCacheRecord(
+            cache_key=identity.cache_key,
+            validator_id=identity.validator_id,
+            command_family=identity.command_family,
+            repository_id="repo",
+            branch="feature",
+            worktree_id="/local/worktree",
+            change_id="example",
+            command_hash=identity.normalized_command.command_hash,
+            input_surface_hash=identity.input_surface.manifest_hash,
+            implementation_hash=identity.implementation.manifest_hash,
+            policy_hash=identity.policy.manifest_hash,
+            result="pass",
+            prior_event_stage="first-pass",
+            prior_event_evidence="docs/changes/example/change.yaml#validation-events",
+        )
+        evidence_file = "docs/changes/example/validation-cache-evidence.yaml"
+        evidence_path = validation_cache.write_cache_hit_evidence(
+            repo_root=self.temp_root,
+            evidence_file=evidence_file,
+            change_id="example",
+            cache_hit_id="cache-hit-001",
+            identity=identity,
+            record=record,
+        )
+        validation_cache.write_cache_hit_evidence(
+            repo_root=self.temp_root,
+            evidence_file=evidence_file,
+            change_id="example",
+            cache_hit_id="cache-hit-002",
+            identity=identity,
+            record=record.with_updates(prior_event_stage="second-pass"),
+        )
+
+        text = (self.temp_root / evidence_path).read_text(encoding="utf-8")
+        self.assertIn("id: \"cache-hit-001\"", text)
+        self.assertIn("id: \"cache-hit-002\"", text)
+        self.assertIn("stage: \"first-pass\"", text)
+        self.assertIn("stage: \"second-pass\"", text)
+
+        validation_cache.write_cache_hit_evidence(
+            repo_root=self.temp_root,
+            evidence_file=evidence_file,
+            change_id="example",
+            cache_hit_id="cache-hit-001",
+            identity=identity,
+            record=record.with_updates(prior_event_stage="replacement-pass"),
+        )
+        replaced = (self.temp_root / evidence_path).read_text(encoding="utf-8")
+        self.assertIn("id: \"cache-hit-001\"", replaced)
+        self.assertIn("id: \"cache-hit-002\"", replaced)
+        self.assertIn("stage: \"replacement-pass\"", replaced)
+        self.assertNotIn("stage: \"first-pass\"", replaced)
+        self.assertIn("stage: \"second-pass\"", replaced)
+
+    def test_formal_cache_hit_evidence_rejects_malformed_existing_file(self) -> None:
+        self.write_file("scripts/validate-artifact-lifecycle.py", "VALUE = 1\n")
+        self.write_file("scripts/validation_cache.py", "VALUE = 1\n")
+        self.write_file("docs/changes/example/change.yaml", "schema_version: 2\n")
+        self.write_file("docs/plan.md", "plan\n")
+        identity = validation_cache.build_lifecycle_cache_identity(
+            self.temp_root,
+            [
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths",
+                "--path",
+                "docs/plan.md",
+            ],
+        )
+        record = validation_cache.LocalCacheRecord(
+            cache_key=identity.cache_key,
+            validator_id=identity.validator_id,
+            command_family=identity.command_family,
+            repository_id="repo",
+            branch="feature",
+            worktree_id="/local/worktree",
+            change_id="example",
+            command_hash=identity.normalized_command.command_hash,
+            input_surface_hash=identity.input_surface.manifest_hash,
+            implementation_hash=identity.implementation.manifest_hash,
+            policy_hash=identity.policy.manifest_hash,
+            result="pass",
+            prior_event_stage="unit-pass",
+            prior_event_evidence="docs/changes/example/change.yaml#validation-events",
+        )
+        target = self.temp_root / "docs/changes/example/validation-cache-evidence.yaml"
+        target.write_text(
+            "schema_version: 2\nchange_id: \"example\"\ncache_hits:\n",
+            encoding="utf-8",
+        )
+
+        with self.assertRaises(validation_cache.CacheIdentityError) as schema_context:
+            validation_cache.write_cache_hit_evidence(
+                repo_root=self.temp_root,
+                evidence_file="docs/changes/example/validation-cache-evidence.yaml",
+                change_id="example",
+                cache_hit_id="cache-hit-001",
+                identity=identity,
+                record=record,
+            )
+        self.assertEqual(schema_context.exception.code, "invalid-cache-evidence-file")
+
+        target.unlink()
+        validation_cache.write_cache_hit_evidence(
+            repo_root=self.temp_root,
+            evidence_file="docs/changes/example/validation-cache-evidence.yaml",
+            change_id="example",
+            cache_hit_id="cache-hit-001",
+            identity=identity,
+            record=record,
+        )
+        text = target.read_text(encoding="utf-8")
+        duplicate_entry = text.split("cache_hits:\n", 1)[1]
+        target.write_text(text.rstrip() + "\n" + duplicate_entry, encoding="utf-8")
+
+        with self.assertRaises(validation_cache.CacheIdentityError) as duplicate_context:
+            validation_cache.write_cache_hit_evidence(
+                repo_root=self.temp_root,
+                evidence_file="docs/changes/example/validation-cache-evidence.yaml",
+                change_id="example",
+                cache_hit_id="cache-hit-002",
+                identity=identity,
+                record=record,
+            )
+        self.assertEqual(duplicate_context.exception.code, "duplicate-cache-hit-id")
+
     def test_formal_cache_hit_evidence_rejects_unsafe_file_path(self) -> None:
         self.write_file("scripts/validate-artifact-lifecycle.py", "VALUE = 1\n")
         self.write_file("scripts/validation_cache.py", "VALUE = 1\n")
@@ -480,6 +694,9 @@ class ValidationCacheIdentityTests(unittest.TestCase):
             ],
         )
         record = validation_cache.LocalCacheRecord(
+            cache_key=identity.cache_key,
+            validator_id=identity.validator_id,
+            command_family=identity.command_family,
             repository_id="repo",
             branch="feature",
             worktree_id="/local/worktree",
@@ -489,8 +706,6 @@ class ValidationCacheIdentityTests(unittest.TestCase):
             implementation_hash=identity.implementation.manifest_hash,
             policy_hash=identity.policy.manifest_hash,
             result="pass",
-            cache_key=identity.cache_key,
-            validator_id=identity.validator_id,
             prior_event_stage="unit-pass",
             prior_event_evidence="docs/changes/example/change.yaml#validation-events",
         )
@@ -524,6 +739,9 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         ]
         identity = validation_cache.build_lifecycle_cache_identity(self.temp_root, command)
         context = validation_cache.LocalCacheContext(
+            cache_key=identity.cache_key,
+            validator_id=identity.validator_id,
+            command_family=identity.command_family,
             repository_id="repo",
             branch="feature",
             worktree_id="/local/worktree",

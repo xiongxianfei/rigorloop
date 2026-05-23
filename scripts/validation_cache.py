@@ -60,6 +60,9 @@ class LifecycleCacheIdentity:
 
 @dataclass(frozen=True)
 class LocalCacheRecord:
+    cache_key: str
+    validator_id: str
+    command_family: str
     repository_id: str
     branch: str
     worktree_id: str
@@ -70,8 +73,6 @@ class LocalCacheRecord:
     policy_hash: str
     result: str
     created_at: float = 0.0
-    cache_key: str = ""
-    validator_id: str = "artifact-lifecycle"
     prior_event_stage: str = ""
     prior_event_evidence: str = ""
 
@@ -81,6 +82,9 @@ class LocalCacheRecord:
 
 @dataclass(frozen=True)
 class LocalCacheContext:
+    cache_key: str
+    validator_id: str
+    command_family: str
     repository_id: str
     branch: str
     worktree_id: str
@@ -111,6 +115,7 @@ class LocalCacheLookup:
 _WINDOWS_ABSOLUTE_RE = re.compile(r"^[A-Za-z]:[\\/]")
 _URL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*://")
 _HOSTNAME_PATH_RE = re.compile(r"^[A-Za-z0-9.-]+\.[A-Za-z]{2,}[/:]")
+_SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 _UNSAFE_PATH_CHARS = set("*?[")
 
 _DEFAULT_POLICY_FILES = (
@@ -119,6 +124,8 @@ _DEFAULT_POLICY_FILES = (
     "specs/plan-index-lifecycle-ownership.md",
 )
 _LOCAL_CACHE_FILE = "validation-cache.json"
+_SUPPORTED_VALIDATOR_ID = "artifact-lifecycle"
+_SUPPORTED_COMMAND_FAMILY = "validate-artifact-lifecycle-explicit-paths"
 
 
 def normalize_command(command: str | Sequence[str]) -> list[str]:
@@ -358,6 +365,24 @@ def local_cache_entry_eligible(
     if record.result != "pass":
         return LocalCacheEligibility(False, "previous result was not pass")
 
+    identity_comparisons = (
+        ("cache_key", record.cache_key, context.cache_key),
+        ("validator_id", record.validator_id, context.validator_id),
+        ("command_family", record.command_family, context.command_family),
+    )
+    for name, record_value, context_value in identity_comparisons:
+        if not record_value:
+            return LocalCacheEligibility(False, f"{name} missing")
+        if name == "cache_key" and not _SHA256_RE.match(record_value):
+            return LocalCacheEligibility(False, "cache_key malformed")
+        if record_value != context_value:
+            return LocalCacheEligibility(False, f"{name} changed")
+
+    if record.validator_id != _SUPPORTED_VALIDATOR_ID:
+        return LocalCacheEligibility(False, "validator_id unsupported")
+    if record.command_family != _SUPPORTED_COMMAND_FAMILY:
+        return LocalCacheEligibility(False, "command_family unsupported")
+
     comparisons = (
         ("repository_id", record.repository_id, context.repository_id),
         ("branch", record.branch, context.branch),
@@ -438,6 +463,9 @@ def make_local_cache_record(
     created_at: float | None = None,
 ) -> LocalCacheRecord:
     return LocalCacheRecord(
+        cache_key=identity.cache_key,
+        validator_id=identity.validator_id,
+        command_family=identity.command_family,
         repository_id=context.repository_id,
         branch=context.branch,
         worktree_id=context.worktree_id,
@@ -448,8 +476,6 @@ def make_local_cache_record(
         policy_hash=identity.policy.manifest_hash,
         result="pass",
         created_at=time.time() if created_at is None else created_at,
-        cache_key=identity.cache_key,
-        validator_id=identity.validator_id,
         prior_event_stage=prior_event_stage,
         prior_event_evidence=prior_event_evidence,
     )
@@ -475,69 +501,268 @@ def write_cache_hit_evidence(
     _validate_evidence_ref(record.prior_event_evidence, root)
     target = root / evidence_relative
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(
-        _render_cache_hit_evidence(
-            change_id=change_id,
-            cache_hit_id=cache_hit_id,
-            identity=identity,
-            record=record,
-        ),
-        encoding="utf-8",
+    new_entry = _cache_hit_evidence_entry(
+        cache_hit_id=cache_hit_id,
+        identity=identity,
+        record=record,
     )
+    if target.exists():
+        document = _load_cache_hit_evidence_document(target)
+        if document["change_id"] != change_id:
+            raise _cache_error("invalid-cache-evidence-file")
+        entries = list(document["cache_hits"])
+    else:
+        entries = []
+
+    ids: set[str] = set()
+    for entry in entries:
+        entry_id = entry["id"]
+        if entry_id in ids:
+            raise _cache_error("duplicate-cache-hit-id")
+        ids.add(entry_id)
+
+    merged: list[dict[str, object]] = []
+    replaced = False
+    for entry in entries:
+        if entry["id"] == cache_hit_id:
+            merged.append(new_entry)
+            replaced = True
+        else:
+            merged.append(entry)
+    if not replaced:
+        merged.append(new_entry)
+
+    target.write_text(_render_cache_hit_evidence_document(change_id, merged), encoding="utf-8")
     return evidence_relative
 
 
-def _render_cache_hit_evidence(
+def _cache_hit_evidence_entry(
     *,
-    change_id: str,
     cache_hit_id: str,
     identity: LifecycleCacheIdentity,
     record: LocalCacheRecord,
+) -> dict[str, object]:
+    return {
+        "id": cache_hit_id,
+        "validator_id": identity.validator_id,
+        "command": {"argv": list(identity.normalized_command.argv)},
+        "prior_passing_event": {
+            "stage": record.prior_event_stage,
+            "evidence": record.prior_event_evidence,
+        },
+        "cache_key": {
+            "input_surface_hash": identity.input_surface.manifest_hash,
+            "validator_implementation_hash": identity.implementation.manifest_hash,
+            "policy_hash": identity.policy.manifest_hash,
+            "command_hash": identity.normalized_command.command_hash,
+        },
+        "result_reused": "pass",
+        "allowed_reason": "input surface, validator implementation, policy, and command unchanged since prior passing event",
+        "scope": "inner-loop",
+        "closeout_evidence": False,
+    }
+
+
+def _render_cache_hit_evidence_document(
+    change_id: str,
+    entries: Sequence[dict[str, object]],
 ) -> str:
     lines = [
         "schema_version: 1",
         f"change_id: {_yaml_scalar(change_id)}",
         "cache_hits:",
-        f"  - id: {_yaml_scalar(cache_hit_id)}",
-        f"    validator_id: {_yaml_scalar(identity.validator_id)}",
-        "    command:",
-        "      argv:",
     ]
-    for arg in identity.normalized_command.argv:
-        lines.append(f"        - {_yaml_scalar(arg)}")
-    lines.extend(
-        [
+    for entry in sorted(entries, key=lambda item: str(item["id"])):
+        command = entry["command"]
+        prior = entry["prior_passing_event"]
+        cache_key = entry["cache_key"]
+        if not isinstance(command, dict) or not isinstance(prior, dict) or not isinstance(cache_key, dict):
+            raise _cache_error("invalid-cache-evidence-file")
+        argv = command.get("argv")
+        if not isinstance(argv, list):
+            raise _cache_error("invalid-cache-evidence-file")
+        lines.extend(
+            [
+                f"  - id: {_yaml_scalar(str(entry['id']))}",
+                f"    validator_id: {_yaml_scalar(str(entry['validator_id']))}",
+                "    command:",
+                "      argv:",
+            ]
+        )
+        for arg in argv:
+            lines.append(f"        - {_yaml_scalar(str(arg))}")
+        lines.extend(
+            [
             "    prior_passing_event:",
-            f"      stage: {_yaml_scalar(record.prior_event_stage)}",
-            f"      evidence: {_yaml_scalar(record.prior_event_evidence)}",
+                f"      stage: {_yaml_scalar(str(prior['stage']))}",
+                f"      evidence: {_yaml_scalar(str(prior['evidence']))}",
             "    cache_key:",
-            f"      input_surface_hash: {_yaml_scalar(identity.input_surface.manifest_hash)}",
-            f"      validator_implementation_hash: {_yaml_scalar(identity.implementation.manifest_hash)}",
-            f"      policy_hash: {_yaml_scalar(identity.policy.manifest_hash)}",
-            f"      command_hash: {_yaml_scalar(identity.normalized_command.command_hash)}",
-            "    result_reused: pass",
-            "    allowed_reason: input surface, validator implementation, policy, and command unchanged since prior passing event",
-            "    scope: inner-loop",
-            "    closeout_evidence: false",
-            "",
-        ]
-    )
+                f"      input_surface_hash: {_yaml_scalar(str(cache_key['input_surface_hash']))}",
+                f"      validator_implementation_hash: {_yaml_scalar(str(cache_key['validator_implementation_hash']))}",
+                f"      policy_hash: {_yaml_scalar(str(cache_key['policy_hash']))}",
+                f"      command_hash: {_yaml_scalar(str(cache_key['command_hash']))}",
+                f"    result_reused: {entry['result_reused']}",
+                f"    allowed_reason: {entry['allowed_reason']}",
+                f"    scope: {entry['scope']}",
+                f"    closeout_evidence: {str(entry['closeout_evidence']).lower()}",
+            ]
+        )
+    lines.append("")
     return "\n".join(lines)
+
+
+def _load_cache_hit_evidence_document(path: Path) -> dict[str, object]:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    if len(lines) < 3 or lines[0] != "schema_version: 1":
+        raise _cache_error("invalid-cache-evidence-file")
+    if not lines[1].startswith("change_id: "):
+        raise _cache_error("invalid-cache-evidence-file")
+    change_id = _parse_json_scalar(lines[1].split(": ", 1)[1])
+    if lines[2] != "cache_hits:":
+        raise _cache_error("invalid-cache-evidence-file")
+
+    entries: list[dict[str, object]] = []
+    index = 3
+    while index < len(lines):
+        if not lines[index]:
+            index += 1
+            continue
+        if not lines[index].startswith("  - id: "):
+            raise _cache_error("invalid-cache-evidence-file")
+        entry: dict[str, object] = {
+            "id": _parse_json_scalar(lines[index].split(": ", 1)[1]),
+            "command": {"argv": []},
+            "prior_passing_event": {},
+            "cache_key": {},
+        }
+        index += 1
+        while index < len(lines) and not lines[index].startswith("  - id: "):
+            line = lines[index]
+            if not line:
+                index += 1
+                continue
+            if line.startswith("    validator_id: "):
+                entry["validator_id"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("        - "):
+                command = entry["command"]
+                assert isinstance(command, dict)
+                argv = command["argv"]
+                assert isinstance(argv, list)
+                argv.append(_parse_json_scalar(line.split("- ", 1)[1]))
+            elif line.startswith("      stage: "):
+                prior = entry["prior_passing_event"]
+                assert isinstance(prior, dict)
+                prior["stage"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("      evidence: "):
+                prior = entry["prior_passing_event"]
+                assert isinstance(prior, dict)
+                prior["evidence"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("      input_surface_hash: "):
+                cache_key = entry["cache_key"]
+                assert isinstance(cache_key, dict)
+                cache_key["input_surface_hash"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("      validator_implementation_hash: "):
+                cache_key = entry["cache_key"]
+                assert isinstance(cache_key, dict)
+                cache_key["validator_implementation_hash"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("      policy_hash: "):
+                cache_key = entry["cache_key"]
+                assert isinstance(cache_key, dict)
+                cache_key["policy_hash"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("      command_hash: "):
+                cache_key = entry["cache_key"]
+                assert isinstance(cache_key, dict)
+                cache_key["command_hash"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("    result_reused: "):
+                entry["result_reused"] = line.split(": ", 1)[1]
+            elif line.startswith("    allowed_reason: "):
+                entry["allowed_reason"] = line.split(": ", 1)[1]
+            elif line.startswith("    scope: "):
+                entry["scope"] = line.split(": ", 1)[1]
+            elif line.startswith("    closeout_evidence: "):
+                entry["closeout_evidence"] = line.split(": ", 1)[1] == "true"
+            elif line in (
+                "    command:",
+                "      argv:",
+                "    prior_passing_event:",
+                "    cache_key:",
+            ):
+                pass
+            else:
+                raise _cache_error("invalid-cache-evidence-file")
+            index += 1
+        _validate_cache_hit_entry(entry)
+        entries.append(entry)
+
+    ids: set[str] = set()
+    for entry in entries:
+        entry_id = str(entry["id"])
+        if entry_id in ids:
+            raise _cache_error("duplicate-cache-hit-id")
+        ids.add(entry_id)
+    return {"schema_version": 1, "change_id": change_id, "cache_hits": entries}
+
+
+def _validate_cache_hit_entry(entry: dict[str, object]) -> None:
+    required = (
+        "id",
+        "validator_id",
+        "command",
+        "prior_passing_event",
+        "cache_key",
+        "result_reused",
+        "allowed_reason",
+        "scope",
+        "closeout_evidence",
+    )
+    if any(key not in entry for key in required):
+        raise _cache_error("invalid-cache-evidence-file")
+    command = entry["command"]
+    prior = entry["prior_passing_event"]
+    cache_key = entry["cache_key"]
+    if not isinstance(command, dict) or not command.get("argv"):
+        raise _cache_error("invalid-cache-evidence-file")
+    if not isinstance(prior, dict) or not prior.get("stage") or not prior.get("evidence"):
+        raise _cache_error("invalid-cache-evidence-file")
+    if not isinstance(cache_key, dict):
+        raise _cache_error("invalid-cache-evidence-file")
+    for key in (
+        "input_surface_hash",
+        "validator_implementation_hash",
+        "policy_hash",
+        "command_hash",
+    ):
+        if not cache_key.get(key):
+            raise _cache_error("invalid-cache-evidence-file")
 
 
 def _validate_evidence_ref(reference: str, repo_root: Path) -> None:
     if not reference or "#" not in reference:
-        raise CacheIdentityError("invalid-cache-evidence-reference")
+        raise _cache_error("invalid-cache-evidence-reference")
     path, anchor = reference.split("#", 1)
     if not anchor:
-        raise CacheIdentityError("invalid-cache-evidence-reference")
+        raise _cache_error("invalid-cache-evidence-reference")
     relative = normalize_repo_path(path, repo_root)
     if not (repo_root / relative).is_file():
-        raise CacheIdentityError("invalid-cache-evidence-reference")
+        raise _cache_error("invalid-cache-evidence-reference")
 
 
 def _yaml_scalar(value: str) -> str:
     return json.dumps(str(value), ensure_ascii=False)
+
+
+def _parse_json_scalar(value: str) -> str:
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError as exc:
+        raise _cache_error("invalid-cache-evidence-file") from exc
+    if not isinstance(parsed, str):
+        raise _cache_error("invalid-cache-evidence-file")
+    return parsed
+
+
+def _cache_error(code: str) -> CacheIdentityError:
+    return CacheIdentityError(code, code)
 
 
 def _script_arg(argv: Sequence[str]) -> str | None:

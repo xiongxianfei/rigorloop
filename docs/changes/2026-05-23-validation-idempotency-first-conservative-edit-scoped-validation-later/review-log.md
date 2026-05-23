@@ -103,4 +103,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: VIC-CR-M2-R1-F1, VIC-CR-M2-R1-F2
-Open findings: VIC-CR-M2-R1-F1, VIC-CR-M2-R1-F2
+Open findings: None
