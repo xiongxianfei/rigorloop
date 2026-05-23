@@ -47,6 +47,7 @@ flowchart TB
   npm_registry -->|delivers the published package to| package_runner
   generated -->|provides public Codex skills for benchmark temp fixtures used by| token_bench
   scripts -->|validate lifecycle, metadata, review artifacts, release data, and drift for| lifecycle
+  scripts -->|route registered evidence and query bounded change-record slices in| changes
   scripts -->|run in| execution
   release -->|records metadata and checksums for publication of| generated
   release -->|links token-friendliness report evidence from| token_bench

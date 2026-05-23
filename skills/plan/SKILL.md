@@ -90,6 +90,12 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Change-record bounded reads
+
+For planned change records, use the active plan `Current Handoff Summary` as the current workflow-state owner. When the project provides the helper, use `scripts/query-change-record.py <change-id> artifacts` only to discover canonical artifact paths or detail pointers; do not replace active plan state with historical change metadata or query-helper output.
+
+Escalate from bounded helper output to full `change.yaml` when planning depends on forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing behavior, migration compatibility, or whole-record review.
+
 ## Expected output
 
 Output a compact result plus a plan artifact. Copy `assets/plan-skeleton.md` for section order and other assets for repeated structures. Do not duplicate full layout here.

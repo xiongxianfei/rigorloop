@@ -1,0 +1,511 @@
+change_id: 2026-05-22-change-record-catalog-registration-and-bounded-read-model
+title: Change-record catalog registration and bounded read model
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md
+  spec: specs/change-record-catalog-registration-and-bounded-read-model.md
+  test_spec: specs/change-record-catalog-registration-and-bounded-read-model.test.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md
+  plan: docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md
+  review_resolution: docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md
+  explain_change: docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/explain-change.md
+requirements:
+  - Record the accepted proposal direction for treating change records as queried catalogs.
+  - Preserve separate Workstream A and Workstream B implementation slices.
+  - Record formal proposal-review evidence before downstream spec reliance.
+  - Record architecture guidance for evidence registration, selector routing, bounded query helper behavior, and Workstream A before Workstream B sequencing.
+  - Record the milestone plan for Workstream A before Workstream B implementation.
+  - Record a focused test spec mapping requirements, examples, edge cases, and milestones to concrete proof surfaces before implementation.
+  - Implement M1 evidence class registry and registered selector routing while preserving selected lifecycle validation behavior.
+  - Implement M2 registration-debt diagnostics and actual changed-path selector proof before verify.
+  - Implement M3 bounded change-record query helper for summary, artifacts, validation latest, and validation stage reads.
+  - Implement M4 bounded change-record read guidance in affected stage skills after query-helper commands are stable.
+  - Record M5 durable change rationale and lifecycle handoff evidence without claiming final verify or PR readiness.
+tests:
+  - Proposal-review clean receipt validates through review artifact validation.
+  - Artifact lifecycle validation covers the proposal and review evidence.
+  - Architecture and ADR lifecycle validation covers the canonical architecture package update.
+  - Plan artifact lifecycle validation covers the plan body and plan index.
+  - Test-spec artifact lifecycle validation covers the active proof surface before implementation.
+  - Selector regression covers registered evidence entries, bounded patterns, broad-pattern rejection, ambiguity rejection, and registered evidence routing.
+  - Selector regression covers unregistered deterministic evidence registration debt and local changed-path proof.
+  - Query helper regression covers compact and legacy summary reads, artifact-only reads, latest and stage-scoped validation slices, stable diagnostics, unsafe path handling, deterministic output, read-only behavior, and active change summary.
+  - Skill regression covers bounded change-record read guidance, full-read escalation conditions, and query-helper command references in affected stage skills.
+  - Lifecycle closeout proof covers explain-change rationale, review artifact closeout, metadata validation, artifact lifecycle validation, selected CI, and whitespace.
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: commit e0ca12b
+  review_log: docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md
+    result: pass_validated_1_artifact_file
+  - command: git diff --check -- docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md
+    result: pass_validated_2_artifact_files
+  - command: git diff --check -- docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md specs/change-record-catalog-registration-and-bounded-read-model.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_reviews_2_findings_1_log_entries_2_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1
+  - command: git diff --check -- specs/change-record-catalog-registration-and-bounded-read-model.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_after_spec_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_crm_sr1_spec_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_crm_sr1_spec_revision
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_crm_sr1_spec_revision
+  - command: git diff --check -- specs/change-record-catalog-registration-and-bounded-read-model.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_after_crm_sr1_spec_revision
+  - command: bash scripts/ci.sh --mode explicit --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_crm_sr1_spec_revision
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_3_findings_1_log_entries_3_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_review_r2
+  - command: git diff --check -- specs/change-record-catalog-registration-and-bounded-read-model.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_after_spec_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_architecture
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_architecture
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md
+    result: pass_validated_4_artifact_files_after_architecture
+  - command: git diff --check -- specs/change-record-catalog-registration-and-bounded-read-model.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_after_architecture
+  - command: bash scripts/ci.sh --mode explicit --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_architecture
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_architecture_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_architecture_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md
+    result: pass_validated_4_artifact_files_after_architecture_review
+  - command: git diff --check -- docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_after_architecture_review
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_architecture_review
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_plan
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md
+    result: pass_validated_4_artifact_files_after_plan
+  - command: git diff --check -- docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md docs/plan.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_after_plan
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_plan_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_plan_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/plan-review-r1.md
+    result: pass_validated_4_artifact_files_after_plan_review
+  - command: git diff --check -- docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md docs/plan.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_after_plan_review
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/plan-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_plan_review
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_test_spec
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/plan-review-r1.md
+    result: pass_validated_5_artifact_files_after_test_spec
+  - command: git diff --check -- specs/change-record-catalog-registration-and-bounded-read-model.test.md docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md docs/plan.md docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_after_test_spec
+  - command: bash scripts/ci.sh --mode explicit --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/plan-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_test_spec
+  - command: python scripts/test-select-validation.py
+    result: pass_87_tests_after_m1
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md
+    result: pass_registered_change_evidence_preservation_route
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md
+    result: pass_selected_artifact_lifecycle_validate_selector_regression_after_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/plan-review-r1.md
+    result: pass_validated_5_artifact_files_after_m1
+  - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md docs/plan.md
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_selector_regression_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_structure_reviews_6_findings_2_log_entries_6_resolution_entries_2_after_code_review_m1_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m1_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/plan-review-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r1.md
+    result: pass_validated_5_artifact_files_after_code_review_m1_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m1_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md
+    result: pass_registered_change_evidence_preservation_route_with_affected_root_after_crm_m1_cr1
+  - command: python scripts/test-select-validation.py
+    result: pass_87_tests_after_crm_m1_cr1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_selector_regression_after_crm_m1_cr1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_crm_m1_cr1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_crm_m1_cr1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_structure_reviews_6_findings_2_log_entries_6_resolution_entries_2_after_crm_m1_cr1
+  - command: git diff --check --
+    result: pass_after_crm_m1_cr1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_7_findings_2_log_entries_7_resolution_entries_2_after_code_review_m1_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m1_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r2.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_m1_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m1_r2
+  - command: git diff --check --
+    result: pass_after_code_review_m1_r2
+  - command: python scripts/test-select-validation.py
+    result: pass_89_tests_after_m2
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-25-example/notes.md
+    result: pass_blocked_manual_routing_required_registration_debt_after_m2
+  - command: python scripts/select-validation.py --mode local
+    result: pass_local_changed_paths_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_selector_regression_after_m2
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_selector_regression_after_m2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/select-validation.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md
+    result: pass_explicit_selected_artifact_lifecycle_selector_regression_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_m2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_7_findings_2_log_entries_7_resolution_entries_2_after_m2
+  - command: git diff --check --
+    result: pass_after_m2
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_structure_reviews_8_findings_3_log_entries_8_resolution_entries_3_after_code_review_m2_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m2_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m2-r1.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_m2_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m2_r1
+  - command: git diff --check --
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/test-select-validation.py
+    result: pass_92_tests_after_crm_m2_cr1
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/unregistered-evidence.md
+    result: pass_blocked_manual_routing_required_no_deferral_after_crm_m2_cr1
+  - command: python scripts/select-validation.py --mode local
+    result: pass_local_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_selector_regression_after_crm_m2_cr1
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_selector_regression_after_crm_m2_cr1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md
+    result: pass_explicit_selected_artifact_lifecycle_selector_regression_after_crm_m2_cr1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_crm_m2_cr1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_crm_m2_cr1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_structure_reviews_8_findings_3_log_entries_8_resolution_entries_3_after_crm_m2_cr1
+  - command: git diff --check --
+    result: pass_after_crm_m2_cr1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_9_findings_3_log_entries_9_resolution_entries_3_after_code_review_m2_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m2_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m2-r2.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_m2_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m2_r2
+  - command: git diff --check --
+    result: pass_after_code_review_m2_r2
+  - command: python scripts/test-query-change-record.py
+    result: pass_11_tests_after_m3
+  - command: python scripts/test-select-validation.py
+    result: pass_92_tests_after_m3
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary
+    result: pass_active_summary_after_m3
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model artifacts
+    result: pass_active_artifacts_after_m3
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model validation --latest
+    result: pass_active_validation_latest_after_m3
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_18_tests_after_m3
+  - command: python scripts/select-validation.py --mode local
+    result: pass_local_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_change_record_query_regression_selector_regression_after_m3
+  - command: bash scripts/ci.sh --mode explicit --path scripts/query-change-record.py --path scripts/test-query-change-record.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path tests/fixtures/change-metadata --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_change_record_query_regression_selector_regression_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_9_findings_3_log_entries_9_resolution_entries_3_after_m3
+  - command: git diff --check --
+    result: pass_after_m3
+  - command: tmp=$(mktemp -d) && mkdir -p "$tmp/docs/changes/compact-valid" && cp tests/fixtures/change-metadata/compact-valid/change.yaml "$tmp/docs/changes/compact-valid/change.yaml" && python scripts/query-change-record.py compact-valid artifacts --repo-root "$tmp"
+    result: fail_empty_artifact_paths_for_valid_compact_path_vars_during_code_review_m3_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_structure_reviews_10_findings_4_log_entries_10_resolution_entries_4_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m3-r1.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_m3_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m3-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m3_r1
+  - command: git diff --check --
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/test-query-change-record.py
+    result: pass_16_tests_after_crm_m3_cr1
+  - command: tmp=$(mktemp -d) && mkdir -p "$tmp/docs/changes/compact-valid" && cp tests/fixtures/change-metadata/compact-valid/change.yaml "$tmp/docs/changes/compact-valid/change.yaml" && python scripts/query-change-record.py compact-valid artifacts --repo-root "$tmp" && python scripts/query-change-record.py compact-valid summary --repo-root "$tmp"
+    result: pass_compact_path_vars_artifact_paths_after_crm_m3_cr1
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_18_tests_after_crm_m3_cr1
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/compact-valid/change.yaml
+    result: pass_valid_compact_fixture_after_crm_m3_cr1
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary
+    result: pass_active_summary_after_crm_m3_cr1
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model artifacts
+    result: pass_active_artifacts_after_crm_m3_cr1
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model validation --latest
+    result: pass_active_validation_latest_after_crm_m3_cr1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/query-change-record.py --path scripts/test-query-change-record.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py
+    result: pass_selected_change_metadata_regression_change_record_query_regression_selector_regression_after_crm_m3_cr1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_crm_m3_cr1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_crm_m3_cr1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_structure_reviews_10_findings_4_log_entries_10_resolution_entries_4_after_crm_m3_cr1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/query-change-record.py --path scripts/test-query-change-record.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_change_record_query_regression_after_crm_m3_cr1
+  - command: git diff --check --
+    result: pass_after_crm_m3_cr1
+  - command: python scripts/test-query-change-record.py
+    result: pass_16_tests_after_code_review_m3_r2
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model artifacts
+    result: pass_active_artifacts_after_code_review_m3_r2
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary
+    result: pass_active_summary_after_code_review_m3_r2
+  - command: tmp=$(mktemp -d) && mkdir -p "$tmp/docs/changes/compact-valid" && cp tests/fixtures/change-metadata/compact-valid/change.yaml "$tmp/docs/changes/compact-valid/change.yaml" && python scripts/query-change-record.py compact-valid artifacts --repo-root "$tmp" && python scripts/query-change-record.py compact-valid summary --repo-root "$tmp"
+    result: pass_compact_path_vars_artifact_paths_after_code_review_m3_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_11_findings_4_log_entries_11_resolution_entries_4_after_code_review_m3_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m3_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m3-r2.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_m3_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m3_r2
+  - command: git diff --check --
+    result: pass_after_code_review_m3_r2
+  - command: python scripts/test-skill-validator.py
+    result: fail_missing_bounded_read_guidance_before_m4_skill_updates
+  - command: python scripts/test-skill-validator.py
+    result: pass_161_tests_after_m4
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m4
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_check_after_m4
+  - command: python scripts/build-adapters.py --check
+    result: fail_baseline_retired_tracked_adapter_tree_expectation_after_m4
+  - command: python scripts/build-adapters.py --version v0.1.5 --check
+    result: fail_baseline_archive_only_adapter_tree_expectation_after_m4
+  - command: tmp=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmp" && python scripts/validate-adapters.py --root "$tmp" --version v0.1.5
+    result: pass_release_archive_adapter_validation_after_m4
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_101_tests_after_m4
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary
+    result: pass_active_summary_after_m4
+  - command: bash scripts/ci.sh --mode explicit --path skills/proposal-review/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/plan/SKILL.md --path scripts/test-skill-validator.py --path scripts/query-change-record.py
+    result: pass_selected_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_change_metadata_regression_change_record_query_regression_after_m4
+  - command: git diff --check --
+    result: pass_after_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_m4_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path skills/proposal-review/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/plan/SKILL.md
+    result: pass_validated_5_artifact_files_after_m4_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_11_findings_4_log_entries_11_resolution_entries_4_after_m4_recording
+  - command: bash scripts/ci.sh --mode explicit --path skills/proposal-review/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/plan/SKILL.md --path scripts/test-skill-validator.py --path scripts/query-change-record.py --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_change_metadata_regression_change_metadata_validate_change_record_query_regression_after_m4_recording
+  - command: git diff --check --
+    result: pass_after_m4_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_12_findings_4_log_entries_12_resolution_entries_4_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m4_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m4-r1.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_m4_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m4-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m4_r1
+  - command: git diff --check --
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/test-select-validation.py
+    result: pass_92_tests_after_m5
+  - command: python scripts/test-query-change-record.py
+    result: pass_16_tests_after_m5
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_18_tests_after_m5
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m5
+  - command: python scripts/test-skill-validator.py
+    result: pass_161_tests_after_m5
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_check_after_m5
+  - command: python scripts/build-adapters.py --check
+    result: fail_baseline_retired_tracked_adapter_tree_expectation_after_m5
+  - command: tmp=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmp" && python scripts/validate-adapters.py --root "$tmp" --version v0.1.5
+    result: pass_release_archive_adapter_validation_after_m5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_12_findings_4_log_entries_12_resolution_entries_4_after_m5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/explain-change.md
+    result: pass_validated_5_artifact_files_after_m5
+  - command: bash scripts/ci.sh --mode selected
+    result: fail_unsupported_mode_selected_after_m5
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_m5
+  - command: git diff --check --
+    result: pass_after_m5
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_structure_reviews_13_findings_5_log_entries_13_resolution_entries_5_after_code_review_m5_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m5_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m5-r1.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_m5_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m5-r1.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m5_r1
+  - command: git diff --check --
+    result: pass_after_code_review_m5_r1
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_artifact_lifecycle_after_crm_m5_cr1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_crm_m5_cr1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/explain-change.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_crm_m5_cr1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_13_findings_5_log_entries_13_resolution_entries_5_after_crm_m5_cr1
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_crm_m5_cr1
+  - command: git diff --check --
+    result: pass_after_crm_m5_cr1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_14_findings_5_log_entries_14_resolution_entries_5_after_code_review_m5_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m5_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m5-r2.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_m5_r2
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_code_review_m5_r2
+  - command: git diff --check --
+    result: pass_after_code_review_m5_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_14_findings_5_log_entries_14_resolution_entries_5_after_explain_change_refresh
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_explain_change_refresh
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/explain-change.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md
+    result: pass_validated_5_artifact_files_after_explain_change_refresh
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_explain_change_refresh
+  - command: git diff --check --
+    result: pass_after_explain_change_refresh
+  - command: python scripts/build-adapters.py --check
+    result: fail_retired_tracked_adapter_tree_expectation_during_verify
+  - command: tmp=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmp" && python scripts/validate-adapters.py --root "$tmp" --version v0.1.5
+    result: pass_release_archive_adapter_validation_during_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_92_tests_during_verify
+  - command: python scripts/test-query-change-record.py
+    result: pass_16_tests_during_verify
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_18_tests_during_verify
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_during_verify
+  - command: python scripts/test-skill-validator.py
+    result: pass_161_tests_during_verify
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_check_during_verify
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_101_tests_during_verify
+  - command: python scripts/select-validation.py --mode local
+    result: pass_local_selector_artifact_lifecycle_change_metadata_regression_change_metadata_validate_during_verify
+  - command: python scripts/query-change-record.py 2026-05-22-change-record-catalog-registration-and-bounded-read-model summary
+    result: pass_active_summary_during_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model
+    result: pass_closeout_reviews_14_findings_5_log_entries_14_resolution_entries_5_during_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_during_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.md --path specs/change-record-catalog-registration-and-bounded-read-model.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/explain-change.md
+    result: pass_validated_5_artifact_files_during_verify
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_during_verify
+  - command: git diff --check --
+    result: pass_during_verify
+  - command: gh pr create --base main --head proposal/change-record-catalog-read-model
+    result: pass_opened_pr_87
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+    result: pass_valid_change_metadata_after_pr_handoff
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml --path docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_pr_handoff
+  - command: bash scripts/ci.sh --mode local
+    result: pass_local_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_pr_handoff
+  - command: git diff --check --
+    result: pass_after_pr_handoff
+changed_files:
+  - docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md
+  - specs/change-record-catalog-registration-and-bounded-read-model.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md
+  - specs/change-record-catalog-registration-and-bounded-read-model.test.md
+  - docs/plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md
+  - docs/plan.md
+  - scripts/query-change-record.py
+  - scripts/test-query-change-record.py
+  - scripts/test-skill-validator.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - skills/proposal-review/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/pr/SKILL.md
+  - skills/plan/SKILL.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/behavior-preservation.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/selector-routing-proof.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m1-r2.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m3-r2.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m4-r1.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m5-r1.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/code-review-m5-r2.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/explain-change.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-log.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/review-resolution.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r1.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/spec-review-r2.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/reviews/plan-review-r1.md

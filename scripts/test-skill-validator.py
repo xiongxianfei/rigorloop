@@ -252,6 +252,19 @@ PROJECT_ARTIFACT_LOOKUP_SKILLS = [
     "verify",
     "pr",
 ]
+CHANGE_RECORD_BOUNDED_READ_SKILLS = [
+    "proposal-review",
+    "code-review",
+    "verify",
+    "pr",
+    "plan",
+]
+CHANGE_RECORD_FULL_READ_ESCALATION_TERMS = [
+    "full `change.yaml`",
+    "forensic reconstruction",
+    "unsupported-shape",
+    "whole-record review",
+]
 PUBLIC_WORKFLOW_AND_SKILL_SURFACES = [
     "README.md",
     "AGENTS.md",
@@ -4541,6 +4554,56 @@ and result format.
             for term in forbidden_terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertNotIn(term, body)
+
+    def test_change_record_catalog_m4_stage_skills_name_bounded_reads(self) -> None:
+        required_terms_by_skill = {
+            "proposal-review": [
+                "## Change-record bounded reads",
+                "proposal under review",
+                "user intent",
+                "`review-log.md`",
+                "`review-resolution.md`",
+            ],
+            "code-review": [
+                "## Change-record bounded reads",
+                "`scripts/query-change-record.py <change-id> artifacts`",
+                "`scripts/query-change-record.py <change-id> validation --stage <stage>`",
+                "`review-resolution.md`",
+            ],
+            "verify": [
+                "## Change-record bounded reads",
+                "`scripts/query-change-record.py <change-id> summary`",
+                "`scripts/query-change-record.py <change-id> artifacts`",
+                "`scripts/query-change-record.py <change-id> validation --latest`",
+            ],
+            "pr": [
+                "## Change-record bounded reads",
+                "`scripts/query-change-record.py <change-id> summary`",
+                "`scripts/query-change-record.py <change-id> artifacts`",
+                "`scripts/query-change-record.py <change-id> validation --latest`",
+            ],
+            "plan": [
+                "## Change-record bounded reads",
+                "Current Handoff Summary",
+                "`scripts/query-change-record.py <change-id> artifacts`",
+                "do not replace active plan state",
+            ],
+        }
+
+        for skill_name in CHANGE_RECORD_BOUNDED_READ_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms_by_skill[skill_name]:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+            for term in CHANGE_RECORD_FULL_READ_ESCALATION_TERMS:
+                with self.subTest(skill=skill_name, escalation=term):
+                    self.assertIn(term, body)
+
+    def test_change_record_catalog_m4_query_commands_exist(self) -> None:
+        helper = (ROOT / "scripts" / "query-change-record.py").read_text(encoding="utf-8")
+        for term in ["summary", "artifacts", "validation", "--latest", "--stage"]:
+            with self.subTest(term=term):
+                self.assertIn(term, helper)
 
     def test_follow_up_ownership_m1_workflows_doc_contains_policy_table(self) -> None:
         workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")

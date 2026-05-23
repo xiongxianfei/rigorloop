@@ -57,6 +57,10 @@
 - Multi-Adapter Init and Proxy-Aware Adapter Download change metadata: `docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml`
 - Script Output Optimization proposal: `docs/proposals/2026-05-21-script-output-optimization.md`
 - Script Output Optimization spec: `specs/script-output-optimization.md`
+- Change-Record Catalog Registration and Bounded Read Model proposal: `docs/proposals/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md`
+- Change-Record Catalog Registration and Bounded Read Model spec: `specs/change-record-catalog-registration-and-bounded-read-model.md`
+- Change-Record Catalog Registration and Bounded Read Model ADR: `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md`
+- Change-Record Catalog Registration and Bounded Read Model change metadata: `docs/changes/2026-05-22-change-record-catalog-registration-and-bounded-read-model/change.yaml`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
@@ -89,6 +93,7 @@ The goals are:
 - make public release skill token-friendliness measurable through release reports, structured metadata, and fixture-backed runtime benchmarks;
 - make dynamic token-friendliness coverage visible across the core delivery workflow without requiring every optional skill benchmark for every release;
 - keep repository script output proportional to actionability: compact on success, specific on failure, and expandable through explicit verbose modes;
+- treat change records as queried catalogs with registered deterministic evidence classes, selector routing, and bounded read paths for common stage-owned questions;
 - keep first adoption and package-quality refinement review-based until real package usage proves which checks are worth automating.
 
 ## Architecture Constraints
@@ -111,6 +116,10 @@ The goals are:
 - The first RigorLoop CLI package candidate is `@xiongxianfei/rigorloop` with one public binary, `rigorloop`.
 - The completed first CLI slice was limited to help, version, and `init --adapter codex` with dry-run JSON, safe `rigorloop.yaml` generation, verified Codex adapter archive installation, and planned lockfile output only.
 - The next CLI scaffolding slice adds `rigorloop new-change <change-id>` to create `docs/changes/<change-id>/change.yaml` only. It must not create `explain-change.md`, review artifacts, plans, specs, proposals, lockfiles, adapters, or any lifecycle artifact that would imply a later stage has completed.
+- Change records under `docs/changes/<change-id>/` are queried catalogs, not append-only transcripts. Deterministic change-local evidence files require registered evidence-class routing or explicit registration debt.
+- Evidence-class registry behavior belongs to the selector architecture. The first slice may centralize registry data when the selector supports it, or keep a selector-owned registry table with fixture-backed regression coverage.
+- Bounded change-record reads belong to a new query-helper script rather than `validate-change-metadata.py`; validation remains proof work, while querying returns scoped metadata slices.
+- Workstream A, evidence registration and selector routing, ships before Workstream B, bounded query helper and stage-skill guidance, so CI-routing risk and skill-behavior risk remain separately reviewable and rollbackable.
 - The CLI package may contain CLI code, small scaffolds, and bundled official adapter metadata for the package's compatible Codex adapter release. It must not contain adapter archives as authored npm source or generated adapter skill bodies as canonical source.
 - `rigorloop init --adapter codex --from-archive <path>` verifies local archives against bundled adapter metadata shipped with the installed CLI package version and does not require a separate user metadata path in the first slice.
 - `rigorloop init` may write durable `rigorloop.lock` only for the approved Codex lockfile-writing surface after archive verification, extraction safety checks, generated-output mutation, installed-tree verification, and lockfile shape validation have succeeded.
@@ -170,14 +179,14 @@ The repository system is composed of authored guidance, lifecycle artifacts, val
 | Container | Responsibility | Technology / source |
 | --- | --- | --- |
 | Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` |
-| Lifecycle artifacts and ADRs | Carry proposal, spec, architecture, ADR, plan, test-spec, and change metadata states | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, `docs/plans/`, `docs/changes/` |
+| Lifecycle artifacts and ADRs | Carry proposal, spec, architecture, ADR, plan, test-spec, queryable change metadata, and registered change-record evidence states | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, `docs/plans/`, `docs/changes/` |
 | Token-cost benchmark fixtures and reports | Carry executable benchmark prompts, clean downstream fixtures, raw or sanitized run evidence, analyzer summaries, and longitudinal token-friendliness reports | Markdown/YAML/JSONL under `benchmarks/token-cost/` and `docs/reports/token-cost/` |
 | RigorLoop CLI package | Provides the `rigorloop` binary, project scaffolding, change metadata scaffolding, stable human/JSON command envelopes, bundled adapter metadata, verified adapter archive installation for supported adapters, proxy-safe download diagnostics, and durable lockfile writes for verified generated adapter output | Node/npm package under `packages/rigorloop`, published as `@xiongxianfei/rigorloop` only through the approved npm publication boundary |
 | Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
-| Change-local evidence | Historical architecture evidence, explicit exceptional architecture evidence, change metadata, explanation, review resolution, and verification evidence | Markdown/YAML in `docs/changes/<change-id>/` |
+| Change-local evidence | Historical architecture evidence, explicit exceptional architecture evidence, change metadata, registered deterministic evidence files, explanation, review resolution, and verification evidence | Markdown/YAML in `docs/changes/<change-id>/` |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
 | Canonical skills and adapter templates | Source instructions for workflow stages and thin adapter entrypoints | Markdown in `skills/`, templates in `scripts/adapter_templates/` |
-| Validation and generation scripts | Select checks, validate artifacts, refresh generated output, and prove drift status | Python and shell under `scripts/` |
+| Validation and generation scripts | Select checks, route registered change-local evidence, validate artifacts, query bounded change-record slices, refresh generated output, and prove drift status | Python and shell under `scripts/` |
 | Generated runtime state and adapters | Derived local Codex runtime state and public adapter packages for supported agent tools; local runtime state and public adapter packages are generated from canonical sources and are not authored sources | Ignored local files under `.codex/skills/`, tracked adapter support metadata under `dist/adapters/`, generated temporary or release-output package directories, and release asset archives |
 | Release evidence | Authored release contract, notes, adapter artifact metadata, package publication evidence, checksums, and maintainer smoke evidence | YAML/Markdown under `docs/releases/<version>/` and `docs/reports/adapter-artifacts/releases/` |
 | Legacy architecture archive | Historical architecture records retained after accepted current content is merged here | Archived Markdown under `docs/architecture/*.md` |
@@ -201,7 +210,9 @@ The CLI package remains an additive delivery container. For multi-adapter init, 
 The validation and generation container has these important internal responsibilities:
 
 - selector and CI wrapper: `scripts/validation_selection.py`, `scripts/select-validation.py`, and `scripts/ci.sh` classify paths, select stable check IDs, run repository-owned proof commands, summarize successful selected checks, and surface failed check output with stable check identity;
+- evidence registration: the selector owns deterministic evidence-class matching for recurring change-local evidence files, rejects broad or ambiguous patterns through regression coverage, routes registered classes to declared checks, and surfaces stable `manual-routing-required` diagnostics for unregistered deterministic evidence;
 - lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, and `scripts/validate-review-artifacts.py` validate artifact status, change metadata, and material review closeout structure;
+- change-record query helper: `scripts/query-change-record.py` exposes bounded `summary`, `artifacts`, `validation --latest`, and `validation --stage <stage>` reads over valid legacy and compact metadata shapes without executing validation commands;
 - skill and adapter generation: `scripts/build-skills.py`, `scripts/build-adapters.py`, and adapter distribution helpers generate local runtime state, public adapter output, and release artifact outputs from canonical sources;
 - release and adapter validation: `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, adapter artifact metadata, tracked release notes, checksums, and smoke evidence. For public releases, `release-verify.sh` is the maintainer-facing gate and `validate-release.py` owns structured release validation delegated from that gate. For `v0.1.3` and later, these checks validate generated temporary or release-output adapter packages and release archives instead of tracked adapter package trees.
 - measurement, benchmark, and reporting scripts: repository-local commands measure skill size, run token-cost benchmark prompts in disposable fixtures, analyze Codex JSONL session exports, summarize tool-output amplification, validate token-cost release metadata, and produce reviewable evidence for reports without requiring hosted telemetry.
@@ -234,6 +245,17 @@ This decomposition is prose-only for now. A component diagram should be added wh
 7. Final closeout runs `ci-maintenance` when triggered, then `explain-change`, `verify`, and `pr`.
 8. `explain-change`, `verify`, and `pr` use the change-local evidence pack, plan state, validation output, and review closeout state before claiming readiness.
 
+### Change-record catalog flow
+
+1. A contributor or agent adds deterministic evidence under `docs/changes/<change-id>/`.
+2. The changed-path selector matches the path against registered evidence classes before verify.
+3. A registered evidence file routes to the evidence class's declared check IDs and governing change metadata context.
+4. An unregistered deterministic evidence file receives a stable `manual-routing-required` diagnostic and becomes registration debt.
+5. Registration debt is resolved before verify by adding a supported registry route, removing or renaming the unsupported evidence, or recording owner-approved deferral with validation impact and follow-up.
+6. Workstream B adds `scripts/query-change-record.py` as the bounded read surface for common questions such as artifact paths, latest validation state, and stage-scoped validation evidence.
+7. Query helper reads never execute validation bundle commands and never replace full forensic reads when evidence is disputed, ambiguous, unsupported, or the whole change record is the review target.
+8. Stage-skill guidance may reference query helper commands only after those commands are stable and generated adapter output has been validated.
+
 ### Validation flow
 
 1. Changed paths are inspected with `python scripts/select-validation.py --mode explicit --path ...`.
@@ -247,6 +269,7 @@ This decomposition is prose-only for now. A component diagram should be added wh
 9. Final broad smoke runs only when an authoritative trigger requires it.
 10. Normal script and wrapper output is summary-first and failure-focused: passing checks collapse into counts and durations, failed checks expand with actionable details, and full passing detail remains available through `--verbose`.
 11. `--quiet` is a script-local success-silencing mode, not a failure-hiding mode. Successful quiet runs produce no stdout or stderr, while usage errors, validation failures, test failures, and zero-test safety failures may emit bounded actionable diagnostics.
+12. For branches adding deterministic change-local evidence, actual changed-path routing proof is required before verify. Supplemental fixtures and explicit-path validation do not replace routing the branch's own changed paths.
 
 ### Token-cost measurement flow
 
@@ -337,7 +360,7 @@ Authored content is reviewed in Git and distributed as repository files. Generat
 
 The main execution and publication boundaries are:
 
-- local contributor shell: runs selector, CI wrapper, validation, generation, and drift checks;
+- local contributor shell: runs selector, CI wrapper, validation, change-record query helper, generation, and drift checks;
 - CLI package execution: runs the additive `rigorloop` command from a local package artifact, local/global install, or future npm package; the package is a delivery mechanism and not a canonical workflow source;
 - npm registry: public delivery boundary for `@xiongxianfei/rigorloop`; the registry serves the CLI package, but canonical workflow content, skills, schemas, templates, adapter definitions, and release evidence remain repository-owned;
 - downstream change metadata scaffold: `docs/changes/<change-id>/change.yaml` created by `rigorloop new-change`; it is draft traceability state and not proof that proposal, review, verification, or PR stages are complete;
@@ -386,6 +409,12 @@ Lifecycle-managed artifacts keep status in the artifact. Current architecture ar
 The selector owns routing and stable check IDs. Validation scripts own proof work. Manual review owns C4 diagram sufficiency, arc42 completeness, ADR need, and architecture package shape until a later approved automation contract changes that. Architecture support paths may select lifecycle checks for deterministic CI routing, but that routing is not architecture-package enforcement.
 
 Validation output is part of the proof surface. Default human-readable output should scale with actionability rather than work volume: success output records status, identity, counts, and duration; failure output records responsible checks, names, messages, locations when available, and reliable rerun guidance when available. `--verbose` is the explicit expansion path for full passing detail. `--quiet` suppresses successful script output only and must not hide failure reasons.
+
+For change-record evidence, the selector's routing responsibility includes registered evidence-class matching. `manual-routing-required` is a diagnostic and registration-debt signal for deterministic in-repo evidence, not a durable CI workaround. The query helper belongs beside validation scripts but has a separate role: it reads bounded metadata slices and must not run proof commands.
+
+### Change-record catalog model
+
+Change records are cataloged by evidence class and queried by bounded slices. `change.yaml` remains authoritative for validation inventory and summary metadata, but current live workflow state belongs to the active plan, durable rationale belongs to `explain-change.md`, and material review status belongs to review artifacts. Full change-record reads remain valid for forensic reconstruction, disputed evidence, selector debugging, migration checks, unsupported query shapes, and whole-record review.
 
 ### Diagram source policy
 
@@ -479,6 +508,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md`: CLI-owned durable lockfile boundary, strict schema handling, generated-output drift comparison, and partial-failure write ordering for Codex init.
 - `docs/adr/ADR-20260516-rigorloop-npm-publication.md`: first public npm publication boundary, trusted-publishing/bootstrap modes, package-content proof, and real install closeout proof.
 - `docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md`: descriptor-driven multi-adapter init, schema v2 mixed-root lockfile handling, opencode skills-only compatibility, and proxy-safe download diagnostics.
+- `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md`: change records as registered and queryable catalogs, with evidence-class selector routing and bounded query-helper reads.
 
 No additional ADR is required for the 2026-04-29 package-quality refinement because it sharpens the accepted method without changing the durable architecture decision.
 
@@ -506,6 +536,8 @@ No additional ADR is required for script output optimization because it refines 
 | opencode command alias integrity | A user installs opencode from an archive whose metadata declares command aliases. | The CLI installs `.opencode/skills` and `.opencode/commands` or fails verification; older compatible skills-only archives emit `opencode-command-aliases-not-declared` and record only installed roots. |
 | CLI new-change safety | A user runs `rigorloop new-change <change-id> --title <title>` in a project with existing or missing `docs/changes/` paths. | The CLI validates the option domains, builds a write plan naming every affected path, blocks on unsafe change IDs, symlinks, existing planned files, and path-type conflicts, writes only `change.yaml`, and reports partial write failures without claiming success. |
 | Lifecycle claim boundary | A user sees `docs/changes/<change-id>/change.yaml` created by `new-change`. | The generated metadata has empty artifact and evidence arrays, `review.status: pending`, and no `explain_change` artifact; file existence does not imply proposal acceptance, review completion, verification, or PR readiness. |
+| Evidence routing determinism | A branch adds `docs/changes/<change-id>/behavior-preservation.md`. | The changed-path selector routes it through a registered evidence class before verify, or emits stable `manual-routing-required` registration debt. |
+| Bounded readability | A stage needs the latest validation result or canonical artifact paths for a change. | `scripts/query-change-record.py` returns the requested slice without requiring full validation history or executing validation commands. |
 | Local archive verification | A user runs `rigorloop init --adapter codex --from-archive <path>`. | The CLI verifies the archive against bundled official metadata for the installed package's compatible adapter release and blocks with `metadata-unavailable` if metadata is absent. |
 | Lockfile determinism | A user reruns `rigorloop init --adapter codex` after a verified install with unchanged generated output. | The CLI computes the same normalized manifest hash and `rigorloop-tree-hash-v1`, preserves supported unrelated entries, and produces byte-identical lockfile content for identical state. |
 | Lockfile schema v2 compatibility | A user adds Claude Code or opencode to a project with a valid schema v1 Codex lockfile. | The CLI verifies existing Codex generated output against the recorded hash before upgrading to schema v2; drift blocks before unrelated adapter mutation. |
@@ -557,6 +589,10 @@ No additional ADR is required for script output optimization because it refines 
 | Warning-only token budgets could be mistaken for CI gates | The first measurement slice treats budget thresholds as report warnings; hard gates require a later accepted proposal and spec. |
 | Optional benchmark failures could be mistaken for passing release coverage | `skill-token-runtime-v2` separates optional warning evidence from claimed optional release coverage; claimed coverage follows required benchmark evidence and result-quality gates. |
 | Shorter validation output could hide changed coverage or failure evidence | Script output optimization is presentation-only. Behavior-preservation evidence must prove selected checks, exit codes, failure detection, and failure evidence remain unchanged, and quiet mode must not hide non-success diagnostics. |
+| Evidence-class patterns could become too broad | Registry validation rejects broad catch-all patterns and ambiguous matches, and selector regression coverage proves registered recurring patterns route only their intended evidence classes. |
+| `manual-routing-required` could become a permanent workaround | Deterministic in-repo evidence treats the diagnostic as registration debt, and verify readiness blocks unless debt is resolved or an owner-approved deferral records path, reason, validation impact, and follow-up. |
+| Bounded query output could hide failures or blockers | Query helper outputs include blockers, unsupported-shape diagnostics, and detail pointers; full forensic reads remain required for disputed evidence, summary inconsistency, unsupported shapes, and whole-record review. |
+| Stage-skill guidance could drift from query helper commands | Workstream B updates stage skills only after query helper commands are stable, and generated adapter validation is required whenever canonical stage-skill text changes. |
 
 ## Glossary
 
@@ -590,10 +626,14 @@ No additional ADR is required for script output optimization because it refines 
 - `rigorloop-tree-hash-v1`: normalized tree-hash algorithm for generated adapter output, based on sorted relative file paths and normalized file hashes.
 - proxy-safe diagnostic: download failure diagnostic that reports bounded recovery facts without credentials, raw proxy URLs, request headers, private hostnames, raw environment values, usernames, or machine-local paths.
 - change metadata scaffold: draft `docs/changes/<change-id>/change.yaml` produced by `rigorloop new-change` before downstream workflow stages fill in real requirements, tests, validation, changed files, reviews, and durable reasoning artifacts.
+- evidence class registry: repository-owned selector contract that maps recurring deterministic change-local evidence filenames to allowed roots, routes, validators, lifecycle expectations, and allowed or required conditions.
+- registration debt: required resolution work created when deterministic in-repo evidence produces `manual-routing-required`.
+- bounded read: a query path that returns the authoritative slice needed for a common change-record question without loading unrelated history.
+- query helper: repository-owned command that returns bounded change-record slices without running validation proof commands.
 
 ## Next artifacts
 
-- Architecture-review for the Multi-Adapter Init and Proxy-Aware Adapter Download architecture update.
+- Architecture-review for the Change-Record Catalog Registration and Bounded Read Model architecture update.
 
 ## Follow-on artifacts
 
@@ -620,9 +660,10 @@ No additional ADR is required for script output optimization because it refines 
 - RigorLoop npm Publication: accepted proposal and approved spec define the first public `@xiongxianfei/rigorloop@0.1.4` npm release, package-content allowlist, dependency and lifecycle-script policy, trusted-publishing and bootstrap modes, publication evidence, packed-package smoke, real Codex install smoke, and FU-010 closeout boundary.
 - Multi-Adapter Init and Proxy-Aware Adapter Download: accepted proposal, approved spec, and accepted ADR define descriptor-driven CLI init for Codex, Claude Code, and opencode; keep Codex on `.agents/skills`; define schema v2 mixed-root lockfile handling; preserve release-archive and local-archive verification; and add proxy-safe download diagnostics while deferring programmatic Undici dispatcher support.
 - Script Output Optimization: accepted proposal and approved spec define first-slice `scripts/test-select-validation.py` output shaping, reliable-only rerun guidance, silent quiet success, behavior-preservation evidence, and minimal `scripts/ci.sh` wrapper adjustment only when needed to preserve quiet-success and loud-failure behavior.
+- Change-Record Catalog Registration and Bounded Read Model: accepted proposal, approved spec, and accepted ADR define deterministic evidence-class registration, selector routing for recurring change-local evidence, registration-debt handling for `manual-routing-required`, and a bounded query-helper model for common stage-owned reads.
 
 ## Readiness
 
-This canonical package revision records the current repository architecture for generated skill output, adapter release artifact migration, the `v0.1.1` single-authored-source transition release, the `v0.1.3` public adapter untracking release, the first RigorLoop CLI package plus Codex init slice, the durable lockfile extension for verified Codex init, the `new-change` metadata scaffolding slice, the first public npm publication boundary for `@xiongxianfei/rigorloop@0.1.4`, descriptor-driven multi-adapter init with proxy-safe download diagnostics, and first-slice repository script output optimization.
+This canonical package revision records the current repository architecture for generated skill output, adapter release artifact migration, the `v0.1.1` single-authored-source transition release, the `v0.1.3` public adapter untracking release, the first RigorLoop CLI package plus Codex init slice, the durable lockfile extension for verified Codex init, the `new-change` metadata scaffolding slice, the first public npm publication boundary for `@xiongxianfei/rigorloop@0.1.4`, descriptor-driven multi-adapter init with proxy-safe download diagnostics, first-slice repository script output optimization, and the change-record catalog model for registered evidence routing plus bounded reads.
 
-ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md` records the durable `v0.1.3` decision to make release archives the active public adapter install surface and retire tracked generated adapter package fragments. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and original publication block. ADR `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md` records the durable lockfile boundary, strict schema handling, drift comparison, and partial-failure write ordering for Codex init. ADR `docs/adr/ADR-20260516-rigorloop-npm-publication.md` records the first public npm publication boundary, package-content and publication-mode decisions, and real install closeout proof. ADR `docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md` records descriptor-driven multi-adapter init, schema v2 mixed-root lockfiles, opencode skills-only compatibility, and proxy-safe diagnostics. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.
+ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md` records the durable `v0.1.3` decision to make release archives the active public adapter install surface and retire tracked generated adapter package fragments. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and original publication block. ADR `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md` records the durable lockfile boundary, strict schema handling, drift comparison, and partial-failure write ordering for Codex init. ADR `docs/adr/ADR-20260516-rigorloop-npm-publication.md` records the first public npm publication boundary, package-content and publication-mode decisions, and real install closeout proof. ADR `docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md` records descriptor-driven multi-adapter init, schema v2 mixed-root lockfiles, opencode skills-only compatibility, and proxy-safe diagnostics. ADR `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md` records the durable decision to treat change records as registered and queryable catalogs. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.
