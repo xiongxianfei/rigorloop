@@ -5,3 +5,6 @@ __pycache__/
 # Generated local Codex runtime mirror
 .codex/skills/
 .agents/
+
+# Local validation cache state
+.rigorloop-validation-cache/

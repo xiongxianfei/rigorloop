@@ -1,0 +1,31 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-change-validation-metadata
+  change_root: tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+  metadata:
+    command: python scripts/validate-change-metadata.py {change_root}/change.yaml
+validation_events:
+  - stage: code-review-m1-inner-loop
+    lifecycle_stage: code-review
+    bundles:
+      - lifecycle
+    result: pass
+    evidence_kind: cache-hit-inner-loop
+    evidence_ref: tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/validation-cache-evidence.yaml#cache-hit-001
+  - stage: code-review-m1-closeout
+    lifecycle_stage: code-review
+    bundles:
+      - lifecycle
+      - metadata
+    result: pass
+    evidence_kind: actual-run-pass
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - code-review-m1-inner-loop
+    - code-review-m1-closeout
+  final_counts: {}
+  open_validation_blockers: []

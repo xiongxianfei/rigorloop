@@ -1,0 +1,20 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-21-compact-change-validation-metadata
+  change_root: tests/fixtures/change-metadata/compact-invalid-evidence-kind-unknown
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+validation_events:
+  - stage: code-review-m1-r1
+    lifecycle_stage: code-review
+    bundles:
+      - lifecycle
+    result: pass
+    evidence_kind: cached-pass
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - code-review-m1-r1
+  final_counts: {}
+  open_validation_blockers: []

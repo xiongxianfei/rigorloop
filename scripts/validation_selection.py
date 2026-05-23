@@ -91,6 +91,12 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <path>...",
         "lifecycle",
     ),
+    "validation_cache.regression": CheckCatalogEntry(
+        "validation_cache.regression",
+        "python scripts/test-validation-cache.py",
+        "validation-cache",
+        parallel_safe=True,
+    ),
     "change_metadata.regression": CheckCatalogEntry(
         "change_metadata.regression",
         "python scripts/test-change-metadata-validator.py",
@@ -292,6 +298,22 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         required_validator="validate-artifact-lifecycle",
         lifecycle_stage="implementation",
         allowed_when=("implementation support evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="validation-cache-evidence",
+        patterns=("validation-cache-evidence.yaml",),
+        selector_routes=("artifact_lifecycle.validate", "validation_cache.regression"),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("formal validation cache-hit evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="validation-cache-measurement",
+        patterns=("validation-cache-measurement.yaml",),
+        selector_routes=("artifact_lifecycle.validate", "change_metadata.validate"),
+        required_validator="validate-change-metadata",
+        lifecycle_stage="implementation",
+        allowed_when=("Workstream A validation cache measurement evidence is recorded",),
     ),
 )
 
@@ -815,7 +837,19 @@ def _apply_path_selection(
                     path=path,
                 )
             elif route == "change_metadata.validate":
-                if governing_change_yaml:
+                if evidence_class.evidence_class_id == "validation-cache-measurement":
+                    _add_check(
+                        selected,
+                        route,
+                        "Validation cache measurement evidence requires measurement metadata validation.",
+                        path=path,
+                    )
+                    _add_check(
+                        selected,
+                        "change_metadata.regression",
+                        "Validation cache measurement evidence requires validator regression fixtures.",
+                    )
+                elif governing_change_yaml:
                     _add_check(
                         selected,
                         route,
@@ -1035,6 +1069,14 @@ def _apply_path_selection(
             selected,
             "artifact_lifecycle.regression",
             "Changed artifact lifecycle fixture requires lifecycle regression fixtures.",
+        )
+        return
+
+    if category == "validation-cache":
+        _add_check(
+            selected,
+            "validation_cache.regression",
+            "Changed validation cache identity helper requires cache regression fixtures.",
         )
         return
 
@@ -1413,6 +1455,8 @@ def _path_category(path: str) -> str | None:
         "scripts/test-artifact-lifecycle-validator.py",
     }:
         return "validator-artifact-lifecycle"
+    if path in {"scripts/validation_cache.py", "scripts/test-validation-cache.py"}:
+        return "validation-cache"
     if path in {
         "scripts/change_metadata_semantics.py",
         "scripts/validate-change-metadata.py",

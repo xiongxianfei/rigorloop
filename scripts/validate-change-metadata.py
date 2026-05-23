@@ -39,6 +39,36 @@ COMPACT_REQUIRED_FIELDS = {
 }
 LEGACY_VALIDATION_FIELDS = {"validation"}
 VALIDATION_EVENT_RESULTS = {"pass", "fail", "blocked", "skipped", "not-run"}
+EVIDENCE_KIND_RESULTS = {
+    "actual-run-pass": "pass",
+    "actual-run-fail": "fail",
+    "blocked": "blocked",
+    "cache-hit-inner-loop": "pass",
+}
+MEASUREMENT_SUMMARY_FIELDS = {
+    "eligible_commands",
+    "cache_hits",
+    "cache_misses",
+    "cache_disabled",
+    "actual_runs",
+    "estimated_seconds_saved",
+    "remaining_validation_seconds",
+    "cache_hit_rate",
+}
+MEASUREMENT_STILL_RERUN_REASONS = {
+    "none",
+    "input-changed",
+    "implementation-changed",
+    "policy-changed",
+    "closeout-gate",
+    "unsupported-surface",
+    "other",
+}
+WORKSTREAM_B_RECOMMENDATION_STATES = {
+    "defer",
+    "propose-follow-up",
+    "reject-for-now",
+}
 COMPACT_CHANGE_ID_RE = re.compile(
     r"^[0-9]{4}-[0-9]{2}-[0-9]{2}-(?P<slug>[a-z0-9][a-z0-9-]*[a-z0-9])$"
 )
@@ -120,6 +150,8 @@ def parse_scalar(text: str) -> Any:
         return []
     if re.fullmatch(r"-?[0-9]+", value):
         return int(value)
+    if re.fullmatch(r"-?(?:[0-9]+\.[0-9]+|[0-9]+[eE][+-]?[0-9]+|[0-9]+\.[0-9]+[eE][+-]?[0-9]+)", value):
+        return float(value)
     return value
 
 
@@ -380,6 +412,16 @@ def validate_metadata_semantics(data: Any) -> list[str]:
         return []
 
     errors: list[str] = []
+    validation = data.get("validation")
+    if isinstance(validation, list):
+        for index, record in enumerate(validation):
+            if not isinstance(record, dict):
+                continue
+            if "evidence_kind" in record or "evidence_ref" in record:
+                errors.append(
+                    f"validation[{index}].evidence_kind: legacy validation metadata cannot claim cache-hit or closeout evidence"
+                )
+
     review = data.get("review")
     if isinstance(review, dict):
         reviewed_artifact = review.get("reviewed_artifact")
@@ -464,6 +506,8 @@ def validate_repo_relative_path(value: str, path: str) -> list[str]:
     lower_value = value.lower()
     if value.startswith("/"):
         errors.append(f"{path}: unsafe absolute path")
+    if re.match(r"^[A-Za-z]:[\\/]", value):
+        errors.append(f"{path}: unsafe absolute path")
     if value.startswith("~"):
         errors.append(f"{path}: unsafe home-directory path")
     if re.match(r"^[A-Za-z][A-Za-z0-9+.-]*://", value):
@@ -492,6 +536,19 @@ def validate_repo_relative_path(value: str, path: str) -> list[str]:
     )
     if any(marker in lower_value for marker in secret_markers):
         errors.append(f"{path}: unsafe secret-like value")
+    return errors
+
+
+def validate_safe_measurement_value(value: Any, path: str = "$") -> list[str]:
+    errors: list[str] = []
+    if isinstance(value, dict):
+        for key, child in value.items():
+            errors.extend(validate_safe_measurement_value(child, path_label(path, key)))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            errors.extend(validate_safe_measurement_value(child, path_label(path, index)))
+    elif isinstance(value, str):
+        errors.extend(validate_repo_relative_path(value, path))
     return errors
 
 
@@ -984,6 +1041,66 @@ def validate_compact_transcript_reference(
     return []
 
 
+def compact_event_is_closeout(event: dict[str, Any]) -> bool:
+    stage = event.get("stage")
+    return isinstance(stage, str) and "closeout" in stage.lower()
+
+
+def validate_compact_evidence_reference(
+    event: dict[str, Any],
+    event_path: str,
+) -> list[str]:
+    reference = event.get("evidence_ref")
+    if reference is None:
+        return []
+    ref_path = f"{event_path}.evidence_ref"
+    if not is_nonempty_string(reference):
+        return [f"{ref_path}: expected string"]
+    if reference.count("#") != 1:
+        return [f"{ref_path}: malformed evidence reference"]
+    file_part, anchor = reference.split("#", 1)
+    if not file_part or not anchor:
+        return [f"{ref_path}: malformed evidence reference"]
+
+    errors = validate_repo_relative_path(file_part, ref_path)
+    if errors:
+        return errors
+    target = ROOT / file_part
+    if not target.is_file():
+        return [f"{ref_path}: referenced evidence file does not exist: {file_part}"]
+    text = target.read_text(encoding="utf-8")
+    anchor_patterns = (
+        f"id: {anchor}",
+        f'id: "{anchor}"',
+        f"id: '{anchor}'",
+        f"#{anchor}",
+    )
+    if not any(pattern in text for pattern in anchor_patterns):
+        return [f"{ref_path}: unresolved anchor '{anchor}'"]
+    return []
+
+
+def validate_compact_evidence_kind(event: dict[str, Any], event_path: str) -> list[str]:
+    if "evidence_kind" not in event:
+        return []
+    evidence_kind = event.get("evidence_kind")
+    allowed = ", ".join(sorted(EVIDENCE_KIND_RESULTS))
+    if evidence_kind not in EVIDENCE_KIND_RESULTS:
+        return [f"{event_path}.evidence_kind: expected one of: {allowed}"]
+
+    result = event.get("result")
+    expected_result = EVIDENCE_KIND_RESULTS[evidence_kind]
+    if result != expected_result:
+        return [
+            f"{event_path}.evidence_kind: {evidence_kind} requires result {expected_result}"
+        ]
+    if evidence_kind == "cache-hit-inner-loop" and compact_event_is_closeout(event):
+        return [
+            f"{event_path}.evidence_kind: cache-hit-inner-loop cannot satisfy closeout"
+        ]
+    return []
+
+
 def validate_compact_event(
     event: Any,
     index: int,
@@ -1029,6 +1146,8 @@ def validate_compact_event(
 
     errors.extend(validate_compact_failure_details(event, event_path))
     errors.extend(validate_compact_skipped_event(event, event_path))
+    errors.extend(validate_compact_evidence_kind(event, event_path))
+    errors.extend(validate_compact_evidence_reference(event, event_path))
     if variables is not None:
         errors.extend(validate_compact_event_paths(event, event_path, variables))
         errors.extend(validate_compact_transcript_reference(event, event_path, variables))
@@ -1305,8 +1424,163 @@ def validate_compact_metadata_semantics(data: Any) -> list[str]:
     return errors
 
 
+def is_measurement_file(path: Path) -> bool:
+    return path.name == "validation-cache-measurement.yaml"
+
+
+def is_nonnegative_integer(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 0
+
+
+def is_nonnegative_number(value: Any) -> bool:
+    return (
+        isinstance(value, (int, float))
+        and not isinstance(value, bool)
+        and value >= 0
+    )
+
+
+def validate_measurement_required_fields(data: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    required = (
+        "schema_version",
+        "change_id",
+        "measurement_window",
+        "summary",
+        "validators",
+        "closeout",
+        "workstream_b_recommendation",
+    )
+    for field in required:
+        if field not in data:
+            errors.append(f"{field}: missing required measurement field")
+    return errors
+
+
+def validate_measurement_window(value: Any) -> list[str]:
+    if not isinstance(value, dict):
+        return ["measurement_window: expected object"]
+    errors: list[str] = []
+    for field in ("start_stage", "end_stage", "description"):
+        if not is_nonempty_string(value.get(field)):
+            errors.append(f"measurement_window.{field}: expected string")
+    return errors
+
+
+def validate_measurement_summary(value: Any) -> list[str]:
+    if not isinstance(value, dict):
+        return ["summary: expected object"]
+    errors: list[str] = []
+    for field in sorted(MEASUREMENT_SUMMARY_FIELDS):
+        if field not in value:
+            errors.append(f"summary.{field}: missing required field")
+
+    for field in ("eligible_commands", "cache_hits", "cache_misses", "cache_disabled", "actual_runs"):
+        if field in value and not is_nonnegative_integer(value[field]):
+            errors.append(f"summary.{field}: expected non-negative integer")
+    for field in ("estimated_seconds_saved", "remaining_validation_seconds"):
+        if field in value and not is_nonnegative_number(value[field]):
+            errors.append(f"summary.{field}: expected non-negative number")
+    cache_hit_rate = value.get("cache_hit_rate")
+    if "cache_hit_rate" in value and (
+        not is_nonnegative_number(cache_hit_rate) or cache_hit_rate > 1
+    ):
+        errors.append("summary.cache_hit_rate: expected number between 0 and 1")
+
+    eligible = value.get("eligible_commands")
+    hits = value.get("cache_hits")
+    misses = value.get("cache_misses")
+    disabled = value.get("cache_disabled")
+    if all(is_nonnegative_integer(item) for item in (eligible, hits, misses, disabled)):
+        if eligible != hits + misses + disabled:
+            errors.append(
+                "summary.eligible_commands: expected cache_hits + cache_misses + cache_disabled"
+            )
+    return errors
+
+
+def validate_measurement_validators(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return ["validators: expected array"]
+    errors: list[str] = []
+    for index, entry in enumerate(value):
+        entry_path = path_label("validators", index)
+        if not isinstance(entry, dict):
+            errors.append(f"{entry_path}: expected object")
+            continue
+        if not is_nonempty_string(entry.get("validator_id")):
+            errors.append(f"{entry_path}.validator_id: expected string")
+        for field in ("eligible_commands", "cache_hits", "cache_misses", "actual_runs"):
+            if field in entry and not is_nonnegative_integer(entry[field]):
+                errors.append(f"{entry_path}.{field}: expected non-negative integer")
+            elif field not in entry:
+                errors.append(f"{entry_path}.{field}: missing required field")
+        if "estimated_seconds_saved" not in entry:
+            errors.append(f"{entry_path}.estimated_seconds_saved: missing required field")
+        elif not is_nonnegative_number(entry["estimated_seconds_saved"]):
+            errors.append(f"{entry_path}.estimated_seconds_saved: expected non-negative number")
+        reason = entry.get("still_rerun_reason")
+        if reason not in MEASUREMENT_STILL_RERUN_REASONS:
+            allowed = ", ".join(sorted(MEASUREMENT_STILL_RERUN_REASONS))
+            errors.append(f"{entry_path}.still_rerun_reason: expected one of: {allowed}")
+    return errors
+
+
+def validate_measurement_closeout(value: Any) -> list[str]:
+    if not isinstance(value, dict):
+        return ["closeout: expected object"]
+    errors: list[str] = []
+    if not is_nonnegative_integer(value.get("full_bundle_actual_runs")):
+        errors.append("closeout.full_bundle_actual_runs: expected non-negative integer")
+    if value.get("closeout_cache_skips") != 0:
+        errors.append("closeout.closeout_cache_skips: expected 0")
+    return errors
+
+
+def validate_measurement_workstream_b(value: Any) -> list[str]:
+    if not isinstance(value, dict):
+        return ["workstream_b_recommendation: expected object"]
+    errors: list[str] = []
+    state = value.get("state")
+    if state not in WORKSTREAM_B_RECOMMENDATION_STATES:
+        allowed = ", ".join(sorted(WORKSTREAM_B_RECOMMENDATION_STATES))
+        errors.append(f"workstream_b_recommendation.state: expected one of: {allowed}")
+    if not is_nonempty_string(value.get("rationale")):
+        errors.append("workstream_b_recommendation.rationale: expected string")
+    return errors
+
+
+def validate_measurement_evidence(data: Any) -> list[str]:
+    if not isinstance(data, dict):
+        return ["$: expected object"]
+
+    errors = validate_measurement_required_fields(data)
+    if data.get("schema_version") != 1:
+        errors.append("schema_version: expected 1")
+    if not is_nonempty_string(data.get("change_id")):
+        errors.append("change_id: expected string")
+
+    if "measurement_window" in data:
+        errors.extend(validate_measurement_window(data["measurement_window"]))
+    if "summary" in data:
+        errors.extend(validate_measurement_summary(data["summary"]))
+    if "validators" in data:
+        errors.extend(validate_measurement_validators(data["validators"]))
+    if "closeout" in data:
+        errors.extend(validate_measurement_closeout(data["closeout"]))
+    if "workstream_b_recommendation" in data:
+        errors.extend(
+            validate_measurement_workstream_b(data["workstream_b_recommendation"])
+        )
+
+    errors.extend(validate_safe_measurement_value(data))
+    return list(dict.fromkeys(errors))
+
+
 def validate_file(path: Path) -> list[str]:
     data = load_yaml(path)
+    if is_measurement_file(path):
+        return validate_measurement_evidence(data)
     if is_compact_metadata(data):
         return validate_compact_metadata_semantics(data)
     schema = load_schema()

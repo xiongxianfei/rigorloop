@@ -1,0 +1,20 @@
+change_id: 0001-skill-validator
+title: Legacy cache evidence fields
+classification: default
+risk: low
+artifacts:
+  proposal: docs/changes/0001-skill-validator/proposal.md
+requirements:
+  - REQ-001
+tests:
+  - TEST-001
+validation:
+  - command: python scripts/validate-skills.py
+    result: pass
+    evidence_kind: cache-hit-inner-loop
+    evidence_ref: docs/changes/0001-skill-validator/validation-cache-evidence.yaml#cache-hit-001
+changed_files:
+  - scripts/validate-skills.py
+review:
+  status: resolved
+  unresolved_items: 0

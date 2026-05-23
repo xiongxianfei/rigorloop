@@ -273,6 +273,7 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
         validator = load_validator_module()
         unsafe_values = [
             "/tmp/change.yaml",
+            r"C:\Users\alice\change.yaml",
             "~/change.yaml",
             "../change.yaml",
             "example.com/change.yaml",
@@ -447,6 +448,30 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
                 "compact-invalid-extra-summary-blocker",
                 "validation_summary.open_validation_blockers: extra blocker not derived from validation_events: fake-blocker",
             ),
+            (
+                "compact-invalid-evidence-kind-result",
+                "validation_events[0].evidence_kind: actual-run-fail requires result fail",
+            ),
+            (
+                "compact-invalid-evidence-kind-unknown",
+                "validation_events[0].evidence_kind: expected one of",
+            ),
+            (
+                "compact-invalid-evidence-ref-unsafe",
+                "validation_events[0].evidence_ref: unsafe URL or hostname path",
+            ),
+            (
+                "compact-invalid-evidence-ref-missing-anchor",
+                "validation_events[0].evidence_ref: unresolved anchor 'missing-anchor'",
+            ),
+            (
+                "compact-invalid-cache-only-closeout",
+                "validation_events[0].evidence_kind: cache-hit-inner-loop cannot satisfy closeout",
+            ),
+            (
+                "legacy-invalid-cache-evidence-fields",
+                "validation[0].evidence_kind: legacy validation metadata cannot claim cache-hit or closeout evidence",
+            ),
         ]
         for fixture, expected in cases:
             with self.subTest(fixture=fixture):
@@ -457,11 +482,55 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
 
     def test_compact_m3_valid_fixtures_pass(self) -> None:
         for fixture in (
+            "compact-valid-cache-hit-plus-closeout",
             "compact-valid-skipped-with-decision",
             "compact-valid-review-counts",
         ):
             with self.subTest(fixture=fixture):
                 self.assertPathPasses(FIXTURES / fixture / "change.yaml")
+
+    def test_measurement_valid_fixture_passes(self) -> None:
+        self.assertPathPasses(
+            FIXTURES / "measurement-valid" / "validation-cache-measurement.yaml"
+        )
+
+    def test_measurement_invalid_fixtures_fail(self) -> None:
+        cases = [
+            (
+                "measurement-invalid-missing-field",
+                "summary: missing required measurement field",
+            ),
+            (
+                "measurement-invalid-negative-count",
+                "summary.eligible_commands: expected non-negative integer",
+            ),
+            (
+                "measurement-invalid-count-drift",
+                "summary.eligible_commands: expected cache_hits + cache_misses + cache_disabled",
+            ),
+            (
+                "measurement-invalid-closeout-cache-skip",
+                "closeout.closeout_cache_skips: expected 0",
+            ),
+            (
+                "measurement-invalid-workstream-b-state",
+                "workstream_b_recommendation.state: expected one of",
+            ),
+            (
+                "measurement-invalid-missing-rationale",
+                "workstream_b_recommendation.rationale: expected string",
+            ),
+            (
+                "measurement-invalid-unsafe-value",
+                "measurement_window.description: unsafe machine-local path",
+            ),
+        ]
+        for fixture, expected in cases:
+            with self.subTest(fixture=fixture):
+                self.assertPathFails(
+                    FIXTURES / fixture / "validation-cache-measurement.yaml",
+                    expected,
+                )
 
     def test_compact_path_accumulation_helper(self) -> None:
         validator = load_validator_module()
