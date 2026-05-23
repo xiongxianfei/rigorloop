@@ -89,11 +89,11 @@ Primary implementation surfaces:
 - Review status: M5 clean-with-notes
 - Open blockers: none
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted CI and human review for PR #90
 - M2/M3 readiness: M2 and M3 are closed after code-review.
 - Metadata mutation readiness: separate permission-gated M4 milestone.
 - Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: M1 through M5 are closed after code-review, explain-change is complete, verify-triggered CI maintenance fixed adoption-surface proof routing, final local verify and PR-mode selected CI passed, and PR handoff is next. Hosted CI and PR body readiness are not claimed.
+- Reason final closeout is or is not ready: M1 through M5 are closed after code-review, explain-change is complete, verify-triggered CI maintenance fixed adoption-surface proof routing, final local verify and PR-mode selected CI passed, and PR #90 is open. Hosted CI success, human review, merge, and Done are not claimed.
 
 ## Metadata acceptance boundary
 
@@ -475,6 +475,7 @@ Do not record tokens, cookies, browser session data, or private account details.
 - 2026-05-23: Explain-change refreshed the durable change rationale from the actual diff, requirements, plan milestones, validation evidence, and review outcomes; handoff moved to verify.
 - 2026-05-23: Final verify initially passed local direct checks, then PR-mode selected validation found unregistered adoption-surface proof evidence files.
 - 2026-05-23: Verify-triggered CI maintenance registered the adoption-surface proof filenames with the selector, added selector regression coverage, reran PR-mode selected validation and selected CI successfully, recorded branch-ready evidence, and handed off to PR.
+- 2026-05-23: PR #90 opened for hosted CI and human review.
 
 ## Decision log
 
@@ -629,7 +630,7 @@ Do not record tokens, cookies, browser session data, or private account details.
 
 ## Outcome and retrospective
 
-- Pending PR handoff.
+- PR #90 is open after final local verify and PR-mode selected CI. Hosted CI success, human review, merge, and Done are not claimed.
 
 ## Readiness
 
