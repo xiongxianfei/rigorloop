@@ -50,6 +50,7 @@ tests:
   - M1 unit tests cover first-slice cacheable command-family detection, deterministic argv hashing, explicit-path order, duplicate path rejection, unsafe path rejection, input-surface manifests, implementation manifests, policy manifests, and branch/worktree/change-local cache eligibility.
   - M1 selector regression covers deterministic routing for validation cache helper and test script changes.
   - Code-review M1 R1 records one material finding requiring review-resolution for unresolved implementation-manifest handling.
+  - Review-resolution for code-review M1 R1 resolves unresolved implementation-manifest handling and returns M1 to code-review.
   - Artifact lifecycle validation covers the revised proposal and change-local review records.
   - Review-artifact validation covers the recorded proposal-review R1 findings and dispositions.
   - Change metadata validation covers this change-local metadata.
@@ -184,6 +185,20 @@ validation:
     result: pass_validated_5_artifact_files_after_code_review_m1_r1
   - command: git diff --check -- docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
     result: pass_after_code_review_m1_r1
+  - command: python scripts/test-validation-cache.py
+    result: pass_13_tests_after_m1_review_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_61_tests_after_m1_review_resolution
+  - command: python scripts/test-select-validation.py
+    result: pass_94_tests_after_m1_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_m1_review_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md
+    result: pass_validated_4_artifact_files_after_m1_review_resolution
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/test-validation-cache.py
+    result: pass_selected_validation_cache_regression_after_m1_review_resolution
+  - command: git diff --check --
+    result: pass_after_m1_review_resolution
 changed_files:
   - docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md
   - specs/validation-idempotency-and-cache-hit-safety.md
@@ -209,6 +224,6 @@ changed_files:
   - scripts/test-select-validation.py
 review:
   status: changes-requested
-  unresolved_items: 1
+  unresolved_items: 0
   review_log: docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md
   location: docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md

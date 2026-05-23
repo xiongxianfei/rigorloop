@@ -14,8 +14,15 @@ from pathlib import Path
 from typing import Iterable, Sequence
 
 
-class CacheIdentityError(ValueError):
+class CacheIdentityError(RuntimeError):
     """Raised when a value is unsafe or unsupported for cache identity."""
+
+    def __init__(self, code: str, message: str | None = None) -> None:
+        if message is None:
+            message = code
+            code = "cache-identity-error"
+        self.code = code
+        super().__init__(message)
 
 
 @dataclass(frozen=True)
@@ -212,22 +219,43 @@ def build_implementation_manifest(
 ) -> Manifest:
     root = Path(repo_root)
     included: set[str] = set()
-    pending = [normalize_repo_path(entrypoint, root)]
+    entrypoint_path = normalize_repo_path(entrypoint, root)
+    _require_implementation_file(
+        root,
+        entrypoint_path,
+        missing_code="implementation-entrypoint-missing",
+        unreadable_code="implementation-entrypoint-unreadable",
+        label="entrypoint",
+    )
+    pending = [(entrypoint_path, True)]
 
     while pending:
-        relative = pending.pop()
+        relative, is_entrypoint = pending.pop()
         if relative in included:
             continue
         included.add(relative)
         path = root / relative
-        if not path.is_file():
-            continue
-        for imported in _repository_imports(root, path):
+        _require_implementation_file(
+            root,
+            relative,
+            missing_code="repository-local-import-unresolved",
+            unreadable_code="repository-local-helper-unreadable",
+            label="repository-local implementation file",
+        )
+        for imported in _repository_imports(root, path, is_entrypoint=is_entrypoint):
             if imported not in included:
-                pending.append(imported)
+                pending.append((imported, False))
 
     if manifest_generator is not None:
-        included.add(normalize_repo_path(manifest_generator, root))
+        generator_path = normalize_repo_path(manifest_generator, root)
+        _require_implementation_file(
+            root,
+            generator_path,
+            missing_code="implementation-manifest-unresolved",
+            unreadable_code="implementation-manifest-unresolved",
+            label="manifest generator",
+        )
+        included.add(generator_path)
 
     entries = [_file_entry(root, path) for path in sorted(included)]
     return Manifest(files=tuple(entries), manifest_hash=_hash_json(entries))
@@ -297,27 +325,90 @@ def _file_entry(repo_root: Path, relative_path: str) -> dict[str, str]:
     return {"path": normalized, "state": "present", "sha256": _hash_file(path)}
 
 
-def _repository_imports(repo_root: Path, source: Path) -> tuple[str, ...]:
+def _require_implementation_file(
+    repo_root: Path,
+    relative_path: str,
+    *,
+    missing_code: str,
+    unreadable_code: str,
+    label: str,
+) -> None:
+    path = repo_root / relative_path
+    if not path.exists():
+        raise CacheIdentityError(
+            missing_code,
+            f"implementation manifest unresolved: {label} is missing: "
+            f"{relative_path}; cache eligibility disabled",
+        )
+    if not path.is_file():
+        raise CacheIdentityError(
+            unreadable_code,
+            f"implementation manifest unresolved: {label} is not a file: "
+            f"{relative_path}; cache eligibility disabled",
+        )
+
+
+def _repository_imports(
+    repo_root: Path, source: Path, *, is_entrypoint: bool = False
+) -> tuple[str, ...]:
     try:
-        tree = ast.parse(source.read_text(encoding="utf-8"))
-    except (OSError, SyntaxError, UnicodeDecodeError):
-        return ()
+        text = source.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        relative = _repo_relative(repo_root, source)
+        code = "implementation-entrypoint-unreadable" if is_entrypoint else "repository-local-helper-unreadable"
+        raise CacheIdentityError(
+            code,
+            f"implementation manifest unresolved: cannot read {relative}: {exc}; "
+            "cache eligibility disabled",
+        ) from exc
+    try:
+        tree = ast.parse(text, filename=str(source))
+    except SyntaxError as exc:
+        relative = _repo_relative(repo_root, source)
+        code = "implementation-entrypoint-unparseable" if is_entrypoint else "repository-local-helper-unparseable"
+        raise CacheIdentityError(
+            code,
+            f"implementation manifest unresolved: cannot parse {relative}: {exc}; "
+            "cache eligibility disabled",
+        ) from exc
 
     candidates: set[str] = set()
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
-                candidates.update(_resolve_module(repo_root, source, alias.name))
+                resolved = _resolve_module(repo_root, source, alias.name)
+                if not resolved and _is_required_repository_import(alias.name, source, node_level=0):
+                    raise _unresolved_import_error(repo_root, source, alias.name)
+                candidates.update(resolved)
         elif isinstance(node, ast.ImportFrom):
             if node.level > 0:
-                module = "." * node.level + (node.module or "")
+                if node.module:
+                    module = "." * node.level + node.module
+                    resolved = _resolve_module(repo_root, source, module)
+                    if not resolved:
+                        raise _unresolved_import_error(repo_root, source, module)
+                    candidates.update(resolved)
+                else:
+                    for alias in node.names:
+                        module = "." * node.level + alias.name
+                        resolved = _resolve_module(repo_root, source, module)
+                        if not resolved:
+                            raise _unresolved_import_error(repo_root, source, module)
+                        candidates.update(resolved)
+                    continue
             else:
                 module = node.module or ""
-            candidates.update(_resolve_module(repo_root, source, module))
-            if node.module:
-                continue
-            for alias in node.names:
-                candidates.update(_resolve_module(repo_root, source, alias.name))
+                resolved = _resolve_module(repo_root, source, module)
+                if not resolved and _is_required_repository_import(module, source, node_level=0):
+                    raise _unresolved_import_error(repo_root, source, module)
+                candidates.update(resolved)
+                if node.module:
+                    continue
+                for alias in node.names:
+                    resolved = _resolve_module(repo_root, source, alias.name)
+                    if not resolved and _is_required_repository_import(alias.name, source, node_level=0):
+                        raise _unresolved_import_error(repo_root, source, alias.name)
+                    candidates.update(resolved)
 
     return tuple(sorted(candidates))
 
@@ -326,14 +417,18 @@ def _resolve_module(repo_root: Path, source: Path, module_name: str) -> set[str]
     if not module_name:
         return set()
 
-    cleaned = module_name.lstrip(".")
+    level = len(module_name) - len(module_name.lstrip("."))
+    cleaned = module_name[level:]
     module_parts = [part for part in cleaned.split(".") if part]
     if not module_parts:
         return set()
 
     candidate_paths: list[Path] = []
     module_path = Path(*module_parts)
-    search_roots = [source.parent, repo_root]
+    relative_root = source.parent
+    for _ in range(max(level - 1, 0)):
+        relative_root = relative_root.parent
+    search_roots = [relative_root] if level else [source.parent, repo_root]
     for search_root in search_roots:
         candidate_paths.append(search_root / f"{module_path}.py")
         candidate_paths.append(search_root / module_path / "__init__.py")
@@ -347,6 +442,30 @@ def _resolve_module(repo_root: Path, source: Path, module_name: str) -> set[str]
         if candidate.is_file():
             resolved.add(relative.as_posix())
     return resolved
+
+
+def _is_required_repository_import(module_name: str, source: Path, *, node_level: int) -> bool:
+    del source
+    if node_level > 0 or module_name.startswith("."):
+        return True
+    return module_name == "scripts" or module_name.startswith("scripts.")
+
+
+def _unresolved_import_error(repo_root: Path, source: Path, module_name: str) -> CacheIdentityError:
+    relative_source = _repo_relative(repo_root, source)
+    return CacheIdentityError(
+        "repository-local-import-unresolved",
+        f"implementation manifest unresolved: repository-local import "
+        f"'{module_name}' from {relative_source} could not be resolved; "
+        "cache eligibility disabled",
+    )
+
+
+def _repo_relative(repo_root: Path, path: Path) -> str:
+    try:
+        return path.resolve().relative_to(repo_root.resolve()).as_posix()
+    except (OSError, ValueError):
+        return path.as_posix()
 
 
 def _hash_file(path: Path) -> str:

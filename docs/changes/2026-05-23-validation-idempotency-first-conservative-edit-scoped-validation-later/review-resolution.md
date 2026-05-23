@@ -4,7 +4,7 @@
 
 This record closes formal lifecycle review findings for the validation idempotency and cache-hit safety proposal revision.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -148,11 +148,11 @@ No material findings.
 
 Finding ID: VIC-CR-M1-R1-F1
 Disposition: accepted
-Status: open
+Status: resolved after implementation
 Owner: implementer
 Owning stage: implement M1 review-resolution
 Required outcome: The cache identity layer must expose unresolved implementation-manifest state as cache-ineligible, and M1 tests must directly prove the named unresolved-manifest edge case from `VIC-T008` / spec `R26`.
-Chosen action: pending
+Chosen action: Updated `scripts/validation_cache.py` so implementation-manifest construction fails closed with stable `CacheIdentityError.code` values for missing validator entrypoints, unresolved repository-local imports, unparseable repository-local helpers, and unresolved manifest-generator identity. Added direct tests in `scripts/test-validation-cache.py` for missing entrypoint, unresolved `scripts.*` helper import, unparseable repository-local helper, and continued standard-library/third-party exclusion.
 Rationale: A stale or incomplete implementation manifest can make a future cache hit unsafe. M1 is the helper layer that later cache execution will rely on, so unresolved manifest inputs need direct proof before lifecycle cache integration proceeds.
-Validation target: Add focused unresolved-manifest regression coverage and rerun the M1 validation set plus selected CI before rerunning code-review.
-Validation evidence: pending
+Validation target: Focused unresolved-manifest regression coverage and M1 validation set pass before rerunning code-review.
+Validation evidence: `python scripts/test-validation-cache.py` passed with 13 tests; `python scripts/test-artifact-lifecycle-validator.py` passed with 61 tests; `python scripts/test-select-validation.py` passed with 94 tests; `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md` passed; `bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/test-validation-cache.py` passed selected `validation_cache.regression`; `git diff --check --` passed.
