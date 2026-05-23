@@ -12,6 +12,7 @@ Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
 ## Resolution Entries
 
@@ -156,3 +157,7 @@ Chosen action: Updated `scripts/validation_cache.py` so implementation-manifest 
 Rationale: A stale or incomplete implementation manifest can make a future cache hit unsafe. M1 is the helper layer that later cache execution will rely on, so unresolved manifest inputs need direct proof before lifecycle cache integration proceeds.
 Validation target: Focused unresolved-manifest regression coverage and M1 validation set pass before rerunning code-review.
 Validation evidence: `python scripts/test-validation-cache.py` passed with 13 tests; `python scripts/test-artifact-lifecycle-validator.py` passed with 61 tests; `python scripts/test-select-validation.py` passed with 94 tests; `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md` passed; `bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/test-validation-cache.py` passed selected `validation_cache.regression`; `git diff --check --` passed.
+
+### code-review-m1-r2
+
+No material findings.
