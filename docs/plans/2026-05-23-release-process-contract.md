@@ -62,9 +62,9 @@ Generated-output currency is already represented by `skills.drift`, `adapters.dr
 - Last reviewed milestone: M4. Lifecycle closeout and final validation
 - Review status: code-review-m4-r1 clean-with-notes; no review-resolution required
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted CI and human review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, code-review is clean, and final verify passed; PR handoff is in progress and final lifecycle closeout is not claimed before PR review.
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, code-review is clean, final verify passed, and PR #89 is open for hosted CI and human review; final lifecycle closeout is not claimed before PR review completes.
 
 ## Milestones
 
@@ -288,6 +288,7 @@ Generated-output currency is already represented by `skills.drift`, `adapters.dr
 - 2026-05-23: M4 targeted validation passed and the milestone is ready for code-review.
 - 2026-05-23: M4 code-review completed clean-with-notes in `docs/changes/2026-05-23-release-process-contract/reviews/code-review-m4-r1.md`; all implementation milestones are closed and next stage is verify.
 - 2026-05-23: Final verify passed on committed branch state after registering `release-process-dry-run.md` as a routed change evidence class; next stage is PR handoff.
+- 2026-05-23: PR #89 opened for hosted CI and human review.
 
 ## Decision log
 
@@ -381,5 +382,5 @@ Generated-output currency is already represented by `skills.drift`, `adapters.dr
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `pr`.
+- PR #89 is open for hosted CI and human review.
 - Not ready for final lifecycle closeout or any npm publish operation. This change did not publish a package.
