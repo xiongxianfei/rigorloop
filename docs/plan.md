@@ -10,7 +10,6 @@ Index policy:
 -->
 
 ## Active
-- [2026-05-22 Change-Record Catalog Registration and Bounded Read Model](plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md) - active execution plan for implementing registered change-local evidence routing, registration-debt handling before verify, bounded change-record query helper reads, stage-skill read guidance after helper stability, generated adapter proof, and lifecycle closeout; all implementation milestones are closed after clean code review, final local verify passed, and PR #87 is open for hosted CI and human review.
 - [2026-05-22 Bounded Plan Index and Completed-Plan Archive](plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md) - branch-ready after final verify; PR #86 open for hosted CI and human review; blockers: none.
 - [2026-05-21 Compact Change Validation Metadata](plans/2026-05-21-compact-change-validation-metadata.md) - active execution plan for implementing compact `schema_version: 2` change validation metadata while preserving legacy compatibility, exact command/path reconstruction, path-variable safety, stage-derived existence checks, review-artifact count cross-checks, and compactness proof; M1, M2, and M3 are closed after clean code reviews, ci-maintenance fixed selected-CI fixture routing, explain-change is refreshed, and final verify passed from clean tracked branch state; PR handoff is pending.
 - [2026-05-20 Proposal-Family Assets Progressive Disclosure](plans/2026-05-20-proposal-family-assets-progressive-disclosure.md) - active execution plan for adding assets-only progressive disclosure to `proposal` and `proposal-review`; M2, M3, and M4 are closed after clean code reviews, explain-change and verify are recorded, and PR #81 is open for hosted CI and human review.
@@ -22,6 +21,7 @@ Index policy:
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-05-22 Change-Record Catalog Registration and Bounded Read Model](plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md) - done; terminal state: done; PR #87 merged.
 - [2026-05-22 Broad-Smoke and Fixture-Suite Output Compaction](plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md) - done; terminal state: done; PR #85 merged.
 - [2026-05-21 Script Output Optimization](plans/2026-05-21-script-output-optimization.md) - done; terminal state: done; PR #83 merged.
 - [2026-05-21 Review-Skill Family Consistency and Parser-Owned Finding Shape](plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md) - done; terminal state: done; PR #82 merged.
@@ -31,7 +31,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-05-19 Spec and Test-Spec Structural Hygiene](plans/2026-05-19-spec-and-test-spec-structural-hygiene.md) - done; terminal state: done; disposition recorded in plan body.
 - [2026-05-19 Assets-First Progressive Disclosure Pilot](plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) - done; terminal state: done; PR #75 passed hosted CI.
 - [2026-05-19 Published Skill Design Plan Family Rollout](plans/2026-05-19-published-skill-design-plan-family.md) - done; terminal state: done; PR #74 merged.
-- [2026-05-19 Published Skill Design Implement And Code-Review Rollout](plans/2026-05-19-published-skill-design-implement-code-review.md) - done; terminal state: done; PR #73 merged.
 
 ## Superseded
 - none yet
