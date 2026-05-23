@@ -49,3 +49,13 @@ This change does not cite a formal cache hit as lifecycle evidence. The M2 tests
 | Evidence references | Existing transcript reference checks | `compact-invalid-evidence-ref-unsafe` and `compact-invalid-evidence-ref-missing-anchor` fail | unsafe or unresolved evidence refs are rejected |
 | Cache-only closeout | First-slice closeout full-bundle rule | `compact-invalid-cache-only-closeout` fails in change-metadata validation and lifecycle validation | cache hits remain inner-loop evidence only |
 | Legacy metadata compatibility | Existing legacy fixtures | `valid-basic` still passes; `legacy-invalid-cache-evidence-fields` fails only when legacy metadata claims cache evidence semantics | legacy metadata remains valid unless it uses unsupported cache fields |
+
+## M4 preservation matrix
+
+| Surface | Baseline proof | M4 proof | Preservation result |
+| --- | --- | --- | --- |
+| Measurement evidence | Spec requires `validation-cache-measurement.yaml` after Workstream A | `test_measurement_valid_fixture_passes` and this change's measurement file validate required counts, closeout fields, and Workstream B recommendation state | measurement is reviewable and bounded |
+| Measurement rejection | Measurement gate must reject impossible or unsafe data | `test_measurement_invalid_fixtures_fail` covers missing fields, negative counts, inconsistent counts, nonzero closeout cache skips, invalid Workstream B state, missing rationale, and unsafe values | unsafe measurement cannot authorize follow-up work |
+| Selector routing | New deterministic evidence files must not create manual routing debt | `test_validation_cache_evidence_files_route_without_manual_debt` routes cache evidence and measurement evidence through selected checks | evidence files are selected deterministically |
+| Workstream B boundary | Edit-scoped validation remains blocked | M4 adds no changed-path or edit-class validator narrowing; Workstream B remains only a recommendation field in measurement evidence | Workstream B behavior remains unimplemented |
+| Actual validator behavior | Existing M2/M3 actual-run proof | M4 changes measurement validation and selector routing only; lifecycle explicit-path execution semantics are unchanged | validator pass/fail behavior preserved |

@@ -950,6 +950,33 @@ raise SystemExit({exit_code})
         self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
         self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
 
+    def test_validation_cache_evidence_files_route_without_manual_debt(self) -> None:
+        paths = [
+            "docs/changes/2026-04-25-example/validation-cache-evidence.yaml",
+            "docs/changes/2026-04-25-example/validation-cache-measurement.yaml",
+        ]
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(payload["blocking_results"])
+        self.assertFalse(payload["registration_debt"])
+        self.assertTrue(
+            all(
+                classified["category"] == "registered-change-evidence"
+                for classified in payload["classified_paths"]
+            )
+        )
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("change_metadata.validate", selected_ids(payload))
+        self.assertIn("validation_cache.regression", selected_ids(payload))
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
+        self.assertIn("docs/changes/2026-04-25-example/validation-cache-evidence.yaml", lifecycle_check["paths"])
+        self.assertIn("docs/changes/2026-04-25-example/validation-cache-measurement.yaml", lifecycle_check["paths"])
+        metadata_check = next(check for check in payload["selected_checks"] if check["id"] == "change_metadata.validate")
+        self.assertIn("docs/changes/2026-04-25-example/validation-cache-measurement.yaml", metadata_check["paths"])
+
     def test_unregistered_change_evidence_produces_registration_debt(self) -> None:
         result = self.select(["docs/changes/2026-04-25-example/notes.md"])
         payload = result.to_json_dict()
