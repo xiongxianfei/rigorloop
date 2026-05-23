@@ -299,6 +299,22 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         lifecycle_stage="implementation",
         allowed_when=("implementation support evidence is recorded",),
     ),
+    EvidenceClassRegistration(
+        evidence_class_id="validation-cache-evidence",
+        patterns=("validation-cache-evidence.yaml",),
+        selector_routes=("artifact_lifecycle.validate", "validation_cache.regression"),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("formal validation cache-hit evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="validation-cache-measurement",
+        patterns=("validation-cache-measurement.yaml",),
+        selector_routes=("artifact_lifecycle.validate", "change_metadata.validate"),
+        required_validator="validate-change-metadata",
+        lifecycle_stage="implementation",
+        allowed_when=("Workstream A validation cache measurement evidence is recorded",),
+    ),
 )
 
 
@@ -821,7 +837,19 @@ def _apply_path_selection(
                     path=path,
                 )
             elif route == "change_metadata.validate":
-                if governing_change_yaml:
+                if evidence_class.evidence_class_id == "validation-cache-measurement":
+                    _add_check(
+                        selected,
+                        route,
+                        "Validation cache measurement evidence requires measurement metadata validation.",
+                        path=path,
+                    )
+                    _add_check(
+                        selected,
+                        "change_metadata.regression",
+                        "Validation cache measurement evidence requires validator regression fixtures.",
+                    )
+                elif governing_change_yaml:
                     _add_check(
                         selected,
                         route,

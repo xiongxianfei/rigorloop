@@ -489,6 +489,49 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
             with self.subTest(fixture=fixture):
                 self.assertPathPasses(FIXTURES / fixture / "change.yaml")
 
+    def test_measurement_valid_fixture_passes(self) -> None:
+        self.assertPathPasses(
+            FIXTURES / "measurement-valid" / "validation-cache-measurement.yaml"
+        )
+
+    def test_measurement_invalid_fixtures_fail(self) -> None:
+        cases = [
+            (
+                "measurement-invalid-missing-field",
+                "summary: missing required measurement field",
+            ),
+            (
+                "measurement-invalid-negative-count",
+                "summary.eligible_commands: expected non-negative integer",
+            ),
+            (
+                "measurement-invalid-count-drift",
+                "summary.eligible_commands: expected cache_hits + cache_misses + cache_disabled",
+            ),
+            (
+                "measurement-invalid-closeout-cache-skip",
+                "closeout.closeout_cache_skips: expected 0",
+            ),
+            (
+                "measurement-invalid-workstream-b-state",
+                "workstream_b_recommendation.state: expected one of",
+            ),
+            (
+                "measurement-invalid-missing-rationale",
+                "workstream_b_recommendation.rationale: expected string",
+            ),
+            (
+                "measurement-invalid-unsafe-value",
+                "measurement_window.description: unsafe machine-local path",
+            ),
+        ]
+        for fixture, expected in cases:
+            with self.subTest(fixture=fixture):
+                self.assertPathFails(
+                    FIXTURES / fixture / "validation-cache-measurement.yaml",
+                    expected,
+                )
+
     def test_compact_path_accumulation_helper(self) -> None:
         validator = load_validator_module()
         data = validator.load_yaml(FIXTURES / "compact-valid" / "change.yaml")
