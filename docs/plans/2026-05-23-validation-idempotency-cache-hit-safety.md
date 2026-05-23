@@ -76,13 +76,13 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Current Handoff Summary
 
 - Current milestone: M1. Cache identity primitives and local cache contract
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M0. Plan-review and test-spec handoff
-- Review status: M1 implementation is ready for code-review; `plan-review-r1` approved the plan with no material findings; test-spec is active.
-- Remaining in-scope implementation milestones: M1 pending code-review; M2, M3, and M4 remain planned.
-- Next stage: code-review M1
+- Review status: `code-review-m1-r1` requested changes for `VIC-CR-M1-R1-F1`; `plan-review-r1` approved the plan with no material findings; test-spec is active.
+- Remaining in-scope implementation milestones: M1 pending review-resolution; M2, M3, and M4 remain planned.
+- Next stage: review-resolution M1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is not reviewed, M2 through M4 are not implemented or reviewed, final validation has not run, explain-change and verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 has an open code-review finding, M2 through M4 are not implemented or reviewed, final validation has not run, explain-change and verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -127,7 +127,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ### M1. Cache identity primitives and local cache contract
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add deterministic cache-key primitives and local-cache eligibility tests without integrating cache skipping into the validator yet.
 - Requirements: R1 through R31, R60 through R72, R78 through R100; AC1 through AC7, AC15, AC19 through AC23.
 - Files/components likely touched:
@@ -416,6 +416,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: M1 added `scripts/validation_cache.py` and `scripts/test-validation-cache.py` for cacheable command-family detection, deterministic argv and path normalization, input-surface manifests, implementation and policy manifests, and branch/worktree/change-local cache eligibility. No validator cache skipping was integrated in M1.
 - 2026-05-23: M1 added selector routing for `scripts/validation_cache.py` and `scripts/test-validation-cache.py` so selected CI runs `validation_cache.regression` instead of blocking on `manual-routing-required`.
 - 2026-05-23: M1 direct validation passed and the milestone is ready for code-review.
+- 2026-05-23: Code-review M1 R1 recorded `VIC-CR-M1-R1-F1`; M1 needs review-resolution for unresolved implementation-manifest handling before it can close.
 
 ## Decision log
 
@@ -446,6 +447,10 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed after M1 implementation.
 - 2026-05-23: `python scripts/test-select-validation.py` passed after adding `validation_cache.regression` selector routing.
 - 2026-05-23: `bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/test-validation-cache.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path specs/validation-idempotency-and-cache-hit-safety.test.md --path specs/validation-idempotency-and-cache-hit-safety.md` passed selected checks `artifact_lifecycle.validate`, `validation_cache.regression`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- 2026-05-23: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed after recording code-review M1 R1.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed after recording code-review M1 R1.
+- 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m1-r1.md` passed after recording code-review M1 R1.
+- 2026-05-23: `git diff --check -- docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed after recording code-review M1 R1.
 
 ## Outcome and retrospective
 
@@ -455,3 +460,4 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 - See `Current Handoff Summary`.
 - Ready for code-review M1. M2, M3, M4, explain-change, verify, PR readiness, and final closeout remain incomplete.
+- Ready for review-resolution M1. M2, M3, M4, explain-change, verify, PR readiness, and final closeout remain incomplete.
