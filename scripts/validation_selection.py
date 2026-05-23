@@ -91,6 +91,12 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <path>...",
         "lifecycle",
     ),
+    "validation_cache.regression": CheckCatalogEntry(
+        "validation_cache.regression",
+        "python scripts/test-validation-cache.py",
+        "validation-cache",
+        parallel_safe=True,
+    ),
     "change_metadata.regression": CheckCatalogEntry(
         "change_metadata.regression",
         "python scripts/test-change-metadata-validator.py",
@@ -1038,6 +1044,14 @@ def _apply_path_selection(
         )
         return
 
+    if category == "validation-cache":
+        _add_check(
+            selected,
+            "validation_cache.regression",
+            "Changed validation cache identity helper requires cache regression fixtures.",
+        )
+        return
+
     if category == "retained-change-fixture":
         _add_check(
             selected,
@@ -1413,6 +1427,8 @@ def _path_category(path: str) -> str | None:
         "scripts/test-artifact-lifecycle-validator.py",
     }:
         return "validator-artifact-lifecycle"
+    if path in {"scripts/validation_cache.py", "scripts/test-validation-cache.py"}:
+        return "validation-cache"
     if path in {
         "scripts/change_metadata_semantics.py",
         "scripts/validate-change-metadata.py",

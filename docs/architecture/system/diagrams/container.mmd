@@ -13,6 +13,7 @@ flowchart TB
     cli["RigorLoop CLI package<br/>[Node/npm package]"]:::container
     architecture["Canonical architecture package<br/>[Markdown and Mermaid]"]:::container
     changes["Change-local evidence<br/>[Markdown and YAML]"]:::container
+    validation_cache["Local validation execution cache<br/>[Untracked local state]"]:::container
     templates["Templates and diagram styles<br/>[Markdown and Mermaid]"]:::container
     skills["Canonical skills and adapter templates<br/>[Markdown and templates]"]:::container
     scripts["Validation and generation scripts<br/>[Python and shell]"]:::container
@@ -48,6 +49,8 @@ flowchart TB
   generated -->|provides public Codex skills for benchmark temp fixtures used by| token_bench
   scripts -->|validate lifecycle, metadata, review artifacts, release data, and drift for| lifecycle
   scripts -->|route registered evidence and query bounded change-record slices in| changes
+  scripts -->|read and write non-portable cache entries in| validation_cache
+  validation_cache -->|may produce reviewable cache-hit claims recorded in| changes
   scripts -->|run in| execution
   release -->|records metadata and checksums for publication of| generated
   release -->|links token-friendliness report evidence from| token_bench

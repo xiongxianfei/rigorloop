@@ -57,6 +57,7 @@ EXPECTED_CATALOG = {
     "review_artifacts.validate": "python scripts/validate-review-artifacts.py <change-root>...",
     "artifact_lifecycle.regression": "python scripts/test-artifact-lifecycle-validator.py",
     "artifact_lifecycle.validate": "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <path>...",
+    "validation_cache.regression": "python scripts/test-validation-cache.py",
     "change_metadata.regression": "python scripts/test-change-metadata-validator.py",
     "change_metadata.validate": "python scripts/validate-change-metadata.py <change-yaml>...",
     "change_record_query.regression": "python scripts/test-query-change-record.py",
@@ -1133,6 +1134,7 @@ raise SystemExit({exit_code})
             "skills.regression",
             "token_cost.regression",
             "token_cost.report_regression",
+            "validation_cache.regression",
         }
 
         self.assertEqual(
@@ -1318,6 +1320,18 @@ raise SystemExit({exit_code})
                 "category": "adapters",
                 "status": "ok",
                 "checks": {"adapters.regression", "adapters.drift", "adapters.validate"},
+            },
+            {
+                "path": "scripts/validation_cache.py",
+                "category": "validation-cache",
+                "status": "ok",
+                "checks": {"validation_cache.regression"},
+            },
+            {
+                "path": "scripts/test-validation-cache.py",
+                "category": "validation-cache",
+                "status": "ok",
+                "checks": {"validation_cache.regression"},
             },
             {
                 "path": "scripts/validate-skills.py",
