@@ -4,13 +4,14 @@
 
 This record closes formal lifecycle review findings for the validation idempotency and cache-hit safety proposal revision.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
+Review closeout: code-review-m1-r1
 
 ## Resolution Entries
 
@@ -140,3 +141,18 @@ No material findings.
 ### plan-review-r1
 
 No material findings.
+
+### code-review-m1-r1
+
+#### VIC-CR-M1-R1-F1
+
+Finding ID: VIC-CR-M1-R1-F1
+Disposition: accepted
+Status: open
+Owner: implementer
+Owning stage: implement M1 review-resolution
+Required outcome: The cache identity layer must expose unresolved implementation-manifest state as cache-ineligible, and M1 tests must directly prove the named unresolved-manifest edge case from `VIC-T008` / spec `R26`.
+Chosen action: pending
+Rationale: A stale or incomplete implementation manifest can make a future cache hit unsafe. M1 is the helper layer that later cache execution will rely on, so unresolved manifest inputs need direct proof before lifecycle cache integration proceeds.
+Validation target: Add focused unresolved-manifest regression coverage and rerun the M1 validation set plus selected CI before rerunning code-review.
+Validation evidence: pending
