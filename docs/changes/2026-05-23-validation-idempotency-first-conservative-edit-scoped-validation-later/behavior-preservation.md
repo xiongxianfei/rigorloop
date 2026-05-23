@@ -39,3 +39,13 @@ docs/changes/<change-id>/validation-cache-evidence.yaml
 ```
 
 This change does not cite a formal cache hit as lifecycle evidence. The M2 tests exercise the evidence writer in a temporary fixture so no durable workflow cache-hit claim is recorded for this change.
+
+## M3 preservation matrix
+
+| Surface | Baseline proof | M3 proof | Preservation result |
+| --- | --- | --- | --- |
+| Compact validation event pass behavior | Existing compact metadata fixtures | `compact-valid-cache-hit-plus-closeout` passes with supporting cache-hit evidence and actual-run closeout evidence | valid compact metadata remains accepted |
+| Invalid evidence-kind pairings | Spec requirements R104 through R108 | `compact-invalid-evidence-kind-result` and `compact-invalid-evidence-kind-unknown` fail with stable diagnostics | invalid evidence state is rejected |
+| Evidence references | Existing transcript reference checks | `compact-invalid-evidence-ref-unsafe` and `compact-invalid-evidence-ref-missing-anchor` fail | unsafe or unresolved evidence refs are rejected |
+| Cache-only closeout | First-slice closeout full-bundle rule | `compact-invalid-cache-only-closeout` fails in change-metadata validation and lifecycle validation | cache hits remain inner-loop evidence only |
+| Legacy metadata compatibility | Existing legacy fixtures | `valid-basic` still passes; `legacy-invalid-cache-evidence-fields` fails only when legacy metadata claims cache evidence semantics | legacy metadata remains valid unless it uses unsupported cache fields |

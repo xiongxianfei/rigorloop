@@ -76,13 +76,13 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Current Handoff Summary
 
 - Current milestone: M3. Compact metadata evidence-kind and closeout enforcement
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Explicit-path lifecycle cache integration and cache-hit evidence
-- Review status: code-review M2 R2 approved M2 with no material findings after `code-review-m2-r1` review-resolution.
-- Remaining in-scope implementation milestones: M3 and M4 remain planned.
-- Next stage: implement M3
+- Review status: M3 implementation complete and ready for code-review.
+- Remaining in-scope implementation milestones: M3 pending code-review; M4 remains planned.
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 and M4 are not implemented or reviewed, final validation has not run, explain-change and verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M3 is implemented but not reviewed, M4 is not implemented or reviewed, final validation has not run, explain-change and verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -227,7 +227,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ### M3. Compact metadata evidence-kind and closeout enforcement
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Enforce the compact `schema_version: 2` evidence-kind contract and reject cache-only closeout claims through lifecycle and change-metadata validators.
 - Requirements: R50 through R59, R101 through R116; AC11 through AC14, AC24 through AC28.
 - Files/components likely touched:
@@ -423,6 +423,9 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: Code-review M2 R1 recorded `VIC-CR-M2-R1-F1` and `VIC-CR-M2-R1-F2`; M2 needs review-resolution for local cache record identity checks and formal evidence preservation before it can close.
 - 2026-05-23: Review-resolution for `VIC-CR-M2-R1-F1` made local cache-hit eligibility require matching `cache_key`, `validator_id`, and `command_family`, with malformed records treated as cache misses. Review-resolution for `VIC-CR-M2-R1-F2` made formal cache-hit evidence writes preserve unrelated records, replace only matching IDs, and reject malformed existing evidence. M2 is ready for code-review rerun.
 - 2026-05-23: Code-review M2 R2 approved M2 with no material findings. M2 is closed and next stage is implement M3.
+- 2026-05-23: M3 implementation started for compact validation event evidence-kind checks and cache-only closeout rejection.
+- 2026-05-23: M3 added compact `evidence_kind` result-pair validation, safe `evidence_ref` validation, legacy cache-evidence field rejection, change-metadata cache-only closeout rejection, and lifecycle-side cache-only closeout rejection for compact change metadata.
+- 2026-05-23: M3 direct validation passed and the milestone is ready for code-review.
 
 ## Decision log
 
@@ -436,6 +439,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - M1 did not need a local cache directory, so no `.gitignore` change was required.
 - Selected CI initially blocked on the new cache script paths; M1 added a narrow `validation-cache` selector category and regression route to avoid carrying known validation debt.
 - M2 introduced the default `.rigorloop-validation-cache/` local cache directory for opt-in cache runs, so `.gitignore` now excludes that untracked execution cache state.
+- M3 keeps closeout detection tied to explicit compact validation event fields and treats stage IDs containing `closeout` as closeout records for the first-slice guard.
 
 ## Validation notes
 
@@ -491,6 +495,14 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed after recording code-review M2 R2.
 - 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m2-r2.md` passed after recording code-review M2 R2.
 - 2026-05-23: `git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md` passed after recording code-review M2 R2.
+- 2026-05-23: `python scripts/test-change-metadata-validator.py` passed with 18 tests after M3 compact evidence-kind and closeout enforcement.
+- 2026-05-23: `python scripts/test-artifact-lifecycle-validator.py` passed with 63 tests after M3 compact evidence-kind and closeout enforcement.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed after M3 implementation.
+- 2026-05-23: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed after M3 implementation.
+- 2026-05-23: `bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/artifact_lifecycle_validation.py --path scripts/test-change-metadata-validator.py --path scripts/test-artifact-lifecycle-validator.py --path tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml --path tests/fixtures/change-metadata/compact-invalid-cache-only-closeout/change.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md` passed selected checks `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, and `change_metadata.regression`.
+- 2026-05-23: `git diff --check --` passed after M3 implementation.
+- 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md` passed after M3 state-sync updates.
+- 2026-05-23: `bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/artifact_lifecycle_validation.py --path scripts/test-change-metadata-validator.py --path scripts/test-artifact-lifecycle-validator.py --path tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml --path tests/fixtures/change-metadata/compact-invalid-cache-only-closeout/change.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md` passed selected checks `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate` after M3 state-sync updates.
 - 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed after resolving code-review M2 R1.
 - 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md` passed after resolving code-review M2 R1.
 - 2026-05-23: `bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/validate-artifact-lifecycle.py --path scripts/test-validation-cache.py --path scripts/test-artifact-lifecycle-validator.py --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md` passed selected checks `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, and `validation_cache.regression`.

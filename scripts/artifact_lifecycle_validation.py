@@ -80,6 +80,7 @@ class ValidationScope:
     input_source: str
     tracked_revision: str | None
     changed_paths: tuple[Path, ...]
+    change_yaml_paths: tuple[Path, ...]
     related_artifact_paths: tuple[Path, ...]
     baseline_paths: tuple[Path, ...]
     generated_paths: tuple[Path, ...]
@@ -449,6 +450,73 @@ def _extract_change_yaml_refs(root: Path, path: Path, tracked_revision: str | No
             refs.add(resolved)
 
     return refs
+
+
+def _change_yaml_closeout_cache_findings(
+    root: Path,
+    path: Path,
+    tracked_revision: str | None = None,
+) -> list[str]:
+    text = _read_repo_text(root, path, tracked_revision)
+    if "schema_version: 2" not in text or "validation_events:" not in text:
+        return []
+
+    events: list[dict[str, str]] = []
+    current: dict[str, str] | None = None
+    in_events = False
+    events_indent = 0
+    current_indent = 0
+
+    for raw_line in text.splitlines():
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+        indent = len(raw_line) - len(raw_line.lstrip(" "))
+        stripped = raw_line.strip()
+        if stripped == "validation_events:":
+            in_events = True
+            events_indent = indent
+            continue
+        if in_events and indent <= events_indent:
+            break
+        if not in_events:
+            continue
+        if indent == events_indent + 2 and stripped.startswith("- "):
+            if current is not None:
+                events.append(current)
+            current = {}
+            current_indent = indent
+            remainder = stripped[2:].strip()
+            if ":" in remainder:
+                key, value = remainder.split(":", 1)
+                current[key.strip()] = value.strip().strip("'\"")
+            continue
+        if current is None or indent <= current_indent or ":" not in stripped:
+            continue
+        key, value = stripped.split(":", 1)
+        key = key.strip()
+        if key in {"stage", "result", "evidence_kind"}:
+            current[key] = value.strip().strip("'\"")
+
+    if current is not None:
+        events.append(current)
+
+    cache_closeout = any(
+        "closeout" in event.get("stage", "").lower()
+        and event.get("result") == "pass"
+        and event.get("evidence_kind") == "cache-hit-inner-loop"
+        for event in events
+    )
+    actual_closeout = any(
+        "closeout" in event.get("stage", "").lower()
+        and event.get("result") == "pass"
+        and event.get("evidence_kind") == "actual-run-pass"
+        for event in events
+    )
+    if cache_closeout and not actual_closeout:
+        return [
+            "closeout requires actual-run-pass evidence; cache-hit-inner-loop is inner-loop evidence only"
+        ]
+    return []
 
 
 def _plan_lifecycle_candidate_paths(
@@ -1123,6 +1191,7 @@ def _resolve_scope(
 
     visited: set[Path] = set()
     related_artifacts: set[Path] = set()
+    change_yaml_paths: set[Path] = set()
     generated_paths: set[Path] = set()
 
     while queue:
@@ -1151,6 +1220,7 @@ def _resolve_scope(
             related_artifacts.add(current)
 
         if current.name == "change.yaml":
+            change_yaml_paths.add(current)
             queue.extend(sorted(_extract_change_yaml_refs(root, current, current_revision)))
             continue
 
@@ -1175,6 +1245,7 @@ def _resolve_scope(
         input_source=input_source,
         tracked_revision=tracked_revision,
         changed_paths=tuple(sorted(changed_paths)),
+        change_yaml_paths=tuple(sorted(change_yaml_paths)),
         related_artifact_paths=tuple(sorted(related_artifacts)),
         baseline_paths=tuple(sorted(baseline_paths)),
         generated_paths=tuple(sorted(generated_paths)),
@@ -1207,6 +1278,22 @@ def validate_repository(
     warning_findings: list[ValidationFinding] = []
     root_resolved = root.resolve()
     related_paths = set(scope.related_artifact_paths)
+
+    for path in scope.change_yaml_paths:
+        for message in _change_yaml_closeout_cache_findings(
+            root_resolved,
+            path,
+            scope.tracked_revision,
+        ):
+            blocking_findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=path,
+                    artifact_class="change_metadata",
+                    status=None,
+                    message=message,
+                )
+            )
 
     for path in scope.generated_paths:
         blocking_findings.append(

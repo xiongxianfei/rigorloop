@@ -1,0 +1,5 @@
+schema_version: 1
+change_id: "2026-05-21-compact-change-validation-metadata"
+cache_hits:
+  - id: "cache-hit-001"
+    validator_id: "artifact-lifecycle"

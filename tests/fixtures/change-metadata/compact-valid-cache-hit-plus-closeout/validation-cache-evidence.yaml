@@ -1,0 +1,21 @@
+schema_version: 1
+change_id: "2026-05-21-compact-change-validation-metadata"
+cache_hits:
+  - id: "cache-hit-001"
+    validator_id: "artifact-lifecycle"
+    command:
+      argv:
+        - "python"
+        - "scripts/validate-artifact-lifecycle.py"
+    prior_passing_event:
+      stage: "code-review-m1-actual"
+      evidence: "tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml#validation_events"
+    cache_key:
+      input_surface_hash: "sha256:input"
+      validator_implementation_hash: "sha256:implementation"
+      policy_hash: "sha256:policy"
+      command_hash: "sha256:command"
+    result_reused: pass
+    allowed_reason: input surface, validator implementation, policy, and command unchanged since prior passing event
+    scope: inner-loop
+    closeout_evidence: false

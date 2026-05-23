@@ -39,6 +39,12 @@ COMPACT_REQUIRED_FIELDS = {
 }
 LEGACY_VALIDATION_FIELDS = {"validation"}
 VALIDATION_EVENT_RESULTS = {"pass", "fail", "blocked", "skipped", "not-run"}
+EVIDENCE_KIND_RESULTS = {
+    "actual-run-pass": "pass",
+    "actual-run-fail": "fail",
+    "blocked": "blocked",
+    "cache-hit-inner-loop": "pass",
+}
 COMPACT_CHANGE_ID_RE = re.compile(
     r"^[0-9]{4}-[0-9]{2}-[0-9]{2}-(?P<slug>[a-z0-9][a-z0-9-]*[a-z0-9])$"
 )
@@ -380,6 +386,16 @@ def validate_metadata_semantics(data: Any) -> list[str]:
         return []
 
     errors: list[str] = []
+    validation = data.get("validation")
+    if isinstance(validation, list):
+        for index, record in enumerate(validation):
+            if not isinstance(record, dict):
+                continue
+            if "evidence_kind" in record or "evidence_ref" in record:
+                errors.append(
+                    f"validation[{index}].evidence_kind: legacy validation metadata cannot claim cache-hit or closeout evidence"
+                )
+
     review = data.get("review")
     if isinstance(review, dict):
         reviewed_artifact = review.get("reviewed_artifact")
@@ -463,6 +479,8 @@ def validate_repo_relative_path(value: str, path: str) -> list[str]:
     errors: list[str] = []
     lower_value = value.lower()
     if value.startswith("/"):
+        errors.append(f"{path}: unsafe absolute path")
+    if re.match(r"^[A-Za-z]:[\\/]", value):
         errors.append(f"{path}: unsafe absolute path")
     if value.startswith("~"):
         errors.append(f"{path}: unsafe home-directory path")
@@ -984,6 +1002,66 @@ def validate_compact_transcript_reference(
     return []
 
 
+def compact_event_is_closeout(event: dict[str, Any]) -> bool:
+    stage = event.get("stage")
+    return isinstance(stage, str) and "closeout" in stage.lower()
+
+
+def validate_compact_evidence_reference(
+    event: dict[str, Any],
+    event_path: str,
+) -> list[str]:
+    reference = event.get("evidence_ref")
+    if reference is None:
+        return []
+    ref_path = f"{event_path}.evidence_ref"
+    if not is_nonempty_string(reference):
+        return [f"{ref_path}: expected string"]
+    if reference.count("#") != 1:
+        return [f"{ref_path}: malformed evidence reference"]
+    file_part, anchor = reference.split("#", 1)
+    if not file_part or not anchor:
+        return [f"{ref_path}: malformed evidence reference"]
+
+    errors = validate_repo_relative_path(file_part, ref_path)
+    if errors:
+        return errors
+    target = ROOT / file_part
+    if not target.is_file():
+        return [f"{ref_path}: referenced evidence file does not exist: {file_part}"]
+    text = target.read_text(encoding="utf-8")
+    anchor_patterns = (
+        f"id: {anchor}",
+        f'id: "{anchor}"',
+        f"id: '{anchor}'",
+        f"#{anchor}",
+    )
+    if not any(pattern in text for pattern in anchor_patterns):
+        return [f"{ref_path}: unresolved anchor '{anchor}'"]
+    return []
+
+
+def validate_compact_evidence_kind(event: dict[str, Any], event_path: str) -> list[str]:
+    if "evidence_kind" not in event:
+        return []
+    evidence_kind = event.get("evidence_kind")
+    allowed = ", ".join(sorted(EVIDENCE_KIND_RESULTS))
+    if evidence_kind not in EVIDENCE_KIND_RESULTS:
+        return [f"{event_path}.evidence_kind: expected one of: {allowed}"]
+
+    result = event.get("result")
+    expected_result = EVIDENCE_KIND_RESULTS[evidence_kind]
+    if result != expected_result:
+        return [
+            f"{event_path}.evidence_kind: {evidence_kind} requires result {expected_result}"
+        ]
+    if evidence_kind == "cache-hit-inner-loop" and compact_event_is_closeout(event):
+        return [
+            f"{event_path}.evidence_kind: cache-hit-inner-loop cannot satisfy closeout"
+        ]
+    return []
+
+
 def validate_compact_event(
     event: Any,
     index: int,
@@ -1029,6 +1107,8 @@ def validate_compact_event(
 
     errors.extend(validate_compact_failure_details(event, event_path))
     errors.extend(validate_compact_skipped_event(event, event_path))
+    errors.extend(validate_compact_evidence_kind(event, event_path))
+    errors.extend(validate_compact_evidence_reference(event, event_path))
     if variables is not None:
         errors.extend(validate_compact_event_paths(event, event_path, variables))
         errors.extend(validate_compact_transcript_reference(event, event_path, variables))
