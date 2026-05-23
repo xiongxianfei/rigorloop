@@ -9,7 +9,8 @@ import json
 import posixpath
 import re
 import shlex
-from dataclasses import dataclass, replace
+import time
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Iterable, Sequence
 
@@ -47,6 +48,17 @@ class Manifest:
 
 
 @dataclass(frozen=True)
+class LifecycleCacheIdentity:
+    validator_id: str
+    command_family: str
+    normalized_command: NormalizedLifecycleCommand
+    input_surface: Manifest
+    implementation: Manifest
+    policy: Manifest
+    cache_key: str
+
+
+@dataclass(frozen=True)
 class LocalCacheRecord:
     repository_id: str
     branch: str
@@ -58,6 +70,10 @@ class LocalCacheRecord:
     policy_hash: str
     result: str
     created_at: float = 0.0
+    cache_key: str = ""
+    validator_id: str = "artifact-lifecycle"
+    prior_event_stage: str = ""
+    prior_event_evidence: str = ""
 
     def with_updates(self, **updates: object) -> "LocalCacheRecord":
         return replace(self, **updates)
@@ -86,6 +102,12 @@ class LocalCacheEligibility:
     reason: str
 
 
+@dataclass(frozen=True)
+class LocalCacheLookup:
+    record: LocalCacheRecord | None
+    reason: str
+
+
 _WINDOWS_ABSOLUTE_RE = re.compile(r"^[A-Za-z]:[\\/]")
 _URL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*://")
 _HOSTNAME_PATH_RE = re.compile(r"^[A-Za-z0-9.-]+\.[A-Za-z]{2,}[/:]")
@@ -96,6 +118,7 @@ _DEFAULT_POLICY_FILES = (
     "docs/workflows.md",
     "specs/plan-index-lifecycle-ownership.md",
 )
+_LOCAL_CACHE_FILE = "validation-cache.json"
 
 
 def normalize_command(command: str | Sequence[str]) -> list[str]:
@@ -276,6 +299,59 @@ def build_policy_manifest(
     return Manifest(files=tuple(entries), manifest_hash=_hash_json(entries))
 
 
+def build_lifecycle_cache_identity(
+    repo_root: Path | str,
+    command: str | Sequence[str],
+    *,
+    extra_policy_files: Iterable[str] = (),
+) -> LifecycleCacheIdentity:
+    root = Path(repo_root)
+    evaluation = evaluate_command_family(command)
+    if not evaluation.cache_eligible or not evaluation.validator_id or not evaluation.command_family:
+        raise CacheIdentityError(
+            "unsupported-command-family",
+            f"{evaluation.reason}; cache eligibility disabled",
+        )
+    normalized_command = normalize_lifecycle_explicit_command(command, root)
+    explicit_path_surface = build_input_surface_manifest(root, normalized_command.explicit_paths)
+    implementation = build_implementation_manifest(
+        root,
+        "scripts/validate-artifact-lifecycle.py",
+        manifest_generator="scripts/validation_cache.py",
+    )
+    policy = build_policy_manifest(root, extra_policy_files=extra_policy_files)
+    input_surface = Manifest(
+        files=explicit_path_surface.files,
+        manifest_hash=_hash_json(
+            {
+                "command_hash": normalized_command.command_hash,
+                "explicit_paths": list(explicit_path_surface.files),
+                "implementation_hash": implementation.manifest_hash,
+                "policy_hash": policy.manifest_hash,
+            }
+        ),
+    )
+    cache_key = _hash_json(
+        {
+            "validator_id": evaluation.validator_id,
+            "command_family": evaluation.command_family,
+            "command_hash": normalized_command.command_hash,
+            "input_surface_hash": input_surface.manifest_hash,
+            "implementation_hash": implementation.manifest_hash,
+            "policy_hash": policy.manifest_hash,
+        }
+    )
+    return LifecycleCacheIdentity(
+        validator_id=evaluation.validator_id,
+        command_family=evaluation.command_family,
+        normalized_command=normalized_command,
+        input_surface=input_surface,
+        implementation=implementation,
+        policy=policy,
+        cache_key=cache_key,
+    )
+
+
 def local_cache_entry_eligible(
     record: LocalCacheRecord, context: LocalCacheContext
 ) -> LocalCacheEligibility:
@@ -300,6 +376,168 @@ def local_cache_entry_eligible(
         return LocalCacheEligibility(False, "local cache entry expired")
 
     return LocalCacheEligibility(True, "local cache entry matches branch/worktree/change-local key")
+
+
+def load_local_cache_records(cache_dir: Path | str) -> tuple[LocalCacheRecord, ...]:
+    path = Path(cache_dir) / _LOCAL_CACHE_FILE
+    if not path.is_file():
+        return ()
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return ()
+    records: list[LocalCacheRecord] = []
+    for item in raw.get("records", []):
+        if not isinstance(item, dict):
+            continue
+        try:
+            records.append(LocalCacheRecord(**item))
+        except TypeError:
+            continue
+    return tuple(records)
+
+
+def store_local_cache_record(cache_dir: Path | str, record: LocalCacheRecord) -> None:
+    directory = Path(cache_dir)
+    directory.mkdir(parents=True, exist_ok=True)
+    records = [
+        existing
+        for existing in load_local_cache_records(directory)
+        if existing.cache_key != record.cache_key
+    ]
+    records.append(record)
+    payload = {
+        "schema_version": 1,
+        "records": [asdict(existing) for existing in records],
+    }
+    (directory / _LOCAL_CACHE_FILE).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def find_local_cache_hit(
+    cache_dir: Path | str,
+    context: LocalCacheContext,
+) -> LocalCacheLookup:
+    last_reason = "no local cache record"
+    for record in load_local_cache_records(cache_dir):
+        eligibility = local_cache_entry_eligible(record, context)
+        if eligibility.eligible:
+            return LocalCacheLookup(record=record, reason=eligibility.reason)
+        last_reason = eligibility.reason
+    return LocalCacheLookup(record=None, reason=last_reason)
+
+
+def make_local_cache_record(
+    *,
+    identity: LifecycleCacheIdentity,
+    context: LocalCacheContext,
+    prior_event_stage: str,
+    prior_event_evidence: str,
+    created_at: float | None = None,
+) -> LocalCacheRecord:
+    return LocalCacheRecord(
+        repository_id=context.repository_id,
+        branch=context.branch,
+        worktree_id=context.worktree_id,
+        change_id=context.change_id,
+        command_hash=identity.normalized_command.command_hash,
+        input_surface_hash=identity.input_surface.manifest_hash,
+        implementation_hash=identity.implementation.manifest_hash,
+        policy_hash=identity.policy.manifest_hash,
+        result="pass",
+        created_at=time.time() if created_at is None else created_at,
+        cache_key=identity.cache_key,
+        validator_id=identity.validator_id,
+        prior_event_stage=prior_event_stage,
+        prior_event_evidence=prior_event_evidence,
+    )
+
+
+def write_cache_hit_evidence(
+    *,
+    repo_root: Path | str,
+    evidence_file: str,
+    change_id: str,
+    cache_hit_id: str,
+    identity: LifecycleCacheIdentity,
+    record: LocalCacheRecord,
+) -> str:
+    root = Path(repo_root)
+    evidence_relative = normalize_repo_path(evidence_file, root)
+    expected = f"docs/changes/{change_id}/validation-cache-evidence.yaml"
+    if evidence_relative != expected:
+        raise CacheIdentityError(
+            "invalid-cache-evidence-path",
+            f"cache-hit evidence must be recorded at {expected}",
+        )
+    _validate_evidence_ref(record.prior_event_evidence, root)
+    target = root / evidence_relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(
+        _render_cache_hit_evidence(
+            change_id=change_id,
+            cache_hit_id=cache_hit_id,
+            identity=identity,
+            record=record,
+        ),
+        encoding="utf-8",
+    )
+    return evidence_relative
+
+
+def _render_cache_hit_evidence(
+    *,
+    change_id: str,
+    cache_hit_id: str,
+    identity: LifecycleCacheIdentity,
+    record: LocalCacheRecord,
+) -> str:
+    lines = [
+        "schema_version: 1",
+        f"change_id: {_yaml_scalar(change_id)}",
+        "cache_hits:",
+        f"  - id: {_yaml_scalar(cache_hit_id)}",
+        f"    validator_id: {_yaml_scalar(identity.validator_id)}",
+        "    command:",
+        "      argv:",
+    ]
+    for arg in identity.normalized_command.argv:
+        lines.append(f"        - {_yaml_scalar(arg)}")
+    lines.extend(
+        [
+            "    prior_passing_event:",
+            f"      stage: {_yaml_scalar(record.prior_event_stage)}",
+            f"      evidence: {_yaml_scalar(record.prior_event_evidence)}",
+            "    cache_key:",
+            f"      input_surface_hash: {_yaml_scalar(identity.input_surface.manifest_hash)}",
+            f"      validator_implementation_hash: {_yaml_scalar(identity.implementation.manifest_hash)}",
+            f"      policy_hash: {_yaml_scalar(identity.policy.manifest_hash)}",
+            f"      command_hash: {_yaml_scalar(identity.normalized_command.command_hash)}",
+            "    result_reused: pass",
+            "    allowed_reason: input surface, validator implementation, policy, and command unchanged since prior passing event",
+            "    scope: inner-loop",
+            "    closeout_evidence: false",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def _validate_evidence_ref(reference: str, repo_root: Path) -> None:
+    if not reference or "#" not in reference:
+        raise CacheIdentityError("invalid-cache-evidence-reference")
+    path, anchor = reference.split("#", 1)
+    if not anchor:
+        raise CacheIdentityError("invalid-cache-evidence-reference")
+    relative = normalize_repo_path(path, repo_root)
+    if not (repo_root / relative).is_file():
+        raise CacheIdentityError("invalid-cache-evidence-reference")
+
+
+def _yaml_scalar(value: str) -> str:
+    return json.dumps(str(value), ensure_ascii=False)
 
 
 def _script_arg(argv: Sequence[str]) -> str | None:
