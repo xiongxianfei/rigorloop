@@ -4,7 +4,7 @@
 
 - Skill: verify
 - Status: branch-ready
-- Artifacts changed: `verify-report.md`, `change.yaml`, active plan, plan index
+- Artifacts changed: `verify-report.md`, `change.yaml`, active plan, plan index, validation selector registration, selector regression coverage
 - Open blockers: none
 - Next stage: pr
 - Validation: local final checks passed; hosted CI not observed
@@ -13,7 +13,8 @@
 ## Verdict
 
 Final verification passed for the public discovery and developer adoption
-surface branch.
+surface branch after verify-triggered CI maintenance fixed a validation routing
+gap for the new adoption-surface proof artifacts.
 
 The implementation, proof artifacts, README/package metadata changes, live
 GitHub metadata proof, feature spec, test spec, active plan, review records,
@@ -33,6 +34,7 @@ evidence without runtime behavior changes.
 | npm landing metadata and package README alignment | `DXA-T006` | `packages/rigorloop/package.json`; `packages/rigorloop/README.md` | package metadata check; `npm test --prefix packages/rigorloop` | pass |
 | Behavior preservation and runtime boundary | `DXA-T007` | `behavior-preservation.md`; docs/package surfaces only | package tests; no unexpected runtime-surface diff | pass |
 | Lifecycle closeout and review evidence | `DXA-T009` | plan, plan index, change metadata, review records, explain-change, verify report | review closeout validation; change metadata validation; lifecycle validation | pass |
+| Validation routing for adoption-surface proof files | selector regression | `scripts/validation_selection.py`; `scripts/test-select-validation.py` | PR-mode selector and selected CI pass after evidence registration | pass |
 
 ## Verification Dimensions
 
@@ -45,7 +47,7 @@ evidence without runtime behavior changes.
 | Architecture coherence | pass | No architecture artifact was required; no runtime data flow or long-lived design boundary changed. |
 | Artifact lifecycle state | pass | Proposal accepted, spec approved, test spec active, plan active with PR as next stage, review-resolution closed. |
 | Plan completion | pass | M1 through M5 are closed after code-review; explain-change is complete; next stage is PR handoff. |
-| Validation evidence | pass | Commands and results are recorded below, in the active plan, and in `change.yaml`. |
+| Validation evidence | pass | Commands and results are recorded below, in the active plan, and in `change.yaml`; the initial PR-mode selector blocker and fix are recorded. |
 | Drift detection | pass | `docs/plan.md` and the plan body agree; explain-change is current; metadata proof and live metadata agree. |
 | Risk closure | pass | External metadata permission, version drift, README ownership, unsupported claims, and no-runtime-change risks have proof. |
 | Release readiness | pass | Branch is ready for PR handoff; hosted CI has not been observed. |
@@ -64,9 +66,27 @@ All commands ran in `/home/xiongxianfei/data/20260419-rigorloop` on 2026-05-23.
 | `gh repo view xiongxianfei/rigorloop --json description,homepageUrl,repositoryTopics` | pass | approved description, blank website, approved 18-topic set |
 | `rg -n "@xiongxianfei/rigorloop@0\\.1\\.5" README.md packages/rigorloop/README.md packages/rigorloop/package.json docs/ \|\| true` | pass | only historical `v0.1.5` release and retrospective records remain |
 | `npm test --prefix packages/rigorloop` | pass | 107 tests passed |
-| `python scripts/test-select-validation.py` | pass | 97 checks passed |
+| `python scripts/test-select-validation.py` | pass | 97 checks passed before PR-mode selector check |
 | `git diff --name-only -- . ':!README.md' ':!packages/rigorloop/README.md' ':!packages/rigorloop/package.json' ':!docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface' ':!docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md' ':!docs/plan.md' ':!specs/public-discovery-and-developer-adoption-surface.md' ':!specs/public-discovery-and-developer-adoption-surface.test.md' ':!docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md'` | pass | no unexpected runtime-surface paths |
 | `git diff --check --` | pass | no whitespace errors |
+| `python scripts/select-validation.py --mode pr --base main --head HEAD` | blocked, then pass after CI maintenance | initially blocked on unregistered adoption-surface proof files; rerun selected checks without blockers |
+| `bash scripts/ci.sh --mode pr --base main --head HEAD` | blocked, then pass after CI maintenance | initially blocked on the same manual-routing-required evidence files; rerun selected CI passed |
+| `python scripts/test-select-validation.py` | pass after CI maintenance | 97 checks passed with adoption-surface proof registration coverage |
+
+## Verify-Triggered CI Maintenance
+
+PR-mode validation initially blocked because four new proof artifacts were not
+registered with the validation selector:
+
+- `adoption-surface-review.md`
+- `readme-ownership-proof.md`
+- `repository-metadata-proof.md`
+- `version-sync-proof.md`
+
+The CI-maintenance fix registered those proof filenames as change-local
+evidence routed to artifact lifecycle validation and added selector regression
+coverage for each filename. PR-mode selection and selected CI were rerun after
+the fix and passed.
 
 ## CI Status
 

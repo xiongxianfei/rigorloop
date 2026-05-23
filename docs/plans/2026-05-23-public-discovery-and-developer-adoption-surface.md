@@ -93,7 +93,7 @@ Primary implementation surfaces:
 - M2/M3 readiness: M2 and M3 are closed after code-review.
 - Metadata mutation readiness: separate permission-gated M4 milestone.
 - Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: M1 through M5 are closed after code-review, explain-change is complete, final local verify passed, and PR handoff is next. Hosted CI and PR body readiness are not claimed.
+- Reason final closeout is or is not ready: M1 through M5 are closed after code-review, explain-change is complete, verify-triggered CI maintenance fixed adoption-surface proof routing, final local verify and PR-mode selected CI passed, and PR handoff is next. Hosted CI and PR body readiness are not claimed.
 
 ## Metadata acceptance boundary
 
@@ -473,7 +473,8 @@ Do not record tokens, cookies, browser session data, or private account details.
 - 2026-05-23: M5 implementation created durable change rationale, synchronized lifecycle state, ran the milestone validation set, and handed off for code-review.
 - 2026-05-23: Code-review M5 R1 closed M5 with no material findings and handed off to explain-change.
 - 2026-05-23: Explain-change refreshed the durable change rationale from the actual diff, requirements, plan milestones, validation evidence, and review outcomes; handoff moved to verify.
-- 2026-05-23: Final verify passed locally, recorded branch-ready evidence, and handed off to PR.
+- 2026-05-23: Final verify initially passed local direct checks, then PR-mode selected validation found unregistered adoption-surface proof evidence files.
+- 2026-05-23: Verify-triggered CI maintenance registered the adoption-surface proof filenames with the selector, added selector regression coverage, reran PR-mode selected validation and selected CI successfully, recorded branch-ready evidence, and handed off to PR.
 
 ## Decision log
 
@@ -620,6 +621,11 @@ Do not record tokens, cookies, browser session data, or private account details.
 - 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface`, explicit-path lifecycle validation, and scoped `git diff --check --` passed after explain-change.
 - 2026-05-23: Final verify passed locally: query-change-record via `python`, review closeout validation, change metadata validation, explicit-path lifecycle validation, live GitHub metadata proof, stale-version sweep, package tests, selector regression, no-unexpected-runtime-surface diff, and `git diff --check --`.
 - 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml`, review closeout validation, explicit-path lifecycle validation including `verify-report.md`, and `git diff --check --` passed after recording verify evidence.
+- 2026-05-23: `python scripts/select-validation.py --mode pr --base main --head HEAD` and `bash scripts/ci.sh --mode pr --base main --head HEAD` initially blocked on manual-routing-required registration debt for `adoption-surface-review.md`, `readme-ownership-proof.md`, `repository-metadata-proof.md`, and `version-sync-proof.md`.
+- 2026-05-23: Verify-triggered CI maintenance updated `scripts/validation_selection.py` and `scripts/test-select-validation.py` to register and test those adoption-surface proof files.
+- 2026-05-23: `python scripts/test-select-validation.py` passed with 97 checks after CI maintenance.
+- 2026-05-23: `python scripts/select-validation.py --mode pr --base main --head HEAD` passed after CI maintenance with no blocking results.
+- 2026-05-23: `bash scripts/ci.sh --mode pr --base main --head HEAD` passed after CI maintenance; selected checks were review artifact validation, artifact lifecycle validation, change metadata regression and validation, README validation, README vision-marker validation, package tests, and npm package publication tests.
 
 ## Outcome and retrospective
 

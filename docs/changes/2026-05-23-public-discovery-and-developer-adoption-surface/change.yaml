@@ -201,7 +201,7 @@ validation:
   - command: git diff --check -- docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
     result: pass_after_explain_change
   - command: verify
-    result: branch_ready_local_final_verify_passed
+    result: branch_ready_local_direct_verify_passed_before_pr_mode_selector_check
   - command: python scripts/query-change-record.py 2026-05-23-public-discovery-and-developer-adoption-surface summary
     result: pass_status_ok_no_open_blockers_review_clean
   - command: scripts/query-change-record.py 2026-05-23-public-discovery-and-developer-adoption-surface summary
@@ -226,6 +226,18 @@ validation:
     result: pass_verify
   - command: post-verify evidence validation
     result: pass_change_metadata_review_closeout_lifecycle_with_verify_report_and_diff_check
+  - command: python scripts/select-validation.py --mode pr --base main --head HEAD
+    result: blocked_manual_routing_required_for_adoption_surface_proof_files_before_ci_maintenance
+  - command: bash scripts/ci.sh --mode pr --base main --head HEAD
+    result: blocked_manual_routing_required_for_adoption_surface_proof_files_before_ci_maintenance
+  - command: ci-maintenance validation routing fix
+    result: registered_adoption_surface_proof_evidence_classes_and_selector_regression_paths
+  - command: python scripts/test-select-validation.py
+    result: pass_97_checks_after_ci_maintenance
+  - command: python scripts/select-validation.py --mode pr --base main --head HEAD
+    result: pass_pr_mode_after_ci_maintenance
+  - command: bash scripts/ci.sh --mode pr --base main --head HEAD
+    result: pass_pr_mode_selected_ci_after_ci_maintenance
   - command: gh repo view xiongxianfei/rigorloop --json description,homepageUrl,repositoryTopics
     result: pass_after_code_review_m4_r1
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
@@ -366,3 +378,5 @@ changed_files:
   - README.md
   - packages/rigorloop/package.json
   - packages/rigorloop/README.md
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
