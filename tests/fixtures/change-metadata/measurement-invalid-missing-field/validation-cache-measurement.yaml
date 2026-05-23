@@ -1,0 +1,13 @@
+schema_version: 1
+change_id: 2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+measurement_window:
+  start_stage: implement-m1
+  end_stage: implement-m4
+  description: Missing summary fixture
+validators: []
+closeout:
+  full_bundle_actual_runs: 1
+  closeout_cache_skips: 0
+workstream_b_recommendation:
+  state: defer
+  rationale: Missing field fixture.

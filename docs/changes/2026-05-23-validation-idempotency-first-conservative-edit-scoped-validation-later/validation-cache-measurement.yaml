@@ -1,0 +1,29 @@
+schema_version: 1
+change_id: 2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+measurement_window:
+  start_stage: implement-m2
+  end_stage: implement-m4
+  description: Workstream A implementation loop for explicit-path lifecycle cache hits and evidence validation
+summary:
+  eligible_commands: 4
+  cache_hits: 1
+  cache_misses: 2
+  cache_disabled: 1
+  actual_runs: 3
+  estimated_seconds_saved: 1.0
+  remaining_validation_seconds: 42.0
+  cache_hit_rate: 0.25
+validators:
+  - validator_id: artifact-lifecycle
+    eligible_commands: 4
+    cache_hits: 1
+    cache_misses: 2
+    actual_runs: 3
+    estimated_seconds_saved: 1.0
+    still_rerun_reason: closeout-gate
+closeout:
+  full_bundle_actual_runs: 3
+  closeout_cache_skips: 0
+workstream_b_recommendation:
+  state: defer
+  rationale: Workstream A measurement is now reviewable, but edit-scoped validation remains blocked pending review and separate authorization.

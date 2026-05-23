@@ -1,0 +1,488 @@
+change_id: 2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+title: Validation idempotency first, conservative edit-scoped validation later
+classification: workflow-governance-proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md
+  spec: specs/validation-idempotency-and-cache-hit-safety.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md
+  plan: docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md
+  test_spec: specs/validation-idempotency-and-cache-hit-safety.test.md
+  explain_change: docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md
+  verify_report: docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md
+  review_resolution: docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md
+requirements:
+  - Author a proposal for validation idempotency and cache-hit safety.
+  - Record proposal-review R1 findings in durable change-local artifacts.
+  - Revise the proposal to resolve VIC-PR1 through VIC-PR5 before downstream spec reliance.
+  - Keep Workstream B edit-scoped validation out of the first implementing spec and test spec.
+  - Record the first-slice cache-hit evidence file decision as docs/changes/<change-id>/validation-cache-evidence.yaml.
+  - Record deterministic implementation manifest contents for validate-artifact-lifecycle.py explicit-path cache eligibility.
+  - Record cache-only closeout rejection ownership across artifact lifecycle and change metadata validators.
+  - Record branch-local, worktree-local, and change-local cache lifetime limits for the first slice.
+  - Record proposal-review R2 approval before downstream spec reliance.
+  - Normalize the accepted proposal before downstream spec reliance.
+  - Draft the validation idempotency and cache-hit safety spec before test-spec, planning, or implementation.
+  - Record spec-review R1 findings before spec revision or downstream reliance.
+  - Revise the spec to resolve VIC-SR1 through VIC-SR3 before test-spec, planning, or implementation.
+  - Record spec-review R2 approval before downstream architecture, plan, test-spec, or implementation reliance.
+  - Normalize the spec to approved before architecture reliance.
+  - Record architecture and ADR decisions for validation idempotency cache-hit safety before planning.
+  - Record architecture-review R1 approval before execution planning reliance.
+  - Create a living execution plan before plan-review, test-spec, and implementation.
+  - Record plan-review R1 approval before test-spec reliance.
+  - Create an active test spec before implementation.
+  - Implement M1 cache identity primitives and local cache eligibility without enabling validator cache skips.
+  - Implement M2 explicit-path lifecycle cache integration with opt-in local cache hits and reviewable cache-hit evidence writing.
+  - Record code-review M2 R1 findings before M2 review-resolution.
+  - Resolve code-review M2 R1 findings before rerunning code-review.
+  - Record code-review M2 R2 approval before M3 implementation.
+  - Implement M3 compact metadata evidence-kind validation and cache-only closeout enforcement.
+  - Record code-review M3 R1 approval before M4 implementation.
+  - Implement M4 measurement evidence validation, validation cache evidence routing, and Workstream B non-implementation proof.
+  - Record code-review M4 R1 approval before explain-change.
+  - Record durable explain-change rationale before final verify.
+  - Run final verify before PR handoff.
+tests:
+  - Proposal-review R1 found VIC-PR1 through VIC-PR5 and required first-slice scope, cache evidence, first validator, implementation manifest, and closeout enforcement clarification.
+  - Proposal revision accepts all five proposal-review findings.
+  - Proposal revision resolves first-slice open questions for formal cache-hit evidence file, implementation manifest, closeout rejection ownership, and local cache lifetime.
+  - Proposal-review R2 approves the revised proposal with no material findings.
+  - Spec authoring records requirements for explicit-path lifecycle cache eligibility, cache keys, input surfaces, implementation manifests, change-local cache evidence, closeout enforcement, local cache lifetime, measurement, compatibility, and Workstream B exclusion.
+  - Spec-review R1 found VIC-SR1 through VIC-SR3 and required command/path normalization, change metadata evidence shape, and measurement evidence location clarification.
+  - Spec revision accepts and resolves VIC-SR1 through VIC-SR3 with deterministic command/path normalization, compact schema_version 2 evidence-kind metadata, and durable measurement evidence at validation-cache-measurement.yaml.
+  - Spec-review R2 approves the revised spec with no material findings.
+  - Architecture records local-only validation execution cache state, formal cache-hit evidence, closeout actual-run gates, Workstream A measurement, and Workstream B deferral.
+  - ADR records the durable validation cache-hit safety decision for unchanged explicit-path lifecycle validation inputs.
+  - Architecture-review R1 approves the canonical architecture update and ADR with no material findings.
+  - Plan sequences implementation into cache primitives, lifecycle cache integration, metadata closeout enforcement, measurement/routing, and lifecycle closeout.
+  - Plan-review R1 approves the execution plan with no material findings.
+  - Test spec maps approved requirements, examples, edge cases, and plan milestones to concrete test cases.
+  - M1 unit tests cover first-slice cacheable command-family detection, deterministic argv hashing, explicit-path order, duplicate path rejection, unsafe path rejection, input-surface manifests, implementation manifests, policy manifests, and branch/worktree/change-local cache eligibility.
+  - M1 selector regression covers deterministic routing for validation cache helper and test script changes.
+  - Code-review M1 R1 records one material finding requiring review-resolution for unresolved implementation-manifest handling.
+  - Review-resolution for code-review M1 R1 resolves unresolved implementation-manifest handling and returns M1 to code-review.
+  - Code-review M1 R2 approves M1 and closes the cache identity primitives milestone.
+  - M2 tests cover complete lifecycle cache identity, local pass-record storage, non-pass prior record rejection, helper and policy invalidation, formal cache-hit evidence shape, unsafe evidence path rejection, and second-run CLI cache hits.
+  - M2 behavior-preservation evidence records that actual-run lifecycle pass and fail behavior remain unchanged when the validator actually runs.
+  - Code-review M2 R1 records VIC-CR-M2-R1-F1 and VIC-CR-M2-R1-F2 requiring review-resolution for cache record identity checks and formal evidence preservation.
+  - Review-resolution for code-review M2 R1 resolves strict local cache identity checks and merge-preserving formal cache-hit evidence writes.
+  - Code-review M2 R2 approves M2 with no material findings and closes the lifecycle cache integration milestone.
+  - M3 tests cover compact evidence-kind result pairings, safe evidence references, cache-only closeout rejection, actual-run closeout with supporting cache evidence, and legacy cache-field rejection.
+  - Code-review M3 R1 approves M3 and closes the compact evidence-kind and closeout enforcement milestone.
+  - M4 tests cover validation-cache-measurement.yaml required fields, count consistency, closeout cache-skip rejection, Workstream B recommendation state, unsafe-value rejection, and selector routing for validation cache evidence files.
+  - M4 behavior-preservation evidence records that measurement and selector routing do not implement Workstream B edit-scoped validation.
+  - Code-review M4 R1 approves M4 and closes the measurement evidence and selected validation routing milestone.
+  - Explain-change records the problem-to-diff rationale, review-resolution summary, validation evidence, alternatives rejected, and remaining risks before final verify.
+  - Verify records branch-ready evidence and confirms PR is the next stage.
+  - Artifact lifecycle validation covers the revised proposal and change-local review records.
+  - Review-artifact validation covers the recorded proposal-review R1 findings and dispositions.
+  - Change metadata validation covers this change-local metadata.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_reviews_1_findings_5_log_entries_1_resolution_entries_5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md
+    result: pass_validated_1_artifact_file
+  - command: git diff --check -- docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_reviews_2_findings_5_log_entries_2_resolution_entries_5_after_proposal_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md
+    result: pass_validated_1_artifact_file_after_proposal_review_r2
+  - command: git diff --check -- docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_proposal_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_spec_authoring
+  - command: git diff --check -- docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md specs/validation-idempotency-and-cache-hit-safety.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_structure_reviews_3_findings_8_log_entries_3_resolution_entries_8_after_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1
+  - command: git diff --check -- docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md specs/validation-idempotency-and-cache-hit-safety.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_spec_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_3_findings_8_log_entries_3_resolution_entries_8_after_spec_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_spec_revision
+  - command: git diff --check -- docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md specs/validation-idempotency-and-cache-hit-safety.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_spec_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_revision
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_spec_revision
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_4_findings_8_log_entries_4_resolution_entries_8_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_review_r2
+  - command: git diff --check -- docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md specs/validation-idempotency-and-cache-hit-safety.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_spec_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r2.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_architecture_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r2.md
+    result: pass_validated_4_artifact_files_after_architecture_authoring
+  - command: git diff --check -- specs/validation-idempotency-and-cache-hit-safety.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_architecture_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_4_findings_8_log_entries_4_resolution_entries_8_after_architecture_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r2.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_architecture_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_5_findings_8_log_entries_5_resolution_entries_8_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_architecture_review_r1
+  - command: git diff --check -- specs/validation-idempotency-and-cache-hit-safety.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_architecture_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/architecture-review-r1.md
+    result: pass_validated_4_artifact_files_after_architecture_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/architecture-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_plan_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_5_findings_8_log_entries_5_resolution_entries_8_after_plan_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/architecture-review-r1.md
+    result: pass_validated_4_artifact_files_after_plan_authoring
+  - command: git diff --check -- docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_plan_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/architecture-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_plan_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_6_findings_8_log_entries_6_resolution_entries_8_after_plan_review_r1
+  - command: git diff --check -- docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/architecture-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/plan-review-r1.md
+    result: pass_validated_4_artifact_files_after_plan_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/architecture-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/plan-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_test_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_6_findings_8_log_entries_6_resolution_entries_8_after_test_spec_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/plan-review-r1.md
+    result: pass_validated_5_artifact_files_after_test_spec_authoring
+  - command: git diff --check -- specs/validation-idempotency-and-cache-hit-safety.test.md docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_test_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r2.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/architecture-review-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/plan-review-r1.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_test_spec_authoring
+  - command: python scripts/test-validation-cache.py
+    result: pass_10_tests_after_m1
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_61_tests_after_m1
+  - command: python scripts/test-select-validation.py
+    result: pass_94_tests_after_m1_selector_routing
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/plan-review-r1.md
+    result: pass_validated_5_artifact_files_after_m1
+  - command: git diff --check --
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/test-validation-cache.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path specs/validation-idempotency-and-cache-hit-safety.test.md --path specs/validation-idempotency-and-cache-hit-safety.md
+    result: pass_selected_artifact_lifecycle_validation_cache_change_metadata_selector_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_structure_reviews_7_findings_9_log_entries_7_resolution_entries_9_after_code_review_m1_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m1_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m1-r1.md
+    result: pass_validated_5_artifact_files_after_code_review_m1_r1
+  - command: git diff --check -- docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/test-validation-cache.py
+    result: pass_13_tests_after_m1_review_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_61_tests_after_m1_review_resolution
+  - command: python scripts/test-select-validation.py
+    result: pass_94_tests_after_m1_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_m1_review_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md
+    result: pass_validated_4_artifact_files_after_m1_review_resolution
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/test-validation-cache.py
+    result: pass_selected_validation_cache_regression_after_m1_review_resolution
+  - command: git diff --check --
+    result: pass_after_m1_review_resolution
+  - command: python scripts/test-validation-cache.py
+    result: pass_13_tests_during_code_review_m1_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_7_findings_9_log_entries_7_resolution_entries_9_during_code_review_m1_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_during_code_review_m1_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_8_findings_9_log_entries_8_resolution_entries_9_after_code_review_m1_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m1_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m1-r2.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_m1_r2
+  - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
+    result: pass_after_code_review_m1_r2
+  - command: python scripts/test-validation-cache.py
+    result: pass_18_tests_after_m2
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_62_tests_after_m2
+  - command: python scripts/test-select-validation.py
+    result: pass_94_tests_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md
+    result: pass_validated_5_artifact_files_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_m2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/test-validation-cache.py --path scripts/validate-artifact-lifecycle.py --path scripts/test-artifact-lifecycle-validator.py --path .gitignore --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_selected_skills_artifact_lifecycle_validation_cache_change_metadata_after_m2
+  - command: git diff --check --
+    result: pass_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md
+    result: pass_validated_5_artifact_files_after_m2_state_sync
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_structure_reviews_9_findings_11_log_entries_9_resolution_entries_11_after_code_review_m2_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m2_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m2-r1.md
+    result: pass_validated_5_artifact_files_after_code_review_m2_r1
+  - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/test-validation-cache.py
+    result: pass_20_tests_after_m2_review_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_62_tests_after_m2_review_resolution
+  - command: python scripts/test-select-validation.py
+    result: pass_94_tests_after_m2_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_m2_review_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md
+    result: pass_validated_5_artifact_files_after_m2_review_resolution
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/validate-artifact-lifecycle.py --path scripts/test-validation-cache.py --path scripts/test-artifact-lifecycle-validator.py --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_validation_cache_after_m2_review_resolution
+  - command: git diff --check --
+    result: pass_after_m2_review_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_9_findings_11_log_entries_9_resolution_entries_11_after_m2_review_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md
+    result: pass_validated_5_artifact_files_after_m2_review_resolution_closeout
+  - command: python scripts/test-validation-cache.py
+    result: pass_20_tests_during_code_review_m2_r2
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_62_tests_during_code_review_m2_r2
+  - command: python scripts/test-select-validation.py
+    result: pass_94_tests_during_code_review_m2_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_10_findings_11_log_entries_10_resolution_entries_11_after_code_review_m2_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m2_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m2-r2.md
+    result: pass_validated_5_artifact_files_after_code_review_m2_r2
+  - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
+    result: pass_after_code_review_m2_r2
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_18_tests_after_m3
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_63_tests_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_10_findings_11_log_entries_10_resolution_entries_11_after_m3
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/artifact_lifecycle_validation.py --path scripts/test-change-metadata-validator.py --path scripts/test-artifact-lifecycle-validator.py --path tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml --path tests/fixtures/change-metadata/compact-invalid-cache-only-closeout/change.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md
+    result: pass_selected_artifact_lifecycle_change_metadata_after_m3
+  - command: git diff --check --
+    result: pass_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md
+    result: pass_validated_5_artifact_files_after_m3_state_sync
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/artifact_lifecycle_validation.py --path scripts/test-change-metadata-validator.py --path scripts/test-artifact-lifecycle-validator.py --path tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml --path tests/fixtures/change-metadata/compact-invalid-cache-only-closeout/change.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md
+    result: pass_selected_artifact_lifecycle_change_metadata_after_m3_state_sync
+  - command: python scripts/test-change-metadata-validator.py -k compact_invalid
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/test-change-metadata-validator.py -k compact_m3_valid
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/test-artifact-lifecycle-validator.py -k cache_only_closeout
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml
+    result: pass_valid_change_metadata_during_code_review_m3_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_11_findings_11_log_entries_11_resolution_entries_11_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m3-r1.md
+    result: pass_validated_5_artifact_files_after_code_review_m3_r1
+  - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/test-change-metadata-validator.py -k measurement
+    result: pass_2_tests_m4_red_then_green
+  - command: python scripts/test-select-validation.py -k validation_cache_evidence
+    result: pass_1_test_m4_red_then_green
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_20_tests_after_m4
+  - command: python scripts/test-select-validation.py
+    result: pass_95_tests_after_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
+    result: pass_valid_measurement_after_m4
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-evidence.yaml
+    result: pass_ok_selected_artifact_lifecycle_validation_cache_change_metadata_after_m4
+  - command: python scripts/test-validation-cache.py
+    result: pass_20_tests_after_m4
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_63_tests_after_m4
+  - command: python scripts/select-validation.py --mode local
+    result: pass_ok_no_manual_routing_debt_after_m4
+  - command: bash scripts/ci.sh --mode local
+    result: pass_selected_artifact_lifecycle_change_metadata_selector_after_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
+    result: pass_valid_change_metadata_and_measurement_after_m4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_11_findings_11_log_entries_11_resolution_entries_11_after_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md
+    result: pass_validated_5_artifact_files_after_m4
+  - command: git diff --check --
+    result: pass_after_m4
+  - command: python scripts/test-change-metadata-validator.py -k measurement
+    result: pass_during_code_review_m4_r1
+  - command: python scripts/test-select-validation.py -k validation_cache_evidence
+    result: pass_during_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
+    result: pass_valid_measurement_during_code_review_m4_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-evidence.yaml
+    result: pass_ok_no_manual_routing_debt_during_code_review_m4_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_12_findings_11_log_entries_12_resolution_entries_11_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
+    result: pass_valid_change_metadata_and_measurement_after_code_review_m4_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m4-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plan.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md
+    result: pass_validated_5_artifact_files_after_code_review_m4_r1
+  - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
+    result: pass_valid_change_metadata_and_measurement_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_12_findings_11_log_entries_12_resolution_entries_11_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_explain_change
+  - command: python scripts/select-validation.py --mode local
+    result: pass_ok_no_manual_routing_debt_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_explain_change
+  - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
+    result: pass_after_explain_change
+  - command: python scripts/test-validation-cache.py
+    result: pass_20_tests_final_verify
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_63_tests_final_verify
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_20_tests_final_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_95_tests_final_verify
+  - command: python scripts/select-validation.py --mode pr --base main --head HEAD
+    result: pass_ok_no_unclassified_paths_no_registration_debt_broad_smoke_not_required_final_verify
+  - command: bash scripts/ci.sh --mode pr --base main --head HEAD
+    result: pass_selected_skills_generation_review_artifacts_artifact_lifecycle_validation_cache_change_metadata_selector_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
+    result: pass_valid_change_metadata_and_measurement_final_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_12_findings_11_log_entries_12_resolution_entries_11_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
+    result: pass_validated_5_artifact_files_final_verify
+  - command: git diff --check -- $(git diff --name-only main...HEAD)
+    result: pass_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
+    result: pass_valid_change_metadata_and_measurement_after_verify_report
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_12_findings_11_log_entries_12_resolution_entries_11_after_verify_report
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_verify_report
+  - command: python scripts/select-validation.py --mode local
+    result: pass_ok_no_unclassified_paths_no_registration_debt_after_verify_report
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_verify_report
+  - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
+    result: pass_after_verify_report
+  - command: gh run view 26332328087 --job 77520310588 --log
+    result: observed_hosted_ci_failure_artifact_lifecycle_regression_cache_hit_test_inherited_CI_true
+  - command: CI=true python scripts/test-artifact-lifecycle-validator.py
+    result: pass_64_tests_after_ci_failure_fix
+  - command: python scripts/test-validation-cache.py
+    result: pass_20_tests_after_ci_failure_fix
+  - command: python scripts/test-artifact-lifecycle-validator.py -k cache
+    result: pass_3_cache_tests_after_ci_failure_fix
+  - command: CI=true bash scripts/ci.sh --mode pr --base main --head HEAD
+    result: pass_selected_skills_generation_review_artifacts_artifact_lifecycle_validation_cache_change_metadata_selector_after_ci_failure_fix
+  - command: git diff --check -- scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_ci_failure_fix
+changed_files:
+  - docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md
+  - specs/validation-idempotency-and-cache-hit-safety.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r1.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/spec-review-r2.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/plan-review-r1.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m1-r2.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m4-r1.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md
+  - docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md
+  - specs/validation-idempotency-and-cache-hit-safety.test.md
+  - docs/plan.md
+  - scripts/validation_cache.py
+  - scripts/test-validation-cache.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - scripts/validate-artifact-lifecycle.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - scripts/validate-change-metadata.py
+  - scripts/artifact_lifecycle_validation.py
+  - scripts/test-change-metadata-validator.py
+  - tests/fixtures/change-metadata/measurement-valid/validation-cache-measurement.yaml
+  - tests/fixtures/change-metadata/measurement-invalid-missing-field/validation-cache-measurement.yaml
+  - tests/fixtures/change-metadata/measurement-invalid-negative-count/validation-cache-measurement.yaml
+  - tests/fixtures/change-metadata/measurement-invalid-count-drift/validation-cache-measurement.yaml
+  - tests/fixtures/change-metadata/measurement-invalid-closeout-cache-skip/validation-cache-measurement.yaml
+  - tests/fixtures/change-metadata/measurement-invalid-workstream-b-state/validation-cache-measurement.yaml
+  - tests/fixtures/change-metadata/measurement-invalid-missing-rationale/validation-cache-measurement.yaml
+  - tests/fixtures/change-metadata/measurement-invalid-unsafe-value/validation-cache-measurement.yaml
+  - tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml
+  - tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/validation-cache-evidence.yaml
+  - tests/fixtures/change-metadata/compact-invalid-evidence-kind-result/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-evidence-kind-unknown/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-evidence-ref-unsafe/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-evidence-ref-missing-anchor/change.yaml
+  - tests/fixtures/change-metadata/compact-invalid-evidence-ref-missing-anchor/validation-cache-evidence.yaml
+  - tests/fixtures/change-metadata/compact-invalid-cache-only-closeout/change.yaml
+  - tests/fixtures/change-metadata/legacy-invalid-cache-evidence-fields/change.yaml
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md
+  - .gitignore
+review:
+  status: approved
+  unresolved_items: 0
+  review_log: docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md
+  location: docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md

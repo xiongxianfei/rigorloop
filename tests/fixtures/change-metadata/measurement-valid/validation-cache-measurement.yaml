@@ -1,0 +1,29 @@
+schema_version: 1
+change_id: 2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+measurement_window:
+  start_stage: implement-m1
+  end_stage: implement-m4
+  description: Workstream A implementation loop for explicit-path lifecycle cache hits
+summary:
+  eligible_commands: 3
+  cache_hits: 1
+  cache_misses: 1
+  cache_disabled: 1
+  actual_runs: 2
+  estimated_seconds_saved: 4
+  remaining_validation_seconds: 18
+  cache_hit_rate: 0
+validators:
+  - validator_id: artifact-lifecycle
+    eligible_commands: 3
+    cache_hits: 1
+    cache_misses: 1
+    actual_runs: 2
+    estimated_seconds_saved: 4
+    still_rerun_reason: closeout-gate
+closeout:
+  full_bundle_actual_runs: 4
+  closeout_cache_skips: 0
+workstream_b_recommendation:
+  state: defer
+  rationale: Workstream A measurement is recorded for review before any follow-up proposal.

@@ -1,0 +1,61 @@
+# Validation Cache Behavior Preservation
+
+## Status
+
+active
+
+## Scope
+
+This artifact records behavior-preservation proof for M2 of validation idempotency and cache-hit safety.
+
+M2 adds opt-in local cache lookup for:
+
+```text
+python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...
+```
+
+The underlying lifecycle validator still performs the same checks whenever it actually runs. Cache support is not enabled for other modes, closeout context, CI, or unsupported validator commands.
+
+## M2 preservation matrix
+
+| Surface | Baseline proof | M2 proof | Preservation result |
+| --- | --- | --- | --- |
+| Actual pass behavior | Existing explicit-path lifecycle validator tests | `test_cli_cache_hits_on_second_identical_explicit_path_run` first run returns normal `validated ... explicit-paths mode` output before any cache hit | unchanged actual-run pass behavior |
+| Actual fail behavior | Existing artifact lifecycle failing fixtures | M2 does not change `artifact_lifecycle_validation.validate_repository`; cache integration is confined to the CLI wrapper and only stores records after a pass | unchanged actual-run failure detection |
+| Cache hit behavior | none before M2 | Second identical opt-in explicit-path CLI run emits bounded `[CACHE HIT] artifact-lifecycle` output and exits successfully | prior pass reused only after matching cache identity |
+| Changed input | M1 content-hash input-surface tests | M2 cache identity recomputes the complete input-surface hash before lookup | cache miss and actual run required |
+| Validator/helper changed | M1 strict implementation-manifest tests | `test_cache_lookup_misses_after_helper_or_policy_change` proves helper changes miss local cache | cache miss and actual run required |
+| Policy changed | M1 policy manifest tests | `test_cache_lookup_misses_after_helper_or_policy_change` proves policy changes miss local cache | cache miss and actual run required |
+| Failed prior result | M1 local-cache eligibility test | `test_local_cache_store_reuses_only_matching_prior_pass` proves failed records are not cache hits | failed prior result is not reused |
+| Formal cache-hit evidence | none before M2 | `test_formal_cache_hit_evidence_file_has_required_shape` writes `validation-cache-evidence.yaml` shape without local worktree details | structured and reviewable when requested |
+| Closeout behavior | stage closeout required actual validation before M2 | M2 cache lookup is disabled when `--validation-cache-context closeout` is used | cache hits remain inner-loop only |
+
+## Formal cache-hit evidence
+
+M2 provides the writer for:
+
+```text
+docs/changes/<change-id>/validation-cache-evidence.yaml
+```
+
+This change does not cite a formal cache hit as lifecycle evidence. The M2 tests exercise the evidence writer in a temporary fixture so no durable workflow cache-hit claim is recorded for this change.
+
+## M3 preservation matrix
+
+| Surface | Baseline proof | M3 proof | Preservation result |
+| --- | --- | --- | --- |
+| Compact validation event pass behavior | Existing compact metadata fixtures | `compact-valid-cache-hit-plus-closeout` passes with supporting cache-hit evidence and actual-run closeout evidence | valid compact metadata remains accepted |
+| Invalid evidence-kind pairings | Spec requirements R104 through R108 | `compact-invalid-evidence-kind-result` and `compact-invalid-evidence-kind-unknown` fail with stable diagnostics | invalid evidence state is rejected |
+| Evidence references | Existing transcript reference checks | `compact-invalid-evidence-ref-unsafe` and `compact-invalid-evidence-ref-missing-anchor` fail | unsafe or unresolved evidence refs are rejected |
+| Cache-only closeout | First-slice closeout full-bundle rule | `compact-invalid-cache-only-closeout` fails in change-metadata validation and lifecycle validation | cache hits remain inner-loop evidence only |
+| Legacy metadata compatibility | Existing legacy fixtures | `valid-basic` still passes; `legacy-invalid-cache-evidence-fields` fails only when legacy metadata claims cache evidence semantics | legacy metadata remains valid unless it uses unsupported cache fields |
+
+## M4 preservation matrix
+
+| Surface | Baseline proof | M4 proof | Preservation result |
+| --- | --- | --- | --- |
+| Measurement evidence | Spec requires `validation-cache-measurement.yaml` after Workstream A | `test_measurement_valid_fixture_passes` and this change's measurement file validate required counts, closeout fields, and Workstream B recommendation state | measurement is reviewable and bounded |
+| Measurement rejection | Measurement gate must reject impossible or unsafe data | `test_measurement_invalid_fixtures_fail` covers missing fields, negative counts, inconsistent counts, nonzero closeout cache skips, invalid Workstream B state, missing rationale, and unsafe values | unsafe measurement cannot authorize follow-up work |
+| Selector routing | New deterministic evidence files must not create manual routing debt | `test_validation_cache_evidence_files_route_without_manual_debt` routes cache evidence and measurement evidence through selected checks | evidence files are selected deterministically |
+| Workstream B boundary | Edit-scoped validation remains blocked | M4 adds no changed-path or edit-class validator narrowing; Workstream B remains only a recommendation field in measurement evidence | Workstream B behavior remains unimplemented |
+| Actual validator behavior | Existing M2/M3 actual-run proof | M4 changes measurement validation and selector routing only; lifecycle explicit-path execution semantics are unchanged | validator pass/fail behavior preserved |
