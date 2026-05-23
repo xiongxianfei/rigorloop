@@ -76,13 +76,13 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Current Handoff Summary
 
 - Current milestone: M4. Measurement evidence and selected validation routing
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Compact metadata evidence-kind and closeout enforcement
-- Review status: M4 implementation complete and ready for code-review.
-- Remaining in-scope implementation milestones: M4 pending code-review.
-- Next stage: code-review M4
+- Current milestone state: closed
+- Last reviewed milestone: M4. Measurement evidence and selected validation routing
+- Review status: code-review M4 R1 approved M4 with no material findings.
+- Remaining in-scope implementation milestones: none.
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 is implemented but not reviewed, final validation has not run, explain-change and verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: all implementation milestones are closed, but explain-change and verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -276,7 +276,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ### M4. Measurement evidence, selector routing, and implementation closeout
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Validate Workstream A measurement evidence, register deterministic cache evidence routing, record this change's measurement/behavior evidence, and prepare implementation handoff for final code review.
 - Requirements: R32 through R48, R75 through R77, R117 through R130; AC8 through AC10, AC17, AC18, AC29 through AC32.
 - Files/components likely touched:
@@ -430,6 +430,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: M4 implementation started for Workstream A measurement validation, validation cache evidence routing, and first-slice Workstream B non-implementation proof.
 - 2026-05-23: M4 added validation-cache measurement fixture validation, deterministic selector routing for `validation-cache-evidence.yaml` and `validation-cache-measurement.yaml`, this change's measurement artifact, and behavior-preservation evidence for the measurement/routing slice.
 - 2026-05-23: M4 direct validation passed and the milestone is ready for code-review.
+- 2026-05-23: Code-review M4 R1 approved M4 with no material findings. M4 is closed and next stage is explain-change.
 
 ## Decision log
 
@@ -531,6 +532,14 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed after M4.
 - 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md` passed after M4.
 - 2026-05-23: `git diff --check --` passed after M4.
+- 2026-05-23: `python scripts/test-change-metadata-validator.py -k measurement` passed during code-review M4 R1.
+- 2026-05-23: `python scripts/test-select-validation.py -k validation_cache_evidence` passed during code-review M4 R1.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml` passed during code-review M4 R1.
+- 2026-05-23: `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-evidence.yaml` returned status `ok` with no manual routing debt during code-review M4 R1.
+- 2026-05-23: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed after recording code-review M4 R1.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml` passed after recording code-review M4 R1.
+- 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m4-r1.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plan.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md` passed after recording code-review M4 R1.
+- 2026-05-23: `git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md` passed after recording code-review M4 R1.
 - 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed after resolving code-review M2 R1.
 - 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md` passed after resolving code-review M2 R1.
 - 2026-05-23: `bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/validate-artifact-lifecycle.py --path scripts/test-validation-cache.py --path scripts/test-artifact-lifecycle-validator.py --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md` passed selected checks `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, and `validation_cache.regression`.
@@ -545,4 +554,4 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M4. M4 review, explain-change, verify, PR readiness, and final closeout remain incomplete.
+- Ready for explain-change. Explain-change, verify, PR readiness, and final closeout remain incomplete.
