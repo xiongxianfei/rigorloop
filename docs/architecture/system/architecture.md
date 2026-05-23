@@ -65,6 +65,10 @@
 - Validation Idempotency and Cache-Hit Safety spec: `specs/validation-idempotency-and-cache-hit-safety.md`
 - Validation Idempotency and Cache-Hit Safety ADR: `docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md`
 - Validation Idempotency and Cache-Hit Safety change metadata: `docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml`
+- Release Process Contract proposal: `docs/proposals/2026-05-23-release-process-contract.md`
+- Release Process Contract spec: `specs/release-process-contract.md`
+- Release Process Contract ADR: `docs/adr/ADR-20260523-release-process-contract.md`
+- Release Process Contract change metadata: `docs/changes/2026-05-23-release-process-contract/change.yaml`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
@@ -99,6 +103,7 @@ The goals are:
 - keep repository script output proportional to actionability: compact on success, specific on failure, and expandable through explicit verbose modes;
 - treat change records as queried catalogs with registered deterministic evidence classes, selector routing, and bounded read paths for common stage-owned questions;
 - reduce repeated validation work only through unchanged-input cache hits that preserve validator behavior and closeout actual-run gates;
+- define the release process once as a standing contract, then execute routine publishes as operations with durable release evidence;
 - keep first adoption and package-quality refinement review-based until real package usage proves which checks are worth automating.
 
 ## Architecture Constraints
@@ -145,6 +150,10 @@ The goals are:
 - Normal npm publication uses trusted publishing through `.github/workflows/release.yml`. One-time bootstrap publication may be used only for `@xiongxianfei/rigorloop@0.1.4` if trusted publishing cannot be configured before package creation, and it may publish only the exact verified tarball recorded in publication evidence.
 - After the `v0.1.3` adapter untracking migration, the tracked default adapter support surface under `dist/adapters/` is limited to `README.md` and `manifest.yaml` unless a later approved spec explicitly names more tracked metadata or templates.
 - `docs/releases/<version>/release.yaml` and `docs/releases/<version>/release-notes.md` are authored release evidence, not generated release-note substitutes.
+- Routine publish operations execute the standing release-process contract and record durable version-scoped evidence under `docs/releases/v<version>.md`; related change records link to that evidence when applicable.
+- Routine release evidence does not update `docs/plan.md` unless the release is part of an active lifecycle plan; `docs/releases/` and the release index own routine publish records.
+- Release-process changes, new package names or scopes, new adapter targets, changed authentication/provenance policy, and changed publish mechanics remain normal lifecycle-managed work before any publish operation uses them.
+- Emergency release deferrals are narrow owner-approved exceptions to release gate timing, not an alternate normal release path. Release evidence creation, secret suppression, source/package/version/dist-tag recording, publish-path recording, registry verification, and recovery/follow-up recording are non-deferrable.
 - First implementation remains review-based for architecture package completeness; required package-shape, C4-file, and ADR-presence enforcement automation is deferred.
 - Top-level legacy documents under `docs/architecture/*.md` are archived historical artifacts after accepted current content has been merged into this canonical package.
 - Package diagrams live as separate authored source files under `diagrams/`; default Mermaid diagrams use `.mmd` files and are linked from `architecture.md` by relative path.
@@ -198,7 +207,7 @@ The repository system is composed of authored guidance, lifecycle artifacts, val
 | Canonical skills and adapter templates | Source instructions for workflow stages and thin adapter entrypoints | Markdown in `skills/`, templates in `scripts/adapter_templates/` |
 | Validation and generation scripts | Select checks, route registered change-local evidence, compute validation cache keys for eligible explicit-path lifecycle validation, validate artifacts, query bounded change-record slices, refresh generated output, and prove drift status | Python and shell under `scripts/` |
 | Generated runtime state and adapters | Derived local Codex runtime state and public adapter packages for supported agent tools; local runtime state and public adapter packages are generated from canonical sources and are not authored sources | Ignored local files under `.codex/skills/`, tracked adapter support metadata under `dist/adapters/`, generated temporary or release-output package directories, and release asset archives |
-| Release evidence | Authored release contract, notes, adapter artifact metadata, package publication evidence, checksums, and maintainer smoke evidence | YAML/Markdown under `docs/releases/<version>/` and `docs/reports/adapter-artifacts/releases/` |
+| Release evidence | Authored release contract, release notes, standing process evidence, adapter artifact metadata, package publication evidence, registry verification, checksums, emergency deferrals, and maintainer smoke evidence | Markdown/YAML under `docs/releases/v<version>.md`, `docs/releases/<version>/`, and `docs/reports/adapter-artifacts/releases/` |
 | Legacy architecture archive | Historical architecture records retained after accepted current content is merged here | Archived Markdown under `docs/architecture/*.md` |
 
 ### Level 2 White-Box: RigorLoop CLI Package
@@ -225,7 +234,7 @@ The validation and generation container has these important internal responsibil
 - lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, and `scripts/validate-review-artifacts.py` validate artifact status, change metadata, and material review closeout structure;
 - change-record query helper: `scripts/query-change-record.py` exposes bounded `summary`, `artifacts`, `validation --latest`, and `validation --stage <stage>` reads over valid legacy and compact metadata shapes without executing validation commands;
 - skill and adapter generation: `scripts/build-skills.py`, `scripts/build-adapters.py`, and adapter distribution helpers generate local runtime state, public adapter output, and release artifact outputs from canonical sources;
-- release and adapter validation: `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, adapter artifact metadata, tracked release notes, checksums, and smoke evidence. For public releases, `release-verify.sh` is the maintainer-facing gate and `validate-release.py` owns structured release validation delegated from that gate. For `v0.1.3` and later, these checks validate generated temporary or release-output adapter packages and release archives instead of tracked adapter package trees.
+- release and adapter validation: `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, adapter artifact metadata, tracked release notes, package preview, registry verification, emergency deferral records, checksums, and smoke evidence. For public releases, `release-verify.sh` is the maintainer-facing gate and `validate-release.py` owns structured release validation delegated from that gate. For `v0.1.3` and later, these checks validate generated temporary or release-output adapter packages and release archives instead of tracked adapter package trees.
 - measurement, benchmark, and reporting scripts: repository-local commands measure skill size, run token-cost benchmark prompts in disposable fixtures, analyze Codex JSONL session exports, summarize tool-output amplification, validate token-cost release metadata, and produce reviewable evidence for reports without requiring hosted telemetry.
 - required-benchmark context: release validation determines the release-specific required dynamic benchmark set from core suite policy, transition carryover policy, changed public skills, and claimed optional coverage, then passes that context to token-cost validation in process or through a transient YAML file for CLI and debugging use.
 - first-slice script-output shaping: `scripts/test-select-validation.py` is the first standalone runner surface for compact `[PASS]` success summaries, actionable `[FAIL]` details, explicit `--verbose`, silent successful `--quiet`, reliable-only rerun guidance, and behavior-preservation evidence.
@@ -376,6 +385,20 @@ This decomposition is prose-only for now. A component diagram should be added wh
 8. The publication process records npm package URL, source commit, selected mode, trusted publishing or bootstrap details, provenance status when available, and rollback/deprecation notes.
 9. FU-010 remains open until actual non-dry-run `init --adapter codex --json` succeeds from the packed or published package against the official `v0.1.4` Codex adapter archive. Dry-run smoke is not enough.
 
+### Standing release-process flow
+
+1. A maintainer classifies the release as routine, prerelease, breaking publish, emergency, process-changing, new package/scope, new adapter target, or republish recovery before publish work begins.
+2. Routine publishes proceed only when no new product, process, package-surface, authentication, provenance, adapter-target, or publish-mechanics decision is being introduced. Otherwise the upstream change follows the normal proposal/spec/review path before release execution.
+3. The release operator records version, release type, source commit, branch, package name, npm dist-tag, publish path, provenance mode, and release evidence path before publish.
+4. The pre-publish release gate proves a clean or intentionally release-scoped worktree, release notes or not-required rationale, generated-output currency, test or broad smoke status, package preview, packed local install smoke, selected publish path, and unresolved-blocker state.
+5. Generated-output currency is proven by repository-owned drift or generated-output checks such as `skills.drift`, `adapters.drift`, or current equivalents. Currency is not asserted from memory.
+6. Package preview and packed install smoke inspect the exact package artifact that may be published, not repository-local source in place of package contents.
+7. Preferred publication uses trusted publishing/OIDC. Manual fallback is allowed only as a recorded fallback or emergency path and does not relax gate evidence, package preview, registry verification, or secret-suppression requirements.
+8. After publish, verification reads from the public registry and records version, dist-tag, integrity metadata, and a fresh install or `npx` smoke result when not emergency-deferred.
+9. Emergency releases may defer only deferrable gate items, and each deferral records owner approval, rationale, validation impact, accepted risk, follow-up location, and deadline or next lifecycle stage before publish.
+10. Release evidence remains open for deferred gate follow-up until the gate completes, an approved recovery action replaces it, or an owner closes the risk explicitly.
+11. Failed package contents recover through fix-forward, dist-tag correction when only tags are wrong, or deprecation when necessary. Published npm versions are not overwritten.
+
 ## Deployment View
 
 RigorLoop has no deployed service, database, or runtime infrastructure for this architecture method. The deployment boundary is repository packaging and publication.
@@ -387,6 +410,7 @@ The main execution and publication boundaries are:
 - local contributor shell: runs selector, CI wrapper, validation, change-record query helper, generation, and drift checks;
 - CLI package execution: runs the additive `rigorloop` command from a local package artifact, local/global install, or future npm package; the package is a delivery mechanism and not a canonical workflow source;
 - npm registry: public delivery boundary for `@xiongxianfei/rigorloop`; the registry serves the CLI package, but canonical workflow content, skills, schemas, templates, adapter definitions, and release evidence remain repository-owned;
+- routine release evidence: `docs/releases/v<version>.md`, a version-scoped standing process record for release type, version decision, gate status, package contents, publish event, registry verification, emergency deferrals, recovery notes, and follow-up;
 - downstream change metadata scaffold: `docs/changes/<change-id>/change.yaml` created by `rigorloop new-change`; it is draft traceability state and not proof that proposal, review, verification, or PR stages are complete;
 - GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
 - local validation execution cache: untracked branch-local, worktree-local, and change-local state that can speed eligible repeated local validation but is not portable and is not lifecycle evidence;
@@ -404,7 +428,7 @@ The main execution and publication boundaries are:
 - token-cost benchmark fixtures: `benchmarks/token-cost/`, authored prompt and fixture inputs used to exercise public skills in a downstream-style project;
 - token-cost temporary runs: isolated directories under system temp or `$RUNNER_TEMP`, disposable and not durable release evidence;
 - token-cost release evidence: `docs/reports/token-cost/releases/<version>.md`, `docs/reports/token-cost/releases/<version>.yaml`, and tracked raw or sanitized run summaries under `docs/reports/token-cost/runs/<version>/`;
-- release evidence: tracked `docs/releases/<version>/release.yaml`, release notes, and maintainer smoke evidence used by release verification.
+- release evidence: tracked `docs/releases/v<version>.md`, `docs/releases/<version>/release.yaml`, release notes, and maintainer smoke evidence used by release verification.
 - npm publication evidence: `docs/releases/v0.1.4/npm-publication.md`, recording selected publication mode, tarball identity, package-content checks, packed-package smoke, trusted publishing or bootstrap details, npm package URL, and real Codex install smoke.
 
 Rollback before public adapter skill-copy untracking keeps `dist/adapters/**/skills` tracked and defers archive publication or fixes archive metadata, install docs, and validation before release. Rollback before `v0.1.3` publication may regenerate and restore tracked adapter output from `skills/` if the release cannot validate generated packages or archives. Rollback after public adapter skill-copy untracking preserves generation from `skills/` and either republishes release artifacts from last known good generated output or uses a later approved recovery release. No runtime data migration is required.
@@ -460,6 +484,14 @@ After `.codex/skills/` is untracked, non-release local Codex mirror validation p
 
 Release verification uses tracked `docs/releases/<version>/release.yaml` and `release-notes.md` plus maintainer smoke evidence. Generated release notes are not authoritative for adapter compatibility claims.
 
+The standing release-process contract adds `docs/releases/v<version>.md` as the durable routine publish evidence surface. It records release type, version decision, source identity, package identity, dist-tag, publish path, provenance mode, pre-publish gate results, package contents, publication event, registry verification, smoke results, recovery notes, and follow-up. Related change records link to this release evidence when a publish is tied to a lifecycle change, but the release record remains version-scoped.
+
+Routine publish evidence is operational evidence, not a substitute for upstream lifecycle review. It can prove that already-approved work was packaged and published correctly; it cannot approve new package-surface decisions, release-process changes, new adapter targets, or changed authentication/provenance policy.
+
+Release evidence must suppress secrets and machine-local details. It records command families, public registry references, package identity, checksums or integrity values, and bounded results, but not npm tokens, OTPs, credentials, raw environment dumps, private hostnames, usernames, or machine-local absolute paths.
+
+Emergency deferrals are part of the release evidence surface. A deferral must name the deferred gate item, approving owner or owning stage, emergency rationale, reason for deferral, validation impact, accepted risk, follow-up location, and deadline or next lifecycle stage. Failed gate evidence must remain visible as failed or deferred-with-owner-risk, not rewritten as passed.
+
 Generated adapter releases have an additional artifact evidence layer. `docs/reports/adapter-artifacts/releases/<version>.yaml` records release version, source commit, generator command, canonical source, manifest path, generated archive names, SHA-256 checksums, validation command, and validation result. Public releases that distribute generated adapters publish separate per-adapter archives as release assets and may publish a combined archive for convenience. The repository tracks metadata and checksums, not generated archive files by default.
 
 The `v0.1.1` transition release does not require downloadable adapter archives. `dist/adapters/` remains the public adapter install path, and release notes or adapter docs state whether archives are absent or separately published. If a separate accepted plan publishes optional archives for `v0.1.1`, repository-tree installation from `dist/adapters/` remains the required public install path for that release and archive metadata becomes additional evidence rather than a replacement for tracked public adapter validation.
@@ -493,6 +525,8 @@ Public npm publication is an approved deployment boundary for `@xiongxianfei/rig
 The npm package is a delivery artifact for the CLI. It can include runtime CLI code, package metadata, package-local README and license files, and bundled official adapter metadata for the compatible Codex adapter release. It must not include adapter archives, generated public adapter skill bodies, repository lifecycle artifacts, tests, local fixtures, secrets, `.codex`, `.agents`, or generated adapter package trees.
 
 Publication has one selected mode. Trusted-publishing mode uses `.github/workflows/release.yml` and npm OIDC. Bootstrap mode is a one-time manual publication path for `@xiongxianfei/rigorloop@0.1.4` only when trusted publishing cannot be configured before package creation. Bootstrap mode separates release readiness ownership from npm publish execution: `release.yml` or `release-verify.sh` owns readiness, and the maintainer publishes only the exact verified tarball recorded in publication evidence.
+
+For release-process-contract releases after the bootstrap publication boundary, trusted publishing/OIDC remains the preferred npm path. Manual token or manual 2FA fallback is operationally allowed when trusted publishing is not available, but it must record the reason and satisfy the same non-deferrable evidence, package identity, registry verification, recovery, and secret-suppression boundaries. Staged publishing is deferred until trusted publishing works reliably.
 
 The npm package does not replace GitHub release assets for adapter archives. `rigorloop init --adapter codex`, `rigorloop init --adapter claude`, and `rigorloop init --adapter opencode` still install generated adapter output from official GitHub release archives or verified local archives matched against package-bundled metadata.
 
@@ -542,6 +576,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md`: descriptor-driven multi-adapter init, schema v2 mixed-root lockfile handling, opencode skills-only compatibility, and proxy-safe download diagnostics.
 - `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md`: change records as registered and queryable catalogs, with evidence-class selector routing and bounded query-helper reads.
 - `docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md`: validation cache hits for unchanged explicit-path lifecycle inputs, with local-only cache state, formal cache-hit evidence, closeout actual-run gates, and Workstream B measurement gating.
+- `docs/adr/ADR-20260523-release-process-contract.md`: standing release-process boundary, routine publish evidence under `docs/releases/v<version>.md`, preferred trusted publishing, manual fallback limits, emergency deferral contract, and fix-forward/deprecate recovery for bad package content.
 
 No additional ADR is required for the 2026-04-29 package-quality refinement because it sharpens the accepted method without changing the durable architecture decision.
 
@@ -579,6 +614,8 @@ No additional ADR is required for script output optimization because it refines 
 | Lockfile drift safety | A user reruns `rigorloop init --adapter codex` after generated files under `.agents/skills` were modified. | The CLI reports drift with expected and actual tree hashes when available and blocks destructive replacement by default. |
 | Proxy diagnostic safety | A network archive download fails in a proxied environment. | JSON diagnostics expose only bounded fields and allowed enum values; human output recommends `--from-archive`; neither mode prints raw proxy values, credentials, private hostnames, request headers, or machine-local paths. |
 | npm publication safety | A maintainer publishes `@xiongxianfei/rigorloop@0.1.4`. | Publication evidence records exactly one publication mode, package-content validation, packed-package smoke, trusted-publishing or bootstrap identity, npm package URL, and real Codex install smoke before FU-010 closes. |
+| Standing release-process safety | A maintainer publishes a routine release after the release-process contract is active. | Release evidence under `docs/releases/v<version>.md` records release type, version decision, source commit, package identity, dist-tag, full gate, package preview, packed install smoke, publish path, provenance mode, registry verification, recovery notes, and follow-up without requiring a new proposal/spec/plan when no new decision is introduced. |
+| Emergency deferral safety | A maintainer publishes an emergency release with a deferred gate item. | Evidence records owner approval, rationale, deferred item, validation impact, accepted risk, follow-up location, and deadline; non-deferrable evidence, secret suppression, package/source/version/dist-tag recording, publish-path recording, registry verification, and recovery/follow-up recording still pass. |
 | Measurement usefulness | A contributor optimizes skill token cost. | Static skill measurement, JSONL analysis, and baseline reports identify measured cost drivers before hard token-budget gates are introduced. |
 | Release token-friendliness | A maintainer prepares a public release. | Markdown and YAML token-friendliness reports exist under `docs/reports/token-cost/releases/`, Codex benchmark evidence or a valid waiver is recorded, portability passes, and release validation delegates to the token-cost report validator. |
 | Dynamic benchmark coverage | A maintainer prepares a public release with `skill-token-runtime-v2`. | The report records required core coverage, transition carryover coverage when applicable, changed-skill-required coverage, claimed optional coverage, optional warnings, and per-run result-quality evidence. |
@@ -611,6 +648,9 @@ No additional ADR is required for script output optimization because it refines 
 | Programmatic proxy dispatch could add dependency and credential-handling complexity | The first proxy-aware slice uses Node built-in env-proxy support only when available and defers Undici dispatcher support to a later approved proposal or spec. |
 | npm package tarball could include unintended repository internals | The npm publication spec requires a package-content allowlist, forbidden-path checks, package-local license, no adapter archives, no generated adapter skill bodies, no lifecycle artifacts, and no secrets before publication. |
 | Bootstrap publication could become a shadow release path | Bootstrap mode is limited to the first `0.1.4` publication when trusted publishing cannot be configured before package creation. It publishes only the exact verified tarball recorded in evidence, and trusted publishing must be configured before the next npm publication. |
+| Routine publish could smuggle a release-process or package-surface change | Release evidence must classify the release type before publish. Process changes, new package names or scopes, new adapter targets, changed auth/provenance policy, and changed publish mechanics stay lifecycle-managed and cannot be treated as routine operations. |
+| Emergency release deferrals could become generic gate bypasses | Deferrals require owner approval, reason, validation impact, accepted risk, follow-up location, and deadline. Non-deferrable release requirements remain mandatory, and failed gate evidence must be recorded rather than hidden. |
+| Release evidence could leak credentials or machine details | The release evidence boundary records command families and bounded public facts only. Tokens, OTPs, credentials, private environment dumps, private hostnames, usernames, and machine-local absolute paths are forbidden. |
 | Dry-run smoke could hide a broken real adapter install | FU-010 closeout requires actual non-dry-run `init --adapter codex --json` from the packed or published package against the official `v0.1.4` Codex archive. |
 | Local archive extraction could overwrite or escape project boundaries | The CLI write plan refuses user-file overwrites by default, rejects absolute paths, parent traversal, symlinks, drive-letter paths, and paths outside `.agents/skills`, and maps expected verification failures to exit code `3`. |
 | Lockfile could be mistaken for canonical source or release metadata | The lockfile records downstream generated-output state only. Canonical workflow, skill, schema, adapter metadata, and release evidence stay in repository-authored or release-evidence surfaces. |
@@ -658,6 +698,9 @@ No additional ADR is required for script output optimization because it refines 
 - CLI package: the repository package boundary published as `@xiongxianfei/rigorloop` and exposing the `rigorloop` binary through local, packed, or npm delivery.
 - publication mode: the selected public npm publication path, either `trusted-publishing` through `release.yml` and npm OIDC or one-time `bootstrap` manual publication of an exact verified tarball.
 - publication evidence: durable release evidence under `docs/releases/<version>/npm-publication.md` recording package identity, selected publication mode, tarball identity, smoke results, npm URL, trusted publishing or bootstrap details, and real Codex install proof.
+- standing release-process contract: approved release architecture and spec that define how already-reviewed source is packaged, published, verified from the registry, and recorded without re-running proposal/spec/plan ceremony for routine publishes.
+- routine publish: publish operation for already-reviewed work that introduces no new product, release-process, package-surface, authentication, provenance, adapter-target, or publish-mechanics decision.
+- emergency deferral: owner-approved temporary release-gate exception that records rationale, validation impact, accepted risk, follow-up location, and deadline while preserving non-deferrable release requirements.
 - bundled adapter metadata: official adapter artifact metadata included in the CLI package for the package's compatible adapter release.
 - adapter descriptor: CLI-owned adapter install contract that maps an adapter name to archive filename pattern, possible roots, manifest shape, and lockfile shape.
 - planned lockfile content: lockfile-shaped command output that previews generated-output hashes without writing durable `rigorloop.lock`.

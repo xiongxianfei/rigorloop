@@ -1279,6 +1279,56 @@ raise SystemExit({exit_code})
         release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
         self.assertEqual(release_check["command"], "python scripts/validate-release-ci.py --version v0.1.1")
 
+    def test_release_evidence_markdown_path_selects_lifecycle_checklist_validation(self) -> None:
+        result = run_selector("--mode", "explicit", "--path", "docs/releases/v1.2.3.md")
+        payload = parse_stdout(result)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(payload["status"], "ok")
+        self.assertIn({"path": "docs/releases/v1.2.3.md", "category": "release"}, payload["classified_paths"])
+        self.assertNotIn(
+            "manual-routing-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+        self.assertNotIn(
+            "release-version-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        lifecycle_check = next(
+            check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate"
+        )
+        self.assertEqual(
+            lifecycle_check["command"],
+            "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/releases/v1.2.3.md",
+        )
+
+    def test_release_guidance_paths_do_not_require_release_version(self) -> None:
+        result = run_selector(
+            "--mode",
+            "explicit",
+            "--path",
+            "docs/releases/README.md",
+            "--path",
+            "docs/releases/index.md",
+        )
+        payload = parse_stdout(result)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(payload["status"], "ok")
+        self.assertIn(
+            {"path": "docs/releases/README.md", "category": "workflow-guidance"},
+            payload["classified_paths"],
+        )
+        self.assertIn(
+            {"path": "docs/releases/index.md", "category": "workflow-guidance"},
+            payload["classified_paths"],
+        )
+        self.assertNotIn(
+            "release-version-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+
     def test_release_path_without_version_directory_blocks(self) -> None:
         result = run_selector("--mode", "explicit", "--path", "docs/releases/release-notes.md")
         self.assertEqual(result.returncode, 2)
@@ -1560,6 +1610,12 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/historical-coverage.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/release-process-dry-run.md",
                 "category": "registered-change-evidence",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},

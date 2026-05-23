@@ -292,6 +292,14 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("historical coverage evidence is recorded",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="release-process-dry-run",
+        patterns=("release-process-dry-run.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("non-publishing release-process rehearsal evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="implementation-note",
         patterns=("implementation-notes.md", "cold-read-report.md", "adapter-packaging.md"),
         selector_routes=("artifact_lifecycle.validate",),
@@ -932,6 +940,14 @@ def _apply_path_selection(
         return
 
     if category == "release":
+        if _is_flat_release_evidence_path(path):
+            _add_check(
+                selected,
+                "artifact_lifecycle.validate",
+                "Changed flat release evidence requires release evidence checklist validation.",
+                path=path,
+            )
+            return
         version = _release_version_from_path(path)
         if not version:
             blocking_results.append(
@@ -1561,6 +1577,8 @@ def _path_category(path: str) -> str | None:
     if _is_lifecycle_path(path):
         return "lifecycle"
     if path.startswith("docs/releases/"):
+        if path in {"docs/releases/README.md", "docs/releases/index.md"}:
+            return "workflow-guidance"
         return "release"
     if path == "docs/workflows.md":
         return "workflow-guidance"
@@ -1704,9 +1722,19 @@ def _change_root(path: str) -> str | None:
 
 def _release_version_from_path(path: str) -> str | None:
     parts = path.split("/")
+    if _is_flat_release_evidence_path(path):
+        return parts[2][:-3]
     if len(parts) >= 4 and parts[0] == "docs" and parts[1] == "releases" and parts[2] and parts[3]:
         return parts[2]
     return None
+
+
+def _is_flat_release_evidence_path(path: str) -> bool:
+    parts = path.split("/")
+    if len(parts) != 3 or parts[0] != "docs" or parts[1] != "releases":
+        return False
+    filename = parts[2]
+    return filename.startswith("v") and filename.endswith(".md") and len(filename) > len("v.md")
 
 
 def _broad_smoke_sources(

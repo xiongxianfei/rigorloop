@@ -3060,6 +3060,61 @@ release_gate:
         self.assertNotIn("python scripts/build-adapters.py --version v0.1.4 --check", result.stdout)
         self.assertNotIn("python scripts/validate-adapters.py --version v0.1.4", result.stdout)
 
+    def test_release_verify_script_rehearses_standing_process_contract_for_v0_1_5(self) -> None:
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts" / "release-verify.sh"), "v0.1.5"],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            env={
+                "RELEASE_VERIFY_DRY_RUN": "1",
+                "RELEASE_OUTPUT_DIR": "release-output",
+                "RELEASE_COMMIT": "0123456789abcdef0123456789abcdef01234567",
+            },
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("Standing release-process gate rehearsal", result.stdout)
+        self.assertIn("generated-output currency", result.stdout)
+        self.assertIn("package preview and packed install smoke", result.stdout)
+        self.assertIn("trusted publishing preferred; manual fallback requires release evidence", result.stdout)
+        self.assertIn("post-publish registry verification", result.stdout)
+        self.assertIn("dry-run mode: no publish command is executed", result.stdout)
+        self.assertIn("python scripts/test-npm-package-publication.py", result.stdout)
+        self.assertIn(
+            "python scripts/build-adapters.py --version v0.1.5 --output-dir release-output",
+            result.stdout,
+        )
+        self.assertIn(
+            "python scripts/validate-release.py --version v0.1.5 --release-output-dir release-output --release-commit 0123456789abcdef0123456789abcdef01234567",
+            result.stdout,
+        )
+
+    def test_release_ci_validation_uses_recorded_source_commit_for_v0_1_5(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "validate-release-ci.py"),
+                "--version",
+                "v0.1.5",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("validated release metadata for v0.1.5 from recorded source", result.stdout)
+        self.assertNotIn("sha256 mismatch", result.stdout)
+
     def test_release_verify_script_accepts_github_ref_name(self) -> None:
         result = subprocess.run(
             ["bash", str(ROOT / "scripts" / "release-verify.sh")],
