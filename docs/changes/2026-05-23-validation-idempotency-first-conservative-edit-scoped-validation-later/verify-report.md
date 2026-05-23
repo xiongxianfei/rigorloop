@@ -59,7 +59,7 @@ All commands ran in `/home/xiongxianfei/data/20260419-rigorloop` on 2026-05-23.
 | Command | Result | Key output |
 | --- | --- | --- |
 | `python scripts/test-validation-cache.py` | pass | 20 tests passed |
-| `python scripts/test-artifact-lifecycle-validator.py` | pass | 63 tests passed |
+| `python scripts/test-artifact-lifecycle-validator.py` | pass | 64 tests passed after CI-environment cache test isolation fix |
 | `python scripts/test-change-metadata-validator.py` | pass | 20 tests passed |
 | `python scripts/test-select-validation.py` | pass | 95 tests passed |
 | `python scripts/select-validation.py --mode local` | blocked as expected on clean tree | no uncommitted changed paths were discoverable |
@@ -75,7 +75,13 @@ All commands ran in `/home/xiongxianfei/data/20260419-rigorloop` on 2026-05-23.
 
 Local selected CI passed through `bash scripts/ci.sh --mode pr --base main --head HEAD`.
 
-Hosted CI was not observed during this verify stage and is not claimed.
+After PR #88 opened, hosted CI initially failed in `artifact_lifecycle.regression`
+because the cache-hit regression test inherited `CI=true`, while the validator
+correctly disables local cache lookup in CI. The test now removes `CI` for the
+inner-loop cache-hit smoke and adds a separate CI-environment test proving the
+validator runs instead of cache-hitting when `CI=true`.
+
+Hosted CI pass is not claimed until the rerun completes.
 
 ## Artifact Drift
 

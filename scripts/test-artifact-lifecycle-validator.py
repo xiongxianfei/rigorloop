@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
@@ -24,12 +25,13 @@ def copy_fixture(relative_path: str) -> Path:
     return temp_root
 
 
-def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
+def run_cli(*args: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(VALIDATOR), *args],
         capture_output=True,
         text=True,
         cwd=ROOT,
+        env=env,
     )
 
 
@@ -1523,6 +1525,8 @@ Leave this draft stale.
     def test_cli_cache_hits_on_second_identical_explicit_path_run(self) -> None:
         cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
         self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
+        cache_env = dict(os.environ)
+        cache_env.pop("CI", None)
         args = (
             "--mode",
             "explicit-paths",
@@ -1543,15 +1547,46 @@ Leave this draft stale.
             "docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml#validation-events",
         )
 
-        first = run_cli(*args)
+        first = run_cli(*args, env=cache_env)
         self.assertEqual(first.returncode, 0, first.stderr)
         self.assertIn("validated", first.stdout)
         self.assertNotIn("[CACHE HIT]", first.stdout)
 
-        second = run_cli(*args)
+        second = run_cli(*args, env=cache_env)
         self.assertEqual(second.returncode, 0, second.stderr)
         self.assertIn("[CACHE HIT] artifact-lifecycle", second.stdout)
         self.assertIn("prior result pass", second.stdout)
+
+    def test_cli_cache_runs_validation_in_ci_environment(self) -> None:
+        cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
+        self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
+        ci_env = dict(os.environ)
+        ci_env["CI"] = "true"
+        args = (
+            "--mode",
+            "explicit-paths",
+            "--path",
+            "docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md",
+            "--path",
+            "specs/validation-idempotency-and-cache-hit-safety.md",
+            "--path",
+            "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
+            "--use-validation-cache",
+            "--validation-cache-dir",
+            str(cache_dir),
+            "--validation-cache-change-id",
+            "2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later",
+        )
+
+        first = run_cli(*args, env=ci_env)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertIn("validated", first.stdout)
+        self.assertNotIn("[CACHE HIT]", first.stdout)
+
+        second = run_cli(*args, env=ci_env)
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertIn("validated", second.stdout)
+        self.assertNotIn("[CACHE HIT]", second.stdout)
 
 
 if __name__ == "__main__":

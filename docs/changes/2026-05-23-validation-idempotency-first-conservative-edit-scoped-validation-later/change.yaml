@@ -414,6 +414,18 @@ validation:
     result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_verify_report
   - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
     result: pass_after_verify_report
+  - command: gh run view 26332328087 --job 77520310588 --log
+    result: observed_hosted_ci_failure_artifact_lifecycle_regression_cache_hit_test_inherited_CI_true
+  - command: CI=true python scripts/test-artifact-lifecycle-validator.py
+    result: pass_64_tests_after_ci_failure_fix
+  - command: python scripts/test-validation-cache.py
+    result: pass_20_tests_after_ci_failure_fix
+  - command: python scripts/test-artifact-lifecycle-validator.py -k cache
+    result: pass_3_cache_tests_after_ci_failure_fix
+  - command: CI=true bash scripts/ci.sh --mode pr --base main --head HEAD
+    result: pass_selected_skills_generation_review_artifacts_artifact_lifecycle_validation_cache_change_metadata_selector_after_ci_failure_fix
+  - command: git diff --check -- scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_ci_failure_fix
 changed_files:
   - docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md
   - specs/validation-idempotency-and-cache-hit-safety.md
