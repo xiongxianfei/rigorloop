@@ -66,6 +66,12 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Change-record bounded reads
+
+For change-record-backed proposal review, read the proposal under review and user intent first. Use `review-log.md` and `review-resolution.md` only when checking prior findings, prior dispositions, or whether a prior proposal-review concern is still open.
+
+Do not use full `change.yaml` as the default first read for proposal quality, scope, option, or vision-fit questions. Full `change.yaml` reads remain valid for forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing debugging, and whole-record review.
+
 ## Resource map
 
 - COPY `assets/review-result-skeleton.md` when producing the proposal-review result artifact.
