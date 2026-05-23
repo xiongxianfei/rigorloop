@@ -46,7 +46,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
         validate_package_policy(
             {
                 "name": "@xiongxianfei/rigorloop",
-                "version": "0.1.5",
+                "version": "0.2.0",
                 "bin": {"rigorloop": "dist/bin/rigorloop.js"},
                 "files": ["dist/", "package.json", "README.md", "LICENSE"],
                 "scripts": {"test": "node --test"},
@@ -71,12 +71,12 @@ class NpmPackagePublicationTests(unittest.TestCase):
 
     def test_forbidden_path_detection_rejects_root_and_nested_sensitive_files(self) -> None:
         forbidden_paths = [
-            "package/rigorloop-adapter-codex-v0.1.5.zip",
+            "package/rigorloop-adapter-codex-v0.2.0.zip",
             "package/archive.tgz",
             "package/.env",
             "package/secret.pem",
             "package/secret.key",
-            "package/assets/rigorloop-adapter-codex-v0.1.5.zip",
+            "package/assets/rigorloop-adapter-codex-v0.2.0.zip",
             "package/tmp/archive.tgz",
             "package/config/.env",
             "package/secrets/secret.pem",
@@ -95,7 +95,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
             "package/LICENSE",
             "package/dist/bin/rigorloop.js",
             "package/dist/lib/some-runtime-file.js",
-            "package/dist/metadata/adapter-artifacts-v0.1.5.json",
+            "package/dist/metadata/adapter-artifacts-v0.2.0.json",
         ]
         for path in allowed_paths:
             with self.subTest(path=path):
@@ -108,17 +108,17 @@ class NpmPackagePublicationTests(unittest.TestCase):
 
         self.assertTrue(REQUIRED_PACKAGE_PATHS.issubset(report.paths))
         self.assertEqual(report.forbidden_paths, ())
-        self.assertIn("package/dist/metadata/adapter-artifacts-v0.1.5.json", report.paths)
+        self.assertIn("package/dist/metadata/adapter-artifacts-v0.2.0.json", report.paths)
         self.assertNotIn("package/dist/metadata/adapter-artifacts-v0.1.3.json", report.paths)
 
     def test_inspector_rejects_forbidden_paths(self) -> None:
         cases = [
-            "package/rigorloop-adapter-codex-v0.1.5.zip",
+            "package/rigorloop-adapter-codex-v0.2.0.zip",
             "package/archive.tgz",
             "package/.env",
             "package/secret.pem",
             "package/secret.key",
-            "package/assets/rigorloop-adapter-codex-v0.1.5.zip",
+            "package/assets/rigorloop-adapter-codex-v0.2.0.zip",
             "package/tmp/archive.tgz",
             "package/config/.env",
             "package/secrets/secret.pem",
@@ -157,7 +157,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
 
             version_result = run_command([str(bin_path), "version"], cwd=Path(project_temp))
             self.assertEqual(version_result.returncode, 0, version_result.stderr)
-            self.assertEqual(version_result.stdout.strip(), "@xiongxianfei/rigorloop 0.1.5")
+            self.assertEqual(version_result.stdout.strip(), "@xiongxianfei/rigorloop 0.2.0")
 
             init_result = run_command([str(bin_path), "init", "--adapter", "codex", "--dry-run", "--json"], cwd=Path(project_temp))
             self.assertEqual(init_result.returncode, 0, init_result.stderr)
