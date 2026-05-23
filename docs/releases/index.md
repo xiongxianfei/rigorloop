@@ -4,4 +4,4 @@ This index lists standing release-process evidence records under `docs/releases/
 
 Historical release-specific evidence remains in version directories such as `docs/releases/v0.1.5/`.
 
-No standing release-process evidence records have been created yet.
+- [v0.2.0](v0.2.0.md) - 2026-05-23; @xiongxianfei/rigorloop; latest; published
