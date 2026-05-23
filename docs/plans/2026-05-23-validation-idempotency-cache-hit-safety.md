@@ -2,13 +2,13 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Owner: maintainers
 - Start date: 2026-05-23
 - Last updated: 2026-05-23
-- Related issue or PR: none yet
+- Related issue or PR: PR #88 merged
 - Supersedes: none
 
 ## Purpose / big picture
@@ -76,13 +76,13 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Current Handoff Summary
 
 - Current milestone: M5. Lifecycle closeout
-- Current milestone state: PR #88 open for hosted CI and human review
+- Current milestone state: done
 - Last reviewed milestone: M4. Measurement evidence and selected validation routing
 - Review status: code-review M4 R1 approved M4 with no material findings.
 - Remaining in-scope implementation milestones: none.
-- Next stage: hosted CI and human review
-- Final closeout readiness: PR #88 open; hosted CI and human review pending
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, final verify passed, and PR #88 is open; hosted CI, human review, and final lifecycle done remain incomplete.
+- Next stage: none; terminal
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: all implementation milestones closed, explain-change recorded, final verify passed, PR #88 passed hosted CI and merged.
 
 ## Milestones
 
@@ -330,7 +330,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ### M5. Lifecycle closeout
 
-- Milestone state: PR #88 open for hosted CI and human review
+- Milestone state: done
 - Goal: Complete downstream closeout after all implementation milestones are closed.
 - Requirements: R73 through R77; AC16 through AC18, AC32.
 - Files/components likely touched:
@@ -435,6 +435,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: Final verify passed from clean branch state using PR-mode selected validation against `main...HEAD`. Branch is ready for PR handoff; hosted CI is not claimed.
 - 2026-05-23: PR #88 opened for hosted CI and human review: https://github.com/xiongxianfei/rigorloop/pull/88.
 - 2026-05-23: Hosted CI failed in `artifact_lifecycle.regression` because `test_cli_cache_hits_on_second_identical_explicit_path_run` inherited `CI=true`, while the validator correctly disables local cache lookup in CI. The regression test now removes `CI` for the inner-loop cache-hit smoke and adds a separate CI-environment test proving repeated runs validate instead of cache-hitting when `CI=true`.
+- 2026-05-23: PR #88 passed hosted CI and merged. Plan lifecycle state moved to `done`.
 
 ## Decision log
 
@@ -582,9 +583,9 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ## Outcome and retrospective
 
-- Pending completion.
+- Done. PR #88 merged after hosted CI passed.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #88 is open for hosted CI and human review. Hosted CI, human review, and final lifecycle done remain incomplete.
+- Terminal. No next stage.
