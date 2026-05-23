@@ -868,6 +868,10 @@ raise SystemExit({exit_code})
             "docs/changes/2026-04-25-example/session-identity.txt",
             "docs/changes/2026-04-25-example/command-output-identity.txt",
             "docs/changes/2026-04-25-example/behavior-preservation.md",
+            "docs/changes/2026-04-25-example/adoption-surface-review.md",
+            "docs/changes/2026-04-25-example/readme-ownership-proof.md",
+            "docs/changes/2026-04-25-example/repository-metadata-proof.md",
+            "docs/changes/2026-04-25-example/version-sync-proof.md",
             "docs/changes/2026-04-25-example/baseline.md",
             "docs/changes/2026-04-25-example/token-cost.md",
         ]
