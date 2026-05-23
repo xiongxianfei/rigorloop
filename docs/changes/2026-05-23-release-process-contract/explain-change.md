@@ -150,4 +150,4 @@ Follow-up proposals identified by the proposal/spec remain appropriate:
 
 M1 through M4 are closed after clean code review. Final `verify` passed on the committed branch state, including PR-mode selected CI, broad smoke, release-gate dry-run rehearsal, release CI validation for `v0.1.5`, selector regression, lifecycle regression, review-artifact closeout, and change metadata validation.
 
-Next stage is `pr`. This artifact does not claim that a package was published, that hosted CI passed, or that the change is a real npm release.
+PR #89 is open for hosted CI and human review. This artifact does not claim that a package was published, that hosted CI passed, or that the change is a real npm release.
