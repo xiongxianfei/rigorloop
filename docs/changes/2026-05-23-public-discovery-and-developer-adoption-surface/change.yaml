@@ -238,6 +238,8 @@ validation:
     result: pass_pr_mode_after_ci_maintenance
   - command: bash scripts/ci.sh --mode pr --base main --head HEAD
     result: pass_pr_mode_selected_ci_after_ci_maintenance
+  - command: pr
+    result: opened_PR_90_for_hosted_CI_and_human_review
   - command: gh repo view xiongxianfei/rigorloop --json description,homepageUrl,repositoryTopics
     result: pass_after_code_review_m4_r1
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
