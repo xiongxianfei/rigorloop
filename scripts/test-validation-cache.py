@@ -187,11 +187,12 @@ class ValidationCacheIdentityTests(unittest.TestCase):
     def test_implementation_manifest_is_deterministic_and_complete(self) -> None:
         self.write_file(
             "scripts/validate-artifact-lifecycle.py",
-            "import os\nimport helper\nfrom nested import tool\n",
+            "import os\nimport pathlib\nimport yaml\nimport helper\nfrom nested import tool\n",
         )
         self.write_file("scripts/helper.py", "import json\n")
         self.write_file("scripts/nested.py", "from sub import leaf\n")
         self.write_file("scripts/sub.py", "VALUE = 1\n")
+        self.write_file("scripts/validation_cache.py", "VALUE = 1\n")
 
         manifest = validation_cache.build_implementation_manifest(
             self.temp_root,
@@ -205,11 +206,61 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         self.assertIn("scripts/sub.py", paths)
         self.assertIn("scripts/validation_cache.py", paths)
         self.assertNotIn("os.py", paths)
+        self.assertNotIn("pathlib.py", paths)
+        self.assertNotIn("yaml.py", paths)
         self.assertEqual(manifest.manifest_hash, validation_cache.build_implementation_manifest(
             self.temp_root,
             "scripts/validate-artifact-lifecycle.py",
             manifest_generator="scripts/validation_cache.py",
         ).manifest_hash)
+
+    def test_implementation_manifest_missing_entrypoint_is_cache_ineligible(self) -> None:
+        with self.assertRaises(validation_cache.CacheIdentityError) as context:
+            validation_cache.build_implementation_manifest(
+                self.temp_root,
+                "scripts/missing-validator.py",
+                manifest_generator="scripts/validation_cache.py",
+            )
+
+        self.assertEqual(context.exception.code, "implementation-entrypoint-missing")
+        self.assertIn("cache eligibility disabled", str(context.exception))
+
+    def test_implementation_manifest_unresolved_repository_import_is_cache_ineligible(self) -> None:
+        self.write_file(
+            "scripts/validate-artifact-lifecycle.py",
+            "from scripts.missing_helper import helper\n",
+        )
+        self.write_file("scripts/validation_cache.py", "VALUE = 1\n")
+
+        with self.assertRaises(validation_cache.CacheIdentityError) as context:
+            validation_cache.build_implementation_manifest(
+                self.temp_root,
+                "scripts/validate-artifact-lifecycle.py",
+                manifest_generator="scripts/validation_cache.py",
+            )
+
+        self.assertEqual(context.exception.code, "repository-local-import-unresolved")
+        self.assertIn("scripts.missing_helper", str(context.exception))
+        self.assertIn("cache eligibility disabled", str(context.exception))
+
+    def test_implementation_manifest_unparseable_repository_helper_is_cache_ineligible(self) -> None:
+        self.write_file(
+            "scripts/validate-artifact-lifecycle.py",
+            "from scripts.bad_helper import helper\n",
+        )
+        self.write_file("scripts/bad_helper.py", "def broken(:\n")
+        self.write_file("scripts/validation_cache.py", "VALUE = 1\n")
+
+        with self.assertRaises(validation_cache.CacheIdentityError) as context:
+            validation_cache.build_implementation_manifest(
+                self.temp_root,
+                "scripts/validate-artifact-lifecycle.py",
+                manifest_generator="scripts/validation_cache.py",
+            )
+
+        self.assertEqual(context.exception.code, "repository-local-helper-unparseable")
+        self.assertIn("scripts/bad_helper.py", str(context.exception))
+        self.assertIn("cache eligibility disabled", str(context.exception))
 
     def test_policy_config_manifest_is_deterministic(self) -> None:
         manifest = validation_cache.build_policy_manifest(
