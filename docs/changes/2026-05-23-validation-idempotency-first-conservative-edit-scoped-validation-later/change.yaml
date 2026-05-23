@@ -37,6 +37,7 @@ requirements:
   - Resolve code-review M2 R1 findings before rerunning code-review.
   - Record code-review M2 R2 approval before M3 implementation.
   - Implement M3 compact metadata evidence-kind validation and cache-only closeout enforcement.
+  - Record code-review M3 R1 approval before M4 implementation.
 tests:
   - Proposal-review R1 found VIC-PR1 through VIC-PR5 and required first-slice scope, cache evidence, first validator, implementation manifest, and closeout enforcement clarification.
   - Proposal revision accepts all five proposal-review findings.
@@ -63,6 +64,7 @@ tests:
   - Review-resolution for code-review M2 R1 resolves strict local cache identity checks and merge-preserving formal cache-hit evidence writes.
   - Code-review M2 R2 approves M2 with no material findings and closes the lifecycle cache integration milestone.
   - M3 tests cover compact evidence-kind result pairings, safe evidence references, cache-only closeout rejection, actual-run closeout with supporting cache evidence, and legacy cache-field rejection.
+  - Code-review M3 R1 approves M3 and closes the compact evidence-kind and closeout enforcement milestone.
   - Artifact lifecycle validation covers the revised proposal and change-local review records.
   - Review-artifact validation covers the recorded proposal-review R1 findings and dispositions.
   - Change metadata validation covers this change-local metadata.
@@ -297,6 +299,22 @@ validation:
     result: pass_validated_5_artifact_files_after_m3_state_sync
   - command: bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/artifact_lifecycle_validation.py --path scripts/test-change-metadata-validator.py --path scripts/test-artifact-lifecycle-validator.py --path tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml --path tests/fixtures/change-metadata/compact-invalid-cache-only-closeout/change.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md
     result: pass_selected_artifact_lifecycle_change_metadata_after_m3_state_sync
+  - command: python scripts/test-change-metadata-validator.py -k compact_invalid
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/test-change-metadata-validator.py -k compact_m3_valid
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/test-artifact-lifecycle-validator.py -k cache_only_closeout
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml
+    result: pass_valid_change_metadata_during_code_review_m3_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_11_findings_11_log_entries_11_resolution_entries_11_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m3-r1.md
+    result: pass_validated_5_artifact_files_after_code_review_m3_r1
+  - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
+    result: pass_after_code_review_m3_r1
 changed_files:
   - docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md
   - specs/validation-idempotency-and-cache-hit-safety.md
@@ -313,6 +331,7 @@ changed_files:
   - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m1-r2.md
   - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m3-r1.md
   - docs/architecture/system/architecture.md
   - docs/architecture/system/diagrams/container.mmd
   - docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md

@@ -15,6 +15,7 @@ Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m3-r1
 
 ## Resolution Entries
 
@@ -193,5 +194,9 @@ Validation target: Multiple formal cache-hit evidence records remain reviewable 
 Validation evidence: `python scripts/test-validation-cache.py` passed with 20 tests; `python scripts/test-artifact-lifecycle-validator.py` passed with 62 tests; `python scripts/test-select-validation.py` passed with 94 tests; selected CI passed `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, and `validation_cache.regression`; `git diff --check --` passed.
 
 ### code-review-m2-r2
+
+No material findings.
+
+### code-review-m3-r1
 
 No material findings.
