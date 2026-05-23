@@ -434,6 +434,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: Explain-change recorded durable problem-to-diff rationale, validation evidence, review-resolution summary, alternatives rejected, and remaining risks. Next stage is verify.
 - 2026-05-23: Final verify passed from clean branch state using PR-mode selected validation against `main...HEAD`. Branch is ready for PR handoff; hosted CI is not claimed.
 - 2026-05-23: PR #88 opened for hosted CI and human review: https://github.com/xiongxianfei/rigorloop/pull/88.
+- 2026-05-23: Hosted CI failed in `artifact_lifecycle.regression` because `test_cli_cache_hits_on_second_identical_explicit_path_run` inherited `CI=true`, while the validator correctly disables local cache lookup in CI. The regression test now removes `CI` for the inner-loop cache-hit smoke and adds a separate CI-environment test proving repeated runs validate instead of cache-hitting when `CI=true`.
 
 ## Decision log
 
@@ -572,6 +573,12 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: `python scripts/select-validation.py --mode local` returned status `ok` with no unclassified paths or registration debt after recording `verify-report.md`.
 - 2026-05-23: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md` passed selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate` after recording `verify-report.md`.
 - 2026-05-23: `git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md` passed after recording `verify-report.md`.
+- 2026-05-23: `gh run view 26332328087 --job 77520310588 --log` identified hosted CI failure in `artifact_lifecycle.regression`: expected `[CACHE HIT]` was absent because `CI=true` disables validation cache lookup.
+- 2026-05-23: `CI=true python scripts/test-artifact-lifecycle-validator.py` passed with 64 tests after the CI failure fix.
+- 2026-05-23: `python scripts/test-validation-cache.py` passed with 20 tests after the CI failure fix.
+- 2026-05-23: `python scripts/test-artifact-lifecycle-validator.py -k cache` passed with 3 tests after the CI failure fix.
+- 2026-05-23: `CI=true bash scripts/ci.sh --mode pr --base main --head HEAD` passed selected checks `skills.generation_regression`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `validation_cache.regression`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression` after the CI failure fix.
+- 2026-05-23: `git diff --check -- scripts/test-artifact-lifecycle-validator.py` passed after the CI failure fix.
 
 ## Outcome and retrospective
 
