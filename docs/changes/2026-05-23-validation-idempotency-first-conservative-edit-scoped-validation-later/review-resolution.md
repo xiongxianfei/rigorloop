@@ -4,7 +4,7 @@
 
 This record closes formal lifecycle review findings for the validation idempotency and cache-hit safety proposal revision.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -13,6 +13,7 @@ Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m2-r1
 
 ## Resolution Entries
 
@@ -161,3 +162,29 @@ Validation evidence: `python scripts/test-validation-cache.py` passed with 13 te
 ### code-review-m1-r2
 
 No material findings.
+
+### code-review-m2-r1
+
+#### VIC-CR-M2-R1-F1
+
+Finding ID: VIC-CR-M2-R1-F1
+Disposition: accepted
+Status: unresolved
+Owner: implementer
+Owning stage: implement M2 review-resolution
+Required outcome: Local cache hit eligibility must fail closed when the stored cache key is missing or differs from the current computed key, and when the stored validator ID is missing, malformed, unsupported, or different from the first-slice validator ID.
+Stop state: M2 remains resolution-needed until local cache record identity checks and direct regression tests are added.
+Rationale: Spec `R11` requires actual validation when any cache-key component is unknown, missing, malformed, unsupported, or changed; accepting records without stored cache key or validator identity can allow unsafe cache skips.
+Expected proof: Tests cover missing `cache_key`, mismatched `cache_key`, unsupported stored `validator_id`, and a valid matching record; M2 validation reruns.
+
+#### VIC-CR-M2-R1-F2
+
+Finding ID: VIC-CR-M2-R1-F2
+Disposition: accepted
+Status: unresolved
+Owner: implementer
+Owning stage: implement M2 review-resolution
+Required outcome: Writing a cache-hit evidence record must preserve existing cache-hit records unless the same stable cache-hit ID is intentionally replaced.
+Stop state: M2 remains resolution-needed until formal cache-hit evidence writes preserve existing records and direct regression tests cover multiple cache-hit IDs.
+Rationale: Formal workflow cache-hit evidence is the reviewable trail for skipped validators; overwriting the file can erase earlier formal cache-hit claims.
+Expected proof: Tests write two distinct cache-hit IDs and prove both remain; if same-ID replacement is supported, tests prove only the matching ID is replaced; M2 validation reruns.
