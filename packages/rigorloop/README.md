@@ -2,7 +2,11 @@
 
 RigorLoop CLI for repository-local AI-assisted software delivery.
 
-This package exposes the `rigorloop` binary for approved CLI workflows such as adapter initialization and change metadata scaffolding. Adapter archives remain verified GitHub release artifacts; they are not bundled into the npm package.
+This package exposes the `rigorloop` binary for approved CLI workflows such as
+adapter initialization and change metadata scaffolding. Adapter archives remain
+verified GitHub release artifacts; they are not bundled into the npm package.
+npm is the CLI delivery channel, not the canonical source for workflow rules,
+skills, schemas, templates, or adapter archives.
 
 ## Quick Start
 
@@ -19,7 +23,7 @@ npx @xiongxianfei/rigorloop@latest init --adapter opencode
 Use a pinned version when you want reproducible setup:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.1.5 init --adapter codex
+npx @xiongxianfei/rigorloop@0.2.0 init --adapter codex
 ```
 
 Install as a project-local development dependency:
@@ -52,23 +56,23 @@ rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
 Initialize an adapter from the verified official release archive:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.1.5 init --adapter codex --json
-npx @xiongxianfei/rigorloop@0.1.5 init --adapter claude --json
-npx @xiongxianfei/rigorloop@0.1.5 init --adapter opencode --json
+npx @xiongxianfei/rigorloop@0.2.0 init --adapter codex --json
+npx @xiongxianfei/rigorloop@0.2.0 init --adapter claude --json
+npx @xiongxianfei/rigorloop@0.2.0 init --adapter opencode --json
 ```
 
 Preview the write plan without mutating files:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.1.5 init --adapter opencode --dry-run --json
+npx @xiongxianfei/rigorloop@0.2.0 init --adapter opencode --dry-run --json
 ```
 
 Use `--from-archive` when you already downloaded the matching official archive, or when Node `fetch()` cannot reach GitHub from your network:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.1.5 init --adapter codex --from-archive ./rigorloop-adapter-codex-v0.1.5.zip --json
-npx @xiongxianfei/rigorloop@0.1.5 init --adapter claude --from-archive ./rigorloop-adapter-claude-v0.1.5.zip --json
-npx @xiongxianfei/rigorloop@0.1.5 init --adapter opencode --from-archive ./rigorloop-adapter-opencode-v0.1.5.zip --json
+npx @xiongxianfei/rigorloop@0.2.0 init --adapter codex --from-archive ./rigorloop-adapter-codex-v0.2.0.zip --json
+npx @xiongxianfei/rigorloop@0.2.0 init --adapter claude --from-archive ./rigorloop-adapter-claude-v0.2.0.zip --json
+npx @xiongxianfei/rigorloop@0.2.0 init --adapter opencode --from-archive ./rigorloop-adapter-opencode-v0.2.0.zip --json
 ```
 
 The install command writes repository-local RigorLoop files, verifies the selected archive before extraction, and verifies the installed tree before reporting success. Runtime roots are adapter-specific:
@@ -86,20 +90,20 @@ Network installs use Node `fetch()`. If download fails in a proxied environment,
 Create a new change metadata scaffold:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.1.5 new-change my-change --title "Describe the change" --json
+npx @xiongxianfei/rigorloop@0.2.0 new-change my-change --title "Describe the change" --json
 ```
 
 Preview the scaffold first:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.1.5 new-change my-change --title "Describe the change" --dry-run --json
+npx @xiongxianfei/rigorloop@0.2.0 new-change my-change --title "Describe the change" --dry-run --json
 ```
 
 `new-change` creates `docs/changes/<change-id>/change.yaml`. It does not claim that proposal, spec, review, verification, or PR readiness is complete.
 
 ## Version Guidance
 
-Use `@latest` for manual exploration. Use an explicit version such as `@0.1.5` for CI, onboarding docs, and repeatable agent setup.
+Use `@latest` for manual exploration. Use an explicit version such as `@0.2.0` for CI, onboarding docs, and repeatable agent setup.
 
 ## Source of Truth
 
