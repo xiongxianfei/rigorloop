@@ -1,0 +1,55 @@
+version: v0.2.0
+release_type: final
+manifest_version: v0.1.5
+
+supported_tools:
+  - codex
+  - claude
+  - opencode
+
+adapter_paths:
+  codex: dist/adapters/codex/
+  claude: dist/adapters/claude/
+  opencode: dist/adapters/opencode/
+
+instruction_entrypoints:
+  codex: dist/adapters/codex/AGENTS.md
+  claude: dist/adapters/claude/CLAUDE.md
+  opencode: dist/adapters/opencode/AGENTS.md
+
+smoke:
+  codex:
+    result: pass
+    tool_version: "pending-publication"
+    evidence: "Packed-package dry-run smoke passes before publication. Actual non-dry-run Codex install smoke is required after npm publication and is tracked in release evidence."
+    reason: ""
+    owner: maintainer
+  claude:
+    result: pass
+    tool_version: "pending-publication"
+    evidence: "Adapter archive validation passes for v0.2.0 release artifacts. Manual adapter runtime smoke is deferred to release execution evidence."
+    reason: ""
+    owner: maintainer
+  opencode:
+    result: pass
+    tool_version: "pending-publication"
+    evidence: "Adapter archive validation passes for v0.2.0 release artifacts. Manual adapter runtime smoke is deferred to release execution evidence."
+    reason: ""
+    owner: maintainer
+
+validation:
+  generated_sync: pass
+  release_notes_consistency: pass
+  placeholder_release_check: pass
+  security: pass
+  adapter_archives: pass
+  adapter_artifact_metadata: pass
+
+npm_package:
+  name: "@xiongxianfei/rigorloop"
+  version: "0.2.0"
+  release_tag: v0.2.0
+
+adapter_release:
+  tag: v0.2.0
+  bundled_metadata: adapter-artifacts-v0.2.0.json
