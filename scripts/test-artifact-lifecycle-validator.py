@@ -81,6 +81,174 @@ def write_minimal_test_spec(root: Path, readiness: str) -> Path:
     return target
 
 
+def write_release_evidence(root: Path, text: str, filename: str = "v1.2.3.md") -> Path:
+    target = root / "docs" / "releases" / filename
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(text, encoding="utf-8")
+    return target
+
+
+def routine_release_evidence(*, package_preview: str = "pass", extra_notes: str = "") -> str:
+    return f"""# Release v1.2.3
+
+## Result
+
+- Package: @rigorloop/rigorloop
+- Version: 1.2.3
+- Release type: patch
+- Routine publish: yes
+- No new decision introduced: yes
+- Source commit: abc1234
+- Source branch: main
+- npm dist-tag: latest
+- Publish path: trusted-publishing
+- Provenance: automatic
+- Status: published
+
+## Related Lifecycle Evidence
+
+- Related change record: not-applicable
+- Upstream lifecycle approval: not-applicable
+- Release-specific evidence: not-applicable
+- Release notes: not-required; maintenance-only release
+
+## Version Decision
+
+- Change summary: maintenance release.
+- Version decision: patch
+- Dist-tag decision: latest
+- No-op check: pass
+- Existing npm version check: not-found
+
+## Routine Publish Boundary
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| release type recorded | pass | patch |
+| no new product or implementation decision | pass | no new decision introduced |
+| no release-process change | pass | release process unchanged |
+| no package name/scope change | pass | package unchanged |
+| no adapter target/install-root change | pass | adapters unchanged |
+| upstream breaking change approval | not-applicable | not breaking |
+
+## Preflight Gate
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| clean worktree except intentional release artifacts | pass | git status --short |
+| release notes or not-required rationale | not-required | maintenance-only release |
+| generated output current | pass | skills.drift and adapters.drift |
+| tests / selected CI / broad smoke | pass | selected CI passed |
+| package build or pack proof | pass | npm pack |
+| package preview | {package_preview} | npm pack --dry-run |
+| local packed-install smoke | pass | temp project install |
+| no unresolved release blockers | pass | none |
+| publish path selected | pass | trusted-publishing |
+| evidence path prepared | pass | docs/releases/v1.2.3.md |
+
+## Package Contents
+
+- Package filename: rigorloop-1.2.3.tgz
+- Package size: 42 kB
+- Integrity or checksum: sha512-demo
+- Included-file review: package contents reviewed
+- Unexpected inclusions: none
+- Unexpected exclusions: none
+- Secret-bearing file check: pass
+
+## Publish Event
+
+- Command family: trusted publishing workflow
+- Registry: npm
+- Package reference: @rigorloop/rigorloop@1.2.3
+- Published at: 2026-05-23T12:00:00Z
+- Dist-tag: latest
+- Provenance status: automatic
+- Manual fallback reason: not-applicable
+
+## Registry Verification
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| registry version query | pass | npm view returned 1.2.3 |
+| dist-tag points correctly | pass | latest points to 1.2.3 |
+| integrity metadata available | pass | sha512-demo |
+| fresh registry install smoke | pass | registry install smoke passed |
+| CLI or npx smoke | pass | CLI smoke passed |
+
+## Emergency Deferrals
+
+Use `none` for routine releases with no emergency deferrals.
+
+| Deferred gate item | Approving owner or owning stage | Rationale | Reason pre-publish completion was impossible | Validation impact | Risk accepted | Follow-up location | Deadline or next lifecycle stage | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| none | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | completed |
+
+## Recovery / Rollback Notes
+
+- Failure phase: none
+- Registry state checked before retry: not-applicable
+- Recovery action: none
+- Published version overwrite attempted: no
+- Notes: none
+
+## Follow-up
+
+- Release announcement: none
+- Deferred gate follow-up: none
+- Deprecation or dist-tag follow-up: none
+- Next release follow-up: none
+
+## Evidence Safety Checklist
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| no npm tokens | pass | reviewed |
+| no OTPs | pass | reviewed |
+| no credentials or private keys | pass | reviewed |
+| no private environment dumps | pass | reviewed |
+| no hostnames or usernames | pass | reviewed |
+| no home-directory or machine-local temp paths | pass | reviewed |
+| command output summarized instead of pasted wholesale | pass | reviewed |
+
+{extra_notes}
+"""
+
+
+def emergency_release_evidence(
+    *,
+    deferred_item: str = "fresh registry install smoke",
+    owner: str = "release owner",
+    validation_impact: str = "registry install smoke pending",
+) -> str:
+    return routine_release_evidence().replace(
+        "- Release type: patch\n"
+        "- Routine publish: yes\n"
+        "- No new decision introduced: yes\n"
+        "- Source commit: abc1234\n"
+        "- Source branch: main\n"
+        "- npm dist-tag: latest\n"
+        "- Publish path: trusted-publishing\n"
+        "- Provenance: automatic\n"
+        "- Status: published",
+        "- Release type: emergency\n"
+        "- Routine publish: no\n"
+        "- No new decision introduced: yes\n"
+        "- Source commit: abc1234\n"
+        "- Source branch: main\n"
+        "- npm dist-tag: latest\n"
+        "- Publish path: manual-2fa\n"
+        "- Provenance: not-used with reason\n"
+        "- Status: emergency-with-deferred-gate",
+    ).replace(
+        "| fresh registry install smoke | pass | registry install smoke passed |",
+        "| fresh registry install smoke | deferred | deferred with owner approval |",
+    ).replace(
+        "| none | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | completed |",
+        f"| {deferred_item} | {owner} | urgent fix | dependency unavailable before publish | {validation_impact} | owner accepts temporary risk | docs/changes/2026-05-23-release-process-contract/follow-up.md | next lifecycle stage | open |",
+    )
+
+
 def init_git_fixture(path: Path) -> str:
     subprocess.run(["git", "init"], cwd=path, check=True, capture_output=True, text=True)
     subprocess.run(
@@ -282,6 +450,101 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
             result.blocking_findings,
             msg=f"expected plan archive contract fixture to pass, got blockers: {result.blocking_findings}",
         )
+
+    def test_release_evidence_fixture_passes_lightweight_checklist(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="release-evidence-checklist-"))
+        self.addCleanupTree(fixture_root)
+        write_release_evidence(fixture_root, routine_release_evidence())
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/releases/v1.2.3.md"],
+        )
+
+        self.assertFalse(
+            result.blocking_findings,
+            msg=f"expected complete release evidence to pass, got blockers: {result.blocking_findings}",
+        )
+        self.assertEqual(result.checked_artifacts, [Path("docs/releases/v1.2.3.md")])
+
+    def test_release_evidence_blocks_missing_routine_gate_item(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="release-evidence-checklist-"))
+        self.addCleanupTree(fixture_root)
+        write_release_evidence(fixture_root, routine_release_evidence(package_preview="fail"))
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/releases/v1.2.3.md"],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("routine release gate item 'package preview' must pass before publish", messages)
+
+    def test_release_evidence_allows_complete_emergency_deferral(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="release-evidence-checklist-"))
+        self.addCleanupTree(fixture_root)
+        write_release_evidence(fixture_root, emergency_release_evidence())
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/releases/v1.2.3.md"],
+        )
+
+        self.assertFalse(
+            result.blocking_findings,
+            msg=f"expected complete emergency deferral to pass, got blockers: {result.blocking_findings}",
+        )
+
+    def test_release_evidence_blocks_emergency_deferral_without_owner(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="release-evidence-checklist-"))
+        self.addCleanupTree(fixture_root)
+        write_release_evidence(fixture_root, emergency_release_evidence(owner=""))
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/releases/v1.2.3.md"],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("emergency deferral 'fresh registry install smoke' is missing approving owner", messages)
+
+    def test_release_evidence_blocks_nondeferrable_registry_verification(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="release-evidence-checklist-"))
+        self.addCleanupTree(fixture_root)
+        write_release_evidence(
+            fixture_root,
+            emergency_release_evidence(deferred_item="post-publish registry verification"),
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/releases/v1.2.3.md"],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("emergency deferral 'post-publish registry verification' is non-deferrable", messages)
+
+    def test_release_evidence_blocks_secret_bearing_content(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="release-evidence-checklist-"))
+        self.addCleanupTree(fixture_root)
+        write_release_evidence(
+            fixture_root,
+            routine_release_evidence(extra_notes="Leaked environment: NPM_TOKEN=secret-value"),
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/releases/v1.2.3.md"],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("release evidence contains forbidden secret or private machine-state marker", messages)
 
     def test_valid_proposal_passes(self) -> None:
         self.assertFixturePasses(

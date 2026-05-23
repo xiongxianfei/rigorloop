@@ -1,0 +1,275 @@
+change_id: 2026-05-23-release-process-contract
+title: RigorLoop release process contract
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-23-release-process-contract.md
+  spec: specs/release-process-contract.md
+  test_spec: specs/release-process-contract.test.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260523-release-process-contract.md
+  plan: docs/plans/2026-05-23-release-process-contract.md
+  review_resolution: docs/changes/2026-05-23-release-process-contract/review-resolution.md
+  explain_change: docs/changes/2026-05-23-release-process-contract/explain-change.md
+requirements:
+  - Record the proposal direction for defining the release process once and executing routine publishes as operations.
+  - Preserve the routine-publish boundary so ordinary releases do not require new proposal/spec/plan ceremony when no new decision is introduced.
+  - Record release evidence, gate, versioning, npm publish policy, registry verification, and recovery as downstream spec topics.
+  - Record formal proposal-review evidence before downstream spec reliance.
+  - Define the standing release-process contract in a feature spec after proposal-review approval.
+  - Record formal spec-review findings before downstream reliance.
+  - Record clean spec-review after REL-SR1 resolution before downstream reliance.
+  - Record canonical architecture and ADR for the standing release-process boundary before planning.
+  - Record formal architecture-review evidence before downstream planning reliance.
+  - Create a living execution plan before implementation or release workflow configuration.
+  - Record formal plan-review evidence before test-spec or implementation reliance.
+  - Create a traceable test specification before implementation.
+  - Implement M1 release evidence README, index, and template/checklist surfaces.
+  - Record clean M1 code-review before advancing to M2 implementation.
+  - Implement M2 release evidence selector routing for docs/releases/v<version>.md.
+  - Implement M2 lightweight release-evidence checklist validation fixtures for routine gate, emergency deferral, non-deferrable registry verification, and secret-bearing evidence cases.
+  - Record M2 code-review finding CR-M2-1 before review-resolution fixes.
+  - Resolve CR-M2-1 by selecting artifact lifecycle checklist validation for flat release evidence files.
+  - Record clean M2 code-review re-review before advancing to M3 implementation.
+  - Implement M3 release gate dry-run contract output and non-publishing rehearsal evidence.
+  - Preserve M3 release CI validation for historical adapter artifacts by rebuilding from the recorded release source commit.
+  - Record clean M3 code-review before advancing to M4 implementation.
+  - Record M4 explain-change and lifecycle closeout evidence before final verify or PR handoff.
+  - Record clean M4 code-review before final verify.
+tests:
+  - Proposal artifact lifecycle validation covers the accepted proposal.
+  - Spec artifact lifecycle validation covers the release-process contract spec.
+  - Proposal-review clean receipt validates through review artifact validation.
+  - Spec-review finding record validates through review artifact validation.
+  - Review-resolution records accepted REL-SR1 disposition after spec revision.
+  - Spec-review clean receipt validates after REL-SR1 resolution.
+  - Change metadata validation covers the current review state.
+  - Artifact lifecycle validation covers canonical architecture and ADR updates.
+  - Architecture-review clean receipt validates through review artifact validation.
+  - Plan artifact lifecycle validation covers the release-process execution plan and plan index update.
+  - Plan-review clean receipt validates through review artifact validation.
+  - Test spec artifact lifecycle validation covers the release-process proof plan.
+  - M1 targeted validation covers release evidence authoring surfaces and lifecycle metadata.
+  - M1 clean code-review receipt validates through review artifact validation.
+  - Selector regression covers docs/releases/v<version>.md routing and release guidance paths that do not require a version.
+  - Artifact lifecycle validator regression covers release-evidence checklist fixtures, emergency deferrals, non-deferrable registry verification, and forbidden secret/private-machine markers.
+  - M2 code-review identified that selector routing must select the lifecycle/checklist route for docs/releases/v<version>.md.
+  - Direct selector proof confirms docs/releases/v1.2.3.md selects artifact_lifecycle.validate after CR-M2-1 resolution.
+  - M2 clean re-review receipt validates through review artifact validation.
+  - M3 release gate dry-run proves standing gate command selection without executing a publish command.
+  - M3 release CI wrapper validation proves v0.1.5 adapter artifacts from the recorded release source commit still validate against release metadata.
+  - M3 clean code-review receipt validates through review artifact validation.
+  - M4 explain-change records implementation rationale, validation evidence, scope control, risks, and downstream readiness limits.
+  - M4 clean code-review receipt validates through review artifact validation.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-23-release-process-contract
+    result: pass_reviews_3_findings_1_log_entries_3_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md
+    result: pass_validated_1_artifact_file
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md
+    result: pass_validated_1_artifact_file_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-23-release-process-contract
+    result: pass_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_rel_sr1_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_rel_sr1_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_rel_sr1_revision
+  - command: git diff --check -- docs/proposals/2026-05-23-release-process-contract.md specs/release-process-contract.md docs/changes/2026-05-23-release-process-contract
+    result: pass_after_rel_sr1_revision
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_architecture
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_architecture
+  - command: git diff --check -- docs/proposals/2026-05-23-release-process-contract.md specs/release-process-contract.md docs/architecture/system/architecture.md docs/adr/ADR-20260523-release-process-contract.md docs/changes/2026-05-23-release-process-contract
+    result: pass_after_architecture
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-release-process-contract.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r2.md
+    result: pass_validated_4_artifact_files_after_architecture
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_architecture_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-release-process-contract.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/architecture-review-r1.md
+    result: pass_validated_4_artifact_files_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-release-process-contract.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/architecture-review-r1.md
+    result: pass_validated_4_artifact_files_after_plan
+  - command: git diff --check -- docs/proposals/2026-05-23-release-process-contract.md specs/release-process-contract.md docs/architecture/system/architecture.md docs/adr/ADR-20260523-release-process-contract.md docs/plans/2026-05-23-release-process-contract.md docs/plan.md docs/changes/2026-05-23-release-process-contract
+    result: pass_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_6_findings_1_log_entries_6_resolution_entries_1_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-release-process-contract.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/architecture-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/plan-review-r1.md
+    result: pass_validated_4_artifact_files_after_plan_review_r1
+  - command: git diff --check -- docs/proposals/2026-05-23-release-process-contract.md specs/release-process-contract.md docs/architecture/system/architecture.md docs/adr/ADR-20260523-release-process-contract.md docs/plans/2026-05-23-release-process-contract.md docs/plan.md docs/changes/2026-05-23-release-process-contract
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_test_spec
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_6_findings_1_log_entries_6_resolution_entries_1_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path specs/release-process-contract.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-release-process-contract.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/architecture-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/plan-review-r1.md
+    result: pass_validated_5_artifact_files_after_test_spec
+  - command: git diff --check -- docs/proposals/2026-05-23-release-process-contract.md specs/release-process-contract.md specs/release-process-contract.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260523-release-process-contract.md docs/plans/2026-05-23-release-process-contract.md docs/plan.md docs/changes/2026-05-23-release-process-contract
+    result: pass_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-process-contract.test.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_validated_5_artifact_files_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_m1
+  - command: git diff --check -- docs/releases/README.md docs/releases/index.md templates/release-evidence.md specs/release-process-contract.test.md docs/plans/2026-05-23-release-process-contract.md docs/changes/2026-05-23-release-process-contract
+    result: pass_m1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_7_findings_1_log_entries_7_resolution_entries_1_after_code_review_m1_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m1_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path specs/release-process-contract.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-release-process-contract.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r2.md --path docs/changes/2026-05-23-release-process-contract/reviews/architecture-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/plan-review-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/code-review-m1-r1.md
+    result: pass_validated_5_artifact_files_after_code_review_m1_r1
+  - command: git diff --check -- docs/releases/README.md docs/releases/index.md templates/release-evidence.md specs/release-process-contract.test.md docs/plans/2026-05-23-release-process-contract.md docs/changes/2026-05-23-release-process-contract docs/plan.md
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/test-select-validation.py
+    result: pass_97_tests_m2
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_70_tests_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-process-contract.test.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_validated_5_artifact_files_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_m2
+  - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py scripts/artifact_lifecycle_contracts.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py specs/release-process-contract.test.md docs/changes/2026-05-23-release-process-contract
+    result: pass_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-process-contract.test.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_validated_5_artifact_files_m2_handoff_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_m2_handoff_sync
+  - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py scripts/artifact_lifecycle_contracts.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py specs/release-process-contract.test.md docs/plans/2026-05-23-release-process-contract.md docs/plan.md docs/changes/2026-05-23-release-process-contract
+    result: pass_m2_handoff_sync
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-23-release-process-contract
+    result: pass_structure_reviews_8_findings_2_log_entries_8_resolution_entries_2_after_code_review_m2_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m2_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/code-review-m2-r1.md
+    result: pass_validated_5_artifact_files_after_code_review_m2_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/releases/v1.2.3.md
+    result: pass_selected_artifact_lifecycle_validate_for_flat_release_evidence
+  - command: python scripts/select-validation.py --mode explicit --path docs/releases/README.md --path docs/releases/index.md
+    result: pass_release_guidance_routes_without_version_requirement
+  - command: python scripts/select-validation.py --mode explicit --path docs/releases/v0.1.5/release.yaml
+    result: pass_directory_release_metadata_still_selects_release_validate
+  - command: python scripts/test-select-validation.py
+    result: pass_97_tests_after_cr_m2_1
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_70_tests_after_cr_m2_1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-process-contract.test.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_validated_5_artifact_files_after_cr_m2_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_cr_m2_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: expected_fail_pending_m2_same_stage_re_review
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-23-release-process-contract
+    result: pass_structure_reviews_8_findings_2_log_entries_8_resolution_entries_2_after_cr_m2_1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/code-review-m2-r1.md
+    result: pass_validated_5_artifact_files_after_cr_m2_1_review_evidence
+  - command: git diff --check --
+    result: pass_after_cr_m2_1
+  - command: python scripts/select-validation.py --mode explicit --path docs/releases/v1.2.3.md
+    result: pass_re_review_selected_artifact_lifecycle_validate_for_flat_release_evidence
+  - command: python scripts/select-validation.py --mode explicit --path docs/releases/v0.1.5/release.yaml
+    result: pass_re_review_directory_release_metadata_still_selects_release_validate
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_9_findings_2_log_entries_9_resolution_entries_2_after_code_review_m2_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m2_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-process-contract.test.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/code-review-m2-r1.md --path docs/changes/2026-05-23-release-process-contract/reviews/code-review-m2-r2.md
+    result: pass_validated_5_artifact_files_after_code_review_m2_r2
+  - command: git diff --check --
+    result: pass_after_code_review_m2_r2
+  - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.5
+    result: pass_m3_non_publishing_release_gate_rehearsal
+  - command: python scripts/validate-release-ci.py --version v0.1.5
+    result: pass_m3_recorded_source_release_ci_validation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_103_tests_m3
+  - command: python scripts/test-npm-package-publication.py
+    result: pass_6_tests_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-process-contract.test.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_validated_5_artifact_files_m3_handoff_sync
+  - command: git diff --check -- scripts/release-verify.sh scripts/validate-release.py scripts/validate-release-ci.py scripts/test-adapter-distribution.py scripts/test-npm-package-publication.py docs/plans/2026-05-23-release-process-contract.md docs/plan.md docs/changes/2026-05-23-release-process-contract
+    result: pass_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_10_findings_2_log_entries_10_resolution_entries_2_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-process-contract.test.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/code-review-m3-r1.md
+    result: pass_validated_5_artifact_files_after_code_review_m3_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_10_findings_2_log_entries_10_resolution_entries_2_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path specs/release-process-contract.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-release-process-contract.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/explain-change.md --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md
+    result: pass_validated_5_artifact_files_m4
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/explain-change.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path specs/release-process-contract.test.md
+    result: pass_selected_ci_m4_paths_artifact_lifecycle_change_metadata_regression_change_metadata_validate
+  - command: bash scripts/ci.sh --mode pr --base ef8e29ee1c1bad1fefb5d8c9c933a0b164e21325 --head HEAD
+    result: pass_pr_mode_current_head_range
+  - command: git diff --check -- docs/changes/2026-05-23-release-process-contract/change.yaml docs/changes/2026-05-23-release-process-contract/explain-change.md docs/plans/2026-05-23-release-process-contract.md docs/plan.md
+    result: pass_m4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-release-process-contract
+    result: pass_closeout_reviews_11_findings_2_log_entries_11_resolution_entries_2_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-release-process-contract/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m4_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-release-process-contract.md --path specs/release-process-contract.md --path specs/release-process-contract.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-release-process-contract.md --path docs/plans/2026-05-23-release-process-contract.md --path docs/plan.md --path docs/changes/2026-05-23-release-process-contract/change.yaml --path docs/changes/2026-05-23-release-process-contract/explain-change.md --path docs/changes/2026-05-23-release-process-contract/review-log.md --path docs/changes/2026-05-23-release-process-contract/review-resolution.md --path docs/changes/2026-05-23-release-process-contract/reviews/code-review-m4-r1.md
+    result: pass_validated_5_artifact_files_after_code_review_m4_r1
+changed_files:
+  - docs/proposals/2026-05-23-release-process-contract.md
+  - specs/release-process-contract.md
+  - specs/release-process-contract.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260523-release-process-contract.md
+  - docs/plans/2026-05-23-release-process-contract.md
+  - docs/plan.md
+  - docs/releases/README.md
+  - docs/releases/index.md
+  - templates/release-evidence.md
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - scripts/artifact_lifecycle_validation.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - scripts/release-verify.sh
+  - scripts/validate-release-ci.py
+  - scripts/test-adapter-distribution.py
+  - docs/changes/2026-05-23-release-process-contract/release-process-dry-run.md
+  - docs/changes/2026-05-23-release-process-contract/explain-change.md
+  - docs/changes/2026-05-23-release-process-contract/change.yaml
+  - docs/changes/2026-05-23-release-process-contract/review-log.md
+  - docs/changes/2026-05-23-release-process-contract/review-resolution.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r1.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/spec-review-r2.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/plan-review-r1.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-23-release-process-contract/reviews/code-review-m4-r1.md
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/plans/2026-05-23-release-process-contract.md
+  review_log: docs/changes/2026-05-23-release-process-contract/review-log.md

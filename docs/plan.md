@@ -10,6 +10,7 @@ Index policy:
 -->
 
 ## Active
+- [2026-05-23 Release Process Contract](plans/2026-05-23-release-process-contract.md) - active execution plan for implementing the standing release-process contract; M1 through M4 are closed after clean code-reviews, explain-change is recorded, and final verify passed; next stage: pr; blockers: none.
 - [2026-05-22 Bounded Plan Index and Completed-Plan Archive](plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md) - branch-ready after final verify; PR #86 open for hosted CI and human review; blockers: none.
 - [2026-05-21 Compact Change Validation Metadata](plans/2026-05-21-compact-change-validation-metadata.md) - active execution plan for implementing compact `schema_version: 2` change validation metadata while preserving legacy compatibility, exact command/path reconstruction, path-variable safety, stage-derived existence checks, review-artifact count cross-checks, and compactness proof; M1, M2, and M3 are closed after clean code reviews, ci-maintenance fixed selected-CI fixture routing, explain-change is refreshed, and final verify passed from clean tracked branch state; PR handoff is pending.
 - [2026-05-20 Proposal-Family Assets Progressive Disclosure](plans/2026-05-20-proposal-family-assets-progressive-disclosure.md) - active execution plan for adding assets-only progressive disclosure to `proposal` and `proposal-review`; M2, M3, and M4 are closed after clean code reviews, explain-change and verify are recorded, and PR #81 is open for hosted CI and human review.

@@ -112,6 +112,18 @@ verify_release_script_contract() {
 
 }
 
+describe_standing_release_process_gate() {
+  echo "Standing release-process gate rehearsal"
+  echo "- generated-output currency: repository-owned drift/build/release-output checks must prove current output"
+  echo "- package preview and packed install smoke: npm package checks must prove package contents before publish"
+  echo "- publish path: trusted publishing preferred; manual fallback requires release evidence"
+  echo "- post-publish registry verification: npm view version, dist-tags, integrity, and fresh install/npx smoke"
+  if [[ "${RELEASE_VERIFY_DRY_RUN:-}" == "1" ]]; then
+    echo "- dry-run mode: no publish command is executed"
+  fi
+  echo
+}
+
 run_check() {
   local label="$1"
   shift
@@ -165,6 +177,7 @@ echo "Adapter manifest version: ${adapter_version}"
 echo
 
 verify_release_script_contract
+describe_standing_release_process_gate
 
 run_check "Validate canonical skills" \
   python scripts/validate-skills.py

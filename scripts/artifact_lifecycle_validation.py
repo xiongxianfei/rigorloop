@@ -12,6 +12,7 @@ from artifact_lifecycle_contracts import ArtifactContract, classify_artifact
 
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|lorem ipsum)\b", re.IGNORECASE)
+RELEASE_EVIDENCE_PATH_PATTERN = re.compile(r"^docs/releases/v[^/]+\.md$")
 REPO_PATH_PATTERN = re.compile(
     r"(?P<path>(?:\.\./|\.\/)?(?:docs|specs|\.codex)/[A-Za-z0-9._/\-]+(?:\.md|\.yaml))"
 )
@@ -55,6 +56,78 @@ PLAN_SCOPE_SECTIONS = frozenset(
         "Pre-implementation prerequisites",
         "Related artifacts",
     }
+)
+RELEASE_EVIDENCE_REQUIRED_SECTIONS = (
+    "Result",
+    "Related Lifecycle Evidence",
+    "Version Decision",
+    "Routine Publish Boundary",
+    "Preflight Gate",
+    "Package Contents",
+    "Publish Event",
+    "Registry Verification",
+    "Emergency Deferrals",
+    "Recovery / Rollback Notes",
+    "Follow-up",
+    "Evidence Safety Checklist",
+)
+RELEASE_EVIDENCE_RESULT_FIELDS = (
+    "Package",
+    "Version",
+    "Release type",
+    "Routine publish",
+    "No new decision introduced",
+    "Source commit",
+    "Source branch",
+    "npm dist-tag",
+    "Publish path",
+    "Provenance",
+    "Status",
+)
+RELEASE_EVIDENCE_PUBLISH_FIELDS = (
+    "Command family",
+    "Registry",
+    "Package reference",
+    "Published at",
+    "Dist-tag",
+    "Provenance status",
+    "Manual fallback reason",
+)
+ROUTINE_RELEASE_GATE_ITEMS = (
+    "clean worktree except intentional release artifacts",
+    "generated output current",
+    "tests / selected CI / broad smoke",
+    "package preview",
+    "no unresolved release blockers",
+    "publish path selected",
+    "evidence path prepared",
+)
+NON_DEFERRABLE_RELEASE_ITEMS = (
+    "release evidence",
+    "secret",
+    "token",
+    "otp",
+    "credential",
+    "private environment",
+    "machine-local",
+    "source commit",
+    "package version",
+    "package name",
+    "dist-tag",
+    "publish path",
+    "registry verification",
+    "recovery",
+    "follow-up",
+)
+FORBIDDEN_RELEASE_EVIDENCE_PATTERNS = (
+    re.compile(r"(?i)\b(?:NPM_TOKEN|NODE_AUTH_TOKEN|GITHUB_TOKEN|AWS_SECRET_ACCESS_KEY)\s*="),
+    re.compile(r"(?i)//registry\.npmjs\.org/:_authToken\s*="),
+    re.compile(r"(?i)\bnpm_[A-Za-z0-9]{10,}\b"),
+    re.compile(r"(?i)\bOTP\s*[:=]\s*\d{4,}\b"),
+    re.compile(r"(?i)\b(?:password|credential|secret)\s*[:=]\s*\S+"),
+    re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
+    re.compile(r"(?i)\b(?:HOME|USER|USERNAME|HOSTNAME)\s*=\s*\S+"),
+    re.compile(r"(?:^|[\s`])(?:/home/|/Users/|/tmp/)\S+"),
 )
 
 
@@ -423,6 +496,144 @@ def _contains_placeholder_text(text: str) -> bool:
         sanitized_lines.append(re.sub(r"`[^`]+`", "", line))
     sanitized = "\n".join(sanitized_lines)
     return PLACEHOLDER_PATTERN.search(sanitized) is not None
+
+
+def _is_release_evidence_path(relative_path: Path) -> bool:
+    return RELEASE_EVIDENCE_PATH_PATTERN.fullmatch(relative_path.as_posix()) is not None
+
+
+def _markdown_field_value(section: str, label: str) -> str | None:
+    pattern = re.compile(rf"^\s*-\s*{re.escape(label)}:\s*(?P<value>.+?)\s*$", re.IGNORECASE | re.MULTILINE)
+    match = pattern.search(section)
+    if match is None:
+        return None
+    return match.group("value").strip()
+
+
+def _markdown_table_rows(section: str) -> list[list[str]]:
+    rows: list[list[str]] = []
+    for line in section.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|") or not stripped.endswith("|"):
+            continue
+        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+        if not cells:
+            continue
+        if all(set(cell) <= {"-", ":", " "} for cell in cells):
+            continue
+        if cells[0].casefold() in {"check", "deferred gate item"}:
+            continue
+        rows.append(cells)
+    return rows
+
+
+def _table_row_result(section: str, row_label: str) -> str | None:
+    for row in _markdown_table_rows(section):
+        if row and row[0].casefold() == row_label.casefold():
+            if len(row) < 2:
+                return None
+            return row[1].strip()
+    return None
+
+
+def _is_blank_table_value(value: str) -> bool:
+    return not value.strip() or value.strip().casefold() in {"-", "missing", "not-recorded"}
+
+
+def _validate_emergency_deferrals(section: str) -> list[str]:
+    errors: list[str] = []
+    for row in _markdown_table_rows(section):
+        if not row:
+            continue
+        deferred_item = row[0].strip()
+        if not deferred_item or deferred_item.casefold() == "none":
+            continue
+        normalized = deferred_item.casefold()
+        if any(term in normalized for term in NON_DEFERRABLE_RELEASE_ITEMS):
+            errors.append(f"emergency deferral '{deferred_item}' is non-deferrable")
+        if len(row) < 9:
+            errors.append(f"emergency deferral '{deferred_item}' must include all required fields")
+            continue
+        required_fields = (
+            ("approving owner", row[1]),
+            ("emergency rationale", row[2]),
+            ("reason for deferral", row[3]),
+            ("validation impact", row[4]),
+            ("risk accepted", row[5]),
+            ("follow-up location", row[6]),
+            ("deadline or next lifecycle stage", row[7]),
+            ("status", row[8]),
+        )
+        for field_name, value in required_fields:
+            if _is_blank_table_value(value):
+                errors.append(f"emergency deferral '{deferred_item}' is missing {field_name}")
+    return errors
+
+
+def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    sections = _parse_sections(text)
+
+    for section_name in RELEASE_EVIDENCE_REQUIRED_SECTIONS:
+        body = _get_section(sections, section_name)
+        if body is None:
+            errors.append(f"release evidence missing required '{section_name}' section")
+        elif not body.strip():
+            errors.append(f"release evidence required '{section_name}' section must not be empty")
+
+    if re.search(r"<[^>\n]+>", text):
+        errors.append("release evidence contains unresolved template placeholder")
+
+    if any(pattern.search(text) for pattern in FORBIDDEN_RELEASE_EVIDENCE_PATTERNS):
+        errors.append("release evidence contains forbidden secret or private machine-state marker")
+
+    result_section = _get_section(sections, "Result") or ""
+    result_values = {field: _markdown_field_value(result_section, field) for field in RELEASE_EVIDENCE_RESULT_FIELDS}
+    for field, value in result_values.items():
+        if value is None:
+            errors.append(f"release evidence missing Result field '{field}'")
+        elif _is_blank_table_value(value):
+            errors.append(f"release evidence Result field '{field}' must not be empty")
+
+    publish_section = _get_section(sections, "Publish Event") or ""
+    for field in RELEASE_EVIDENCE_PUBLISH_FIELDS:
+        value = _markdown_field_value(publish_section, field)
+        if value is None:
+            errors.append(f"release evidence missing Publish Event field '{field}'")
+        elif _is_blank_table_value(value):
+            errors.append(f"release evidence Publish Event field '{field}' must not be empty")
+
+    preflight_section = _get_section(sections, "Preflight Gate") or ""
+    status = (result_values.get("Status") or "").casefold()
+    release_type = (result_values.get("Release type") or "").casefold()
+    is_emergency = release_type == "emergency" or status == "emergency-with-deferred-gate"
+    if not is_emergency:
+        for gate_item in ROUTINE_RELEASE_GATE_ITEMS:
+            gate_result = _table_row_result(preflight_section, gate_item)
+            if gate_result is None:
+                errors.append(f"routine release gate item '{gate_item}' is missing")
+            elif gate_result.casefold() != "pass":
+                errors.append(f"routine release gate item '{gate_item}' must pass before publish")
+
+    registry_section = _get_section(sections, "Registry Verification") or ""
+    registry_result = _table_row_result(registry_section, "registry version query")
+    if registry_result is None:
+        errors.append("release evidence missing registry version query result")
+    elif registry_result.casefold() not in {"pass", "not-applicable"}:
+        errors.append("post-publish registry verification must not be deferred")
+
+    emergency_section = _get_section(sections, "Emergency Deferrals") or ""
+    errors.extend(_validate_emergency_deferrals(emergency_section))
+
+    path_version = relative_path.stem
+    result_version = (result_values.get("Version") or "").strip()
+    accepted_versions = {path_version}
+    if path_version.startswith("v"):
+        accepted_versions.add(path_version[1:])
+    if result_version not in accepted_versions:
+        errors.append("release evidence path version must match Result version")
+
+    return errors
 
 
 def _extract_change_yaml_refs(root: Path, path: Path, tracked_revision: str | None = None) -> set[Path]:
@@ -1215,6 +1426,8 @@ def _resolve_scope(
             continue
 
         current_text = _read_repo_text(root, current, current_revision) if current.suffix in {".md", ".yaml"} else None
+        if _is_release_evidence_path(relative):
+            related_artifacts.add(current)
         contract = classify_artifact(relative, current_text if current.suffix == ".md" else None)
         if contract is not None:
             related_artifacts.add(current)
@@ -1305,6 +1518,22 @@ def validate_repository(
                 message="generated output path must not be treated as authored source of truth",
             )
         )
+
+    for path in tuple(sorted(related_paths)):
+        relative_path = path.relative_to(root_resolved)
+        if not _is_release_evidence_path(relative_path):
+            continue
+        text = _read_repo_text(root_resolved, path, scope.tracked_revision)
+        for message in _validate_release_evidence_checklist(relative_path, text):
+            blocking_findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=path,
+                    artifact_class="release-evidence",
+                    status=None,
+                    message=message,
+                )
+            )
 
     inspections: dict[Path, ArtifactInspection] = {}
     for path in tuple(sorted(related_paths | set(scope.baseline_paths))):
