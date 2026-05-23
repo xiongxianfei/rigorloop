@@ -124,6 +124,9 @@ def cache_context_for(
     identity: validation_cache.LifecycleCacheIdentity,
 ) -> validation_cache.LocalCacheContext:
     return validation_cache.LocalCacheContext(
+        cache_key=identity.cache_key,
+        validator_id=identity.validator_id,
+        command_family=identity.command_family,
         repository_id=local_repository_id(ROOT),
         branch=current_branch(ROOT),
         worktree_id=ROOT.resolve().as_posix(),
