@@ -2,13 +2,13 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Owner: maintainer
 - Start date: 2026-05-23
 - Last updated: 2026-05-23
-- Related issue or PR: none yet
+- Related issue or PR: PR #89 merged
 - Supersedes: none
 
 ## Purpose / big picture
@@ -58,13 +58,13 @@ Generated-output currency is already represented by `skills.drift`, `adapters.dr
 ## Current Handoff Summary
 
 - Current milestone: M4. Lifecycle closeout and final validation
-- Current milestone state: closed
+- Current milestone state: done
 - Last reviewed milestone: M4. Lifecycle closeout and final validation
 - Review status: code-review-m4-r1 clean-with-notes; no review-resolution required
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, code-review is clean, final verify passed, and PR #89 is open for hosted CI and human review; final lifecycle closeout is not claimed before PR review completes.
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #89 merged on 2026-05-23 after implementation, review, final verify, PR handoff, hosted CI, and human review. This plan is complete. It did not publish an npm package.
 
 ## Milestones
 
@@ -289,6 +289,7 @@ Generated-output currency is already represented by `skills.drift`, `adapters.dr
 - 2026-05-23: M4 code-review completed clean-with-notes in `docs/changes/2026-05-23-release-process-contract/reviews/code-review-m4-r1.md`; all implementation milestones are closed and next stage is verify.
 - 2026-05-23: Final verify passed on committed branch state after registering `release-process-dry-run.md` as a routed change evidence class; next stage is PR handoff.
 - 2026-05-23: PR #89 opened for hosted CI and human review.
+- 2026-05-23: PR #89 merged; plan lifecycle is done with terminal disposition merged.
 
 ## Decision log
 
@@ -377,10 +378,11 @@ Generated-output currency is already represented by `skills.drift`, `adapters.dr
 
 ## Outcome and retrospective
 
-- Pending. This plan is active and not complete.
+- Done. PR #89 merged the standing release-process contract and first-slice implementation.
+- The change did not publish a package. Routine future publishes execute the standing release process and record release evidence rather than creating new lifecycle plans when no new decision is introduced.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #89 is open for hosted CI and human review.
-- Not ready for final lifecycle closeout or any npm publish operation. This change did not publish a package.
+- Plan complete.
+- Not a release evidence record and not an npm publish operation.
