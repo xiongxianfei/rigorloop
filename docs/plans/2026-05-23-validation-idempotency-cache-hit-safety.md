@@ -76,13 +76,13 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Current Handoff Summary
 
 - Current milestone: M5. Lifecycle closeout
-- Current milestone state: branch-ready after verify; PR handoff pending
+- Current milestone state: PR #88 open for hosted CI and human review
 - Last reviewed milestone: M4. Measurement evidence and selected validation routing
 - Review status: code-review M4 R1 approved M4 with no material findings.
 - Remaining in-scope implementation milestones: none.
-- Next stage: pr
-- Final closeout readiness: branch-ready; PR handoff not prepared
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, final verify passed, and PR handoff is the remaining lifecycle stage.
+- Next stage: hosted CI and human review
+- Final closeout readiness: PR #88 open; hosted CI and human review pending
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, final verify passed, and PR #88 is open; hosted CI, human review, and final lifecycle done remain incomplete.
 
 ## Milestones
 
@@ -330,7 +330,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ### M5. Lifecycle closeout
 
-- Milestone state: branch-ready after verify; PR handoff pending
+- Milestone state: PR #88 open for hosted CI and human review
 - Goal: Complete downstream closeout after all implementation milestones are closed.
 - Requirements: R73 through R77; AC16 through AC18, AC32.
 - Files/components likely touched:
@@ -433,6 +433,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: Code-review M4 R1 approved M4 with no material findings. M4 is closed and next stage is explain-change.
 - 2026-05-23: Explain-change recorded durable problem-to-diff rationale, validation evidence, review-resolution summary, alternatives rejected, and remaining risks. Next stage is verify.
 - 2026-05-23: Final verify passed from clean branch state using PR-mode selected validation against `main...HEAD`. Branch is ready for PR handoff; hosted CI is not claimed.
+- 2026-05-23: PR #88 opened for hosted CI and human review: https://github.com/xiongxianfei/rigorloop/pull/88.
 
 ## Decision log
 
@@ -579,4 +580,4 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Branch-ready for PR handoff. PR body readiness, hosted CI, and final lifecycle done remain incomplete.
+- PR #88 is open for hosted CI and human review. Hosted CI, human review, and final lifecycle done remain incomplete.
