@@ -75,14 +75,14 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Compact metadata evidence-kind and closeout enforcement
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Explicit-path lifecycle cache integration and cache-hit evidence
-- Review status: M3 implementation complete and ready for code-review.
-- Remaining in-scope implementation milestones: M3 pending code-review; M4 remains planned.
-- Next stage: code-review M3
+- Current milestone: M4. Measurement evidence and selected validation routing
+- Current milestone state: planned
+- Last reviewed milestone: M3. Compact metadata evidence-kind and closeout enforcement
+- Review status: code-review M3 R1 approved M3 with no material findings.
+- Remaining in-scope implementation milestones: M4 remains planned.
+- Next stage: implement M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is implemented but not reviewed, M4 is not implemented or reviewed, final validation has not run, explain-change and verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M4 is not implemented or reviewed, final validation has not run, explain-change and verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -227,7 +227,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ### M3. Compact metadata evidence-kind and closeout enforcement
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Enforce the compact `schema_version: 2` evidence-kind contract and reject cache-only closeout claims through lifecycle and change-metadata validators.
 - Requirements: R50 through R59, R101 through R116; AC11 through AC14, AC24 through AC28.
 - Files/components likely touched:
@@ -426,6 +426,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: M3 implementation started for compact validation event evidence-kind checks and cache-only closeout rejection.
 - 2026-05-23: M3 added compact `evidence_kind` result-pair validation, safe `evidence_ref` validation, legacy cache-evidence field rejection, change-metadata cache-only closeout rejection, and lifecycle-side cache-only closeout rejection for compact change metadata.
 - 2026-05-23: M3 direct validation passed and the milestone is ready for code-review.
+- 2026-05-23: Code-review M3 R1 approved M3 with no material findings. M3 is closed and next stage is implement M4.
 
 ## Decision log
 
@@ -503,6 +504,14 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: `git diff --check --` passed after M3 implementation.
 - 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md` passed after M3 state-sync updates.
 - 2026-05-23: `bash scripts/ci.sh --mode explicit --path scripts/validate-change-metadata.py --path scripts/artifact_lifecycle_validation.py --path scripts/test-change-metadata-validator.py --path scripts/test-artifact-lifecycle-validator.py --path tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml --path tests/fixtures/change-metadata/compact-invalid-cache-only-closeout/change.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md` passed selected checks `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate` after M3 state-sync updates.
+- 2026-05-23: `python scripts/test-change-metadata-validator.py -k compact_invalid` passed during code-review M3 R1.
+- 2026-05-23: `python scripts/test-change-metadata-validator.py -k compact_m3_valid` passed during code-review M3 R1.
+- 2026-05-23: `python scripts/test-artifact-lifecycle-validator.py -k cache_only_closeout` passed during code-review M3 R1.
+- 2026-05-23: `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml tests/fixtures/change-metadata/compact-valid-cache-hit-plus-closeout/change.yaml` passed during code-review M3 R1.
+- 2026-05-23: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed after recording code-review M3 R1.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed after recording code-review M3 R1.
+- 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/reviews/code-review-m3-r1.md` passed after recording code-review M3 R1.
+- 2026-05-23: `git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md` passed after recording code-review M3 R1.
 - 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml` passed after resolving code-review M2 R1.
 - 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md` passed after resolving code-review M2 R1.
 - 2026-05-23: `bash scripts/ci.sh --mode explicit --path scripts/validation_cache.py --path scripts/validate-artifact-lifecycle.py --path scripts/test-validation-cache.py --path scripts/test-artifact-lifecycle-validator.py --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md` passed selected checks `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, and `validation_cache.regression`.
@@ -517,4 +526,4 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M2 rerun. M3, M4, explain-change, verify, PR readiness, and final closeout remain incomplete.
+- Ready for implement M4. M4, explain-change, verify, PR readiness, and final closeout remain incomplete.
