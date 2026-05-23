@@ -14,6 +14,7 @@ Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
 ## Resolution Entries
 
@@ -190,3 +191,7 @@ Chosen action: Updated formal cache-hit evidence writing to load and validate an
 Rationale: Formal workflow cache-hit evidence is the reviewable trail for skipped validators; overwriting the file can erase earlier formal cache-hit claims.
 Validation target: Multiple formal cache-hit evidence records remain reviewable across sequential writes, same-ID replacement is bounded to the matching record, and malformed existing formal evidence fails closed.
 Validation evidence: `python scripts/test-validation-cache.py` passed with 20 tests; `python scripts/test-artifact-lifecycle-validator.py` passed with 62 tests; `python scripts/test-select-validation.py` passed with 94 tests; selected CI passed `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, and `validation_cache.regression`; `git diff --check --` passed.
+
+### code-review-m2-r2
+
+No material findings.

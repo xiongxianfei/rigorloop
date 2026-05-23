@@ -104,3 +104,14 @@ Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: VIC-CR-M2-R1-F1, VIC-CR-M2-R1-F2
 Open findings: None
+
+### Review entry
+
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: 2
+Status: approved
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: None
+Open findings: None
