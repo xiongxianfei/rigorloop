@@ -75,14 +75,14 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Measurement evidence and selected validation routing
-- Current milestone state: closed
+- Current milestone: M5. Lifecycle closeout
+- Current milestone state: branch-ready after verify; PR handoff pending
 - Last reviewed milestone: M4. Measurement evidence and selected validation routing
 - Review status: code-review M4 R1 approved M4 with no material findings.
 - Remaining in-scope implementation milestones: none.
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded, but verify is not recorded and PR handoff is not prepared.
+- Next stage: pr
+- Final closeout readiness: branch-ready; PR handoff not prepared
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, final verify passed, and PR handoff is the remaining lifecycle stage.
 
 ## Milestones
 
@@ -330,7 +330,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 
 ### M5. Lifecycle closeout
 
-- Milestone state: planned
+- Milestone state: branch-ready after verify; PR handoff pending
 - Goal: Complete downstream closeout after all implementation milestones are closed.
 - Requirements: R73 through R77; AC16 through AC18, AC32.
 - Files/components likely touched:
@@ -432,6 +432,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: M4 direct validation passed and the milestone is ready for code-review.
 - 2026-05-23: Code-review M4 R1 approved M4 with no material findings. M4 is closed and next stage is explain-change.
 - 2026-05-23: Explain-change recorded durable problem-to-diff rationale, validation evidence, review-resolution summary, alternatives rejected, and remaining risks. Next stage is verify.
+- 2026-05-23: Final verify passed from clean branch state using PR-mode selected validation against `main...HEAD`. Branch is ready for PR handoff; hosted CI is not claimed.
 
 ## Decision log
 
@@ -553,6 +554,23 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: `python scripts/select-validation.py --mode local` returned status `ok` with no manual routing debt after explain-change.
 - 2026-05-23: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md` passed selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate` after explain-change.
 - 2026-05-23: `git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md` passed after explain-change.
+- 2026-05-23: `python scripts/test-validation-cache.py` passed with 20 tests during final verify.
+- 2026-05-23: `python scripts/test-artifact-lifecycle-validator.py` passed with 63 tests during final verify.
+- 2026-05-23: `python scripts/test-change-metadata-validator.py` passed with 20 tests during final verify.
+- 2026-05-23: `python scripts/test-select-validation.py` passed with 95 tests during final verify.
+- 2026-05-23: `python scripts/select-validation.py --mode local` and `bash scripts/ci.sh --mode local` blocked on an empty clean working-tree path set during final verify; PR-mode selected validation was used for clean branch proof.
+- 2026-05-23: `python scripts/select-validation.py --mode pr --base main --head HEAD` returned status `ok` with no unclassified paths, no registration debt, and broad smoke not required during final verify.
+- 2026-05-23: `bash scripts/ci.sh --mode pr --base main --head HEAD` passed selected checks `skills.generation_regression`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `validation_cache.regression`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression` during final verify.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml` passed during final verify.
+- 2026-05-23: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed during final verify.
+- 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml` passed during final verify.
+- 2026-05-23: `git diff --check -- $(git diff --name-only main...HEAD)` passed during final verify.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml` passed after recording `verify-report.md`.
+- 2026-05-23: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed after recording `verify-report.md`.
+- 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md` passed after recording `verify-report.md`.
+- 2026-05-23: `python scripts/select-validation.py --mode local` returned status `ok` with no unclassified paths or registration debt after recording `verify-report.md`.
+- 2026-05-23: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md` passed selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate` after recording `verify-report.md`.
+- 2026-05-23: `git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/verify-report.md docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md` passed after recording `verify-report.md`.
 
 ## Outcome and retrospective
 
@@ -561,4 +579,4 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for verify. Verify, PR readiness, and final closeout remain incomplete.
+- Branch-ready for PR handoff. PR body readiness, hosted CI, and final lifecycle done remain incomplete.
