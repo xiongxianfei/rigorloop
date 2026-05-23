@@ -273,6 +273,7 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
         validator = load_validator_module()
         unsafe_values = [
             "/tmp/change.yaml",
+            r"C:\Users\alice\change.yaml",
             "~/change.yaml",
             "../change.yaml",
             "example.com/change.yaml",
@@ -447,6 +448,30 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
                 "compact-invalid-extra-summary-blocker",
                 "validation_summary.open_validation_blockers: extra blocker not derived from validation_events: fake-blocker",
             ),
+            (
+                "compact-invalid-evidence-kind-result",
+                "validation_events[0].evidence_kind: actual-run-fail requires result fail",
+            ),
+            (
+                "compact-invalid-evidence-kind-unknown",
+                "validation_events[0].evidence_kind: expected one of",
+            ),
+            (
+                "compact-invalid-evidence-ref-unsafe",
+                "validation_events[0].evidence_ref: unsafe URL or hostname path",
+            ),
+            (
+                "compact-invalid-evidence-ref-missing-anchor",
+                "validation_events[0].evidence_ref: unresolved anchor 'missing-anchor'",
+            ),
+            (
+                "compact-invalid-cache-only-closeout",
+                "validation_events[0].evidence_kind: cache-hit-inner-loop cannot satisfy closeout",
+            ),
+            (
+                "legacy-invalid-cache-evidence-fields",
+                "validation[0].evidence_kind: legacy validation metadata cannot claim cache-hit or closeout evidence",
+            ),
         ]
         for fixture, expected in cases:
             with self.subTest(fixture=fixture):
@@ -457,6 +482,7 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
 
     def test_compact_m3_valid_fixtures_pass(self) -> None:
         for fixture in (
+            "compact-valid-cache-hit-plus-closeout",
             "compact-valid-skipped-with-decision",
             "compact-valid-review-counts",
         ):
