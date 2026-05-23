@@ -19,6 +19,17 @@ Open findings: None
 
 ### Review entry
 
+Review ID: code-review-m4-r1
+Stage: code-review
+Round: 1
+Status: approved
+Detailed record: reviews/code-review-m4-r1.md
+Resolution: review-resolution.md#code-review-m4-r1
+Material findings: None
+Open findings: None
+
+### Review entry
+
 Review ID: spec-review-r1
 Stage: spec-review
 Round: 1

@@ -16,6 +16,7 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
+Review closeout: code-review-m4-r1
 
 ## Resolution Entries
 
@@ -198,5 +199,9 @@ Validation evidence: `python scripts/test-validation-cache.py` passed with 20 te
 No material findings.
 
 ### code-review-m3-r1
+
+No material findings.
+
+### code-review-m4-r1
 
 No material findings.
