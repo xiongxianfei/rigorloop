@@ -80,9 +80,9 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - Last reviewed milestone: M4. Measurement evidence and selected validation routing
 - Review status: code-review M4 R1 approved M4 with no material findings.
 - Remaining in-scope implementation milestones: none.
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, but explain-change and verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded, but verify is not recorded and PR handoff is not prepared.
 
 ## Milestones
 
@@ -431,6 +431,7 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: M4 added validation-cache measurement fixture validation, deterministic selector routing for `validation-cache-evidence.yaml` and `validation-cache-measurement.yaml`, this change's measurement artifact, and behavior-preservation evidence for the measurement/routing slice.
 - 2026-05-23: M4 direct validation passed and the milestone is ready for code-review.
 - 2026-05-23: Code-review M4 R1 approved M4 with no material findings. M4 is closed and next stage is explain-change.
+- 2026-05-23: Explain-change recorded durable problem-to-diff rationale, validation evidence, review-resolution summary, alternatives rejected, and remaining risks. Next stage is verify.
 
 ## Decision log
 
@@ -546,6 +547,12 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 - 2026-05-23: `git diff --check --` passed after resolving code-review M2 R1.
 - 2026-05-23: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed after closing M2 review-resolution.
 - 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-log.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md` passed after closing M2 review-resolution.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml` passed after explain-change.
+- 2026-05-23: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later` passed after explain-change.
+- 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md` passed after explain-change.
+- 2026-05-23: `python scripts/select-validation.py --mode local` returned status `ok` with no manual routing debt after explain-change.
+- 2026-05-23: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md` passed selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate` after explain-change.
+- 2026-05-23: `git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md` passed after explain-change.
 
 ## Outcome and retrospective
 
@@ -554,4 +561,4 @@ The plan keeps Workstream B out of scope. Changed-path or edit-class validator n
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for explain-change. Explain-change, verify, PR readiness, and final closeout remain incomplete.
+- Ready for verify. Verify, PR readiness, and final closeout remain incomplete.

@@ -9,6 +9,7 @@ artifacts:
   adr: docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md
   plan: docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md
   test_spec: specs/validation-idempotency-and-cache-hit-safety.test.md
+  explain_change: docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md
   review_resolution: docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/review-resolution.md
 requirements:
   - Author a proposal for validation idempotency and cache-hit safety.
@@ -40,6 +41,7 @@ requirements:
   - Record code-review M3 R1 approval before M4 implementation.
   - Implement M4 measurement evidence validation, validation cache evidence routing, and Workstream B non-implementation proof.
   - Record code-review M4 R1 approval before explain-change.
+  - Record durable explain-change rationale before final verify.
 tests:
   - Proposal-review R1 found VIC-PR1 through VIC-PR5 and required first-slice scope, cache evidence, first validator, implementation manifest, and closeout enforcement clarification.
   - Proposal revision accepts all five proposal-review findings.
@@ -70,6 +72,7 @@ tests:
   - M4 tests cover validation-cache-measurement.yaml required fields, count consistency, closeout cache-skip rejection, Workstream B recommendation state, unsafe-value rejection, and selector routing for validation cache evidence files.
   - M4 behavior-preservation evidence records that measurement and selector routing do not implement Workstream B edit-scoped validation.
   - Code-review M4 R1 approves M4 and closes the measurement evidence and selected validation routing milestone.
+  - Explain-change records the problem-to-diff rationale, review-resolution summary, validation evidence, alternatives rejected, and remaining risks before final verify.
   - Artifact lifecycle validation covers the revised proposal and change-local review records.
   - Review-artifact validation covers the recorded proposal-review R1 findings and dispositions.
   - Change metadata validation covers this change-local metadata.
@@ -364,6 +367,18 @@ validation:
     result: pass_validated_5_artifact_files_after_code_review_m4_r1
   - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
     result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
+    result: pass_valid_change_metadata_and_measurement_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later
+    result: pass_closeout_reviews_12_findings_11_log_entries_12_resolution_entries_11_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_explain_change
+  - command: python scripts/select-validation.py --mode local
+    result: pass_ok_no_manual_routing_debt_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md --path docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml --path docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md --path docs/plan.md
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_explain_change
+  - command: git diff --check -- docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md docs/plan.md
+    result: pass_after_explain_change
 changed_files:
   - docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md
   - specs/validation-idempotency-and-cache-hit-safety.md
@@ -416,6 +431,7 @@ changed_files:
   - tests/fixtures/change-metadata/legacy-invalid-cache-evidence-fields/change.yaml
   - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml
   - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md
+  - docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/explain-change.md
   - .gitignore
 review:
   status: approved
