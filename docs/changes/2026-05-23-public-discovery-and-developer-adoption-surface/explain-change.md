@@ -1,138 +1,183 @@
 # Explain Change: Public Discovery and Developer Adoption Surface
 
-## Purpose
+## Summary
 
-This change improves RigorLoop's first-contact public adoption surface while
-preserving the existing workflow and runtime boundaries. It makes the repository
-easier to discover, easier to understand from the first README screen, and
-easier to evaluate through durable proof artifacts.
+This change improves RigorLoop's public discovery and first-contact adoption
+surface without changing runtime behavior. It updates the GitHub repository
+metadata, root README, npm package metadata, package README, and durable
+change-local proof artifacts so a first-time visitor can quickly understand
+what RigorLoop is, how to try it, where to inspect proof, and how to contribute
+or report feedback.
 
-The governing direction is the accepted proposal, approved spec, active test
-spec, and reviewed plan for
-`2026-05-23-public-discovery-and-developer-adoption-surface`.
+The core implementation is documentation, metadata, and evidence only:
 
-## What Changed
+- live GitHub description/topics/blank website decision;
+- README first-contact command, link group, Quick Start refresh, and Mermaid
+  lifecycle visual;
+- npm package description, keywords, and package README version alignment;
+- durable proof artifacts for external metadata, version source, README
+  ownership, cold-read/link checks, unsupported-claim checks, and behavior
+  preservation;
+- lifecycle state synchronized through M5 and clean code-review.
 
-### Repository Metadata
+## Problem
 
-The live GitHub repository metadata was updated to the approved external
-settings:
+The accepted proposal identified a mismatch between RigorLoop's internal rigor
+and its external discovery surface. The repository already had workflow
+artifacts, specs, skills, validation scripts, release assets, contribution
+files, and an npm-delivered CLI, but a new visitor could still fail to answer
+the basic adoption questions quickly:
 
-- description:
-  `Git-first workflow for AI coding agents: proposals, specs, tests, review gates, and durable validation evidence from idea to PR.`
-- topics: the approved 18-topic set for AI coding, developer tooling, code
-  review, Git workflow, CLI/npm delivery, validation, and supported adapter
-  discovery.
-- website: blank, by the approved first-slice decision.
+- What is this?
+- Who is it for?
+- Why should I try it?
+- How do I start?
+- What proof exists that it works?
+- How do I contribute or report feedback?
 
-Because GitHub metadata is external state, the durable before/after proof lives
-in `repository-metadata-proof.md` instead of relying on a PR diff alone.
+The proposal framed this as a public-surface and developer-experience problem,
+not as a runtime, skill, adapter, validator, or release-mechanics problem. The
+implementation keeps that boundary.
 
-### Root README
+## Decision Trail
 
-`README.md` was updated as the main first-contact adoption surface:
+| Source | Decision | Impact |
+| --- | --- | --- |
+| Proposal | Choose metadata plus landing-page README pass, not a full launch campaign. | Scope stayed on repository metadata, README, npm landing, visuals, links, and proof. |
+| Proposal review | Add durable proof for external GitHub metadata, version sync, README ownership, and cold-read/link checks. | Added change-local proof artifacts instead of relying on chat or a PR diff. |
+| Spec `DXA-R1` through `DXA-R3` | Set approved GitHub description/topics and leave website blank unless a stable landing page exists. | Live metadata was updated and recorded in `repository-metadata-proof.md`. |
+| Spec `DXA-R4` through `DXA-R9` | Preserve README positioning, Quick Start, Mermaid visual, required links, and generated-region boundaries. | README was updated outside generated regions and ownership proof was recorded. |
+| Spec `DXA-R10` through `DXA-R13` | Align npm package metadata and package README with current stable release and source-of-truth boundaries. | Package description/keywords and package README examples now align with `0.2.0`. |
+| Spec `DXA-R14` through `DXA-R18` | Record cold-read, behavior-preservation, no-runtime-change, and link evidence. | Added durable review artifacts and validation notes. |
+| Plan review `DXA-PLAN1` | Isolate live GitHub metadata mutation in separate M4 permission-gated milestone. | M1 recorded baseline proof; M4 performed the external mutation after permission was confirmed. |
+| Plan milestones | Implement M1 proof, M2 README, M3 npm landing, M4 metadata mutation, M5 lifecycle evidence. | Work stayed reviewable and each slice had validation and code-review. |
+| Architecture decision | No architecture artifact required. | The change touches public docs, metadata, and proof surfaces only; no runtime data flow or long-lived design boundary changed. |
 
-- added a direct `@latest init --adapter codex` first command near the top;
-- added a near-top link group for Quick Start, workflow, proof example,
-  contribution, issue templates, and security guidance;
-- preserved the generated vision block boundary;
-- preserved the value-first `When to use / When not to use` contract;
-- updated current Quick Start examples from stale `@0.1.5` pins to `@latest`
-  and reproducible `@0.2.0` examples;
-- added a static Mermaid lifecycle diagram with caption text that keeps manual
-  skill invocations scoped and does not imply full workflow completion.
+## Diff Rationale By Area
 
-This keeps the README as a landing surface, not a replacement for workflow
-specs or detailed docs.
+| File or surface | Change | Reason | Source artifact | Test/evidence |
+| --- | --- | --- | --- | --- |
+| GitHub repository settings | Set approved description, approved 18 topics, and blank website field. | Make the repo discoverable and reviewable as external state. | `DXA-R1` through `DXA-R3`, M4 | `repository-metadata-proof.md`; `gh repo view ...` |
+| `README.md` | Added first command, near-top adoption links, Mermaid lifecycle diagram, current Quick Start commands, and contribution/security routing. | Make the repository understandable within the first few seconds while preserving value-first ordering. | `DXA-R4` through `DXA-R9`, M2 | `readme-ownership-proof.md`; `adoption-surface-review.md`; README validation |
+| `packages/rigorloop/package.json` | Updated description and added 18 keywords. | Align npm package metadata with approved repository positioning and topic set. | `DXA-R10`, `DXA-R10a`, M3 | package metadata check; package tests |
+| `packages/rigorloop/README.md` | Updated current-use examples and archive names to `0.2.0`; preserved npm delivery-channel boundary. | Remove stale public CLI examples and avoid making npm the canonical workflow source. | `DXA-R10` through `DXA-R13`, M3 | stale-version sweep; unsupported-claim sweep |
+| `repository-metadata-proof.md` | Recorded approved targets, before-state, permission status, mutation command, after-state, and acceptance status. | GitHub metadata is not tracked in Git, so review needs durable evidence. | `DXA-R12`, `DXA-T001`, `DXA-T008` | live metadata command output |
+| `version-sync-proof.md` | Recorded GitHub release and npm package version sources and stale-version sweep. | Pinned examples need a deterministic current-stable source. | `DXA-R6`, `DXA-R13`, `DXA-T002` | `gh release view`; `npm view`; `rg` sweep |
+| `readme-ownership-proof.md` | Recorded generated vision block boundaries and contradiction checks. | Prevent hand-editing generated README content or conflicting with `VISION.md`. | `DXA-R9`, `DXA-R14`, `DXA-T003` | `python scripts/validate-readme.py README.md --vision-markers` |
+| `adoption-surface-review.md` | Recorded cold-read, links, commands, stale-version, visual, and unsupported-claim checks. | Subjective first-contact quality needs explicit evidence. | `DXA-R15`, `DXA-R18`, `DXA-T005` | manual link/cold-read evidence plus scans |
+| `behavior-preservation.md` | Recorded no-runtime-change matrix across README, npm, metadata, CLI, adapters, skills, validators, release, and workflow surfaces. | Prove adoption-surface work did not silently change product behavior. | `DXA-R16`, `DXA-R17`, `DXA-T007` | package tests; no unexpected runtime-surface diff |
+| `docs/proposals/...`, `specs/...`, `docs/plans/...`, `docs/plan.md`, `review-log.md`, `review-resolution.md`, review records, `change.yaml` | Recorded lifecycle state, review results, validation, and accepted plan-review finding closeout. | Preserve the trace from proposal through implementation review. | Constitution workflow rules, active plan | review artifact validators; lifecycle validation |
 
-### npm Package Surface
+## Tests Added Or Changed
 
-`packages/rigorloop/package.json` now uses a description aligned with the
-approved repository positioning and has keywords mirroring the approved topic
-set where npm metadata supports keywords.
+No product test files were added because the implementation did not add runtime
+behavior. The test coverage for this change is proof-based and validation-based,
+as approved in the test spec:
 
-`packages/rigorloop/README.md` now aligns current-use install and archive
-examples with the current stable `0.2.0` release, while preserving the npm
-delivery-channel boundary: npm is an install surface, not the canonical source
-for workflow rules, skills, schemas, templates, or adapter archives.
+- `DXA-T001`: repository metadata baseline proof.
+- `DXA-T002`: version source and stale pinned-version proof.
+- `DXA-T003`: README ownership, ordering, and first-contact contract.
+- `DXA-T004`: README Mermaid lifecycle visual and required link presence.
+- `DXA-T005`: cold-read, link-check, command-check, and unsupported-claim review.
+- `DXA-T006`: npm package landing alignment.
+- `DXA-T007`: behavior preservation and runtime-surface diff proof.
+- `DXA-T008`: live repository metadata after-state proof.
+- `DXA-T009`: lifecycle closeout validation.
 
-### Proof Artifacts
+The package test suite was rerun because package metadata and package README
+surfaces changed.
 
-The change-local proof pack records the parts that are not fully represented by
-normal diffs:
+## Validation Evidence Available Before Final Verify
 
-- `repository-metadata-proof.md`: approved metadata, before-state, permission
-  status, mutation command, after-state, and metadata acceptance status.
-- `version-sync-proof.md`: GitHub and npm version sources and stale-version
-  sweep results.
-- `readme-ownership-proof.md`: generated-region boundaries and source-of-truth
-  checks.
-- `adoption-surface-review.md`: cold-read, link, command, stale-version,
-  unsupported-claim, and visual accuracy evidence.
-- `behavior-preservation.md`: no-runtime-change matrix across CLI, adapters,
-  skills, validators, release boundaries, workflow semantics, README, package
-  metadata, and repository metadata.
+Validation evidence is recorded in the active plan and `change.yaml`. The
+available evidence includes:
 
-## Why These Changes
+- `gh repo view xiongxianfei/rigorloop --json description,homepageUrl,repositoryTopics`
+- `gh release view --repo xiongxianfei/rigorloop --json tagName,isDraft,isPrerelease,publishedAt,url`
+- `npm view @xiongxianfei/rigorloop version`
+- `python scripts/validate-readme.py README.md --vision-markers`
+- `python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface`
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface`
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml`
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`
+- `npm test --prefix packages/rigorloop` with 107 passing tests
+- `python scripts/test-select-validation.py` with 97 passing checks
+- stale-version sweeps showing no current README/package `@0.1.5` examples
+- unsupported-claim sweeps for hosted-platform, autonomous-merge, fake status,
+  replacement, and unsupported source-of-truth claims
+- no-unexpected-runtime-surface diff checks
+- `git diff --check --`
 
-The proposal identified a mismatch between RigorLoop's internal rigor and its
-external discovery surface. A visitor could find substantial internal artifacts
-but still need too much effort to answer what the project is, who it serves, how
-to try it, and how to inspect proof.
+Hosted CI and final `verify` have not been claimed here.
 
-The implementation keeps the approved first slice narrow:
+## Review Resolution Summary
 
-- public metadata;
-- README first-contact comprehension;
-- Quick Start freshness;
-- static lifecycle visual;
-- contribution and security routing;
-- npm package landing alignment;
-- durable proof for external and subjective checks.
+One material finding was recorded during planning:
 
-It deliberately does not change runtime behavior, workflow semantics, skills,
-adapters, validators, release automation, or release archive trust boundaries.
+- `DXA-PLAN1`: accepted and closed. The plan was revised to separate baseline
+  tracked proof from permission-sensitive live GitHub metadata mutation.
 
-## Requirement Coverage
+`review-resolution.md` has `Closeout status: closed`, no open findings, and no
+remaining `needs-decision` disposition. Subsequent proposal/spec/plan/code
+reviews for this change recorded no material findings. M1 through M5 are closed
+after clean code-review.
 
-- `DXA-R1` through `DXA-R3`: satisfied by live GitHub metadata update and
-  `repository-metadata-proof.md`.
-- `DXA-R4` through `DXA-R9`: satisfied by README updates,
-  `readme-ownership-proof.md`, and `adoption-surface-review.md`.
-- `DXA-R10` through `DXA-R13`: satisfied by package metadata/package README
-  alignment and `version-sync-proof.md`.
-- `DXA-R14` through `DXA-R18`: satisfied by ownership, cold-read/link,
-  behavior-preservation, no-runtime-change, and validation evidence.
-- `AC-DXA-001` through `AC-DXA-018`: covered by the metadata proof, README and
-  npm diffs, proof artifacts, package tests, lifecycle validators, stale-version
-  scans, unsupported-claim sweeps, and review records.
+## Alternatives Rejected
 
-## Behavior Preservation
+- Metadata-only update: rejected because discoverability would improve but
+  first-contact README comprehension and Quick Start drift would remain.
+- README-only rewrite: rejected because GitHub search/discovery metadata would
+  remain blank.
+- Full launch campaign: rejected for this slice because off-platform promotion
+  should not send traffic to an unfinished landing page.
+- PNG diagram or CLI GIF as first visual: deferred in favor of Mermaid because
+  Mermaid is diffable, low-maintenance, and easier to review.
+- Website field placeholder: rejected because no stable approved docs landing
+  page was identified for this first slice.
+- Runtime, skill, adapter, validator, release, or workflow behavior changes:
+  rejected as out of scope.
 
-Runtime and workflow behavior are unchanged.
+## Scope Control
 
-The only product-package file touched is package metadata/README content; the
-CLI implementation and tests are unchanged. The package test suite passed after
-the package metadata and README changes.
+The implementation preserved the proposal and spec non-goals:
 
-No adapter distribution files, authored skill files, validator scripts, schemas,
-release archives, release automation, or workflow-contract files were changed
-for product behavior.
+- no CLI behavior changes;
+- no skill behavior changes;
+- no adapter behavior changes;
+- no validator behavior changes;
+- no release archive or release automation changes;
+- no workflow semantic changes;
+- no hosted control-plane, autonomous-merge, fake adoption, or broad maturity
+  claims;
+- no off-platform promotion.
 
-## Validation Summary
+The README remains a landing surface and links to deeper governing documents
+instead of replacing them.
 
-Validation evidence is recorded in the active plan and `change.yaml`. The M5
-handoff validation includes:
+## Risks And Follow-Ups
 
-- review artifact closeout validation;
-- change metadata validation;
-- lifecycle explicit-path validation;
-- npm package tests;
-- validation selector regression;
-- stale-version sweep;
-- repository metadata after-state check;
-- whitespace validation.
+Remaining risks:
 
-This artifact explains the implementation and prepares the milestone for
-`code-review`. It does not claim code-review completion, final verify
-completion, PR readiness, branch readiness, or Done.
+- Final `verify` has not run yet and may still find stale lifecycle state or
+  validation gaps.
+- Hosted CI has not been observed from this local stage.
+- Future releases can make pinned version examples stale again unless release
+  updates include a version-sync check.
+- Off-platform promotion remains intentionally deferred until final verification
+  and PR readiness are handled.
+
+Follow-up candidates from the proposal remain out of scope for this slice:
+
+- Dev.to, Hacker News, Reddit, or other launch posts;
+- a docs landing page or GitHub Pages site;
+- automated README/npx demo GIF generation;
+- adoption metrics or repository traffic review.
+
+## Current Readiness
+
+The active plan now has all implementation milestones closed after code-review.
+This explain-change artifact is the durable rationale for the change and hands
+off to `verify`.
+
+This artifact does not claim final verification, PR readiness, branch readiness,
+hosted CI success, or Done.

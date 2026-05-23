@@ -84,16 +84,16 @@ Primary implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M5. Lifecycle closeout and final validation
-- Current milestone state: review-requested
-- Last reviewed milestone: code-review-m4-r2
-- Review status: M5 implementation ready for code-review
+- Current milestone state: closed
+- Last reviewed milestone: code-review-m5-r1
+- Review status: M5 clean-with-notes
 - Open blockers: none
-- Remaining in-scope implementation milestones: M5
-- Next stage: code-review M5
+- Remaining in-scope implementation milestones: none
+- Next stage: pr
 - M2/M3 readiness: M2 and M3 are closed after code-review.
 - Metadata mutation readiness: separate permission-gated M4 milestone.
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 through M4 are closed and M5 has implementation evidence ready for code-review, but M5 code-review, final verify, and PR handoff have not happened.
+- Final closeout readiness: branch-ready
+- Reason final closeout is or is not ready: M1 through M5 are closed after code-review, explain-change is complete, final local verify passed, and PR handoff is next. Hosted CI and PR body readiness are not claimed.
 
 ## Metadata acceptance boundary
 
@@ -367,7 +367,7 @@ Do not record tokens, cookies, browser session data, or private account details.
 
 ### M5. Lifecycle closeout and final validation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Close remaining lifecycle evidence after implementation milestones are reviewed, explain the change, run final verification, synchronize plan state, and prepare PR handoff.
 - Requirements: `AC-DXA-001` through `AC-DXA-018`
 - Files/components likely touched:
@@ -471,6 +471,9 @@ Do not record tokens, cookies, browser session data, or private account details.
 - 2026-05-23: Code-review M4 R1 closed M4 with no material findings and handed off to M5.
 - 2026-05-23: Code-review M4 R2 repeated the M4 review with no material findings and kept the handoff at M5.
 - 2026-05-23: M5 implementation created durable change rationale, synchronized lifecycle state, ran the milestone validation set, and handed off for code-review.
+- 2026-05-23: Code-review M5 R1 closed M5 with no material findings and handed off to explain-change.
+- 2026-05-23: Explain-change refreshed the durable change rationale from the actual diff, requirements, plan milestones, validation evidence, and review outcomes; handoff moved to verify.
+- 2026-05-23: Final verify passed locally, recorded branch-ready evidence, and handed off to PR.
 
 ## Decision log
 
@@ -607,12 +610,22 @@ Do not record tokens, cookies, browser session data, or private account details.
 - 2026-05-23 M5: `python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface` passed with 14 reviews, 1 finding, 14 log entries, and 1 resolution entry.
 - 2026-05-23 M5: `git diff --check --` passed.
 - 2026-05-23 M5: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml`, final explicit-path lifecycle validation, and scoped `git diff --check --` passed after readiness wording sync.
+- 2026-05-23: `code-review-m5-r1` recorded clean-with-notes, closed M5, and handed off to explain-change.
+- 2026-05-23: `python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface` passed after code-review-m5-r1 with 15 reviews, 1 finding, 15 log entries, and 1 resolution entry.
+- 2026-05-23: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface` passed after code-review-m5-r1 with 15 reviews, 1 finding, 15 log entries, and 1 resolution entry.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml` passed after code-review-m5-r1.
+- 2026-05-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.test.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/readme-ownership-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/explain-change.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m5-r1.md` passed after code-review-m5-r1.
+- 2026-05-23: `git diff --check -- docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface` passed after code-review-m5-r1.
+- 2026-05-23: Explain-change updated `docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/explain-change.md` with required sections: summary, problem, decision trail, file-by-file rationale, tests, validation, review resolution summary, alternatives, scope control, risks, and verify handoff.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface`, explicit-path lifecycle validation, and scoped `git diff --check --` passed after explain-change.
+- 2026-05-23: Final verify passed locally: query-change-record via `python`, review closeout validation, change metadata validation, explicit-path lifecycle validation, live GitHub metadata proof, stale-version sweep, package tests, selector regression, no-unexpected-runtime-surface diff, and `git diff --check --`.
+- 2026-05-23: `python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml`, review closeout validation, explicit-path lifecycle validation including `verify-report.md`, and `git diff --check --` passed after recording verify evidence.
 
 ## Outcome and retrospective
 
-- Pending M5 code-review, final verify, and PR handoff.
+- Pending PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review` M5; not ready for final verify, PR handoff, or Done.
+- Branch-ready for `pr`; not PR-body-ready, PR-open-ready, hosted-CI-ready, or Done.
