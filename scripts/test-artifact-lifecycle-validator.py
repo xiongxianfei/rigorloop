@@ -923,7 +923,7 @@ validation_summary:
   all_passed: true
   stages_validated:
     - code-review-m1-closeout
-  final_counts: {{}}
+  final_counts: {}
   open_validation_blockers: []
 """,
             encoding="utf-8",
