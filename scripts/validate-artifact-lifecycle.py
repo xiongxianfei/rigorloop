@@ -55,7 +55,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--validation-cache-dir",
-        default=".rigorloop-validation-cache",
+        default=os.environ.get("RIGORLOOP_VALIDATION_CACHE_DIR", ".rigorloop-validation-cache"),
         help="Local untracked validation cache directory.",
     )
     parser.add_argument(
@@ -180,10 +180,25 @@ def infer_change_id(paths: list[str]) -> str:
     return "no-change-id"
 
 
+def helper_mode(args: argparse.Namespace) -> bool:
+    return args.mode == "explicit-paths-inner-loop"
+
+
+def formal_helper_evidence_file(args: argparse.Namespace, change_id: str) -> str | None:
+    if args.validation_cache_evidence_file:
+        return args.validation_cache_evidence_file
+    if not helper_mode(args) or change_id == "no-change-id":
+        return None
+    expected_change = ROOT / "docs" / "changes" / change_id / "change.yaml"
+    if expected_change.is_file():
+        return f"docs/changes/{change_id}/validation-cache-evidence.yaml"
+    return None
+
+
 def maybe_cache_hit(args: argparse.Namespace) -> tuple[validation_cache.LifecycleCacheIdentity, validation_cache.LocalCacheContext] | None:
     if (
-        not args.use_validation_cache
-        or args.mode != "explicit-paths"
+        not (args.use_validation_cache or helper_mode(args))
+        or args.mode not in {"explicit-paths", "explicit-paths-inner-loop"}
         or args.validation_cache_context != "inner-loop"
         or os.environ.get("CI")
     ):
@@ -192,19 +207,25 @@ def maybe_cache_hit(args: argparse.Namespace) -> tuple[validation_cache.Lifecycl
         identity = validation_cache.build_lifecycle_cache_identity(ROOT, semantic_argv(args))
         context = cache_context_for(args, identity)
     except validation_cache.CacheIdentityError as exc:
-        print(f"validation cache disabled: {exc}", file=sys.stderr)
+        if helper_mode(args):
+            print(f"[CACHE MISS] artifact-lifecycle: validation cache disabled: {exc}; running validator")
+        else:
+            print(f"validation cache disabled: {exc}", file=sys.stderr)
         return None
 
     lookup = validation_cache.find_local_cache_hit(args.validation_cache_dir, context)
     if lookup.record is None:
+        if helper_mode(args):
+            print(f"[CACHE MISS] artifact-lifecycle: {lookup.reason}; running validator")
         return identity, context
 
     short_key = lookup.record.cache_key[:19] if lookup.record.cache_key else identity.cache_key[:19]
-    if args.validation_cache_evidence_file:
+    evidence_file = formal_helper_evidence_file(args, context.change_id)
+    if evidence_file:
         try:
             validation_cache.write_cache_hit_evidence(
                 repo_root=ROOT,
-                evidence_file=args.validation_cache_evidence_file,
+                evidence_file=evidence_file,
                 change_id=context.change_id,
                 cache_hit_id=args.validation_cache_hit_id,
                 identity=identity,

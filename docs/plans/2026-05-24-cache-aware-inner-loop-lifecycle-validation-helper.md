@@ -68,13 +68,13 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 ## Current Handoff Summary
 
 - Current milestone: M2. Inner-loop helper runtime and formal cache-hit evidence
-- Current milestone state: ready for implementation
+- Current milestone state: review-requested
 - Last reviewed milestone: M1 helper mode and canonical identity tests
-- Review status: code-review M1 R1 clean-with-notes with no material findings.
+- Review status: M2 implementation is ready for code-review; code-review M2 has not run.
 - Remaining in-scope implementation milestones: M2, M3, M4, M5, M6.
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review; M2 through M6, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 is implemented but not yet code-reviewed; M3 through M6, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -161,7 +161,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ### M2. Inner-loop helper runtime and formal cache-hit evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Expose `--mode explicit-paths-inner-loop`, supply approved cache context by default, and write or merge formal helper evidence only in safe workflow contexts.
 - Requirements: R32-R50, R131-R149; AC33-AC39, AC46-AC47.
 - Files/components likely touched:
@@ -431,6 +431,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 - 2026-05-24: Test spec amended in `specs/validation-idempotency-and-cache-hit-safety.test.md` for helper normalization, runtime fallback, evidence, closeout rejection, selector routing, measurement, and published-skill boundaries; approved by user; M1 is ready for implementation.
 - 2026-05-24: M1 implemented helper-mode parser support, canonical direct-command cache identity normalization, displayed helper argv preservation on `LifecycleCacheIdentity`, and tests for direct-pass reuse, helper path-order invalidation, unsupported command exclusion, and helper explicit-path CLI behavior.
 - 2026-05-24: Code-review M1 R1 completed clean-with-notes with no material findings; M1 closed and M2 is ready for implementation.
+- 2026-05-24: M2 implemented automatic inner-loop helper cache use, cache-miss fallback output, inferable safe change-root evidence writes, ad hoc no-evidence behavior, displayed/canonical argv evidence rendering, and focused tests for helper cache hits and formal evidence.
 
 ## Decision log
 
@@ -440,12 +441,14 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 | 2026-05-24 | Keep direct `--mode explicit-paths` as the actual-run closeout command. | Closeout, verify, branch-readiness, PR-readiness, and CI must remain actual-run evidence in the first slice. | Cache by default for direct explicit-path lifecycle validation. |
 | 2026-05-24 | Keep published skills out of scope for internal command examples. | The approved spec forbids exposing RigorLoop-internal validator paths and selector mechanics in published skills. | Adding helper command tables to public skill text. |
 | 2026-05-24 | M1 preserves helper displayed argv on cache identity but does not write helper formal evidence yet. | Formal helper evidence writing and prior-actual-run evidence validation are assigned to M2/M3; M1 only prepares the identity surface needed by those milestones. | Expanding M1 into evidence-file schema and closeout validation work. |
+| 2026-05-24 | Let `RIGORLOOP_VALIDATION_CACHE_DIR` override the helper's default local cache directory. | M2 tests need isolated cache directories while keeping normal CLI use free of long cache flags. | Requiring tests or helper users to pass the long cache flag set. |
 
 ## Surprises and discoveries
 
 - The existing validator already has opt-in cache flags, so implementation should reuse the existing cache primitives and focus on helper adoption, canonical identity, evidence, measurement, and closeout boundaries.
 - M1 could expose the helper CLI mode without enabling automatic helper cache use yet by routing validator execution through the existing explicit-path lifecycle implementation and leaving cache-context defaults to M2.
 - R133f/R133g are unaffected in M1 because no helper-produced formal cache-hit evidence is written in this slice; M2/M3 remain responsible for enforcing prior actual-run ancestry when helper formal evidence exists.
+- M2 can infer formal helper evidence only when exactly one safe change root is present and the corresponding `change.yaml` exists; otherwise helper cache hits remain local/ad hoc status output with no formal evidence write.
 
 ## Validation notes
 
@@ -461,6 +464,20 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/architecture-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/plan-review-r1.md`
   - `git diff --check --`
+- 2026-05-24 M2 focused validation passed before artifact-state updates:
+  - `python scripts/test-validation-cache.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+- 2026-05-24 M2 implementation validation passed:
+  - `python scripts/test-validation-cache.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths-inner-loop --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md`
+  - `git diff --check --`
+- 2026-05-24 M2 handoff artifact validation passed after plan and change-metadata updates:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/architecture-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/plan-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m1-r1.md`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -469,4 +486,4 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M2 implementation. Readiness is not Done; remaining implementation milestones, code-review, explain-change, verify, and PR gates remain.
+- Ready for code-review M2. Readiness is not Done; M2 has not been reviewed, and remaining implementation milestones, explain-change, verify, and PR gates remain.
