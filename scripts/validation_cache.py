@@ -572,7 +572,11 @@ def _cache_hit_evidence_entry(
     return {
         "id": cache_hit_id,
         "validator_id": identity.validator_id,
+        "command_family": identity.command_family,
+        "evidence_kind": "cache-hit-inner-loop",
         "command": {"argv": list(identity.normalized_command.argv)},
+        "displayed_command_argv": list(identity.displayed_command.argv),
+        "canonical_cache_argv": list(identity.normalized_command.argv),
         "prior_passing_event": {
             "stage": record.prior_event_stage,
             "evidence": record.prior_event_evidence,
@@ -612,6 +616,22 @@ def _render_cache_hit_evidence_document(
             [
                 f"  - id: {_yaml_scalar(str(entry['id']))}",
                 f"    validator_id: {_yaml_scalar(str(entry['validator_id']))}",
+                f"    command_family: {_yaml_scalar(str(entry['command_family']))}",
+                f"    evidence_kind: {entry['evidence_kind']}",
+                "    displayed_command_argv:",
+            ]
+        )
+        displayed = entry["displayed_command_argv"]
+        canonical = entry["canonical_cache_argv"]
+        if not isinstance(displayed, list) or not isinstance(canonical, list):
+            raise _cache_error("invalid-cache-evidence-file")
+        for arg in displayed:
+            lines.append(f"      - {_yaml_scalar(str(arg))}")
+        lines.append("    canonical_cache_argv:")
+        for arg in canonical:
+            lines.append(f"      - {_yaml_scalar(str(arg))}")
+        lines.extend(
+            [
                 "    command:",
                 "      argv:",
             ]
@@ -659,10 +679,13 @@ def _load_cache_hit_evidence_document(path: Path) -> dict[str, object]:
         entry: dict[str, object] = {
             "id": _parse_json_scalar(lines[index].split(": ", 1)[1]),
             "command": {"argv": []},
+            "displayed_command_argv": [],
+            "canonical_cache_argv": [],
             "prior_passing_event": {},
             "cache_key": {},
         }
         index += 1
+        list_target: str | None = None
         while index < len(lines) and not lines[index].startswith("  - id: "):
             line = lines[index]
             if not line:
@@ -670,7 +693,22 @@ def _load_cache_hit_evidence_document(path: Path) -> dict[str, object]:
                 continue
             if line.startswith("    validator_id: "):
                 entry["validator_id"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("    command_family: "):
+                entry["command_family"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("    evidence_kind: "):
+                entry["evidence_kind"] = line.split(": ", 1)[1]
+            elif line == "    displayed_command_argv:":
+                list_target = "displayed_command_argv"
+            elif line == "    canonical_cache_argv:":
+                list_target = "canonical_cache_argv"
+            elif line.startswith("      - "):
+                if list_target not in {"displayed_command_argv", "canonical_cache_argv"}:
+                    raise _cache_error("invalid-cache-evidence-file")
+                argv = entry[list_target]
+                assert isinstance(argv, list)
+                argv.append(_parse_json_scalar(line.split("- ", 1)[1]))
             elif line.startswith("        - "):
+                list_target = "command"
                 command = entry["command"]
                 assert isinstance(command, dict)
                 argv = command["argv"]
@@ -714,10 +752,22 @@ def _load_cache_hit_evidence_document(path: Path) -> dict[str, object]:
                 "    prior_passing_event:",
                 "    cache_key:",
             ):
+                if line == "      argv:":
+                    list_target = "command"
+                elif line != "    command:":
+                    list_target = None
                 pass
             else:
                 raise _cache_error("invalid-cache-evidence-file")
             index += 1
+        command = entry["command"]
+        if isinstance(command, dict) and isinstance(command.get("argv"), list):
+            if not entry.get("displayed_command_argv"):
+                entry["displayed_command_argv"] = list(command["argv"])
+            if not entry.get("canonical_cache_argv"):
+                entry["canonical_cache_argv"] = list(command["argv"])
+        entry.setdefault("command_family", _SUPPORTED_COMMAND_FAMILY)
+        entry.setdefault("evidence_kind", "cache-hit-inner-loop")
         _validate_cache_hit_entry(entry)
         entries.append(entry)
 
@@ -734,6 +784,10 @@ def _validate_cache_hit_entry(entry: dict[str, object]) -> None:
     required = (
         "id",
         "validator_id",
+        "command_family",
+        "evidence_kind",
+        "displayed_command_argv",
+        "canonical_cache_argv",
         "command",
         "prior_passing_event",
         "cache_key",
@@ -748,6 +802,8 @@ def _validate_cache_hit_entry(entry: dict[str, object]) -> None:
     prior = entry["prior_passing_event"]
     cache_key = entry["cache_key"]
     if not isinstance(command, dict) or not command.get("argv"):
+        raise _cache_error("invalid-cache-evidence-file")
+    if not entry.get("displayed_command_argv") or not entry.get("canonical_cache_argv"):
         raise _cache_error("invalid-cache-evidence-file")
     if not isinstance(prior, dict) or not prior.get("stage") or not prior.get("evidence"):
         raise _cache_error("invalid-cache-evidence-file")
