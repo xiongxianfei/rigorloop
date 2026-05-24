@@ -79,5 +79,19 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: VIC-IH-CR-M2-001
-Open findings: VIC-IH-CR-M2-001
+Open findings: None
+Superseded by: code-review-m2-r2
+Closeout: resolved by review-resolution and confirmed by code-review-m2-r2
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: 2
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: None
+Open findings: None
 Recording status: recorded
