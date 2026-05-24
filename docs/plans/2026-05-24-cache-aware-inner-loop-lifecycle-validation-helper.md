@@ -72,9 +72,9 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 - Last reviewed milestone: M6 lifecycle closeout
 - Review status: code-review M6 R1 clean-with-notes with no material findings.
 - Remaining in-scope implementation milestones: none.
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed after clean code review; final verify and PR handoff remain.
+- Next stage: pr
+- Final closeout readiness: branch-ready
+- Reason final closeout is or is not ready: final verify passed from clean tracked branch state with plan/test-spec validation commands, PR-mode selected CI over `main...HEAD`, local-mode selected CI over explicit branch changed paths, review-artifact closeout, change metadata validation, lifecycle validation, and whitespace checks. Hosted CI is not claimed.
 
 ## Milestones
 
@@ -445,6 +445,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 - 2026-05-24: Code-review M5 R1 completed clean-with-notes with no material findings; M5 closed and M6 is ready for implementation.
 - 2026-05-24: M6 recorded durable explain-change evidence, ran the final implementation validation set, and kept final verify/PR readiness unclaimed pending code-review and downstream gates.
 - 2026-05-24: Code-review M6 R1 completed clean-with-notes with no material findings; all implementation milestones are closed and the next stage is verify.
+- 2026-05-24: Final verify passed from clean tracked branch state; branch-ready is confirmed for PR handoff, with hosted CI not claimed.
 
 ## Decision log
 
@@ -602,12 +603,27 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
   - `python scripts/test-artifact-lifecycle-validator.py`
   - `python scripts/test-change-metadata-validator.py`
   - `python scripts/test-select-validation.py`
+- 2026-05-24 final verify passed:
+  - `python scripts/query-change-record.py 2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper summary`
+  - `python scripts/query-change-record.py 2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper artifacts`
+  - `python scripts/query-change-record.py 2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper validation --latest`
+  - `python scripts/test-validation-cache.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/test-select-validation.py`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml`
+  - `python scripts/select-validation.py --mode pr --base main --head HEAD`
+  - `bash scripts/ci.sh --mode pr --base main --head HEAD --timeout 120`
+  - `bash scripts/ci.sh --mode local --path <main...HEAD changed paths> --timeout 120`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/explain-change.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/behavior-preservation.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/validation-cache-measurement.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m5-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m6-r1.md`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
-- Pending until all implementation milestones, reviews, explain-change, verify, and PR handoff complete.
+- Branch-ready after final verify. PR handoff remains.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for verify. Readiness is not Done; final verify and PR gates remain.
+- Branch-ready for PR handoff. Readiness is not Done; PR handoff and hosted CI remain downstream.
