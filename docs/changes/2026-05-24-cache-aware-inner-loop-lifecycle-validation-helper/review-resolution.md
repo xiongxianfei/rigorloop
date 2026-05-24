@@ -4,7 +4,7 @@
 
 This record tracks formal lifecycle review findings for the cache-aware inner-loop lifecycle validation helper change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -12,6 +12,7 @@ Review closeout: spec-review-r2
 Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
+Review closeout pending: code-review-m2-r1
 
 ## Resolution Entries
 
@@ -81,3 +82,20 @@ No material findings.
 ### code-review-m1-r1
 
 No material findings.
+
+### code-review-m2-r1
+
+#### VIC-IH-CR-M2-001
+
+Finding ID: VIC-IH-CR-M2-001
+Disposition: accepted
+Status: open
+Owner: implementer
+Owning stage: review-resolution
+Required outcome: The ad hoc no-evidence test must prove the helper does not create new formal evidence for the ad hoc invocation without assuming the whole repository has no formal cache-hit evidence files.
+Safe resolution path: Snapshot the set of repository `validation-cache-evidence.yaml` files before the ad hoc helper invocation and assert the set is unchanged afterward, or assert only that the ad hoc command's inferred/specific evidence path is absent. Keep the cache hit output assertion so the test still proves ad hoc hits print status.
+Rationale: The current test asserts every `docs/changes/*/validation-cache-evidence.yaml` file is absent, which conflicts with the approved formal evidence contract once any valid workflow cache-hit evidence exists.
+Chosen action: pending
+Stop state: open
+Validation target: Rerun `python scripts/test-artifact-lifecycle-validator.py`, focused lifecycle/change metadata validation, and `git diff --check --` after the test assertion is narrowed.
+Validation evidence: pending
