@@ -469,6 +469,10 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
                 "validation_events[0].evidence_kind: cache-hit-inner-loop cannot satisfy closeout",
             ),
             (
+                "compact-invalid-helper-closeout-command",
+                "validation_events[0].bundles[0]: explicit-paths-inner-loop cannot satisfy closeout",
+            ),
+            (
                 "legacy-invalid-cache-evidence-fields",
                 "validation[0].evidence_kind: legacy validation metadata cannot claim cache-hit or closeout evidence",
             ),

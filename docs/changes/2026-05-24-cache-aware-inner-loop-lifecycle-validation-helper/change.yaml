@@ -38,6 +38,9 @@ requirements:
   - Record code-review M2 R1 and keep M2 in review-resolution until VIC-IH-CR-M2-001 is resolved.
   - Resolve VIC-IH-CR-M2-001 before rerunning code-review M2.
   - Record code-review M2 R2 before advancing to M3.
+  - Implement M3 closeout rejection so helper `explicit-paths-inner-loop` proof commands cannot satisfy closeout.
+  - Preserve direct `explicit-paths` actual-run closeout eligibility while allowing helper cache-hit evidence only as supporting context.
+  - Hand M3 to code-review before advancing to selector routing, measurement, or final closeout milestones.
   - Preserve the proposal's first-slice boundary for the cache-aware inner-loop lifecycle validation mode.
   - Route remaining selector-registration and cross-change measurement details to spec and plan.
 tests:
@@ -63,6 +66,8 @@ tests:
   - Code-review M2 R1 records VIC-IH-CR-M2-001 against the over-broad ad hoc no-evidence test assertion.
   - Review-resolution narrows the ad hoc no-evidence assertion so existing formal cache-hit evidence files do not fail the test.
   - Code-review M2 R2 closes M2 with no material findings and routes next to M3 implementation.
+  - M3 tests cover helper command closeout rejection in both compact change metadata validation and artifact lifecycle validation.
+  - M3 implementation keeps `cache-hit-inner-loop` and helper command proof inner-loop only; separate direct `actual-run-pass` remains the closeout-eligible path.
   - Review artifact validation covers the clean proposal-review receipt and review log.
   - Artifact lifecycle validation covers the proposal and review evidence.
 review:
@@ -231,6 +236,22 @@ validation:
     result: pass_validated_5_artifact_files_after_code_review_m2_r2
   - command: git diff --check --
     result: pass_after_code_review_m2_r2
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_76_tests_after_m3
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_20_tests_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_m3
+  - command: git diff --check --
+    result: pass_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_closeout_reviews_8_findings_4_log_entries_8_resolution_entries_4_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_m3_handoff
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m2-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m2-r2.md
+    result: pass_validated_5_artifact_files_after_m3
+  - command: git diff --check --
+    result: pass_after_m3_handoff
 changed_files:
   - docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md
   - specs/validation-idempotency-and-cache-hit-safety.md
@@ -254,3 +275,7 @@ changed_files:
   - scripts/validate-artifact-lifecycle.py
   - scripts/test-validation-cache.py
   - scripts/test-artifact-lifecycle-validator.py
+  - scripts/test-change-metadata-validator.py
+  - scripts/artifact_lifecycle_validation.py
+  - scripts/validate-change-metadata.py
+  - tests/fixtures/change-metadata/compact-invalid-helper-closeout-command/change.yaml

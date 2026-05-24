@@ -622,6 +622,57 @@ def validate_compact_bundle_command_safety(
     return list(dict.fromkeys(errors))
 
 
+def lifecycle_command_mode(command: str) -> str | None:
+    try:
+        tokens = shlex.split(command)
+    except ValueError:
+        return None
+    for index, token in enumerate(tokens):
+        if token == "--mode" and index + 1 < len(tokens):
+            mode = tokens[index + 1]
+            if mode in {"explicit-paths", "explicit-paths-inner-loop"} and any(
+                part.endswith("scripts/validate-artifact-lifecycle.py") for part in tokens
+            ):
+                return mode
+    return None
+
+
+def validate_compact_closeout_command_boundary(
+    event: dict[str, Any],
+    event_path: str,
+    validation_bundles: dict[str, Any],
+) -> list[str]:
+    if not compact_event_is_closeout(event) or event.get("result") != "pass":
+        return []
+    event_bundles = event.get("bundles")
+    if not isinstance(event_bundles, list):
+        return []
+
+    modes: dict[int, str] = {}
+    for bundle_index, bundle_id in enumerate(event_bundles):
+        if not isinstance(bundle_id, str):
+            continue
+        definition = validation_bundles.get(bundle_id)
+        if not isinstance(definition, dict):
+            continue
+        command = definition.get("command")
+        if isinstance(command, str):
+            mode = lifecycle_command_mode(command)
+            if mode is not None:
+                modes[bundle_index] = mode
+
+    if "explicit-paths" in modes.values():
+        return []
+    errors: list[str] = []
+    for bundle_index, mode in modes.items():
+        if mode == "explicit-paths-inner-loop":
+            errors.append(
+                f"{path_label(path_label(event_path, 'bundles'), bundle_index)}: "
+                "explicit-paths-inner-loop cannot satisfy closeout"
+            )
+    return errors
+
+
 def resolve_compact_path_vars(path_vars: dict[str, Any]) -> tuple[dict[str, str], list[str]]:
     errors: list[str] = []
     raw_change_id = path_vars.get("change_id")
@@ -1148,6 +1199,7 @@ def validate_compact_event(
     errors.extend(validate_compact_skipped_event(event, event_path))
     errors.extend(validate_compact_evidence_kind(event, event_path))
     errors.extend(validate_compact_evidence_reference(event, event_path))
+    errors.extend(validate_compact_closeout_command_boundary(event, event_path, validation_bundles))
     if variables is not None:
         errors.extend(validate_compact_event_paths(event, event_path, variables))
         errors.extend(validate_compact_transcript_reference(event, event_path, variables))
