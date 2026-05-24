@@ -1,7 +1,27 @@
 {
   "name": "@xiongxianfei/rigorloop",
   "version": "0.2.0",
-  "description": "RigorLoop CLI.",
+  "description": "Git-first workflow for AI coding agents: proposals, specs, tests, review gates, and durable validation evidence from idea to PR.",
+  "keywords": [
+    "ai-agents",
+    "ai-coding",
+    "coding-agent",
+    "agentic-workflow",
+    "llm",
+    "developer-tools",
+    "software-engineering",
+    "code-review",
+    "git-workflow",
+    "cli",
+    "npm-package",
+    "claude-code",
+    "codex",
+    "opencode",
+    "workflow",
+    "testing",
+    "validation",
+    "pull-requests"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/xiongxianfei/rigorloop"

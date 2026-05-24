@@ -1,0 +1,384 @@
+change_id: 2026-05-23-public-discovery-and-developer-adoption-surface
+title: Public discovery and developer adoption surface
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md
+  spec: specs/public-discovery-and-developer-adoption-surface.md
+  test_spec: specs/public-discovery-and-developer-adoption-surface.test.md
+  plan: docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md
+requirements:
+  - Improve public discovery and first-contact developer adoption without changing runtime behavior, workflow semantics, skills, adapters, validators, or release mechanics.
+  - Keep GitHub metadata, README first-screen clarity, Quick Start freshness, visual explanation, contribution routing, and package metadata in the first-slice decision space.
+  - Defer off-platform promotion until the repository landing surface passes cold-read review.
+  - Record proof for external GitHub metadata, Quick Start version sync, README ownership boundaries, and cold-read/link-check evidence before implementation closeout.
+  - Preserve the approved README positioning contract while adding public discovery, repository metadata, npm landing, and adoption-evidence requirements.
+tests:
+  - Proposal-review clean receipt for revised proposal readiness.
+  - Spec-review for public discovery and developer adoption requirements.
+  - Plan-review for the public discovery and developer adoption execution plan.
+  - Plan-review rerun for the DXA-PLAN1 plan revision.
+  - Plan-review confirmation for the current execution plan.
+  - Test-spec coverage mapping for metadata, README, npm, proof artifacts, and no-runtime-change preservation.
+  - M1 baseline proof for repository metadata, version sync, README ownership, stale versions, unsupported claims, and no live metadata mutation.
+  - Code-review M1 clean receipt for baseline proof.
+  - Code-review M1 repeat clean receipt for baseline proof.
+  - M2 README first-contact adoption surface implementation with updated proof artifacts.
+  - Code-review M2 clean receipt for README first-contact adoption surface.
+  - Code-review M2 repeat clean receipt for README first-contact adoption surface.
+  - M3 npm package landing alignment with updated package metadata, package README, and proof artifacts.
+  - Code-review M3 clean receipt for npm package landing alignment.
+  - Code-review M3 repeat clean receipt for npm package landing alignment.
+  - M4 live GitHub repository metadata mutation and after-state proof.
+  - Code-review M4 clean receipt for external GitHub metadata mutation and proof.
+  - Code-review M4 repeat clean receipt for external GitHub metadata mutation and proof.
+  - M5 lifecycle closeout implementation with durable explain-change rationale and final milestone validation evidence.
+  - Code-review M5 clean receipt for lifecycle closeout evidence.
+  - Explain-change durable rationale refreshed from the actual diff, requirements, plan milestones, validation evidence, and review outcomes.
+  - Final verify report proving branch-ready status for PR handoff.
+  - Review artifact validation for clean formal review recording.
+  - Change metadata validation for the proposal, spec, and plan record root.
+  - Artifact lifecycle validation for the proposal, spec, test spec, plan, plan index, and review record root.
+  - Whitespace validation for the proposal, spec, test spec, plan, plan index, and review artifacts.
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md
+  review_log: docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted_from_proposal_review_r1
+  - command: spec
+    result: completed_pending_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: spec-review r2
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: spec_status_approved_from_spec_review_r2
+  - command: plan
+    result: completed_pending_plan_review
+  - command: plan-review r1
+    result: changes_requested_DXA-PLAN1
+  - command: plan revision for DXA-PLAN1
+    result: completed_pending_plan_review_rerun
+  - command: plan-review r2
+    result: approved_no_material_findings_DXA-PLAN1_closed
+  - command: plan-review r3
+    result: approved_no_material_findings
+  - command: test-spec
+    result: completed_active
+  - command: user approval
+    result: active_test_spec_approved_for_implementation_guidance
+  - command: implement M1
+    result: review_requested
+  - command: code-review M1 R1
+    result: clean_with_notes_no_material_findings_M1_closed
+  - command: code-review M1 R2
+    result: clean_with_notes_no_material_findings
+  - command: gh repo view xiongxianfei/rigorloop --json description,homepageUrl,repositoryTopics
+    result: pass_blank_description_blank_website_no_topics
+  - command: gh release view --repo xiongxianfei/rigorloop --json tagName,isDraft,isPrerelease,publishedAt,url
+    result: pass_v0.2.0_stable
+  - command: npm view @xiongxianfei/rigorloop version
+    result: pass_0.2.0
+  - command: gh api repos/xiongxianfei/rigorloop --jq '{permissions: .permissions, role_name: .role_name, viewer_permission: .viewer_permission}'
+    result: pass_permission_available
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass
+  - command: rg -n "@xiongxianfei/rigorloop@0\\.1\\.5" README.md packages/rigorloop/README.md packages/rigorloop/package.json docs/ || true
+    result: baseline_current_use_stale_examples_found_for_M2_M3
+  - command: rg -n "hosted|SaaS|control plane|autonomous|merge|replacement|replace|production|stars|forks|adoption|security status|CI status" README.md packages/rigorloop/README.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface || true
+    result: baseline_no_unsupported_claim_identified
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_6_findings_1_log_entries_6_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_6_findings_1_log_entries_6_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_M3_review_requested_state_sync
+  - command: git diff --check -- packages/rigorloop/package.json packages/rigorloop/README.md docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_M3_review_requested_state_sync
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_10_findings_1_log_entries_10_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_10_findings_1_log_entries_10_resolution_entries_1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop/package.json --path packages/rigorloop/README.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md
+    result: pass
+  - command: code-review M3 R1
+    result: clean_with_notes_no_material_findings_M3_closed
+  - command: code-review M3 R2
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_12_findings_1_log_entries_12_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_12_findings_1_log_entries_12_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_code_review_m3_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop/package.json --path packages/rigorloop/README.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m3-r1.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m3-r2.md
+    result: pass
+  - command: git diff --check -- packages/rigorloop/package.json packages/rigorloop/README.md docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_code_review_m3_r2
+  - command: implement M4
+    result: review_requested
+  - command: gh repo edit xiongxianfei/rigorloop --description 'Git-first workflow for AI coding agents: proposals, specs, tests, review gates, and durable validation evidence from idea to PR.' --homepage '' --add-topic ai-agents,ai-coding,coding-agent,agentic-workflow,llm,developer-tools,software-engineering,code-review,git-workflow,cli,npm-package,claude-code,codex,opencode,workflow,testing,validation,pull-requests
+    result: pass
+  - command: gh repo view xiongxianfei/rigorloop --json description,homepageUrl,repositoryTopics
+    result: pass_metadata_after_state_matches_approved_values
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_M4_review_requested_state_sync
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_12_findings_1_log_entries_12_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_12_findings_1_log_entries_12_resolution_entries_1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md
+    result: pass
+  - command: git diff --check -- docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_M4_review_requested_state_sync
+  - command: code-review M4 R1
+    result: clean_with_notes_no_material_findings_M4_closed
+  - command: code-review M4 R2
+    result: clean_with_notes_no_material_findings
+  - command: gh repo view xiongxianfei/rigorloop --json description,homepageUrl,repositoryTopics
+    result: pass_after_code_review_m4_r2
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_14_findings_1_log_entries_14_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_14_findings_1_log_entries_14_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_code_review_m4_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m4-r1.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m4-r2.md
+    result: pass
+  - command: git diff --check -- docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_code_review_m4_r2
+  - command: implement M5
+    result: review_requested
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_14_findings_1_log_entries_14_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_M5_review_requested_state_sync
+  - command: gh repo view xiongxianfei/rigorloop --json description,homepageUrl,repositoryTopics
+    result: pass_M5_metadata_after_state_still_matches_approved_values
+  - command: rg -n "@xiongxianfei/rigorloop@0\\.1\\.5" README.md packages/rigorloop/README.md packages/rigorloop/package.json docs/ || true
+    result: pass_M5_only_historical_v0_1_5_release_and_retrospective_records
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.test.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/readme-ownership-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/explain-change.md
+    result: pass
+  - command: npm test --prefix packages/rigorloop
+    result: pass_107_tests_M5
+  - command: python scripts/test-select-validation.py
+    result: pass_97_checks
+  - command: git diff --name-only -- . ':!README.md' ':!packages/rigorloop/README.md' ':!packages/rigorloop/package.json' ':!docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface' ':!docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md' ':!docs/plan.md' ':!specs/public-discovery-and-developer-adoption-surface.md' ':!specs/public-discovery-and-developer-adoption-surface.test.md' ':!docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md'
+    result: pass_no_unexpected_runtime_surface_diff_M5
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_14_findings_1_log_entries_14_resolution_entries_1
+  - command: git diff --check --
+    result: pass_M5
+  - command: final M5 readiness wording sync validation
+    result: pass_change_metadata_lifecycle_explicit_paths_and_scoped_diff_check
+  - command: code-review M5 R1
+    result: clean_with_notes_no_material_findings_M5_closed
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_15_findings_1_log_entries_15_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_15_findings_1_log_entries_15_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_code_review_m5_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.test.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/readme-ownership-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/explain-change.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m5-r1.md
+    result: pass
+  - command: git diff --check -- docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_code_review_m5_r1
+  - command: explain-change
+    result: completed_ready_for_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.test.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/readme-ownership-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/explain-change.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m5-r1.md
+    result: pass_after_explain_change
+  - command: git diff --check -- docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_explain_change
+  - command: verify
+    result: branch_ready_local_direct_verify_passed_before_pr_mode_selector_check
+  - command: python scripts/query-change-record.py 2026-05-23-public-discovery-and-developer-adoption-surface summary
+    result: pass_status_ok_no_open_blockers_review_clean
+  - command: scripts/query-change-record.py 2026-05-23-public-discovery-and-developer-adoption-surface summary
+    result: blocked_permission_denied_rerun_with_python_passed
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_15_findings_1_log_entries_15_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.test.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/readme-ownership-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/explain-change.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m5-r1.md
+    result: pass_verify
+  - command: gh repo view xiongxianfei/rigorloop --json description,homepageUrl,repositoryTopics
+    result: pass_verify_metadata_after_state_still_matches_approved_values
+  - command: rg -n "@xiongxianfei/rigorloop@0\\.1\\.5" README.md packages/rigorloop/README.md packages/rigorloop/package.json docs/ || true
+    result: pass_verify_only_historical_v0_1_5_release_and_retrospective_records
+  - command: npm test --prefix packages/rigorloop
+    result: pass_107_tests_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_97_checks_verify
+  - command: git diff --name-only -- . ':!README.md' ':!packages/rigorloop/README.md' ':!packages/rigorloop/package.json' ':!docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface' ':!docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md' ':!docs/plan.md' ':!specs/public-discovery-and-developer-adoption-surface.md' ':!specs/public-discovery-and-developer-adoption-surface.test.md' ':!docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md'
+    result: pass_no_unexpected_runtime_surface_diff_verify
+  - command: git diff --check --
+    result: pass_verify
+  - command: post-verify evidence validation
+    result: pass_change_metadata_review_closeout_lifecycle_with_verify_report_and_diff_check
+  - command: python scripts/select-validation.py --mode pr --base main --head HEAD
+    result: blocked_manual_routing_required_for_adoption_surface_proof_files_before_ci_maintenance
+  - command: bash scripts/ci.sh --mode pr --base main --head HEAD
+    result: blocked_manual_routing_required_for_adoption_surface_proof_files_before_ci_maintenance
+  - command: ci-maintenance validation routing fix
+    result: registered_adoption_surface_proof_evidence_classes_and_selector_regression_paths
+  - command: python scripts/test-select-validation.py
+    result: pass_97_checks_after_ci_maintenance
+  - command: python scripts/select-validation.py --mode pr --base main --head HEAD
+    result: pass_pr_mode_after_ci_maintenance
+  - command: bash scripts/ci.sh --mode pr --base main --head HEAD
+    result: pass_pr_mode_selected_ci_after_ci_maintenance
+  - command: pr
+    result: opened_PR_90_for_hosted_CI_and_human_review
+  - command: gh repo view xiongxianfei/rigorloop --json description,homepageUrl,repositoryTopics
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_13_findings_1_log_entries_13_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_13_findings_1_log_entries_13_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m4-r1.md
+    result: pass
+  - command: git diff --check -- docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_11_findings_1_log_entries_11_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_11_findings_1_log_entries_11_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop/package.json --path packages/rigorloop/README.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m3-r1.md
+    result: pass
+  - command: git diff --check -- packages/rigorloop/package.json packages/rigorloop/README.md docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.test.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/spec-review-r1.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/spec-review-r2.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/plan-review-r1.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/plan-review-r2.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/plan-review-r3.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: implement M2
+    result: review_requested
+  - command: rg -n '@xiongxianfei/rigorloop@0\\.1\\.5' README.md docs/ packages/ || true
+    result: pass_no_README_stale_examples_package_README_remaining_for_M3_historical_docs_allowed
+  - command: rg -n '```mermaid|flowchart LR|When to use / When not to use|SECURITY.md|CONTRIBUTING.md|ISSUE_TEMPLATE|docs/workflows.md|docs/changes/0001-skill-validator|manual skill' README.md
+    result: pass
+  - command: manual link existence check for README adoption links
+    result: pass
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass
+  - command: git diff --check -- README.md docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_M2_review_requested_state_sync
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_after_M2_review_requested_state_sync
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_8_findings_1_log_entries_8_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_8_findings_1_log_entries_8_resolution_entries_1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/readme-ownership-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md
+    result: pass
+  - command: git diff --check -- README.md docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_M2_review_requested_state_sync
+  - command: code-review M2 R1
+    result: clean_with_notes_no_material_findings_M2_closed
+  - command: code-review M2 R2
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_10_findings_1_log_entries_10_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_10_findings_1_log_entries_10_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_code_review_m2_r2
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_after_code_review_m2_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/readme-ownership-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m2-r1.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m2-r2.md
+    result: pass
+  - command: git diff --check -- README.md docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_code_review_m2_r2
+  - command: implement M3
+    result: review_requested
+  - command: npm test --prefix packages/rigorloop
+    result: pass_107_tests
+  - command: rg -n '@xiongxianfei/rigorloop@0\\.1\\.5' README.md packages/rigorloop/README.md packages/rigorloop/package.json docs/ || true
+    result: pass_no_current_README_package_README_or_package_metadata_stale_examples_historical_docs_allowed
+  - command: node -e "const p=require('./packages/rigorloop/package.json'); const bad=(p.keywords||[]).filter(k=>!/^[a-z0-9-]{1,50}$/.test(k)); if (!p.description) process.exit(1); if (bad.length) { console.error(bad.join(',')); process.exit(2); } console.log(JSON.stringify({description:p.description, keywords:p.keywords.length}))"
+    result: pass_description_present_keywords_18
+  - command: rg -n 'hosted|SaaS|control plane|autonomous|merge|replacement|replace|production|stars|forks|adoption|security status|CI status|canonical source|delivery channel' packages/rigorloop/README.md packages/rigorloop/package.json || true
+    result: pass_only_delivery_channel_and_canonical_source_boundary_wording
+  - command: git diff --name-only -- . ':!README.md' ':!packages/rigorloop/README.md' ':!packages/rigorloop/package.json' ':!docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface' ':!docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md' ':!docs/plan.md' ':!specs/public-discovery-and-developer-adoption-surface.test.md'
+    result: pass_no_unexpected_runtime_surface_diff
+  - command: git diff --check -- packages/rigorloop/package.json packages/rigorloop/README.md docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_9_findings_1_log_entries_9_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_9_findings_1_log_entries_9_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/readme-ownership-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m2-r1.md
+    result: pass
+  - command: git diff --check -- README.md docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md docs/plan.md docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_structure_reviews_8_findings_1_log_entries_8_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface
+    result: pass_closeout_reviews_8_findings_1_log_entries_8_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.md --path specs/public-discovery-and-developer-adoption-surface.test.md --path docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md --path docs/plan.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/readme-ownership-proof.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/proposal-review-r1.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/spec-review-r1.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/spec-review-r2.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/plan-review-r1.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/plan-review-r2.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/plan-review-r3.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m1-r1.md --path docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m1-r2.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+changed_files:
+  - docs/proposals/2026-05-23-public-discovery-and-developer-adoption-surface.md
+  - specs/public-discovery-and-developer-adoption-surface.md
+  - specs/public-discovery-and-developer-adoption-surface.test.md
+  - docs/plans/2026-05-23-public-discovery-and-developer-adoption-surface.md
+  - docs/plan.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/change.yaml
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-log.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/spec-review-r1.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/spec-review-r2.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/plan-review-r1.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/plan-review-r2.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/plan-review-r3.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m1-r2.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m3-r2.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m4-r1.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m4-r2.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/reviews/code-review-m5-r1.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/review-resolution.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/repository-metadata-proof.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/version-sync-proof.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/readme-ownership-proof.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/adoption-surface-review.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/behavior-preservation.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/explain-change.md
+  - docs/changes/2026-05-23-public-discovery-and-developer-adoption-surface/verify-report.md
+  - README.md
+  - packages/rigorloop/package.json
+  - packages/rigorloop/README.md
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
