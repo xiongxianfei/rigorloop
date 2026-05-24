@@ -34,12 +34,13 @@ Install and run the public CLI from npm:
 
 ```bash
 npx @xiongxianfei/rigorloop@latest --help
+npx @xiongxianfei/rigorloop@latest init --adapter codex
 ```
 
 For reproducible setup, pin the published version:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.1.5 init --adapter codex
+npx @xiongxianfei/rigorloop@0.2.0 init --adapter codex
 ```
 
 For a project-local dev dependency:
@@ -55,6 +56,27 @@ Then use the repository workflow docs when you want to understand or customize t
 2. Read the [normative workflow contract](specs/rigorloop-workflow.md).
 3. Inspect the [shipped proof-of-value example](docs/changes/0001-skill-validator/).
 4. If the approach fits, start from the lifecycle artifacts under [docs/](docs/), [specs/](specs/), and [skills/](skills/).
+
+Key paths: [workflow](docs/workflows.md) · [proof example](docs/changes/0001-skill-validator/) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
+
+## Lifecycle At A Glance
+
+```mermaid
+flowchart LR
+  A[Idea] --> B[Proposal]
+  B --> C[Spec]
+  C --> D[Test spec]
+  D --> E[Plan]
+  E --> F[Implement]
+  F --> G[Code review]
+  G --> H[Explain change]
+  H --> I[Verify]
+  I --> J[PR]
+```
+
+RigorLoop recommends the full chain for complete AI-assisted delivery. Manual
+skill invocations may use only the relevant stage and do not imply full workflow
+completion.
 
 ## npm Usage
 
@@ -84,7 +106,7 @@ npx @xiongxianfei/rigorloop@latest init --adapter codex --dry-run --json
 Use `@latest` for quick manual trials. Use a pinned version for automation, CI, onboarding docs, and repeatable agent setup:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.1.5 init --adapter codex --json
+npx @xiongxianfei/rigorloop@0.2.0 init --adapter codex --json
 ```
 
 ### Run after project-local install
@@ -180,6 +202,8 @@ Do not use Codex `$skill` syntax for Claude Code or OpenCode. Claude Code one-sh
 - Artifact and skill docs: [specs/README.md](specs/README.md) and [skills/](skills/)
 - Report problems or feature ideas: [bug report template](.github/ISSUE_TEMPLATE/bug.yml) and [feature request template](.github/ISSUE_TEMPLATE/feature.yml)
 - Review PR expectations before contributing: [.github/pull_request_template.md](.github/pull_request_template.md)
+- Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Security policy: [SECURITY.md](SECURITY.md)
 
 ## Workflow At A Glance
 
