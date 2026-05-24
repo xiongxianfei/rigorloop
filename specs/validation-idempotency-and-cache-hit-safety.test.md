@@ -8,6 +8,7 @@ active
 
 - Spec: [Validation Idempotency and Cache-Hit Safety](validation-idempotency-and-cache-hit-safety.md), approved.
 - Plan: [Validation Idempotency and Cache-Hit Safety Plan](../docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md), active.
+- Helper plan: [Cache-Aware Inner-Loop Lifecycle Validation Helper Plan](../docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md), active.
 - Architecture: [System Architecture](../docs/architecture/system/architecture.md), approved.
 - ADR: [ADR-20260523-validation-idempotency-cache-hit-safety](../docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md), accepted.
 - Spec reviews: `spec-review-r2` approved the revised spec with no material findings.
@@ -16,7 +17,7 @@ active
 
 ## Testing strategy
 
-- Unit tests exercise deterministic command normalization, repository-relative path normalization, content hashing, missing-file markers, implementation manifests, policy/config manifests, local cache-key matching, evidence-file parsing, measurement validation, and unsafe-value detection.
+- Unit tests exercise deterministic command normalization, helper-to-canonical cache identity normalization, repository-relative path normalization, content hashing, missing-file markers, implementation manifests, policy/config manifests, local cache-key matching, evidence-file parsing, measurement validation, and unsafe-value detection.
 - Integration tests execute repository-owned CLIs: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, `scripts/select-validation.py`, and `scripts/ci.sh`.
 - End-to-end proof is milestone-scoped selected CI over changed files plus final branch-local changed-path proof through `bash scripts/ci.sh --mode local`.
 - Smoke tests use repeated explicit-path lifecycle validator commands to prove first run executes, repeated unchanged run can cache-hit, and changed or uncertain conditions fall back to actual validation.
@@ -28,22 +29,29 @@ active
 
 | Requirement ID | Covered by | Level | Notes |
 | --- | --- | --- | --- |
-| R1, R2, R3 | VIC-T001, VIC-T011 | unit, integration | First-slice cache eligibility is limited to lifecycle explicit-path mode. |
+| R1, R2, R3 | VIC-T001, VIC-T011, VIC-T037, VIC-T052 | unit, integration | First-slice cache eligibility is limited to the explicit-path lifecycle command family: direct `explicit-paths` and helper `explicit-paths-inner-loop`. |
 | R4, R5 | VIC-T009, VIC-T012, VIC-T013 | unit, integration | Only previous `pass` entries are reusable. |
 | R6, R7, R78, R79, R80, R81, R82, R83, R84, R85, R86 | VIC-T002, VIC-T003, VIC-T004, VIC-T012 | unit | Normalized command and command hash contract. |
 | R8, R12, R13, R14, R15, R97, R98, R99, R100 | VIC-T005, VIC-T006, VIC-T007, VIC-T012, VIC-T014 | unit, integration | Input-surface hash includes normalized ordered paths, content hashes, missing markers, and duplicate/order behavior. |
 | R9, R16, R18, R19, R20, R21, R22, R23, R24, R25, R26 | VIC-T008, VIC-T012, VIC-T015, VIC-T016 | unit, integration | Deterministic implementation manifest and invalidation. |
 | R10, R17, R27, R28, R29, R30, R31 | VIC-T009, VIC-T012, VIC-T017 | unit, integration | Policy/config manifest and invalidation. |
-| R11 | VIC-T012, VIC-T014, VIC-T015, VIC-T016, VIC-T017, VIC-T018 | integration | Unknown, missing, malformed, unsupported, or changed components run the validator. |
-| R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48 | VIC-T019, VIC-T020, VIC-T021, VIC-T022 | unit, integration, security | Formal cache-hit evidence shape, required fields, pointers, and unsafe-value rejection. |
+| R11 | VIC-T012, VIC-T014, VIC-T015, VIC-T016, VIC-T017, VIC-T018, VIC-T042 | integration | Unknown, missing, malformed, unsupported, or changed components run the validator. |
+| R32, R33, R34, R35, R36, R37, R38, R38a, R38b, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48 | VIC-T019, VIC-T020, VIC-T021, VIC-T022, VIC-T039, VIC-T040, VIC-T044 | unit, integration, security | Formal cache-hit evidence shape, displayed/canonical argv fields, required fields, pointers, and unsafe-value rejection. |
 | R49, R50, R51, R52, R53, R54, R55, R56, R57, R58, R59 | VIC-T023, VIC-T024, VIC-T025, VIC-T026, VIC-T027 | integration, migration | Cache hits are not new passes and cannot satisfy closeout. |
 | R60, R61, R62, R63, R64, R65, R66, R67, R68, R69, R70, R71, R72 | VIC-T010, VIC-T012, VIC-T018, VIC-T022 | unit, security | Local cache lifetime, portability, TTL, deletion, and tracked evidence boundaries. |
 | R73, R74 | VIC-T028, VIC-T029 | integration, contract | Actual validator execution preserves behavior, checks, exit codes, and failure detection. |
-| R75, R117, R118, R119, R120, R121, R122, R123, R124, R125, R126, R127, R128, R129, R130 | VIC-T030, VIC-T031 | unit, integration, security | Measurement evidence location, shape, counts, enums, rationale, closeout skips, and unsafe values. |
+| R75, R117, R118, R119, R120, R121, R122, R123, R124, R125, R126, R127, R128, R129, R130 | VIC-T030, VIC-T031, VIC-T048, VIC-T049 | unit, integration, security | Measurement evidence location, helper fields, count relationships, enums, rationale, closeout actual-run separation, and unsafe values. |
 | R76, R77 | VIC-T032, VIC-T036 | contract, manual | Workstream B is not implemented and remains blocked until separate authorization. |
 | R87, R88, R89, R90, R91, R92, R93, R94, R95, R96 | VIC-T004, VIC-T007 | unit | Repository-relative path normalization and unsafe path rejection. |
 | R101, R102, R103, R104, R105, R106, R107, R108, R109, R110, R111, R112, R116 | VIC-T023, VIC-T024, VIC-T025, VIC-T026 | unit, integration | Compact evidence-kind fields, result pairings, closeout eligibility, and safe refs. |
 | R113, R114, R115 | VIC-T027 | migration | Legacy metadata compatibility and rejection of unsupported cache-hit semantics. |
+| R131, R132, R133, R133a, R133b, R133c, R133d, R133e, R133f, R133g, R134 | VIC-T037, VIC-T038, VIC-T039, VIC-T040, VIC-T041, VIC-T042 | unit, integration | Helper mode exists, shares explicit-path inputs, supplies cache context, normalizes to canonical direct argv, reuses eligible prior actual runs, and rejects cache-hit-only proof chains. |
+| R135, R136, R137, R138, R150, R151 | VIC-T043, VIC-T046, VIC-T047, VIC-T052 | integration, smoke | Helper is not closeout proof, direct explicit-path remains actual-run, and CI does not use the helper. |
+| R139, R140, R141, R142, R143, R144 | VIC-T041, VIC-T042, VIC-T043 | integration | Helper miss, stale, malformed, changed, or missing cache identity falls back to actual validation and emits distinct output. |
+| R145, R146, R147, R148, R149 | VIC-T044, VIC-T045 | integration, security | Formal helper evidence writes only in safe workflow context, ad hoc use does not write evidence, and evidence merges without overwrite. |
+| R152, R153, R154 | VIC-T033, VIC-T050 | integration | Selector routes for cache evidence and measurement are deterministic before workflow reliance. |
+| R155, R156 | VIC-T051 | manual, contract | Repository-local templates may show the two-command table; published skills do not expose internal commands. |
+| R157, R158, R159 | VIC-T048, VIC-T049, VIC-T036 | unit, integration, manual | Measurement distinguishes helper activity and future expansion relies on measured evidence rather than a single unsupported count. |
 | AC1, AC2, AC3, AC4, AC5, AC6, AC7 | VIC-T012, VIC-T014, VIC-T015, VIC-T016, VIC-T017, VIC-T018 | integration | Core cache hit and invalidation criteria. |
 | AC8, AC9, AC10 | VIC-T019, VIC-T020, VIC-T021, VIC-T022 | unit, integration, security | Formal evidence and local-cache non-authority. |
 | AC11, AC12, AC13, AC14 | VIC-T023, VIC-T024, VIC-T025, VIC-T026 | integration | Closeout actual-run enforcement. |
@@ -53,6 +61,14 @@ active
 | AC18, AC32 | VIC-T032, VIC-T036 | contract, manual | Workstream B remains blocked. |
 | AC19, AC20, AC21, AC22, AC23 | VIC-T002, VIC-T003, VIC-T004, VIC-T005, VIC-T006, VIC-T007 | unit | Command/path normalization acceptance criteria. |
 | AC24, AC25, AC26, AC27, AC28 | VIC-T023, VIC-T024, VIC-T025, VIC-T026, VIC-T027 | unit, integration, migration | Metadata evidence-kind contract. |
+| AC33, AC34, AC35, AC46, AC47 | VIC-T037, VIC-T038, VIC-T039, VIC-T040, VIC-T041, VIC-T042 | unit, integration | Helper command, canonical identity, prior actual-run traceability, and no long flag set. |
+| AC36, AC37 | VIC-T041, VIC-T042, VIC-T043 | integration | Helper fallback and output distinction. |
+| AC38, AC39 | VIC-T044, VIC-T045 | integration, security | Formal helper evidence is safe and ad hoc use does not write formal evidence. |
+| AC40, AC41, AC42 | VIC-T046, VIC-T047, VIC-T052 | integration, smoke | Helper cache hits cannot satisfy closeout, direct explicit-path remains actual-run, and CI avoids helper use. |
+| AC43 | VIC-T051 | manual, contract | Internal command guidance stays repository-local and published skills stay clean. |
+| AC44 | VIC-T033, VIC-T050 | integration | Evidence and measurement selector routes are registered. |
+| AC45, AC50 | VIC-T048, VIC-T049 | unit, integration | Helper measurement fields and impossible relationships are enforced. |
+| AC48, AC49 | VIC-T001, VIC-T052 | contract | Eligibility language is consistent and all other validators remain excluded. |
 
 ## Example coverage map
 
@@ -67,6 +83,11 @@ active
 | E7 | VIC-T024 | Inner-loop cache hit plus actual-run closeout is valid. |
 | E8 | VIC-T010, VIC-T018 | Local cache is not portable across branch/worktree/CI boundaries. |
 | E9 | VIC-T032, VIC-T036 | Workstream B remains gated by measurement and separate approval. |
+| E10 | VIC-T037, VIC-T038 | Inner-loop helper supplies approved cache context without the long flag set. |
+| E11 | VIC-T041, VIC-T042 | Helper cache miss or unsafe identity falls back to actual validation. |
+| E12 | VIC-T046, VIC-T047 | Helper evidence cannot satisfy closeout without separate actual-run proof. |
+| E13 | VIC-T045 | Ad hoc helper use outside a safe change root prints status but writes no formal evidence. |
+| E14 | VIC-T052 | CI remains actual-run and does not use `explicit-paths-inner-loop`. |
 
 ## Edge case coverage
 
@@ -82,6 +103,10 @@ active
 | EC23 | VIC-T008, VIC-T015 | Conditional repository-local helpers must be included or caching disabled. |
 | EC33, EC34, EC35 | VIC-T025, VIC-T027 | Invalid evidence-kind/result pairings and legacy field misuse fail. |
 | EC36, EC37 | VIC-T030, VIC-T031 | Measurement count and recommendation failures. |
+| EC38, EC39 | VIC-T037, VIC-T052 | Helper path requirements match direct explicit paths, and CI does not use the helper. |
+| EC40 | VIC-T045 | Helper cache hit outside a safe change root writes no formal evidence. |
+| EC41 | VIC-T046, VIC-T047 | Helper command or helper cache-hit evidence as closeout proof fails unless actual-run closeout proof exists separately. |
+| EC42 | VIC-T044 | Helper evidence merge preserves unrelated records and rejects duplicate cache-hit IDs. |
 
 ## Test cases
 
@@ -89,9 +114,9 @@ active
 
 - Covers: R1, R2, R3, AC1
 - Level: unit
-- Fixture/setup: Command-family helper inputs for lifecycle explicit-paths, lifecycle local/pr/push modes, metadata validator, review validator, and arbitrary commands.
+- Fixture/setup: Command-family helper inputs for lifecycle direct `explicit-paths`, lifecycle helper `explicit-paths-inner-loop`, lifecycle local/pr/push modes, metadata validator, review validator, and arbitrary commands.
 - Steps: Evaluate cache eligibility for each command family.
-- Expected result: Only `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` is cache-eligible.
+- Expected result: Only the explicit-path lifecycle command family is cache-eligible: direct `explicit-paths` actual runs and helper `explicit-paths-inner-loop` through canonical direct cache identity.
 - Failure proves: Unsupported validators or modes can be cache-skipped by this first slice.
 - Automation location: `scripts/test-validation-cache.py`.
 
@@ -379,9 +404,9 @@ active
 
 - Covers: R75, R117, R118, R119, R120, R121, R122, R123, R124, R125, R126, R127, R128, R129, AC17, AC29, AC30, AC31, EC36, EC37
 - Level: unit, integration
-- Fixture/setup: `validation-cache-measurement.yaml` valid fixture and invalid fixtures with missing fields, negative counts, inconsistent counts, invalid recommendation state, missing follow-up rationale, and `closeout_cache_skips > 0`.
+- Fixture/setup: `validation-cache-measurement.yaml` valid fixture and invalid fixtures with missing helper fields, negative counts, inconsistent helper count relationships, invalid recommendation state, missing follow-up rationale, and cache hits counted as closeout actual runs.
 - Steps: Validate measurement fixtures.
-- Expected result: Valid measurement passes; invalid counts, enum values, missing rationale, and closeout skips fail.
+- Expected result: Valid measurement passes; invalid counts, enum values, missing rationale, helper relationship errors, and closeout/cache-hit conflation fail.
 - Failure proves: Workstream A measurement cannot be trusted as a follow-on gate.
 - Automation location: `scripts/test-change-metadata-validator.py` or `scripts/test-validation-cache.py`, depending on implementation ownership.
 
@@ -445,15 +470,178 @@ active
 - Failure proves: Final branch state exceeds the approved scope or lacks required proof.
 - Automation location: `bash scripts/ci.sh --mode local`; `verify`; manual code-review/verify inspection.
 
+### VIC-T037. Helper mode exists and preserves explicit-path argument rules
+
+- Covers: R1, R2, R3, R131, R132, AC33, AC48, EC38, E10
+- Level: integration
+- Fixture/setup: Lifecycle validator CLI invocations for `--mode explicit-paths-inner-loop` with valid explicit paths, no paths, duplicate normalized paths, and unsafe path values.
+- Steps: Run parser-level and subprocess tests for the helper mode inputs.
+- Expected result: The helper mode is accepted; valid explicit paths follow the same input-surface rules as direct `explicit-paths`; missing, duplicate, or unsafe paths fail or disable cache exactly as the direct explicit-path contract requires.
+- Failure proves: The helper is not a true lifecycle explicit-path helper or introduces a different input contract.
+- Automation location: `scripts/test-artifact-lifecycle-validator.py`; `scripts/test-validation-cache.py`.
+
+### VIC-T038. Helper supplies cache context without caller cache flags
+
+- Covers: R131, R134, AC34, E10
+- Level: integration
+- Fixture/setup: Temporary repository/change fixture with an eligible helper command that omits `--use-validation-cache`, `--validation-cache-context`, cache directory, change ID, evidence-file, and cache-hit ID flags.
+- Steps: Run `python scripts/validate-artifact-lifecycle.py --mode explicit-paths-inner-loop --path <path>` in the fixture.
+- Expected result: The helper internally supplies the approved inner-loop cache context and reaches cache evaluation or safe fallback without requiring the long cache flag set.
+- Failure proves: The adoption path still depends on callers remembering opt-in cache flags.
+- Automation location: `scripts/test-artifact-lifecycle-validator.py`; `scripts/test-validation-cache.py`.
+
+### VIC-T039. Helper normalizes cache identity to canonical direct argv
+
+- Covers: R6, R7, R38a, R38b, R133, R133a, R133b, R133c, AC35, AC46
+- Level: unit, integration
+- Fixture/setup: Matching helper and direct explicit-path commands with normalized ordered paths, plus variants with path order changed.
+- Steps: Compute helper display argv, canonical cache argv, command hash, and cache key for each command.
+- Expected result: Helper cache identity replaces `explicit-paths-inner-loop` with canonical `explicit-paths` while preserving ordered paths; displayed helper argv remains available for evidence; changed path order changes canonical identity and misses cache.
+- Failure proves: Helper cache keys either cannot reuse direct actual-run passes or hide the user-invoked helper command.
+- Automation location: `scripts/test-validation-cache.py`.
+
+### VIC-T040. Helper can reuse prior direct actual-run pass
+
+- Covers: R4, R5, R133d, R133e, AC35, AC46
+- Level: integration
+- Fixture/setup: Temporary fixture where a direct `--mode explicit-paths` actual run creates a passing local cache record, and a second fixture where helper fallback actual run records the same canonical cache argv.
+- Steps: Run the helper with the same paths and unchanged implementation, policy, and input-surface identity.
+- Expected result: The helper can cache-hit against the prior direct actual-run record or helper-fallback actual-run record when canonical identity matches.
+- Failure proves: The helper cannot adopt existing safe cache evidence and loses the proposal's reuse value.
+- Automation location: `scripts/test-validation-cache.py`; `scripts/test-artifact-lifecycle-validator.py`.
+
+### VIC-T041. Helper requires a prior actual-run proof source
+
+- Covers: R39, R49, R133f, R133g, AC47
+- Level: integration
+- Fixture/setup: Formal helper cache-hit evidence fixtures with prior events that resolve directly to `actual-run-pass`, resolve through a recorded chain to `actual-run-pass`, resolve only to cache-hit records, and cannot be resolved.
+- Steps: Validate the evidence fixtures.
+- Expected result: Direct or resolvable actual-run ancestry passes; cache-hit-only chains and unresolved prior events fail or block formal evidence.
+- Failure proves: Formal helper evidence can become a chain of cache hits with no actual validation root.
+- Automation location: `scripts/test-validation-cache.py`; `scripts/test-change-metadata-validator.py`.
+
+### VIC-T042. Helper fallback runs actual validation on miss or unsafe identity
+
+- Covers: R11, R139, R140, R141, AC36, E11
+- Level: integration
+- Fixture/setup: Helper invocations with missing cache entries, malformed records, stale input-surface hash, changed implementation hash, changed policy hash, unsupported command-family data, and unknown identity fields.
+- Steps: Run the helper for each fixture and observe cache decision plus validator execution.
+- Expected result: Actual lifecycle validation runs for every miss, malformed, stale, unsupported, unknown, or changed identity; passing actual fallback may update the local execution cache.
+- Failure proves: The helper can turn uncertain cache identity into a skipped validation.
+- Automation location: `scripts/test-validation-cache.py`; `scripts/test-artifact-lifecycle-validator.py`.
+
+### VIC-T043. Helper output distinguishes hit, miss fallback, and actual run
+
+- Covers: R142, R143, R144, AC37, E11
+- Level: integration
+- Fixture/setup: Helper fixtures that produce a cache hit, cache miss followed by actual validation, cache-disabled fallback, and actual validation pass.
+- Steps: Run subprocess commands and assert stable output markers or equivalent structured status.
+- Expected result: Cache hits are visibly distinct from actual-run passes; misses explain fallback to actual validation; actual-run output cannot be mistaken for a cache hit.
+- Failure proves: Reviewers cannot tell whether proof came from reused prior pass or fresh execution.
+- Automation location: `scripts/test-artifact-lifecycle-validator.py`; `scripts/test-validation-cache.py`.
+
+### VIC-T044. Helper formal evidence has displayed and canonical argv and merges safely
+
+- Covers: R32, R33, R34, R35, R36, R37, R38a, R38b, R40, R41, R42, R43, R44, R145, R148, R149, AC38, AC46, EC42
+- Level: integration
+- Fixture/setup: Safe workflow change root with existing `validation-cache-evidence.yaml` records, a helper cache hit, a duplicate cache-hit ID, and unrelated prior cache-hit entries.
+- Steps: Run helper evidence write/merge logic and validate the resulting file.
+- Expected result: Helper evidence includes `displayed_command_argv`, `canonical_cache_argv`, `scope: inner-loop`, `closeout_evidence: false`, prior pass reference, hashes, and allowed reason; unrelated records remain; duplicate IDs fail or are rejected without overwrite.
+- Failure proves: Formal helper evidence is not reviewable or can overwrite unrelated cache-hit proof.
+- Automation location: `scripts/test-validation-cache.py`; `scripts/test-change-metadata-validator.py`.
+
+### VIC-T045. Helper writes no formal evidence outside a safe workflow context
+
+- Covers: R145, R146, R147, AC39, EC40, E13
+- Level: integration, security
+- Fixture/setup: Helper cache-hit fixture outside a safe change root, with no explicit safe evidence path; companion fixture with an explicit safe evidence path.
+- Steps: Run the helper and inspect output plus filesystem writes.
+- Expected result: Ad hoc use may print cache status but creates no formal evidence without a safe root/path; explicit safe evidence path enables formal evidence write.
+- Failure proves: Local ad hoc cache hits can accidentally become workflow evidence.
+- Automation location: `scripts/test-artifact-lifecycle-validator.py`; `scripts/test-validation-cache.py`.
+
+### VIC-T046. Helper command cannot be closeout proof
+
+- Covers: R50, R51, R58, R135, R150, AC40, EC41, E12
+- Level: integration
+- Fixture/setup: Closeout metadata and lifecycle fixtures whose only passing proof command is `validate-artifact-lifecycle.py --mode explicit-paths-inner-loop`.
+- Steps: Run change metadata and artifact lifecycle validators.
+- Expected result: Closeout fails unless separate actual-run closeout evidence satisfies the bundle.
+- Failure proves: A mis-moded closeout can pass with helper proof.
+- Automation location: `scripts/test-change-metadata-validator.py`; `scripts/test-artifact-lifecycle-validator.py`.
+
+### VIC-T047. Direct explicit-path closeout remains actual-run
+
+- Covers: R136, R137, R150, R151, AC40, AC41, E12
+- Level: integration, contract
+- Fixture/setup: Valid closeout fixture with direct `--mode explicit-paths` actual-run evidence plus helper cache-hit supporting evidence.
+- Steps: Run the direct lifecycle validator and closeout validators.
+- Expected result: Direct `explicit-paths` remains actual-run and satisfies closeout when the bundle is otherwise valid; helper evidence is accepted only as supporting inner-loop proof.
+- Failure proves: The helper changed closeout semantics or made direct closeout cache-aware by default.
+- Automation location: `scripts/test-artifact-lifecycle-validator.py`; `scripts/test-change-metadata-validator.py`.
+
+### VIC-T048. Helper measurement schema validates required fields
+
+- Covers: R117, R118, R119, R120, R121, R122, R123, R124, R125, R126, R127, R157, R158, R159, AC45, AC50
+- Level: unit, integration
+- Fixture/setup: Measurement fixtures containing all helper-specific summary and validator fields, plus fixtures missing `helper_invocations`, `actual_run_fallbacks`, `closeout_actual_runs`, `workstream_b_recommendation.state`, or rationale where required.
+- Steps: Validate measurement fixtures.
+- Expected result: Complete helper measurement passes; missing helper-specific fields, invalid recommendation enum, and `propose-follow-up` without bounded rationale fail.
+- Failure proves: Measurement cannot support a disciplined expansion decision.
+- Automation location: `scripts/test-validation-cache.py`; `scripts/test-change-metadata-validator.py`.
+
+### VIC-T049. Helper measurement count relationships are enforced
+
+- Covers: R128, R129, R157, AC45, AC50
+- Level: unit, integration
+- Fixture/setup: Measurement fixtures for valid hit/fallback/closeout combinations and invalid combinations where `helper_invocations != cache_hits + actual_run_fallbacks`, `actual_run_fallbacks != cache_misses + cache_disabled`, `actual_runs < actual_run_fallbacks + closeout_actual_runs`, cache hit rate disagrees, or cache hits are counted as closeout actual runs.
+- Steps: Validate each measurement fixture.
+- Expected result: Valid relationships pass; impossible helper counts, actual-run counts, cache-hit-rate disagreements, and cache-hit/closeout conflation fail.
+- Failure proves: Measurement can overstate savings or treat cache hits as closeout actual runs.
+- Automation location: `scripts/test-validation-cache.py`; `scripts/test-change-metadata-validator.py`.
+
+### VIC-T050. Helper evidence and measurement files have selector routes
+
+- Covers: R152, R153, R154, AC44
+- Level: integration
+- Fixture/setup: Changed paths for `docs/changes/<change-id>/validation-cache-evidence.yaml` and `docs/changes/<change-id>/validation-cache-measurement.yaml`.
+- Steps: Run selected validation routing and explicit selected CI for those paths.
+- Expected result: Evidence routes include lifecycle validation and validation-cache regression coverage; measurement routes include lifecycle validation plus change-metadata validation or equivalent repository-owned measurement validation; neither path emits `manual-routing-required`.
+- Failure proves: Workflow-managed helper evidence can reach verify without deterministic validation.
+- Automation location: `scripts/test-select-validation.py`; `bash scripts/ci.sh --mode explicit ...`.
+
+### VIC-T051. Internal helper command guidance stays out of published skills
+
+- Covers: R155, R156, AC43
+- Level: manual, contract
+- Fixture/setup: Implementation diff touching repository-local plan/test templates or published skill bodies.
+- Steps: Review changed template and skill files.
+- Expected result: Repository-local templates may include the inner-loop versus closeout command table; published skills do not mention `explicit-paths-inner-loop`, internal validator paths, selector mechanics, generated-output paths, or repository-maintenance details.
+- Failure proves: Internal RigorLoop maintenance commands leaked into user-facing skill text.
+- Automation location: Code-review/manual inspection; repository text search when skill files are touched.
+
+### VIC-T052. CI and unsupported validators remain actual-run or non-cacheable
+
+- Covers: R1, R2, R3, R136, R137, R138, AC42, AC48, AC49, EC39, E14
+- Level: smoke, integration
+- Fixture/setup: CI/local selected validation command fixtures, direct lifecycle closeout command, metadata/review/release/npm/generated-output/external-state command-family fixtures.
+- Steps: Run or inspect selected CI command construction and command-family cache eligibility.
+- Expected result: CI uses actual-run validation and never `explicit-paths-inner-loop`; unsupported validators and selector/release/npm/generated-output/external-state proof are not cache-eligible.
+- Failure proves: The helper broadened cache scope beyond the approved first slice.
+- Automation location: `scripts/test-select-validation.py`; `scripts/test-validation-cache.py`; `bash scripts/ci.sh --mode explicit ...`.
+
 ## Fixtures and data
 
 - `tests/fixtures/validation-cache/` for command normalization, path normalization, cache key, manifest, local cache, formal evidence, and measurement fixtures.
 - `tests/fixtures/change-metadata/` additions for compact evidence-kind, evidence-ref, cache-only closeout, legacy compatibility, and measurement fixtures.
 - `tests/fixtures/artifact-lifecycle/` additions for cache-only closeout and behavior-preservation fixtures when direct lifecycle fixtures are clearer than metadata-only fixtures.
+- Helper-specific fixtures should cover canonical direct argv, displayed helper argv, direct actual-run prior pass reuse, helper fallback prior pass reuse, cache-hit-only ancestry rejection, safe evidence-path writes, ad hoc no-write behavior, and measurement count relationships.
 - Temporary repository fixtures created by tests may be used for branch/worktree/change-local cache behavior and implementation manifest import graphs.
 - `docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/behavior-preservation.md` records actual-run pass/fail behavior preservation during implementation.
 - `docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-measurement.yaml` records Workstream A measurement after implementation.
 - `docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/validation-cache-evidence.yaml` is created only if formal workflow cache-hit evidence is produced during implementation.
+- `docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/validation-cache-measurement.yaml` records helper invocation, fallback, closeout actual-run, and savings measurement after M4.
+- `docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/validation-cache-evidence.yaml` is created only if formal helper cache-hit evidence is produced during implementation.
 
 ## Mocking/stubbing policy
 
@@ -467,13 +655,17 @@ active
 - Existing valid legacy change metadata fixtures continue to pass.
 - Existing compact metadata fixtures continue to pass unless they use invalid new evidence-kind fields.
 - Legacy metadata attempting to use `evidence_kind` or `evidence_ref` to claim cache-hit or closeout semantics fails.
-- Existing validators outside `validate-artifact-lifecycle.py --mode explicit-paths` continue to run normally and are not cache-skipped.
+- Existing validators outside the explicit-path lifecycle command family continue to run normally and are not cache-skipped.
+- Direct `validate-artifact-lifecycle.py --mode explicit-paths` remains valid closeout actual-run evidence and is not made cache-aware by default.
+- The helper mode is additive; no wrapper script compatibility surface is introduced in the first slice.
 - Rollback behavior is manually reviewed: disabling cache reads must force validators to run while leaving historical cache-hit evidence as non-closeout inner-loop evidence.
 
 ## Observability verification
 
 - Cache-hit output includes bounded human-readable status such as `[CACHE HIT]`, validator ID, prior pass reference or local cache identity, short key/hash, and unchanged-input reason.
+- Helper output distinguishes `[CACHE HIT]`, `[CACHE MISS]` followed by actual validation, cache-disabled fallback, and actual-run pass output.
 - Formal cache-hit evidence is inspectable from `validation-cache-evidence.yaml`.
+- Helper formal cache-hit evidence includes both `displayed_command_argv` and `canonical_cache_argv`.
 - Measurement evidence is inspectable from `validation-cache-measurement.yaml`.
 - Failure diagnostics for unsafe evidence, invalid evidence-kind pairings, unresolved evidence refs, and cache-only closeout are stable enough for fixture assertions.
 
@@ -481,28 +673,31 @@ active
 
 - Tracked cache-hit evidence rejects secrets, credentials, tokens, usernames, hostnames, private environment dumps, worktree absolute paths, and machine-local paths.
 - Tracked measurement evidence rejects secrets, usernames, hostnames, credentials, environment dumps, and machine-local absolute paths.
+- Helper ad hoc use outside a safe change root does not write formal evidence unless a safe evidence path is explicitly supplied.
 - Local worktree identity may appear only in untracked local cache state and must never be copied into tracked evidence.
 - Command normalization does not expand shell, glob, environment, command substitution, or working-directory-dependent expressions.
 
 ## Performance checks
 
 - Unit tests should assert deterministic hash behavior, not specific wall-clock performance.
-- Measurement evidence records eligible commands, cache hits, cache misses, disabled evaluations, actual runs, estimated time saved, remaining validation seconds, cache-hit rate, closeout actual runs, and Workstream B recommendation.
+- Measurement evidence records eligible commands, helper invocations, cache hits, cache misses, disabled evaluations, actual-run fallbacks, actual runs, estimated time saved, remaining validation seconds, cache-hit rate, closeout actual runs, and Workstream B recommendation.
 - Final verify reviews the measurement file for plausibility, but the first slice does not set a required minimum speedup threshold.
 
 ## Manual QA checklist
 
 - Review the implementation diff to confirm Workstream B changed-path/edit-class narrowing was not added.
 - Review behavior-preservation evidence for actual-run pass/fail behavior.
-- Review `validation-cache-measurement.yaml` to confirm `closeout_cache_skips: 0`.
+- Review `validation-cache-measurement.yaml` to confirm cache hits are not counted as closeout actual runs and `workstream_b_recommendation.state` defaults to `defer` unless evidence supports a follow-up.
 - Confirm no tracked cache evidence contains local machine details.
 - Confirm closeout evidence uses actual-run validation, not cache-hit-only evidence.
+- Confirm published skills do not expose the internal helper command, validator paths, selector mechanics, generated-output paths, or maintenance details when skill files are touched.
 
 ## What not to test and why
 
 - Do not test edit-scoped validation, mixed-edit union selection, or diff-derived edit classes; they are Workstream B and out of scope.
 - Do not test remote/shared/cross-branch cache reuse as a supported behavior; first-slice tests prove rejection only.
-- Do not test caching for `validate-change-metadata.py`, `validate-review-artifacts.py`, skill validation, release validation, or selector checks; first-slice cache eligibility is lifecycle explicit-path only.
+- Do not test caching for `validate-change-metadata.py`, `validate-review-artifacts.py`, skill validation, release validation, generated-output verification, npm tests, external-state proof, or selector checks; first-slice cache eligibility is the explicit-path lifecycle command family only.
+- Do not test a wrapper script helper; the approved first slice uses `--mode explicit-paths-inner-loop`.
 - Do not require historical change records to add cache evidence or measurement files.
 - Do not assert exact wall-clock speedup; measurement records observed value and remaining cost.
 
@@ -526,4 +721,4 @@ None yet
 
 ## Readiness
 
-Active proof-planning surface for implementation. Ready for M1 implementation after the active plan handoff is updated to `implement M1`.
+Active proof-planning surface for implementation. Ready for M1 implementation.

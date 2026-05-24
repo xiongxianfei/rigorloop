@@ -1785,6 +1785,26 @@ Leave this draft stale.
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("requires at least one --path", result.stderr + result.stdout)
 
+    def test_cli_accepts_inner_loop_helper_mode_with_explicit_paths(self) -> None:
+        result = run_cli(
+            "--mode",
+            "explicit-paths-inner-loop",
+            "--path",
+            "docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md",
+            "--path",
+            "specs/validation-idempotency-and-cache-hit-safety.md",
+            "--path",
+            "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("validated", result.stdout)
+        self.assertIn("explicit-paths-inner-loop mode", result.stdout)
+
+    def test_cli_helper_mode_requires_explicit_paths(self) -> None:
+        result = run_cli("--mode", "explicit-paths-inner-loop")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("requires at least one --path", result.stderr + result.stdout)
+
     def test_cli_cache_hits_on_second_identical_explicit_path_run(self) -> None:
         cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
         self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))

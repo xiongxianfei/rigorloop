@@ -52,6 +52,7 @@ class LifecycleCacheIdentity:
     validator_id: str
     command_family: str
     normalized_command: NormalizedLifecycleCommand
+    displayed_command: NormalizedLifecycleCommand
     input_surface: Manifest
     implementation: Manifest
     policy: Manifest
@@ -126,6 +127,8 @@ _DEFAULT_POLICY_FILES = (
 _LOCAL_CACHE_FILE = "validation-cache.json"
 _SUPPORTED_VALIDATOR_ID = "artifact-lifecycle"
 _SUPPORTED_COMMAND_FAMILY = "validate-artifact-lifecycle-explicit-paths"
+_DIRECT_EXPLICIT_PATHS_MODE = "explicit-paths"
+_INNER_LOOP_HELPER_MODE = "explicit-paths-inner-loop"
 
 
 def normalize_command(command: str | Sequence[str]) -> list[str]:
@@ -146,7 +149,10 @@ def evaluate_command_family(command: str | Sequence[str]) -> CommandFamilyEvalua
     argv = normalize_command(command)
     script = _script_arg(argv)
     mode = _option_value(argv, "--mode")
-    if script == "scripts/validate-artifact-lifecycle.py" and mode == "explicit-paths":
+    if script == "scripts/validate-artifact-lifecycle.py" and mode in {
+        _DIRECT_EXPLICIT_PATHS_MODE,
+        _INNER_LOOP_HELPER_MODE,
+    }:
         return CommandFamilyEvaluation(
             cache_eligible=True,
             validator_id="artifact-lifecycle",
@@ -195,7 +201,10 @@ def normalize_repo_path(raw_path: str, repo_root: Path | str) -> str:
 
 
 def normalize_lifecycle_explicit_command(
-    command: str | Sequence[str], repo_root: Path | str
+    command: str | Sequence[str],
+    repo_root: Path | str,
+    *,
+    canonical_cache_identity: bool = True,
 ) -> NormalizedLifecycleCommand:
     argv = list(normalize_command(command))
     evaluation = evaluate_command_family(argv)
@@ -207,7 +216,15 @@ def normalize_lifecycle_explicit_command(
     index = 0
     while index < len(argv):
         arg = argv[index]
-        normalized_argv.append(arg)
+        normalized_arg = arg
+        if (
+            canonical_cache_identity
+            and arg == _INNER_LOOP_HELPER_MODE
+            and index > 0
+            and argv[index - 1] == "--mode"
+        ):
+            normalized_arg = _DIRECT_EXPLICIT_PATHS_MODE
+        normalized_argv.append(normalized_arg)
         if arg == "--path":
             if index + 1 >= len(argv):
                 raise CacheIdentityError("--path requires a value")
@@ -319,7 +336,16 @@ def build_lifecycle_cache_identity(
             "unsupported-command-family",
             f"{evaluation.reason}; cache eligibility disabled",
         )
-    normalized_command = normalize_lifecycle_explicit_command(command, root)
+    normalized_command = normalize_lifecycle_explicit_command(
+        command,
+        root,
+        canonical_cache_identity=True,
+    )
+    displayed_command = normalize_lifecycle_explicit_command(
+        command,
+        root,
+        canonical_cache_identity=False,
+    )
     explicit_path_surface = build_input_surface_manifest(root, normalized_command.explicit_paths)
     implementation = build_implementation_manifest(
         root,
@@ -352,6 +378,7 @@ def build_lifecycle_cache_identity(
         validator_id=evaluation.validator_id,
         command_family=evaluation.command_family,
         normalized_command=normalized_command,
+        displayed_command=displayed_command,
         input_surface=input_surface,
         implementation=implementation,
         policy=policy,

@@ -1,0 +1,175 @@
+change_id: 2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+title: Cache-aware inner-loop lifecycle validation helper
+classification: proposal-review-recording
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md
+  spec: specs/validation-idempotency-and-cache-hit-safety.md
+  test_spec: specs/validation-idempotency-and-cache-hit-safety.test.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md
+  plan: docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md
+requirements:
+  - Record formal proposal-review evidence before downstream spec reliance.
+  - Settle the approved proposal status to accepted before spec reliance.
+  - Amend the validation idempotency spec for the cache-aware inner-loop lifecycle validation helper.
+  - Record spec-review R1 findings before spec revision or downstream reliance.
+  - Resolve VIC-IH-SR1 through VIC-IH-SR3 before architecture, plan, test-spec, or implementation relies on the helper amendment.
+  - Keep spec-review stop condition in force until spec-review reruns cleanly.
+  - Record spec-review R2 before downstream reliance on the revised helper amendment.
+  - Settle the approved validation-idempotency spec status before architecture reliance.
+  - Update the canonical architecture package and existing validation-cache ADR for the helper mode.
+  - Keep C4 diagrams unchanged because the helper does not change system or container boundaries.
+  - Record architecture-review approval before execution planning.
+  - Create a living execution plan before test-spec or implementation.
+  - Add the execution plan to the bounded plan index.
+  - Record plan-review approval before test-spec.
+  - Amend the validation-idempotency test spec before implementation.
+  - Record user approval of the validation-idempotency test spec before implementation.
+  - Sync the active plan and plan index after test-spec handoff.
+  - Implement M1 helper mode and canonical identity support before code-review.
+  - Keep M1 scoped to helper parser/identity support, leaving formal evidence writes, closeout rejection, selector routing, and measurement for later milestones.
+  - Preserve the proposal's first-slice boundary for the cache-aware inner-loop lifecycle validation mode.
+  - Route remaining selector-registration and cross-change measurement details to spec and plan.
+tests:
+  - Proposal-review R1 approves the proposal with no material findings.
+  - Spec amendment defines `explicit-paths-inner-loop`, safe evidence writes, closeout rejection, CI exclusion, selector route expectations, and measurement fields.
+  - Spec-review R1 records VIC-IH-SR1, VIC-IH-SR2, and VIC-IH-SR3 requiring spec revision before downstream reliance.
+  - Spec revision resolves helper cache identity normalization, non-goal eligibility consistency, and helper measurement count consistency.
+  - Spec-review R2 confirms VIC-IH-SR1, VIC-IH-SR2, and VIC-IH-SR3 are resolved with no material findings.
+  - Review-resolution closeout records final dispositions and no open findings after spec-review R2.
+  - Architecture records helper mode adoption, canonical direct-command cache identity, formal evidence shape, closeout actual-run boundary, measurement fields, and no new diagram boundary.
+  - Architecture-review R1 approves the canonical architecture update and ADR amendment with no material findings.
+  - Plan sequences helper implementation into reviewable milestones and keeps current handoff at plan-review.
+  - Plan-review R1 approves the plan with no material findings and routes next to test-spec.
+  - Test spec maps helper requirements to tests for canonical identity normalization, runtime fallback, formal evidence, closeout rejection, selector routing, measurement consistency, and published-skill boundaries.
+  - User approval confirms the test spec is ready for implementation reliance.
+  - Active plan handoff points to M1 implementation after test-spec amendment.
+  - M1 tests cover helper command-family eligibility, canonical direct argv normalization, displayed helper argv preservation, path-order identity changes, direct actual-run cache identity reuse, and helper CLI explicit-path behavior.
+  - M1 implementation leaves direct `explicit-paths` actual-run closeout behavior unchanged and does not introduce wrapper scripts or broader validator caching.
+  - Review artifact validation covers the clean proposal-review receipt and review log.
+  - Artifact lifecycle validation covers the proposal and review evidence.
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md
+  review_log: docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_changed_files_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/proposal-review-r1.md
+    result: pass_validated_1_artifact_file
+  - command: git diff --check -- docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/proposal-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_amendment
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_spec_amendment
+  - command: git diff --check -- docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md specs/validation-idempotency-and-cache-hit-safety.md docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_after_spec_amendment
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_structure_reviews_2_findings_3_log_entries_2_resolution_entries_3_after_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/proposal-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1
+  - command: git diff --check -- docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md specs/validation-idempotency-and-cache-hit-safety.md docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_structure_reviews_2_findings_3_log_entries_2_resolution_entries_3_after_spec_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_spec_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/proposal-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_revision
+  - command: git diff --check -- docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md specs/validation-idempotency-and-cache-hit-safety.md docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_after_spec_revision
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_structure_reviews_3_findings_3_log_entries_3_resolution_entries_3_after_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_closeout_reviews_3_findings_3_log_entries_3_resolution_entries_3_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/proposal-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/spec-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/spec-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_review_r2
+  - command: git diff --check -- docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md specs/validation-idempotency-and-cache-hit-safety.md docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_after_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_structure_reviews_3_findings_3_log_entries_3_resolution_entries_3_after_architecture
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_closeout_reviews_3_findings_3_log_entries_3_resolution_entries_3_after_architecture
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_architecture
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/proposal-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/spec-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/spec-review-r2.md
+    result: pass_validated_4_artifact_files_after_architecture
+  - command: git diff --check -- docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md specs/validation-idempotency-and-cache-hit-safety.md docs/architecture/system/architecture.md docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_after_architecture
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_structure_reviews_4_findings_3_log_entries_4_resolution_entries_3_after_architecture_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_closeout_reviews_4_findings_3_log_entries_4_resolution_entries_3_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_architecture_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/proposal-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/spec-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/spec-review-r2.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/architecture-review-r1.md
+    result: pass_validated_4_artifact_files_after_architecture_review_r1
+  - command: git diff --check -- docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md specs/validation-idempotency-and-cache-hit-safety.md docs/architecture/system/architecture.md docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_after_architecture_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_closeout_reviews_4_findings_3_log_entries_4_resolution_entries_3_after_plan
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/architecture-review-r1.md
+    result: pass_validated_5_artifact_files_after_plan
+  - command: git diff --check -- docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md docs/plan.md docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_closeout_reviews_5_findings_3_log_entries_5_resolution_entries_3_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/architecture-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/plan-review-r1.md
+    result: pass_validated_5_artifact_files_after_plan_review_r1
+  - command: git diff --check -- docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md docs/plan.md docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_closeout_reviews_5_findings_3_log_entries_5_resolution_entries_3_after_test_spec
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/architecture-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/plan-review-r1.md
+    result: pass_validated_5_artifact_files_after_test_spec
+  - command: git diff --check -- specs/validation-idempotency-and-cache-hit-safety.test.md docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md docs/plan.md docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_after_test_spec
+  - command: user approval
+    result: test_spec_approved_for_implementation_reliance
+  - command: python scripts/test-validation-cache.py
+    result: pass_23_tests_after_m1
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_72_tests_after_m1
+  - command: git diff --check --
+    result: pass_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_closeout_reviews_5_findings_3_log_entries_5_resolution_entries_3_after_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/architecture-review-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/plan-review-r1.md
+    result: pass_validated_5_artifact_files_after_m1
+changed_files:
+  - docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md
+  - specs/validation-idempotency-and-cache-hit-safety.md
+  - specs/validation-idempotency-and-cache-hit-safety.test.md
+  - docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+  - docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md
+  - docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md
+  - docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/spec-review-r1.md
+  - docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/spec-review-r2.md
+  - docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/plan-review-r1.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md
+  - docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md
+  - docs/plan.md
+  - scripts/validation_cache.py
+  - scripts/validate-artifact-lifecycle.py
+  - scripts/test-validation-cache.py
+  - scripts/test-artifact-lifecycle-validator.py
