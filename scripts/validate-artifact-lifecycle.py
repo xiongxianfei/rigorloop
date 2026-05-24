@@ -25,7 +25,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--mode",
         required=True,
-        choices=("explicit-paths", "local", "pr-ci", "push-main-ci"),
+        choices=(
+            "explicit-paths",
+            "explicit-paths-inner-loop",
+            "local",
+            "pr-ci",
+            "push-main-ci",
+        ),
         help="How to determine validation scope.",
     )
     parser.add_argument(
@@ -215,6 +221,12 @@ def maybe_cache_hit(args: argparse.Namespace) -> tuple[validation_cache.Lifecycl
     raise SystemExit(0)
 
 
+def validation_mode(args: argparse.Namespace) -> str:
+    if args.mode == "explicit-paths-inner-loop":
+        return "explicit-paths"
+    return args.mode
+
+
 def record_passing_cache_entry(
     args: argparse.Namespace,
     cache_state: tuple[validation_cache.LifecycleCacheIdentity, validation_cache.LocalCacheContext] | None,
@@ -238,7 +250,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         result = validate_repository(
             ROOT,
-            mode=args.mode,
+            mode=validation_mode(args),
             paths=args.path,
             base=args.base,
             head=args.head,
