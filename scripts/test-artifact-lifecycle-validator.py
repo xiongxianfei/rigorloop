@@ -940,6 +940,46 @@ validation_summary:
             messages,
         )
 
+    def test_change_yaml_helper_command_closeout_fails_lifecycle_validation(self) -> None:
+        fixture_root = copy_fixture("related-scope")
+        self.addCleanupTree(fixture_root)
+        change_yaml = fixture_root / "docs" / "changes" / "0002-lifecycle" / "change.yaml"
+        change_yaml.write_text(
+            """schema_version: 2
+path_vars:
+  change_id: 0002-lifecycle
+  change_root: docs/changes/0002-lifecycle
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths-inner-loop --path {change_root}/change.yaml
+validation_events:
+  - stage: code-review-m1-closeout
+    lifecycle_stage: code-review
+    bundles:
+      - lifecycle
+    result: pass
+    evidence_kind: actual-run-pass
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - code-review-m1-closeout
+  final_counts: {}
+  open_validation_blockers: []
+""",
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/changes/0002-lifecycle/change.yaml"],
+        )
+        messages = [finding.message for finding in result.blocking_findings]
+        self.assertIn(
+            "closeout requires direct explicit-paths actual-run evidence; explicit-paths-inner-loop is inner-loop only",
+            messages,
+        )
+
     def test_change_local_markdown_refs_do_not_recursively_expand_related_scope(self) -> None:
         fixture_root = copy_fixture("related-scope")
         self.addCleanupTree(fixture_root)

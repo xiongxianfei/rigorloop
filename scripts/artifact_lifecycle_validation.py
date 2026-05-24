@@ -672,10 +672,14 @@ def _change_yaml_closeout_cache_findings(
     if "schema_version: 2" not in text or "validation_events:" not in text:
         return []
 
-    events: list[dict[str, str]] = []
+    bundles: dict[str, str] = {}
+    events: list[dict[str, object]] = []
     current: dict[str, str] | None = None
+    current_bundle: str | None = None
     in_events = False
+    in_bundles = False
     events_indent = 0
+    bundles_indent = 0
     current_indent = 0
 
     for raw_line in text.splitlines():
@@ -683,9 +687,27 @@ def _change_yaml_closeout_cache_findings(
             continue
         indent = len(raw_line) - len(raw_line.lstrip(" "))
         stripped = raw_line.strip()
+        if stripped == "validation_bundles:":
+            in_bundles = True
+            in_events = False
+            bundles_indent = indent
+            current_bundle = None
+            continue
         if stripped == "validation_events:":
             in_events = True
+            in_bundles = False
             events_indent = indent
+            current_bundle = None
+            continue
+        if in_bundles and indent <= bundles_indent:
+            in_bundles = False
+            current_bundle = None
+        if in_bundles:
+            if indent == bundles_indent + 2 and stripped.endswith(":"):
+                current_bundle = stripped[:-1].strip()
+                continue
+            if current_bundle and indent > bundles_indent + 2 and stripped.startswith("command:"):
+                bundles[current_bundle] = stripped.split(":", 1)[1].strip().strip("'\"")
             continue
         if in_events and indent <= events_indent:
             break
@@ -701,7 +723,14 @@ def _change_yaml_closeout_cache_findings(
                 key, value = remainder.split(":", 1)
                 current[key.strip()] = value.strip().strip("'\"")
             continue
-        if current is None or indent <= current_indent or ":" not in stripped:
+        if current is None or indent <= current_indent:
+            continue
+        if indent == current_indent + 4 and stripped.startswith("- "):
+            event_bundles = current.setdefault("bundles", [])
+            if isinstance(event_bundles, list):
+                event_bundles.append(stripped[2:].strip().strip("'\""))
+            continue
+        if ":" not in stripped:
             continue
         key, value = stripped.split(":", 1)
         key = key.strip()
@@ -726,6 +755,25 @@ def _change_yaml_closeout_cache_findings(
     if cache_closeout and not actual_closeout:
         return [
             "closeout requires actual-run-pass evidence; cache-hit-inner-loop is inner-loop evidence only"
+        ]
+    helper_closeout = False
+    direct_closeout = False
+    for event in events:
+        if "closeout" not in str(event.get("stage", "")).lower() or event.get("result") != "pass":
+            continue
+        for bundle_id in event.get("bundles", []):
+            if not isinstance(bundle_id, str):
+                continue
+            command = bundles.get(bundle_id, "")
+            if "scripts/validate-artifact-lifecycle.py" not in command:
+                continue
+            if "--mode explicit-paths-inner-loop" in command:
+                helper_closeout = True
+            if "--mode explicit-paths" in command and "--mode explicit-paths-inner-loop" not in command:
+                direct_closeout = True
+    if helper_closeout and not direct_closeout:
+        return [
+            "closeout requires direct explicit-paths actual-run evidence; explicit-paths-inner-loop is inner-loop only"
         ]
     return []
 
