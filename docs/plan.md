@@ -10,7 +10,6 @@ Index policy:
 -->
 
 ## Active
-- [2026-05-23 Public Discovery and Developer Adoption Surface](plans/2026-05-23-public-discovery-and-developer-adoption-surface.md) - branch-ready after local final verify and PR-mode selected CI; PR #90 open for hosted CI and human review; improves GitHub repository metadata, README first-contact adoption, Quick Start freshness, Mermaid lifecycle visual, contribution/security routing, npm landing alignment, and durable proof evidence without runtime behavior changes; blockers: none.
 - [2026-05-22 Bounded Plan Index and Completed-Plan Archive](plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md) - branch-ready after final verify; PR #86 open for hosted CI and human review; blockers: none.
 - [2026-05-21 Compact Change Validation Metadata](plans/2026-05-21-compact-change-validation-metadata.md) - active execution plan for implementing compact `schema_version: 2` change validation metadata while preserving legacy compatibility, exact command/path reconstruction, path-variable safety, stage-derived existence checks, review-artifact count cross-checks, and compactness proof; M1, M2, and M3 are closed after clean code reviews, ci-maintenance fixed selected-CI fixture routing, explain-change is refreshed, and final verify passed from clean tracked branch state; PR handoff is pending.
 - [2026-05-20 Proposal-Family Assets Progressive Disclosure](plans/2026-05-20-proposal-family-assets-progressive-disclosure.md) - active execution plan for adding assets-only progressive disclosure to `proposal` and `proposal-review`; M2, M3, and M4 are closed after clean code reviews, explain-change and verify are recorded, and PR #81 is open for hosted CI and human review.
@@ -22,6 +21,7 @@ Index policy:
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-05-23 Public Discovery and Developer Adoption Surface](plans/2026-05-23-public-discovery-and-developer-adoption-surface.md) - done; terminal state: done; PR #90 merged.
 - [2026-05-23 Release Process Contract](plans/2026-05-23-release-process-contract.md) - done; terminal state: done; PR #89 merged.
 - [2026-05-23 Validation Idempotency and Cache-Hit Safety](plans/2026-05-23-validation-idempotency-cache-hit-safety.md) - done; terminal state: done; PR #88 merged.
 - [2026-05-22 Change-Record Catalog Registration and Bounded Read Model](plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md) - done; terminal state: done; PR #87 merged.
@@ -31,7 +31,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-05-20 Spec-Family Assets Progressive Disclosure](plans/2026-05-20-spec-family-assets-progressive-disclosure.md) - done; terminal state: done; PR #80 merged.
 - [2026-05-20 Spec-Family Readability Pass](plans/2026-05-20-spec-family-readability-pass.md) - done; terminal state: done; PR #79 merged.
 - [2026-05-20 Test-Spec Contract Normalization](plans/2026-05-20-test-spec-contract-normalization.md) - done; terminal state: done; PR #77 merged.
-- [2026-05-19 Spec and Test-Spec Structural Hygiene](plans/2026-05-19-spec-and-test-spec-structural-hygiene.md) - done; terminal state: done; disposition recorded in plan body.
 
 ## Superseded
 - none yet

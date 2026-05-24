@@ -2,15 +2,15 @@
 
 ## Status
 
-active
+done
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Owner: maintainer
 - Start date: 2026-05-23
-- Last updated: 2026-05-23
-- Related issue or PR: none yet
+- Last updated: 2026-05-24
+- Related issue or PR: PR #90
 - Supersedes: none
 
 ## Purpose / big picture
@@ -89,11 +89,11 @@ Primary implementation surfaces:
 - Review status: M5 clean-with-notes
 - Open blockers: none
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #90
+- Next stage: none
 - M2/M3 readiness: M2 and M3 are closed after code-review.
 - Metadata mutation readiness: separate permission-gated M4 milestone.
-- Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: M1 through M5 are closed after code-review, explain-change is complete, verify-triggered CI maintenance fixed adoption-surface proof routing, final local verify and PR-mode selected CI passed, and PR #90 is open. Hosted CI success, human review, merge, and Done are not claimed.
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: M1 through M5 are closed after code-review, explain-change is complete, verify-triggered CI maintenance fixed adoption-surface proof routing, final local verify and PR-mode selected CI passed, PR #90 hosted CI passed, and PR #90 merged on 2026-05-24.
 
 ## Metadata acceptance boundary
 
@@ -476,6 +476,7 @@ Do not record tokens, cookies, browser session data, or private account details.
 - 2026-05-23: Final verify initially passed local direct checks, then PR-mode selected validation found unregistered adoption-surface proof evidence files.
 - 2026-05-23: Verify-triggered CI maintenance registered the adoption-surface proof filenames with the selector, added selector regression coverage, reran PR-mode selected validation and selected CI successfully, recorded branch-ready evidence, and handed off to PR.
 - 2026-05-23: PR #90 opened for hosted CI and human review.
+- 2026-05-24: PR #90 merged after hosted `ci` completed successfully.
 
 ## Decision log
 
@@ -630,9 +631,9 @@ Do not record tokens, cookies, browser session data, or private account details.
 
 ## Outcome and retrospective
 
-- PR #90 is open after final local verify and PR-mode selected CI. Hosted CI success, human review, merge, and Done are not claimed.
+- Done. PR #90 merged on 2026-05-24 after hosted `ci` completed successfully.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Branch-ready for `pr`; not PR-body-ready, PR-open-ready, hosted-CI-ready, or Done.
+- Terminal state: done.
