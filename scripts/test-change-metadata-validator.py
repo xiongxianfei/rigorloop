@@ -514,7 +514,31 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
             ),
             (
                 "measurement-invalid-count-drift",
-                "summary.eligible_commands: expected cache_hits + cache_misses + cache_disabled",
+                "summary.helper_invocations: expected cache_hits + actual_run_fallbacks",
+            ),
+            (
+                "measurement-invalid-fallback-drift",
+                "summary.actual_run_fallbacks: expected cache_misses + cache_disabled",
+            ),
+            (
+                "measurement-invalid-cache-hit-rate",
+                "summary.cache_hit_rate: expected cache_hits / helper_invocations",
+            ),
+            (
+                "measurement-invalid-cache-hit-closeout",
+                "summary.actual_runs: expected at least actual_run_fallbacks + closeout_actual_runs",
+            ),
+            (
+                "measurement-invalid-missing-helper-invocations",
+                "summary.helper_invocations: missing required field",
+            ),
+            (
+                "measurement-invalid-missing-actual-run-fallbacks",
+                "summary.actual_run_fallbacks: missing required field",
+            ),
+            (
+                "measurement-invalid-missing-closeout-actual-runs",
+                "summary.closeout_actual_runs: missing required field",
             ),
             (
                 "measurement-invalid-closeout-cache-skip",

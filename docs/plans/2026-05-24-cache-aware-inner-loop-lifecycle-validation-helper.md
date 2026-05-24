@@ -67,14 +67,14 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Selector routing and repository-local guidance boundary
-- Current milestone state: ready for implementation
+- Current milestone: M4. Measurement schema and selector routing
+- Current milestone state: review-requested
 - Last reviewed milestone: M3 closeout rejection and actual-run boundary enforcement
-- Review status: code-review M3 R2 clean-with-notes with no material findings.
+- Review status: M4 implemented with targeted validation passing; ready for code-review M4.
 - Remaining in-scope implementation milestones: M4, M5, M6.
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is closed after clean re-review; M4 through M6, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M4 is implemented but not reviewed; M5, M6, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -252,7 +252,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ### M4. Measurement schema and selector routing
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add helper-specific measurement fields, consistency validation, and deterministic selector routing for helper evidence and measurement artifacts.
 - Requirements: R117-R130, R152-R154, R157-R159; AC29-AC32, AC44-AC45, AC50.
 - Files/components likely touched:
@@ -439,6 +439,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 - 2026-05-24: Code-review M3 R1 recorded VIC-IH-CR-M3-001 because helper closeout rejection missed the accepted `--mode=explicit-paths-inner-loop` flag spelling; M3 is in review-resolution.
 - 2026-05-24: Review-resolution for VIC-IH-CR-M3-001 normalized helper mode detection for both `--mode VALUE` and `--mode=VALUE` forms; M3 is ready for re-review.
 - 2026-05-24: Code-review M3 R2 completed clean-with-notes with no material findings; M3 closed and M4 is ready for implementation.
+- 2026-05-24: M4 updated validation-cache measurement validation for helper-specific fields and count relationships, added helper measurement fixtures, recorded first-slice measurement evidence, and confirmed the existing selector routes for cache evidence and measurement select lifecycle, cache regression, and change-metadata validation without manual routing debt.
 
 ## Decision log
 
@@ -456,6 +457,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 - M1 could expose the helper CLI mode without enabling automatic helper cache use yet by routing validator execution through the existing explicit-path lifecycle implementation and leaving cache-context defaults to M2.
 - R133f/R133g are unaffected in M1 because no helper-produced formal cache-hit evidence is written in this slice; M2/M3 remain responsible for enforcing prior actual-run ancestry when helper formal evidence exists.
 - M2 can infer formal helper evidence only when exactly one safe change root is present and the corresponding `change.yaml` exists; otherwise helper cache hits remain local/ad hoc status output with no formal evidence write.
+- M4 found `validation-cache-evidence.yaml` and `validation-cache-measurement.yaml` were already registered in the selector; no selector code change was needed. The existing route selects `artifact_lifecycle.validate` and `validation_cache.regression` for evidence, and `artifact_lifecycle.validate`, `change_metadata.validate`, and `change_metadata.regression` for measurement.
 
 ## Validation notes
 
@@ -531,6 +533,19 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m3-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m3-r2.md`
   - `git diff --check --`
+- 2026-05-24 M4 red test confirmed old measurement schema behavior before implementation:
+  - `python scripts/test-change-metadata-validator.py` failed because the validator still required `closeout.full_bundle_actual_runs` and the old `eligible_commands = cache_hits + cache_misses + cache_disabled` rule instead of helper-specific count relationships.
+- 2026-05-24 M4 targeted validation passed:
+  - `python scripts/test-validation-cache.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/test-select-validation.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/validation-cache-measurement.yaml`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/validation-cache-evidence.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/validation-cache-measurement.yaml`
+- 2026-05-24 M4 handoff artifact validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/validation-cache-measurement.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m3-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m3-r2.md`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -539,5 +554,4 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M2. Readiness is not Done; M2 has not been reviewed, and remaining implementation milestones, explain-change, verify, and PR gates remain.
-- Ready for M4 implementation. Readiness is not Done; remaining implementation milestones, explain-change, verify, and PR gates remain.
+- Ready for code-review M4. Readiness is not Done; M4 has not been reviewed, and remaining implementation milestones, explain-change, verify, and PR gates remain.
