@@ -36,6 +36,7 @@ requirements:
   - Preserve displayed helper argv and canonical direct cache argv in formal cache-hit evidence.
   - Hand M2 to code-review before advancing to closeout rejection, selector routing, measurement, or final closeout milestones.
   - Record code-review M2 R1 and keep M2 in review-resolution until VIC-IH-CR-M2-001 is resolved.
+  - Resolve VIC-IH-CR-M2-001 before rerunning code-review M2.
   - Preserve the proposal's first-slice boundary for the cache-aware inner-loop lifecycle validation mode.
   - Route remaining selector-registration and cross-change measurement details to spec and plan.
 tests:
@@ -59,6 +60,7 @@ tests:
   - M2 implementation keeps direct `explicit-paths` closeout behavior unchanged and leaves closeout rejection, selector routing, and measurement to later milestones.
   - Active plan handoff points to code-review M2 after implementation validation.
   - Code-review M2 R1 records VIC-IH-CR-M2-001 against the over-broad ad hoc no-evidence test assertion.
+  - Review-resolution narrows the ad hoc no-evidence assertion so existing formal cache-hit evidence files do not fail the test.
   - Review artifact validation covers the clean proposal-review receipt and review log.
   - Artifact lifecycle validation covers the proposal and review evidence.
 review:
@@ -203,6 +205,16 @@ validation:
     result: pass_validated_5_artifact_files_after_code_review_m2_r1
   - command: git diff --check --
     result: pass_after_code_review_m2_r1
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_75_tests_after_vic_ih_cr_m2_001_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+    result: pass_structure_reviews_7_findings_4_log_entries_7_resolution_entries_4_after_vic_ih_cr_m2_001_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml
+    result: pass_valid_change_metadata_after_vic_ih_cr_m2_001_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m2-r1.md
+    result: pass_validated_5_artifact_files_after_vic_ih_cr_m2_001_resolution
+  - command: git diff --check --
+    result: pass_after_vic_ih_cr_m2_001_resolution
 changed_files:
   - docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md
   - specs/validation-idempotency-and-cache-hit-safety.md
