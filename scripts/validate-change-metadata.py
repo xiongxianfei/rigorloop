@@ -47,14 +47,28 @@ EVIDENCE_KIND_RESULTS = {
 }
 MEASUREMENT_SUMMARY_FIELDS = {
     "eligible_commands",
+    "helper_invocations",
     "cache_hits",
     "cache_misses",
     "cache_disabled",
+    "actual_run_fallbacks",
     "actual_runs",
+    "closeout_actual_runs",
     "estimated_seconds_saved",
     "remaining_validation_seconds",
     "cache_hit_rate",
 }
+MEASUREMENT_VALIDATOR_COUNT_FIELDS = {
+    "eligible_commands",
+    "helper_invocations",
+    "cache_hits",
+    "cache_misses",
+    "cache_disabled",
+    "actual_run_fallbacks",
+    "actual_runs",
+    "closeout_actual_runs",
+}
+MEASUREMENT_RATE_TOLERANCE = 0.000001
 MEASUREMENT_STILL_RERUN_REASONS = {
     "none",
     "input-changed",
@@ -622,6 +636,61 @@ def validate_compact_bundle_command_safety(
     return list(dict.fromkeys(errors))
 
 
+def lifecycle_command_mode(command: str) -> str | None:
+    try:
+        tokens = shlex.split(command)
+    except ValueError:
+        return None
+    for index, token in enumerate(tokens):
+        mode: str | None = None
+        if token == "--mode" and index + 1 < len(tokens):
+            mode = tokens[index + 1]
+        elif token.startswith("--mode="):
+            mode = token.split("=", 1)[1]
+        if mode is not None:
+            if mode in {"explicit-paths", "explicit-paths-inner-loop"} and any(
+                part.endswith("scripts/validate-artifact-lifecycle.py") for part in tokens
+            ):
+                return mode
+    return None
+
+
+def validate_compact_closeout_command_boundary(
+    event: dict[str, Any],
+    event_path: str,
+    validation_bundles: dict[str, Any],
+) -> list[str]:
+    if not compact_event_is_closeout(event) or event.get("result") != "pass":
+        return []
+    event_bundles = event.get("bundles")
+    if not isinstance(event_bundles, list):
+        return []
+
+    modes: dict[int, str] = {}
+    for bundle_index, bundle_id in enumerate(event_bundles):
+        if not isinstance(bundle_id, str):
+            continue
+        definition = validation_bundles.get(bundle_id)
+        if not isinstance(definition, dict):
+            continue
+        command = definition.get("command")
+        if isinstance(command, str):
+            mode = lifecycle_command_mode(command)
+            if mode is not None:
+                modes[bundle_index] = mode
+
+    if "explicit-paths" in modes.values():
+        return []
+    errors: list[str] = []
+    for bundle_index, mode in modes.items():
+        if mode == "explicit-paths-inner-loop":
+            errors.append(
+                f"{path_label(path_label(event_path, 'bundles'), bundle_index)}: "
+                "explicit-paths-inner-loop cannot satisfy closeout"
+            )
+    return errors
+
+
 def resolve_compact_path_vars(path_vars: dict[str, Any]) -> tuple[dict[str, str], list[str]]:
     errors: list[str] = []
     raw_change_id = path_vars.get("change_id")
@@ -1148,6 +1217,7 @@ def validate_compact_event(
     errors.extend(validate_compact_skipped_event(event, event_path))
     errors.extend(validate_compact_evidence_kind(event, event_path))
     errors.extend(validate_compact_evidence_reference(event, event_path))
+    errors.extend(validate_compact_closeout_command_boundary(event, event_path, validation_bundles))
     if variables is not None:
         errors.extend(validate_compact_event_paths(event, event_path, variables))
         errors.extend(validate_compact_transcript_reference(event, event_path, variables))
@@ -1475,7 +1545,16 @@ def validate_measurement_summary(value: Any) -> list[str]:
         if field not in value:
             errors.append(f"summary.{field}: missing required field")
 
-    for field in ("eligible_commands", "cache_hits", "cache_misses", "cache_disabled", "actual_runs"):
+    for field in (
+        "eligible_commands",
+        "helper_invocations",
+        "cache_hits",
+        "cache_misses",
+        "cache_disabled",
+        "actual_run_fallbacks",
+        "actual_runs",
+        "closeout_actual_runs",
+    ):
         if field in value and not is_nonnegative_integer(value[field]):
             errors.append(f"summary.{field}: expected non-negative integer")
     for field in ("estimated_seconds_saved", "remaining_validation_seconds"):
@@ -1487,15 +1566,58 @@ def validate_measurement_summary(value: Any) -> list[str]:
     ):
         errors.append("summary.cache_hit_rate: expected number between 0 and 1")
 
+    errors.extend(validate_measurement_count_relationships(value, "summary"))
+    return errors
+
+
+def validate_measurement_count_relationships(value: dict[str, Any], prefix: str) -> list[str]:
+    errors: list[str] = []
     eligible = value.get("eligible_commands")
+    helper_invocations = value.get("helper_invocations")
     hits = value.get("cache_hits")
     misses = value.get("cache_misses")
     disabled = value.get("cache_disabled")
-    if all(is_nonnegative_integer(item) for item in (eligible, hits, misses, disabled)):
-        if eligible != hits + misses + disabled:
+    fallbacks = value.get("actual_run_fallbacks")
+    actual_runs = value.get("actual_runs")
+    closeout_actual_runs = value.get("closeout_actual_runs")
+
+    if all(is_nonnegative_integer(item) for item in (helper_invocations, hits, fallbacks)):
+        if helper_invocations != hits + fallbacks:
             errors.append(
-                "summary.eligible_commands: expected cache_hits + cache_misses + cache_disabled"
+                f"{prefix}.helper_invocations: expected cache_hits + actual_run_fallbacks"
             )
+    if all(is_nonnegative_integer(item) for item in (fallbacks, misses, disabled)):
+        if fallbacks != misses + disabled:
+            errors.append(
+                f"{prefix}.actual_run_fallbacks: expected cache_misses + cache_disabled"
+            )
+    if all(is_nonnegative_integer(item) for item in (eligible, helper_invocations)):
+        if eligible < helper_invocations:
+            errors.append(
+                f"{prefix}.eligible_commands: expected at least helper_invocations"
+            )
+    if all(is_nonnegative_integer(item) for item in (actual_runs, fallbacks, closeout_actual_runs)):
+        if actual_runs < fallbacks + closeout_actual_runs:
+            errors.append(
+                f"{prefix}.actual_runs: expected at least actual_run_fallbacks + closeout_actual_runs"
+            )
+    if all(is_nonnegative_integer(item) for item in (hits, helper_invocations)):
+        if hits > helper_invocations:
+            errors.append(f"{prefix}.cache_hits: expected at most helper_invocations")
+    if all(is_nonnegative_integer(item) for item in (fallbacks, helper_invocations)):
+        if fallbacks > helper_invocations:
+            errors.append(
+                f"{prefix}.actual_run_fallbacks: expected at most helper_invocations"
+            )
+
+    if prefix == "summary":
+        rate = value.get("cache_hit_rate")
+        if is_nonnegative_number(rate) and rate <= 1 and is_nonnegative_integer(helper_invocations):
+            expected_rate = hits / helper_invocations if helper_invocations > 0 else 0
+            if is_nonnegative_integer(hits) and abs(rate - expected_rate) > MEASUREMENT_RATE_TOLERANCE:
+                errors.append(
+                    f"{prefix}.cache_hit_rate: expected cache_hits / helper_invocations"
+                )
     return errors
 
 
@@ -1510,7 +1632,9 @@ def validate_measurement_validators(value: Any) -> list[str]:
             continue
         if not is_nonempty_string(entry.get("validator_id")):
             errors.append(f"{entry_path}.validator_id: expected string")
-        for field in ("eligible_commands", "cache_hits", "cache_misses", "actual_runs"):
+        if not is_nonempty_string(entry.get("command_family")):
+            errors.append(f"{entry_path}.command_family: expected string")
+        for field in sorted(MEASUREMENT_VALIDATOR_COUNT_FIELDS):
             if field in entry and not is_nonnegative_integer(entry[field]):
                 errors.append(f"{entry_path}.{field}: expected non-negative integer")
             elif field not in entry:
@@ -1523,6 +1647,7 @@ def validate_measurement_validators(value: Any) -> list[str]:
         if reason not in MEASUREMENT_STILL_RERUN_REASONS:
             allowed = ", ".join(sorted(MEASUREMENT_STILL_RERUN_REASONS))
             errors.append(f"{entry_path}.still_rerun_reason: expected one of: {allowed}")
+        errors.extend(validate_measurement_count_relationships(entry, entry_path))
     return errors
 
 
@@ -1530,8 +1655,6 @@ def validate_measurement_closeout(value: Any) -> list[str]:
     if not isinstance(value, dict):
         return ["closeout: expected object"]
     errors: list[str] = []
-    if not is_nonnegative_integer(value.get("full_bundle_actual_runs")):
-        errors.append("closeout.full_bundle_actual_runs: expected non-negative integer")
     if value.get("closeout_cache_skips") != 0:
         errors.append("closeout.closeout_cache_skips: expected 0")
     return errors

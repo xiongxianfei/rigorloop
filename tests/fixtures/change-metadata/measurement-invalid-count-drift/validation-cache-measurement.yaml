@@ -6,16 +6,18 @@ measurement_window:
   description: Count drift fixture
 summary:
   eligible_commands: 2
+  helper_invocations: 1
   cache_hits: 1
   cache_misses: 1
   cache_disabled: 1
+  actual_run_fallbacks: 2
   actual_runs: 2
+  closeout_actual_runs: 0
   estimated_seconds_saved: 0
   remaining_validation_seconds: 0
-  cache_hit_rate: 0
+  cache_hit_rate: 1
 validators: []
 closeout:
-  full_bundle_actual_runs: 1
   closeout_cache_skips: 0
 workstream_b_recommendation:
   state: defer
