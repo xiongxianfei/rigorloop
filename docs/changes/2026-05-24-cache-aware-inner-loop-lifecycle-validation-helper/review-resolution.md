@@ -118,7 +118,7 @@ Owning stage: review-resolution
 Required outcome: Closeout rejection must apply to helper lifecycle proof commands regardless of whether the mode flag is written as `--mode explicit-paths-inner-loop` or `--mode=explicit-paths-inner-loop`.
 Safe resolution path: Normalize lifecycle command mode parsing through token handling that recognizes both `--mode VALUE` and `--mode=VALUE`, then use the same command-mode interpretation in metadata validation and artifact lifecycle validation. Add direct tests or fixtures for the equals-form helper closeout command in both validator paths.
 Rationale: The M3 implementation currently rejects only one spelling of the helper mode flag, while the CLI accepts both spellings.
-Chosen action: pending
-Stop state: open
+Chosen action: Updated lifecycle command mode parsing to recognize both `--mode explicit-paths-inner-loop` and `--mode=explicit-paths-inner-loop`. Added metadata and artifact lifecycle tests for the equals-form helper closeout command.
+Stop state: ready for re-review
 Validation target: Rerun `python scripts/test-change-metadata-validator.py`, `python scripts/test-artifact-lifecycle-validator.py`, focused change metadata/lifecycle validation, and `git diff --check --` after fixing command-mode parsing.
-Validation evidence: pending
+Validation evidence: `python scripts/test-artifact-lifecycle-validator.py` passed 76 tests and `python scripts/test-change-metadata-validator.py` passed 20 tests after the command-mode parsing fix.

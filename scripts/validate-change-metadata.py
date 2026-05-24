@@ -628,8 +628,12 @@ def lifecycle_command_mode(command: str) -> str | None:
     except ValueError:
         return None
     for index, token in enumerate(tokens):
+        mode: str | None = None
         if token == "--mode" and index + 1 < len(tokens):
             mode = tokens[index + 1]
+        elif token.startswith("--mode="):
+            mode = token.split("=", 1)[1]
+        if mode is not None:
             if mode in {"explicit-paths", "explicit-paths-inner-loop"} and any(
                 part.endswith("scripts/validate-artifact-lifecycle.py") for part in tokens
             ):
