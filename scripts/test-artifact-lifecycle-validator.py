@@ -1925,12 +1925,14 @@ Leave this draft stale.
             "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
         )
 
+        evidence_files_before = set((ROOT / "docs/changes").glob("*/validation-cache-evidence.yaml"))
+
         self.assertEqual(run_cli(*args, env=cache_env).returncode, 0)
         second = run_cli(*args, env=cache_env)
         self.assertEqual(second.returncode, 0, second.stderr)
         self.assertIn("[CACHE HIT] artifact-lifecycle", second.stdout)
-        evidence_files = list((ROOT / "docs/changes").glob("*/validation-cache-evidence.yaml"))
-        self.assertEqual(evidence_files, [])
+        evidence_files_after = set((ROOT / "docs/changes").glob("*/validation-cache-evidence.yaml"))
+        self.assertEqual(evidence_files_after, evidence_files_before)
 
     def test_cli_cache_runs_validation_in_ci_environment(self) -> None:
         cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
