@@ -16,6 +16,7 @@ Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
+Review closeout: code-review-m4-r1
 
 ## Resolution Entries
 
@@ -125,5 +126,9 @@ Validation target: Rerun `python scripts/test-change-metadata-validator.py`, `py
 Validation evidence: `python scripts/test-artifact-lifecycle-validator.py` passed 76 tests and `python scripts/test-change-metadata-validator.py` passed 20 tests after the command-mode parsing fix.
 
 ### code-review-m3-r2
+
+No material findings.
+
+### code-review-m4-r1
 
 No material findings.
