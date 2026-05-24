@@ -68,13 +68,13 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 ## Current Handoff Summary
 
 - Current milestone: M3. Closeout rejection and actual-run boundary enforcement
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M2 inner-loop helper runtime and formal cache-hit evidence
-- Review status: code-review M3 R1 requested changes for VIC-IH-CR-M3-001.
+- Review status: VIC-IH-CR-M3-001 has an accepted fix and is ready for code-review M3 R2.
 - Remaining in-scope implementation milestones: M3, M4, M5, M6.
-- Next stage: review-resolution for M3
+- Next stage: code-review M3 R2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 has an open accepted code-review finding; M4 through M6, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M3 accepted finding needs re-review; M4 through M6, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -208,7 +208,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ### M3. Closeout rejection and actual-run boundary enforcement
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Make helper cache hits structurally unable to satisfy closeout, verify, branch-readiness, PR-readiness, release, or CI proof.
 - Requirements: R50-R59, R101-R116, R135-R138, R150-R151; AC11-AC14, AC24-AC28, AC40-AC42.
 - Files/components likely touched:
@@ -437,6 +437,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 - 2026-05-24: Code-review M2 R2 completed clean-with-notes with no material findings; M2 closed and M3 is ready for implementation.
 - 2026-05-24: M3 implemented closeout rejection for `explicit-paths-inner-loop` lifecycle proof commands in compact change metadata and artifact lifecycle validation, while preserving direct `explicit-paths` actual-run closeout evidence.
 - 2026-05-24: Code-review M3 R1 recorded VIC-IH-CR-M3-001 because helper closeout rejection missed the accepted `--mode=explicit-paths-inner-loop` flag spelling; M3 is in review-resolution.
+- 2026-05-24: Review-resolution for VIC-IH-CR-M3-001 normalized helper mode detection for both `--mode VALUE` and `--mode=VALUE` forms; M3 is ready for re-review.
 
 ## Decision log
 
@@ -513,6 +514,14 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m2-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m2-r2.md`
   - `git diff --check --`
+- 2026-05-24 review-resolution validation for VIC-IH-CR-M3-001 passed:
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-change-metadata-validator.py`
+- 2026-05-24 review-resolution handoff validation passed:
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m3-r1.md`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -522,4 +531,4 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 - See `Current Handoff Summary`.
 - Ready for code-review M2. Readiness is not Done; M2 has not been reviewed, and remaining implementation milestones, explain-change, verify, and PR gates remain.
-- Ready for review-resolution M3. Readiness is not Done; M3 has an open accepted finding, and remaining implementation milestones, explain-change, verify, and PR gates remain.
+- Ready for code-review M3 R2. Readiness is not Done; M3 accepted finding needs re-review, and remaining implementation milestones, explain-change, verify, and PR gates remain.

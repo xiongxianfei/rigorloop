@@ -767,9 +767,13 @@ def _change_yaml_closeout_cache_findings(
             command = bundles.get(bundle_id, "")
             if "scripts/validate-artifact-lifecycle.py" not in command:
                 continue
-            if "--mode explicit-paths-inner-loop" in command:
+            if "--mode explicit-paths-inner-loop" in command or "--mode=explicit-paths-inner-loop" in command:
                 helper_closeout = True
-            if "--mode explicit-paths" in command and "--mode explicit-paths-inner-loop" not in command:
+            if (
+                ("--mode explicit-paths" in command or "--mode=explicit-paths" in command)
+                and "--mode explicit-paths-inner-loop" not in command
+                and "--mode=explicit-paths-inner-loop" not in command
+            ):
                 direct_closeout = True
     if helper_closeout and not direct_closeout:
         return [
