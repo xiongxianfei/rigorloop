@@ -6,16 +6,18 @@ measurement_window:
   description: Missing rationale fixture
 summary:
   eligible_commands: 0
+  helper_invocations: 0
   cache_hits: 0
   cache_misses: 0
   cache_disabled: 0
+  actual_run_fallbacks: 0
   actual_runs: 0
+  closeout_actual_runs: 0
   estimated_seconds_saved: 0
   remaining_validation_seconds: 0
   cache_hit_rate: 0
 validators: []
 closeout:
-  full_bundle_actual_runs: 1
   closeout_cache_skips: 0
 workstream_b_recommendation:
   state: propose-follow-up

@@ -67,6 +67,20 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         self.assertTrue(eligible.cache_eligible)
         self.assertEqual(eligible.validator_id, "artifact-lifecycle")
 
+        helper = validation_cache.evaluate_command_family(
+            [
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths-inner-loop",
+                "--path",
+                "docs/plan.md",
+            ]
+        )
+        self.assertTrue(helper.cache_eligible)
+        self.assertEqual(helper.validator_id, "artifact-lifecycle")
+        self.assertEqual(helper.command_family, "validate-artifact-lifecycle-explicit-paths")
+
         unsupported_commands = [
             ["python", "scripts/validate-artifact-lifecycle.py", "--mode", "local"],
             ["python", "scripts/validate-change-metadata.py", "docs/changes/x/change.yaml"],
@@ -393,6 +407,144 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         )
         self.assertNotEqual(identity.cache_key, changed.cache_key)
 
+    def test_helper_identity_uses_canonical_direct_argv_and_preserves_display_argv(self) -> None:
+        self.write_file("scripts/validate-artifact-lifecycle.py", "VALUE = 1\n")
+        self.write_file("scripts/validation_cache.py", "VALUE = 1\n")
+        self.write_file("docs/plan.md", "plan\n")
+
+        direct = validation_cache.build_lifecycle_cache_identity(
+            self.temp_root,
+            [
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths",
+                "--path",
+                "./docs/plan.md",
+            ],
+        )
+        helper = validation_cache.build_lifecycle_cache_identity(
+            self.temp_root,
+            [
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths-inner-loop",
+                "--path",
+                "./docs/plan.md",
+            ],
+        )
+
+        self.assertEqual(helper.normalized_command.argv, direct.normalized_command.argv)
+        self.assertEqual(helper.normalized_command.command_hash, direct.normalized_command.command_hash)
+        self.assertEqual(helper.cache_key, direct.cache_key)
+        self.assertEqual(
+            helper.displayed_command.argv,
+            (
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths-inner-loop",
+                "--path",
+                "docs/plan.md",
+            ),
+        )
+        self.assertEqual(
+            helper.normalized_command.argv,
+            (
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths",
+                "--path",
+                "docs/plan.md",
+            ),
+        )
+
+    def test_helper_path_order_changes_canonical_identity(self) -> None:
+        self.write_file("scripts/validate-artifact-lifecycle.py", "VALUE = 1\n")
+        self.write_file("scripts/validation_cache.py", "VALUE = 1\n")
+        self.write_file("docs/a.md", "a\n")
+        self.write_file("docs/b.md", "b\n")
+
+        first = validation_cache.build_lifecycle_cache_identity(
+            self.temp_root,
+            [
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths-inner-loop",
+                "--path",
+                "docs/a.md",
+                "--path",
+                "docs/b.md",
+            ],
+        )
+        second = validation_cache.build_lifecycle_cache_identity(
+            self.temp_root,
+            [
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths-inner-loop",
+                "--path",
+                "docs/b.md",
+                "--path",
+                "docs/a.md",
+            ],
+        )
+
+        self.assertNotEqual(first.normalized_command.command_hash, second.normalized_command.command_hash)
+        self.assertNotEqual(first.cache_key, second.cache_key)
+
+    def test_helper_reuses_direct_actual_run_cache_identity(self) -> None:
+        self.write_file("scripts/validate-artifact-lifecycle.py", "VALUE = 1\n")
+        self.write_file("scripts/validation_cache.py", "VALUE = 1\n")
+        self.write_file("docs/plan.md", "plan\n")
+        direct_identity = validation_cache.build_lifecycle_cache_identity(
+            self.temp_root,
+            [
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths",
+                "--path",
+                "docs/plan.md",
+            ],
+        )
+        helper_identity = validation_cache.build_lifecycle_cache_identity(
+            self.temp_root,
+            [
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths-inner-loop",
+                "--path",
+                "docs/plan.md",
+            ],
+        )
+        context = validation_cache.LocalCacheContext(
+            cache_key=helper_identity.cache_key,
+            validator_id=helper_identity.validator_id,
+            command_family=helper_identity.command_family,
+            repository_id="repo",
+            branch="feature",
+            worktree_id="/local/worktree",
+            change_id="2026-05-24-change",
+            command_hash=helper_identity.normalized_command.command_hash,
+            input_surface_hash=helper_identity.input_surface.manifest_hash,
+            implementation_hash=helper_identity.implementation.manifest_hash,
+            policy_hash=helper_identity.policy.manifest_hash,
+        )
+        record = validation_cache.make_local_cache_record(
+            identity=direct_identity,
+            context=context,
+            prior_event_stage="closeout",
+            prior_event_evidence="docs/changes/2026-05-24-change/change.yaml#validation-events",
+        )
+
+        self.assertTrue(validation_cache.local_cache_entry_eligible(record, context).eligible)
+
     def test_local_cache_store_reuses_only_matching_prior_pass(self) -> None:
         cache_dir = self.temp_root / ".rigorloop-validation-cache"
         now = time.time()
@@ -529,10 +681,64 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         self.assertIn("change_id: \"example\"", text)
         self.assertIn("id: \"cache-hit-001\"", text)
         self.assertIn("validator_id: \"artifact-lifecycle\"", text)
+        self.assertIn("command_family: \"validate-artifact-lifecycle-explicit-paths\"", text)
+        self.assertIn("evidence_kind: cache-hit-inner-loop", text)
+        self.assertIn("displayed_command_argv:", text)
+        self.assertIn("canonical_cache_argv:", text)
         self.assertIn("result_reused: pass", text)
         self.assertIn("scope: inner-loop", text)
         self.assertIn("closeout_evidence: false", text)
         self.assertNotIn("/local/worktree", text)
+
+    def test_helper_cache_hit_evidence_preserves_displayed_and_canonical_argv(self) -> None:
+        self.write_file("scripts/validate-artifact-lifecycle.py", "VALUE = 1\n")
+        self.write_file("scripts/validation_cache.py", "VALUE = 1\n")
+        self.write_file("docs/changes/example/change.yaml", "schema_version: 2\n")
+        self.write_file("docs/plan.md", "plan\n")
+        identity = validation_cache.build_lifecycle_cache_identity(
+            self.temp_root,
+            [
+                "python",
+                "scripts/validate-artifact-lifecycle.py",
+                "--mode",
+                "explicit-paths-inner-loop",
+                "--path",
+                "docs/plan.md",
+            ],
+        )
+        record = validation_cache.LocalCacheRecord(
+            cache_key=identity.cache_key,
+            validator_id=identity.validator_id,
+            command_family=identity.command_family,
+            repository_id="repo",
+            branch="feature",
+            worktree_id="/local/worktree",
+            change_id="example",
+            command_hash=identity.normalized_command.command_hash,
+            input_surface_hash=identity.input_surface.manifest_hash,
+            implementation_hash=identity.implementation.manifest_hash,
+            policy_hash=identity.policy.manifest_hash,
+            result="pass",
+            created_at=time.time(),
+            prior_event_stage="unit-pass",
+            prior_event_evidence="docs/changes/example/change.yaml#validation-events",
+        )
+
+        evidence_path = validation_cache.write_cache_hit_evidence(
+            repo_root=self.temp_root,
+            evidence_file="docs/changes/example/validation-cache-evidence.yaml",
+            change_id="example",
+            cache_hit_id="cache-hit-001",
+            identity=identity,
+            record=record,
+        )
+
+        text = (self.temp_root / evidence_path).read_text(encoding="utf-8")
+        self.assertIn("displayed_command_argv:", text)
+        self.assertIn("canonical_cache_argv:", text)
+        self.assertIn("explicit-paths-inner-loop", text)
+        self.assertIn("explicit-paths", text)
+        self.assertIn("command_family: \"validate-artifact-lifecycle-explicit-paths\"", text)
 
     def test_formal_cache_hit_evidence_merges_and_replaces_by_id(self) -> None:
         self.write_file("scripts/validate-artifact-lifecycle.py", "VALUE = 1\n")

@@ -1,0 +1,20 @@
+schema_version: 2
+path_vars:
+  change_id: 2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+  change_root: tests/fixtures/change-metadata/compact-invalid-helper-closeout-command
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths-inner-loop --path {change_root}/change.yaml
+validation_events:
+  - stage: code-review-m1-closeout
+    lifecycle_stage: code-review
+    bundles:
+      - lifecycle
+    result: pass
+    evidence_kind: actual-run-pass
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - code-review-m1-closeout
+  final_counts: {}
+  open_validation_blockers: []

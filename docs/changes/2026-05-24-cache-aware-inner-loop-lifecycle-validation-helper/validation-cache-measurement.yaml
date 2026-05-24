@@ -1,0 +1,36 @@
+schema_version: 1
+change_id: 2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper
+measurement_window:
+  start_stage: implement-m2
+  end_stage: implement-m4-handoff
+  description: First-slice helper measurement through M4 using recorded local validation evidence.
+summary:
+  eligible_commands: 1
+  helper_invocations: 1
+  cache_hits: 0
+  cache_misses: 1
+  cache_disabled: 0
+  actual_run_fallbacks: 1
+  actual_runs: 2
+  closeout_actual_runs: 1
+  estimated_seconds_saved: 0
+  remaining_validation_seconds: 0
+  cache_hit_rate: 0
+validators:
+  - validator_id: artifact-lifecycle
+    command_family: validate-artifact-lifecycle-explicit-paths
+    eligible_commands: 1
+    helper_invocations: 1
+    cache_hits: 0
+    cache_misses: 1
+    cache_disabled: 0
+    actual_run_fallbacks: 1
+    actual_runs: 2
+    closeout_actual_runs: 1
+    estimated_seconds_saved: 0
+    still_rerun_reason: closeout-gate
+closeout:
+  closeout_cache_skips: 0
+workstream_b_recommendation:
+  state: defer
+  rationale: First-slice helper measurement has no cache hits or timing savings yet; do not expand eligibility without reviewed follow-up evidence.

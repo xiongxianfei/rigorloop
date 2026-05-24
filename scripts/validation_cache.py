@@ -52,6 +52,7 @@ class LifecycleCacheIdentity:
     validator_id: str
     command_family: str
     normalized_command: NormalizedLifecycleCommand
+    displayed_command: NormalizedLifecycleCommand
     input_surface: Manifest
     implementation: Manifest
     policy: Manifest
@@ -126,6 +127,8 @@ _DEFAULT_POLICY_FILES = (
 _LOCAL_CACHE_FILE = "validation-cache.json"
 _SUPPORTED_VALIDATOR_ID = "artifact-lifecycle"
 _SUPPORTED_COMMAND_FAMILY = "validate-artifact-lifecycle-explicit-paths"
+_DIRECT_EXPLICIT_PATHS_MODE = "explicit-paths"
+_INNER_LOOP_HELPER_MODE = "explicit-paths-inner-loop"
 
 
 def normalize_command(command: str | Sequence[str]) -> list[str]:
@@ -146,7 +149,10 @@ def evaluate_command_family(command: str | Sequence[str]) -> CommandFamilyEvalua
     argv = normalize_command(command)
     script = _script_arg(argv)
     mode = _option_value(argv, "--mode")
-    if script == "scripts/validate-artifact-lifecycle.py" and mode == "explicit-paths":
+    if script == "scripts/validate-artifact-lifecycle.py" and mode in {
+        _DIRECT_EXPLICIT_PATHS_MODE,
+        _INNER_LOOP_HELPER_MODE,
+    }:
         return CommandFamilyEvaluation(
             cache_eligible=True,
             validator_id="artifact-lifecycle",
@@ -195,7 +201,10 @@ def normalize_repo_path(raw_path: str, repo_root: Path | str) -> str:
 
 
 def normalize_lifecycle_explicit_command(
-    command: str | Sequence[str], repo_root: Path | str
+    command: str | Sequence[str],
+    repo_root: Path | str,
+    *,
+    canonical_cache_identity: bool = True,
 ) -> NormalizedLifecycleCommand:
     argv = list(normalize_command(command))
     evaluation = evaluate_command_family(argv)
@@ -207,7 +216,15 @@ def normalize_lifecycle_explicit_command(
     index = 0
     while index < len(argv):
         arg = argv[index]
-        normalized_argv.append(arg)
+        normalized_arg = arg
+        if (
+            canonical_cache_identity
+            and arg == _INNER_LOOP_HELPER_MODE
+            and index > 0
+            and argv[index - 1] == "--mode"
+        ):
+            normalized_arg = _DIRECT_EXPLICIT_PATHS_MODE
+        normalized_argv.append(normalized_arg)
         if arg == "--path":
             if index + 1 >= len(argv):
                 raise CacheIdentityError("--path requires a value")
@@ -319,7 +336,16 @@ def build_lifecycle_cache_identity(
             "unsupported-command-family",
             f"{evaluation.reason}; cache eligibility disabled",
         )
-    normalized_command = normalize_lifecycle_explicit_command(command, root)
+    normalized_command = normalize_lifecycle_explicit_command(
+        command,
+        root,
+        canonical_cache_identity=True,
+    )
+    displayed_command = normalize_lifecycle_explicit_command(
+        command,
+        root,
+        canonical_cache_identity=False,
+    )
     explicit_path_surface = build_input_surface_manifest(root, normalized_command.explicit_paths)
     implementation = build_implementation_manifest(
         root,
@@ -352,6 +378,7 @@ def build_lifecycle_cache_identity(
         validator_id=evaluation.validator_id,
         command_family=evaluation.command_family,
         normalized_command=normalized_command,
+        displayed_command=displayed_command,
         input_surface=input_surface,
         implementation=implementation,
         policy=policy,
@@ -545,7 +572,11 @@ def _cache_hit_evidence_entry(
     return {
         "id": cache_hit_id,
         "validator_id": identity.validator_id,
+        "command_family": identity.command_family,
+        "evidence_kind": "cache-hit-inner-loop",
         "command": {"argv": list(identity.normalized_command.argv)},
+        "displayed_command_argv": list(identity.displayed_command.argv),
+        "canonical_cache_argv": list(identity.normalized_command.argv),
         "prior_passing_event": {
             "stage": record.prior_event_stage,
             "evidence": record.prior_event_evidence,
@@ -585,6 +616,22 @@ def _render_cache_hit_evidence_document(
             [
                 f"  - id: {_yaml_scalar(str(entry['id']))}",
                 f"    validator_id: {_yaml_scalar(str(entry['validator_id']))}",
+                f"    command_family: {_yaml_scalar(str(entry['command_family']))}",
+                f"    evidence_kind: {entry['evidence_kind']}",
+                "    displayed_command_argv:",
+            ]
+        )
+        displayed = entry["displayed_command_argv"]
+        canonical = entry["canonical_cache_argv"]
+        if not isinstance(displayed, list) or not isinstance(canonical, list):
+            raise _cache_error("invalid-cache-evidence-file")
+        for arg in displayed:
+            lines.append(f"      - {_yaml_scalar(str(arg))}")
+        lines.append("    canonical_cache_argv:")
+        for arg in canonical:
+            lines.append(f"      - {_yaml_scalar(str(arg))}")
+        lines.extend(
+            [
                 "    command:",
                 "      argv:",
             ]
@@ -632,10 +679,13 @@ def _load_cache_hit_evidence_document(path: Path) -> dict[str, object]:
         entry: dict[str, object] = {
             "id": _parse_json_scalar(lines[index].split(": ", 1)[1]),
             "command": {"argv": []},
+            "displayed_command_argv": [],
+            "canonical_cache_argv": [],
             "prior_passing_event": {},
             "cache_key": {},
         }
         index += 1
+        list_target: str | None = None
         while index < len(lines) and not lines[index].startswith("  - id: "):
             line = lines[index]
             if not line:
@@ -643,7 +693,22 @@ def _load_cache_hit_evidence_document(path: Path) -> dict[str, object]:
                 continue
             if line.startswith("    validator_id: "):
                 entry["validator_id"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("    command_family: "):
+                entry["command_family"] = _parse_json_scalar(line.split(": ", 1)[1])
+            elif line.startswith("    evidence_kind: "):
+                entry["evidence_kind"] = line.split(": ", 1)[1]
+            elif line == "    displayed_command_argv:":
+                list_target = "displayed_command_argv"
+            elif line == "    canonical_cache_argv:":
+                list_target = "canonical_cache_argv"
+            elif line.startswith("      - "):
+                if list_target not in {"displayed_command_argv", "canonical_cache_argv"}:
+                    raise _cache_error("invalid-cache-evidence-file")
+                argv = entry[list_target]
+                assert isinstance(argv, list)
+                argv.append(_parse_json_scalar(line.split("- ", 1)[1]))
             elif line.startswith("        - "):
+                list_target = "command"
                 command = entry["command"]
                 assert isinstance(command, dict)
                 argv = command["argv"]
@@ -687,10 +752,22 @@ def _load_cache_hit_evidence_document(path: Path) -> dict[str, object]:
                 "    prior_passing_event:",
                 "    cache_key:",
             ):
+                if line == "      argv:":
+                    list_target = "command"
+                elif line != "    command:":
+                    list_target = None
                 pass
             else:
                 raise _cache_error("invalid-cache-evidence-file")
             index += 1
+        command = entry["command"]
+        if isinstance(command, dict) and isinstance(command.get("argv"), list):
+            if not entry.get("displayed_command_argv"):
+                entry["displayed_command_argv"] = list(command["argv"])
+            if not entry.get("canonical_cache_argv"):
+                entry["canonical_cache_argv"] = list(command["argv"])
+        entry.setdefault("command_family", _SUPPORTED_COMMAND_FAMILY)
+        entry.setdefault("evidence_kind", "cache-hit-inner-loop")
         _validate_cache_hit_entry(entry)
         entries.append(entry)
 
@@ -707,6 +784,10 @@ def _validate_cache_hit_entry(entry: dict[str, object]) -> None:
     required = (
         "id",
         "validator_id",
+        "command_family",
+        "evidence_kind",
+        "displayed_command_argv",
+        "canonical_cache_argv",
         "command",
         "prior_passing_event",
         "cache_key",
@@ -721,6 +802,8 @@ def _validate_cache_hit_entry(entry: dict[str, object]) -> None:
     prior = entry["prior_passing_event"]
     cache_key = entry["cache_key"]
     if not isinstance(command, dict) or not command.get("argv"):
+        raise _cache_error("invalid-cache-evidence-file")
+    if not entry.get("displayed_command_argv") or not entry.get("canonical_cache_argv"):
         raise _cache_error("invalid-cache-evidence-file")
     if not isinstance(prior, dict) or not prior.get("stage") or not prior.get("evidence"):
         raise _cache_error("invalid-cache-evidence-file")

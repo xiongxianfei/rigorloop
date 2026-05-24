@@ -3,14 +3,13 @@ change_id: 2026-05-23-validation-idempotency-first-conservative-edit-scoped-vali
 measurement_window:
   start_stage: implement-m1
   end_stage: implement-m4
-  description: Closeout cache skip fixture
+  description: Missing actual run fallbacks fixture
 summary:
   eligible_commands: 0
   helper_invocations: 0
   cache_hits: 0
   cache_misses: 0
   cache_disabled: 0
-  actual_run_fallbacks: 0
   actual_runs: 0
   closeout_actual_runs: 0
   estimated_seconds_saved: 0
@@ -18,7 +17,7 @@ summary:
   cache_hit_rate: 0
 validators: []
 closeout:
-  closeout_cache_skips: 1
+  closeout_cache_skips: 0
 workstream_b_recommendation:
   state: defer
-  rationale: Closeout cache skip fixture.
+  rationale: Missing actual run fallbacks fixture.

@@ -940,6 +940,48 @@ validation_summary:
             messages,
         )
 
+    def test_change_yaml_helper_command_closeout_fails_lifecycle_validation(self) -> None:
+        for mode_arg in ("--mode explicit-paths-inner-loop", "--mode=explicit-paths-inner-loop"):
+            with self.subTest(mode_arg=mode_arg):
+                fixture_root = copy_fixture("related-scope")
+                self.addCleanupTree(fixture_root)
+                change_yaml = fixture_root / "docs" / "changes" / "0002-lifecycle" / "change.yaml"
+                change_yaml.write_text(
+                    f"""schema_version: 2
+path_vars:
+  change_id: 0002-lifecycle
+  change_root: docs/changes/0002-lifecycle
+validation_bundles:
+  lifecycle:
+    command: python scripts/validate-artifact-lifecycle.py {mode_arg} --path {{change_root}}/change.yaml
+validation_events:
+  - stage: code-review-m1-closeout
+    lifecycle_stage: code-review
+    bundles:
+      - lifecycle
+    result: pass
+    evidence_kind: actual-run-pass
+validation_summary:
+  all_passed: true
+  stages_validated:
+    - code-review-m1-closeout
+  final_counts: {{}}
+  open_validation_blockers: []
+""",
+                    encoding="utf-8",
+                )
+
+                result = validate_repository(
+                    fixture_root,
+                    mode="explicit-paths",
+                    paths=["docs/changes/0002-lifecycle/change.yaml"],
+                )
+                messages = [finding.message for finding in result.blocking_findings]
+                self.assertIn(
+                    "closeout requires direct explicit-paths actual-run evidence; explicit-paths-inner-loop is inner-loop only",
+                    messages,
+                )
+
     def test_change_local_markdown_refs_do_not_recursively_expand_related_scope(self) -> None:
         fixture_root = copy_fixture("related-scope")
         self.addCleanupTree(fixture_root)
@@ -1785,6 +1827,33 @@ Leave this draft stale.
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("requires at least one --path", result.stderr + result.stdout)
 
+    def test_cli_accepts_inner_loop_helper_mode_with_explicit_paths(self) -> None:
+        cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
+        self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
+        cache_env = dict(os.environ)
+        cache_env["RIGORLOOP_VALIDATION_CACHE_DIR"] = str(cache_dir)
+        cache_env.pop("CI", None)
+
+        result = run_cli(
+            "--mode",
+            "explicit-paths-inner-loop",
+            "--path",
+            "docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md",
+            "--path",
+            "specs/validation-idempotency-and-cache-hit-safety.md",
+            "--path",
+            "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
+            env=cache_env,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("validated", result.stdout)
+        self.assertIn("explicit-paths-inner-loop mode", result.stdout)
+
+    def test_cli_helper_mode_requires_explicit_paths(self) -> None:
+        result = run_cli("--mode", "explicit-paths-inner-loop")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("requires at least one --path", result.stderr + result.stdout)
+
     def test_cli_cache_hits_on_second_identical_explicit_path_run(self) -> None:
         cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
         self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
@@ -1819,6 +1888,93 @@ Leave this draft stale.
         self.assertEqual(second.returncode, 0, second.stderr)
         self.assertIn("[CACHE HIT] artifact-lifecycle", second.stdout)
         self.assertIn("prior result pass", second.stdout)
+
+    def test_cli_helper_mode_cache_hits_without_long_cache_flags(self) -> None:
+        cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
+        self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
+        cache_env = dict(os.environ)
+        cache_env.pop("CI", None)
+        cache_env["RIGORLOOP_VALIDATION_CACHE_DIR"] = str(cache_dir)
+        args = (
+            "--mode",
+            "explicit-paths-inner-loop",
+            "--path",
+            "docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md",
+            "--path",
+            "specs/validation-idempotency-and-cache-hit-safety.md",
+            "--path",
+            "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
+        )
+
+        first = run_cli(*args, env=cache_env)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertIn("[CACHE MISS] artifact-lifecycle", first.stdout)
+        self.assertIn("running validator", first.stdout)
+        self.assertIn("validated", first.stdout)
+
+        second = run_cli(*args, env=cache_env)
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertIn("[CACHE HIT] artifact-lifecycle", second.stdout)
+        self.assertNotIn("validated", second.stdout)
+
+    def test_cli_helper_mode_writes_formal_evidence_when_change_root_is_inferable(self) -> None:
+        cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
+        self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
+        evidence_path = ROOT / "docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/validation-cache-evidence.yaml"
+        self.addCleanup(lambda: evidence_path.unlink(missing_ok=True))
+        evidence_path.unlink(missing_ok=True)
+        cache_env = dict(os.environ)
+        cache_env.pop("CI", None)
+        cache_env["RIGORLOOP_VALIDATION_CACHE_DIR"] = str(cache_dir)
+        args = (
+            "--mode",
+            "explicit-paths-inner-loop",
+            "--path",
+            "docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml",
+            "--path",
+            "specs/validation-idempotency-and-cache-hit-safety.md",
+            "--path",
+            "docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md",
+        )
+
+        first = run_cli(*args, env=cache_env)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertFalse(evidence_path.exists())
+
+        second = run_cli(*args, env=cache_env)
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertTrue(evidence_path.exists())
+        text = evidence_path.read_text(encoding="utf-8")
+        self.assertIn("displayed_command_argv:", text)
+        self.assertIn("canonical_cache_argv:", text)
+        self.assertIn("explicit-paths-inner-loop", text)
+        self.assertIn("closeout_evidence: false", text)
+
+    def test_cli_helper_mode_ad_hoc_cache_hit_writes_no_formal_evidence(self) -> None:
+        cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
+        self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
+        cache_env = dict(os.environ)
+        cache_env.pop("CI", None)
+        cache_env["RIGORLOOP_VALIDATION_CACHE_DIR"] = str(cache_dir)
+        args = (
+            "--mode",
+            "explicit-paths-inner-loop",
+            "--path",
+            "docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md",
+            "--path",
+            "specs/validation-idempotency-and-cache-hit-safety.md",
+            "--path",
+            "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
+        )
+
+        evidence_files_before = set((ROOT / "docs/changes").glob("*/validation-cache-evidence.yaml"))
+
+        self.assertEqual(run_cli(*args, env=cache_env).returncode, 0)
+        second = run_cli(*args, env=cache_env)
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertIn("[CACHE HIT] artifact-lifecycle", second.stdout)
+        evidence_files_after = set((ROOT / "docs/changes").glob("*/validation-cache-evidence.yaml"))
+        self.assertEqual(evidence_files_after, evidence_files_before)
 
     def test_cli_cache_runs_validation_in_ci_environment(self) -> None:
         cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
