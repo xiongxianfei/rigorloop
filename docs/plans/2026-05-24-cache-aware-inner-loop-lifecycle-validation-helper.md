@@ -67,14 +67,14 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ## Current Handoff Summary
 
-- Current milestone: M6. Lifecycle closeout
-- Current milestone state: review-requested
-- Last reviewed milestone: M5 repository-local guidance and behavior-preservation evidence
-- Review status: M6 implemented with targeted validation passing; ready for code-review M6.
-- Remaining in-scope implementation milestones: M6.
-- Next stage: code-review M6
+- Current milestone: implementation milestones complete
+- Current milestone state: closed
+- Last reviewed milestone: M6 lifecycle closeout
+- Review status: code-review M6 R1 clean-with-notes with no material findings.
+- Remaining in-scope implementation milestones: none.
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M6 is implemented but not reviewed; final verify and PR handoff remain.
+- Reason final closeout is or is not ready: all implementation milestones are closed after clean code review; final verify and PR handoff remain.
 
 ## Milestones
 
@@ -347,7 +347,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ### M6. Lifecycle closeout
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Complete implementation evidence, explain the change, verify the branch, and prepare PR handoff after all implementation milestones are reviewed and closed.
 - Requirements: all in-scope requirements and acceptance criteria.
 - Files/components likely touched:
@@ -444,6 +444,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 - 2026-05-24: M5 recorded repository-local inner-loop versus closeout command guidance in behavior-preservation evidence, proved direct actual-run validation and helper fallback behavior, confirmed published skills do not contain internal helper commands or validator/cache evidence paths, and left canonical skill/adapters unchanged.
 - 2026-05-24: Code-review M5 R1 completed clean-with-notes with no material findings; M5 closed and M6 is ready for implementation.
 - 2026-05-24: M6 recorded durable explain-change evidence, ran the final implementation validation set, and kept final verify/PR readiness unclaimed pending code-review and downstream gates.
+- 2026-05-24: Code-review M6 R1 completed clean-with-notes with no material findings; all implementation milestones are closed and the next stage is verify.
 
 ## Decision log
 
@@ -590,8 +591,17 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
   - `python scripts/test-select-validation.py`
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/explain-change.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/behavior-preservation.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/validation-cache-measurement.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m5-r1.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m6-r1.md`
+  - `git diff --check --`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path specs/validation-idempotency-and-cache-hit-safety.md --path specs/validation-idempotency-and-cache-hit-safety.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md --path docs/plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md --path docs/plan.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/explain-change.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/behavior-preservation.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/validation-cache-measurement.yaml --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-log.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/review-resolution.md --path docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/reviews/code-review-m5-r1.md`
   - `git diff --check --`
+- 2026-05-24 code-review M6 R1 validation passed:
+  - `python scripts/test-validation-cache.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/test-select-validation.py`
 
 ## Outcome and retrospective
 
@@ -600,4 +610,4 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M6. Readiness is not Done; M6 has not been reviewed, and final verify and PR gates remain.
+- Ready for verify. Readiness is not Done; final verify and PR gates remain.
