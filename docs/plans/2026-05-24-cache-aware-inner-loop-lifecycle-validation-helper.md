@@ -68,13 +68,13 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 ## Current Handoff Summary
 
 - Current milestone: M3. Closeout rejection and actual-run boundary enforcement
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M2 inner-loop helper runtime and formal cache-hit evidence
-- Review status: M3 implementation is ready for code-review; code-review M3 has not run.
+- Review status: code-review M3 R1 requested changes for VIC-IH-CR-M3-001.
 - Remaining in-scope implementation milestones: M3, M4, M5, M6.
-- Next stage: code-review M3
+- Next stage: review-resolution for M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is implemented but not yet code-reviewed; M4 through M6, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M3 has an open accepted code-review finding; M4 through M6, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -208,7 +208,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ### M3. Closeout rejection and actual-run boundary enforcement
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Make helper cache hits structurally unable to satisfy closeout, verify, branch-readiness, PR-readiness, release, or CI proof.
 - Requirements: R50-R59, R101-R116, R135-R138, R150-R151; AC11-AC14, AC24-AC28, AC40-AC42.
 - Files/components likely touched:
@@ -436,6 +436,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 - 2026-05-24: Review-resolution for VIC-IH-CR-M2-001 narrowed the ad hoc no-evidence assertion to compare evidence files before and after the command, preserving compatibility with legitimate formal evidence files; M2 is ready for re-review.
 - 2026-05-24: Code-review M2 R2 completed clean-with-notes with no material findings; M2 closed and M3 is ready for implementation.
 - 2026-05-24: M3 implemented closeout rejection for `explicit-paths-inner-loop` lifecycle proof commands in compact change metadata and artifact lifecycle validation, while preserving direct `explicit-paths` actual-run closeout evidence.
+- 2026-05-24: Code-review M3 R1 recorded VIC-IH-CR-M3-001 because helper closeout rejection missed the accepted `--mode=explicit-paths-inner-loop` flag spelling; M3 is in review-resolution.
 
 ## Decision log
 
@@ -521,4 +522,4 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 - See `Current Handoff Summary`.
 - Ready for code-review M2. Readiness is not Done; M2 has not been reviewed, and remaining implementation milestones, explain-change, verify, and PR gates remain.
-- Ready for code-review M3. Readiness is not Done; M3 has not been reviewed, and remaining implementation milestones, explain-change, verify, and PR gates remain.
+- Ready for review-resolution M3. Readiness is not Done; M3 has an open accepted finding, and remaining implementation milestones, explain-change, verify, and PR gates remain.
