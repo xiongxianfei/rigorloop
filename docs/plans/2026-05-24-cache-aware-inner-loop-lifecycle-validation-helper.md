@@ -67,14 +67,14 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Helper mode and canonical identity tests
-- Current milestone state: review-requested
-- Last reviewed milestone: M0 plan-review/test-spec handoff
-- Review status: M1 implementation is ready for code-review; code-review has not run.
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5, M6.
-- Next stage: code-review M1
+- Current milestone: M2. Inner-loop helper runtime and formal cache-hit evidence
+- Current milestone state: ready for implementation
+- Last reviewed milestone: M1 helper mode and canonical identity tests
+- Review status: code-review M1 R1 clean-with-notes with no material findings.
+- Remaining in-scope implementation milestones: M2, M3, M4, M5, M6.
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is implemented but awaiting code-review; M2 through M6, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 is closed after clean code-review; M2 through M6, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -119,7 +119,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ### M1. Helper mode and canonical identity tests
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add failing tests and cache-identity support for `--mode explicit-paths-inner-loop` without changing closeout semantics.
 - Requirements: R1-R3, R6-R17, R38a-R40, R78-R100, R131-R138, R133a-R133g; AC33-AC35, AC41-AC42, AC46-AC49.
 - Files/components likely touched:
@@ -430,6 +430,7 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 - 2026-05-24: Plan-review R1 approved with no material findings.
 - 2026-05-24: Test spec amended in `specs/validation-idempotency-and-cache-hit-safety.test.md` for helper normalization, runtime fallback, evidence, closeout rejection, selector routing, measurement, and published-skill boundaries; approved by user; M1 is ready for implementation.
 - 2026-05-24: M1 implemented helper-mode parser support, canonical direct-command cache identity normalization, displayed helper argv preservation on `LifecycleCacheIdentity`, and tests for direct-pass reuse, helper path-order invalidation, unsupported command exclusion, and helper explicit-path CLI behavior.
+- 2026-05-24: Code-review M1 R1 completed clean-with-notes with no material findings; M1 closed and M2 is ready for implementation.
 
 ## Decision log
 
@@ -468,4 +469,4 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M1 code-review. Readiness is not Done; M1 code-review, remaining implementation milestones, explain-change, verify, and PR gates remain.
+- Ready for M2 implementation. Readiness is not Done; remaining implementation milestones, code-review, explain-change, verify, and PR gates remain.
