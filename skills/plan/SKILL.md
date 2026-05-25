@@ -84,9 +84,19 @@ If evidence is missing, contradictory, unresolved, unknown, or unmapped, block i
 
 Use the project workflow guide for artifact locations when placement matters.
 
+Plan surfaces:
+
+- Workflow map: `docs/workflows.md` describes project-local workflow and artifact-location customizations.
+- Plan index: `docs/plan.md` summarizes active, blocked, recent done, and supersession context.
+- Plan body: `docs/plans/YYYY-MM-DD-slug.md` carries the concrete execution plan for a planned initiative.
+- Change metadata: `docs/changes/<change-id>/change.yaml` records compact change metadata and validation ledger entries.
+- Change-local evidence: `docs/changes/<change-id>/` contains review, rationale, verification, and related lifecycle evidence.
+
 Lookup order: explicit user path or change ID; active plan, change metadata, reviewed artifact path, or current artifact metadata; known governing spec or schema constraint when directly relevant; `docs/workflows.md` artifact-location table; this skill's portable default path; block on ambiguity.
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+
+Use `docs/workflows.md` only for artifact types it specifies. If it is present but silent for a plan surface, use this skill's portable default path.
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
