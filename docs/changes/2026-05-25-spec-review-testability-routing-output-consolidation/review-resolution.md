@@ -11,11 +11,12 @@ Review closeout: spec-review-r2
 Review closeout: spec-review-r3
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `plan-review-r2`
+- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`
 - Findings resolved: 3
 - Unresolved findings: 0
-- Final result: `SRTR-SR1` and `SRTR-SR2` were accepted and resolved in the spec amendment. `spec-review-r2` and `spec-review-r3` approved the revised spec with no material findings. `SRTR-PR1` was accepted and resolved by revising the plan's M1/M2 milestone boundary. `plan-review-r2` approved the revised plan with no material findings.
+- Final result: `SRTR-SR1` and `SRTR-SR2` were accepted and resolved in the spec amendment. `spec-review-r2` and `spec-review-r3` approved the revised spec with no material findings. `SRTR-PR1` was accepted and resolved by revising the plan's M1/M2 milestone boundary. `plan-review-r2` approved the revised plan with no material findings. `code-review-m1-r1` closed M1 with no material findings.
 
 ## Resolution Overview
 
@@ -40,6 +41,18 @@ Owner: spec author
 Owning stage: spec revision
 Chosen action: Aligned the amended spec terminology around the `Immediate next stage` result field. Replaced stale "immediate next repository stage" wording where the closed enum field is meant, clarified that generic repository stage-order derivation applies only to `architecture` and `plan`, and retitled Example E6 so it uses `Immediate next stage: none`.
 Rationale: The finding is correct. The closed enum includes routing and no-handoff values that are not forward repository stages, so the spec must not use repository-stage wording for the whole field.
+Validation target: Rerun lifecycle validation, review-artifact validation, change metadata validation, whitespace checks, and spec-review.
+Validation evidence: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check -- ...` passed after the spec revision.
+
+#### SRTR-SR2
+
+Finding ID: SRTR-SR2
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec revision
+Chosen action: Added the required `Accessibility and UX` section after `Security and privacy`. The section records that this Markdown workflow-contract amendment has no graphical UI surface and that its UX surface is text clarity in skill outputs and review records.
+Rationale: The finding is correct. Current spec authoring requires the section or an explicit not-applicable rationale, and the amendment has a real text-only UX clarity concern.
 Validation target: Rerun lifecycle validation, review-artifact validation, change metadata validation, whitespace checks, and spec-review.
 Validation evidence: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check -- ...` passed after the spec revision.
 
@@ -77,14 +90,8 @@ Review closeout: closed
 
 No material findings. Clean rerun approval is recorded in `reviews/plan-review-r2.md`.
 
-#### SRTR-SR2
+### code-review-m1-r1
 
-Finding ID: SRTR-SR2
-Disposition: accepted
-Status: resolved
-Owner: spec author
-Owning stage: spec revision
-Chosen action: Added the required `Accessibility and UX` section after `Security and privacy`. The section records that this Markdown workflow-contract amendment has no graphical UI surface and that its UX surface is text clarity in skill outputs and review records.
-Rationale: The finding is correct. Current spec authoring requires the section or an explicit not-applicable rationale, and the amendment has a real text-only UX clarity concern.
-Validation target: Rerun lifecycle validation, review-artifact validation, change metadata validation, whitespace checks, and spec-review.
-Validation evidence: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check -- ...` passed after the spec revision.
+Review closeout: closed
+
+No material findings. Clean M1 implementation review is recorded in `reviews/code-review-m1-r1.md`. M1 is closed, and the remaining implementation milestones are M2 and M3.

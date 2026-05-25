@@ -26,8 +26,9 @@ tests:
   - matching test spec amended for closed routing/readiness contract
   - active test spec maintainer approval recorded
   - M1 controlled fixture validation implemented
+  - code-review-m1-r1 clean-with-notes
 review:
-  status: clean_after_plan_review_r2
+  status: clean_after_code_review_m1_r1
   unresolved_items: 0
   location: docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md
 validation:
@@ -121,6 +122,22 @@ validation:
     result: pass_reviews_6_findings_3_log_entries_6_resolution_entries_3_after_m1_state_sync
   - command: git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
     result: pass_after_m1_state_sync
+  - command: python scripts/test-skill-validator.py -k spec_review_result_fixture
+    result: pass_8_tests_during_code_review_m1_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_during_code_review_m1_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_6_findings_3_log_entries_6_resolution_entries_3_during_code_review_m1_r1
+  - command: git diff --check --
+    result: pass_during_code_review_m1_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_7_findings_3_log_entries_7_resolution_entries_3_after_code_review_m1_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_code_review_m1_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/code-review-m1-r1.md
+    result: pass_validated_3_artifact_files_after_code_review_m1_r1_recording
+  - command: git diff --check -- docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md
+    result: pass_after_code_review_m1_r1_recording
 changed_files:
   - specs/test-spec-readiness-and-skill-workflow-alignment.md
   - specs/test-spec-readiness-and-skill-workflow-alignment.test.md
@@ -136,5 +153,6 @@ changed_files:
   - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/spec-review-r3.md
   - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/plan-review-r1.md
   - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/plan-review-r2.md
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/code-review-m1-r1.md
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py

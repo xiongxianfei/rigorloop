@@ -79,3 +79,17 @@ Resolution: review-resolution.md#plan-review-r2
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 60fa43018573ca1c88fffb7f3abcedb456def904
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r1.md
+Record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
