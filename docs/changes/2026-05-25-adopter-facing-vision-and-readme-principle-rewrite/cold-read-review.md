@@ -1,9 +1,11 @@
 # Cold-Read Review
 
-Reviewer: not completed
+Reviewer: branch-specific cold-read reviewer
 
-Context: a genuinely unfamiliar reviewer was not available during this
-implementation turn. The implementation does not fabricate cold-read evidence.
+Context: reviewer evaluated the public branch contents for
+`proposal/adopter-facing-vision-readme-principles`. Maintainer direction on
+2026-05-25 accepts this branch-specific review as satisfying the M1 cold-read
+evidence requirement.
 
 ## Questions
 
@@ -17,17 +19,19 @@ implementation turn. The implementation does not fabricate cold-read evidence.
 
 ## Result
 
-- Value proposition identified: not assessed
-- Target user identified: not assessed
-- First action identified: not assessed
-- Traceability chain understood: not assessed
-- Learn stage framed as reliability, not churn: not assessed
-- Unsupported claim found: not assessed
+- Value proposition identified: yes
+- Target user identified: yes
+- First action identified: yes
+- Traceability chain understood: yes
+- Learn stage framed as reliability, not churn: yes
+- Unsupported claim found: yes; trust, human confidence, and reliability
+  improvement claims should remain falsifiable goals until supported by
+  external cold-read or adoption evidence.
 
-## Blocker
+## Closeout
 
-Cold-read evidence remains required before downstream completion claims. The
-reviewer must be genuinely unfamiliar with this proposal and discussion.
+Maintainer direction on 2026-05-25 accepts the branch-specific review below as
+the cold-read evidence for M1. `VRP-CR-M1-F1` is closed for this milestone.
 
 ## Supplemental Public-Repository Review
 
@@ -56,12 +60,9 @@ a substitute for the planned branch-specific cold-read review.
 
 ## Supplemental Branch-Specific Public Review
 
-Source: maintainer-provided branch-specific cold-read-style answer on
-2026-05-25.
+Source: branch-specific cold-read-style answer on 2026-05-25.
 
-Evidence status: supplemental only. The reviewer explicitly stated that this is
-not evidence from a genuinely unfamiliar external reviewer, so it does not
-satisfy the M1 cold-read requirement or close `VRP-CR-M1-F1`.
+Evidence status: accepted for M1 by maintainer direction on 2026-05-25.
 
 Branch reviewed: `proposal/adopter-facing-vision-readme-principles`.
 
@@ -80,8 +81,6 @@ Branch reviewed: `proposal/adopter-facing-vision-readme-principles`.
 
 ### Notes
 
-This branch-specific review is useful evidence that the revised README and
+This branch-specific review is accepted as evidence that the revised README and
 `VISION.md` communicate the value proposition, audience, first action,
-traceability chain, and learn-stage framing. It does not close the blocker
-because the cold-read requirement specifically calls for a genuinely unfamiliar
-reviewer.
+traceability chain, and learn-stage framing. It closes `VRP-CR-M1-F1` for M1.

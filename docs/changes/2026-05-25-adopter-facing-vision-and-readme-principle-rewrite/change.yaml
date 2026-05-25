@@ -10,8 +10,8 @@ requirements:
 tests:
   - proposal-review-r1
 review:
-  status: blocked_after_code_review_m1_r1
-  unresolved_items: 1
+  status: review_requested_after_cold_read_resolution
+  unresolved_items: 0
   location: docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/review-resolution.md
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite
@@ -40,6 +40,14 @@ validation:
     result: pass_after_m1_content_rewrite
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml
     result: pass_after_artifact_key_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite
+    result: pass_after_cold_read_closeout
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite
+    result: pass_after_cold_read_closeout
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml
+    result: pass_after_cold_read_closeout
+  - command: git diff --check --
+    result: pass_after_cold_read_closeout
 changed_files:
   - VISION.md
   - README.md

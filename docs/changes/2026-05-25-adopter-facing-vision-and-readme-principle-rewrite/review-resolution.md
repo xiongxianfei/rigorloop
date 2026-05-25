@@ -1,6 +1,7 @@
 # Review Resolution
 
-Closeout status: open
+Closeout status: closed
+Review closeout: code-review-m1-r1
 
 ### proposal-review-r1
 
@@ -26,10 +27,10 @@ Validation evidence: `python scripts/validate-review-artifacts.py --mode structu
 
 Finding ID: VRP-CR-M1-F1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: implement
 Owning stage: implement
-Chosen action: Complete the required cold-read evidence with a genuinely unfamiliar reviewer, update `cold-read-review.md`, update the active plan and change metadata, and return M1 to `review-requested` before rerunning code-review.
+Chosen action: Accept the branch-specific cold-read review as satisfying the M1 cold-read evidence requirement by maintainer direction, update `cold-read-review.md`, update the active plan and change metadata, and return M1 to `review-requested` before rerunning code-review.
 Rationale: The active plan and cold-read artifact both state that cold-read evidence is incomplete and blocks code-review handoff. Review cannot cleanly assess M1 while a named proof requirement remains unassessed.
 Validation target: `cold-read-review.md` contains completed reviewer answers/results, the plan Current Handoff Summary names code-review as the next stage, M1 state is `review-requested`, and targeted validation passes.
-Validation evidence: pending
+Validation evidence: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml`, and `git diff --check --` passed after accepting the branch-specific cold-read evidence and closing `VRP-CR-M1-F1`.

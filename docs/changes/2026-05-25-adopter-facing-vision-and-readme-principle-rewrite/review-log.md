@@ -38,4 +38,4 @@ Status: blocked
 Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: VRP-CR-M1-F1
-Open findings: VRP-CR-M1-F1
+Open findings: None
