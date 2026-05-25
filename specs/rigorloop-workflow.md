@@ -329,27 +329,33 @@ R7f. In v1, manual skill invocations and bugfix skill invocations remain isolate
 
 R7g. Direct invocation of `pr` remains allowed. Isolation prevents downstream continuation beyond `pr`, but it MUST NOT downgrade `pr` itself from opening a pull request when readiness passes.
 
-R7h. Workflow-facing review outputs that report both stage handoff and later-stage fitness MUST distinguish immediate next repository stage from downstream readiness.
+R7h. Workflow-facing review outputs that report both stage handoff and later-stage fitness MUST distinguish the `Immediate next stage` result field from downstream readiness.
 
-R7i. `spec-review` output MUST report review outcome, immediate next repository stage, and eventual `test-spec` readiness separately.
+R7i. `spec-review` output MUST report review outcome, `Immediate next stage`, and eventual `test-spec` readiness separately.
 
-R7j. `spec-review` immediate next repository stage MUST use only repository stages:
+R7j. `spec-review` `Immediate next stage` MUST use exactly one of:
+- `spec revision`;
+- `review-resolution`;
+- `architecture`;
+- `plan`;
+- `none`.
+
+For forward repository-stage handoff values, `spec-review` uses:
 - `architecture` when the review outcome is approved and a separate architecture step remains required;
-- `plan` when the review outcome is approved and no separate architecture step remains required;
-- `spec` when the review outcome is `changes-requested` or `blocked`;
-- omitted or explicitly empty when the review outcome is `inconclusive`.
+- `plan` when the review outcome is approved and no separate architecture step remains required.
+
+The values `spec revision`, `review-resolution`, and `none` are revision, disposition, or no-handoff routing values, not forward repository-stage handoff values.
 
 R7k. `spec-review` eventual `test-spec` readiness MUST use exactly one of:
 - `ready`;
 - `conditionally-ready`;
-- `not-ready`;
-- `not-assessed`.
+- `not-ready`.
 
 R7l. Approved `spec-review` MUST pair only with eventual `test-spec` readiness `ready` or `conditionally-ready`. `conditionally-ready` MUST name the remaining intermediate dependency or dependencies.
 
-R7m. `changes-requested` and `blocked` spec-review outcomes MUST pair with eventual `test-spec` readiness `not-ready`. `inconclusive` MUST pair with eventual `test-spec` readiness `not-assessed`.
+R7m. `changes-requested`, `blocked`, and `inconclusive` spec-review outcomes MUST pair with eventual `test-spec` readiness `not-ready`.
 
-R7n. When eventual `test-spec` readiness is `not-ready`, the output MUST state that downstream planning stops, name `spec` as the required upstream fix surface, and identify the blocking defect category. When eventual `test-spec` readiness is `not-assessed`, the output MUST record the stop condition and missing required input without naming any immediate next repository stage.
+R7n. When eventual `test-spec` readiness is `not-ready`, the output MUST state that downstream planning stops, name the required upstream fix surface as `spec revision` or `review-resolution`, and identify the blocking defect category. For inconclusive reviews, the output MUST use `Immediate next stage: none` and record the stop condition and missing required input.
 
 R7o. Missing input and blocker conditions MUST be expressed as stop conditions rather than pseudo-routing states in immediate-next-stage fields.
 
