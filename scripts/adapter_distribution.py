@@ -250,6 +250,8 @@ RELEASE_TARGETS = {
     "v0.1.4": ("final", "v0.1.4"),
     "v0.1.5": ("final", "v0.1.5"),
     "v0.2.0": ("final", "v0.1.5"),
+    "v0.3.0": ("final", "v0.1.5"),
+    "v0.3.1": ("final", "v0.1.5"),
 }
 REQUIRED_RELEASE_VALIDATION_KEYS = (
     "generated_sync",
@@ -258,9 +260,10 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "security",
 )
 TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
-ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0"})
-UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0"})
-NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4", "v0.1.5"})
+ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1"})
+UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1"})
+NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4", "v0.1.5", "v0.3.0", "v0.3.1"})
+TARGET_NATIVE_INIT_RELEASES = frozenset({"v0.3.0", "v0.3.1"})
 TOKEN_COST_RUNTIME_V2 = "skill-token-runtime-v2"
 PLACEHOLDER_RELEASE_PATTERNS = (
     "Replace this script with repository-specific release checks",
@@ -2199,6 +2202,61 @@ def _release_notes_consistency_errors(
     if first_heading != f"# RigorLoop {version}":
         errors.append(f"release notes version mismatch: expected '# RigorLoop {version}'")
 
+    if version in TARGET_NATIVE_INIT_RELEASES:
+        for adapter in SUPPORTED_ADAPTERS:
+            archive = adapter_archive_name(adapter, version)
+            if archive not in notes_text:
+                errors.append(f"{version} release notes must list adapter archive: {archive}")
+        required_phrases = {
+            "npx @xiongxianfei/rigorloop@latest init codex": (
+                f"{version} release notes must include target-native latest npm quick-start command"
+            ),
+            f"npx @xiongxianfei/rigorloop@{version.removeprefix('v')} init codex": (
+                f"{version} release notes must include target-native pinned npm command"
+            ),
+            "npx rigorloop init codex": (
+                f"{version} release notes must include target-native local rigorloop command"
+            ),
+            "init codex": (
+                f"{version} release notes must describe target-native init"
+            ),
+            "--write-state": (
+                f"{version} release notes must describe explicit state writes"
+            ),
+            "default init does not create `rigorloop.yaml` or `rigorloop.lock`": (
+                f"{version} release notes must describe default install-only state behavior"
+            ),
+            "packed-package pre-publish smoke": (
+                f"{version} release notes must require packed-package pre-publish smoke"
+            ),
+            "live registry/download post-publish smoke": (
+                f"{version} release notes must require live post-publish smoke"
+            ),
+            f"docs/reports/adapter-artifacts/releases/{version}.yaml": (
+                f"{version} release notes must identify adapter artifact metadata"
+            ),
+            f"bash scripts/release-verify.sh {version}": (
+                f"{version} release notes must name the release verification command"
+            ),
+        }
+        lowered_notes = notes_text.lower()
+        for phrase, error in required_phrases.items():
+            if phrase.lower() not in lowered_notes:
+                errors.append(error)
+        forbidden_phrases = (
+            "init --adapter",
+            "npx rigorloop init --adapter",
+            "dry-run-only install proof",
+        )
+        for phrase in forbidden_phrases:
+            if phrase in lowered_notes:
+                errors.append(f"{version} release notes must not teach {phrase}")
+        if "tracked `dist/adapters/**/skills` remain available" in notes_text:
+            errors.append(
+                f"{version} release notes must not present tracked dist/adapters skill bodies as active"
+            )
+        return errors
+
     if version in NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES:
         for adapter in SUPPORTED_ADAPTERS:
             archive = adapter_archive_name(adapter, version)
@@ -2384,6 +2442,135 @@ def _evidence_bool(value: Any) -> bool | None:
     return None
 
 
+TARGET_INIT_SMOKE_ROOTS = {
+    "codex": (".agents/skills",),
+    "claude": (".claude/skills",),
+    "opencode": (".opencode/skills", ".opencode/commands"),
+}
+PENDING_EVIDENCE_MARKERS = ("<pending", "pending", "tbd", "not run", "unknown", "none")
+
+
+def _evidence_values(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    if isinstance(value, str):
+        separators = (";", ",")
+        values = [value]
+        for separator in separators:
+            if separator in value:
+                values = value.split(separator)
+                break
+        return [item.strip() for item in values if item.strip()]
+    return []
+
+
+def _contains_pending_marker(value: Any) -> bool:
+    values = _evidence_values(value)
+    if not values and value is not None:
+        values = [str(value)]
+    return any(
+        any(marker in item.strip().lower() for marker in PENDING_EVIDENCE_MARKERS)
+        for item in values
+    )
+
+
+def _validate_target_init_smoke_row(
+    *,
+    path: Path,
+    version: str,
+    status: str,
+    target: str,
+    row: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    expected_version = version[1:]
+    expected_roots = TARGET_INIT_SMOKE_ROOTS[target]
+    expected_command = f"npx @xiongxianfei/rigorloop@{expected_version} init {target} --json"
+    expected_archive_url = (
+        f"https://github.com/xiongxianfei/rigorloop/releases/download/{version}/"
+        f"rigorloop-adapter-{target}-{version}.zip"
+    )
+    row_required = {
+        f"target_init_smoke.{target}.command": (row.get("command"), expected_command),
+        f"target_init_smoke.{target}.target": (row.get("target"), target),
+        f"target_init_smoke.{target}.npm_version": (row.get("npm_version"), expected_version),
+    }
+    for key, (actual, expected) in row_required.items():
+        if actual != expected:
+            errors.append(f"{path}: {key}: expected {expected}, found {actual}")
+    archive_url = str(row.get("official_archive_url", "")).strip()
+    if not archive_url:
+        errors.append(f"{path}: target_init_smoke row for {target} is missing public archive URL")
+    elif status == "published" and archive_url != expected_archive_url:
+        errors.append(
+            f"{path}: target_init_smoke.{target}.official_archive_url: "
+            f"expected {expected_archive_url}, found {archive_url}"
+        )
+    if not str(row.get("package_source", "")).strip():
+        errors.append(f"{path}: target_init_smoke row for {target} is missing package source")
+
+    installed_roots = _evidence_values(row.get("installed_roots"))
+    if not installed_roots:
+        errors.append(f"{path}: {version} target_init_smoke row for {target} is missing installed root(s)")
+    for expected_root in expected_roots:
+        if expected_root not in installed_roots:
+            if target == "opencode":
+                errors.append(
+                    f"{path}: {version} target_init_smoke row for opencode must name both .opencode/skills and .opencode/commands"
+                )
+                break
+            errors.append(
+                f"{path}: {version} target_init_smoke row for {target} must name installed root {expected_root}"
+            )
+
+    tree_hashes = _evidence_values(row.get("tree_hashes"))
+    if not tree_hashes:
+        errors.append(f"{path}: {version} target_init_smoke row for {target} is missing tree hash value(s)")
+    file_counts = _evidence_values(row.get("file_counts"))
+    if not file_counts:
+        errors.append(f"{path}: {version} target_init_smoke row for {target} is missing file count(s)")
+    command_summary = str(row.get("command_output_summary", "")).strip()
+    if not command_summary:
+        errors.append(f"{path}: {version} target_init_smoke row for {target} is missing command output summary")
+
+    if status == "pending-publication":
+        blocker = str(row.get("closeout_blocker", "")).strip().lower()
+        if not blocker or blocker == "none":
+            errors.append(f"{path}: pending target_init_smoke row for {target} must name live-smoke closeout blocker")
+        return errors
+
+    if status != "published":
+        return errors
+
+    published_fields = {
+        "public archive URL": row.get("official_archive_url"),
+        "installed root(s)": row.get("installed_roots"),
+        "tree hash value(s)": row.get("tree_hashes"),
+        "file count(s)": row.get("file_counts"),
+        "command output summary": row.get("command_output_summary"),
+    }
+    for field, value in published_fields.items():
+        if _contains_pending_marker(value):
+            errors.append(f"{path}: {version} published target_init_smoke row for {target} still contains pending {field}")
+    if tree_hashes and not any(re.search(r"sha256:[0-9a-f]{64}", value) for value in tree_hashes):
+        errors.append(f"{path}: {version} published target_init_smoke row for {target} must record real tree hash value(s)")
+    if file_counts and not any(re.search(r"(?:^|=)\d+$", value) for value in file_counts):
+        errors.append(f"{path}: {version} published target_init_smoke row for {target} must record real file count(s)")
+    if target == "opencode":
+        for expected_root in expected_roots:
+            if not any(value.startswith(f"{expected_root}=") for value in tree_hashes):
+                errors.append(f"{path}: {version} published target_init_smoke row for opencode must map tree hash for {expected_root}")
+            if not any(value.startswith(f"{expected_root}=") for value in file_counts):
+                errors.append(f"{path}: {version} published target_init_smoke row for opencode must map file count for {expected_root}")
+    closeout_blocker = str(row.get("closeout_blocker", "")).strip().lower()
+    if closeout_blocker != "none":
+        errors.append(f"{path}: published target_init_smoke row for {target} must record closeout_blocker: none")
+    row_blocked = _evidence_bool(row.get("post_publish_closeout_blocked"))
+    if row_blocked is not False:
+        errors.append(f"{path}: published target init smoke must clear post-publish closeout blocker for {target}")
+    return errors
+
+
 def _validate_bootstrap_tarball_identity(
     *,
     path: Path,
@@ -2444,15 +2631,20 @@ def _validate_npm_publication_evidence(
         trusted = _expect_mapping(data.get("trusted_publishing"), path, "trusted_publishing")
         bootstrap = _expect_mapping(data.get("bootstrap"), path, "bootstrap")
         npm = _expect_mapping(data.get("npm"), path, "npm")
-        adapter_smoke = _expect_mapping(data.get("adapter_install_smoke"), path, "adapter_install_smoke")
+        target_smoke = (
+            _expect_mapping(data.get("target_init_smoke"), path, "target_init_smoke")
+            if version in TARGET_NATIVE_INIT_RELEASES
+            else None
+        )
+        adapter_smoke = (
+            _expect_mapping(data.get("adapter_install_smoke"), path, "adapter_install_smoke")
+            if version not in TARGET_NATIVE_INIT_RELEASES
+            else None
+        )
     except ValueError as exc:
         return [str(exc)]
 
     expected_version = version[1:]
-    expected_archive_url = (
-        f"https://github.com/xiongxianfei/rigorloop/releases/download/{version}/"
-        f"rigorloop-adapter-codex-{version}.zip"
-    )
     required_values = {
         "publication.package": (publication.get("package"), "@xiongxianfei/rigorloop"),
         "publication.version": (publication.get("version"), expected_version),
@@ -2461,16 +2653,25 @@ def _validate_npm_publication_evidence(
         "tarball.filename": (tarball.get("filename"), f"xiongxianfei-rigorloop-{expected_version}.tgz"),
         "tarball.pack_command": (tarball.get("pack_command"), "npm pack --prefix packages/rigorloop"),
         "trusted_publishing.workflow": (trusted.get("workflow"), ".github/workflows/release.yml"),
-        "adapter_install_smoke.command": (
-            adapter_smoke.get("command"),
-            f"npx @xiongxianfei/rigorloop@{expected_version} init --adapter codex --json",
-        ),
-        "adapter_install_smoke.adapter": (adapter_smoke.get("adapter"), "codex"),
-        "adapter_install_smoke.official_archive_url": (
-            adapter_smoke.get("official_archive_url"),
-            expected_archive_url,
-        ),
     }
+    if adapter_smoke is not None:
+        expected_archive_url = (
+            f"https://github.com/xiongxianfei/rigorloop/releases/download/{version}/"
+            f"rigorloop-adapter-codex-{version}.zip"
+        )
+        required_values.update(
+            {
+                "adapter_install_smoke.command": (
+                    adapter_smoke.get("command"),
+                    f"npx @xiongxianfei/rigorloop@{expected_version} init --adapter codex --json",
+                ),
+                "adapter_install_smoke.adapter": (adapter_smoke.get("adapter"), "codex"),
+                "adapter_install_smoke.official_archive_url": (
+                    adapter_smoke.get("official_archive_url"),
+                    expected_archive_url,
+                ),
+            }
+        )
     for key, (actual, expected) in required_values.items():
         if actual != expected:
             errors.append(f"{path}: {key}: expected {expected}, found {actual}")
@@ -2481,9 +2682,42 @@ def _validate_npm_publication_evidence(
     published_by_workflow = _evidence_bool(workflow.get("published_by_workflow"))
     unsupported_tags_rejected = _evidence_bool(workflow.get("unsupported_tags_rejected"))
     npm_published = _evidence_bool(npm.get("published"))
-    fu_closeout_blocked = _evidence_bool(adapter_smoke.get("fu_010_closeout_blocked"))
-    archive_sha256_verified = _evidence_bool(adapter_smoke.get("archive_sha256_verified"))
-    tree_hash_verified = _evidence_bool(adapter_smoke.get("tree_hash_verified"))
+    if target_smoke is not None:
+        if set(target_smoke) != set(SUPPORTED_ADAPTERS):
+            errors.append(f"{path}: target_init_smoke must include exactly {SUPPORTED_ADAPTERS}")
+        for target in SUPPORTED_ADAPTERS:
+            row = target_smoke.get(target)
+            if not isinstance(row, dict):
+                errors.append(f"{path}: target_init_smoke.{target}: expected mapping")
+                continue
+            errors.extend(
+                _validate_target_init_smoke_row(
+                    path=path,
+                    version=version,
+                    status=status,
+                    target=target,
+                    row=row,
+                )
+            )
+            row_result = row.get("result")
+            row_blocked = _evidence_bool(row.get("post_publish_closeout_blocked"))
+            row_archive_sha = _evidence_bool(row.get("archive_sha256_verified"))
+            row_tree_hash = _evidence_bool(row.get("tree_hash_verified"))
+            if status == "pending-publication":
+                if row_result not in {"pending", "pending-publication"}:
+                    errors.append(f"{path}: pending publication evidence must record target_init_smoke.{target}.result: pending-publication")
+                if row_blocked is not True:
+                    errors.append(f"{path}: pending target init smoke must block post-publish closeout for {target}")
+            if status == "published":
+                if row_result != "pass":
+                    errors.append(f"{path}: published evidence must record target_init_smoke.{target}.result: pass")
+                if row_archive_sha is not True:
+                    errors.append(f"{path}: published evidence must record target_init_smoke.{target}.archive_sha256_verified: true")
+                if row_tree_hash is not True:
+                    errors.append(f"{path}: published evidence must record target_init_smoke.{target}.tree_hash_verified: true")
+    fu_closeout_blocked = _evidence_bool(adapter_smoke.get("fu_010_closeout_blocked")) if adapter_smoke is not None else None
+    archive_sha256_verified = _evidence_bool(adapter_smoke.get("archive_sha256_verified")) if adapter_smoke is not None else None
+    tree_hash_verified = _evidence_bool(adapter_smoke.get("tree_hash_verified")) if adapter_smoke is not None else None
     bootstrap_used = _evidence_bool(bootstrap.get("used"))
 
     if mode == "trusted-publishing" and published_by_workflow is not True:
@@ -2498,24 +2732,24 @@ def _validate_npm_publication_evidence(
     if tarball.get("smoke_result") not in {"pass", "pending"}:
         errors.append(f"{path}: tarball.smoke_result must be pass or pending")
 
-    adapter_result = adapter_smoke.get("result")
+    adapter_result = adapter_smoke.get("result") if adapter_smoke is not None else None
     if status == "pending-publication":
         if npm_published is not False:
             errors.append(f"{path}: pending publication evidence must record npm.published: false")
-        if adapter_result != "pending":
+        if adapter_smoke is not None and adapter_result != "pending":
             errors.append(f"{path}: pending publication evidence must record adapter_install_smoke.result: pending")
-        if fu_closeout_blocked is not True:
+        if adapter_smoke is not None and fu_closeout_blocked is not True:
             errors.append(f"{path}: pending adapter install smoke must block FU-010 closeout")
     if status == "published":
         if npm_published is not True:
             errors.append(f"{path}: published evidence must record npm.published: true")
         if not str(npm.get("package_url", "")).startswith("https://www.npmjs.com/package/@xiongxianfei/rigorloop"):
             errors.append(f"{path}: published evidence must record npm package URL")
-        if adapter_result != "pass":
+        if adapter_smoke is not None and adapter_result != "pass":
             errors.append(f"{path}: published evidence must record adapter_install_smoke.result: pass")
-        if archive_sha256_verified is not True:
+        if adapter_smoke is not None and archive_sha256_verified is not True:
             errors.append(f"{path}: published evidence must record archive_sha256_verified: true")
-        if tree_hash_verified is not True:
+        if adapter_smoke is not None and tree_hash_verified is not True:
             errors.append(f"{path}: published evidence must record tree_hash_verified: true")
         if mode == "bootstrap":
             errors.extend(

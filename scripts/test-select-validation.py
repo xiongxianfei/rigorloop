@@ -870,6 +870,8 @@ raise SystemExit({exit_code})
             "docs/changes/2026-04-25-example/behavior-preservation.md",
             "docs/changes/2026-04-25-example/adoption-surface-review.md",
             "docs/changes/2026-04-25-example/readme-ownership-proof.md",
+            "docs/changes/2026-04-25-example/vision-readme-sync-proof.md",
+            "docs/changes/2026-04-25-example/cold-read-review.md",
             "docs/changes/2026-04-25-example/repository-metadata-proof.md",
             "docs/changes/2026-04-25-example/version-sync-proof.md",
             "docs/changes/2026-04-25-example/baseline.md",
@@ -1283,6 +1285,23 @@ raise SystemExit({exit_code})
         release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
         self.assertEqual(release_check["command"], "python scripts/validate-release-ci.py --version v0.1.1")
 
+    def test_multiple_release_paths_share_one_release_validation_check(self) -> None:
+        result = self.select(
+            [
+                "docs/releases/v0.1.1/release.yaml",
+                "docs/releases/v0.1.2/release.yaml",
+            ]
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertIn("release.validate", selected_ids(payload))
+        release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
+        self.assertEqual(
+            release_check["command"],
+            "python scripts/validate-release-ci.py --version v0.1.1 v0.1.2",
+        )
+
     def test_release_evidence_markdown_path_selects_lifecycle_checklist_validation(self) -> None:
         result = run_selector("--mode", "explicit", "--path", "docs/releases/v1.2.3.md")
         payload = parse_stdout(result)
@@ -1542,6 +1561,18 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/behavior-preservation.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/vision-readme-sync-proof.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/cold-read-review.md",
                 "category": "registered-change-evidence",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
