@@ -273,6 +273,33 @@ REVIEW_FAMILY_MATERIAL_FINDING_ALLOWED_LABELS = {
     *REVIEW_FAMILY_PARSER_FIELD_LABELS,
     "needs-decision rationale",
 }
+SPEC_REVIEW_RESULT_FIELD_PATTERN = re.compile(
+    r"^\s*(?:[-*]\s*)?(?P<label>[A-Za-z][A-Za-z /_-]*):\s*(?P<value>.*?)\s*$"
+)
+SPEC_REVIEW_RESULT_ALLOWED_REVIEW_STATUSES = {
+    "approved",
+    "changes-requested",
+    "blocked",
+    "inconclusive",
+}
+SPEC_REVIEW_RESULT_ALLOWED_IMMEDIATE_STAGES = {
+    "spec revision",
+    "review-resolution",
+    "architecture",
+    "plan",
+    "none",
+}
+SPEC_REVIEW_RESULT_ALLOWED_READINESS = {
+    "ready",
+    "conditionally-ready",
+    "not-ready",
+}
+SPEC_REVIEW_RESULT_PSEUDO_ROUTING_VALUES = {
+    "blocker handling",
+    "missing-context resolution",
+    "test-spec",
+    "ready for test-spec",
+}
 REVIEW_FAMILY_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
     r"\b(?:must|should|review[- ]dimension definitions?|review[- ]dimension guidance|"
     r"severity[- ]policy|review[- ]status[- ]policy|material[- ]finding[- ]sufficiency|"
@@ -319,6 +346,105 @@ INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH = (
 INSTALLED_SKILL_PLACEMENT_WORKFLOW_REVIEW_PATH = (
     "docs/changes/<change-id>/reviews/<stage>-r<n>.md"
 )
+
+
+def _normalize_result_label(label: str) -> str:
+    return re.sub(r"[\s/_]+", "-", label.strip().lower())
+
+
+def _parse_spec_review_result_fields(text: str) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    for line in text.splitlines():
+        match = SPEC_REVIEW_RESULT_FIELD_PATTERN.match(line)
+        if not match:
+            continue
+        label = _normalize_result_label(match.group("label"))
+        fields[label] = match.group("value").strip()
+    return fields
+
+
+def validate_spec_review_result_fields(text: str) -> list[str]:
+    """Validate controlled spec-review result fixtures.
+
+    M1 uses this helper only for controlled fixtures. Canonical `spec-review`
+    skill and result-skeleton enforcement is intentionally enabled in M2, after
+    those canonical assets are updated.
+    """
+
+    fields = _parse_spec_review_result_fields(text)
+    errors: list[str] = []
+
+    review_status = fields.get("review-status")
+    immediate_stage = fields.get("immediate-next-stage")
+    readiness = fields.get("eventual-test-spec-readiness")
+    stop_condition = fields.get("stop-condition")
+    readiness_condition = (
+        fields.get("readiness-condition")
+        or fields.get("eventual-test-spec-readiness-condition")
+        or fields.get("condition")
+    )
+
+    for label, value in (
+        ("Review status", review_status),
+        ("Immediate next stage", immediate_stage),
+        ("Eventual test-spec readiness", readiness),
+        ("Stop condition", stop_condition),
+    ):
+        if value is None:
+            errors.append(f"spec-review result missing required field: {label}")
+
+    if review_status is not None and review_status not in SPEC_REVIEW_RESULT_ALLOWED_REVIEW_STATUSES:
+        errors.append(f"Review status is not an allowed value: {review_status}")
+
+    if immediate_stage is not None:
+        if immediate_stage == "test-spec":
+            errors.append("Immediate next stage must not be test-spec")
+        if (
+            immediate_stage not in SPEC_REVIEW_RESULT_ALLOWED_IMMEDIATE_STAGES
+            or immediate_stage in SPEC_REVIEW_RESULT_PSEUDO_ROUTING_VALUES
+        ):
+            errors.append(f"Immediate next stage is not an allowed value: {immediate_stage}")
+
+    if readiness is not None:
+        if readiness == "not-assessed":
+            errors.append("Eventual test-spec readiness must not be not-assessed")
+        if readiness not in SPEC_REVIEW_RESULT_ALLOWED_READINESS:
+            errors.append(f"Eventual test-spec readiness is not an allowed value: {readiness}")
+
+    if review_status == "approved":
+        if immediate_stage not in {"architecture", "plan"}:
+            errors.append("approved requires Immediate next stage architecture or plan")
+        if readiness not in {"ready", "conditionally-ready"}:
+            errors.append(
+                "approved requires Eventual test-spec readiness ready or conditionally-ready"
+            )
+
+    if review_status == "changes-requested":
+        if immediate_stage not in {"spec revision", "review-resolution"}:
+            errors.append(
+                "changes-requested requires Immediate next stage spec revision or review-resolution"
+            )
+        if readiness != "not-ready":
+            errors.append("changes-requested requires Eventual test-spec readiness not-ready")
+
+    if review_status == "blocked":
+        if immediate_stage not in {"review-resolution", "none"}:
+            errors.append("blocked requires Immediate next stage review-resolution or none")
+        if readiness != "not-ready":
+            errors.append("blocked requires Eventual test-spec readiness not-ready")
+
+    if review_status == "inconclusive":
+        if immediate_stage != "none":
+            errors.append("inconclusive requires Immediate next stage none")
+        if readiness != "not-ready":
+            errors.append("inconclusive requires Eventual test-spec readiness not-ready")
+        if stop_condition in {None, "", "none"}:
+            errors.append("inconclusive requires a concrete Stop condition")
+
+    if readiness == "conditionally-ready" and not readiness_condition:
+        errors.append("conditionally-ready requires a named condition")
+
+    return errors
 INSTALLED_SKILL_PLAN_SURFACE_PATHS = (
     "docs/workflows.md",
     "docs/plan.md",

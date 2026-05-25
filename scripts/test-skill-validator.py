@@ -1687,6 +1687,176 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertIn("Eventual test-spec readiness", result_skeleton)
         self.assertNotIn("clean-with-notes", result_skeleton)
 
+    def assertSpecReviewResultPasses(self, result_text: str) -> None:
+        errors = skill_validation.validate_spec_review_result_fields(
+            textwrap.dedent(result_text)
+        )
+        self.assertEqual(errors, [])
+
+    def assertSpecReviewResultFails(self, result_text: str, expected_text: str) -> None:
+        errors = skill_validation.validate_spec_review_result_fields(
+            textwrap.dedent(result_text)
+        )
+        self.assertTrue(errors, "expected controlled spec-review result fixture to fail")
+        self.assertIn(expected_text, "\n".join(errors))
+
+    def test_spec_review_result_fixture_accepts_allowed_immediate_next_stage_values(self) -> None:
+        fixtures = {
+            "spec revision": (
+                "Review status: changes-requested\n"
+                "Immediate next stage: spec revision\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: none\n"
+            ),
+            "review-resolution": (
+                "Review status: blocked\n"
+                "Immediate next stage: review-resolution\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: material findings require disposition\n"
+            ),
+            "architecture": (
+                "Review status: approved\n"
+                "Immediate next stage: architecture\n"
+                "Eventual test-spec readiness: conditionally-ready\n"
+                "Readiness condition: architecture must be completed before test-spec authoring\n"
+                "Stop condition: none\n"
+            ),
+            "plan": (
+                "Review status: approved\n"
+                "Immediate next stage: plan\n"
+                "Eventual test-spec readiness: ready\n"
+                "Stop condition: none\n"
+            ),
+            "none": (
+                "Review status: inconclusive\n"
+                "Immediate next stage: none\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: missing reviewer input\n"
+            ),
+        }
+
+        for stage, fixture in fixtures.items():
+            with self.subTest(stage=stage):
+                self.assertSpecReviewResultPasses(fixture)
+
+    def test_spec_review_result_fixture_rejects_test_spec_as_immediate_next_stage(self) -> None:
+        self.assertSpecReviewResultFails(
+            """
+            Review status: approved
+            Immediate next stage: test-spec
+            Eventual test-spec readiness: ready
+            Stop condition: none
+            """,
+            "Immediate next stage must not be test-spec",
+        )
+
+    def test_spec_review_result_fixture_rejects_pseudo_routing_values(self) -> None:
+        for stage in ("blocker handling", "missing-context resolution", "ready for test-spec"):
+            with self.subTest(stage=stage):
+                self.assertSpecReviewResultFails(
+                    f"""
+                    Review status: blocked
+                    Immediate next stage: {stage}
+                    Eventual test-spec readiness: not-ready
+                    Stop condition: blocker
+                    """,
+                    "Immediate next stage is not an allowed value",
+                )
+
+    def test_spec_review_result_fixture_rejects_approved_not_ready(self) -> None:
+        self.assertSpecReviewResultFails(
+            """
+            Review status: approved
+            Immediate next stage: plan
+            Eventual test-spec readiness: not-ready
+            Stop condition: none
+            """,
+            "approved requires Eventual test-spec readiness ready or conditionally-ready",
+        )
+
+    def test_spec_review_result_fixture_rejects_not_assessed_readiness(self) -> None:
+        self.assertSpecReviewResultFails(
+            """
+            Review status: inconclusive
+            Immediate next stage: none
+            Eventual test-spec readiness: not-assessed
+            Stop condition: missing reviewer input
+            """,
+            "Eventual test-spec readiness must not be not-assessed",
+        )
+
+    def test_spec_review_result_fixture_rejects_status_to_routing_contradictions(self) -> None:
+        invalid = {
+            "approved spec revision": (
+                "Review status: approved\n"
+                "Immediate next stage: spec revision\n"
+                "Eventual test-spec readiness: ready\n"
+                "Stop condition: none\n",
+                "approved requires Immediate next stage architecture or plan",
+            ),
+            "approved review-resolution": (
+                "Review status: approved\n"
+                "Immediate next stage: review-resolution\n"
+                "Eventual test-spec readiness: ready\n"
+                "Stop condition: none\n",
+                "approved requires Immediate next stage architecture or plan",
+            ),
+            "approved none": (
+                "Review status: approved\n"
+                "Immediate next stage: none\n"
+                "Eventual test-spec readiness: ready\n"
+                "Stop condition: none\n",
+                "approved requires Immediate next stage architecture or plan",
+            ),
+            "changes-requested plan": (
+                "Review status: changes-requested\n"
+                "Immediate next stage: plan\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: none\n",
+                "changes-requested requires Immediate next stage spec revision or review-resolution",
+            ),
+            "blocked architecture": (
+                "Review status: blocked\n"
+                "Immediate next stage: architecture\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: blocker\n",
+                "blocked requires Immediate next stage review-resolution or none",
+            ),
+            "inconclusive plan": (
+                "Review status: inconclusive\n"
+                "Immediate next stage: plan\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: missing input\n",
+                "inconclusive requires Immediate next stage none",
+            ),
+        }
+
+        for name, (fixture, expected) in invalid.items():
+            with self.subTest(name=name):
+                self.assertSpecReviewResultFails(fixture, expected)
+
+    def test_spec_review_result_fixture_requires_stop_condition_for_inconclusive(self) -> None:
+        self.assertSpecReviewResultFails(
+            """
+            Review status: inconclusive
+            Immediate next stage: none
+            Eventual test-spec readiness: not-ready
+            Stop condition: none
+            """,
+            "inconclusive requires a concrete Stop condition",
+        )
+
+    def test_spec_review_result_fixture_requires_condition_for_conditionally_ready(self) -> None:
+        self.assertSpecReviewResultFails(
+            """
+            Review status: approved
+            Immediate next stage: architecture
+            Eventual test-spec readiness: conditionally-ready
+            Stop condition: none
+            """,
+            "conditionally-ready requires a named condition",
+        )
+
     def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

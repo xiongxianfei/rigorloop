@@ -1,0 +1,140 @@
+change_id: 2026-05-25-spec-review-testability-routing-output-consolidation
+title: Spec-review testability routing and output consolidation
+classification: proposal-review-recording
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md
+  spec: specs/test-spec-readiness-and-skill-workflow-alignment.md
+  test_spec: specs/test-spec-readiness-and-skill-workflow-alignment.test.md
+  plan: docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md
+requirements:
+  - Record formal proposal-review evidence before downstream planning relies on the accepted proposal.
+  - Preserve the accepted routing/readiness separation and status-to-routing bindings for planning.
+  - Amend the spec-review readiness contract before planning relies on the accepted proposal.
+  - Create an active execution plan before plan-review.
+  - Record maintainer approval of the active test spec before implementation.
+tests:
+  - proposal-review-r1
+  - spec amendment ready for spec-review
+  - spec-review-r1 changes-requested with SRTR-SR1 and SRTR-SR2
+  - spec-review-r2 clean approval after SRTR-SR1 and SRTR-SR2 resolution
+  - spec-review-r3 clean approval rerun
+  - plan artifact created and indexed
+  - plan-review-r1 changes-requested with SRTR-PR1
+  - SRTR-PR1 resolved by plan revision
+  - plan-review-r2 clean approval after SRTR-PR1 resolution
+  - matching test spec amended for closed routing/readiness contract
+  - active test spec maintainer approval recorded
+  - M1 controlled fixture validation implemented
+review:
+  status: clean_after_plan_review_r2
+  unresolved_items: 0
+  location: docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md
+validation:
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md
+    result: pass_before_review_recording
+  - command: git diff --check -- docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md
+    result: pass_before_review_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/proposal-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0_after_spec_authoring
+  - command: git diff --check -- specs/test-spec-readiness-and-skill-workflow-alignment.md docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_2_findings_2_log_entries_2_resolution_entries_2_after_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/proposal-review-r1.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1
+  - command: git diff --check -- specs/test-spec-readiness-and-skill-workflow-alignment.md docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_3_findings_2_log_entries_3_resolution_entries_2_after_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_3_findings_2_log_entries_3_resolution_entries_2_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/proposal-review-r1.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/spec-review-r1.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/spec-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md
+    result: pass_validated_2_artifact_files_after_plan_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_after_plan_authoring
+  - command: git diff --check -- docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_5_findings_3_log_entries_5_resolution_entries_3_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/plan-review-r1.md
+    result: pass_validated_2_artifact_files_after_plan_review_r1
+  - command: git diff --check -- docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_5_findings_3_log_entries_5_resolution_entries_3_after_srtr_pr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_srtr_pr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/plan-review-r1.md
+    result: pass_validated_2_artifact_files_after_srtr_pr1_resolution
+  - command: git diff --check -- docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_after_srtr_pr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_6_findings_3_log_entries_6_resolution_entries_3_after_plan_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_plan_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/plan-review-r2.md
+    result: pass_validated_2_artifact_files_after_plan_review_r2
+  - command: git diff --check -- docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_after_plan_review_r2
+  - command: state-sync update
+    result: plan_and_plan_index_now_route_to_test_spec_after_plan_review_r2
+  - command: test-spec amendment
+    result: active_test_spec_routes_to_implement_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md
+    result: pass_validated_3_artifact_files_after_test_spec_amendment
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_6_findings_3_log_entries_6_resolution_entries_3_after_test_spec_amendment
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_test_spec_amendment
+  - command: git diff --check -- specs/test-spec-readiness-and-skill-workflow-alignment.test.md docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_test_spec_amendment
+  - command: test-spec approval
+    result: maintainer_approved_active_test_spec_ready_for_implement_m1
+  - command: python scripts/test-skill-validator.py -k spec_review_result_fixture
+    result: pass_expected_red_then_green_after_m1_helper
+  - command: python scripts/test-skill-validator.py
+    result: pass_180_tests_after_m1
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m1
+  - command: git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py
+    result: pass_after_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_m1_state_sync
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md
+    result: pass_validated_3_artifact_files_after_m1_state_sync
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_6_findings_3_log_entries_6_resolution_entries_3_after_m1_state_sync
+  - command: git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_m1_state_sync
+changed_files:
+  - specs/test-spec-readiness-and-skill-workflow-alignment.md
+  - specs/test-spec-readiness-and-skill-workflow-alignment.test.md
+  - docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md
+  - docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md
+  - docs/plan.md
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/spec-review-r1.md
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/spec-review-r2.md
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/spec-review-r3.md
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/plan-review-r1.md
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/plan-review-r2.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py

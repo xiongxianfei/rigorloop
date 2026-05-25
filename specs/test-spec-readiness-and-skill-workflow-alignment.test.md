@@ -1,369 +1,301 @@
-# Test-Spec Readiness And Skill Workflow Alignment test spec
+# Test-Spec Readiness And Skill Workflow Alignment Test Spec
 
 ## Status
 
-- active
+active
 
 ## Related spec and plan
 
 - Spec: `specs/test-spec-readiness-and-skill-workflow-alignment.md`
-- Related proposal: `docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
-- Plan: `docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
-- Architecture: none. The approved spec and active plan both state that no separate architecture artifact is expected for this slice.
-- Related workflow and proof surfaces:
-  - `specs/rigorloop-workflow.md`
-  - `docs/workflows.md`
-  - `AGENTS.md`
-  - `CONSTITUTION.md`
-  - `skills/spec-review/SKILL.md`
-  - `skills/test-spec/SKILL.md`
-  - `skills/workflow/SKILL.md`
-  - `skills/plan-review/SKILL.md` only if implementation finds a real wording conflict
-  - generated `.codex/skills/`
-  - `python scripts/validate-skills.py`
-  - `python scripts/test-skill-validator.py`
-  - `python scripts/test-artifact-lifecycle-validator.py`
-  - `python scripts/build-skills.py`
-  - `python scripts/validate-artifact-lifecycle.py`
-  - `python scripts/validate-change-metadata.py`
-  - `bash scripts/ci.sh`
+- Proposal: `docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md`
+- Plan: `docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md`
+- Change metadata: `docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`
+- Review evidence: `docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/spec-review-r3.md`, `docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/plan-review-r2.md`
+- Architecture/ADRs: not applicable. The approved plan states this is a localized skill-output contract, asset, validator, and generated-output change inside existing boundaries.
 
 ## Testing strategy
 
-- Use manual contract review as the primary proof method because this feature changes workflow-facing guidance, handoff wording, and repository-visible proof expectations rather than a runtime subsystem.
-- This focused test spec owns proof for:
-  - `spec-review` immediate next stage versus eventual `test-spec` readiness
-  - negative readiness output shapes for `not-ready` and `not-assessed`
-  - preserved stage-order and isolation boundaries
-  - `plan-review` preserving `test-spec` as the immediate next handoff when its wording is in scope
-  - `test-spec` preserving approved spec, spec-review findings, concrete plan, and relevant architecture or ADR inputs when needed
-- Keep `specs/rigorloop-workflow.test.md` archived unless implementation finds genuine overlap that requires an explicit follow-up update; do not revive it by default for this slice.
-- Use skill validation, generated-output drift checks, artifact-lifecycle validator fixtures, explicit-path artifact validation, and the repo-owned CI wrapper as executable proof that the contract remains structurally valid after implementation.
-- Prefer real repository surfaces over mocks or synthetic fixtures. The risk here is contract drift across workflow spec, workflow summary, and workflow-facing skills.
+- Unit strategy: add focused helper/parser tests in `scripts/test-skill-validator.py` for controlled `spec-review` result text and fixture structures.
+- Integration strategy: run skill validation and build checks against canonical `skills/spec-review/SKILL.md`, `skills/spec-review/assets/review-result-skeleton.md`, and generated local skill output.
+- End-to-end strategy: use the M3 generated-output proof to build temporary adapter archives and validate that packaged skill bodies and assets contain the updated contract.
+- Smoke strategy: run repository-owned skill, change metadata, review artifact, lifecycle, and diff hygiene commands named by the active plan.
+- Manual strategy: review touched skill text and behavior-preservation evidence for scope preservation, adjacent-skill drift, and material-finding field ownership.
+- Contract strategy: prove the closed `Immediate next stage` and `Eventual test-spec readiness` enums, status-to-routing bindings, and approval-to-readiness rule through deterministic fixtures where structurally inspectable.
+- Migration strategy: no runtime migration is required; compatibility proof is that workflow order, review statuses, finding severities, recording statuses, material-finding asset shape, and autoprogression boundaries remain unchanged.
 
 ## Requirement coverage map
 
-| Requirement IDs | Covered by | Level | Notes |
+| Requirement ID | Covered by | Level | Notes |
 | --- | --- | --- | --- |
-| `R1`, `R1a`, `R1b`, `R1c`, `R1d`, `R2`, `R2a`, `R2b`, `R2c`, `R2d`, `R2e`, `R3`, `R3a`, `R3b`, `R3c`, `R3k` | `T1` | manual | Successful `spec-review` outputs distinguish repository-stage handoff from eventual readiness |
-| `R2f`, `R2g`, `R3d`, `R3f`, `R3g`, `R3h`, `R3i` | `T2` | manual | `changes-requested` and `blocked` deny approval and route back to `spec` with explicit defect framing |
-| `R2h`, `R3e`, `R3j` | `T3` | manual | `inconclusive` uses `not-assessed`, records the stop condition, and leaves immediate next stage empty |
-| `R4`, `R4a`, `R4b`, `R4c` | `T4`, `T5` | manual | Preserved stage order, no broadened autoprogression, and isolated-stage behavior |
-| `R5`, `R5a`, `R5b` | `T5` | manual | `plan-review` preserves `test-spec` as the immediate next handoff when in scope |
-| `R6`, `R6a`, `R6b` | `T6` | manual | `test-spec` prerequisites remain intact and reject unready upstream review states |
-| `R7`, `R7a` | `T7` | manual | First-pass implementation scope stays limited to directly affected workflow-facing surfaces |
-| `R8`, `R8a` | `T7`, `T8`, `T9` | manual, integration, smoke | Validator deferral remains in place and proof comes from touched wording plus repo-owned validation |
+| `R1`, `R1a`, `R1b` | `T1`, `T4` | contract | Covers separation of routing from readiness, the closed immediate-stage enum, and forward repository-stage distinction. |
+| `R1c`, `R1d` | `T7` | manual | Confirms the focused spec remains the change contract and workflow invariant handling does not drift beyond the approved first slice. |
+| `R2`, `R2a`, `R2b`, `R2c` | `T1`, `T4` | contract | Covers result fields, review status enum, immediate-stage enum, and pseudo-routing rejection. |
+| `R2d`, `R2e`, `R2i`, `R2j` | `T3`, `T4` | contract | Covers approved status routing to `architecture` or `plan` only, and invalid cross-field pairings. |
+| `R2f`, `R2g`, `R2h` | `T3`, `T4` | contract | Covers non-approved routing to `spec revision`, `review-resolution`, or `none` and missing-input stop conditions. |
+| `R3`, `R3a`, `R3b`, `R3c` | `T2`, `T4` | contract | Covers readiness enum, approved readiness pairing, and named condition requirement. |
+| `R3d`, `R3e`, `R3f`, `R3g`, `R3h`, `R3i` | `T2`, `T3` | contract | Covers `not-ready` behavior for non-approved reviews and downstream stop behavior. |
+| `R3j`, `R3k` | `T1`, `T2`, `T3` | contract | Covers rejection of `not-assessed` readiness and `test-spec` as an immediate next stage. |
+| `R4`, `R4a`, `R4b`, `R4c` | `T6`, `T7` | manual | Preserves workflow order, plan-review handoff to `test-spec`, and isolated review behavior. |
+| `R5`, `R5a`, `R5b` | `T6` | manual | Covers `plan-review` handoff wording only if that skill is touched or drift is found. |
+| `R6`, `R6a`, `R6b` | `T6` | manual | Covers `test-spec` prerequisites and rejection of unready upstream review outcomes. |
+| `R7`, `R7a` | `T7` | manual | Covers first-pass scope boundary and prevents broad review-family normalization. |
+| `R8`, `R8a`, `R8b`, `R8c` | `T1`, `T2`, `T3`, `T4` | unit, contract | Covers deterministic fixture and canonical enforcement for routing/readiness fields where inspectable. |
+| `R8d` | `T5` | unit, manual | Covers material-finding field-label single ownership without prose overfit. |
+| `R8e` | `T7`, `T9` | manual | Confirms recorded review-artifact field enforcement remains deferred unless parser support already exists. |
+| `AC-SRTR-ROUTE-001` through `AC-SRTR-ROUTE-005` | `T1`, `T3`, `T4` | contract | Covers field naming, enum values, forward-stage distinction, stage-order derivation, and missing-input `none`. |
+| `AC-SRTR-UX-001` through `AC-SRTR-UX-004` | `T7` | manual | Confirms the approved spec's text-only UX clarity requirements remain satisfied by implementation outputs. |
 
 ## Example coverage map
 
 | Example | Covered by | Notes |
 | --- | --- | --- |
-| `E1` | `T1` | Successful `spec-review` with no architecture step names `plan` next and marks eventual readiness `ready` |
-| `E2` | `T1` | Successful `spec-review` with architecture dependency uses `architecture` next plus `conditionally-ready` |
-| `E3` | `T2` | Missing eventual readiness becomes a review failure rather than a successful handoff |
-| `E4` | `T5` | Approved `plan-review` keeps `test-spec` as the immediate next stage |
-| `E5` | `T6` | `test-spec` authoring still requires approved spec and plan context |
-| `E6` | `T3` | Missing reviewer input produces `inconclusive` and no immediate-next-stage value |
+| `E1` | `T2`, `T3`, `T4` | Approved no-architecture case uses `Immediate next stage: plan` and readiness `ready`. |
+| `E2` | `T2`, `T3`, `T4` | Approved architecture case uses `Immediate next stage: architecture` and readiness `conditionally-ready` with a named dependency. |
+| `E3` | `T2`, `T3` | Missing eventual readiness becomes `changes-requested` or `blocked`, with `not-ready` and downstream stop behavior. |
+| `E4` | `T6` | Approved plan-review keeps `test-spec` as the immediate next stage. |
+| `E5` | `T6` | Test-spec authoring still requires approved spec and plan context. |
+| `E6` | `T3` | Missing reviewer input uses `inconclusive`, `Immediate next stage: none`, readiness `not-ready`, and a stop condition. |
+| `E7` | `T3`, `T4` | Approved spec-review cannot route backward or to `test-spec`. |
 
 ## Edge case coverage
 
-- Approved `spec-review` with remaining architecture work uses immediate next stage `architecture` and eventual readiness `conditionally-ready`: `T1`
-- Approved `spec-review` with no architecture dependency uses immediate next stage `plan` and eventual readiness `ready`: `T1`
-- `changes-requested` and `blocked` never pair with `ready` or `conditionally-ready`: `T2`
-- `inconclusive` never invents a pseudo-stage such as blocker handling or missing-context resolution: `T3`
-- Direct or review-only `spec-review` remains isolated even when outputs name the next stage and downstream readiness: `T4`
-- `plan-review` may already satisfy the approved handoff wording; in that case implementation must leave it unchanged: `T5`, `T7`
-- `test-spec` authoring must still reject missing relevant architecture or ADR input when changed boundaries require it: `T6`
-- The archived `specs/rigorloop-workflow.test.md` surface stays archived unless later implementation proves a real overlap that must be updated explicitly: `T7`
-- Canonical `skills/` and generated `.codex/skills/` may drift independently, so both need proof: `T8`, `T9`
+- `Immediate next stage: test-spec` is rejected in controlled fixture coverage and canonical enforcement once enabled: `T1`, `T4`.
+- `Review status: approved` with `Eventual test-spec readiness: not-ready` is rejected: `T2`, `T4`.
+- `Review status: approved` with `Immediate next stage: spec revision`, `review-resolution`, or `none` is rejected: `T3`, `T4`.
+- `changes-requested`, `blocked`, or `inconclusive` with `Immediate next stage: architecture` or `plan` is rejected where fields are structurally inspectable: `T3`.
+- Missing reviewer input uses explicit `none`, not an empty field or `not-assessed`: `T2`, `T3`.
+- `conditionally-ready` without a named condition is rejected or manually flagged as incomplete: `T2`.
+- M1 must not enable canonical enforcement before canonical assets are changed in M2: `T1`, `T7`.
+- `assets/material-finding.md` remains the structural owner of the complete material-finding field shape: `T5`.
+- Generated adapter proof may be blocked by unavailable local tooling; the blocker and smallest next action must be recorded instead of claiming proof: `T8`.
 
 ## Test cases
 
-### T1. Successful `spec-review` outputs distinguish immediate next stage from eventual `test-spec` readiness
+### T1. Controlled fixtures enforce the immediate-stage enum
 
-- Covers: `R1`, `R1a`, `R1b`, `R1c`, `R1d`, `R2`, `R2a`, `R2b`, `R2c`, `R2d`, `R2e`, `R3`, `R3a`, `R3b`, `R3c`, `R3k`, `E1`, `E2`
-- Level: manual
-- Fixture/setup:
-  - `specs/rigorloop-workflow.md`
-  - `docs/workflows.md`
-  - `skills/spec-review/SKILL.md`
-  - `skills/workflow/SKILL.md`
+- Covers: `R1`, `R2`, `R2b`, `R2c`, `R3k`, `R8`, `R8a`, `AC-SRTR-ROUTE-001`, `AC-SRTR-ROUTE-002`
+- Level: unit
+- Fixture/setup: Controlled result fixtures in `scripts/test-skill-validator.py` or file-backed fixtures under `tests/fixtures/skills/` if the existing layout supports them.
 - Steps:
-  - Review the touched workflow spec, workflow summary, and `spec-review` guidance.
-  - Confirm successful `spec-review` output reports both:
-    - the immediate next repository stage
-    - eventual `test-spec` readiness
-  - Confirm approved output uses repository stages only for the immediate next stage.
-  - Confirm approved output with required architecture uses immediate next stage `architecture` and eventual readiness `conditionally-ready` with a named dependency.
-  - Confirm approved output without required architecture uses immediate next stage `plan` and eventual readiness `ready`.
-  - Confirm successful `spec-review` never names `test-spec` as the immediate next stage when `architecture` or `plan` still remains.
-- Expected result:
-  - Successful review output makes the handoff/readiness distinction explicit without skipping required intermediate stages.
-- Failure proves:
-  - The implementation still blurs later-stage fitness with immediate stage routing, or it leaves the enduring invariant outside the durable workflow rule.
-- Automation location:
-  - Manual review during M1.
-
-### T2. `not-ready` output denies approval and routes upstream to `spec`
-
-- Covers: `R2f`, `R2g`, `R3d`, `R3f`, `R3g`, `R3h`, `R3i`, `E3`
-- Level: manual
-- Fixture/setup:
-  - `specs/rigorloop-workflow.md`
-  - `skills/spec-review/SKILL.md`
-  - `skills/workflow/SKILL.md`
-- Steps:
-  - Review the negative `spec-review` output contract in the touched workflow and review guidance.
-  - Confirm `changes-requested` pairs with immediate next stage `spec` and eventual readiness `not-ready`.
-  - Confirm `blocked` pairs with immediate next stage `spec` and eventual readiness `not-ready`.
-  - Confirm `not-ready` output states that the spec is not approved for downstream planning.
-  - Confirm `not-ready` output names `spec` as the required upstream fix surface.
-  - Confirm `not-ready` output identifies a blocking defect category such as missing testable requirements or contradictory requirements.
-- Expected result:
-  - Missing or contradictory testable requirements stop approval and downstream planning instead of being treated as a soft warning.
-- Failure proves:
-  - The repository could still approve or continue from a spec that is not credible enough for later proof design.
-- Automation location:
-  - Manual review during M1.
-
-### T3. `not-assessed` output records the stop condition and no immediate next stage
-
-- Covers: `R2h`, `R3e`, `R3j`, `E6`
-- Level: manual
-- Fixture/setup:
-  - `specs/rigorloop-workflow.md`
-  - `skills/spec-review/SKILL.md`
-  - `skills/workflow/SKILL.md`
-- Steps:
-  - Review the missing-input path in the touched workflow and `spec-review` guidance.
-  - Confirm `inconclusive` pairs with eventual readiness `not-assessed`.
-  - Confirm the immediate next repository stage field is omitted or explicitly empty.
-  - Confirm the output records the stop condition and identifies the missing required input.
-  - Confirm no pseudo-routing states such as `blocker handling` or `missing-context resolution` appear in the immediate-next-stage field.
-- Expected result:
-  - Missing reviewer inputs stop the workflow cleanly without inventing a non-stage route.
-- Failure proves:
-  - The implementation still allows ambiguous stop behavior or pseudo-stage leakage in contributor-facing outputs.
-- Automation location:
-  - Manual review during M1.
-
-### T4. Stage order, autoprogression boundaries, and isolated `spec-review` behavior remain unchanged
-
-- Covers: `R4`, `R4a`, `R4c`
-- Level: manual
-- Fixture/setup:
-  - `specs/rigorloop-workflow.md`
-  - `docs/workflows.md`
-  - `skills/spec-review/SKILL.md`
-  - `skills/workflow/SKILL.md`
-- Steps:
-  - Compare the touched workflow surfaces against the approved focused spec.
-  - Confirm the feature preserves the existing stage order of `spec-review -> architecture when needed -> plan -> plan-review -> test-spec`.
-  - Confirm the feature does not broaden autoprogression from `spec-review` into `architecture`, `plan`, or `test-spec`.
-  - Confirm direct or review-only `spec-review` remains isolated unless a higher-priority approved workflow rule changes that behavior.
-- Expected result:
-  - The change clarifies wording without changing the repository’s approved routing and continuation boundaries.
-- Failure proves:
-  - The implementation widened the workflow instead of clarifying contributor-visible output semantics.
-- Automation location:
-  - Manual review during M1.
-
-### T5. `plan-review` preserves `test-spec` as the immediate next handoff when its wording is in scope
-
-- Covers: `R4b`, `R5`, `R5a`, `R5b`, `E4`
-- Level: manual
-- Fixture/setup:
-  - `skills/plan-review/SKILL.md`
-  - `skills/workflow/SKILL.md`
-  - `docs/workflows.md`
-- Steps:
-  - Inspect `skills/plan-review/SKILL.md` only if implementation touches it.
-  - If it is touched, confirm approved `plan-review` continues to name `test-spec` as the immediate next stage and treats any implementation-readiness wording as downstream readiness only.
-  - If it is not touched, confirm the existing wording already satisfies the approved contract and that implementation did not widen scope by editing it unnecessarily.
-- Expected result:
-  - `plan-review` either stays unchanged because it is already compliant or is aligned without obscuring `test-spec` as the immediate handoff.
-- Failure proves:
-  - The repository still blurs immediate handoff with later implementation readiness, or the slice widened without a real defect.
-- Automation location:
-  - Manual review during M1.
-
-### T6. `test-spec` authoring preserves approved upstream prerequisites
-
-- Covers: `R6`, `R6a`, `R6b`, `E5`
-- Level: manual
-- Fixture/setup:
-  - `skills/test-spec/SKILL.md`
-  - `skills/workflow/SKILL.md`
-  - `specs/test-spec-readiness-and-skill-workflow-alignment.md`
-- Steps:
-  - Review the touched `test-spec` guidance.
-  - Confirm `test-spec` authoring still requires:
-    - an approved feature spec
-    - spec-review findings
-    - a concrete execution plan
-    - approved architecture or ADR inputs when relevant to changed boundaries
-  - Confirm `test-spec` does not proceed from upstream `not-ready` or `not-assessed` review outcomes.
-  - Confirm missing approved inputs return work to the appropriate upstream gate instead of silently continuing.
-- Expected result:
-  - The proof-authoring stage stays gated by the same upstream rigor the approved spec requires.
-- Failure proves:
-  - The implementation weakened prerequisites or allowed proof authoring from an unready upstream artifact.
-- Automation location:
-  - Manual review during M1.
-
-### T7. First-pass implementation scope stays narrow and validator enforcement remains deferred
-
-- Covers: `R7`, `R7a`, `R8`, `R8a`
-- Level: manual
-- Fixture/setup:
-  - `docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
-  - touched workflow and skill surfaces
-- Steps:
-  - Review the final implementation diff against the active plan and approved spec.
-  - Confirm first-pass implementation stays limited to:
-    - `specs/rigorloop-workflow.md`
-    - `docs/workflows.md`
-    - `skills/spec-review/SKILL.md`
-    - `skills/test-spec/SKILL.md`
-    - `skills/workflow/SKILL.md`
-    - `skills/plan-review/SKILL.md` only if a real wording conflict existed
-  - Confirm no dedicated readiness-wording validator, router, or new persistence layer is introduced in v1.
-  - Confirm proof continues to rely on wording review plus the named validation surfaces rather than a new enforcement subsystem.
-- Expected result:
-  - The implementation remains inside the approved first slice and keeps validator enforcement deferred.
-- Failure proves:
-  - The slice widened into broad review-skill normalization or premature automation.
-- Automation location:
-  - Manual review during M1.
-
-### T8. Canonical and generated skill surfaces remain synchronized and structurally valid
-
-- Covers: supporting proof for `T1`-`T7`
-- Level: integration
-- Fixture/setup:
-  - touched canonical `skills/`
-  - generated `.codex/skills/`
-- Steps:
-  - Run `python scripts/validate-skills.py`.
+  - Add controlled fixtures for each allowed `Immediate next stage` value: `spec revision`, `review-resolution`, `architecture`, `plan`, and `none`.
+  - Add a controlled negative fixture with `Immediate next stage: test-spec`.
+  - Add controlled negative fixtures for pseudo-routing labels such as `blocker handling`, `missing-context resolution`, and `ready for test-spec` if practical.
   - Run `python scripts/test-skill-validator.py`.
-  - Run `python scripts/build-skills.py`.
-  - Run `python scripts/build-skills.py --check`.
-  - Confirm the touched canonical skills and generated compatibility output stay synchronized.
-- Expected result:
-  - Canonical skill guidance remains valid and generated `.codex/skills/` output stays in sync with the authored changes.
-- Failure proves:
-  - The feature changed workflow-facing skills without keeping the derived distribution surface structurally valid.
-- Automation location:
-  - `python scripts/validate-skills.py`
-  - `python scripts/test-skill-validator.py`
-  - `python scripts/build-skills.py`
-  - `python scripts/build-skills.py --check`
+- Expected result: Allowed enum values pass; `test-spec` and pseudo-routing labels fail in controlled fixture validation.
+- Failure proves: The historical direct-to-`test-spec` routing failure can recur or the enum is not structurally enforced.
+- Automation location: `scripts/test-skill-validator.py`; optional `tests/fixtures/skills/`.
 
-### T9. Artifact-lifecycle fixtures, explicit-path validation, and repo smoke stay green
+### T2. Controlled fixtures enforce eventual readiness values and approval pairing
 
-- Covers: supporting proof for touched authoritative artifacts and repo-owned smoke validation
-- Level: integration, smoke
-- Fixture/setup:
-  - `docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
-  - `specs/test-spec-readiness-and-skill-workflow-alignment.md`
-  - `specs/test-spec-readiness-and-skill-workflow-alignment.test.md`
-  - `specs/rigorloop-workflow.md`
-  - `docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
-  - `docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/change.yaml` once created
-  - repo-owned validation wrapper
+- Covers: `R3`, `R3a`, `R3b`, `R3c`, `R3d`, `R3e`, `R3f`, `R3g`, `R3h`, `R3i`, `R3j`, `R8b`, `E1`, `E2`, `E3`, `E6`
+- Level: unit
+- Fixture/setup: Controlled `spec-review` result fixtures.
 - Steps:
-  - Run `python scripts/test-artifact-lifecycle-validator.py`.
-  - Run `python scripts/validate-change-metadata.py docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/change.yaml` once the baseline change-local pack exists.
-  - Run `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/rigorloop-workflow.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`.
-  - Run `bash scripts/ci.sh` after implementation lands.
-  - Confirm the touched lifecycle-managed artifacts stay internally consistent and the standard smoke path still passes.
-- Expected result:
-  - The authoritative artifacts remain lifecycle-valid, the validator fixtures stay green, and the repository smoke path continues to pass after the workflow-contract changes.
-- Failure proves:
-  - The feature left stale lifecycle state behind or broke a required repo-owned validation surface.
-- Automation location:
-  - `python scripts/test-artifact-lifecycle-validator.py`
-  - `python scripts/validate-change-metadata.py docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/change.yaml`
-  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/rigorloop-workflow.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
-  - `bash scripts/ci.sh`
+  - Add positive fixtures for `Review status: approved` with readiness `ready` and `conditionally-ready`.
+  - Add a negative fixture for `Review status: approved` with `Eventual test-spec readiness: not-ready`.
+  - Add a negative fixture for readiness `not-assessed`.
+  - Add a negative or manual-contract fixture for `conditionally-ready` without a named condition when the validator can inspect condition text.
+  - Run `python scripts/test-skill-validator.py`.
+- Expected result: Approved results require `ready` or `conditionally-ready`; `not-ready` and `not-assessed` fail for approved results; conditional readiness names the condition where inspectable.
+- Failure proves: The readiness field can become a rubber stamp or an unassessed escape hatch.
+- Automation location: `scripts/test-skill-validator.py`; optional `tests/fixtures/skills/`.
+
+### T3. Controlled fixtures enforce status-to-routing bindings and missing-input behavior
+
+- Covers: `R2d`, `R2e`, `R2f`, `R2g`, `R2h`, `R2i`, `R2j`, `R3d`, `R3e`, `R3i`, `R3j`, `E3`, `E6`, `E7`, `AC-SRTR-ROUTE-003`, `AC-SRTR-ROUTE-004`, `AC-SRTR-ROUTE-005`
+- Level: unit
+- Fixture/setup: Controlled `spec-review` result fixtures.
+- Steps:
+  - Add positive fixtures for approved results routing to `architecture` and `plan`.
+  - Add negative fixtures for approved results routing to `spec revision`, `review-resolution`, `none`, or `test-spec`.
+  - Add positive fixtures for `changes-requested` routing to `spec revision` or `review-resolution`.
+  - Add positive fixtures for `blocked` routing to `review-resolution` or `none`.
+  - Add a positive missing-input fixture with `Review status: inconclusive`, `Immediate next stage: none`, `Eventual test-spec readiness: not-ready`, and a stop condition.
+  - Add negative fixtures for non-approved statuses routing to `architecture` or `plan`.
+  - Run `python scripts/test-skill-validator.py`.
+- Expected result: Status-to-routing contradictions fail, and missing input uses the explicit `none` value with `not-ready` and a stop condition.
+- Failure proves: The new routing field can contradict review status or reintroduce empty/missing immediate-stage behavior.
+- Automation location: `scripts/test-skill-validator.py`; optional `tests/fixtures/skills/`.
+
+### T4. Canonical spec-review skill and result skeleton enforce the contract
+
+- Covers: `R1`, `R1a`, `R1b`, `R2`, `R2a-R2j`, `R3`, `R3a-R3k`, `R8a`, `R8b`, `R8c`, `E1`, `E2`, `E7`
+- Level: integration
+- Fixture/setup: `skills/spec-review/SKILL.md`, `skills/spec-review/assets/review-result-skeleton.md`, and M1 helper checks.
+- Steps:
+  - Update canonical `spec-review` skill text and result skeleton in M2.
+  - Enable canonical enforcement only after the canonical assets are updated.
+  - Run `python scripts/test-skill-validator.py`.
+  - Run `python scripts/validate-skills.py skills/spec-review/SKILL.md`.
+  - Run `python scripts/validate-skills.py`.
+  - Run `python scripts/build-skills.py --check`.
+- Expected result: Canonical skill and skeleton expose `Immediate next stage`, `Eventual test-spec readiness`, and `Stop condition` distinctly; direct `test-spec` routing and approved/not-ready contradictions fail validation.
+- Failure proves: Controlled fixtures pass but the shipped canonical skill still teaches the wrong output contract.
+- Automation location: `scripts/skill_validation.py`, `scripts/test-skill-validator.py`, `scripts/validate-skills.py`, `scripts/build-skills.py`.
+
+### T5. Material-finding field shape has one structural owner
+
+- Covers: `R8d`
+- Level: unit, manual
+- Fixture/setup: `skills/spec-review/SKILL.md`, `skills/spec-review/assets/material-finding.md`, and validator helper support if feasible.
+- Steps:
+  - Confirm `assets/material-finding.md` still contains the complete required material-finding field-label set.
+  - Confirm `SKILL.md` preserves the material-finding sufficiency rule.
+  - Confirm `SKILL.md` does not re-enumerate the complete material-finding field-label set in a second prose block.
+  - Add a targeted structural single-ownership validator check if feasible without exact-prose overfitting.
+  - Run `python scripts/test-skill-validator.py` and `python scripts/validate-skills.py`.
+- Expected result: The asset owns field structure; the skill may reference the asset and sufficiency rule without duplicating the full field shape.
+- Failure proves: The drift surface remains because field shape is still duplicated or the asset no longer owns the complete structure.
+- Automation location: `scripts/test-skill-validator.py` if feasible; otherwise manual contract evidence in code review and behavior-preservation proof.
+
+### T6. Adjacent plan-review and test-spec prerequisites remain intact
+
+- Covers: `R4b`, `R5`, `R5a`, `R5b`, `R6`, `R6a`, `R6b`, `E4`, `E5`
+- Level: manual
+- Fixture/setup: `skills/plan-review/SKILL.md`, `skills/test-spec/SKILL.md`, active plan, and approved spec-review evidence.
+- Steps:
+  - Inspect `skills/plan-review/SKILL.md` only if implementation touches it or validation shows direct drift.
+  - Confirm approved `plan-review` still routes immediately to `test-spec`.
+  - Inspect `skills/test-spec/SKILL.md` only if implementation touches it or validation shows direct drift.
+  - Confirm `test-spec` authoring still requires an approved spec, spec-review findings, concrete execution plan, and approved architecture or ADR inputs when relevant.
+  - Confirm `test-spec` authoring rejects upstream `not-ready` spec-review outcomes and returns work to the appropriate upstream gate.
+- Expected result: The change does not obscure `plan-review -> test-spec` or weaken `test-spec` prerequisites.
+- Failure proves: The implementation fixed `spec-review` while moving the routing/readiness confusion into adjacent stages.
+- Automation location: Manual review during M2 and code-review.
+
+### T7. Scope, workflow order, isolation, and UX clarity are preserved
+
+- Covers: `R1c`, `R1d`, `R4`, `R4a`, `R4c`, `R7`, `R7a`, `R8e`, `AC-SRTR-UX-001` through `AC-SRTR-UX-004`
+- Level: manual
+- Fixture/setup: Active plan, approved spec, touched skill files, `docs/workflows.md` if touched, and behavior-preservation evidence.
+- Steps:
+  - Compare the final diff to the active plan's first-slice boundary.
+  - Confirm no broad review-family rewrite, workflow stage-order change, autoprogression expansion, or new lifecycle stage was introduced.
+  - Confirm direct or review-only `spec-review` remains isolated by default.
+  - Confirm recorded review-artifact result-field validation is deferred unless the existing parser can inspect those fields without broad parser redesign.
+  - Confirm Markdown output clarity remains the UX surface and the implementation does not introduce irrelevant graphical UI requirements.
+- Expected result: The implementation clarifies the output contract without changing workflow topology or expanding scope.
+- Failure proves: The slice drifted from output-contract consolidation into broader workflow redesign.
+- Automation location: Manual review during M2/M3, code-review, and verify.
+
+### T8. Generated local skills and public adapter proof include updated spec-review content
+
+- Covers: `R4`, `R4a`, `R4b`, `R4c`, `R7`, `R7a`, `R8e`
+- Level: integration, e2e
+- Fixture/setup: Canonical `skills/`, temporary adapter output directory, and current adapter version from repository release guidance or manifest.
+- Steps:
+  - Run `python scripts/build-skills.py --check`.
+  - Build temporary adapter archives with `python scripts/build-adapters.py --version <version> --output-dir <tmpdir>`.
+  - Validate temporary adapter output with `python scripts/validate-adapters.py --root <tmpdir> --version <version>`.
+  - Inspect generated Codex, Claude, and opencode adapter content for the updated `spec-review` skill body and result skeleton.
+  - If local tooling is unavailable, record the blocker and smallest next action instead of claiming generated-output proof.
+- Expected result: Generated outputs are current from canonical `skills/` and include the updated routing/readiness contract.
+- Failure proves: Canonical source and shipped adapter surfaces can diverge.
+- Automation location: `scripts/build-skills.py`, `scripts/build-adapters.py`, `scripts/validate-adapters.py`, bounded archive-content checks.
+
+### T9. Lifecycle, review, metadata, and diff hygiene validation remain green
+
+- Covers: supporting proof for all requirements and touched lifecycle artifacts
+- Level: smoke
+- Fixture/setup: Active change-local artifact pack and touched lifecycle artifacts.
+- Steps:
+  - Run `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`.
+  - Run `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation` when findings are closed.
+  - Run `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`.
+  - Run explicit-path lifecycle validation for touched spec, test spec, plan, plan index, changed skill assets, behavior-preservation evidence when created, and change-local review artifacts.
+  - Run `git diff --check -- <touched files>`.
+- Expected result: Lifecycle-managed artifacts, review evidence, change metadata, and diff hygiene are valid after each milestone.
+- Failure proves: The implementation may be behaviorally correct but leaves stale lifecycle or review state that blocks PR readiness.
+- Automation location: `scripts/validate-review-artifacts.py`, `scripts/validate-change-metadata.py`, `scripts/validate-artifact-lifecycle.py`, `git diff --check --`.
 
 ## Fixtures and data
 
-- Real repository workflow and proof surfaces:
-  - `specs/test-spec-readiness-and-skill-workflow-alignment.md`
-  - `specs/rigorloop-workflow.md`
-  - `docs/workflows.md`
-  - `AGENTS.md`
-  - `CONSTITUTION.md`
+- Controlled result fixtures for valid and invalid `spec-review` output field combinations.
+- Canonical authored skill and asset files:
   - `skills/spec-review/SKILL.md`
+  - `skills/spec-review/assets/review-result-skeleton.md`
+  - `skills/spec-review/assets/material-finding.md`
+- Adjacent skills only when directly touched or drift is proven:
+  - `skills/plan-review/SKILL.md`
   - `skills/test-spec/SKILL.md`
-  - `skills/workflow/SKILL.md`
-  - `skills/plan-review/SKILL.md` when touched
-  - generated `.codex/skills/`
-- The active plan acts as a proof fixture for first-pass scope, validation commands, and the conditional `plan-review` touch rule:
-  - `docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
+- Lifecycle and review artifacts:
+  - `specs/test-spec-readiness-and-skill-workflow-alignment.md`
+  - `specs/test-spec-readiness-and-skill-workflow-alignment.test.md`
+  - `docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md`
+  - `docs/plan.md`
+  - `docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/`
+- Temporary generated adapter output under `/tmp` for M3.
 
 ## Mocking/stubbing policy
 
-- No mocks or stubs are needed.
-- Use real repository files and repo-owned validation scripts because the contract is about contributor-visible workflow behavior and proof surfaces, not isolated function logic.
+- Prefer controlled text fixtures and real repository files over mocks.
+- Do not mock canonical skill files; canonical enforcement must inspect actual `skills/` content after M2 updates it.
+- Do not mock generated adapter archives in M3; use repository-owned build output or record a tooling blocker.
 
 ## Migration or compatibility tests
 
-- Manual verification that the implementation preserves compatibility with the current workflow baseline:
-  - the canonical stage order remains unchanged
-  - no new autoprogression is implied from `spec-review`
-  - the archived `specs/rigorloop-workflow.test.md` surface is not silently reopened
-  - older wording that treated `test-spec` as the immediate next stage after `spec-review` is replaced or removed where touched
+- Confirm no runtime migration, persistent state migration, or user data migration is introduced.
+- Confirm review status values, finding severity values, recording status values, material-finding asset shape, workflow order, and autoprogression boundaries remain unchanged.
+- Confirm generated-output validation uses temporary output and does not hand-edit tracked public adapter archives.
 
 ## Observability verification
 
-- Manual review must be able to determine from touched workflow-facing outputs:
-  - the immediate next repository stage
-  - eventual `test-spec` readiness
-  - when approval is denied for downstream planning
-  - when a stop condition prevented readiness assessment
-- Manual review must be able to tell whether `plan-review` preserved `test-spec` as the immediate next handoff when its wording is in scope.
+- `spec-review` output exposes `Review status`, `Immediate next stage`, `Eventual test-spec readiness`, and `Stop condition`.
+- Validator failures identify invalid routing/readiness combinations by field value rather than broad prose scoring.
+- Behavior-preservation evidence records approval readiness, routing, readiness, material findings, recording, statuses, severities, and generated-output proof.
+- Change metadata records validation commands and results for each lifecycle gate and milestone.
 
 ## Security/privacy verification
 
-- Confirm the wording change does not introduce any new network dependency, secret handling path, or destructive workflow action.
-- Confirm examples and review-output wording do not encourage exposing credentials, secrets, or sensitive runtime values while naming missing inputs or blockers.
-- Confirm the change does not weaken higher-priority repository policies for sensitive workflow decisions.
+- Confirm the change introduces no new secret handling, credential path, network dependency, or destructive action.
+- Confirm review-output examples and validation fixtures do not include secrets or sensitive runtime values.
+- Confirm no higher-priority security or privacy policy is weakened while editing workflow-facing skills.
 
 ## Performance checks
 
-- Not applicable. This feature changes workflow wording and proof surfaces, not runtime performance.
+- No runtime performance checks are required.
+- Validator additions should remain bounded to deterministic field/fixture checks and avoid broad natural-language scoring or expensive repository-wide parsing beyond existing validation commands.
 
 ## Manual QA checklist
 
-- [ ] Successful `spec-review` output distinguishes immediate next stage from eventual `test-spec` readiness.
-- [ ] Approved `spec-review` with architecture dependency uses immediate next stage `architecture` and eventual readiness `conditionally-ready` with a named dependency.
-- [ ] Approved `spec-review` without architecture dependency uses immediate next stage `plan` and eventual readiness `ready`.
-- [ ] Approved `spec-review` never pairs with `not-ready` or `not-assessed`.
-- [ ] `changes-requested` and `blocked` pair with `not-ready`, immediate next stage `spec`, and explicit upstream-fix wording.
-- [ ] `inconclusive` pairs with `not-assessed`, records the stop condition and missing input, and leaves the immediate-next-stage field empty.
-- [ ] Direct or review-only `spec-review` remains isolated.
-- [ ] `plan-review` preserves `test-spec` as the immediate next handoff when in scope, or remains untouched because it was already compliant.
-- [ ] `test-spec` guidance still requires approved spec, spec-review findings, concrete plan, and relevant architecture or ADR inputs when needed.
-- [ ] No validator or routing subsystem is introduced in v1.
-- [ ] Skill, lifecycle, and smoke validation commands named in the active plan are all represented on the implementation proof path.
+- [ ] `Immediate next stage` enum is exactly `spec revision`, `review-resolution`, `architecture`, `plan`, and `none`.
+- [ ] `Immediate next stage: test-spec` fails controlled fixture validation and canonical enforcement after M2.
+- [ ] `Eventual test-spec readiness` enum is exactly `ready`, `conditionally-ready`, and `not-ready`.
+- [ ] `not-assessed` is not accepted as eventual readiness.
+- [ ] `approved` pairs only with `ready` or `conditionally-ready`.
+- [ ] `conditionally-ready` names its remaining condition.
+- [ ] Missing reviewer input uses `inconclusive`, `Immediate next stage: none`, `Eventual test-spec readiness: not-ready`, and a stop condition.
+- [ ] `approved` routes only to `architecture` or `plan`.
+- [ ] Non-approved statuses do not route to `architecture` or `plan`.
+- [ ] `assets/material-finding.md` remains the field-shape owner and `SKILL.md` does not duplicate the complete field-label list.
+- [ ] `plan-review` remains the immediate handoff to `test-spec` if its wording is in scope.
+- [ ] `test-spec` prerequisites remain approved spec, spec-review findings, concrete plan, and relevant approved architecture/ADR inputs.
+- [ ] No workflow-order, autoprogression, review-status, severity, recording-status, or broad review-family changes are introduced.
+- [ ] Generated-output proof uses canonical source and temporary adapter output.
 
-## What not to test
+## What not to test and why
 
-- Do not invent executable product or unit tests for runtime code; this feature is intentionally workflow-contract driven.
-- Do not treat a dedicated readiness-wording validator as part of v1 proof.
-- Do not revive or expand the archived `specs/rigorloop-workflow.test.md` surface unless implementation reveals genuine overlap that requires a separate explicit update.
-- Do not test broader review-stage normalization outside the approved first-pass scope.
+- Do not add runtime product tests; this change affects workflow-facing skills, assets, validators, and generated documentation.
+- Do not test every review-family skill; the approved first slice is scoped to `spec-review` plus adjacent-skill drift only when directly proven.
+- Do not require recorded review-artifact result-field enforcement unless existing parser support can inspect those fields without broad redesign.
+- Do not use snapshot-only tests for the behavior contract; field-level assertions and controlled fixtures are required.
+- Do not hand-edit or assert tracked public adapter package skill bodies; generated proof must come from repository-owned build/validation commands.
 
 ## Uncovered gaps
 
-- None. The approved spec and active plan are specific enough to support focused manual and repo-owned structural proof without returning to spec or architecture.
+None. The approved spec and plan are precise enough for implementation proof. Recorded review-artifact result-field enforcement is intentionally deferred by `R8e` unless parser support already exists.
 
 ## Next artifacts
 
-- `pr`
-- downstream merge-closeout lifecycle updates if later stages continue
+- implement M1
+- code-review M1
+- implement M2
+- code-review M2
+- implement M3
+- code-review M3
+- explain-change
+- verify
+- pr
 
 ## Follow-on artifacts
 
@@ -371,8 +303,8 @@ None yet.
 
 ## Readiness
 
-This test spec is active.
+This test spec is active and ready to govern implementation.
 
-It remained aligned through implementation, first-pass `code-review`, `verify`, and `explain-change` for `docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`.
+Immediate next stage: implement M1.
 
-The next stage is `pr`.
+Implementation readiness: ready for M1 only. M2 and M3 remain gated by M1 closeout and their milestone-specific validation.
