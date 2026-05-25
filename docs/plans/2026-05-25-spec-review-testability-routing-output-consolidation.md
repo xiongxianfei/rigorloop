@@ -69,13 +69,13 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 ## Current Handoff Summary
 
 - Current milestone: M2
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: M1 closed by code-review-m1-r1 with no material findings
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Review status: implementation complete for M2; code-review pending
+- Remaining in-scope implementation milestones: M2 review, M3
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2, M3, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 code-review, M3, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -135,7 +135,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 
 ### M2. Canonical Spec-Review Skill and Asset Contract
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Update canonical `spec-review` skill guidance and `review-result-skeleton.md` so routing and readiness are separate closed fields and material-finding field ownership is de-duplicated.
 - Requirements: R1, R1a, R1b, R2, R2a-R2j, R3, R3a-R3k, R4, R4a-R4c, R5, R6, R7, R7a, R8d, AC-SRTR-ROUTE-001 through AC-SRTR-ROUTE-005
 - Files/components likely touched:
@@ -144,6 +144,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
   - `skills/spec-review/assets/material-finding.md` only if parity review finds a structural defect
   - `skills/plan-review/SKILL.md` only if direct drift is found against R5
   - `skills/test-spec/SKILL.md` only if direct drift is found against R6
+  - `specs/rigorloop-workflow.md` only if direct invariant drift is found against R1c/R7
   - `docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/behavior-preservation.md`
   - `docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`
   - this plan and `docs/plan.md`
@@ -173,6 +174,16 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path skills/spec-review/SKILL.md --path skills/spec-review/assets/review-result-skeleton.md --path skills/spec-review/assets/material-finding.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`
   - `git diff --check -- skills/spec-review/SKILL.md skills/spec-review/assets/review-result-skeleton.md skills/spec-review/assets/material-finding.md docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md`
 - Expected observable result: `spec-review` teaches one routing contract and one readiness contract, and the result skeleton makes the wrong immediate route structurally invalid.
+- Implementation evidence:
+  - Added canonical `spec-review` routing/readiness validation in `scripts/skill_validation.py`.
+  - Added canonical and negative fixture tests in `scripts/test-skill-validator.py`.
+  - Updated `skills/spec-review/SKILL.md` with one consolidated routing/readiness section.
+  - Updated `skills/spec-review/assets/review-result-skeleton.md` with closed `Immediate next stage`, `Eventual test-spec readiness`, and `Stop condition` fields.
+  - Left `skills/spec-review/assets/material-finding.md` unchanged and removed the duplicate full material-finding field list from `SKILL.md`.
+  - Updated `skills/test-spec/SKILL.md` to remove stale `not-assessed` readiness wording.
+  - Updated `specs/rigorloop-workflow.md` because the durable workflow invariant still contained the old empty-route and `not-assessed` contract.
+  - Checked `skills/plan-review/SKILL.md`; no edit was required because it preserves `Immediate next stage: <test-spec | plan revision | blocked>` and treats implementation readiness as downstream.
+  - Created behavior-preservation evidence for M2.
 - Commit message: `M2: separate spec-review routing and readiness output`
 - Milestone closeout:
   - validation passed
@@ -298,6 +309,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-25: Maintainer approved the active test spec; implementation M1 remains next.
 - 2026-05-25: M1 implementation added controlled result-field fixture validation and is ready for code-review.
 - 2026-05-25: Code-review-m1-r1 closed M1 with no material findings; next stage is implement M2.
+- 2026-05-25: M2 implementation separated canonical `spec-review` routing/readiness output, enabled canonical validation, updated direct `test-spec` and workflow-spec drift, and is ready for code-review.
 
 ## Decision log
 
@@ -309,12 +321,14 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 | 2026-05-25 | Treat architecture as not required. | The change does not alter runtime architecture, persistence, APIs, deployment, security boundaries, or hard-to-reverse technical design. | Create an architecture artifact for a localized skill/output-contract change. |
 | 2026-05-25 | Keep M1 separate but fixture-scoped after plan-review-r1. | This preserves TDD-oriented fixture/parser work while giving M1 a passable validation boundary before code-review. | Combine M1 and M2; make M1 a red-test milestone with no code-review closeout. |
 | 2026-05-25 | Keep canonical spec-review enforcement disabled in M1. | M1 is scoped to controlled fixture/parser scaffolding; M2 updates canonical `spec-review` assets and enables canonical enforcement. | Enable canonical checks before updating canonical assets. |
+| 2026-05-25 | Update `specs/rigorloop-workflow.md` in M2. | The durable workflow invariant still contained the old `not-assessed`, `spec`, and empty immediate-stage wording, so R1c/R7 required direct alignment. | Leave stale workflow invariant for a later milestone. |
 
 ## Surprises and discoveries
 
 - The existing matching test spec is stale relative to the approved 2026-05-25 amendment and must be updated before implementation.
 - M1 cannot enable canonical skill enforcement before M2 updates the canonical skill and result skeleton without creating an intentionally failing implementation milestone.
 - Controlled fixture validation can cover the historical routing/readiness failures without inspecting unchanged canonical skill assets.
+- M2 found direct adjacent drift in `skills/test-spec/SKILL.md` and `specs/rigorloop-workflow.md`; `skills/plan-review/SKILL.md` already preserves the immediate `test-spec` handoff and downstream implementation-readiness distinction.
 
 ## Validation notes
 
@@ -324,12 +338,14 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-25: M1 targeted validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, and `git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py`.
 - 2026-05-25: M1 lifecycle validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, and focused `git diff --check -- ...`.
 - 2026-05-25: Code-review-m1-r1 reran `python scripts/test-skill-validator.py -k spec_review_result_fixture`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, and `git diff --check --`; all passed.
+- 2026-05-25: M2 targeted validation passed: `python scripts/test-skill-validator.py -k spec_review`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py skills/spec-review/SKILL.md`, `python scripts/validate-skills.py skills/test-spec/SKILL.md`, `python scripts/validate-skills.py`, and `python scripts/build-skills.py --check`.
+- 2026-05-25: M2 lifecycle validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and focused `git diff --check -- ...`. The lifecycle validator reported pre-existing lifecycle-language warnings in `specs/rigorloop-workflow.md`; no M2 blocker was reported.
 
 ## Outcome and retrospective
 
-- Pending downstream implementation and code-review for M2 and M3, explain-change, verify, and PR handoff.
+- Pending downstream code-review for M2, implementation and code-review for M3, explain-change, verify, and PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M2`. Readiness is not Done; M2, M3, explain-change, verify, and PR gates remain.
+- Ready for `code-review M2`. Readiness is not Done; M2 review, M3, explain-change, verify, and PR gates remain.

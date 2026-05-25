@@ -16,16 +16,14 @@
 - Review log: <review log path or blocked>
 - Review resolution: <review resolution path or not-required or blocked>
 - Open blockers: <open blockers or none>
-- Immediate next stage: <immediate next stage or empty when inconclusive>
+- Immediate next stage: <spec revision | review-resolution | architecture | plan | none>
+- Eventual test-spec readiness: <ready | conditionally-ready | not-ready>
+- Stop condition: <none or exact stop condition>
+
+`Immediate next stage` is the routing field; allowed values exclude `test-spec`.
+Use `Eventual test-spec readiness` to assess whether test-spec authoring will
+be possible after required routing stages.
 
 ## Findings
 
 <material finding blocks or none>
-
-## Eventual test-spec readiness
-
-<test-spec readiness>
-
-## Stop condition
-
-<stop condition or none>

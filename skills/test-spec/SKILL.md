@@ -27,7 +27,7 @@ The test spec defines how the team will know the implementation satisfies the be
 Stop and report the blocker instead of producing a test spec when:
 
 - the source spec is unreviewed or unstable, unless the user explicitly requests isolated test-planning output and the limitation is recorded;
-- the relevant spec-review outcome explicitly marked eventual `test-spec` readiness as `not-ready` or `not-assessed`.
+- the relevant spec-review outcome explicitly marked eventual `test-spec` readiness as `not-ready`.
 
 ## Inputs to read
 

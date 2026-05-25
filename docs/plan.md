@@ -10,7 +10,7 @@ Index policy:
 -->
 
 ## Active
-- [2026-05-25 Spec-Review Testability Routing and Output Consolidation](plans/2026-05-25-spec-review-testability-routing-output-consolidation.md) - active execution plan for separating `spec-review` immediate routing from eventual test-spec readiness; M1 closed after clean code-review and implement M2 is next.
+- [2026-05-25 Spec-Review Testability Routing and Output Consolidation](plans/2026-05-25-spec-review-testability-routing-output-consolidation.md) - active execution plan for separating `spec-review` immediate routing from eventual test-spec readiness; M2 implementation is complete and code-review M2 is next.
 - [2026-05-25 Adopter-Facing Vision and README Principle Rewrite](plans/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite.md) - PR #94 merged into `release/v0.3.1`; included in release-to-main PR #95; blockers: none.
 - [2026-05-24 Target-Native Init Commands](plans/2026-05-24-target-native-init-commands.md) - active execution plan for implementing the 0.3.0 target-native `rigorloop init <target>` contract, default install-only behavior, explicit `--write-state`, target-oriented state schemas, release-smoke hardening, and docs/package updates; M1 is closed after clean code-review-r2, M2 is closed after clean code-review-r4, M3 is closed after clean code-review-r6, M4 is closed after clean code-review-r7, final verify passed, and PR handoff is next.
 - [2026-05-25 Installed-Skill Artifact Placement Contract](plans/2026-05-25-installed-skill-artifact-placement-contract.md) - PR #93 open for hosted CI and human review after local final verify; blockers: none.

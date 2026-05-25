@@ -187,6 +187,8 @@ SPEC_REVIEW_ASSET_APPROVED_LABELS = {
     "review-resolution",
     "open-blockers",
     "immediate-next-stage",
+    "eventual-test-spec-readiness",
+    "stop-condition",
     "finding-id",
     "severity",
     "location",
@@ -364,12 +366,7 @@ def _parse_spec_review_result_fields(text: str) -> dict[str, str]:
 
 
 def validate_spec_review_result_fields(text: str) -> list[str]:
-    """Validate controlled spec-review result fixtures.
-
-    M1 uses this helper only for controlled fixtures. Canonical `spec-review`
-    skill and result-skeleton enforcement is intentionally enabled in M2, after
-    those canonical assets are updated.
-    """
+    """Validate structurally inspectable spec-review result fields."""
 
     fields = _parse_spec_review_result_fields(text)
     errors: list[str] = []
@@ -443,6 +440,173 @@ def validate_spec_review_result_fields(text: str) -> list[str]:
 
     if readiness == "conditionally-ready" and not readiness_condition:
         errors.append("conditionally-ready requires a named condition")
+
+    return errors
+
+
+def _placeholder_values(value: str | None) -> set[str]:
+    if value is None:
+        return set()
+    stripped = value.strip()
+    if stripped.startswith("<") and stripped.endswith(">"):
+        stripped = stripped[1:-1]
+    return {part.strip() for part in stripped.split("|") if part.strip()}
+
+
+def _sectionless_text(body: str, heading: str) -> str:
+    lines = body.splitlines()
+    result: list[str] = []
+    skipping = False
+    marker = f"## {heading}"
+    for line in lines:
+        if line.strip() == marker:
+            skipping = True
+            continue
+        if skipping and line.startswith("## "):
+            skipping = False
+        if not skipping:
+            result.append(line)
+    return "\n".join(result)
+
+
+def _normalized_material_field_mentions(text: str) -> set[str]:
+    mentions: set[str] = set()
+    for line in _iter_lines_outside_fences(text):
+        stripped = line.strip()
+        if stripped.startswith("- "):
+            stripped = stripped[2:].strip()
+        stripped = stripped.strip("` ")
+        if not stripped:
+            continue
+        label = stripped.split(":", 1)[0].split(",", 1)[0].strip("` ")
+        normalized = label.lower()
+        if normalized in {field.lower() for field in REVIEW_FAMILY_PARSER_FIELD_LABELS}:
+            mentions.add(normalized)
+    return mentions
+
+
+def validate_spec_review_canonical_contract(skill_path: Path) -> list[str]:
+    errors: list[str] = []
+    try:
+        _, body = load_skill_file(skill_path)
+    except ValueError as exc:
+        return [str(exc)]
+
+    result_skeleton_path = skill_path.parent / "assets" / "review-result-skeleton.md"
+    material_finding_path = skill_path.parent / "assets" / "material-finding.md"
+
+    if not result_skeleton_path.is_file():
+        errors.append(f"{skill_path}: spec-review result skeleton is missing")
+        result_skeleton_text = ""
+    else:
+        result_skeleton_text = result_skeleton_path.read_text(encoding="utf-8")
+
+    result_fields = _parse_spec_review_result_fields(result_skeleton_text)
+    required_result_fields = {
+        "review-status": "Review status",
+        "immediate-next-stage": "Immediate next stage",
+        "eventual-test-spec-readiness": "Eventual test-spec readiness",
+        "stop-condition": "Stop condition",
+    }
+    for normalized_label, display_label in required_result_fields.items():
+        if normalized_label not in result_fields:
+            errors.append(
+                f"{result_skeleton_path}: spec-review result skeleton missing field: {display_label}"
+            )
+
+    immediate_values = _placeholder_values(result_fields.get("immediate-next-stage"))
+    if "test-spec" in immediate_values:
+        errors.append(
+            "spec-review result skeleton Immediate next stage enum must exclude test-spec"
+        )
+    if immediate_values and immediate_values != SPEC_REVIEW_RESULT_ALLOWED_IMMEDIATE_STAGES:
+        expected = ", ".join(sorted(SPEC_REVIEW_RESULT_ALLOWED_IMMEDIATE_STAGES))
+        actual = ", ".join(sorted(immediate_values))
+        errors.append(
+            "spec-review result skeleton Immediate next stage enum mismatch: "
+            f"expected {expected}; found {actual}"
+        )
+
+    readiness_values = _placeholder_values(result_fields.get("eventual-test-spec-readiness"))
+    if "not-assessed" in readiness_values:
+        errors.append(
+            "spec-review result skeleton Eventual test-spec readiness enum must exclude not-assessed"
+        )
+    if readiness_values and readiness_values != SPEC_REVIEW_RESULT_ALLOWED_READINESS:
+        expected = ", ".join(sorted(SPEC_REVIEW_RESULT_ALLOWED_READINESS))
+        actual = ", ".join(sorted(readiness_values))
+        errors.append(
+            "spec-review result skeleton Eventual test-spec readiness enum mismatch: "
+            f"expected {expected}; found {actual}"
+        )
+
+    routing_section = _extract_markdown_section(body, "Routing and testability assessment")
+    if routing_section is None:
+        errors.append(
+            f"{skill_path}: spec-review must include a Routing and testability assessment section"
+        )
+        routing_section = ""
+
+    for value in sorted(SPEC_REVIEW_RESULT_ALLOWED_IMMEDIATE_STAGES):
+        if value not in routing_section:
+            errors.append(
+                f"{skill_path}: Routing and testability assessment missing immediate-stage value: {value}"
+            )
+    for value in sorted(SPEC_REVIEW_RESULT_ALLOWED_READINESS):
+        if value not in routing_section:
+            errors.append(
+                f"{skill_path}: Routing and testability assessment missing readiness value: {value}"
+            )
+    if "approved" in routing_section and "not-ready" in routing_section:
+        approved_rule_pattern = re.compile(
+            r"approved[^\n.]*Eventual test-spec readiness[^\n.]*"
+            r"(?:ready[^\n.]*conditionally-ready|conditionally-ready[^\n.]*ready)",
+            re.IGNORECASE,
+        )
+        if not approved_rule_pattern.search(routing_section):
+            errors.append(
+                f"{skill_path}: Routing and testability assessment must bind approved to ready or conditionally-ready"
+            )
+
+    no_test_spec_routing = re.search(
+        r"(?:do not|never)[^\n.]*test-spec[^\n.]*Immediate next stage",
+        routing_section,
+        re.IGNORECASE,
+    ) or re.search(
+        r"Immediate next stage[^\n.]*(?:do not|never|must not)[^\n.]*test-spec",
+        routing_section,
+        re.IGNORECASE,
+    )
+    if not no_test_spec_routing:
+        errors.append(
+            f"{skill_path}: Routing and testability assessment must state that test-spec is not an Immediate next stage value"
+        )
+
+    if material_finding_path.is_file():
+        material_finding_text = material_finding_path.read_text(encoding="utf-8")
+        material_finding_body = _asset_body_without_metadata(material_finding_text)
+        material_labels = {
+            label.lower()
+            for label in _asset_field_labels(material_finding_body)
+            if label in REVIEW_FAMILY_PARSER_FIELD_LABELS
+        }
+        missing_material_labels = {
+            label.lower() for label in REVIEW_FAMILY_PARSER_FIELD_LABELS
+        } - material_labels
+        for label in sorted(missing_material_labels):
+            errors.append(
+                f"{material_finding_path}: spec-review material-finding asset missing field label: {label}"
+            )
+
+    skill_without_resource_map = _sectionless_text(body, "Resource map")
+    skill_material_mentions = _normalized_material_field_mentions(skill_without_resource_map)
+    complete_required_mentions = {
+        label.lower() for label in REVIEW_FAMILY_PARSER_FIELD_LABELS
+    }
+    if complete_required_mentions <= skill_material_mentions:
+        errors.append(
+            "spec-review SKILL.md must not re-enumerate the complete material-finding field list outside the Resource map"
+        )
 
     return errors
 INSTALLED_SKILL_PLAN_SURFACE_PATHS = (
@@ -1938,6 +2102,8 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
                     body,
                 )
             )
+        if skill_name == "spec-review":
+            errors.extend(validate_spec_review_canonical_contract(path))
 
     return errors, skill_name
 
