@@ -85,9 +85,9 @@ approved CLI contract and package docs.
 - Last reviewed milestone: M1. Vision, README, and Evidence Rewrite
 - Review status: code-review-m1-r3 clean-with-notes after branch stacking boundary closeout
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 and explain-change are complete, but verify and PR handoff remain.
+- Reason final closeout is or is not ready: M1, explain-change, and local final verify are complete; PR handoff remains.
 
 ## Milestones
 
@@ -198,6 +198,7 @@ approved CLI contract and package docs.
 - 2026-05-25: code-review-m1-r2 found that the published branch diff against `origin/main` includes unrelated runtime/release/validator/skill/scope files, so M1 moved to resolution-needed for `VRP-CR-M1-F2`.
 - 2026-05-25: maintainer decided to keep all stacked branch changes, closed `VRP-CR-M1-F2` by scoping behavior-preservation proof to the M1 vision/README commits, and code-review-m1-r3 closed M1 clean-with-notes.
 - 2026-05-25: explain-change recorded durable rationale for the M1 vision/README rewrite and moved the next stage to verify.
+- 2026-05-25: local final verify passed, `verify-report.md` was recorded, and the next stage moved to PR handoff.
 
 ## Decision log
 
@@ -247,4 +248,4 @@ approved CLI contract and package docs.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- M1 and explain-change are complete. Next stage is verify. Readiness is not Done; verify and PR handoff remain.
+- M1, explain-change, and local final verify are complete. Next stage is PR handoff. Readiness is branch-ready, not PR body/open readiness or lifecycle Done.
