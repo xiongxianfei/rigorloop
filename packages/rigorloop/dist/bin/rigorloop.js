@@ -36,6 +36,8 @@ function parseFlags(args) {
     noColor: Boolean(process.env.NO_COLOR),
     dryRun: false,
     adapter: undefined,
+    adapterOptionUsed: false,
+    writeState: false,
     fromArchiveProvided: false,
     fromArchive: undefined,
     force: false,
@@ -55,10 +57,13 @@ function parseFlags(args) {
     } else if (arg === "--dry-run") {
       flags.dryRun = true;
     } else if (arg === "--adapter") {
+      flags.adapterOptionUsed = true;
       if (args[index + 1] && !args[index + 1].startsWith("--")) {
         flags.adapter = args[index + 1];
         index += 1;
       }
+    } else if (arg === "--write-state") {
+      flags.writeState = true;
     } else if (arg === "--from-archive") {
       flags.fromArchiveProvided = true;
       if (args[index + 1] && !args[index + 1].startsWith("--")) {
@@ -110,13 +115,13 @@ function usage() {
 Usage:
   rigorloop --help
   rigorloop version
-  rigorloop init --adapter codex|claude|opencode [--dry-run] [--json]
+  rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]
   rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
 
 Commands:
   version                 Print package name and version.
-  init --adapter codex|claude|opencode
-                          Initialize a verified adapter install plan.
+  init codex|claude|opencode
+                          Initialize verified target support.
   new-change              Plan a change metadata scaffold.
 `;
 }
@@ -141,7 +146,7 @@ function sourceForFlags(flags, info, descriptor) {
   };
 }
 
-function manifestAdapterBlock(source, descriptor, artifact) {
+function manifestTargetBlock(source, descriptor, artifact) {
   const sourceLines =
     source.type === "local-archive"
       ? [`      type: local-archive`, `      archive: "${source.archive}"`]
@@ -155,22 +160,26 @@ function manifestAdapterBlock(source, descriptor, artifact) {
           ...Object.entries(installRoots).map(([role, root]) => `      ${role}: "${root}"`),
         ];
 
-  return `  - name: ${descriptor.name}
+  return `  - target: ${descriptor.name}
 ${rootLines.join("\n")}
     source:
 ${sourceLines.join("\n")}`;
 }
 
 function parseManifestAdapterBlocks(content) {
-  if (!content.includes("schema_version: 1") || !content.includes("adapters:")) {
+  const isLegacySchema = content.includes("schema_version: 1") && content.includes("adapters:");
+  const isTargetSchema = content.includes("schema_version: 2") && content.includes("targets:");
+  if (!isLegacySchema && !isTargetSchema) {
     return { error: { code: "invalid-config", message: "Existing rigorloop.yaml is not compatible with the init contract." } };
   }
   const lines = content.replace(/\r\n?/g, "\n").split("\n");
-  const adapterStart = lines.findIndex((line) => line === "adapters:");
+  const listKey = isTargetSchema ? "targets:" : "adapters:";
+  const entryPrefix = isTargetSchema ? "  - target: " : "  - name: ";
+  const adapterStart = lines.findIndex((line) => line === listKey);
   const blocks = [];
   let current = [];
   for (const line of lines.slice(adapterStart + 1)) {
-    if (line.startsWith("  - name: ")) {
+    if (line.startsWith(entryPrefix)) {
       if (current.length) {
         blocks.push(current);
       }
@@ -186,37 +195,57 @@ function parseManifestAdapterBlocks(content) {
   }
   const adapters = [];
   for (const block of blocks) {
-    const name = block[0].slice("  - name: ".length).trim();
+    const name = block[0].slice(entryPrefix.length).trim();
     const descriptor = adapterDescriptor(name);
     if (!descriptor) {
       return { error: { code: "invalid-config", message: `Existing rigorloop.yaml includes unsupported adapter ${name}.` } };
     }
-    adapters.push({ name, block: block.join("\n").replace(/\n+$/, "") });
+    const blockText = isTargetSchema ? block.join("\n").replace(/\n+$/, "") : block.join("\n").replace(/\n+$/, "").replace(/^  - name:/, "  - target:");
+    adapters.push({ name, block: blockText, roots: manifestBlockRoots(blockText) });
   }
   return { adapters };
 }
 
-function manifestContent(info, source, descriptor, existingContent) {
-  const selectedBlock = manifestAdapterBlock(source, descriptor, source.artifact);
-  if (existingContent) {
-    const parsed = parseManifestAdapterBlocks(existingContent);
-    if (!parsed.error) {
-      const preserved = parsed.adapters.filter((entry) => entry.name !== descriptor.name).map((entry) => entry.block);
-      return `schema_version: 1
-rigorloop:
-  package: "${info.name}"
-  package_version: "${info.version}"
-adapters:
-${[...preserved, selectedBlock].join("\n")}
-`;
+function manifestBlockRoots(block) {
+  const roots = [];
+  let inInstallRoots = false;
+  for (const line of block.split("\n")) {
+    const singleRootMatch = line.match(/^    install_root:\s+"([^"]+)"\s*$/);
+    if (singleRootMatch) {
+      roots.push(singleRootMatch[1]);
+      inInstallRoots = false;
+      continue;
+    }
+    if (line === "    install_roots:") {
+      inInstallRoots = true;
+      continue;
+    }
+    if (/^    [A-Za-z_][A-Za-z0-9_-]*:/.test(line)) {
+      inInstallRoots = false;
+    }
+    const rootMatch = inInstallRoots ? line.match(/^      [A-Za-z_][A-Za-z0-9_-]*:\s+"([^"]+)"\s*$/) : undefined;
+    if (rootMatch) {
+      roots.push(rootMatch[1]);
     }
   }
-  return `schema_version: 1
+  return roots;
+}
+
+function manifestContent(info, source, descriptor, existingContent) {
+  const selectedBlock = manifestTargetBlock(source, descriptor, source.artifact);
+  const parsed = existingContent ? parseManifestAdapterBlocks(existingContent) : undefined;
+  const preserved =
+    parsed && !parsed.error
+      ? parsed.adapters
+          .filter((entry) => entry.name !== descriptor.name)
+          .map((entry) => entry.block.replace(/^  - name:/, "  - target:"))
+      : [];
+  return `schema_version: 2
 rigorloop:
   package: "${info.name}"
   package_version: "${info.version}"
-adapters:
-${selectedBlock}
+targets:
+${[...preserved, selectedBlock].join("\n")}
 `;
 }
 
@@ -251,7 +280,7 @@ function usesMultiRootLockfile(descriptor, artifact) {
 
 function lockfileEntryForAdapter(info, source, artifact, descriptor, rootHashes = rootHashesForArtifact(descriptor, artifact)) {
   const entry = {
-    adapter: descriptor.name,
+    target: descriptor.name,
     release: releaseForPackage(info.version),
     source: source.type,
     archive: source.archive,
@@ -277,7 +306,7 @@ function lockfileEntryForAdapter(info, source, artifact, descriptor, rootHashes 
 function plannedLockfile(info, source, manifest, descriptor) {
   const artifact = source.artifact;
   return {
-    schema_version: 2,
+    schema_version: 3,
     rigorloop: {
       package: info.name,
       version: info.version,
@@ -287,7 +316,7 @@ function plannedLockfile(info, source, manifest, descriptor) {
       sha256: sha256NormalizedText(manifest),
     },
     generated: {
-      adapters: [lockfileEntryForAdapter(info, source, artifact, descriptor)],
+      targets: [lockfileEntryForAdapter(info, source, artifact, descriptor)],
     },
   };
 }
@@ -301,7 +330,16 @@ function existingLockfileEntries(selectedAdapter) {
   if (!parsed.ok) {
     return [];
   }
-  return parsed.lockfile.generated.adapters.filter((entry) => entry.adapter !== selectedAdapter);
+  const entries = parsed.lockfile.generated.targets ?? parsed.lockfile.generated.adapters;
+  return entries
+    .filter((entry) => (entry.target ?? entry.adapter) !== selectedAdapter)
+    .map((entry) => {
+      if (entry.target) {
+        return entry;
+      }
+      const { adapter, ...rest } = entry;
+      return { target: adapter, ...rest };
+    });
 }
 
 function lockfileForVerifiedInstall(info, source, manifest, artifact, rootHashes, descriptor) {
@@ -310,7 +348,7 @@ function lockfileForVerifiedInstall(info, source, manifest, artifact, rootHashes
     lockfileEntryForAdapter(info, source, artifact, descriptor, rootHashes),
   ];
   return {
-    schema_version: 2,
+    schema_version: 3,
     rigorloop: {
       package: info.name,
       version: info.version,
@@ -320,7 +358,7 @@ function lockfileForVerifiedInstall(info, source, manifest, artifact, rootHashes
       sha256: sha256NormalizedText(manifest),
     },
     generated: {
-      adapters,
+      targets: adapters,
     },
   };
 }
@@ -751,7 +789,7 @@ function unsafePathCode(name, descriptor, artifact) {
 }
 
 function isArchiveSupportEntry(name) {
-  return name === "AGENTS.md";
+  return name === "AGENTS.md" || name === "CLAUDE.md";
 }
 
 function fileRowsForTreeRoot(entries, installRoot) {
@@ -848,11 +886,11 @@ function currentLockfileEntries() {
   if (!parsed.ok) {
     return [];
   }
-  return parsed.lockfile.generated.adapters;
+  return parsed.lockfile.generated.targets ?? parsed.lockfile.generated.adapters;
 }
 
 function currentLockfileEntry(descriptor) {
-  return currentLockfileEntries().find((entry) => entry.adapter === descriptor.name);
+  return currentLockfileEntries().find((entry) => (entry.target ?? entry.adapter) === descriptor.name);
 }
 
 function installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCount) {
@@ -936,6 +974,7 @@ function lockfileDriftBlocker(lockfileEntry) {
       const rootHash = lockfileEntry.root_hashes[role];
       const blocker = lockfileDriftBlocker({
         adapter: lockfileEntry.adapter,
+        target: lockfileEntry.target,
         installed_root: root,
         tree_sha256: rootHash.tree_sha256,
         file_count: rootHash.file_count,
@@ -952,7 +991,7 @@ function lockfileDriftBlocker(lockfileEntry) {
     return {
       code: "generated-output-missing",
       message: "Codex generated output recorded in rigorloop.lock is missing.",
-      adapter: lockfileEntry.adapter,
+      target: lockfileEntry.target ?? lockfileEntry.adapter,
       installed_root: lockfileEntry.installed_root,
       expected_tree_sha256: lockfileEntry.tree_sha256,
       actual_tree_sha256: null,
@@ -973,7 +1012,7 @@ function lockfileDriftBlocker(lockfileEntry) {
     return {
       code: "generated-output-drift",
       message: "Codex generated output differs from rigorloop.lock.",
-      adapter: lockfileEntry.adapter,
+      target: lockfileEntry.target ?? lockfileEntry.adapter,
       installed_root: lockfileEntry.installed_root,
       expected_tree_sha256: lockfileEntry.tree_sha256,
       actual_tree_sha256: actualTree.treeHash,
@@ -983,6 +1022,116 @@ function lockfileDriftBlocker(lockfileEntry) {
     };
   }
 
+  return undefined;
+}
+
+function lockfileEntryTarget(entry) {
+  return entry.target ?? entry.adapter;
+}
+
+function lockfileEntryRoots(entry) {
+  if (entry.installed_roots) {
+    return Object.values(entry.installed_roots);
+  }
+  return entry.installed_root ? [entry.installed_root] : [];
+}
+
+function rootsOverlap(leftRoots, rightRoots) {
+  return leftRoots.some((left) =>
+    rightRoots.some((right) => left === right || left.startsWith(`${right}/`) || right.startsWith(`${left}/`)),
+  );
+}
+
+function targetRootConflictBlocker(target, path, reason) {
+  return {
+    code: "target-root-conflict",
+    message: reason,
+    target,
+    path,
+    next_action: "Resolve the existing RigorLoop state before running init.",
+  };
+}
+
+function existingStateSafetyBlocker(descriptor, artifact) {
+  const targetRoots = Object.values(rootsForArtifact(descriptor, artifact));
+  const manifestPath = resolve(process.cwd(), "rigorloop.yaml");
+  if (existsSync(manifestPath)) {
+    const parsedManifest = parseManifestAdapterBlocks(readFileSync(manifestPath, "utf8"));
+    if (parsedManifest.error) {
+      return {
+        code: "state-invalid",
+        message: "Existing RigorLoop state is malformed; refusing to mutate target roots.",
+        path: "rigorloop.yaml",
+        next_action: "Fix or move rigorloop.yaml before running init.",
+      };
+    }
+    const selectedEntries = parsedManifest.adapters.filter((entry) => entry.name === descriptor.name);
+    if (selectedEntries.length > 1) {
+      return {
+        code: "duplicate-target-entry",
+        message: `Existing rigorloop.yaml contains duplicate ${descriptor.displayName} target entries.`,
+        path: "rigorloop.yaml",
+        next_action: "Remove duplicate target entries before running init.",
+      };
+    }
+    for (const entry of parsedManifest.adapters) {
+      if (entry.name === descriptor.name && entry.roots.length && !rootsOverlap(entry.roots, targetRoots)) {
+        return targetRootConflictBlocker(
+          descriptor.name,
+          "rigorloop.yaml",
+          `Existing RigorLoop state records target ${descriptor.name} with a conflicting install root.`,
+        );
+      }
+      if (entry.name !== descriptor.name && rootsOverlap(entry.roots, targetRoots)) {
+        return targetRootConflictBlocker(
+          descriptor.name,
+          "rigorloop.yaml",
+          `Existing RigorLoop state records an overlapping install root for target ${entry.name}.`,
+        );
+      }
+    }
+  }
+
+  const lockfilePath = resolve(process.cwd(), LOCKFILE_PATH);
+  if (!existsSync(lockfilePath)) {
+    return undefined;
+  }
+  const parsedLockfile = parseLockfile(readFileSync(lockfilePath, "utf8"));
+  if (!parsedLockfile.ok) {
+    return {
+      code: parsedLockfile.code,
+      message: "Existing RigorLoop lock state is malformed or unsupported; refusing to mutate target roots.",
+      path: LOCKFILE_PATH,
+      next_action: "Fix or move rigorloop.lock before running init.",
+    };
+  }
+  const entries = parsedLockfile.lockfile.generated.targets ?? parsedLockfile.lockfile.generated.adapters;
+  for (const entry of entries) {
+    const entryTarget = lockfileEntryTarget(entry);
+    const entryRoots = lockfileEntryRoots(entry);
+    const selected = entryTarget === descriptor.name;
+    const overlapping = rootsOverlap(entryRoots, targetRoots);
+    if (selected && entryRoots.length && !overlapping) {
+      return targetRootConflictBlocker(
+        descriptor.name,
+        LOCKFILE_PATH,
+        `Existing RigorLoop lock state records target ${descriptor.name} with a conflicting install root.`,
+      );
+    }
+    if (!selected && overlapping) {
+      return targetRootConflictBlocker(
+        descriptor.name,
+        LOCKFILE_PATH,
+        `Existing RigorLoop lock state records an overlapping install root for target ${entryTarget}.`,
+      );
+    }
+    if (selected || overlapping) {
+      const drift = lockfileDriftBlocker(entry);
+      if (drift) {
+        return drift;
+      }
+    }
+  }
   return undefined;
 }
 
@@ -1232,7 +1381,7 @@ function addLockfilePlan(flags, actions, artifacts, blockers, errors) {
       status: flags.dryRun ? "planned" : "pending",
       reason: flags.dryRun
         ? "Plan durable lockfile content."
-        : "Write durable lockfile after verified Codex adapter install.",
+        : "Write durable lockfile after verified target install.",
     });
     artifacts.push({
       path: LOCKFILE_PATH,
@@ -1250,7 +1399,7 @@ function addLockfilePlan(flags, actions, artifacts, blockers, errors) {
       status: flags.dryRun ? "planned" : "pending",
       reason: flags.dryRun
         ? "Plan update to supported rigorloop.lock."
-        : "Update supported rigorloop.lock after verified Codex adapter install.",
+        : "Update supported rigorloop.lock after verified target install.",
     });
     artifacts.push({
       path: LOCKFILE_PATH,
@@ -1298,7 +1447,7 @@ function buildInitPlan(flags, descriptor, artifact) {
   const manifestPath = "rigorloop.yaml";
   const manifestAbsolutePath = resolve(process.cwd(), manifestPath);
   const existingManifest = existsSync(manifestAbsolutePath) ? readFileSync(manifestAbsolutePath, "utf8") : undefined;
-  const manifest = manifestContent(info, source, descriptor, existingManifest);
+  const manifest = flags.writeState ? manifestContent(info, source, descriptor, existingManifest) : undefined;
   const actions = [];
   const artifacts = [];
   const blockers = [];
@@ -1325,40 +1474,41 @@ function buildInitPlan(flags, descriptor, artifact) {
   artifacts.push(...directoryPlan.artifacts);
   blockers.push(...directoryPlan.blockers);
 
-  if (existingManifest !== undefined) {
-    const parsedManifest = parseManifestAdapterBlocks(existingManifest);
-    if (parsedManifest.error) {
-      errors.push({
-        code: parsedManifest.error.code,
-        message: parsedManifest.error.message,
-        path: manifestPath,
-        next_action: "Review or move the existing file before running init.",
-      });
-    } else if (parsedManifest.adapters.filter((entry) => entry.name === descriptor.name).length > 1) {
-      blockers.push({
-        code: "duplicate-adapter-entry",
-        message: `Existing rigorloop.yaml contains duplicate ${descriptor.displayName} adapter entries.`,
-        path: manifestPath,
-        next_action: "Remove duplicate adapter entries before running init.",
-      });
-    } else if (compatibleManifest(existingManifest, descriptor, artifact)) {
+  if (flags.writeState) {
+    if (existingManifest !== undefined) {
+      const parsedManifest = parseManifestAdapterBlocks(existingManifest);
+      if (parsedManifest.error) {
+        errors.push({
+          code: parsedManifest.error.code,
+          message: parsedManifest.error.message,
+          path: manifestPath,
+          next_action: "Review or move the existing file before running init.",
+        });
+      } else if (parsedManifest.adapters.filter((entry) => entry.name === descriptor.name).length > 1) {
+        blockers.push({
+          code: "duplicate-target-entry",
+          message: `Existing rigorloop.yaml contains duplicate ${descriptor.displayName} target entries.`,
+          path: manifestPath,
+          next_action: "Remove duplicate target entries before running init.",
+        });
+      }
       actions.push({
         type: "write",
         path: manifestPath,
-        status: flags.dryRun ? "planned" : "skipped",
-        reason: "Compatible rigorloop.yaml already exists.",
+        status: flags.dryRun ? "planned" : "pending",
+        reason: `Write target-oriented rigorloop.yaml for ${descriptor.displayName} support.`,
       });
       artifacts.push({
         path: manifestPath,
         kind: "project-manifest",
-        status: "existing",
+        status: flags.dryRun ? "planned" : "pending",
       });
     } else {
       actions.push({
         type: "write",
         path: manifestPath,
         status: flags.dryRun ? "planned" : "pending",
-        reason: `Update rigorloop.yaml for ${descriptor.displayName} adapter.`,
+        reason: "Create target-oriented RigorLoop project manifest.",
       });
       artifacts.push({
         path: manifestPath,
@@ -1366,21 +1516,9 @@ function buildInitPlan(flags, descriptor, artifact) {
         status: flags.dryRun ? "planned" : "pending",
       });
     }
-  } else {
-    actions.push({
-      type: "write",
-      path: manifestPath,
-      status: flags.dryRun ? "planned" : "pending",
-      reason: "Create first-slice RigorLoop project manifest.",
-    });
-    artifacts.push({
-      path: manifestPath,
-      kind: "project-manifest",
-      status: flags.dryRun ? "planned" : "pending",
-    });
-  }
 
-  addLockfilePlan(flags, actions, artifacts, blockers, errors);
+    addLockfilePlan(flags, actions, artifacts, blockers, errors);
+  }
 
   return {
     info,
@@ -1390,7 +1528,7 @@ function buildInitPlan(flags, descriptor, artifact) {
     artifacts,
     blockers,
     errors,
-    planned_lockfile: plannedLockfile(info, source, manifest, descriptor),
+    planned_lockfile: flags.writeState ? plannedLockfile(info, source, manifest, descriptor) : undefined,
   };
 }
 
@@ -1483,11 +1621,11 @@ function invalidArchivePath(message, flags) {
 function unsupportedAdapter(adapter, flags) {
   const result = envelope("init", flags, {
     status: "blocked",
-    summary: `Adapter '${adapter}' is not supported.`,
+    summary: `Target '${adapter}' is not supported.`,
     blockers: [
       {
-        code: "adapter-unknown",
-        message: `Adapter '${adapter}' is not supported.`,
+        code: "target-unknown",
+        message: `Target '${adapter}' is not supported.`,
         next_action: `Use one of: ${supportedAdapterNames().join(", ")}.`,
       },
     ],
@@ -1499,6 +1637,27 @@ function unsupportedAdapter(adapter, flags) {
     process.stderr.write(`${result.summary}\nUse one of: ${supportedAdapterNames().join(", ")}.\n`);
   }
   return exitCodeForResult({ ...result, exit_class: "blocked" });
+}
+
+function removedAdapterSyntax(flags) {
+  const targets = supportedAdapterNames();
+  const result = envelope("init", flags, {
+    status: "error",
+    summary: "`init --adapter` was removed in RigorLoop 0.3.0.",
+    errors: [
+      {
+        code: "adapter-option-removed",
+        message: "`init --adapter` was removed in RigorLoop 0.3.0.",
+        next_action: `Use target-native init: ${targets.map((target) => `rigorloop init ${target}`).join(", ")}.`,
+      },
+    ],
+  });
+  if (flags.json) {
+    writeJson(result);
+  } else {
+    process.stderr.write(`${result.summary}\n${result.errors[0].next_action}\n`);
+  }
+  return exitCodeForResult({ ...result, exit_class: "invalid_usage" });
 }
 
 function writeBlockedResult(flags, plan, summary, blockers, exitClass = "blocked") {
@@ -1513,17 +1672,22 @@ function writeBlockedResult(flags, plan, summary, blockers, exitClass = "blocked
       artifact.status = "blocked";
     }
   }
+  const statePlan = flags.writeState
+    ? {
+        planned_manifest: {
+          path: "rigorloop.yaml",
+          content: plan.manifest,
+        },
+        planned_lockfile: plan.planned_lockfile,
+      }
+    : {};
   const result = envelope("init", flags, {
     status: "blocked",
     summary,
     actions: plan.actions,
     artifacts: plan.artifacts,
     blockers,
-    planned_manifest: {
-      path: "rigorloop.yaml",
-      content: plan.manifest,
-    },
-    planned_lockfile: plan.planned_lockfile,
+    ...statePlan,
   });
   if (blockers[0]?.diagnostics) {
     result.diagnostics = { ...result.diagnostics, ...blockers[0].diagnostics };
@@ -1552,17 +1716,22 @@ function writeValidationErrorResult(flags, plan, error) {
       artifact.status = "blocked";
     }
   }
+  const statePlan = flags.writeState
+    ? {
+        planned_manifest: {
+          path: "rigorloop.yaml",
+          content: plan.manifest,
+        },
+        planned_lockfile: plan.planned_lockfile,
+      }
+    : {};
   const result = envelope("init", flags, {
     status: "error",
     summary: error.message,
     actions: plan.actions,
     artifacts: plan.artifacts,
     errors: [error],
-    planned_manifest: {
-      path: "rigorloop.yaml",
-      content: plan.manifest,
-    },
-    planned_lockfile: plan.planned_lockfile,
+    ...statePlan,
   });
   if (flags.json) {
     writeJson(result);
@@ -1661,13 +1830,17 @@ async function archiveWorkForInit(flags, info, descriptor) {
   return { artifact, entries: inspected.entries, archiveHash: inspected.archiveHash, treeHash: inspected.treeHash };
 }
 
-async function handleInit(flags) {
-  if (!flags.adapter) {
-    return invalidUsage("Missing required option: --adapter codex|claude|opencode.", flags, "init");
+async function handleInit(flags, initArgs = []) {
+  if (flags.adapterOptionUsed) {
+    return removedAdapterSyntax(flags);
   }
-  const descriptor = adapterDescriptor(flags.adapter);
+  if (initArgs.length !== 1) {
+    return invalidUsage(`init requires exactly one target: ${supportedAdapterNames().join(", ")}.`, flags, "init");
+  }
+  const target = initArgs[0];
+  const descriptor = adapterDescriptor(target);
   if (!descriptor) {
-    return unsupportedAdapter(flags.adapter, flags);
+    return unsupportedAdapter(target, flags);
   }
   if (flags.fromArchiveProvided && (!flags.fromArchive || flags.fromArchive.startsWith("--"))) {
     return invalidArchivePath("Missing required value for --from-archive.", flags);
@@ -1685,11 +1858,15 @@ async function handleInit(flags) {
       actions: plan.actions,
       artifacts: plan.artifacts,
       errors: plan.errors,
-      planned_manifest: {
-        path: "rigorloop.yaml",
-        content: plan.manifest,
-      },
-      planned_lockfile: plan.planned_lockfile,
+      ...(flags.writeState
+        ? {
+            planned_manifest: {
+              path: "rigorloop.yaml",
+              content: plan.manifest,
+            },
+            planned_lockfile: plan.planned_lockfile,
+          }
+        : {}),
     });
     if (flags.json) {
       writeJson(result);
@@ -1704,6 +1881,12 @@ async function handleInit(flags) {
     plan.blockers.every((blocker) => String(blocker.path ?? "").startsWith(".opencode/commands"));
   if (plan.blockers.length > 0 && !deferrableRootBlockers) {
     return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
+  }
+  if (flags.dryRun) {
+    const stateSafety = existingStateSafetyBlocker(descriptor);
+    if (stateSafety) {
+      return writeBlockedResult(flags, plan, stateSafety.message, [stateSafety], exitClassForBlockers([stateSafety]));
+    }
   }
 
   const archiveWork = await archiveWorkForInit(flags, info, descriptor);
@@ -1721,7 +1904,11 @@ async function handleInit(flags) {
     if (conflict) {
       return writeBlockedResult(flags, plan, conflict.message, [conflict], "mutation_conflict");
     }
-    const drift = firstLockfileDriftBlocker();
+    const stateSafety = existingStateSafetyBlocker(descriptor, archiveWork.artifact);
+    if (stateSafety) {
+      return writeBlockedResult(flags, plan, stateSafety.message, [stateSafety], exitClassForBlockers([stateSafety]));
+    }
+    const drift = flags.writeState ? firstLockfileDriftBlocker() : undefined;
     if (drift) {
       return writeBlockedResult(
         flags,
@@ -1749,7 +1936,7 @@ async function handleInit(flags) {
   }
 
   if (!flags.dryRun) {
-    const manifestAction = plan.actions.find((action) => action.path === "rigorloop.yaml");
+    const manifestAction = flags.writeState ? plan.actions.find((action) => action.path === "rigorloop.yaml") : undefined;
     const directoryActions = plan.actions.filter((action) => action.type === "create-dir" && action.status === "pending");
     for (const directoryAction of directoryActions) {
       mkdirSync(resolve(process.cwd(), directoryAction.path));
@@ -1784,11 +1971,15 @@ async function handleInit(flags) {
               partial_state: "scaffold files may have been written; adapter files may be incomplete.",
             },
           ],
-          planned_manifest: {
-            path: "rigorloop.yaml",
-            content: plan.manifest,
-          },
-          planned_lockfile: plan.planned_lockfile,
+          ...(flags.writeState
+            ? {
+                planned_manifest: {
+                  path: "rigorloop.yaml",
+                  content: plan.manifest,
+                },
+                planned_lockfile: plan.planned_lockfile,
+              }
+            : {}),
         });
         if (flags.json) {
           writeJson(result);
@@ -1798,7 +1989,7 @@ async function handleInit(flags) {
         return exitCodeForResult({ ...result, exit_class: "internal" });
       }
     }
-    if (archiveWork.entries) {
+    if (flags.writeState && archiveWork.entries) {
       const lockfileAction = plan.actions.find((action) => action.path === LOCKFILE_PATH);
       const lockfileArtifact = plan.artifacts.find((artifact) => artifact.path === LOCKFILE_PATH);
       if (lockfileAction?.status === "pending") {
@@ -1834,16 +2025,23 @@ async function handleInit(flags) {
     summary: flags.dryRun
       ? "RigorLoop init dry run completed. No files were written."
       : archiveWork.entries
-        ? `RigorLoop initialized with verified ${descriptor.displayName} adapter files.`
+            ? `RigorLoop initialized with verified ${descriptor.displayName} target support.`
         : `RigorLoop initialized with ${descriptor.displayName} scaffold.`,
     actions: plan.actions,
     artifacts: plan.artifacts,
     warnings,
-    planned_manifest: {
-      path: "rigorloop.yaml",
-      content: plan.manifest,
-    },
-    planned_lockfile: plan.planned_lockfile,
+    state_files: flags.writeState
+      ? { action: flags.dryRun ? "planned" : "written" }
+      : { action: "skipped", reason: "Use --write-state to write rigorloop.yaml and rigorloop.lock." },
+    ...(flags.writeState
+      ? {
+          planned_manifest: {
+            path: "rigorloop.yaml",
+            content: plan.manifest,
+          },
+          planned_lockfile: plan.planned_lockfile,
+        }
+      : {}),
   });
 
   if (flags.json) {
@@ -1853,9 +2051,9 @@ async function handleInit(flags) {
       ? ["RigorLoop init dry run completed.", "No files were written."]
       : [
           archiveWork.entries
-            ? `RigorLoop initialized with verified ${descriptor.displayName} adapter files.`
+            ? `RigorLoop initialized with verified ${descriptor.displayName} target support.`
             : `RigorLoop initialized with ${descriptor.displayName} scaffold.`,
-          archiveWork.entries ? "rigorloop.lock was written." : "No adapter files were installed.",
+          flags.writeState ? "rigorloop.yaml and rigorloop.lock were written." : "State files were not written; use --write-state to write them.",
         ];
     for (const warning of warnings) {
       lines.push(`warning ${warning.code}: ${warning.message}`);
@@ -1882,7 +2080,7 @@ async function main() {
       return handleVersion(flags);
     }
     if (command === "init") {
-      return handleInit(flags);
+      return handleInit(flags, positional.slice(1));
     }
     if (command === "new-change") {
       return handleNewChange(rawArgs.slice(rawArgs.indexOf("new-change") + 1));

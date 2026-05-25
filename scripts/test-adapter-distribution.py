@@ -400,6 +400,199 @@ adapter_install_smoke:
         )
         return evidence
 
+    def v0_3_0_target_smoke_rows(self, *, pending: bool = False) -> dict[str, dict[str, object]]:
+        if pending:
+            return {
+                "codex": {
+                    "command": "npx @xiongxianfei/rigorloop@0.3.0 init codex --json",
+                    "npm_version": "0.3.0",
+                    "temp_project": "pending",
+                    "package_source": "npm registry",
+                    "target": "codex",
+                    "official_archive_url": "<pending public archive URL>",
+                    "installed_roots": [".agents/skills"],
+                    "tree_hashes": ["<pending live tree sha256>"],
+                    "file_counts": ["<pending live file count>"],
+                    "command_output_summary": "<pending live command output summary>",
+                    "archive_sha256_verified": "pending",
+                    "tree_hash_verified": "pending",
+                    "result": "pending-publication",
+                    "closeout_blocker": "live post-publish smoke not run",
+                    "post_publish_closeout_blocked": True,
+                },
+                "claude": {
+                    "command": "npx @xiongxianfei/rigorloop@0.3.0 init claude --json",
+                    "npm_version": "0.3.0",
+                    "temp_project": "pending",
+                    "package_source": "npm registry",
+                    "target": "claude",
+                    "official_archive_url": "<pending public archive URL>",
+                    "installed_roots": [".claude/skills"],
+                    "tree_hashes": ["<pending live tree sha256>"],
+                    "file_counts": ["<pending live file count>"],
+                    "command_output_summary": "<pending live command output summary>",
+                    "archive_sha256_verified": "pending",
+                    "tree_hash_verified": "pending",
+                    "result": "pending-publication",
+                    "closeout_blocker": "live post-publish smoke not run",
+                    "post_publish_closeout_blocked": True,
+                },
+                "opencode": {
+                    "command": "npx @xiongxianfei/rigorloop@0.3.0 init opencode --json",
+                    "npm_version": "0.3.0",
+                    "temp_project": "pending",
+                    "package_source": "npm registry",
+                    "target": "opencode",
+                    "official_archive_url": "<pending public archive URL>",
+                    "installed_roots": [".opencode/skills", ".opencode/commands"],
+                    "tree_hashes": [
+                        ".opencode/skills=<pending skills tree sha256>",
+                        ".opencode/commands=<pending commands tree sha256>",
+                    ],
+                    "file_counts": [
+                        ".opencode/skills=<pending skills file count>",
+                        ".opencode/commands=<pending commands file count>",
+                    ],
+                    "command_output_summary": "<pending live command output summary>",
+                    "archive_sha256_verified": "pending",
+                    "tree_hash_verified": "pending",
+                    "result": "pending-publication",
+                    "closeout_blocker": "live post-publish smoke not run",
+                    "post_publish_closeout_blocked": True,
+                },
+            }
+        return {
+            "codex": {
+                "command": "npx @xiongxianfei/rigorloop@0.3.0 init codex --json",
+                "npm_version": "0.3.0",
+                "temp_project": "/tmp/rigorloop-live-codex",
+                "package_source": "npm registry",
+                "target": "codex",
+                "official_archive_url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.0/rigorloop-adapter-codex-v0.3.0.zip",
+                "installed_roots": [".agents/skills"],
+                "tree_hashes": ["sha256:" + "a" * 64],
+                "file_counts": ["38"],
+                "command_output_summary": "exit 0; installed Codex target; verified tree",
+                "archive_sha256_verified": True,
+                "tree_hash_verified": True,
+                "result": "pass",
+                "closeout_blocker": "none",
+                "post_publish_closeout_blocked": False,
+            },
+            "claude": {
+                "command": "npx @xiongxianfei/rigorloop@0.3.0 init claude --json",
+                "npm_version": "0.3.0",
+                "temp_project": "/tmp/rigorloop-live-claude",
+                "package_source": "npm registry",
+                "target": "claude",
+                "official_archive_url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.0/rigorloop-adapter-claude-v0.3.0.zip",
+                "installed_roots": [".claude/skills"],
+                "tree_hashes": ["sha256:" + "b" * 64],
+                "file_counts": ["38"],
+                "command_output_summary": "exit 0; installed Claude target; verified tree",
+                "archive_sha256_verified": True,
+                "tree_hash_verified": True,
+                "result": "pass",
+                "closeout_blocker": "none",
+                "post_publish_closeout_blocked": False,
+            },
+            "opencode": {
+                "command": "npx @xiongxianfei/rigorloop@0.3.0 init opencode --json",
+                "npm_version": "0.3.0",
+                "temp_project": "/tmp/rigorloop-live-opencode",
+                "package_source": "npm registry",
+                "target": "opencode",
+                "official_archive_url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.0/rigorloop-adapter-opencode-v0.3.0.zip",
+                "installed_roots": [".opencode/skills", ".opencode/commands"],
+                "tree_hashes": [
+                    ".opencode/skills=sha256:" + "c" * 64,
+                    ".opencode/commands=sha256:" + "d" * 64,
+                ],
+                "file_counts": [".opencode/skills=38", ".opencode/commands=12"],
+                "command_output_summary": "exit 0; installed opencode skills and commands; verified both roots",
+                "archive_sha256_verified": True,
+                "tree_hash_verified": True,
+                "result": "pass",
+                "closeout_blocker": "none",
+                "post_publish_closeout_blocked": False,
+            },
+        }
+
+    def write_v0_3_0_npm_publication_evidence(
+        self,
+        release_dir: Path,
+        *,
+        status: str = "pending-publication",
+        rows: dict[str, dict[str, object]] | None = None,
+    ) -> Path:
+        rows = rows or self.v0_3_0_target_smoke_rows(pending=status == "pending-publication")
+
+        def scalar(value: object) -> str:
+            if isinstance(value, bool):
+                return "true" if value else "false"
+            return f'"{value}"'
+
+        def row_yaml(row: dict[str, object]) -> list[str]:
+            lines: list[str] = []
+            for key, value in row.items():
+                if value is None:
+                    continue
+                if isinstance(value, list):
+                    lines.append(f"    {key}:")
+                    lines.extend(f"      - {scalar(item)}" for item in value)
+                else:
+                    lines.append(f"    {key}: {scalar(value)}")
+            return lines
+
+        evidence = release_dir / "npm-publication.md"
+        lines = [
+            "# npm publication evidence for v0.3.0",
+            "",
+            f"Status: {status}",
+            "",
+            "```yaml",
+            "publication:",
+            "  package: \"@xiongxianfei/rigorloop\"",
+            "  version: \"0.3.0\"",
+            "  release_tag: \"v0.3.0\"",
+            "  source_commit: \"0123456789abcdef0123456789abcdef01234567\"",
+            "  mode: \"bootstrap\"",
+            "",
+            "workflow:",
+            "  release_workflow: \".github/workflows/release.yml\"",
+            "  published_by_workflow: false",
+            "  unsupported_tags_rejected: true",
+            "",
+            "tarball:",
+            "  filename: \"xiongxianfei-rigorloop-0.3.0.tgz\"",
+            "  sha256: \"" + ("pending" if status == "pending-publication" else "e" * 64) + "\"",
+            "  pack_command: \"npm pack --prefix packages/rigorloop\"",
+            "  content_check: \"pass\"",
+            "  smoke_result: \"pass\"",
+            "",
+            "trusted_publishing:",
+            "  configured: true",
+            "  workflow: \".github/workflows/release.yml\"",
+            "  id_token_write: true",
+            "",
+            "bootstrap:",
+            "  used: " + ("false" if status == "pending-publication" else "true"),
+            "  approving_maintainer: " + ("null" if status == "pending-publication" else "\"maintainer\""),
+            "  publish_command: " + ("null" if status == "pending-publication" else "\"npm publish xiongxianfei-rigorloop-0.3.0.tgz\""),
+            "",
+            "npm:",
+            "  published: " + ("false" if status == "pending-publication" else "true"),
+            "  package_url: \"" + ("pending" if status == "pending-publication" else "https://www.npmjs.com/package/@xiongxianfei/rigorloop/v/0.3.0") + "\"",
+            "",
+            "target_init_smoke:",
+        ]
+        for target in SUPPORTED_ADAPTERS:
+            lines.append(f"  {target}:")
+            lines.extend(row_yaml(rows[target]))
+        lines.extend(["```", ""])
+        evidence.write_text("\n".join(lines), encoding="utf-8")
+        return evidence
+
     def write_fake_npm_tarball(self, tarball_root: Path, *, content: bytes = b"fake npm tarball") -> str:
         tarball_root.mkdir(parents=True, exist_ok=True)
         tarball_path = tarball_root / "xiongxianfei-rigorloop-0.1.4.tgz"
@@ -3060,6 +3253,36 @@ release_gate:
         self.assertNotIn("python scripts/build-adapters.py --version v0.1.4 --check", result.stdout)
         self.assertNotIn("python scripts/validate-adapters.py --version v0.1.4", result.stdout)
 
+    def test_release_verify_script_supports_v0_3_0_target_native_release_gate(self) -> None:
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts" / "release-verify.sh"), "v0.3.0"],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            env={
+                "RELEASE_VERIFY_DRY_RUN": "1",
+                "RELEASE_OUTPUT_DIR": "release-output",
+                "RELEASE_COMMIT": "0123456789abcdef0123456789abcdef01234567",
+            },
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("python scripts/test-npm-package-publication.py", result.stdout)
+        self.assertIn(
+            "python scripts/build-adapters.py --version v0.3.0 --output-dir release-output",
+            result.stdout,
+        )
+        self.assertIn(
+            "python scripts/validate-release.py --version v0.3.0 --release-output-dir release-output --release-commit 0123456789abcdef0123456789abcdef01234567",
+            result.stdout,
+        )
+        self.assertNotIn("python scripts/build-adapters.py --version v0.3.0 --check", result.stdout)
+        self.assertNotIn("python scripts/validate-adapters.py --version v0.3.0", result.stdout)
+
     def test_release_verify_script_rehearses_standing_process_contract_for_v0_1_5(self) -> None:
         result = subprocess.run(
             ["bash", str(ROOT / "scripts" / "release-verify.sh"), "v0.1.5"],
@@ -3672,6 +3895,89 @@ release_gate:
             )
 
         self.assertEqual([], errors)
+
+    def test_npm_publication_evidence_accepts_pending_placeholders_before_publication(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            release_dir = Path(tmp)
+            release_dir.mkdir(parents=True, exist_ok=True)
+            self.write_v0_3_0_npm_publication_evidence(release_dir)
+
+            errors = adapter_distribution_module._validate_npm_publication_evidence("v0.3.0", release_dir)
+
+        self.assertEqual([], errors)
+
+    def test_npm_publication_evidence_accepts_complete_published_target_smoke_details(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            release_dir = Path(tmp)
+            release_dir.mkdir(parents=True, exist_ok=True)
+            self.write_v0_3_0_npm_publication_evidence(release_dir, status="published")
+
+            errors = adapter_distribution_module._validate_npm_publication_evidence("v0.3.0", release_dir)
+
+        self.assertEqual([], errors)
+
+    def v0_3_0_published_evidence_errors(
+        self,
+        mutate: callable,
+    ) -> list[str]:
+        rows = self.v0_3_0_target_smoke_rows()
+        mutate(rows)
+        with tempfile.TemporaryDirectory() as tmp:
+            release_dir = Path(tmp)
+            release_dir.mkdir(parents=True, exist_ok=True)
+            self.write_v0_3_0_npm_publication_evidence(release_dir, status="published", rows=rows)
+            return adapter_distribution_module._validate_npm_publication_evidence("v0.3.0", release_dir)
+
+    def test_npm_publication_evidence_requires_installed_roots_for_published_target_smoke(self) -> None:
+        errors = self.v0_3_0_published_evidence_errors(
+            lambda rows: rows["codex"].pop("installed_roots")
+        )
+
+        self.assertTrue(any("target_init_smoke row for codex is missing installed root(s)" in error for error in errors), errors)
+
+    def test_npm_publication_evidence_requires_tree_hashes_for_published_target_smoke(self) -> None:
+        errors = self.v0_3_0_published_evidence_errors(
+            lambda rows: rows["claude"].pop("tree_hashes")
+        )
+
+        self.assertTrue(any("target_init_smoke row for claude is missing tree hash value(s)" in error for error in errors), errors)
+
+    def test_npm_publication_evidence_requires_file_counts_for_published_target_smoke(self) -> None:
+        errors = self.v0_3_0_published_evidence_errors(
+            lambda rows: rows["opencode"].pop("file_counts")
+        )
+
+        self.assertTrue(any("target_init_smoke row for opencode is missing file count(s)" in error for error in errors), errors)
+
+    def test_npm_publication_evidence_requires_command_output_summary_for_published_target_smoke(self) -> None:
+        errors = self.v0_3_0_published_evidence_errors(
+            lambda rows: rows["codex"].pop("command_output_summary")
+        )
+
+        self.assertTrue(
+            any("target_init_smoke row for codex is missing command output summary" in error for error in errors),
+            errors,
+        )
+
+    def test_npm_publication_evidence_requires_all_opencode_roots_for_live_smoke(self) -> None:
+        errors = self.v0_3_0_published_evidence_errors(
+            lambda rows: rows["opencode"].update({"installed_roots": [".opencode/skills"]})
+        )
+
+        self.assertTrue(
+            any("target_init_smoke row for opencode must name both .opencode/skills and .opencode/commands" in error for error in errors),
+            errors,
+        )
+
+    def test_npm_publication_evidence_rejects_pending_placeholders_when_published(self) -> None:
+        errors = self.v0_3_0_published_evidence_errors(
+            lambda rows: rows["codex"].update({"command_output_summary": "<pending live command output summary>"})
+        )
+
+        self.assertTrue(
+            any("published target_init_smoke row for codex still contains pending command output summary" in error for error in errors),
+            errors,
+        )
 
     def test_workflows_records_adapter_artifact_metadata_location(self) -> None:
         text = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
