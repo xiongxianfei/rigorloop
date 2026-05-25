@@ -1,0 +1,389 @@
+change_id: 2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+title: Target-native init commands and adapter terminology retirement
+classification: proposal-review-recording
+risk: high
+artifacts:
+  proposal: docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md
+  spec: specs/target-native-init.md
+  test_spec: specs/target-native-init.test.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260524-target-native-init-state-boundary.md
+  plan: docs/plans/2026-05-24-target-native-init-commands.md
+  review_resolution: docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md
+  explain_change: docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/explain-change.md
+  verify_report: docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/verify-report.md
+requirements:
+  - Remove public `--adapter` CLI syntax for the 0.3.0 target-native init release.
+  - Accept only `codex`, `claude`, and `opencode` as init targets.
+  - Make default `init <target>` install-only and leave `rigorloop.yaml` and `rigorloop.lock` unchanged.
+  - Write project state only when `init <target> --write-state` is requested.
+  - Rename user-visible state-file keys away from `adapter`.
+  - Preserve non-user-visible internal adapter implementation names unless a later approved artifact changes that boundary.
+  - Require packed-package pre-publish smoke and live registry/download post-publish smoke.
+  - Settle the approved proposal status to accepted before spec reliance.
+  - Create a target-native init spec covering command syntax, install-only default, `--write-state`, target-oriented state files, metadata/archive verification, and release smoke.
+  - Record spec-review R1 before spec revision or downstream reliance.
+  - Resolve TNI-SR1 through TNI-SR3 before architecture, plan, test-spec, or implementation relies on the target-native init spec.
+  - Record spec-review R2 approval before downstream reliance.
+  - Settle the approved spec status before architecture reliance.
+  - Update the canonical architecture package for target-native init, install-only default behavior, explicit state writes, state safety reads, and release-smoke boundaries.
+  - Record a durable ADR for the target-native init and explicit state boundary decision.
+  - Record architecture-review R1 before downstream test-spec, planning, or implementation relies on the target-native init architecture.
+  - Create a living execution plan and plan index entry before plan-review and test-spec.
+  - Record plan-review R1 before downstream test-spec or implementation relies on the plan.
+  - Resolve TNI-PLR1-F1 before test-spec or implementation relies on the target-native init plan.
+  - Record plan-review R2 approval before test-spec or implementation relies on the revised plan.
+  - Create an active target-native init test spec before implementation.
+  - Implement M1 parser/state schema behavior before code-review covering positional `init <target>`, removed `--adapter`, default install-only state behavior, explicit `--write-state`, and target-oriented state-file schemas.
+  - Record M1 code-review R1 before closing the M1 implementation milestone.
+  - Resolve TNI-CR1-F1 before rerunning M1 code-review.
+  - Record M1 code-review R2 before advancing to M2 implementation.
+  - Implement M2 verified install, existing-state safety parsing, legacy state compatibility, target roots, and mutation-conflict preservation before M2 code-review.
+  - Resolve TNI-CR3-F1 before closing M2 and advancing to M3 implementation.
+  - Rerun M2 code-review after resolving TNI-CR3-F1 before advancing to M3.
+  - Record clean M2 code-review R4 before advancing to M3 implementation.
+tests:
+  - Proposal-review R1 records the state-file terminology boundary conflict before spec reliance.
+  - Review-resolution remains open until the proposal consistently distinguishes user-visible state keys from non-user-visible internals, then closes after R2 approval.
+  - Proposal-review R2 confirms the state-file terminology boundary is consistent and ready for spec.
+  - Proposal-review R3 confirms no new material findings and records the status-normalization note before spec reliance.
+  - Spec authoring records the upstream proposal status settlement and creates a draft spec ready for spec-review.
+  - Spec-review R1 records dry-run, state-file key/value terminology, and default-init state parsing findings before downstream reliance.
+  - Spec revision resolves TNI-SR1, TNI-SR2, and TNI-SR3.
+  - Spec-review R2 confirms the revised spec is ready for downstream artifacts.
+  - Spec-review R3 confirms no new material findings before downstream status normalization.
+  - Architecture package records the target-native runtime flow, downstream state deployment boundary, crosscutting state model, quality targets, risks, and architecture-review handoff.
+  - ADR records the durable target-native init, explicit state-write, target-oriented schema, default state safety, and release-smoke gate decisions.
+  - Architecture-review R1 confirms no material findings and clears the architecture for downstream test-spec and planning.
+  - Plan sequences implementation into reviewable milestones covering parser/state schema, verified install/state safety, release/docs validation, and lifecycle closeout.
+  - Plan-review R1 records the release-verify invocation mismatch before test-spec or implementation.
+  - Plan revision resolves TNI-PLR1-F1 by using the existing `release-verify.sh` environment-variable interface.
+  - Plan-review R2 confirms the revised plan is ready for test-spec.
+  - Test spec maps the approved requirements, examples, edge cases, architecture boundaries, and plan milestones to concrete tests.
+  - Package CLI tests prove M1 behavior for target parsing, removed `--adapter`, default dry-run without state plans, `--write-state` dry-run state content, schema v2 manifest output, schema v3 lockfile parsing/serialization, and package README/help alignment.
+  - Code-review R1 checks the M1 implementation diff against the approved spec, test spec, plan, and validation evidence.
+  - Parser-edge package CLI tests cover named rejected aliases and mixed removed syntax forms required by TNI-CR1-F1.
+  - Code-review R2 confirms TNI-CR1-F1 is resolved and closes M1 with no material findings.
+  - Package CLI tests prove default target-native init installs without state files, unrelated valid state is byte-preserved, malformed existing state blocks before mutation, and generated path conflicts keep mutation-conflict exit behavior.
+  - Package publication smoke validates the packed target-native binary help and dry-run command shape.
+  - Code-review R3 records the M2 direct-proof gap for default opencode install, default implicated drift/conflict blocking, and default legacy state preservation.
+  - Direct package CLI tests resolve TNI-CR3-F1 by proving default opencode no-state install, selected-target drift blocking, overlapping-root conflict blocking, and legacy adapter state byte preservation.
+  - Code-review R4 confirms TNI-CR3-F1 is resolved and closes M2 with no material findings.
+  - Package CLI tests prove v0.3.0 bundled metadata, package version, and real release archive compatibility.
+  - Package publication tests prove packed-package pre-publish smoke runs real non-dry-run default and `--write-state` init for codex, claude, and opencode.
+  - Release validation tests prove v0.3.0 release verification invokes package smoke, builds release archives, validates release metadata, and records post-publish target smoke evidence.
+  - Code-review R5 records the M3 post-publish target-smoke evidence detail gap before M3 closeout.
+  - Post-publish target-smoke evidence tests resolve TNI-CR5-F1 by requiring installed root(s), tree hash value(s), file count(s), and command output summaries before published v0.3.0 evidence can pass.
+  - Code-review R6 confirms TNI-CR5-F1 is resolved and closes M3 with no material findings.
+  - M4 lifecycle closeout records durable explain-change rationale and broad selected validation evidence before code-review.
+  - Code-review R7 confirms M4 lifecycle closeout and broad validation evidence are ready for verify.
+  - Final verify confirms branch-ready state after the full change pack is tracked in commit 33d41c6.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_structure_reviews_6_findings_4_log_entries_6_resolution_entries_4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_6_findings_4_log_entries_6_resolution_entries_4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md --path specs/target-native-init.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r1.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r2.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r3.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r1.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r2.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r3.md
+    result: pass_validated_2_artifact_files_after_spec_review_r3
+  - command: git diff --check -- docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md specs/target-native-init.md docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_architecture_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_6_findings_4_log_entries_6_resolution_entries_4_after_architecture_update
+  - command: git diff --check -- docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md specs/target-native-init.md docs/architecture/system/architecture.md docs/adr/ADR-20260524-target-native-init-state-boundary.md docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_after_architecture_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md --path specs/target-native-init.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260524-target-native-init-state-boundary.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r1.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r2.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r3.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r1.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r2.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r3.md
+    result: pass_validated_4_artifact_files_after_architecture_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_7_findings_4_log_entries_7_resolution_entries_4_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_architecture_review_r1
+  - command: git diff --check -- docs/architecture/system/architecture.md docs/adr/ADR-20260524-target-native-init-state-boundary.md specs/target-native-init.md docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_after_architecture_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md --path specs/target-native-init.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260524-target-native-init-state-boundary.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r1.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r2.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r3.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r1.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r2.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r3.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/architecture-review-r1.md
+    result: pass_validated_4_artifact_files_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_plan_creation
+  - command: git diff --check -- docs/plans/2026-05-24-target-native-init-commands.md docs/plan.md docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_after_plan_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md --path specs/target-native-init.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260524-target-native-init-state-boundary.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r1.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r2.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r3.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r1.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r2.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r3.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/architecture-review-r1.md
+    result: pass_validated_4_artifact_files_after_plan_creation
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_structure_reviews_8_findings_5_log_entries_8_resolution_entries_5_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r1
+  - command: git diff --check -- docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/plan-review-r1.md
+    result: pass_validated_4_artifact_files_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_plan_revision_for_TNI_PLR1_F1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_4_artifact_files_after_plan_revision_for_TNI_PLR1_F1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_8_findings_5_log_entries_8_resolution_entries_5_after_plan_revision_for_TNI_PLR1_F1
+  - command: git diff --check --
+    result: pass_after_plan_revision_for_TNI_PLR1_F1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_9_findings_5_log_entries_9_resolution_entries_5_after_plan_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/plan-review-r2.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_4_artifact_files_after_plan_review_r2
+  - command: git diff --check -- docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement docs/plans/2026-05-24-target-native-init-commands.md docs/plan.md
+    result: pass_after_plan_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/target-native-init.md --path specs/target-native-init.test.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_validated_5_artifact_files_after_test_spec
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_9_findings_5_log_entries_9_resolution_entries_5_after_test_spec
+  - command: git diff --check -- specs/target-native-init.test.md docs/plans/2026-05-24-target-native-init-commands.md docs/plan.md docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_after_test_spec
+  - command: npm test --prefix packages/rigorloop
+    result: pass_109_tests_after_M1_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_M1_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/target-native-init.md --path specs/target-native-init.test.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_validated_5_artifact_files_after_M1_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_9_findings_5_log_entries_9_resolution_entries_5_after_M1_implementation
+  - command: git diff --check -- packages/rigorloop docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement docs/plans/2026-05-24-target-native-init-commands.md docs/plan.md
+    result: pass_after_M1_implementation
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_structure_reviews_10_findings_6_log_entries_10_resolution_entries_6_after_code_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r1.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_r1
+  - command: git diff --check -- docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement docs/plans/2026-05-24-target-native-init-commands.md docs/plan.md
+    result: pass_after_code_review_r1
+  - command: npm test --prefix packages/rigorloop
+    result: pass_110_tests_after_TNI_CR1_F1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_TNI_CR1_F1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_TNI_CR1_F1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_10_findings_6_log_entries_10_resolution_entries_6_after_TNI_CR1_F1_resolution
+  - command: git diff --check --
+    result: pass_after_TNI_CR1_F1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_11_findings_6_log_entries_11_resolution_entries_6_after_code_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r2.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_r2
+  - command: git diff --check -- docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement docs/plans/2026-05-24-target-native-init-commands.md docs/plan.md
+    result: pass_after_code_review_r2
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern "TTNI-INST-001|TTNI-STATE-003|TTNI-STATE-006"
+    result: pass_focused_M2_state_safety_regressions
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern "TTNI-INST-001|TTNI-STATE-003|TTNI-STATE-006|TLF-027"
+    result: pass_focused_M2_state_safety_and_mutation_conflict_regressions
+  - command: npm test --prefix packages/rigorloop
+    result: pass_113_tests_after_M2_implementation
+  - command: python scripts/test-npm-package-publication.py
+    result: pass_after_M2_target_native_packed_smoke_alignment
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_103_tests_after_M2_implementation
+  - command: git diff --check -- packages/rigorloop scripts docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_after_M2_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_M2_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_11_findings_6_log_entries_11_resolution_entries_6_after_M2_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/target-native-init.md --path specs/target-native-init.test.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_validated_5_artifact_files_after_M2_implementation
+  - command: git diff --check -- packages/rigorloop scripts docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement docs/plans/2026-05-24-target-native-init-commands.md docs/plan.md
+    result: pass_after_M2_handoff_updates
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_structure_reviews_12_findings_7_log_entries_12_resolution_entries_7_after_code_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r3.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_r3
+  - command: git diff --check -- docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement docs/plans/2026-05-24-target-native-init-commands.md docs/plan.md
+    result: pass_after_code_review_r3
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern "TTNI-INST-002|TTNI-STATE-005|TTNI-MIG-001"
+    result: pass_focused_TNI_CR3_F1_direct_proof_tests
+  - command: npm test --prefix packages/rigorloop
+    result: pass_117_tests_after_TNI_CR3_F1_resolution
+  - command: python scripts/test-npm-package-publication.py
+    result: pass_after_TNI_CR3_F1_resolution
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_103_tests_after_TNI_CR3_F1_resolution
+  - command: git diff --check -- packages/rigorloop scripts docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement docs/plans/2026-05-24-target-native-init-commands.md docs/plan.md
+    result: pass_after_TNI_CR3_F1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_TNI_CR3_F1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_TNI_CR3_F1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_12_findings_7_log_entries_12_resolution_entries_7_after_TNI_CR3_F1_resolution
+  - command: git diff --check --
+    result: pass_after_TNI_CR3_F1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_13_findings_7_log_entries_13_resolution_entries_7_after_code_review_r4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r4.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_r4
+  - command: git diff --check -- docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement docs/plans/2026-05-24-target-native-init-commands.md docs/plan.md
+    result: pass_after_code_review_r4
+  - command: npm test --prefix packages/rigorloop
+    result: pass_117_tests_after_M3_release_package_validation
+  - command: python scripts/test-npm-package-publication.py
+    result: pass_real_non_dry_run_packed_package_smoke_for_all_targets
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_104_tests_after_v0_3_0_release_gate_update
+  - command: python scripts/validate-release.py --version v0.3.0 --release-output-dir <temp-release-output-dir> --release-commit 02a9d7d6d514fc99908abf32898494dbbbae00c9
+    result: pass_validated_v0_3_0_release_metadata
+  - command: RELEASE_OUTPUT_DIR=<temp-release-output-dir> RELEASE_COMMIT=02a9d7d6d514fc99908abf32898494dbbbae00c9 bash scripts/release-verify.sh v0.3.0
+    result: pass_v0_3_0_release_verify
+  - command: git grep -n "init --adapter\\|installing an adapter\\|Install the .* adapter" README.md packages docs dist || true
+    result: historical_matches_only_current_public_docs_use_target_native_init
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_M3_handoff
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_13_findings_7_log_entries_13_resolution_entries_7_after_M3_handoff
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md --path specs/target-native-init.md --path specs/target-native-init.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260524-target-native-init-state-boundary.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r4.md
+    result: pass_validated_5_artifact_files_after_M3_handoff
+  - command: git diff --check --
+    result: pass_after_M3_handoff
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_structure_reviews_14_findings_8_log_entries_14_resolution_entries_8_after_code_review_r5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r5.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_r5
+  - command: git diff --check --
+    result: pass_after_code_review_r5
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_112_tests_after_TNI_CR5_F1_resolution
+  - command: python scripts/test-npm-package-publication.py
+    result: pass_6_tests_after_TNI_CR5_F1_resolution
+  - command: npm test --prefix packages/rigorloop
+    result: pass_117_tests_after_TNI_CR5_F1_resolution
+  - command: python scripts/validate-release.py --version v0.3.0 --release-output-dir /tmp/tmp.cWJYJ5cs7M --release-commit 02a9d7d6d514fc99908abf32898494dbbbae00c9
+    result: pass_v0_3_0_release_validation_after_TNI_CR5_F1_resolution
+  - command: RELEASE_OUTPUT_DIR=/tmp/tmp.cWJYJ5cs7M RELEASE_COMMIT=02a9d7d6d514fc99908abf32898494dbbbae00c9 bash scripts/release-verify.sh v0.3.0
+    result: pass_v0_3_0_release_verify_after_TNI_CR5_F1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_TNI_CR5_F1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md --path docs/releases/v0.3.0/npm-publication.md
+    result: pass_validated_5_artifact_files_after_TNI_CR5_F1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_14_findings_8_log_entries_14_resolution_entries_8_after_TNI_CR5_F1_resolution
+  - command: git diff --check --
+    result: pass_after_TNI_CR5_F1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_15_findings_8_log_entries_15_resolution_entries_8_after_code_review_r6
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r6
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r6.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_r6
+  - command: git diff --check --
+    result: pass_after_code_review_r6
+  - command: npm pack --dry-run --json
+    result: pass_packages_rigorloop_dry_run_pack_14_entries_25902_bytes
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts --path README.md --path docs/releases --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement --path specs/target-native-init.md --path docs/plans/2026-05-24-target-native-init-commands.md
+    result: fail_selector_unclassified_directory_paths_before_checks
+  - command: bash scripts/ci.sh --mode explicit --path scripts/adapter_distribution.py --path scripts/npm_package_validation.py --path scripts/release-verify.sh --path scripts/test-adapter-distribution.py --path scripts/test-npm-package-publication.py --path docs/releases/index.md --path docs/releases/v0.3.0.md --path docs/releases/v0.3.0/release.yaml --path docs/releases/v0.3.0/release-notes.md --path docs/releases/v0.3.0/npm-publication.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/explain-change.md --path README.md --path packages/rigorloop --path specs/target-native-init.md --path docs/plans/2026-05-24-target-native-init-commands.md
+    result: fail_artifact_lifecycle_validate_before_v0_3_0_flat_release_evidence_alignment
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/explain-change.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/releases/index.md --path docs/releases/v0.3.0.md --path specs/target-native-init.md
+    result: pass_validated_6_artifact_files_after_release_evidence_alignment
+  - command: bash scripts/ci.sh --mode explicit --path scripts/adapter_distribution.py --path scripts/npm_package_validation.py --path scripts/release-verify.sh --path scripts/test-adapter-distribution.py --path scripts/test-npm-package-publication.py --path docs/releases/index.md --path docs/releases/v0.3.0.md --path docs/releases/v0.3.0/release.yaml --path docs/releases/v0.3.0/release-notes.md --path docs/releases/v0.3.0/npm-publication.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/explain-change.md --path README.md --path packages/rigorloop --path specs/target-native-init.md --path docs/plans/2026-05-24-target-native-init-commands.md
+    result: pass_selected_ci_with_broad_smoke_after_M4_closeout_updates
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md --path specs/target-native-init.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260524-target-native-init-state-boundary.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_validated_5_artifact_files_after_M4_handoff
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_15_findings_8_log_entries_15_resolution_entries_8_after_M4_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_M4_handoff
+  - command: git diff --check --
+    result: pass_after_M4_handoff
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_16_findings_8_log_entries_16_resolution_entries_8_after_code_review_r7
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r7
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r7.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md
+    result: pass_validated_5_artifact_files_after_code_review_r7
+  - command: git diff --check --
+    result: pass_after_code_review_r7
+  - command: git status --short
+    result: pass_clean_after_commit_33d41c6
+  - command: python scripts/query-change-record.py 2026-05-24-target-native-init-commands-and-adapter-terminology-retirement summary
+    result: pass_status_ok_no_open_blockers_after_commit
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_16_findings_8_log_entries_16_resolution_entries_8_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md --path specs/target-native-init.md --path specs/target-native-init.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260524-target-native-init-state-boundary.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/explain-change.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md
+    result: pass_validated_5_artifact_files_final_verify
+  - command: bash scripts/ci.sh --mode pr --base main --head HEAD
+    result: pass_pr_mode_selected_ci_with_broad_smoke_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+    result: pass_valid_change_metadata_after_verify_evidence_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement
+    result: pass_closeout_reviews_16_findings_8_log_entries_16_resolution_entries_8_after_verify_evidence_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md --path specs/target-native-init.md --path specs/target-native-init.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260524-target-native-init-state-boundary.md --path docs/plans/2026-05-24-target-native-init-commands.md --path docs/plan.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/explain-change.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/verify-report.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md --path docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md
+    result: pass_validated_5_artifact_files_after_verify_evidence_update
+  - command: git diff --check --
+    result: pass_after_verify_evidence_update
+changed_files:
+  - README.md
+  - docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md
+  - specs/target-native-init.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260524-target-native-init-state-boundary.md
+  - specs/target-native-init.test.md
+  - docs/plans/2026-05-24-target-native-init-commands.md
+  - docs/plan.md
+  - docs/releases/index.md
+  - docs/releases/v0.3.0.md
+  - docs/releases/v0.3.0/release.yaml
+  - docs/releases/v0.3.0/release-notes.md
+  - docs/releases/v0.3.0/npm-publication.md
+  - docs/reports/adapter-artifacts/releases/v0.3.0.yaml
+  - packages/rigorloop/package.json
+  - packages/rigorloop/README.md
+  - packages/rigorloop/dist/bin/rigorloop.js
+  - packages/rigorloop/dist/lib/lockfile.js
+  - packages/rigorloop/dist/metadata/adapter-artifacts-v0.2.0.json
+  - packages/rigorloop/dist/metadata/adapter-artifacts-v0.3.0.json
+  - packages/rigorloop/dist/metadata/releases.json
+  - packages/rigorloop/test/cli.test.js
+  - scripts/adapter_distribution.py
+  - scripts/npm_package_validation.py
+  - scripts/release-verify.sh
+  - scripts/test-adapter-distribution.py
+  - scripts/test-npm-package-publication.py
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/explain-change.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/verify-report.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-resolution.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r3.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r1.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r2.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/spec-review-r3.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/plan-review-r1.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/plan-review-r2.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r1.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r2.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r3.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r4.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r5.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r6.md
+  - docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r7.md
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/code-review-r7.md
+  review_log: docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/review-log.md
