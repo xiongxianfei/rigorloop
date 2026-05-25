@@ -20,7 +20,8 @@
       "size_bytes": 105317,
       "install_root": ".agents/skills",
       "tree_hash_algorithm": "rigorloop-tree-hash-v1",
-      "tree_sha256": "698be6488b06534ed927278f7d0671fd9ee7ead8f4e20d1df838894b45d139bf"
+      "tree_sha256": "6c01d71d2a0e4cd3b276092728f52de23345095b25ce2135b1a0759afd25c12e",
+      "file_count": 38
     }
   ],
   "validation": {

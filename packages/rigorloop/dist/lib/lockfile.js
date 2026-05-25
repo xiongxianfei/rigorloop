@@ -6,7 +6,7 @@ const SUPPORTED_ADAPTERS = new Set(["codex", "claude", "opencode"]);
 const TOP_LEVEL_FIELDS = ["schema_version", "rigorloop", "manifest", "generated"];
 const RIGORLOOP_FIELDS = ["package", "version"];
 const MANIFEST_FIELDS = ["path", "sha256"];
-const GENERATED_FIELDS = ["adapters"];
+const GENERATED_FIELDS = ["adapters", "targets"];
 const ADAPTER_FIELDS = [
   "adapter",
   "release",
@@ -227,6 +227,25 @@ function parseAdapters(lines) {
   return { adapters };
 }
 
+function parseTargets(lines) {
+  const transformed = lines.map((line) => {
+    if (line === "  targets:") {
+      return "  adapters:";
+    }
+    return line.replace(/^    - target:/, "    - adapter:");
+  });
+  const parsed = parseAdapters(transformed);
+  if (parsed.ok === false || parsed.missing) {
+    return parsed;
+  }
+  return {
+    targets: parsed.adapters.map((adapter) => {
+      const { adapter: target, ...rest } = adapter;
+      return { target, ...rest };
+    }),
+  };
+}
+
 function unexpectedFields(adapter, allowed) {
   return Object.keys(adapter).filter((field) => !allowed.includes(field));
 }
@@ -337,6 +356,18 @@ function validateAdapter(adapter, schemaVersion) {
   return validateSingleRootAdapter(adapter, schemaVersion);
 }
 
+function validateTarget(target) {
+  const adapter = { ...target, adapter: target.target };
+  delete adapter.target;
+  const error = validateAdapter(adapter, 2);
+  if (error) {
+    return error;
+  }
+  const { adapter: normalizedTarget, ...rest } = adapter;
+  Object.assign(target, { target: normalizedTarget, ...rest });
+  return undefined;
+}
+
 export function parseLockfile(text) {
   if (typeof text !== "string" || !text.trim()) {
     return failure("invalid", "invalid-lockfile", "rigorloop.lock is empty or not text.");
@@ -359,7 +390,7 @@ export function parseLockfile(text) {
   }
   const schemaVersion = parseScalar(top.get("schema_version"));
   const parsedSchemaVersion = Number.parseInt(schemaVersion, 10);
-  if (!/^\d+$/.test(schemaVersion) || ![1, 2].includes(parsedSchemaVersion)) {
+  if (!/^\d+$/.test(schemaVersion) || ![1, 2, 3].includes(parsedSchemaVersion)) {
     return failure("unsupported", "unsupported-lockfile-shape", "Unsupported lockfile schema_version.");
   }
 
@@ -383,6 +414,33 @@ export function parseLockfile(text) {
   }
   if (manifest.fields.path !== "rigorloop.yaml" || !isSha256(manifest.fields.sha256)) {
     return failure("invalid", "invalid-lockfile", "Invalid manifest lockfile entry.");
+  }
+
+  if (parsedSchemaVersion === 3) {
+    const targetResult = parseTargets(lines);
+    if (targetResult.ok === false) {
+      return targetResult;
+    }
+    if (targetResult.missing || !targetResult.targets.length) {
+      return failure("invalid", "invalid-lockfile", "generated.targets must contain at least one target entry.");
+    }
+    for (const target of targetResult.targets) {
+      const targetError = validateTarget(target);
+      if (targetError) {
+        return targetError;
+      }
+    }
+    return {
+      ok: true,
+      lockfile: {
+        schema_version: parsedSchemaVersion,
+        rigorloop: rigorloop.fields,
+        manifest: manifest.fields,
+        generated: {
+          targets: targetResult.targets,
+        },
+      },
+    };
   }
 
   const adapterResult = parseAdapters(lines);
@@ -413,7 +471,17 @@ export function parseLockfile(text) {
 }
 
 export function serializeLockfile(lockfile) {
-  const adapters = [...lockfile.generated.adapters].sort((left, right) => left.adapter.localeCompare(right.adapter));
+  const isTargetSchema = lockfile.schema_version === 3;
+  const sourceEntries = lockfile.generated.targets ?? lockfile.generated.adapters;
+  const entries = [...sourceEntries].map((entry) => {
+    if (isTargetSchema || entry.adapter) {
+      return entry;
+    }
+    const { target, ...rest } = entry;
+    return { adapter: target, ...rest };
+  }).sort((left, right) =>
+    (left.target ?? left.adapter).localeCompare(right.target ?? right.adapter),
+  );
   const lines = [
     `schema_version: ${lockfile.schema_version ?? 2}`,
     "",
@@ -426,11 +494,11 @@ export function serializeLockfile(lockfile) {
     `  sha256: "${lockfile.manifest.sha256}"`,
     "",
     "generated:",
-    "  adapters:",
+    isTargetSchema ? "  targets:" : "  adapters:",
   ];
-  for (const adapter of adapters) {
+  for (const adapter of entries) {
     lines.push(
-      `    - adapter: ${adapter.adapter}`,
+      isTargetSchema ? `    - target: ${adapter.target}` : `    - adapter: ${adapter.adapter}`,
       `      release: "${adapter.release}"`,
       `      source: ${adapter.source}`,
       `      archive: "${adapter.archive}"`,
