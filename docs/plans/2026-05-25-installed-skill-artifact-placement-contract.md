@@ -63,9 +63,9 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - Last reviewed milestone: M3. Generated Output Proof and Cold-Read Evidence
 - Review status: code-review-m3-r1 clean-with-notes; M3 closed
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready; PR handoff pending
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, explain-change is recorded, final verify passed locally, and PR handoff is not prepared.
+- Next stage: hosted CI and human review for PR #93
+- Final closeout readiness: PR open; hosted CI and human review pending
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, explain-change is recorded, final verify passed locally, and PR #93 is open; hosted CI and human review are not complete.
 
 ## Milestones
 
@@ -259,6 +259,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: `code-review-m3-r1` closed M3 cleanly; no implementation milestones remain, and next stage is explain-change.
 - 2026-05-25: Recorded `explain-change.md`; next stage is verify.
 - 2026-05-25: Final verify passed locally and recorded `verify-report.md`; branch-ready for PR handoff.
+- 2026-05-25: PR #93 opened; hosted CI and human review are pending.
 
 ## Decision log
 
@@ -325,4 +326,4 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `pr`; branch-ready is recorded, but PR body/open readiness is not Done.
+- PR #93 is open; hosted CI and human review are pending.
