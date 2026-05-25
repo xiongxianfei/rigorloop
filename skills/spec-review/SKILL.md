@@ -32,6 +32,24 @@ Do not review implementation code unless the spec claims current behavior and yo
 
 Use the project workflow guide for artifact locations when placement matters.
 
+Formal spec-review records default to:
+
+`docs/changes/<change-id>/reviews/spec-review-r<n>.md`
+
+Record the review-log entry in:
+
+`docs/changes/<change-id>/review-log.md`
+
+Conditional review-resolution path:
+
+`docs/changes/<change-id>/review-resolution.md`
+
+Create that artifact only when material findings, blocking outcomes, or accepted dispositions require it.
+
+If this is a formal lifecycle review and no change pack exists, create or request `docs/changes/<change-id>/` before claiming `Recording status: recorded`. This applies to clean and material reviews. A clean formal review records a receipt and `review-log.md` without creating an empty `review-resolution.md`.
+
+If the user requested an isolated advisory review and no formal recording is required, do not create lifecycle artifacts unless explicitly asked.
+
 Lookup order:
 
 1. explicit user path or change ID;
@@ -42,6 +60,8 @@ Lookup order:
 6. block on ambiguity.
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+
+Use `docs/workflows.md` only for artifact types it specifies. If it is present but silent for this record, use this skill's portable default path.
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
