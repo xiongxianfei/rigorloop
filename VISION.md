@@ -9,10 +9,10 @@ what was considered, what was tested, and how to resume the work safely.
 RigorLoop exists to make AI-assisted software work traceable, resumable, and
 reviewable in Git.
 
-It turns agent work into durable artifacts: proposal, spec, execution plan,
-test plan, implementation evidence, review findings, verification, and PR
-handoff. The goal is not just faster output. The goal is AI work that humans
-can inspect, trust, continue, and improve.
+It turns agent work into durable artifacts. The chain runs through proposal,
+spec, execution plan, test plan, implementation evidence, review findings,
+verification, and PR handoff. The goal is not just faster output. The goal is
+AI work that humans can inspect, trust, continue, and improve.
 
 ## What makes this different
 
@@ -24,9 +24,10 @@ visible, validation evidence is captured, and review concerns stay attached to
 the change.
 
 The differentiator is the traceability chain. A meaningful change can be traced
-from idea to proposal, spec, plan, test spec, implementation, review, verification,
-and PR handoff. Months later, a reviewer should be able to see why the change
-was made, what proved it correct, and where to resume if work stopped.
+from idea to proposal, spec, plan, test spec, implementation, review,
+verification, and PR handoff. Months later, a reviewer should be able to see
+why the change was made, what proved it correct, and where to resume if work
+stopped.
 
 ## Principles
 
@@ -61,11 +62,11 @@ mistakes are recorded and acted on rather than remembered only by one agent.
 
 ## Who it is for
 
-RigorLoop is for individual contributors, maintainers, and teams that want AI
-agents to participate in serious software delivery without weakening engineering
-discipline. It fits projects that value explicit requirements, test-driven work,
-architectural consistency, reproducible validation, and human approval of scope,
-tradeoffs, and release decisions.
+RigorLoop is for individual contributors, maintainers, and teams that want
+AI agents to participate in serious software delivery without weakening
+engineering discipline. It fits projects that value explicit requirements,
+test-driven work, architectural consistency, reproducible validation, and human
+approval of scope, tradeoffs, and release decisions.
 
 ## Who it is not for
 
@@ -93,9 +94,8 @@ remains understandable, testable, and consistent with system design.
 ## What would prove this wrong
 
 The vision is wrong if reviewers cannot reconstruct a representative change's
-purpose, requirements, design constraints, tests, validation evidence, and
-review concerns from tracked artifacts without chat history. It is also wrong if
-teams routinely ignore the artifacts because they slow delivery without
-improving review quality, if the public story becomes more attractive but less
-accurate, or if RigorLoop requires a platform migration before it becomes
-useful.
+purpose, requirements, design constraints, tests, validation evidence, and review
+concerns from tracked artifacts without chat history. It is also wrong when
+teams routinely ignore the artifacts because they slow delivery without improving
+review quality, when the public story becomes more attractive but less accurate,
+or when RigorLoop requires a platform migration before it becomes useful.

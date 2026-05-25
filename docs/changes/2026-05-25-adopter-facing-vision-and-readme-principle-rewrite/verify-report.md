@@ -95,6 +95,17 @@ Validation after the line-wrap fix:
 - `python scripts/validate-readme.py README.md --vision-markers`: passed
 - `git diff --check --`: passed
 
+## Post-PR Vision Line-Wrap Fix
+
+After PR handoff, `VISION.md` prose was reflowed to avoid awkward source line
+breaks around the artifact chain, traceability chain, audience paragraph, and
+falsifiability paragraph. The rendered meaning is unchanged.
+
+Validation after the vision line-wrap fix:
+
+- `python scripts/validate-readme.py README.md --vision-markers`: passed
+- `git diff --check --`: passed
+
 ## Remaining Risks
 
 - The branch is intentionally stacked. PR handoff must identify the intended
