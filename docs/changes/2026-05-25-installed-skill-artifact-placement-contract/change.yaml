@@ -8,6 +8,7 @@ artifacts:
   test_spec: specs/installed-skill-artifact-placement-contract.test.md
   plan: docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md
   explain_change: docs/changes/2026-05-25-installed-skill-artifact-placement-contract/explain-change.md
+  verify_report: docs/changes/2026-05-25-installed-skill-artifact-placement-contract/verify-report.md
 requirements:
   - Record the proposal direction for installed-skill artifact placement self-containment before spec authoring.
   - Preserve the proposal-review observations for spec authoring without treating them as material findings.
@@ -37,6 +38,7 @@ tests:
   - M3 cold-read proof answers proposal-review placement, spec-review pre-change-pack placement, and plan-surface questions from installed skill text.
   - Code-review-m3-r1 closes M3 after confirming generated-output and cold-read proof.
   - Explain-change records why each meaningful code, skill, workflow, validation, and lifecycle artifact changed.
+  - Final verify records local branch-ready evidence and hands off to PR preparation.
   - Artifact lifecycle validation covers the accepted proposal and draft spec.
   - Review artifact validation covers the clean review receipt root.
   - Artifact lifecycle validation covers the proposal and change-local review artifacts.
@@ -169,7 +171,7 @@ validation:
     result: pass_after_code_review_m3_r1
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml
     result: pass_after_code_review_m3_r1
-  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m3-r1.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/behavior-preservation.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m3-r1.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/behavior-preservation.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/verify-report.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md
     result: pass_after_code_review_m3_r1
   - command: git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md
     result: pass_after_code_review_m3_r1
@@ -181,6 +183,30 @@ validation:
     result: pass_after_explain_change
   - command: git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract/explain-change.md docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md
     result: pass_after_explain_change
+  - command: python scripts/test-skill-validator.py
+    result: pass_172_tests_final_verify
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_final_verify
+  - command: python scripts/build-skills.py --check
+    result: pass_final_verify
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-verify-installed-skill-adapters
+    result: pass_final_verify_built_codex_claude_opencode_archives
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-verify-installed-skill-adapters --version v0.1.5
+    result: pass_final_verify_validated_adapter_archives
+  - command: python verify-archive-content-check
+    result: pass_final_verify_archives_contain_revised_skill_paths
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-installed-skill-artifact-placement-contract
+    result: pass_final_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-installed-skill-artifact-placement-contract
+    result: pass_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml
+    result: pass_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/installed-skill-artifact-placement-contract.md --path specs/installed-skill-artifact-placement-contract.test.md --path docs/workflows.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/behavior-preservation.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/explain-change.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md
+    result: pass_final_verify_validated_3_artifact_files
+  - command: git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/plan/SKILL.md docs/workflows.md specs/installed-skill-artifact-placement-contract.md specs/installed-skill-artifact-placement-contract.test.md docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md
+    result: pass_final_verify
+  - command: bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path docs/workflows.md --path specs/installed-skill-artifact-placement-contract.md --path specs/installed-skill-artifact-placement-contract.test.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/explain-change.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/behavior-preservation.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/verify-report.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md
+    result: pass_final_verify_selected_checks_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression
 changed_files:
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
@@ -198,6 +224,7 @@ changed_files:
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/behavior-preservation.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/explain-change.md
+  - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/verify-report.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/proposal-review-r1.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/proposal-review-r2.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/spec-review-r1.md
@@ -209,6 +236,6 @@ changed_files:
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: implementation commit ee3445f
+  reviewed_artifact: implementation commit 1d21353
   review_log: docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md
   latest_review: docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m3-r1.md

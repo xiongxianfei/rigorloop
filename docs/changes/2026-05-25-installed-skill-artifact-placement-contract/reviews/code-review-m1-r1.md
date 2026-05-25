@@ -5,7 +5,7 @@ Stage: code-review
 Round: 1
 Reviewer: Codex code-review
 Target: M1. Placement Contract Validation Scaffolding
-Reviewed artifact: implementation commit `f0320d5`
+Reviewed artifact: implementation commit `32682c4`
 Review date: 2026-05-25
 Recording status: recorded
 Status: changes-requested
@@ -33,7 +33,7 @@ Status: changes-requested
 
 ## Review inputs
 
-- Diff/review surface: commit `f0320d5` on branch `proposal/installed-skill-artifact-placement-contract`.
+- Diff/review surface: commit `32682c4` on branch `proposal/installed-skill-artifact-placement-contract-pr`.
 - Tracked governing branch state: approved proposal, approved spec, active test spec, active plan, change metadata, review log, and M1 implementation commit are tracked.
 - Governing artifacts:
   - `specs/installed-skill-artifact-placement-contract.md`

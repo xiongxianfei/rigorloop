@@ -5,7 +5,7 @@ Stage: code-review
 Round: 1
 Reviewer: Codex code-review
 Target: M2. Canonical Skill and Workflow Map Wording
-Reviewed artifact: implementation commit `d5339a2`
+Reviewed artifact: implementation commit `d4b7ef8`
 Review date: 2026-05-25
 Recording status: recorded
 Status: changes-requested
@@ -33,7 +33,7 @@ Status: changes-requested
 
 ## Review inputs
 
-- Diff/review surface: implementation commit `d5339a2` on branch `proposal/installed-skill-artifact-placement-contract`.
+- Diff/review surface: implementation commit `d4b7ef8` on branch `proposal/installed-skill-artifact-placement-contract-pr`.
 - Tracked governing branch state: approved spec, active test spec, active plan, M1 closed review evidence, M2 implementation commit, review log, and change metadata are tracked.
 - Governing artifacts:
   - `specs/installed-skill-artifact-placement-contract.md`

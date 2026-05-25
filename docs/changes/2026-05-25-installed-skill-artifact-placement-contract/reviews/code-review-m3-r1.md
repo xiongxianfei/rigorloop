@@ -5,7 +5,7 @@ Stage: code-review
 Round: 1
 Reviewer: Codex code-review
 Target: M3. Generated Output Proof and Cold-Read Evidence
-Reviewed artifact: implementation commit `ee3445f`
+Reviewed artifact: implementation commit `1d21353`
 Review date: 2026-05-25
 Recording status: recorded
 Status: clean-with-notes
@@ -33,8 +33,8 @@ Status: clean-with-notes
 
 ## Review inputs
 
-- Diff/review surface: implementation commit `ee3445f`.
-- Tracked governing branch state: approved spec, active test spec, active plan, closed M1/M2 review evidence, and M3 implementation commit `ee3445f` are tracked on branch `proposal/installed-skill-artifact-placement-contract`.
+- Diff/review surface: implementation commit `1d21353`.
+- Tracked governing branch state: approved spec, active test spec, active plan, closed M1/M2 review evidence, and M3 implementation commit `1d21353` are tracked on branch `proposal/installed-skill-artifact-placement-contract-pr`.
 - Governing artifacts:
   - `specs/installed-skill-artifact-placement-contract.md`
   - `specs/installed-skill-artifact-placement-contract.test.md`

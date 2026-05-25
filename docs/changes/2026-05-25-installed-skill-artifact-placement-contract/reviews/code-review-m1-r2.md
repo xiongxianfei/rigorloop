@@ -5,7 +5,7 @@ Stage: code-review
 Round: 2
 Reviewer: Codex code-review
 Target: M1. Placement Contract Validation Scaffolding
-Reviewed artifact: resolution commit `d2e665d`
+Reviewed artifact: resolution commit `9902f1c`
 Review date: 2026-05-25
 Recording status: recorded
 Status: clean-with-notes
@@ -33,8 +33,8 @@ Status: clean-with-notes
 
 ## Review inputs
 
-- Diff/review surface: resolution commit `d2e665d` and focused diff `5a544bd..HEAD` for `scripts/skill_validation.py` and `scripts/test-skill-validator.py`.
-- Tracked governing branch state: approved spec, active test spec, active plan, M1 implementation commit `f0320d5`, first-pass review `code-review-m1-r1`, closed `review-resolution.md`, and resolution commit `d2e665d` are tracked on branch `proposal/installed-skill-artifact-placement-contract`.
+- Diff/review surface: resolution commit `9902f1c` and focused diff `3ecc4d8..HEAD` for `scripts/skill_validation.py` and `scripts/test-skill-validator.py`.
+- Tracked governing branch state: approved spec, active test spec, active plan, M1 implementation commit `32682c4`, first-pass review `code-review-m1-r1`, closed `review-resolution.md`, and resolution commit `9902f1c` are tracked on branch `proposal/installed-skill-artifact-placement-contract-pr`.
 - Governing artifacts:
   - `specs/installed-skill-artifact-placement-contract.md`
   - `specs/installed-skill-artifact-placement-contract.test.md`

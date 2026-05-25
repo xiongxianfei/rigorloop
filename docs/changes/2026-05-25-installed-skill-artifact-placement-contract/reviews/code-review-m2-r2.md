@@ -5,7 +5,7 @@ Stage: code-review
 Round: 2
 Reviewer: manual user approval
 Target: M2. Canonical Skill and Workflow Map Wording
-Reviewed artifact: resolution commit `96f99a6`
+Reviewed artifact: resolution commit `a6780ae`
 Review date: 2026-05-25
 Recording status: recorded
 Status: clean-with-notes
@@ -33,8 +33,8 @@ Status: clean-with-notes
 
 ## Review inputs
 
-- Diff/review surface: resolution commit `96f99a6` resolving `SAP-M2-CR1` after implementation commit `d5339a2`.
-- Tracked governing branch state: approved spec, active test spec, active plan, `code-review-m2-r1`, closed `review-resolution.md`, and resolution commit `96f99a6` are tracked.
+- Diff/review surface: resolution commit `a6780ae` resolving `SAP-M2-CR1` after implementation commit `d4b7ef8`.
+- Tracked governing branch state: approved spec, active test spec, active plan, `code-review-m2-r1`, closed `review-resolution.md`, and resolution commit `a6780ae` are tracked.
 - Governing artifacts:
   - `specs/installed-skill-artifact-placement-contract.md`
   - `specs/installed-skill-artifact-placement-contract.test.md`
@@ -58,7 +58,7 @@ No blocking or required-change findings.
 
 | Check | Result | Evidence |
 |---|---|---|
-| Spec alignment | pass | M2's public skill placement contract remains unchanged from implementation commit `d5339a2`; the resolution only synchronizes lifecycle state. |
+| Spec alignment | pass | M2's public skill placement contract remains unchanged from implementation commit `d4b7ef8`; the resolution only synchronizes lifecycle state. |
 | Test coverage | pass | M2 validation already passed for skill wording and generated local skill checks; the resolution validation covers lifecycle and review artifacts. |
 | Edge cases | pass | `SAP-M2-CR1` is directly resolved: the plan readiness footer now points to rerun `code-review M2` before this manual approval closes M2. |
 | Error handling | pass | No executable error paths changed. |
