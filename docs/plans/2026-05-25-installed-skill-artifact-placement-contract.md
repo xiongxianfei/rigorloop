@@ -59,13 +59,13 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 ## Current Handoff Summary
 
 - Current milestone: M2. Canonical Skill and Workflow Map Wording
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Placement Contract Validation Scaffolding
-- Review status: code-review-m1-r2 clean-with-notes; M1 closed; M2 implementation complete and awaiting code-review
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review M2
+- Current milestone state: resolution-needed
+- Last reviewed milestone: M2. Canonical Skill and Workflow Map Wording
+- Review status: code-review-m2-r1 changes-requested for SAP-M2-CR1; M2 requires review-resolution
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: review-resolution M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 still needs code-review, M3 has not started, explain-change and final verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 has an open review finding, M3 has not started, explain-change and final verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -116,7 +116,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 ### M2. Canonical Skill and Workflow Map Wording
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Update first-slice public skill wording and `docs/workflows.md` so installed skills carry concise placement contracts and the project-local map stays synchronized.
 - Requirements: R1-R25, AC1-AC8, AC11, AC12
 - Files/components likely touched:
@@ -151,6 +151,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
   - decision log updated if needed
   - validation notes updated
   - milestone committed
+  - code-review-m2-r1 requested changes for SAP-M2-CR1
 - Risks:
   - Skill text becomes too verbose.
   - Workflow guide and skill wording disagree after edits.
@@ -248,6 +249,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: Implemented the accepted `SAP-M1-CR1` fix by adding stage-owned record-type helper coverage, correcting the `spec-review` fixture, and adding wrong-stage negative fixtures; M1 returned to `review-requested`.
 - 2026-05-25: `code-review-m1-r2` closed M1 cleanly; next stage is implement M2.
 - 2026-05-25: M2 updated canonical `proposal-review` and `spec-review` placement blocks, added plan-surface wording to `plan`, synchronized `docs/workflows.md` precedence text, and wired the placement helpers into canonical skill validation; next stage is code-review M2.
+- 2026-05-25: `code-review-m2-r1` requested changes for `SAP-M2-CR1`; M2 moved to `resolution-needed`.
 
 ## Decision log
 
@@ -295,6 +297,8 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml` passed after M2 metadata update.
 - 2026-05-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md --path specs/installed-skill-artifact-placement-contract.md` passed after M2, validating 1 artifact file in explicit-paths mode.
 - 2026-05-25: `git diff --check -- skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/plan/SKILL.md docs/workflows.md` passed after M2.
+- 2026-05-25: Code-review M2 reran `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md --path specs/installed-skill-artifact-placement-contract.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml`; it passed with 3 artifact files before recording `SAP-M2-CR1`.
+- 2026-05-25: Post-recording validation for `code-review-m2-r1`: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-installed-skill-artifact-placement-contract`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m2-r1.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md`, and `git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md` passed.
 
 ## Outcome and retrospective
 
@@ -303,4 +307,4 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M2`; readiness is not Done.
+- Ready for `review-resolution M2`; readiness is not Done.

@@ -26,3 +26,17 @@ Resolution: review-resolution.md#code-review-m1-r1
 Material findings: SAP-M1-CR1
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: implementation commit `d5339a2`
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: SAP-M2-CR1
+Open findings: SAP-M2-CR1
+Recording status: recorded
