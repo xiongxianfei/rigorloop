@@ -236,6 +236,22 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("README generated-region and source-of-truth ownership proof is recorded",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="vision-readme-sync-proof",
+        patterns=("vision-readme-sync-proof.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("VISION.md and README consistency proof is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="cold-read-review",
+        patterns=("cold-read-review.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("cold-read reviewer evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="repository-metadata-proof",
         patterns=("repository-metadata-proof.md",),
         selector_routes=("artifact_lifecycle.validate",),

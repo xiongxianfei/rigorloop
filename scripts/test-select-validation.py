@@ -870,6 +870,8 @@ raise SystemExit({exit_code})
             "docs/changes/2026-04-25-example/behavior-preservation.md",
             "docs/changes/2026-04-25-example/adoption-surface-review.md",
             "docs/changes/2026-04-25-example/readme-ownership-proof.md",
+            "docs/changes/2026-04-25-example/vision-readme-sync-proof.md",
+            "docs/changes/2026-04-25-example/cold-read-review.md",
             "docs/changes/2026-04-25-example/repository-metadata-proof.md",
             "docs/changes/2026-04-25-example/version-sync-proof.md",
             "docs/changes/2026-04-25-example/baseline.md",
@@ -1542,6 +1544,18 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/behavior-preservation.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/vision-readme-sync-proof.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/cold-read-review.md",
                 "category": "registered-change-evidence",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
