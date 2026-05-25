@@ -581,9 +581,11 @@ def catalog_command(
             raise ValueError("change_metadata.validate requires at least one change.yaml path")
         return _join("python", "scripts/validate-change-metadata.py", *paths)
     if check_id == "release.validate":
-        if len(versions) != 1:
-            raise ValueError("release.validate requires exactly one release version")
-        return _join("python", "scripts/validate-release-ci.py", "--version", versions[0])
+        if not versions:
+            raise ValueError("release.validate requires at least one release version")
+        args = ["python", "scripts/validate-release-ci.py", "--version"]
+        args.extend(versions)
+        return _join(*args)
     if check_id == "token_cost.report_validate":
         if not paths:
             raise ValueError("token_cost.report_validate requires at least one report YAML path")

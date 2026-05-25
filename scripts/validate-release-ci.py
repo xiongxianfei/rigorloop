@@ -98,20 +98,26 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--version",
+        nargs="+",
         required=True,
-        help="Release tag to validate, such as v0.1.1 or v0.1.2.",
+        help="Release tag or tags to validate, such as v0.1.1 or v0.1.2.",
     )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    source_commit = adapter_artifact_source_commit(args.version)
-    if source_commit is None:
-        return run_command(
-            [sys.executable, "scripts/validate-release.py", "--version", args.version]
-        )
-    return validate_from_recorded_source(args.version, source_commit)
+    for version in args.version:
+        source_commit = adapter_artifact_source_commit(version)
+        if source_commit is None:
+            status = run_command(
+                [sys.executable, "scripts/validate-release.py", "--version", version]
+            )
+        else:
+            status = validate_from_recorded_source(version, source_commit)
+        if status:
+            return status
+    return 0
 
 
 if __name__ == "__main__":
