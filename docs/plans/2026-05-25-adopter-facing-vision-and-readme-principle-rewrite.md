@@ -200,6 +200,7 @@ approved CLI contract and package docs.
 - 2026-05-25: explain-change recorded durable rationale for the M1 vision/README rewrite and moved the next stage to verify.
 - 2026-05-25: local final verify passed, `verify-report.md` was recorded, and the next stage moved to PR handoff.
 - 2026-05-25: PR #94 opened against `release/v0.3.1` so the review diff matches the stacked-branch boundary recorded in verify evidence.
+- 2026-05-25: hosted CI failed because `cold-read-review.md` and `vision-readme-sync-proof.md` were deterministic change-local evidence without selector evidence-class registrations; registered both proof files, added selector regression coverage, and local PR-mode CI passed.
 
 ## Decision log
 
@@ -241,6 +242,9 @@ approved CLI contract and package docs.
 - 2026-05-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path VISION.md --path README.md --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml --path docs/plans/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite.md --path docs/plan.md --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/explain-change.md` passed after explain-change recording.
 - 2026-05-25: `python scripts/validate-readme.py README.md --vision-markers` passed after explain-change recording.
 - 2026-05-25: `git diff --check --` passed after explain-change recording.
+- 2026-05-25: `python scripts/test-select-validation.py` passed after the CI evidence-route fix.
+- 2026-05-25: `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/cold-read-review.md --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/vision-readme-sync-proof.md` passed after the CI evidence-route fix.
+- 2026-05-25: `bash scripts/ci.sh --mode pr --base a1ea3d1b2e42adfb72c1365b6f1ac935ee1be2d5 --head HEAD` passed after the CI evidence-route fix.
 
 ## Outcome and retrospective
 
