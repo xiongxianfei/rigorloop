@@ -106,6 +106,18 @@ Validation after the vision line-wrap fix:
 - `python scripts/validate-readme.py README.md --vision-markers`: passed
 - `git diff --check --`: passed
 
+## Post-PR Vision Semantic Line-Break Fix
+
+After additional review, `VISION.md` was reflowed again to use semantic line
+breaks for prose paragraphs. This avoids hard wrapping in the middle of
+sentences, including the opening line about AI coding agents producing output
+quickly. The rendered meaning is unchanged.
+
+Validation after the semantic line-break fix:
+
+- `python scripts/validate-readme.py README.md --vision-markers`: passed
+- `git diff --check --`: passed
+
 ## Remaining Risks
 
 - The branch is intentionally stacked. PR handoff must identify the intended

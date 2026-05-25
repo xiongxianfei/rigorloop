@@ -82,6 +82,10 @@ validation:
     result: pass_after_vision_line_wrap_fix
   - command: git diff --check --
     result: pass_after_vision_line_wrap_fix
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_after_vision_semantic_line_break_fix
+  - command: git diff --check --
+    result: pass_after_vision_semantic_line_break_fix
 changed_files:
   - VISION.md
   - README.md
