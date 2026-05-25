@@ -31,6 +31,9 @@ tests:
   - M2 skill validation wires first-slice placement checks into canonical skill validation after public skill text is updated.
   - Code-review-m2-r1 records SAP-M2-CR1 against stale plan readiness footer state after the M2 handoff.
   - SAP-M2-CR1 resolution synchronizes the plan readiness footer and returns M2 to rerun code-review.
+  - Code-review-m2-r2 records manual approval for M2 and closes M2.
+  - M3 generated-output proof validates v0.1.5 adapter archives from canonical skills.
+  - M3 cold-read proof answers proposal-review placement, spec-review pre-change-pack placement, and plan-surface questions from installed skill text.
   - Artifact lifecycle validation covers the accepted proposal and draft spec.
   - Review artifact validation covers the clean review receipt root.
   - Artifact lifecycle validation covers the proposal and change-local review artifacts.
@@ -139,6 +142,22 @@ validation:
     result: pass_after_sap_m2_cr1_resolution
   - command: git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md
     result: pass_after_sap_m2_cr1_resolution
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m3
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m3-adapters
+    result: pass_built_codex_claude_opencode_archives_after_m3
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-m3-adapters --version v0.1.5
+    result: pass_validated_generated_adapter_archives_after_m3
+  - command: python generated-archive-content-check
+    result: pass_revised_skill_text_present_in_codex_claude_opencode_archives_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-installed-skill-artifact-placement-contract
+    result: pass_reviews_8_findings_2_log_entries_8_resolution_entries_2_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml
+    result: pass_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/installed-skill-artifact-placement-contract.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/behavior-preservation.md
+    result: pass_validated_3_artifact_files_after_m3
+  - command: git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md
+    result: pass_after_m3
 changed_files:
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
@@ -154,15 +173,17 @@ changed_files:
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md
+  - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/behavior-preservation.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/proposal-review-r1.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/proposal-review-r2.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/spec-review-r1.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/plan-review-r1.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m2-r2.md
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: resolution commit d2e665d
+  reviewed_artifact: manual approval of resolution commit 96f99a6
   review_log: docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md
-  latest_review: docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m1-r2.md
+  latest_review: docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m2-r2.md
