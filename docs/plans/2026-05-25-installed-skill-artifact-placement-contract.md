@@ -58,14 +58,14 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Placement Contract Validation Scaffolding
-- Current milestone state: closed
+- Current milestone: M2. Canonical Skill and Workflow Map Wording
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Placement Contract Validation Scaffolding
-- Review status: code-review-m1-r2 clean-with-notes; M1 closed
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Review status: code-review-m1-r2 clean-with-notes; M1 closed; M2 implementation complete and awaiting code-review
+- Remaining in-scope implementation milestones: M3
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 and M3 have not started, explain-change and final verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 still needs code-review, M3 has not started, explain-change and final verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -116,7 +116,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 ### M2. Canonical Skill and Workflow Map Wording
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Update first-slice public skill wording and `docs/workflows.md` so installed skills carry concise placement contracts and the project-local map stays synchronized.
 - Requirements: R1-R25, AC1-AC8, AC11, AC12
 - Files/components likely touched:
@@ -247,6 +247,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: `code-review-m1-r1` requested changes for `SAP-M1-CR1`; M1 moved to `resolution-needed`.
 - 2026-05-25: Implemented the accepted `SAP-M1-CR1` fix by adding stage-owned record-type helper coverage, correcting the `spec-review` fixture, and adding wrong-stage negative fixtures; M1 returned to `review-requested`.
 - 2026-05-25: `code-review-m1-r2` closed M1 cleanly; next stage is implement M2.
+- 2026-05-25: M2 updated canonical `proposal-review` and `spec-review` placement blocks, added plan-surface wording to `plan`, synchronized `docs/workflows.md` precedence text, and wired the placement helpers into canonical skill validation; next stage is code-review M2.
 
 ## Decision log
 
@@ -255,10 +256,12 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 | 2026-05-25 | Use three implementation milestones: validator coverage, skill/workflow wording, generated-output proof. | Separates proof scaffolding, user-facing contract text, and installable-output evidence into reviewable slices. | One large implementation milestone; updating all review skills in the first slice. |
 | 2026-05-25 | Treat architecture as not required for this slice. | The approved spec changes established skill, workflow-guide, and validator behavior without introducing new components, persistence, APIs, or deployment topology. | Creating an architecture artifact solely for wording and validator updates. |
 | 2026-05-25 | Keep M1 placement helpers fixture-backed and do not wire them into canonical skill validation until M2. | Canonical `proposal-review`, `spec-review`, and plan-surface skill wording is intentionally updated in M2; enforcing the new checks in M1 would make unchanged canonical skills fail before their planned edit slice. | Wiring helper checks into `validate_skill_file` before the public skill wording changes. |
+| 2026-05-25 | Wire placement-contract checks only for canonical first-slice skill surfaces in M2. | The helper now has public skill text to validate, while fixture and unrelated skill validation should not be broadened by this slice. | Applying the helper to generated output before M3; applying plan-surface enforcement to every plan-related skill in M2. |
 
 ## Surprises and discoveries
 
 - M1 needed helper-level validation rather than immediate canonical enforcement so `python scripts/validate-skills.py` remains green until M2 updates public skill text.
+- The published-skill portability validator treats command-style lines that name repository paths as required root dependencies, so the review-resolution path wording uses a label-plus-condition form instead of a `Use <path>` command line.
 
 ## Validation notes
 
@@ -285,6 +288,13 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: `git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md docs/changes/2026-05-25-installed-skill-artifact-placement-contract` passed after `SAP-M1-CR1` fix.
 - 2026-05-25: Rerun review validation for `code-review-m1-r2`: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-installed-skill-artifact-placement-contract`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-installed-skill-artifact-placement-contract`, and `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml` passed before recording the clean review.
 - 2026-05-25: Post-recording validation for `code-review-m1-r2`: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-installed-skill-artifact-placement-contract`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-installed-skill-artifact-placement-contract`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m1-r1.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m1-r2.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md`, and `git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md` passed.
+- 2026-05-25: `python scripts/test-skill-validator.py` initially failed with three expected canonical M2 assertion failures before canonical skill wording was updated: missing `proposal-review` and `spec-review` placement contracts and missing explicit plan-surface paths in `plan`.
+- 2026-05-25: `python scripts/test-skill-validator.py` passed with 172 tests after canonical M2 wording and validator wiring.
+- 2026-05-25: `python scripts/validate-skills.py` passed after M2, validating 23 canonical skill files with placement-contract checks wired for first-slice surfaces.
+- 2026-05-25: `python scripts/build-skills.py --check` passed after M2, validating generated skills from canonical sources using a temporary output directory.
+- 2026-05-25: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml` passed after M2 metadata update.
+- 2026-05-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md --path specs/installed-skill-artifact-placement-contract.md` passed after M2, validating 1 artifact file in explicit-paths mode.
+- 2026-05-25: `git diff --check -- skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/plan/SKILL.md docs/workflows.md` passed after M2.
 
 ## Outcome and retrospective
 
