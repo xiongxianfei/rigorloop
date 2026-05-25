@@ -68,20 +68,20 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 
 ## Current Handoff Summary
 
-- Current milestone: M1
-- Current milestone state: review-requested
-- Last reviewed milestone: plan-review-r2
-- Review status: implementation complete for M1; code-review pending
-- Remaining in-scope implementation milestones: M1 review, M2, M3
-- Next stage: code-review M1
+- Current milestone: M2
+- Current milestone state: planned
+- Last reviewed milestone: M1
+- Review status: M1 closed by code-review-m1-r1 with no material findings
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 code-review, M2, M3, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2, M3, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
 ### M1. Validator and Fixture Scaffolding
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add controlled fixture and helper/parser scaffolding for the closed `spec-review` routing/readiness contract without enabling canonical `spec-review` skill enforcement yet.
 - Requirements: R2, R2a-R2j, R3, R3a-R3k, R8, R8a-R8d, AC-SRTR-ROUTE-001 through AC-SRTR-ROUTE-005
 - Files/components likely touched:
@@ -123,7 +123,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
   - decision log updated if needed
   - validation notes updated
   - milestone handoff commit prepared
-  - code-review requested for M1
+  - code-review completed for M1
 - Risks:
   - Validator overfits prose instead of field structure.
   - Existing parser support is too narrow for actual review-record result fields.
@@ -297,6 +297,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-25: Matching test spec was amended for the closed routing/readiness contract; next stage is implement M1.
 - 2026-05-25: Maintainer approved the active test spec; implementation M1 remains next.
 - 2026-05-25: M1 implementation added controlled result-field fixture validation and is ready for code-review.
+- 2026-05-25: Code-review-m1-r1 closed M1 with no material findings; next stage is implement M2.
 
 ## Decision log
 
@@ -322,12 +323,13 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-25: Active test spec approval recorded in change metadata.
 - 2026-05-25: M1 targeted validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, and `git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py`.
 - 2026-05-25: M1 lifecycle validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, and focused `git diff --check -- ...`.
+- 2026-05-25: Code-review-m1-r1 reran `python scripts/test-skill-validator.py -k spec_review_result_fixture`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, and `git diff --check --`; all passed.
 
 ## Outcome and retrospective
 
-- Pending downstream code-review for M1, M2, M3, explain-change, verify, and PR handoff.
+- Pending downstream implementation and code-review for M2 and M3, explain-change, verify, and PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `plan-review`. Readiness is not Done; test-spec amendment and implementation gates remain.
+- Ready for `implement M2`. Readiness is not Done; M2, M3, explain-change, verify, and PR gates remain.
