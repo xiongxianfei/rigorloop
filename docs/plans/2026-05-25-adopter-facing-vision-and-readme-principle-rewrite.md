@@ -81,19 +81,19 @@ approved CLI contract and package docs.
 ## Current Handoff Summary
 
 - Current milestone: M1. Vision, README, and Evidence Rewrite
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Vision, README, and Evidence Rewrite
-- Review status: code-review-m1-r1 blocked on missing cold-read evidence
+- Review status: code-review-m1-r1 blocker closed by accepted cold-read evidence; rerun code-review for M1
 - Remaining in-scope implementation milestones: M1
-- Next stage: review-resolution / complete M1 cold-read evidence, then return to code-review
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: code-review-m1-r1 recorded blocker `VRP-CR-M1-F1`; cold-read evidence is not complete, M1 is not cleanly reviewed or closed, and explain-change, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: `VRP-CR-M1-F1` is closed, but M1 still needs a clean code-review rerun, explain-change, verify, and PR handoff.
 
 ## Milestones
 
 ### M1. Vision, README, and Evidence Rewrite
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Rewrite `VISION.md` and README public positioning while recording proof that README marker ownership, command-source boundaries, cold-read comprehension, worked-example handling, and behavior preservation are satisfied.
 - Requirements: all VRP and AC checks listed in `Requirements covered`.
 - Files/components likely touched:
@@ -194,6 +194,7 @@ approved CLI contract and package docs.
 - 2026-05-25: corrected the public traceability chain to match repository workflow order: spec, plan, then test spec.
 - 2026-05-25: code-review-m1-r1 blocked M1 on missing cold-read evidence; M1 moved to resolution-needed.
 - 2026-05-25: recorded maintainer-provided public-repository cold-read-style answer as supplemental evidence; it does not close the blocker because it was explicitly not from a separate unfamiliar human reviewer and did not review this branch draft.
+- 2026-05-25: maintainer accepted the branch-specific cold-read evidence for M1, closed `VRP-CR-M1-F1`, and moved M1 back to review-requested for code-review rerun.
 
 ## Decision log
 
@@ -208,7 +209,7 @@ approved CLI contract and package docs.
 
 - `README.md` already contains one valid marker block near the top of the file.
 - `specs/vision-skill.md` already defines the marker sync contract; no new marker-sync mechanism is needed for this plan.
-- A genuinely unfamiliar cold-read reviewer is not available inside this thread; the implementation records that blocker instead of fabricating evidence.
+- Branch-specific cold-read evidence was accepted by maintainer direction for M1 after publication.
 - Review feedback caught an ordering error in the public traceability chain; README and `VISION.md` now show plan before test spec.
 
 ## Validation notes
@@ -223,6 +224,10 @@ approved CLI contract and package docs.
 - 2026-05-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite` passed after owner-decision and M1 content updates.
 - 2026-05-25: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml` passed after owner-decision and M1 content updates.
 - 2026-05-25: `git diff --check --` passed after M1 content rewrite.
+- 2026-05-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite` passed after accepting the branch-specific cold-read evidence and closing `VRP-CR-M1-F1`.
+- 2026-05-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite` passed after cold-read closeout.
+- 2026-05-25: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml` passed after cold-read closeout.
+- 2026-05-25: `git diff --check --` passed after cold-read closeout.
 
 ## Outcome and retrospective
 
@@ -231,4 +236,4 @@ approved CLI contract and package docs.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- M1 is in resolution-needed after code-review-m1-r1. Complete genuine cold-read evidence, update validation and plan state, then return M1 to code-review. Readiness is not Done; code-review closeout, explain-change, verify, and PR handoff remain.
+- M1 is in review-requested after `VRP-CR-M1-F1` closeout. Rerun code-review next. Readiness is not Done; clean code-review, explain-change, verify, and PR handoff remain.
