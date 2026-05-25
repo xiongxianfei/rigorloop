@@ -85,6 +85,16 @@ No blocking drift found.
 - `explain-change.md` exists and matches the closed review state.
 - README marker validation passed.
 
+## Post-PR README Line-Wrap Fix
+
+After PR handoff, README first-screen prose was reflowed to avoid awkward source
+line breaks around the traceability chain. The rendered meaning is unchanged.
+
+Validation after the line-wrap fix:
+
+- `python scripts/validate-readme.py README.md --vision-markers`: passed
+- `git diff --check --`: passed
+
 ## Remaining Risks
 
 - The branch is intentionally stacked. PR handoff must identify the intended

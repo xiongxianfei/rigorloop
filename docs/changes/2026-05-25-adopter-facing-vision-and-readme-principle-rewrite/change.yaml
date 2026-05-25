@@ -74,6 +74,10 @@ validation:
     result: pass_final_verify
   - command: git diff --check --
     result: pass_final_verify
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_after_readme_line_wrap_fix
+  - command: git diff --check --
+    result: pass_after_readme_line_wrap_fix
 changed_files:
   - VISION.md
   - README.md

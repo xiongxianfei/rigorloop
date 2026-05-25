@@ -10,8 +10,9 @@ Who it is for: RigorLoop is for individual contributors, maintainers, and teams 
 See [VISION.md](VISION.md) for goals, non-goals, and falsifiability.
 <!-- vision:end -->
 
-RigorLoop makes AI-assisted delivery inspectable after the chat ends: proposal
-to spec, plan, test spec, implementation, review, verification, and PR handoff.
+RigorLoop makes AI-assisted delivery inspectable after the chat ends. The chain
+runs from proposal to spec, plan, test spec, implementation, review,
+verification, and PR handoff.
 
 It is for contributors and maintainers who want AI agents to help with serious
 software work without losing the reasoning, proof, and review trail that make a
