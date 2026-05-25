@@ -1,6 +1,6 @@
 # Review Resolution
 
-Closeout status: open
+Closeout status: closed
 Review closeout: code-review-m1-r1
 
 ### proposal-review-r1
@@ -38,12 +38,15 @@ Validation evidence: `python scripts/validate-review-artifacts.py --mode closeou
 ### code-review-m1-r2
 
 Finding ID: VRP-CR-M1-F2
-Disposition: needs-decision
-Status: open
-Decision owner: maintainer
+Disposition: accepted
+Status: closed
+Owner: maintainer
 Owning stage: review-resolution
-Decision needed: Choose whether this initiative will be reviewed as a stacked branch on top of the target-native init/release/placement work, or as a clean branch containing only the adopter-facing vision/README commits and evidence.
-Stop state: M1 remains in resolution-needed until the branch review surface is made consistent with the behavior-preservation proof or an explicit stacked-review base is recorded.
+Chosen action: Keep all changes currently on the published branch, record that the branch is intentionally stacked, and clarify that behavior-preservation proof applies to the scoped M1 vision/README commits rather than the whole branch diff against `origin/main`.
 Rationale: The scoped M1 commit set matches the documentation/source-of-truth rewrite, but the published branch diff against `origin/main` includes unrelated runtime, release, validator, skill, adapter, and separate lifecycle files. That contradicts the behavior-preservation proof if reviewers use the default branch diff.
-Validation target: The branch/review surface matches the behavior-preservation proof, either by retargeting/rebasing onto a base that already contains the stacked work or by recreating a clean branch with only the scoped M1 files; review artifacts and plan state then return to `review-requested`.
-Validation evidence: pending
+Validation target: `behavior-preservation.md` records the branch stacking boundary, review-log open findings are cleared, code-review rerun records no material findings, and targeted validation passes.
+Validation evidence: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml`, and `git diff --check --` passed after the stacked-branch decision and code-review-m1-r3 closeout.
+
+### code-review-m1-r3
+
+No material findings.

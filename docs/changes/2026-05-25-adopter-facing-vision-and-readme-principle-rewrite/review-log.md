@@ -48,4 +48,14 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r2.md
 Resolution: review-resolution.md#code-review-m1-r2
 Material findings: VRP-CR-M1-F2
-Open findings: VRP-CR-M1-F2
+Open findings: None
+
+### Review entry
+Review ID: code-review-m1-r3
+Stage: code-review
+Round: 3
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r3.md
+Resolution: review-resolution.md#code-review-m1-r3
+Material findings: None
+Open findings: None
