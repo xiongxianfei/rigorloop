@@ -72,9 +72,9 @@ Important constraints:
 - Last reviewed milestone: M3. Release, Docs, And Package Validation Hardening
 - Review status: M4 closed after clean code-review-r7
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: final verify and PR handoff have not happened yet.
+- Reason final closeout is or is not ready: final verify passed; PR handoff has not happened yet.
 
 ## Milestones
 
@@ -257,6 +257,7 @@ Important constraints:
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml`
   - `git diff --check --`
+- Verify report: `docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/verify-report.md`
 - Expected observable result: all implementation milestones are closed, required review-resolution is closed if triggered, explain-change exists, and verify can assess branch readiness.
 - Commit message: `M4: close target-native init lifecycle evidence`
 - Milestone closeout:
@@ -398,12 +399,14 @@ Important constraints:
 - 2026-05-24: After aligning `docs/releases/v0.3.0.md`, focused lifecycle validation passed for `docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/change.yaml`, `explain-change.md`, `docs/plans/2026-05-24-target-native-init-commands.md`, `docs/releases/index.md`, `docs/releases/v0.3.0.md`, and `specs/target-native-init.md`.
 - 2026-05-24: M4 selected CI passed with checks `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `release.validate`, `readme.validate`, `readme.vision_markers`, `selector.regression`, `broad_smoke.repo`, `rigorloop_cli.test`, and `npm_package_publication.test`.
 - 2026-05-24: M4 explicit lifecycle validation, review-artifact closeout validation, change metadata validation, and `git diff --check --` passed after the selected CI run.
+- 2026-05-24: Initial verify blocked because authoritative new artifacts were still untracked. The full change pack was committed in `33d41c6`, resolving the tracked-branch-state blocker.
+- 2026-05-24: Final verify passed after commit. `python scripts/query-change-record.py 2026-05-24-target-native-init-commands-and-adapter-terminology-retirement summary`, review-artifact closeout validation, change metadata validation, explicit artifact lifecycle validation, and `bash scripts/ci.sh --mode pr --base main --head HEAD` passed. PR-mode selected CI included broad smoke and validated the full stacked branch range.
 
 ## Outcome and retrospective
 
-- Implementation milestones are complete and code-reviewed. Final verification and PR handoff remain pending.
+- Implementation milestones are complete and code-reviewed. Final verification passed. PR handoff remains pending.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- M1 is closed after clean code-review-r2, M2 is closed after clean code-review-r4, M3 is closed after clean code-review-r6, and M4 is closed after clean code-review-r7. Final closeout is not ready until verify and PR handoff complete.
+- M1 is closed after clean code-review-r2, M2 is closed after clean code-review-r4, M3 is closed after clean code-review-r6, and M4 is closed after clean code-review-r7. Final verify passed; PR handoff is next.
