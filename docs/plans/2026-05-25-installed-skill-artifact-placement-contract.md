@@ -58,14 +58,14 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Canonical Skill and Workflow Map Wording
+- Current milestone: M3. Generated Output Proof and Cold-Read Evidence
 - Current milestone state: review-requested
 - Last reviewed milestone: M2. Canonical Skill and Workflow Map Wording
-- Review status: code-review-m2-r1 changes-requested for SAP-M2-CR1; finding resolved and awaiting rerun code-review
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2
+- Review status: code-review-m2-r2 manually approved clean-with-notes; M2 closed
+- Remaining in-scope implementation milestones: none
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 is awaiting rerun code-review, M3 has not started, explain-change and final verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M3 is awaiting code-review, explain-change and final verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -153,6 +153,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
   - milestone committed
   - code-review-m2-r1 requested changes for SAP-M2-CR1
   - SAP-M2-CR1 resolved and returned to code-review
+  - code-review-m2-r2 manually approved M2
 - Risks:
   - Skill text becomes too verbose.
   - Workflow guide and skill wording disagree after edits.
@@ -164,7 +165,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 ### M3. Generated Output Proof and Cold-Read Evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove generated installable skill output contains the revised canonical skill bodies and record behavior-preservation/cold-read evidence.
 - Requirements: R29, R30, AC9, AC10, AC11, AC12
 - Files/components likely touched:
@@ -252,6 +253,8 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: M2 updated canonical `proposal-review` and `spec-review` placement blocks, added plan-surface wording to `plan`, synchronized `docs/workflows.md` precedence text, and wired the placement helpers into canonical skill validation; next stage is code-review M2.
 - 2026-05-25: `code-review-m2-r1` requested changes for `SAP-M2-CR1`; M2 moved to `resolution-needed`.
 - 2026-05-25: Resolved `SAP-M2-CR1` by synchronizing the plan readiness footer with the active rerun state; M2 returned to `review-requested`.
+- 2026-05-25: User manually approved code-review M2; M2 closed and implementation moved directly to M3.
+- 2026-05-25: M3 generated adapter archives under `/tmp/rigorloop-m3-adapters`, validated generated output for `v0.1.5`, and recorded cold-read/behavior-preservation proof; next stage is code-review M3.
 
 ## Decision log
 
@@ -266,6 +269,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 - M1 needed helper-level validation rather than immediate canonical enforcement so `python scripts/validate-skills.py` remains green until M2 updates public skill text.
 - The published-skill portability validator treats command-style lines that name repository paths as required root dependencies, so the review-resolution path wording uses a label-plus-condition form instead of a `Use <path>` command line.
+- M3 selected adapter version `v0.1.5` from `dist/adapters/manifest.yaml` because the test spec requires the current repository release guidance or manifest version when building temporary adapter output.
 
 ## Validation notes
 
@@ -301,6 +305,11 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: `git diff --check -- skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/plan/SKILL.md docs/workflows.md` passed after M2.
 - 2026-05-25: Code-review M2 reran `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md --path specs/installed-skill-artifact-placement-contract.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml`; it passed with 3 artifact files before recording `SAP-M2-CR1`.
 - 2026-05-25: Post-recording validation for `code-review-m2-r1`: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-installed-skill-artifact-placement-contract`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m2-r1.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md`, and `git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md` passed.
+- 2026-05-25: `python scripts/build-skills.py --check` passed for M3.
+- 2026-05-25: `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m3-adapters` passed, creating Codex, Claude, and opencode adapter archives.
+- 2026-05-25: `python scripts/validate-adapters.py --root /tmp/rigorloop-m3-adapters --version v0.1.5` passed.
+- 2026-05-25: Generated archive content check passed: Codex, Claude, and opencode archives contain revised `proposal-review`, `spec-review`, and `plan` skill body paths.
+- 2026-05-25: M3 final validation passed: `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m3-adapters`, `python scripts/validate-adapters.py --root /tmp/rigorloop-m3-adapters --version v0.1.5`, generated archive content check, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-installed-skill-artifact-placement-contract`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/installed-skill-artifact-placement-contract.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/behavior-preservation.md`, and `git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md`.
 
 ## Outcome and retrospective
 
@@ -309,4 +318,4 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M2`; readiness is not Done.
+- Ready for `code-review M3`; readiness is not Done.
