@@ -7,6 +7,7 @@ artifacts:
   spec: specs/installed-skill-artifact-placement-contract.md
   test_spec: specs/installed-skill-artifact-placement-contract.test.md
   plan: docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md
+  explain_change: docs/changes/2026-05-25-installed-skill-artifact-placement-contract/explain-change.md
 requirements:
   - Record the proposal direction for installed-skill artifact placement self-containment before spec authoring.
   - Preserve the proposal-review observations for spec authoring without treating them as material findings.
@@ -35,6 +36,7 @@ tests:
   - M3 generated-output proof validates v0.1.5 adapter archives from canonical skills.
   - M3 cold-read proof answers proposal-review placement, spec-review pre-change-pack placement, and plan-surface questions from installed skill text.
   - Code-review-m3-r1 closes M3 after confirming generated-output and cold-read proof.
+  - Explain-change records why each meaningful code, skill, workflow, validation, and lifecycle artifact changed.
   - Artifact lifecycle validation covers the accepted proposal and draft spec.
   - Review artifact validation covers the clean review receipt root.
   - Artifact lifecycle validation covers the proposal and change-local review artifacts.
@@ -171,6 +173,14 @@ validation:
     result: pass_after_code_review_m3_r1
   - command: git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md
     result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-installed-skill-artifact-placement-contract
+    result: pass_before_explain_change
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/explain-change.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md
+    result: pass_after_explain_change
+  - command: git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract/explain-change.md docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md
+    result: pass_after_explain_change
 changed_files:
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
@@ -187,6 +197,7 @@ changed_files:
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/behavior-preservation.md
+  - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/explain-change.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/proposal-review-r1.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/proposal-review-r2.md
   - docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/spec-review-r1.md
