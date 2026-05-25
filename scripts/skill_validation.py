@@ -289,6 +289,28 @@ INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS = {
     "proposal-review": "docs/changes/<change-id>/reviews/proposal-review-r<n>.md",
     "spec-review": "docs/changes/<change-id>/reviews/spec-review-r<n>.md",
 }
+INSTALLED_SKILL_PLACEMENT_REVIEW_RECORD_TYPES = {
+    "proposal-review": {
+        "record_type_terms": (
+            "proposal-review record",
+            "proposal-review records",
+        ),
+        "forbidden_record_type_terms": (
+            "spec-review record",
+            "spec-review records",
+        ),
+    },
+    "spec-review": {
+        "record_type_terms": (
+            "spec-review record",
+            "spec-review records",
+        ),
+        "forbidden_record_type_terms": (
+            "proposal-review record",
+            "proposal-review records",
+        ),
+    },
+}
 INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH = "docs/changes/<change-id>/review-log.md"
 INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH = (
     "docs/changes/<change-id>/review-resolution.md"
@@ -479,6 +501,32 @@ def _has_isolated_advisory_carveout(text: str) -> bool:
     )
 
 
+def _validate_stage_owned_review_record_type(
+    *,
+    path: Path,
+    skill_name: str,
+    text: str,
+    errors: list[str],
+) -> None:
+    config = INSTALLED_SKILL_PLACEMENT_REVIEW_RECORD_TYPES.get(skill_name)
+    if config is None:
+        return
+
+    normalized = _normalized_prose(text)
+    expected_terms = config["record_type_terms"]
+    forbidden_terms = config["forbidden_record_type_terms"]
+
+    if not any(term in normalized for term in expected_terms):
+        errors.append(
+            f"{path}: installed-skill placement contract must state the stage-owned record type {skill_name} record(s)"
+        )
+    for forbidden in forbidden_terms:
+        if forbidden in normalized:
+            errors.append(
+                f"{path}: installed-skill placement contract names the wrong stage-owned record type {forbidden}"
+            )
+
+
 def validate_installed_skill_artifact_placement_contract(
     path: Path,
     skill_name: str,
@@ -503,6 +551,12 @@ def validate_installed_skill_artifact_placement_contract(
     if review_path is None:
         return errors
 
+    _validate_stage_owned_review_record_type(
+        path=path,
+        skill_name=skill_name,
+        text=placement,
+        errors=errors,
+    )
     if review_path not in placement:
         errors.append(
             f"{path}: installed-skill placement contract missing default formal review record path {review_path}"

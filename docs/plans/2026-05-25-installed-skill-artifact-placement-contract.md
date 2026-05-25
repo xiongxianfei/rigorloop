@@ -59,19 +59,19 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 ## Current Handoff Summary
 
 - Current milestone: M1. Placement Contract Validation Scaffolding
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Placement Contract Validation Scaffolding
-- Review status: code-review-m1-r1 changes-requested for SAP-M1-CR1
+- Review status: SAP-M1-CR1 resolved; rerun code-review not started
 - Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: review-resolution for SAP-M1-CR1, then implement M1 fix
+- Next stage: code-review M1 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 has an unresolved code-review finding, M2 and M3 have not started, explain-change and final verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 fix is implemented but awaiting rerun code-review, M2 and M3 have not started, explain-change and final verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
 ### M1. Placement Contract Validation Scaffolding
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Add deterministic tests and validator support for the installed-skill placement contract before changing canonical skill wording.
 - Requirements: R26, R27, R28, R30, AC6, AC7, AC9
 - Files/components likely touched:
@@ -244,6 +244,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: Clean plan-review recorded and active test spec created; next stage is implement M1.
 - 2026-05-25: M1 implemented validator helper coverage for first-slice review placement contracts, workflow-map drift checks, and plan-surface disambiguation fixtures; next stage is code-review M1.
 - 2026-05-25: `code-review-m1-r1` requested changes for `SAP-M1-CR1`; M1 moved to `resolution-needed`.
+- 2026-05-25: Implemented the accepted `SAP-M1-CR1` fix by adding stage-owned record-type helper coverage, correcting the `spec-review` fixture, and adding wrong-stage negative fixtures; M1 returned to `review-requested`.
 
 ## Decision log
 
@@ -273,6 +274,13 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml` passed after `code-review-m1-r1` recording.
 - 2026-05-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-25-installed-skill-artifact-placement-contract.md --path specs/installed-skill-artifact-placement-contract.md --path specs/installed-skill-artifact-placement-contract.test.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/proposal-review-r1.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/proposal-review-r2.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/spec-review-r1.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/plan-review-r1.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m1-r1.md` passed after `code-review-m1-r1` recording.
 - 2026-05-25: `git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md` passed after `code-review-m1-r1` recording.
+- 2026-05-25: `python scripts/test-skill-validator.py` passed with 170 tests after `SAP-M1-CR1` fix.
+- 2026-05-25: `python scripts/validate-skills.py` passed with 23 skill files after `SAP-M1-CR1` fix.
+- 2026-05-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-installed-skill-artifact-placement-contract` passed after `SAP-M1-CR1` fix.
+- 2026-05-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-installed-skill-artifact-placement-contract` passed after `SAP-M1-CR1` fix.
+- 2026-05-25: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml` passed after `SAP-M1-CR1` fix.
+- 2026-05-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md` passed after `SAP-M1-CR1` fix.
+- 2026-05-25: `git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md docs/changes/2026-05-25-installed-skill-artifact-placement-contract` passed after `SAP-M1-CR1` fix.
 
 ## Outcome and retrospective
 
@@ -281,4 +289,4 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `review-resolution` for `SAP-M1-CR1`; readiness is not Done.
+- Ready for rerun `code-review M1`; readiness is not Done.

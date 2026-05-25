@@ -4558,14 +4558,150 @@ and result format.
     def test_installed_skill_artifact_placement_contract_helper_accepts_compliant_review_skills(
         self,
     ) -> None:
-        proposal_review = textwrap.dedent(
+        def review_skill_placement_fixture(skill_name: str) -> str:
+            return textwrap.dedent(
+                f"""\
+                # {skill_name}
+
+                ## Artifact placement
+
+                Formal {skill_name} records go under:
+                `docs/changes/<change-id>/reviews/{skill_name}-r<n>.md`
+
+                Record the review-log entry in:
+                `docs/changes/<change-id>/review-log.md`
+
+                Use `docs/changes/<change-id>/review-resolution.md` only when material
+                findings, blocking outcomes, or accepted dispositions require it.
+
+                If this is a formal lifecycle review and no change pack exists, create
+                or request `docs/changes/<change-id>/` before claiming `Recording status:
+                recorded`.
+
+                If the user requested an isolated advisory review and no formal recording
+                is required, do not create lifecycle artifacts unless explicitly asked.
+                """
+            )
+
+        for skill_name in ("proposal-review", "spec-review"):
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    skill_validation.validate_installed_skill_artifact_placement_contract(
+                        Path(f"skills/{skill_name}/SKILL.md"),
+                        skill_name,
+                        review_skill_placement_fixture(skill_name),
+                    ),
+                    [],
+                )
+
+    def test_installed_skill_artifact_placement_contract_helper_rejects_wrong_record_type(
+        self,
+    ) -> None:
+        def review_skill_placement_fixture(
+            *,
+            skill_name: str,
+            record_type_name: str,
+        ) -> str:
+            return textwrap.dedent(
+                f"""\
+                # {skill_name}
+
+                ## Artifact placement
+
+                Formal {record_type_name} records go under:
+                `docs/changes/<change-id>/reviews/{skill_name}-r<n>.md`
+
+                Record the review-log entry in:
+                `docs/changes/<change-id>/review-log.md`
+
+                Use `docs/changes/<change-id>/review-resolution.md` only when material
+                findings, blocking outcomes, or accepted dispositions require it.
+
+                If this is a formal lifecycle review and no change pack exists, create
+                or request `docs/changes/<change-id>/` before claiming `Recording status:
+                recorded`.
+
+                If the user requested an isolated advisory review and no formal recording
+                is required, do not create lifecycle artifacts unless explicitly asked.
+                """
+            )
+
+        cases = (
+            (
+                "proposal-review",
+                "spec-review",
+                "skills/proposal-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type spec-review records",
+            ),
+            (
+                "spec-review",
+                "proposal-review",
+                "skills/spec-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type proposal-review records",
+            ),
+        )
+
+        for skill_name, record_type_name, expected_error in cases:
+            with self.subTest(skill=skill_name):
+                errors = skill_validation.validate_installed_skill_artifact_placement_contract(
+                    Path(f"skills/{skill_name}/SKILL.md"),
+                    skill_name,
+                    review_skill_placement_fixture(
+                        skill_name=skill_name,
+                        record_type_name=record_type_name,
+                    ),
+                )
+
+                self.assertIn(expected_error, errors)
+
+    def test_installed_skill_artifact_placement_contract_helper_rejects_missing_record_type(
+        self,
+    ) -> None:
+        errors = skill_validation.validate_installed_skill_artifact_placement_contract(
+            Path("skills/spec-review/SKILL.md"),
+            "spec-review",
+            textwrap.dedent(
+                """\
+                # Spec review
+
+                ## Artifact placement
+
+                Formal review records go under:
+                `docs/changes/<change-id>/reviews/spec-review-r<n>.md`
+
+                Record the review-log entry in:
+                `docs/changes/<change-id>/review-log.md`
+
+                Use `docs/changes/<change-id>/review-resolution.md` only when material
+                findings, blocking outcomes, or accepted dispositions require it.
+
+                If this is a formal lifecycle review and no change pack exists, create
+                or request `docs/changes/<change-id>/` before claiming `Recording status:
+                recorded`.
+
+                If the user requested an isolated advisory review and no formal recording
+                is required, do not create lifecycle artifacts unless explicitly asked.
+                """
+            ),
+        )
+
+        self.assertIn(
+            "skills/spec-review/SKILL.md: installed-skill placement contract must state the stage-owned record type spec-review record(s)",
+            errors,
+        )
+
+    def test_installed_skill_artifact_placement_contract_helper_rejects_wrong_record_type_in_artifact_placement_only(
+        self,
+    ) -> None:
+        body = textwrap.dedent(
             """\
-            # Proposal review
+            # Spec review
+
+            Mentioning spec-review records outside the placement block does not
+            satisfy the placement contract.
 
             ## Artifact placement
 
             Formal proposal-review records go under:
-            `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`
+            `docs/changes/<change-id>/reviews/spec-review-r<n>.md`
 
             Record the review-log entry in:
             `docs/changes/<change-id>/review-log.md`
@@ -4581,24 +4717,17 @@ and result format.
             is required, do not create lifecycle artifacts unless explicitly asked.
             """
         )
-        spec_review = proposal_review.replace(
-            "proposal-review-r<n>.md",
-            "spec-review-r<n>.md",
+
+        errors = skill_validation.validate_installed_skill_artifact_placement_contract(
+            Path("skills/spec-review/SKILL.md"),
+            "spec-review",
+            body,
         )
 
-        for skill_name, body in (
-            ("proposal-review", proposal_review),
-            ("spec-review", spec_review),
-        ):
-            with self.subTest(skill=skill_name):
-                self.assertEqual(
-                    skill_validation.validate_installed_skill_artifact_placement_contract(
-                        Path(f"skills/{skill_name}/SKILL.md"),
-                        skill_name,
-                        body,
-                    ),
-                    [],
-                )
+        self.assertIn(
+            "skills/spec-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type proposal-review records",
+            errors,
+        )
 
     def test_installed_skill_artifact_placement_contract_helper_rejects_missing_review_path(
         self,
