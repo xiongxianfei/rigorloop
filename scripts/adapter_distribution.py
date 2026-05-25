@@ -251,6 +251,7 @@ RELEASE_TARGETS = {
     "v0.1.5": ("final", "v0.1.5"),
     "v0.2.0": ("final", "v0.1.5"),
     "v0.3.0": ("final", "v0.1.5"),
+    "v0.3.1": ("final", "v0.1.5"),
 }
 REQUIRED_RELEASE_VALIDATION_KEYS = (
     "generated_sync",
@@ -259,9 +260,10 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "security",
 )
 TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
-ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0"})
-UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0"})
-NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4", "v0.1.5", "v0.3.0"})
+ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1"})
+UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1"})
+NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4", "v0.1.5", "v0.3.0", "v0.3.1"})
+TARGET_NATIVE_INIT_RELEASES = frozenset({"v0.3.0", "v0.3.1"})
 TOKEN_COST_RUNTIME_V2 = "skill-token-runtime-v2"
 PLACEHOLDER_RELEASE_PATTERNS = (
     "Replace this script with repository-specific release checks",
@@ -2200,7 +2202,7 @@ def _release_notes_consistency_errors(
     if first_heading != f"# RigorLoop {version}":
         errors.append(f"release notes version mismatch: expected '# RigorLoop {version}'")
 
-    if version == "v0.3.0":
+    if version in TARGET_NATIVE_INIT_RELEASES:
         for adapter in SUPPORTED_ADAPTERS:
             archive = adapter_archive_name(adapter, version)
             if archive not in notes_text:
@@ -2509,27 +2511,27 @@ def _validate_target_init_smoke_row(
 
     installed_roots = _evidence_values(row.get("installed_roots"))
     if not installed_roots:
-        errors.append(f"{path}: v0.3.0 target_init_smoke row for {target} is missing installed root(s)")
+        errors.append(f"{path}: {version} target_init_smoke row for {target} is missing installed root(s)")
     for expected_root in expected_roots:
         if expected_root not in installed_roots:
             if target == "opencode":
                 errors.append(
-                    f"{path}: v0.3.0 target_init_smoke row for opencode must name both .opencode/skills and .opencode/commands"
+                    f"{path}: {version} target_init_smoke row for opencode must name both .opencode/skills and .opencode/commands"
                 )
                 break
             errors.append(
-                f"{path}: v0.3.0 target_init_smoke row for {target} must name installed root {expected_root}"
+                f"{path}: {version} target_init_smoke row for {target} must name installed root {expected_root}"
             )
 
     tree_hashes = _evidence_values(row.get("tree_hashes"))
     if not tree_hashes:
-        errors.append(f"{path}: v0.3.0 target_init_smoke row for {target} is missing tree hash value(s)")
+        errors.append(f"{path}: {version} target_init_smoke row for {target} is missing tree hash value(s)")
     file_counts = _evidence_values(row.get("file_counts"))
     if not file_counts:
-        errors.append(f"{path}: v0.3.0 target_init_smoke row for {target} is missing file count(s)")
+        errors.append(f"{path}: {version} target_init_smoke row for {target} is missing file count(s)")
     command_summary = str(row.get("command_output_summary", "")).strip()
     if not command_summary:
-        errors.append(f"{path}: v0.3.0 target_init_smoke row for {target} is missing command output summary")
+        errors.append(f"{path}: {version} target_init_smoke row for {target} is missing command output summary")
 
     if status == "pending-publication":
         blocker = str(row.get("closeout_blocker", "")).strip().lower()
@@ -2549,17 +2551,17 @@ def _validate_target_init_smoke_row(
     }
     for field, value in published_fields.items():
         if _contains_pending_marker(value):
-            errors.append(f"{path}: v0.3.0 published target_init_smoke row for {target} still contains pending {field}")
+            errors.append(f"{path}: {version} published target_init_smoke row for {target} still contains pending {field}")
     if tree_hashes and not any(re.search(r"sha256:[0-9a-f]{64}", value) for value in tree_hashes):
-        errors.append(f"{path}: v0.3.0 published target_init_smoke row for {target} must record real tree hash value(s)")
+        errors.append(f"{path}: {version} published target_init_smoke row for {target} must record real tree hash value(s)")
     if file_counts and not any(re.search(r"(?:^|=)\d+$", value) for value in file_counts):
-        errors.append(f"{path}: v0.3.0 published target_init_smoke row for {target} must record real file count(s)")
+        errors.append(f"{path}: {version} published target_init_smoke row for {target} must record real file count(s)")
     if target == "opencode":
         for expected_root in expected_roots:
             if not any(value.startswith(f"{expected_root}=") for value in tree_hashes):
-                errors.append(f"{path}: v0.3.0 published target_init_smoke row for opencode must map tree hash for {expected_root}")
+                errors.append(f"{path}: {version} published target_init_smoke row for opencode must map tree hash for {expected_root}")
             if not any(value.startswith(f"{expected_root}=") for value in file_counts):
-                errors.append(f"{path}: v0.3.0 published target_init_smoke row for opencode must map file count for {expected_root}")
+                errors.append(f"{path}: {version} published target_init_smoke row for opencode must map file count for {expected_root}")
     closeout_blocker = str(row.get("closeout_blocker", "")).strip().lower()
     if closeout_blocker != "none":
         errors.append(f"{path}: published target_init_smoke row for {target} must record closeout_blocker: none")
@@ -2631,12 +2633,12 @@ def _validate_npm_publication_evidence(
         npm = _expect_mapping(data.get("npm"), path, "npm")
         target_smoke = (
             _expect_mapping(data.get("target_init_smoke"), path, "target_init_smoke")
-            if version == "v0.3.0"
+            if version in TARGET_NATIVE_INIT_RELEASES
             else None
         )
         adapter_smoke = (
             _expect_mapping(data.get("adapter_install_smoke"), path, "adapter_install_smoke")
-            if version != "v0.3.0"
+            if version not in TARGET_NATIVE_INIT_RELEASES
             else None
         )
     except ValueError as exc:

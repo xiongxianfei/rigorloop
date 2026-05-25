@@ -22,7 +22,7 @@ if [[ -z "$release_version" ]]; then
 fi
 
 case "$release_version" in
-  v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0)
+  v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1)
     ;;
   *)
     echo "Unsupported release target: ${release_version}" >&2
@@ -34,9 +34,27 @@ adapter_version="${release_version#v}"
 if [[ "$release_version" == "v0.1.2" ]]; then
   adapter_version="0.1.1"
 fi
+uses_release_output="false"
+case "$release_version" in
+  v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1)
+    uses_release_output="true"
+    ;;
+esac
+untracked_public_adapters="false"
+case "$release_version" in
+  v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1)
+    untracked_public_adapters="true"
+    ;;
+esac
+npm_package_release="false"
+case "$release_version" in
+  v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1)
+    npm_package_release="true"
+    ;;
+esac
 release_output_dir="${RELEASE_OUTPUT_DIR:-}"
 cleanup_release_output_dir=""
-if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" || "$release_version" == "v0.1.4" || "$release_version" == "v0.1.5" || "$release_version" == "v0.2.0" || "$release_version" == "v0.3.0" ]] && [[ -z "$release_output_dir" ]]; then
+if [[ "$uses_release_output" == "true" && -z "$release_output_dir" ]]; then
   release_output_dir="$(mktemp -d)"
   cleanup_release_output_dir="$release_output_dir"
 fi
@@ -44,7 +62,7 @@ if [[ -n "$cleanup_release_output_dir" ]]; then
   trap 'rm -rf "$cleanup_release_output_dir"' EXIT
 fi
 release_commit="${RELEASE_COMMIT:-}"
-if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" || "$release_version" == "v0.1.4" || "$release_version" == "v0.1.5" || "$release_version" == "v0.2.0" || "$release_version" == "v0.3.0" ]] && [[ -z "$release_commit" ]]; then
+if [[ "$uses_release_output" == "true" && -z "$release_commit" ]]; then
   release_commit="$(python - "$release_version" <<'PY'
 import sys
 from pathlib import Path
@@ -70,18 +88,18 @@ REQUIRED_CHECK_COMMANDS=(
   "python scripts/test-skill-validator.py"
   "python scripts/test-adapter-distribution.py"
 )
-if [[ "$release_version" != "v0.1.3" && "$release_version" != "v0.1.4" && "$release_version" != "v0.1.5" && "$release_version" != "v0.2.0" && "$release_version" != "v0.3.0" ]]; then
+if [[ "$untracked_public_adapters" != "true" ]]; then
   REQUIRED_CHECK_COMMANDS+=(
     "python scripts/build-adapters.py --version ${adapter_version} --check"
     "python scripts/validate-adapters.py --version ${adapter_version}"
   )
 fi
-if [[ "$release_version" == "v0.1.4" || "$release_version" == "v0.1.5" || "$release_version" == "v0.2.0" || "$release_version" == "v0.3.0" ]]; then
+if [[ "$npm_package_release" == "true" ]]; then
   REQUIRED_CHECK_COMMANDS+=(
     "python scripts/test-npm-package-publication.py"
   )
 fi
-if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" || "$release_version" == "v0.1.4" || "$release_version" == "v0.1.5" || "$release_version" == "v0.2.0" || "$release_version" == "v0.3.0" ]]; then
+if [[ "$uses_release_output" == "true" ]]; then
   REQUIRED_CHECK_COMMANDS+=(
     "python scripts/build-adapters.py --version ${release_version} --output-dir ${release_output_dir}"
     "python scripts/validate-release.py --version ${release_version} --release-output-dir ${release_output_dir} --release-commit ${release_commit}"
@@ -193,7 +211,7 @@ fi
 run_check "Run adapter distribution regression tests" \
   python scripts/test-adapter-distribution.py
 
-if [[ "$release_version" != "v0.1.3" && "$release_version" != "v0.1.4" && "$release_version" != "v0.1.5" && "$release_version" != "v0.2.0" && "$release_version" != "v0.3.0" ]]; then
+if [[ "$untracked_public_adapters" != "true" ]]; then
   run_check "Check generated adapter drift" \
     python scripts/build-adapters.py --version "$adapter_version" --check
 
@@ -201,12 +219,12 @@ if [[ "$release_version" != "v0.1.3" && "$release_version" != "v0.1.4" && "$rele
     python scripts/validate-adapters.py --version "$adapter_version"
 fi
 
-if [[ "$release_version" == "v0.1.4" || "$release_version" == "v0.1.5" || "$release_version" == "v0.2.0" || "$release_version" == "v0.3.0" ]]; then
+if [[ "$npm_package_release" == "true" ]]; then
   run_check "Validate npm package content and packed-package smoke" \
     python scripts/test-npm-package-publication.py
 fi
 
-if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" || "$release_version" == "v0.1.4" || "$release_version" == "v0.1.5" || "$release_version" == "v0.2.0" || "$release_version" == "v0.3.0" ]]; then
+if [[ "$uses_release_output" == "true" ]]; then
   run_check "Build adapter release archives" \
     python scripts/build-adapters.py --version "$release_version" --output-dir "$release_output_dir"
 fi
@@ -216,7 +234,7 @@ if [[ "$release_version" == "v0.1.1" ]]; then
     python scripts/validate-token-cost-report.py "docs/reports/token-cost/releases/${release_version}.yaml"
 fi
 
-if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" || "$release_version" == "v0.1.4" || "$release_version" == "v0.1.5" || "$release_version" == "v0.2.0" || "$release_version" == "v0.3.0" ]]; then
+if [[ "$uses_release_output" == "true" ]]; then
   run_check "Validate release metadata, adapter artifacts, smoke rules, notes, and security" \
     python scripts/validate-release.py --version "$release_version" --release-output-dir "$release_output_dir" --release-commit "$release_commit"
 else

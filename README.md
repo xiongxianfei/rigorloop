@@ -42,7 +42,7 @@ npx @xiongxianfei/rigorloop@latest init opencode
 For reproducible setup, pin the published version:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.3.0 init codex
+npx @xiongxianfei/rigorloop@0.3.1 init codex
 ```
 
 For a project-local dev dependency:
@@ -108,7 +108,7 @@ npx @xiongxianfei/rigorloop@latest init codex --dry-run --json
 Use `@latest` for quick manual trials. Use a pinned version for automation, CI, onboarding docs, and repeatable agent setup:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.3.0 init codex --json
+npx @xiongxianfei/rigorloop@0.3.1 init codex --json
 ```
 
 ### Run after project-local install
