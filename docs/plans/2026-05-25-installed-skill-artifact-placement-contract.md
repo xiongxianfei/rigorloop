@@ -59,13 +59,13 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 ## Current Handoff Summary
 
 - Current milestone: M3. Generated Output Proof and Cold-Read Evidence
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Canonical Skill and Workflow Map Wording
-- Review status: code-review-m2-r2 manually approved clean-with-notes; M2 closed
+- Current milestone state: closed
+- Last reviewed milestone: M3. Generated Output Proof and Cold-Read Evidence
+- Review status: code-review-m3-r1 clean-with-notes; M3 closed
 - Remaining in-scope implementation milestones: none
-- Next stage: code-review M3
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is awaiting code-review, explain-change and final verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, but explain-change and final verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -116,7 +116,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 ### M2. Canonical Skill and Workflow Map Wording
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Update first-slice public skill wording and `docs/workflows.md` so installed skills carry concise placement contracts and the project-local map stays synchronized.
 - Requirements: R1-R25, AC1-AC8, AC11, AC12
 - Files/components likely touched:
@@ -165,7 +165,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 ### M3. Generated Output Proof and Cold-Read Evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Prove generated installable skill output contains the revised canonical skill bodies and record behavior-preservation/cold-read evidence.
 - Requirements: R29, R30, AC9, AC10, AC11, AC12
 - Files/components likely touched:
@@ -200,6 +200,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
   - decision log updated if needed
   - validation notes updated
   - milestone committed
+  - code-review-m3-r1 closed M3
 - Risks:
   - Local adapter version selection is unclear.
   - Adapter validation requires tools unavailable locally.
@@ -255,6 +256,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: Resolved `SAP-M2-CR1` by synchronizing the plan readiness footer with the active rerun state; M2 returned to `review-requested`.
 - 2026-05-25: User manually approved code-review M2; M2 closed and implementation moved directly to M3.
 - 2026-05-25: M3 generated adapter archives under `/tmp/rigorloop-m3-adapters`, validated generated output for `v0.1.5`, and recorded cold-read/behavior-preservation proof; next stage is code-review M3.
+- 2026-05-25: `code-review-m3-r1` closed M3 cleanly; no implementation milestones remain, and next stage is explain-change.
 
 ## Decision log
 
@@ -310,6 +312,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: `python scripts/validate-adapters.py --root /tmp/rigorloop-m3-adapters --version v0.1.5` passed.
 - 2026-05-25: Generated archive content check passed: Codex, Claude, and opencode archives contain revised `proposal-review`, `spec-review`, and `plan` skill body paths.
 - 2026-05-25: M3 final validation passed: `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m3-adapters`, `python scripts/validate-adapters.py --root /tmp/rigorloop-m3-adapters --version v0.1.5`, generated archive content check, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-installed-skill-artifact-placement-contract`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/installed-skill-artifact-placement-contract.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/behavior-preservation.md`, and `git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md`.
+- 2026-05-25: Code-review M3 exact generated archive content check passed for the Codex, Claude, and opencode archives under `/tmp/rigorloop-m3-adapters`.
 
 ## Outcome and retrospective
 
@@ -318,4 +321,4 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M3`; readiness is not Done.
+- Ready for `explain-change`; readiness is not Done.

@@ -14,6 +14,7 @@ This ledger records formal lifecycle reviews for the installed-skill artifact pl
 | plan-review-r1 | plan-review | 1 | `docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md` | `reviews/plan-review-r1.md` | approved | 0 | recorded |
 | code-review-m1-r2 | code-review | 2 | resolution commit `d2e665d` | `reviews/code-review-m1-r2.md` | clean-with-notes | 0 | recorded |
 | code-review-m2-r2 | code-review | 2 | resolution commit `96f99a6` | `reviews/code-review-m2-r2.md` | clean-with-notes | 0 | recorded |
+| code-review-m3-r1 | code-review | 1 | implementation commit `ee3445f` | `reviews/code-review-m3-r1.md` | clean-with-notes | 0 | recorded |
 ### Review entry
 
 Review ID: code-review-m1-r1
