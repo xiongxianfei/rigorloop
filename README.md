@@ -34,13 +34,15 @@ Install and run the public CLI from npm:
 
 ```bash
 npx @xiongxianfei/rigorloop@latest --help
-npx @xiongxianfei/rigorloop@latest init --adapter codex
+npx @xiongxianfei/rigorloop@latest init codex
+npx @xiongxianfei/rigorloop@latest init claude
+npx @xiongxianfei/rigorloop@latest init opencode
 ```
 
 For reproducible setup, pin the published version:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.2.0 init --adapter codex
+npx @xiongxianfei/rigorloop@0.3.0 init codex
 ```
 
 For a project-local dev dependency:
@@ -99,14 +101,14 @@ You do not need to install RigorLoop before trying it:
 ```bash
 npx @xiongxianfei/rigorloop@latest --help
 npx @xiongxianfei/rigorloop@latest version
-npx @xiongxianfei/rigorloop@latest init --adapter codex
-npx @xiongxianfei/rigorloop@latest init --adapter codex --dry-run --json
+npx @xiongxianfei/rigorloop@latest init codex
+npx @xiongxianfei/rigorloop@latest init codex --dry-run --json
 ```
 
 Use `@latest` for quick manual trials. Use a pinned version for automation, CI, onboarding docs, and repeatable agent setup:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.2.0 init --adapter codex --json
+npx @xiongxianfei/rigorloop@0.3.0 init codex --json
 ```
 
 ### Run after project-local install
@@ -114,7 +116,7 @@ npx @xiongxianfei/rigorloop@0.2.0 init --adapter codex --json
 ```bash
 npm install --save-dev @xiongxianfei/rigorloop
 npx rigorloop --help
-npx rigorloop init --adapter codex
+npx rigorloop init codex
 ```
 
 ### Run after global install
@@ -122,17 +124,17 @@ npx rigorloop init --adapter codex
 ```bash
 npm install --global @xiongxianfei/rigorloop
 rigorloop --help
-rigorloop init --adapter codex
+rigorloop init codex
 ```
 
 The first public npm package supports:
 
 - `rigorloop --help`
 - `rigorloop version`
-- `rigorloop init --adapter codex [--dry-run] [--json]`
+- `rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]`
 - `rigorloop new-change <change-id> --title <title> [--dry-run] [--json]`
 
-`init --adapter codex` installs the Codex adapter into `.agents/skills/`. The CLI uses package-bundled official metadata, downloads the official GitHub release archive, verifies archive SHA-256 and installed tree hash, and then writes project files.
+`init codex` installs verified Codex support into `.agents/skills/`. The CLI uses package-bundled official metadata, downloads the official GitHub release archive, verifies archive SHA-256 and installed tree hash, and leaves `rigorloop.yaml` / `rigorloop.lock` untouched unless `--write-state` is requested.
 
 `new-change` scaffolds `docs/changes/<change-id>/change.yaml` for a new RigorLoop change. It does not replace proposal, spec, review, verification, or PR judgment.
 

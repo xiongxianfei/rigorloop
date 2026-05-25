@@ -24,6 +24,14 @@ from npm_package_validation import (  # noqa: E402
 )
 
 PACKAGE_ROOT = ROOT / "packages" / "rigorloop"
+PACKAGE_VERSION = "0.3.0"
+RELEASE_TAG = f"v{PACKAGE_VERSION}"
+METADATA_FILE = f"adapter-artifacts-{RELEASE_TAG}.json"
+TARGET_SKILL_ROOTS = {
+    "codex": Path(".agents/skills"),
+    "claude": Path(".claude/skills"),
+    "opencode": Path(".opencode/skills"),
+}
 
 
 def run_command(args: list[str], *, cwd: Path = ROOT) -> subprocess.CompletedProcess[str]:
@@ -46,7 +54,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
         validate_package_policy(
             {
                 "name": "@xiongxianfei/rigorloop",
-                "version": "0.2.0",
+                "version": PACKAGE_VERSION,
                 "bin": {"rigorloop": "dist/bin/rigorloop.js"},
                 "files": ["dist/", "package.json", "README.md", "LICENSE"],
                 "scripts": {"test": "node --test"},
@@ -95,7 +103,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
             "package/LICENSE",
             "package/dist/bin/rigorloop.js",
             "package/dist/lib/some-runtime-file.js",
-            "package/dist/metadata/adapter-artifacts-v0.2.0.json",
+            f"package/dist/metadata/{METADATA_FILE}",
         ]
         for path in allowed_paths:
             with self.subTest(path=path):
@@ -108,7 +116,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
 
         self.assertTrue(REQUIRED_PACKAGE_PATHS.issubset(report.paths))
         self.assertEqual(report.forbidden_paths, ())
-        self.assertIn("package/dist/metadata/adapter-artifacts-v0.2.0.json", report.paths)
+        self.assertIn(f"package/dist/metadata/{METADATA_FILE}", report.paths)
         self.assertNotIn("package/dist/metadata/adapter-artifacts-v0.1.3.json", report.paths)
 
     def test_inspector_rejects_forbidden_paths(self) -> None:
@@ -138,11 +146,35 @@ class NpmPackagePublicationTests(unittest.TestCase):
                     with self.assertRaisesRegex(NpmPackageValidationError, "forbidden"):
                         inspect_package_tarball(tarball)
 
-    def test_packed_package_smoke_executes_installed_binary(self) -> None:
+    def assert_no_state_files(self, project_root: Path) -> None:
+        self.assertFalse((project_root / "rigorloop.yaml").exists())
+        self.assertFalse((project_root / "rigorloop.lock").exists())
+
+    def assert_default_target_install(self, project_root: Path, target: str) -> None:
+        self.assertTrue((project_root / TARGET_SKILL_ROOTS[target]).is_dir(), target)
+        if target == "codex":
+            self.assertFalse((project_root / ".claude").exists())
+            self.assertFalse((project_root / ".opencode").exists())
+        elif target == "claude":
+            self.assertFalse((project_root / ".agents").exists())
+            self.assertFalse((project_root / ".opencode").exists())
+        elif target == "opencode":
+            self.assertFalse((project_root / ".agents").exists())
+            self.assertFalse((project_root / ".claude").exists())
+
+    def test_packed_package_smoke_executes_installed_binary_and_real_target_init(self) -> None:
         with tempfile.TemporaryDirectory(prefix="rigorloop-npm-pack-") as pack_temp, tempfile.TemporaryDirectory(
             prefix="rigorloop-npm-install-"
-        ) as install_temp, tempfile.TemporaryDirectory(prefix="rigorloop-npm-project-") as project_temp:
+        ) as install_temp, tempfile.TemporaryDirectory(prefix="rigorloop-npm-project-") as project_temp, tempfile.TemporaryDirectory(
+            prefix="rigorloop-npm-release-output-"
+        ) as release_temp:
             tarball = pack_package(Path(pack_temp))
+            release_output = Path(release_temp)
+            build_result = run_command(
+                ["python", "scripts/build-adapters.py", "--version", RELEASE_TAG, "--output-dir", str(release_output)]
+            )
+            self.assertEqual(build_result.returncode, 0, build_result.stderr)
+
             install_root = Path(install_temp)
             install = run_command(["npm", "install", "--prefix", str(install_root), str(tarball)])
             self.assertEqual(install.returncode, 0, install.stderr)
@@ -153,17 +185,43 @@ class NpmPackagePublicationTests(unittest.TestCase):
 
             help_result = run_command([str(bin_path), "--help"], cwd=Path(project_temp))
             self.assertEqual(help_result.returncode, 0, help_result.stderr)
-            self.assertIn("rigorloop init --adapter codex", help_result.stdout)
+            self.assertIn("rigorloop init codex|claude|opencode", help_result.stdout)
 
             version_result = run_command([str(bin_path), "version"], cwd=Path(project_temp))
             self.assertEqual(version_result.returncode, 0, version_result.stderr)
-            self.assertEqual(version_result.stdout.strip(), "@xiongxianfei/rigorloop 0.2.0")
+            self.assertEqual(version_result.stdout.strip(), f"@xiongxianfei/rigorloop {PACKAGE_VERSION}")
 
-            init_result = run_command([str(bin_path), "init", "--adapter", "codex", "--dry-run", "--json"], cwd=Path(project_temp))
-            self.assertEqual(init_result.returncode, 0, init_result.stderr)
-            self.assertEqual(init_result.stderr, "")
-            init_payload = json.loads(init_result.stdout)
-            self.assertEqual(init_payload["command"], "init")
+            for target in ("codex", "claude", "opencode"):
+                with self.subTest(target=target, mode="default"):
+                    target_project = Path(project_temp) / f"default-{target}"
+                    target_project.mkdir()
+                    archive = release_output / f"rigorloop-adapter-{target}-{RELEASE_TAG}.zip"
+                    init_result = run_command(
+                        [str(bin_path), "init", target, "--from-archive", str(archive), "--json"],
+                        cwd=target_project,
+                    )
+                    self.assertEqual(init_result.returncode, 0, init_result.stderr or init_result.stdout)
+                    self.assertEqual(init_result.stderr, "")
+                    init_payload = json.loads(init_result.stdout)
+                    self.assertEqual(init_payload["command"], "init")
+                    self.assert_default_target_install(target_project, target)
+                    self.assert_no_state_files(target_project)
+
+                with self.subTest(target=target, mode="write-state"):
+                    state_project = Path(project_temp) / f"state-{target}"
+                    state_project.mkdir()
+                    archive = release_output / f"rigorloop-adapter-{target}-{RELEASE_TAG}.zip"
+                    init_result = run_command(
+                        [str(bin_path), "init", target, "--write-state", "--from-archive", str(archive), "--json"],
+                        cwd=state_project,
+                    )
+                    self.assertEqual(init_result.returncode, 0, init_result.stderr or init_result.stdout)
+                    self.assertEqual(init_result.stderr, "")
+                    init_payload = json.loads(init_result.stdout)
+                    self.assertEqual(init_payload["command"], "init")
+                    self.assert_default_target_install(state_project, target)
+                    self.assertTrue((state_project / "rigorloop.yaml").is_file())
+                    self.assertTrue((state_project / "rigorloop.lock").is_file())
 
             new_change_result = run_command(
                 [str(bin_path), "new-change", "test-change", "--title", "Test change", "--dry-run", "--json"],
