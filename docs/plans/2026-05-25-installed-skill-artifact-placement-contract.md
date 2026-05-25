@@ -59,13 +59,13 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 ## Current Handoff Summary
 
 - Current milestone: M2. Canonical Skill and Workflow Map Wording
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Canonical Skill and Workflow Map Wording
-- Review status: code-review-m2-r1 changes-requested for SAP-M2-CR1; M2 requires review-resolution
+- Review status: code-review-m2-r1 changes-requested for SAP-M2-CR1; finding resolved and awaiting rerun code-review
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: review-resolution M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 has an open review finding, M3 has not started, explain-change and final verify are not recorded, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 is awaiting rerun code-review, M3 has not started, explain-change and final verify are not recorded, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -116,7 +116,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 ### M2. Canonical Skill and Workflow Map Wording
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Update first-slice public skill wording and `docs/workflows.md` so installed skills carry concise placement contracts and the project-local map stays synchronized.
 - Requirements: R1-R25, AC1-AC8, AC11, AC12
 - Files/components likely touched:
@@ -152,6 +152,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
   - validation notes updated
   - milestone committed
   - code-review-m2-r1 requested changes for SAP-M2-CR1
+  - SAP-M2-CR1 resolved and returned to code-review
 - Risks:
   - Skill text becomes too verbose.
   - Workflow guide and skill wording disagree after edits.
@@ -250,6 +251,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: `code-review-m1-r2` closed M1 cleanly; next stage is implement M2.
 - 2026-05-25: M2 updated canonical `proposal-review` and `spec-review` placement blocks, added plan-surface wording to `plan`, synchronized `docs/workflows.md` precedence text, and wired the placement helpers into canonical skill validation; next stage is code-review M2.
 - 2026-05-25: `code-review-m2-r1` requested changes for `SAP-M2-CR1`; M2 moved to `resolution-needed`.
+- 2026-05-25: Resolved `SAP-M2-CR1` by synchronizing the plan readiness footer with the active rerun state; M2 returned to `review-requested`.
 
 ## Decision log
 
@@ -307,4 +309,4 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `review-resolution M2`; readiness is not Done.
+- Ready for `code-review M2`; readiness is not Done.

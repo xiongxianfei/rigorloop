@@ -4,21 +4,21 @@
 
 This record tracks material review finding closeout for the installed-skill artifact placement contract change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m2-r1
 
 - Reviews covered: `code-review-m1-r1`, `code-review-m2-r1`
-- Findings resolved: 1
-- Unresolved findings: 1
-- Final result: `code-review-m1-r1` requested changes for `SAP-M1-CR1`; that finding is resolved. `code-review-m2-r1` requested changes for `SAP-M2-CR1`; that finding remains open pending review-resolution.
+- Findings resolved: 2
+- Unresolved findings: 0
+- Final result: `code-review-m1-r1` requested changes for `SAP-M1-CR1`; that finding is resolved. `code-review-m2-r1` requested changes for `SAP-M2-CR1`; that finding is resolved and M2 is ready for rerun code-review.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 |---|---|---|---|
 | SAP-M1-CR1 | accepted | resolved | M1 helper/tests now reject wrong stage-owned record-type wording and accept correct proposal-review/spec-review fixtures. |
-| SAP-M2-CR1 | accepted | open | M2 plan readiness footer still points to `implement M2` after M2 handoff and must be synchronized before rerun code-review. |
+| SAP-M2-CR1 | accepted | resolved | Plan readiness footer now matches the active rerun state: `code-review M2`. |
 
 ## Finding Details
 
@@ -40,7 +40,7 @@ Status: resolved
 
 ### code-review-m2-r1
 
-Review closeout: open
+Review closeout: closed
 
 #### SAP-M2-CR1
 
@@ -51,5 +51,5 @@ Owning stage: implement M2 fix
 Chosen action: Synchronize the active plan readiness footer with the M2 review-resolution handoff so it no longer says `Ready for implement M2` after M2 implementation has already been committed and reviewed.
 Rationale: The active plan's `Current Handoff Summary` and `docs/plan.md` identify `code-review M2` as next after the M2 handoff, while the plan footer still names `implement M2`. The plan's current handoff state and readiness surfaces must not disagree during milestone-based workflow.
 Validation target: Rerun lifecycle validation for the plan, plan index, change metadata, review log, review-resolution, and `code-review-m2-r1` record, plus targeted whitespace checks after the fix.
-Validation evidence: pending
-Status: open
+Validation evidence: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-installed-skill-artifact-placement-contract`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/change.yaml --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-log.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/review-resolution.md --path docs/changes/2026-05-25-installed-skill-artifact-placement-contract/reviews/code-review-m2-r1.md --path docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md --path docs/plan.md`, and `git diff --check -- docs/changes/2026-05-25-installed-skill-artifact-placement-contract docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md docs/plan.md` passed.
+Status: resolved
