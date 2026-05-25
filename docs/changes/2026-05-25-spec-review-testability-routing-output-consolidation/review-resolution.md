@@ -13,11 +13,12 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
-- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`
+- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`
 - Findings resolved: 4
 - Unresolved findings: 0
-- Final result: `SRTR-SR1` and `SRTR-SR2` were accepted and resolved in the spec amendment. `spec-review-r2` and `spec-review-r3` approved the revised spec with no material findings. `SRTR-PR1` was accepted and resolved by revising the plan's M1/M2 milestone boundary. `plan-review-r2` approved the revised plan with no material findings. `code-review-m1-r1` closed M1 with no material findings. `SRTR-CR1` was accepted and resolved by aligning the durable workflow spec with the explicit `Immediate next stage: none` contract.
+- Final result: `SRTR-SR1` and `SRTR-SR2` were accepted and resolved in the spec amendment. `spec-review-r2` and `spec-review-r3` approved the revised spec with no material findings. `SRTR-PR1` was accepted and resolved by revising the plan's M1/M2 milestone boundary. `plan-review-r2` approved the revised plan with no material findings. `code-review-m1-r1` closed M1 with no material findings. `SRTR-CR1` was accepted and resolved by aligning the durable workflow spec with the explicit `Immediate next stage: none` contract. `code-review-m2-r2` closed M2 with no material findings.
 
 ## Resolution Overview
 
@@ -113,3 +114,9 @@ Chosen action: Revise the affected workflow-spec wording so missing-input and in
 Rationale: `code-review-m2-r1` found stale workflow-spec wording that conflicts with the approved explicit `Immediate next stage: none` contract for missing reviewer inputs.
 Validation target: Revise `specs/rigorloop-workflow.md`, rerun the M2 validation scope, and rerun code-review for M2.
 Validation evidence: `python scripts/test-skill-validator.py -k spec_review_routing_adjacent`, `python scripts/test-skill-validator.py -k spec_review`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py skills/spec-review/SKILL.md`, `python scripts/validate-skills.py skills/test-spec/SKILL.md`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check --` passed after the workflow-spec revision. The lifecycle validator reported existing lifecycle-language warnings in `specs/rigorloop-workflow.md`.
+
+### code-review-m2-r2
+
+Review closeout: closed
+
+No material findings. Clean M2 rerun implementation review is recorded in `reviews/code-review-m2-r2.md`. M2 is closed, and the remaining implementation milestone is M3.
