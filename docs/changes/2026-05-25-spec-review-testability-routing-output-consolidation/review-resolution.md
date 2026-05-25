@@ -4,7 +4,7 @@
 
 This record tracks material review finding closeout for the spec-review testability routing and output consolidation change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -12,11 +12,12 @@ Review closeout: spec-review-r3
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`
+- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`
 - Findings resolved: 3
-- Unresolved findings: 0
-- Final result: `SRTR-SR1` and `SRTR-SR2` were accepted and resolved in the spec amendment. `spec-review-r2` and `spec-review-r3` approved the revised spec with no material findings. `SRTR-PR1` was accepted and resolved by revising the plan's M1/M2 milestone boundary. `plan-review-r2` approved the revised plan with no material findings. `code-review-m1-r1` closed M1 with no material findings.
+- Unresolved findings: 1
+- Final result: `SRTR-SR1` and `SRTR-SR2` were accepted and resolved in the spec amendment. `spec-review-r2` and `spec-review-r3` approved the revised spec with no material findings. `SRTR-PR1` was accepted and resolved by revising the plan's M1/M2 milestone boundary. `plan-review-r2` approved the revised plan with no material findings. `code-review-m1-r1` closed M1 with no material findings. `code-review-m2-r1` found `SRTR-CR1`, which remains open.
 
 ## Resolution Overview
 
@@ -25,6 +26,7 @@ Review closeout: code-review-m1-r1
 | SRTR-SR1 | accepted | resolved | Spec wording now consistently uses `Immediate next stage` for the closed enum and distinguishes forward repository-stage handoff values from routing and no-handoff values. |
 | SRTR-SR2 | accepted | resolved | Spec now includes the required `Accessibility and UX` section with a Markdown-output clarity rationale. |
 | SRTR-PR1 | accepted | resolved | M1 is now fixture/parser scaffolding only; canonical enforcement begins in M2 with the canonical skill and result-skeleton updates. |
+| SRTR-CR1 | accepted | open | M2 leaves stale workflow-spec wording that says an inconclusive spec-review may omit an immediate-stage value instead of using `Immediate next stage: none`. |
 
 ## Finding Details
 
@@ -95,3 +97,19 @@ No material findings. Clean rerun approval is recorded in `reviews/plan-review-r
 Review closeout: closed
 
 No material findings. Clean M1 implementation review is recorded in `reviews/code-review-m1-r1.md`. M1 is closed, and the remaining implementation milestones are M2 and M3.
+
+### code-review-m2-r1
+
+Review closeout: open
+
+#### SRTR-CR1
+
+Finding ID: SRTR-CR1
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Chosen action: Revise the affected workflow-spec wording so missing-input and inconclusive examples use explicit `Immediate next stage: none`, and generic `spec-review` outcome language names the `Immediate next stage` result field rather than "immediate next repository stage."
+Rationale: `code-review-m2-r1` found stale workflow-spec wording that conflicts with the approved explicit `Immediate next stage: none` contract for missing reviewer inputs.
+Validation target: Revise `specs/rigorloop-workflow.md`, rerun the M2 validation scope, and rerun code-review for M2.
+Validation evidence: pending
