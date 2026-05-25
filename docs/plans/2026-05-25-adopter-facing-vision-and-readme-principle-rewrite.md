@@ -81,19 +81,19 @@ approved CLI contract and package docs.
 ## Current Handoff Summary
 
 - Current milestone: M1. Vision, README, and Evidence Rewrite
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M1. Vision, README, and Evidence Rewrite
-- Review status: code-review-m1-r1 blocker closed by accepted cold-read evidence; rerun code-review for M1
+- Review status: code-review-m1-r2 requested changes for branch review-surface scope (`VRP-CR-M1-F2`)
 - Remaining in-scope implementation milestones: M1
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: `VRP-CR-M1-F1` is closed, but M1 still needs a clean code-review rerun, explain-change, verify, and PR handoff.
+- Reason final closeout is or is not ready: `VRP-CR-M1-F2` is open; M1 still needs review-resolution, code-review rerun, explain-change, verify, and PR handoff.
 
 ## Milestones
 
 ### M1. Vision, README, and Evidence Rewrite
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Rewrite `VISION.md` and README public positioning while recording proof that README marker ownership, command-source boundaries, cold-read comprehension, worked-example handling, and behavior preservation are satisfied.
 - Requirements: all VRP and AC checks listed in `Requirements covered`.
 - Files/components likely touched:
@@ -195,6 +195,7 @@ approved CLI contract and package docs.
 - 2026-05-25: code-review-m1-r1 blocked M1 on missing cold-read evidence; M1 moved to resolution-needed.
 - 2026-05-25: recorded maintainer-provided public-repository cold-read-style answer as supplemental evidence; it does not close the blocker because it was explicitly not from a separate unfamiliar human reviewer and did not review this branch draft.
 - 2026-05-25: maintainer accepted the branch-specific cold-read evidence for M1, closed `VRP-CR-M1-F1`, and moved M1 back to review-requested for code-review rerun.
+- 2026-05-25: code-review-m1-r2 found that the published branch diff against `origin/main` includes unrelated runtime/release/validator/skill/scope files, so M1 moved to resolution-needed for `VRP-CR-M1-F2`.
 
 ## Decision log
 
@@ -211,6 +212,7 @@ approved CLI contract and package docs.
 - `specs/vision-skill.md` already defines the marker sync contract; no new marker-sync mechanism is needed for this plan.
 - Branch-specific cold-read evidence was accepted by maintainer direction for M1 after publication.
 - Review feedback caught an ordering error in the public traceability chain; README and `VISION.md` now show plan before test spec.
+- The published branch is stacked on other unmerged work; scoped M1 commits are documentation-only, but default review against `origin/main` includes unrelated surfaces.
 
 ## Validation notes
 
@@ -236,4 +238,4 @@ approved CLI contract and package docs.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- M1 is in review-requested after `VRP-CR-M1-F1` closeout. Rerun code-review next. Readiness is not Done; clean code-review, explain-change, verify, and PR handoff remain.
+- M1 is in resolution-needed after `VRP-CR-M1-F2`. Resolve the branch review-surface scope decision, update evidence and plan state, then rerun code-review. Readiness is not Done; clean code-review, explain-change, verify, and PR handoff remain.

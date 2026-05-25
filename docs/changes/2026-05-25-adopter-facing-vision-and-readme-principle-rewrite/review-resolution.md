@@ -1,6 +1,6 @@
 # Review Resolution
 
-Closeout status: closed
+Closeout status: open
 Review closeout: code-review-m1-r1
 
 ### proposal-review-r1
@@ -34,3 +34,16 @@ Chosen action: Accept the branch-specific cold-read review as satisfying the M1 
 Rationale: The active plan and cold-read artifact both state that cold-read evidence is incomplete and blocks code-review handoff. Review cannot cleanly assess M1 while a named proof requirement remains unassessed.
 Validation target: `cold-read-review.md` contains completed reviewer answers/results, the plan Current Handoff Summary names code-review as the next stage, M1 state is `review-requested`, and targeted validation passes.
 Validation evidence: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml`, and `git diff --check --` passed after accepting the branch-specific cold-read evidence and closing `VRP-CR-M1-F1`.
+
+### code-review-m1-r2
+
+Finding ID: VRP-CR-M1-F2
+Disposition: needs-decision
+Status: open
+Decision owner: maintainer
+Owning stage: review-resolution
+Decision needed: Choose whether this initiative will be reviewed as a stacked branch on top of the target-native init/release/placement work, or as a clean branch containing only the adopter-facing vision/README commits and evidence.
+Stop state: M1 remains in resolution-needed until the branch review surface is made consistent with the behavior-preservation proof or an explicit stacked-review base is recorded.
+Rationale: The scoped M1 commit set matches the documentation/source-of-truth rewrite, but the published branch diff against `origin/main` includes unrelated runtime, release, validator, skill, adapter, and separate lifecycle files. That contradicts the behavior-preservation proof if reviewers use the default branch diff.
+Validation target: The branch/review surface matches the behavior-preservation proof, either by retargeting/rebasing onto a base that already contains the stacked work or by recreating a clean branch with only the scoped M1 files; review artifacts and plan state then return to `review-requested`.
+Validation evidence: pending
