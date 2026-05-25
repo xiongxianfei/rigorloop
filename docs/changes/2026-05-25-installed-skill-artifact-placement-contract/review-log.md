@@ -12,3 +12,16 @@ This ledger records formal lifecycle reviews for the installed-skill artifact pl
 | proposal-review-r2 | proposal-review | 2 | `docs/proposals/2026-05-25-installed-skill-artifact-placement-contract.md` | `reviews/proposal-review-r2.md` | approved | 0 | recorded |
 | spec-review-r1 | spec-review | 1 | `specs/installed-skill-artifact-placement-contract.md` | `reviews/spec-review-r1.md` | approved | 0 | recorded |
 | plan-review-r1 | plan-review | 1 | `docs/plans/2026-05-25-installed-skill-artifact-placement-contract.md` | `reviews/plan-review-r1.md` | approved | 0 | recorded |
+### Review entry
+
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: implementation commit `f0320d5`
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: SAP-M1-CR1
+Open findings: SAP-M1-CR1
+Recording status: recorded
