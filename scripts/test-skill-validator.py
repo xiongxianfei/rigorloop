@@ -1820,6 +1820,20 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertIn("spec revision", workflow_spec)
         self.assertIn("review-resolution", workflow_spec)
         self.assertIn("Immediate next stage", workflow_spec)
+        self.assertIn("Immediate next stage: none", workflow_spec)
+        self.assertNotIn(
+            "without naming any immediate next repository stage", workflow_spec
+        )
+        self.assertNotIn("no immediate-next-stage value", workflow_spec)
+        self.assertNotIn("no immediate next-stage value", workflow_spec)
+        self.assertIn(
+            "Only `architecture` and `plan` are forward repository-stage handoff values",
+            workflow_spec,
+        )
+        self.assertIn(
+            "`spec revision`, `review-resolution`, and `none` are routing or no-handoff values",
+            workflow_spec,
+        )
 
     def assertSpecReviewResultPasses(self, result_text: str) -> None:
         errors = skill_validation.validate_spec_review_result_fields(

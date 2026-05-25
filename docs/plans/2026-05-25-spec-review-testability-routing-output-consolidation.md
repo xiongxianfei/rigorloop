@@ -69,13 +69,13 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 ## Current Handoff Summary
 
 - Current milestone: M2
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: code-review-m2-r1 changes-requested with SRTR-CR1
-- Remaining in-scope implementation milestones: M2 resolution, M3
-- Next stage: review-resolution for SRTR-CR1
+- Review status: SRTR-CR1 resolved after workflow-spec revision; M2 rerun code-review pending
+- Remaining in-scope implementation milestones: M2 review, M3
+- Next stage: code-review M2 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 has an open code-review finding; M3, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 rerun code-review, M3, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -135,7 +135,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 
 ### M2. Canonical Spec-Review Skill and Asset Contract
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Update canonical `spec-review` skill guidance and `review-result-skeleton.md` so routing and readiness are separate closed fields and material-finding field ownership is de-duplicated.
 - Requirements: R1, R1a, R1b, R2, R2a-R2j, R3, R3a-R3k, R4, R4a-R4c, R5, R6, R7, R7a, R8d, AC-SRTR-ROUTE-001 through AC-SRTR-ROUTE-005
 - Files/components likely touched:
@@ -311,6 +311,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-25: Code-review-m1-r1 closed M1 with no material findings; next stage is implement M2.
 - 2026-05-25: M2 implementation separated canonical `spec-review` routing/readiness output, enabled canonical validation, updated direct `test-spec` and workflow-spec drift, and is ready for code-review.
 - 2026-05-25: Code-review-m2-r1 found `SRTR-CR1`; M2 remains open pending review-resolution for stale workflow-spec immediate-stage wording.
+- 2026-05-25: `SRTR-CR1` was resolved by aligning `specs/rigorloop-workflow.md` around explicit `Immediate next stage: none` and adding adjacent-drift regression coverage; M2 is ready for rerun code-review.
 
 ## Decision log
 
@@ -343,12 +344,14 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-25: M2 lifecycle validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and focused `git diff --check -- ...`. The lifecycle validator reported pre-existing lifecycle-language warnings in `specs/rigorloop-workflow.md`; no M2 blocker was reported.
 - 2026-05-25: Code-review-m2-r1 targeted stale-wording search found `SRTR-CR1` in `specs/rigorloop-workflow.md`; review-resolution and re-review are required before M2 can close.
 - 2026-05-25: Code-review-m2-r1 recording validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, and `git diff --check -- docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md`.
+- 2026-05-25: `SRTR-CR1` fix validation passed: `python scripts/test-skill-validator.py -k spec_review_routing_adjacent`, `python scripts/test-skill-validator.py -k spec_review`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py skills/spec-review/SKILL.md`, `python scripts/validate-skills.py skills/test-spec/SKILL.md`, `python scripts/validate-skills.py`, and `python scripts/build-skills.py --check`.
+- 2026-05-25: `SRTR-CR1` lifecycle validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check --`. The lifecycle validator reported existing lifecycle-language warnings in `specs/rigorloop-workflow.md`.
 
 ## Outcome and retrospective
 
-- Pending review-resolution and re-review for M2, implementation and code-review for M3, explain-change, verify, and PR handoff.
+- Pending rerun code-review for M2, implementation and code-review for M3, explain-change, verify, and PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `review-resolution` on `SRTR-CR1`. Readiness is not Done; M2 re-review, M3, explain-change, verify, and PR gates remain.
+- Ready for `code-review M2` rerun. Readiness is not Done; M2 review, M3, explain-change, verify, and PR gates remain.

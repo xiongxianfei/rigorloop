@@ -29,9 +29,10 @@ tests:
   - code-review-m1-r1 clean-with-notes
   - M2 canonical spec-review skill and result skeleton contract implemented
   - code-review-m2-r1 changes-requested with SRTR-CR1
+  - SRTR-CR1 resolved by workflow-spec revision
 review:
-  status: open_after_code_review_m2_r1
-  unresolved_items: 1
+  status: closed_after_srtr_cr1_resolution_pending_m2_rereview
+  unresolved_items: 0
   location: docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-25-spec-review-testability-routing-output-consolidation.md
@@ -168,6 +169,28 @@ validation:
     result: pass_after_code_review_m2_r1_recording
   - command: git diff --check -- docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md
     result: pass_after_code_review_m2_r1_recording
+  - command: python scripts/test-skill-validator.py -k spec_review_routing_adjacent
+    result: pass_after_srtr_cr1_resolution
+  - command: python scripts/test-skill-validator.py -k spec_review
+    result: pass_15_tests_after_srtr_cr1_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_184_tests_after_srtr_cr1_resolution
+  - command: python scripts/validate-skills.py skills/spec-review/SKILL.md
+    result: pass_after_srtr_cr1_resolution
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: pass_after_srtr_cr1_resolution
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_srtr_cr1_resolution
+  - command: python scripts/build-skills.py --check
+    result: pass_after_srtr_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_8_findings_4_log_entries_8_resolution_entries_4_after_srtr_cr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_srtr_cr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-workflow.md --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path skills/spec-review/SKILL.md --path skills/spec-review/assets/review-result-skeleton.md --path skills/test-spec/SKILL.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md
+    result: pass_validated_4_artifact_files_with_existing_workflow_spec_warnings_after_srtr_cr1_resolution
+  - command: git diff --check --
+    result: pass_after_srtr_cr1_resolution
 changed_files:
   - specs/test-spec-readiness-and-skill-workflow-alignment.md
   - specs/test-spec-readiness-and-skill-workflow-alignment.test.md
