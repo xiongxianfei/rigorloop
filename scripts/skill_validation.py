@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_SKILLS_DIR = ROOT / "skills"
 GENERATED_SKILLS_DIR = ROOT / ".codex" / "skills"
 SKILL_SCHEMA_PATH = ROOT / "schemas" / "skill.schema.json"
+WORKFLOWS_DOC_PATH = ROOT / "docs" / "workflows.md"
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD)\b")
 READABILITY_SCHEMA_VERSION = "skill-readability-v1"
 READABILITY_STAGE_VALUES = {
@@ -285,6 +286,46 @@ ASSET_ROLLOUT_APPROVED_ASSETS = {
     **SPEC_FAMILY_ASSET_APPROVED_ASSETS,
     **PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS,
 }
+INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS = {
+    "proposal-review": "docs/changes/<change-id>/reviews/proposal-review-r<n>.md",
+    "spec-review": "docs/changes/<change-id>/reviews/spec-review-r<n>.md",
+}
+INSTALLED_SKILL_PLACEMENT_REVIEW_RECORD_TYPES = {
+    "proposal-review": {
+        "record_type_terms": (
+            "proposal-review record",
+            "proposal-review records",
+        ),
+        "forbidden_record_type_terms": (
+            "spec-review record",
+            "spec-review records",
+        ),
+    },
+    "spec-review": {
+        "record_type_terms": (
+            "spec-review record",
+            "spec-review records",
+        ),
+        "forbidden_record_type_terms": (
+            "proposal-review record",
+            "proposal-review records",
+        ),
+    },
+}
+INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH = "docs/changes/<change-id>/review-log.md"
+INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH = (
+    "docs/changes/<change-id>/review-resolution.md"
+)
+INSTALLED_SKILL_PLACEMENT_WORKFLOW_REVIEW_PATH = (
+    "docs/changes/<change-id>/reviews/<stage>-r<n>.md"
+)
+INSTALLED_SKILL_PLAN_SURFACE_PATHS = (
+    "docs/workflows.md",
+    "docs/plan.md",
+    "docs/plans/YYYY-MM-DD-slug.md",
+    "docs/changes/<change-id>/change.yaml",
+    "docs/changes/<change-id>/",
+)
 
 
 @dataclass(frozen=True)
@@ -413,6 +454,157 @@ def _extract_markdown_section(body: str, heading: str) -> str | None:
             break
         section_lines.append(line)
     return "\n".join(section_lines).strip()
+
+
+def _normalized_prose(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip().lower()
+
+
+def _has_create_or_request_change_pack_behavior(text: str) -> bool:
+    normalized = _normalized_prose(text)
+    has_create_or_request = (
+        "create or request" in normalized
+        or "create or require" in normalized
+        or "create or block" in normalized
+    )
+    return (
+        "change pack" in normalized
+        and has_create_or_request
+        and "recording status:" in normalized
+        and "recorded" in normalized
+    )
+
+
+def _has_conditional_review_resolution_behavior(text: str) -> bool:
+    normalized = _normalized_prose(text)
+    if INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH not in text:
+        return False
+    conditional_terms = (
+        "only when",
+        "when material",
+        "when findings",
+        "when blocking",
+        "conditional",
+        "if material",
+    )
+    return any(term in normalized for term in conditional_terms)
+
+
+def _has_isolated_advisory_carveout(text: str) -> bool:
+    normalized = _normalized_prose(text)
+    return (
+        "isolated advisory" in normalized
+        and (
+            "do not create lifecycle artifacts" in normalized
+            or "without lifecycle artifacts" in normalized
+            or "no formal recording" in normalized
+        )
+    )
+
+
+def _validate_stage_owned_review_record_type(
+    *,
+    path: Path,
+    skill_name: str,
+    text: str,
+    errors: list[str],
+) -> None:
+    config = INSTALLED_SKILL_PLACEMENT_REVIEW_RECORD_TYPES.get(skill_name)
+    if config is None:
+        return
+
+    normalized = _normalized_prose(text)
+    expected_terms = config["record_type_terms"]
+    forbidden_terms = config["forbidden_record_type_terms"]
+
+    if not any(term in normalized for term in expected_terms):
+        errors.append(
+            f"{path}: installed-skill placement contract must state the stage-owned record type {skill_name} record(s)"
+        )
+    for forbidden in forbidden_terms:
+        if forbidden in normalized:
+            errors.append(
+                f"{path}: installed-skill placement contract names the wrong stage-owned record type {forbidden}"
+            )
+
+
+def validate_installed_skill_artifact_placement_contract(
+    path: Path,
+    skill_name: str,
+    body: str,
+    *,
+    workflow_text: str | None = None,
+) -> list[str]:
+    """Validate first-slice installed-skill placement contract wording.
+
+    M1 exposed this as a fixture-backed helper. M2 connects it to canonical
+    first-slice skill validation after updating the public skill text.
+    """
+    errors: list[str] = []
+    review_path = INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS.get(skill_name)
+    if review_path is None:
+        return errors
+
+    placement = _extract_markdown_section(body, "Artifact placement")
+    if placement is None:
+        errors.append(
+            f"{path}: installed-skill placement contract must include an Artifact placement section"
+        )
+        placement = body
+
+    _validate_stage_owned_review_record_type(
+        path=path,
+        skill_name=skill_name,
+        text=placement,
+        errors=errors,
+    )
+    if review_path not in placement:
+        errors.append(
+            f"{path}: installed-skill placement contract missing default formal review record path {review_path}"
+        )
+    if INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH not in placement:
+        errors.append(
+            f"{path}: installed-skill placement contract missing review-log path {INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH}"
+        )
+    if not _has_conditional_review_resolution_behavior(placement):
+        errors.append(
+            f"{path}: installed-skill placement contract must describe {INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH} as conditional"
+        )
+    if not _has_create_or_request_change_pack_behavior(placement):
+        errors.append(
+            f"{path}: installed-skill placement contract must state create-or-request change-pack behavior before claiming Recording status: recorded"
+        )
+    if not _has_isolated_advisory_carveout(placement):
+        errors.append(
+            f"{path}: installed-skill placement contract must preserve isolated advisory review without lifecycle artifacts"
+        )
+    if (
+        workflow_text is not None
+        and INSTALLED_SKILL_PLACEMENT_WORKFLOW_REVIEW_PATH not in workflow_text
+    ):
+        errors.append(
+            f"{path}: docs/workflows.md formal review record default does not match {INSTALLED_SKILL_PLACEMENT_WORKFLOW_REVIEW_PATH}"
+        )
+    return errors
+
+
+def validate_installed_skill_plan_surface_contract(
+    path: Path,
+    skill_name: str,
+    body: str,
+) -> list[str]:
+    """Validate first-slice plan-surface disambiguation fixture wording."""
+    if skill_name not in {"plan", "plan-review", "implement", "verify"}:
+        return []
+    errors: list[str] = []
+    missing = [
+        surface for surface in INSTALLED_SKILL_PLAN_SURFACE_PATHS if surface not in body
+    ]
+    if missing:
+        errors.append(
+            f"{path}: installed-skill plan surface contract must distinguish docs/workflows.md, docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/"
+        )
+    return errors
 
 
 def _parse_colon_fields(section: str) -> dict[str, str]:
@@ -1558,6 +1750,7 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
         errors.append(f"{path}: placeholder text is not allowed")
 
     name = metadata.get("name")
+    skill_name = name.strip() if isinstance(name, str) and name.strip() else None
     if isinstance(name, str) and not name.strip():
         errors.append(f"{path}: name: must be at least 1 characters")
 
@@ -1597,8 +1790,30 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
             name.strip() if isinstance(name, str) else None,
         )
     )
+    if skill_name and _is_relative_to(path.resolve(), CANONICAL_SKILLS_DIR.resolve()):
+        workflow_text = (
+            WORKFLOWS_DOC_PATH.read_text(encoding="utf-8")
+            if WORKFLOWS_DOC_PATH.is_file()
+            else None
+        )
+        errors.extend(
+            validate_installed_skill_artifact_placement_contract(
+                path,
+                skill_name,
+                body,
+                workflow_text=workflow_text,
+            )
+        )
+        if skill_name == "plan":
+            errors.extend(
+                validate_installed_skill_plan_surface_contract(
+                    path,
+                    skill_name,
+                    body,
+                )
+            )
 
-    return errors, name.strip() if isinstance(name, str) and name.strip() else None
+    return errors, skill_name
 
 
 def validate_skill_tree(target: Path, *, allow_generated: bool = False) -> ValidationResult:

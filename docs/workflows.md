@@ -169,7 +169,7 @@ Record follow-ups where they can be acted on.
 
 ## Artifact-location source rank
 
-`docs/workflows.md` is the project-local user-facing artifact-location map.
+`docs/workflows.md` is the project-local user-facing artifact-location map. It summarizes and customizes artifact placement; it does not replace the owning stage skill's placement contract.
 
 The source rank is precedence when sources conflict, not mandatory read order. Skills should use the artifact-location map as a concise path index, while still obeying known higher-priority constraints.
 
@@ -186,6 +186,8 @@ An explicit user-provided path or change ID does not override a higher-priority 
 
 If a conflict is discovered between this guide and a higher-priority source, the higher-priority source wins. Refresh this guide or report the stale artifact-location map before downstream reliance.
 
+The workflow guide takes precedence only for artifact types it specifies. If this guide is present but silent for a particular artifact type, use the owning skill's portable default path before blocking on ambiguity.
+
 ## Customer-project portability
 
 Public skills operate in customer-project mode by default.
@@ -200,9 +202,11 @@ When local guidance is absent, use portable defaults where safe and block on amb
 
 The table defines default locations and owning skills.
 
+This workflow guide summarizes and customizes artifact placement. It does not replace the owning stage skill's placement contract, and installed skills carry portable defaults for skill-only adopters.
+
 It does not define full artifact schemas, required fields, lifecycle status values, or validation rules. For exact shapes, use the governing spec, schema, or reference for that artifact type.
 
-If this project customizes artifact locations, update this table. Skills use the table before falling back to portable defaults.
+If this project customizes artifact locations, update this table. Skills use rows in this table for the artifact types those rows specify, then fall back to portable defaults when this guide is silent for an artifact type.
 
 | Artifact type | Default location | Owning skill |
 | --- | --- | --- |
