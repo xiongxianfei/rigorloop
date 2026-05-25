@@ -81,19 +81,19 @@ approved CLI contract and package docs.
 ## Current Handoff Summary
 
 - Current milestone: M1. Vision, README, and Evidence Rewrite
-- Current milestone state: resolution-needed
+- Current milestone state: closed
 - Last reviewed milestone: M1. Vision, README, and Evidence Rewrite
-- Review status: code-review-m1-r2 requested changes for branch review-surface scope (`VRP-CR-M1-F2`)
-- Remaining in-scope implementation milestones: M1
-- Next stage: review-resolution
+- Review status: code-review-m1-r3 clean-with-notes after branch stacking boundary closeout
+- Remaining in-scope implementation milestones: none
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: `VRP-CR-M1-F2` is open; M1 still needs review-resolution, code-review rerun, explain-change, verify, and PR handoff.
+- Reason final closeout is or is not ready: M1 and explain-change are complete, but verify and PR handoff remain.
 
 ## Milestones
 
 ### M1. Vision, README, and Evidence Rewrite
 
-- Milestone state: resolution-needed
+- Milestone state: closed
 - Goal: Rewrite `VISION.md` and README public positioning while recording proof that README marker ownership, command-source boundaries, cold-read comprehension, worked-example handling, and behavior preservation are satisfied.
 - Requirements: all VRP and AC checks listed in `Requirements covered`.
 - Files/components likely touched:
@@ -196,6 +196,8 @@ approved CLI contract and package docs.
 - 2026-05-25: recorded maintainer-provided public-repository cold-read-style answer as supplemental evidence; it does not close the blocker because it was explicitly not from a separate unfamiliar human reviewer and did not review this branch draft.
 - 2026-05-25: maintainer accepted the branch-specific cold-read evidence for M1, closed `VRP-CR-M1-F1`, and moved M1 back to review-requested for code-review rerun.
 - 2026-05-25: code-review-m1-r2 found that the published branch diff against `origin/main` includes unrelated runtime/release/validator/skill/scope files, so M1 moved to resolution-needed for `VRP-CR-M1-F2`.
+- 2026-05-25: maintainer decided to keep all stacked branch changes, closed `VRP-CR-M1-F2` by scoping behavior-preservation proof to the M1 vision/README commits, and code-review-m1-r3 closed M1 clean-with-notes.
+- 2026-05-25: explain-change recorded durable rationale for the M1 vision/README rewrite and moved the next stage to verify.
 
 ## Decision log
 
@@ -205,6 +207,7 @@ approved CLI contract and package docs.
 | 2026-05-25 | Treat README marker sync as existing scope. | `README.md` already has one valid marker block and `specs/vision-skill.md` `R40`-`R48` already govern marker synchronization. | Add new marker sync tooling or a new spec amendment. |
 | 2026-05-25 | Keep exact command changes out of M1 unless command-source proof is recorded. | The accepted proposal explicitly excludes CLI command contract changes and target-native init work owns command shape. | Independently rewrite README command examples in this initiative. |
 | 2026-05-25 | Do not add a separate test spec. | Maintainer owner decision says this documentation/source-of-truth rewrite does not need a separate spec; proof remains in accepted proposal checks and change-local evidence artifacts. | Add a focused test spec before implementation. |
+| 2026-05-25 | Keep this branch stacked for review. | Maintainer direction says to keep all current branch changes; behavior-preservation proof is scoped to M1 commits rather than the whole branch diff against `origin/main`. | Recreate a clean branch from `origin/main` for this initiative. |
 
 ## Surprises and discoveries
 
@@ -230,6 +233,12 @@ approved CLI contract and package docs.
 - 2026-05-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite` passed after cold-read closeout.
 - 2026-05-25: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml` passed after cold-read closeout.
 - 2026-05-25: `git diff --check --` passed after cold-read closeout.
+- 2026-05-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite` passed after stacked-branch decision, code-review-m1-r3, and explain-change recording.
+- 2026-05-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite` passed after stacked-branch decision, code-review-m1-r3, and explain-change recording.
+- 2026-05-25: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml` passed after explain-change recording.
+- 2026-05-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path VISION.md --path README.md --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml --path docs/plans/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite.md --path docs/plan.md --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/explain-change.md` passed after explain-change recording.
+- 2026-05-25: `python scripts/validate-readme.py README.md --vision-markers` passed after explain-change recording.
+- 2026-05-25: `git diff --check --` passed after explain-change recording.
 
 ## Outcome and retrospective
 
@@ -238,4 +247,4 @@ approved CLI contract and package docs.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- M1 is in resolution-needed after `VRP-CR-M1-F2`. Resolve the branch review-surface scope decision, update evidence and plan state, then rerun code-review. Readiness is not Done; clean code-review, explain-change, verify, and PR handoff remain.
+- M1 and explain-change are complete. Next stage is verify. Readiness is not Done; verify and PR handoff remain.
