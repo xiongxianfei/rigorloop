@@ -72,9 +72,18 @@ Run from `/home/xiongxianfei/data/20260419-rigorloop` on 2026-05-25:
 
 ## CI Status
 
-Hosted CI was not observed during local verification. This report does not claim
-CI success. CI should run after PR handoff or be checked separately if the PR
-stage requires hosted status.
+Hosted CI initially failed after PR handoff because the validation selector
+treated `cold-read-review.md` and `vision-readme-sync-proof.md` as unregistered
+deterministic change-local evidence. The branch now registers both evidence
+classes and covers them with selector regression tests.
+
+Validation after the CI evidence-route fix:
+
+- `python scripts/test-select-validation.py`: passed
+- `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/cold-read-review.md --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/vision-readme-sync-proof.md`: passed
+- `bash scripts/ci.sh --mode pr --base a1ea3d1b2e42adfb72c1365b6f1ac935ee1be2d5 --head HEAD`: passed
+
+Hosted CI should rerun after the fix is pushed.
 
 ## Artifact Drift Findings
 

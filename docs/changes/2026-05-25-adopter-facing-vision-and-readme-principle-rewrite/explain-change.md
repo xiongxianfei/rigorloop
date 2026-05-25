@@ -52,6 +52,7 @@ RigorLoop turns that work into traceable, resumable, reviewable artifacts in Git
 | Review records and resolution | Recorded proposal review, plan review, code-review findings, owner decisions, and clean code-review rerun. | Keep formal lifecycle evidence durable. | Review artifact validation passes. |
 | Plan and plan index | Tracked M1 state through implementation, findings, closeout, and next stage. | Keep lifecycle handoff current. | Lifecycle validation passes. |
 | Learn artifacts | Captured the public-framing lesson that plan comes after spec and before test spec. | Prevent future public docs from confusing readers about workflow order. | `docs/learn/sessions/2026-05-25-plan-before-test-spec-public-framing.md`; topic guidance. |
+| Selector evidence routing | Registered `vision-readme-sync-proof.md` and `cold-read-review.md` as deterministic change-local evidence classes. | Hosted CI requires deterministic change-local evidence paths to have explicit selector routes instead of manual routing debt. | `python scripts/test-select-validation.py`; local PR-mode CI. |
 
 ## Tests Added Or Changed
 
@@ -70,6 +71,8 @@ Validation run before this explain-change stage:
 - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite`: passed
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml`: passed
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml --path docs/plans/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite.md --path docs/plan.md`: passed
+- `python scripts/test-select-validation.py`: passed after the CI evidence-route fix
+- `bash scripts/ci.sh --mode pr --base a1ea3d1b2e42adfb72c1365b6f1ac935ee1be2d5 --head HEAD`: passed after the CI evidence-route fix
 - `git diff --check --`: passed
 
 Final verification has not run yet.

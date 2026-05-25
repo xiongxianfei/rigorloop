@@ -86,9 +86,17 @@ validation:
     result: pass_after_vision_semantic_line_break_fix
   - command: git diff --check --
     result: pass_after_vision_semantic_line_break_fix
+  - command: python scripts/test-select-validation.py
+    result: pass_after_ci_evidence_route_fix
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/cold-read-review.md --path docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/vision-readme-sync-proof.md
+    result: pass_after_ci_evidence_route_fix
+  - command: bash scripts/ci.sh --mode pr --base a1ea3d1b2e42adfb72c1365b6f1ac935ee1be2d5 --head HEAD
+    result: pass_after_ci_evidence_route_fix
 changed_files:
   - VISION.md
   - README.md
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
   - docs/proposals/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite.md
   - docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/change.yaml
   - docs/changes/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite/behavior-preservation.md
