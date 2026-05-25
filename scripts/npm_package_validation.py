@@ -21,7 +21,7 @@ REQUIRED_PACKAGE_PATHS = frozenset(
         "package/dist/lib/new-change-filesystem.js",
         "package/dist/lib/new-change.js",
         "package/dist/lib/official-archive-url.js",
-        "package/dist/metadata/adapter-artifacts-v0.3.0.json",
+        "package/dist/metadata/adapter-artifacts-v0.3.1.json",
         "package/dist/metadata/releases.json",
     }
 )
