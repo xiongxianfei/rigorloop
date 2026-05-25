@@ -53,3 +53,35 @@ the M1 cold-read requirement or close `VRP-CR-M1-F1`.
 The review used public `main` repository content rather than this branch's
 current README and `VISION.md` draft. It is useful directional evidence but not
 a substitute for the planned branch-specific cold-read review.
+
+## Supplemental Branch-Specific Public Review
+
+Source: maintainer-provided branch-specific cold-read-style answer on
+2026-05-25.
+
+Evidence status: supplemental only. The reviewer explicitly stated that this is
+not evidence from a genuinely unfamiliar external reviewer, so it does not
+satisfy the M1 cold-read requirement or close `VRP-CR-M1-F1`.
+
+Branch reviewed: `proposal/adopter-facing-vision-readme-principles`.
+
+### Summary
+
+- Value proposition identified: yes.
+- Target user identified: yes.
+- First action identified: yes; the reviewer identified `--help`, then
+  `init codex`, `init claude`, or `init opencode`.
+- Traceability chain understood: yes; the reviewer identified the branch README
+  chain and the fuller workflow chain.
+- Learn stage framed as reliability, not churn: yes.
+- Unsupported claim found: yes. Reviewer trust, human confidence, and
+  reliability-improvement claims should remain falsifiable goals until supported
+  by real cold-read or adoption evidence.
+
+### Notes
+
+This branch-specific review is useful evidence that the revised README and
+`VISION.md` communicate the value proposition, audience, first action,
+traceability chain, and learn-stage framing. It does not close the blocker
+because the cold-read requirement specifically calls for a genuinely unfamiliar
+reviewer.
