@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_SKILLS_DIR = ROOT / "skills"
 GENERATED_SKILLS_DIR = ROOT / ".codex" / "skills"
 SKILL_SCHEMA_PATH = ROOT / "schemas" / "skill.schema.json"
+WORKFLOWS_DOC_PATH = ROOT / "docs" / "workflows.md"
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD)\b")
 READABILITY_SCHEMA_VERSION = "skill-readability-v1"
 READABILITY_STAGE_VALUES = {
@@ -536,20 +537,20 @@ def validate_installed_skill_artifact_placement_contract(
 ) -> list[str]:
     """Validate first-slice installed-skill placement contract wording.
 
-    M1 exposes this as a fixture-backed helper. Canonical skill enforcement is
-    intentionally connected after M2 updates the public skill text.
+    M1 exposed this as a fixture-backed helper. M2 connects it to canonical
+    first-slice skill validation after updating the public skill text.
     """
     errors: list[str] = []
+    review_path = INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS.get(skill_name)
+    if review_path is None:
+        return errors
+
     placement = _extract_markdown_section(body, "Artifact placement")
     if placement is None:
         errors.append(
             f"{path}: installed-skill placement contract must include an Artifact placement section"
         )
         placement = body
-
-    review_path = INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS.get(skill_name)
-    if review_path is None:
-        return errors
 
     _validate_stage_owned_review_record_type(
         path=path,
@@ -1749,6 +1750,7 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
         errors.append(f"{path}: placeholder text is not allowed")
 
     name = metadata.get("name")
+    skill_name = name.strip() if isinstance(name, str) and name.strip() else None
     if isinstance(name, str) and not name.strip():
         errors.append(f"{path}: name: must be at least 1 characters")
 
@@ -1788,8 +1790,30 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
             name.strip() if isinstance(name, str) else None,
         )
     )
+    if skill_name and _is_relative_to(path.resolve(), CANONICAL_SKILLS_DIR.resolve()):
+        workflow_text = (
+            WORKFLOWS_DOC_PATH.read_text(encoding="utf-8")
+            if WORKFLOWS_DOC_PATH.is_file()
+            else None
+        )
+        errors.extend(
+            validate_installed_skill_artifact_placement_contract(
+                path,
+                skill_name,
+                body,
+                workflow_text=workflow_text,
+            )
+        )
+        if skill_name == "plan":
+            errors.extend(
+                validate_installed_skill_plan_surface_contract(
+                    path,
+                    skill_name,
+                    body,
+                )
+            )
 
-    return errors, name.strip() if isinstance(name, str) and name.strip() else None
+    return errors, skill_name
 
 
 def validate_skill_tree(target: Path, *, allow_generated: bool = False) -> ValidationResult:

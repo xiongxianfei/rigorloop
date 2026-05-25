@@ -4830,6 +4830,26 @@ and result format.
             stale_errors,
         )
 
+    def test_installed_skill_artifact_placement_contract_canonical_review_skills(
+        self,
+    ) -> None:
+        workflow_text = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+
+        for skill_name in ("proposal-review", "spec-review"):
+            with self.subTest(skill=skill_name):
+                path = ROOT / "skills" / skill_name / "SKILL.md"
+                body = path.read_text(encoding="utf-8")
+
+                self.assertEqual(
+                    skill_validation.validate_installed_skill_artifact_placement_contract(
+                        path.relative_to(ROOT),
+                        skill_name,
+                        body,
+                        workflow_text=workflow_text,
+                    ),
+                    [],
+                )
+
     def test_installed_skill_plan_surface_contract_helper_rejects_ambiguous_plan_wording(
         self,
     ) -> None:
@@ -4868,6 +4888,19 @@ and result format.
         self.assertEqual(
             skill_validation.validate_installed_skill_plan_surface_contract(
                 Path("skills/plan/SKILL.md"),
+                "plan",
+                body,
+            ),
+            [],
+        )
+
+    def test_installed_skill_plan_surface_contract_canonical_plan_skill(self) -> None:
+        path = ROOT / "skills" / "plan" / "SKILL.md"
+        body = path.read_text(encoding="utf-8")
+
+        self.assertEqual(
+            skill_validation.validate_installed_skill_plan_surface_contract(
+                path.relative_to(ROOT),
                 "plan",
                 body,
             ),
