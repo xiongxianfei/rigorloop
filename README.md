@@ -1,32 +1,22 @@
 # RigorLoop
 
 <!-- vision:start -->
-RigorLoop is a rigorous software engineering workflow for AI coding agents. It turns product intent into traceable proposals, requirements, tests, architecture, plans, implementation, validation evidence, and review decisions so humans can understand agent-produced changes with confidence.
+RigorLoop is a Git-first lifecycle workflow for AI coding agents. It turns AI work into traceable, resumable artifacts so humans can review, trust, and continue what the AI did.
 
-What makes it different: Most AI coding tools optimize for faster output. RigorLoop optimizes for trustworthy change delivery by keeping source of truth, rationale, tests, design intent, validation evidence, and review concerns in durable project artifacts.
+What makes it different: AI coding agents produce output quickly, but the reasoning often disappears. RigorLoop keeps decisions, tests, reviews, validation evidence, and handoff state in durable repository artifacts instead of lost chat logs.
 
-Who it is for: RigorLoop is for individual contributors, maintainers, and teams that want AI agents to participate in serious software delivery without weakening engineering discipline.
+Who it is for: RigorLoop is for individual contributors, maintainers, and teams that want AI-assisted software work to remain traceable, resumable, and reviewable in Git.
 
 See [VISION.md](VISION.md) for goals, non-goals, and falsifiability.
 <!-- vision:end -->
 
-*Rigorous workflow for AI-assisted software delivery with explicit artifacts, review gates, and durable change history.*
+RigorLoop makes AI-assisted delivery inspectable after the chat ends. The chain
+runs from proposal to spec, plan, test spec, implementation, review,
+verification, and PR handoff.
 
-RigorLoop helps individual contributors turn AI-assisted ideas into reviewable changes with proposals, specs, plans, tests, review gates, verification, and explainable change history. That gives contributors clearer review scope, explicit artifact history, and traceable change rationale from idea to PR. It also helps maintainers and small teams keep AI-assisted delivery explicit and auditable without replacing Git, pull requests, CI, or human review.
-
-## When to use / When not to use
-
-Use RigorLoop when:
-
-- you want AI-assisted work to stay reviewable, traceable, and grounded in explicit proposals, specs, plans, tests, and verification
-- you need a repository-local workflow that leaves durable change history instead of burying decisions in chat
-- you want a workflow that makes the path from idea to reviewed change visible and auditable
-
-Do not use RigorLoop when:
-
-- you want agents to bypass pull requests, CI, or human review
-- you need a hosted orchestration platform or centralized control plane
-- you want a zero-process scratchpad with no explicit artifacts or review gates
+It is for contributors and maintainers who want AI agents to help with serious
+software work without losing the reasoning, proof, and review trail that make a
+change safe to continue.
 
 ## Quick Start
 
@@ -61,24 +51,72 @@ Then use the repository workflow docs when you want to understand or customize t
 
 Key paths: [workflow](docs/workflows.md) · [proof example](docs/changes/0001-skill-validator/) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
 
-## Lifecycle At A Glance
+## Workflow At A Glance
 
 ```mermaid
 flowchart LR
   A[Idea] --> B[Proposal]
-  B --> C[Spec]
-  C --> D[Test spec]
-  D --> E[Plan]
-  E --> F[Implement]
-  F --> G[Code review]
-  G --> H[Explain change]
-  H --> I[Verify]
-  I --> J[PR]
+  B --> C[Proposal review]
+  C --> D[Spec]
+  D --> E[Spec review]
+  E --> F[Plan]
+  F --> G[Plan review]
+  G --> H[Test spec]
+  H --> I[Implementation]
+  I --> J[Code review]
+  J --> K[Explain change]
+  K --> L[Verify]
+  L --> M[PR]
 ```
 
-RigorLoop recommends the full chain for complete AI-assisted delivery. Manual
-skill invocations may use only the relevant stage and do not imply full workflow
-completion.
+This is the recommended full chain for complete AI-assisted delivery. Individual
+skills can also be used in isolation when the project does not need the full
+lifecycle.
+
+## Worked Example
+
+A RigorLoop change leaves a traceable artifact chain:
+
+| Stage | Example artifact |
+| --- | --- |
+| Proposal | `docs/proposals/<change>.md` |
+| Spec | `specs/<slug>.md` |
+| Plan | `docs/plans/<change>.md` |
+| Test spec | `specs/<slug>.test.md` |
+| Review records | `docs/changes/<change>/reviews/` |
+| Validation evidence | `docs/changes/<change>/change.yaml` |
+| Explain change | `docs/changes/<change>/explain-change.md` |
+| PR handoff | linked from change records or release notes |
+
+For a concrete repository example, inspect the shipped proof-of-value pack:
+[docs/changes/0001-skill-validator/](docs/changes/0001-skill-validator/).
+
+## When to use / When not to use
+
+Use RigorLoop when:
+
+- you want AI-assisted work to stay reviewable, traceable, and grounded in explicit proposals, specs, plans, tests, and verification
+- you need a repository-local workflow that leaves durable change history instead of burying decisions in chat
+- you want a workflow that makes the path from idea to reviewed change visible and auditable
+
+Do not use RigorLoop when:
+
+- you want agents to bypass pull requests, CI, or human review
+- you need a hosted orchestration platform or centralized control plane
+- you want a zero-process scratchpad with no explicit artifacts or review gates
+
+## Why RigorLoop Is Built This Way
+
+- **Reviewable artifacts.** Important decisions become files in your repository,
+  not lost chat logs.
+- **Human-understandable AI work.** Reviewers can see what changed, why it
+  changed, and what evidence supports it.
+- **Resumable across sessions and agents.** Work can continue because state
+  lives in Git, not one model session.
+- **Traceable from idea to PR.** A change has a visible chain from proposal to
+  verification and handoff.
+- **Durable lessons.** Mistakes become reusable guidance and checks, improving
+  reliability over time.
 
 ## npm Usage
 
@@ -207,7 +245,7 @@ Do not use Codex `$skill` syntax for Claude Code or OpenCode. Claude Code one-sh
 - Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 - Security policy: [SECURITY.md](SECURITY.md)
 
-## Workflow At A Glance
+## Workflow Categories
 
 RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 
