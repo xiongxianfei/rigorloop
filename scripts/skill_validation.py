@@ -285,6 +285,24 @@ ASSET_ROLLOUT_APPROVED_ASSETS = {
     **SPEC_FAMILY_ASSET_APPROVED_ASSETS,
     **PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS,
 }
+INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS = {
+    "proposal-review": "docs/changes/<change-id>/reviews/proposal-review-r<n>.md",
+    "spec-review": "docs/changes/<change-id>/reviews/spec-review-r<n>.md",
+}
+INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH = "docs/changes/<change-id>/review-log.md"
+INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH = (
+    "docs/changes/<change-id>/review-resolution.md"
+)
+INSTALLED_SKILL_PLACEMENT_WORKFLOW_REVIEW_PATH = (
+    "docs/changes/<change-id>/reviews/<stage>-r<n>.md"
+)
+INSTALLED_SKILL_PLAN_SURFACE_PATHS = (
+    "docs/workflows.md",
+    "docs/plan.md",
+    "docs/plans/YYYY-MM-DD-slug.md",
+    "docs/changes/<change-id>/change.yaml",
+    "docs/changes/<change-id>/",
+)
 
 
 @dataclass(frozen=True)
@@ -413,6 +431,125 @@ def _extract_markdown_section(body: str, heading: str) -> str | None:
             break
         section_lines.append(line)
     return "\n".join(section_lines).strip()
+
+
+def _normalized_prose(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip().lower()
+
+
+def _has_create_or_request_change_pack_behavior(text: str) -> bool:
+    normalized = _normalized_prose(text)
+    has_create_or_request = (
+        "create or request" in normalized
+        or "create or require" in normalized
+        or "create or block" in normalized
+    )
+    return (
+        "change pack" in normalized
+        and has_create_or_request
+        and "recording status:" in normalized
+        and "recorded" in normalized
+    )
+
+
+def _has_conditional_review_resolution_behavior(text: str) -> bool:
+    normalized = _normalized_prose(text)
+    if INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH not in text:
+        return False
+    conditional_terms = (
+        "only when",
+        "when material",
+        "when findings",
+        "when blocking",
+        "conditional",
+        "if material",
+    )
+    return any(term in normalized for term in conditional_terms)
+
+
+def _has_isolated_advisory_carveout(text: str) -> bool:
+    normalized = _normalized_prose(text)
+    return (
+        "isolated advisory" in normalized
+        and (
+            "do not create lifecycle artifacts" in normalized
+            or "without lifecycle artifacts" in normalized
+            or "no formal recording" in normalized
+        )
+    )
+
+
+def validate_installed_skill_artifact_placement_contract(
+    path: Path,
+    skill_name: str,
+    body: str,
+    *,
+    workflow_text: str | None = None,
+) -> list[str]:
+    """Validate first-slice installed-skill placement contract wording.
+
+    M1 exposes this as a fixture-backed helper. Canonical skill enforcement is
+    intentionally connected after M2 updates the public skill text.
+    """
+    errors: list[str] = []
+    placement = _extract_markdown_section(body, "Artifact placement")
+    if placement is None:
+        errors.append(
+            f"{path}: installed-skill placement contract must include an Artifact placement section"
+        )
+        placement = body
+
+    review_path = INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS.get(skill_name)
+    if review_path is None:
+        return errors
+
+    if review_path not in placement:
+        errors.append(
+            f"{path}: installed-skill placement contract missing default formal review record path {review_path}"
+        )
+    if INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH not in placement:
+        errors.append(
+            f"{path}: installed-skill placement contract missing review-log path {INSTALLED_SKILL_PLACEMENT_REVIEW_LOG_PATH}"
+        )
+    if not _has_conditional_review_resolution_behavior(placement):
+        errors.append(
+            f"{path}: installed-skill placement contract must describe {INSTALLED_SKILL_PLACEMENT_REVIEW_RESOLUTION_PATH} as conditional"
+        )
+    if not _has_create_or_request_change_pack_behavior(placement):
+        errors.append(
+            f"{path}: installed-skill placement contract must state create-or-request change-pack behavior before claiming Recording status: recorded"
+        )
+    if not _has_isolated_advisory_carveout(placement):
+        errors.append(
+            f"{path}: installed-skill placement contract must preserve isolated advisory review without lifecycle artifacts"
+        )
+    if (
+        workflow_text is not None
+        and INSTALLED_SKILL_PLACEMENT_WORKFLOW_REVIEW_PATH not in workflow_text
+    ):
+        errors.append(
+            f"{path}: docs/workflows.md formal review record default does not match {INSTALLED_SKILL_PLACEMENT_WORKFLOW_REVIEW_PATH}"
+        )
+    return errors
+
+
+def validate_installed_skill_plan_surface_contract(
+    path: Path,
+    skill_name: str,
+    body: str,
+) -> list[str]:
+    """Validate first-slice plan-surface disambiguation fixture wording."""
+    if skill_name not in {"plan", "plan-review", "implement", "verify"}:
+        return []
+    errors: list[str] = []
+    missing = [
+        surface for surface in INSTALLED_SKILL_PLAN_SURFACE_PATHS if surface not in body
+    ]
+    if missing:
+        errors.append(
+            f"{path}: installed-skill plan surface contract must distinguish docs/workflows.md, docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/"
+        )
+    return errors
 
 
 def _parse_colon_fields(section: str) -> dict[str, str]:
