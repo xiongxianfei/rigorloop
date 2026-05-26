@@ -68,14 +68,14 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 
 ## Current Handoff Summary
 
-- Current milestone: M2
-- Current milestone state: closed
+- Current milestone: M3
+- Current milestone state: review-requested
 - Last reviewed milestone: M2
-- Review status: code-review-m2-r2 clean-with-notes; M2 closed
+- Review status: implementation complete for M3; code-review pending
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M3 code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -203,7 +203,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 
 ### M3. Generated Output and Final Proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove generated local skills and public adapter archives include the updated `spec-review` skill and assets, then record final behavior-preservation and validation evidence.
 - Requirements: R4, R4a-R4c, R7, R7a, R8, R8e, generated-output proof from proposal SRTO-010
 - Files/components likely touched:
@@ -236,6 +236,12 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path skills/spec-review/SKILL.md --path skills/spec-review/assets/review-result-skeleton.md --path skills/spec-review/assets/material-finding.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/behavior-preservation.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`
   - `git diff --check -- docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md`
 - Expected observable result: generated output is current from canonical `skills/`, and preservation evidence proves the change clarified routing without weakening review behavior.
+- Implementation evidence:
+  - Ran generated local skill proof with `python scripts/build-skills.py --check`.
+  - Built temporary `v0.1.5` Codex, Claude, and opencode adapter archives under `/tmp/rigorloop-srto-m3-adapters-byvYm0`.
+  - Validated the temporary adapter archives with `python scripts/validate-adapters.py --root /tmp/rigorloop-srto-m3-adapters-byvYm0 --version v0.1.5`.
+  - Inspected each generated archive's `spec-review/SKILL.md` and `spec-review/assets/review-result-skeleton.md` with Python `zipfile` and confirmed the updated routing/readiness contract is present and the forbidden immediate `test-spec`/`not-assessed` forms are absent.
+  - Updated behavior-preservation evidence for generated adapters.
 - Commit message: `M3: prove spec-review routing output packaging`
 - Milestone closeout:
   - validation passed
@@ -313,6 +319,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-25: Code-review-m2-r1 found `SRTR-CR1`; M2 remains open pending review-resolution for stale workflow-spec immediate-stage wording.
 - 2026-05-25: `SRTR-CR1` was resolved by aligning `specs/rigorloop-workflow.md` around explicit `Immediate next stage: none` and adding adjacent-drift regression coverage; M2 is ready for rerun code-review.
 - 2026-05-25: Code-review-m2-r2 closed M2 with no material findings; next stage is implement M3.
+- 2026-05-26: M3 generated local skill and temporary adapter archive proof completed; M3 is ready for code-review.
 
 ## Decision log
 
@@ -349,12 +356,14 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-25: `SRTR-CR1` lifecycle validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check --`. The lifecycle validator reported existing lifecycle-language warnings in `specs/rigorloop-workflow.md`.
 - 2026-05-25: Code-review-m2-r2 reran `python scripts/test-skill-validator.py -k spec_review`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check --`; all passed. The lifecycle validator reported existing lifecycle-language warnings in `specs/rigorloop-workflow.md`.
 - 2026-05-25: Code-review-m2-r2 recording validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, and `git diff --check -- docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md`.
+- 2026-05-26: M3 generated-output proof passed: `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-srto-m3-adapters-byvYm0`, `python scripts/validate-adapters.py --root /tmp/rigorloop-srto-m3-adapters-byvYm0 --version v0.1.5`, and Python `zipfile` content inspection of Codex, Claude, and opencode archives.
+- 2026-05-26: M3 validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check -- ...`.
 
 ## Outcome and retrospective
 
-- Pending implementation and code-review for M3, explain-change, verify, and PR handoff.
+- Pending code-review for M3, explain-change, verify, and PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M3`. Readiness is not Done; M3, explain-change, verify, and PR gates remain.
+- Ready for `code-review M3`. Readiness is not Done; M3 review, explain-change, verify, and PR gates remain.
