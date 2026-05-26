@@ -10,11 +10,12 @@ Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: plan-review-r1
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`, `code-review-m1-r1`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Final result: `proposal-review-r1` requested changes for `CIM-PR1`, `CIM-PR2`, and `CIM-PR3`; the proposal was revised to resolve those findings. `proposal-review-r2` approved the proposal with non-blocking observations for spec. `spec-review-r1` requested changes for `CIM-SR1`, `CIM-SR2`, and `CIM-SR3`; the spec was revised to resolve those findings. `spec-review-r2` approved the revised spec with no material findings. `plan-review-r1` approved the execution plan with no material findings.
+- Final result: `proposal-review-r1` requested changes for `CIM-PR1`, `CIM-PR2`, and `CIM-PR3`; the proposal was revised to resolve those findings. `proposal-review-r2` approved the proposal with non-blocking observations for spec. `spec-review-r1` requested changes for `CIM-SR1`, `CIM-SR2`, and `CIM-SR3`; the spec was revised to resolve those findings. `spec-review-r2` approved the revised spec with no material findings. `plan-review-r1` approved the execution plan with no material findings. `code-review-m1-r1` approved M1 with no material findings.
 
 ## Resolution Overview
 
@@ -102,6 +103,12 @@ No material findings. Clean rerun approval is recorded in `reviews/spec-review-r
 Review closeout: closed
 
 No material findings. Clean plan-review approval is recorded in `reviews/plan-review-r1.md`.
+
+### code-review-m1-r1
+
+Review closeout: closed
+
+No material findings. Clean M1 code-review approval is recorded in `reviews/code-review-m1-r1.md`. M1 is closed and the next implementation stage is M2 - Validator and Fixture Coverage.
 
 #### CIM-SR2 - Downstream artifact sequence skips plan before test-spec
 

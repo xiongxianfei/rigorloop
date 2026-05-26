@@ -8,7 +8,7 @@ Terminal disposition: none
 - Change ID: `2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring`
 - Current owner: agent
 - Current stage: implement
-- Next stage: code-review M1
+- Next stage: implement M2
 - Blockers: none
 
 ## Purpose / Big Picture
@@ -66,20 +66,20 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
 
 ## Current Handoff Summary
 
-- Current milestone: M1 - Canonical skill rename and packaged resources
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation complete; code-review requested
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review M1
+- Current milestone: M2 - Validator and Fixture Coverage
+- Current milestone state: planned
+- Last reviewed milestone: M1 - Canonical skill rename and packaged resources
+- Review status: M1 code-review-r1 completed with no material findings; M1 is closed
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason: M1 implementation and targeted validation are complete; M1 has not been reviewed.
+- Reason: M1 is closed after clean code review. Validator/fixture coverage and generated-adapter proof remain pending.
 
 ## Milestones
 
 ### M1 - Canonical Skill Rename and Packaged Resources
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Rename the authored skill to `ci-maintenance`, add the skeleton and risk-map resources, and update direct authored skill-identifier references without changing repository CI workflows.
 - Requirements: `CIM-R1` through `CIM-R49`, `CIM-R65`, `AC-CIM-FM-001` through `AC-CIM-FM-004`, `AC-CIM-PERM-001` through `AC-CIM-PERM-004`.
 - Likely files:
@@ -111,7 +111,7 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
   - `python scripts/build-skills.py --check --output-dir /tmp/rigorloop-cim-m1-skills/skills`
   - `rg -n "name: ci|role_name: ci|skills/ci/SKILL.md|skills/ci/|when ci is run|when \`ci\` is run|ci-mantance" skills docs specs AGENTS.md`
   - `git diff --check --`
-- Result: implemented. Canonical skill source moved to `skills/ci-maintenance/SKILL.md`, packaged skeleton and risk-map resources were added, direct entrypoint references were updated, behavior preservation was recorded, and no `.github/workflows/*.yml` behavior changed.
+- Result: closed after clean code-review-r1. Canonical skill source moved to `skills/ci-maintenance/SKILL.md`, packaged skeleton and risk-map resources were added, direct entrypoint references were updated, behavior preservation was recorded, and no `.github/workflows/*.yml` behavior changed.
 - Risks:
   - Overbroad text replacement could alter generic CI prose or script names.
   - The published skill could become too repository-internal if RigorLoop-specific rows are not clearly labeled as examples.
