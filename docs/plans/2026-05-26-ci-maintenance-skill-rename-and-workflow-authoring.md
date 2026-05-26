@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring`
 - Current owner: agent
-- Current stage: final closeout
-- Next stage: explain-change
+- Current stage: verify
+- Next stage: verify
 - Blockers: none
 
 ## Purpose / Big Picture
@@ -23,6 +23,7 @@ The implementation must keep repository `.github/workflows/*.yml` behavior uncha
 - Spec: [ci-maintenance-skill.md](../../specs/ci-maintenance-skill.md)
 - Test spec: [ci-maintenance-skill.test.md](../../specs/ci-maintenance-skill.test.md)
 - Change record: [change.yaml](../changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml)
+- Explain change: [explain-change.md](../changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/explain-change.md)
 - Review log: [review-log.md](../changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md)
 - Review resolution: [review-resolution.md](../changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md)
 - Architecture: not required.
@@ -71,9 +72,9 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
 - Last reviewed milestone: M3 - Generated Adapter Proof and Migration Evidence
 - Review status: M3 code-review-r1 completed with no material findings; all implementation milestones are closed
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
-- Final closeout readiness: ready for explain-change; verify and PR readiness are not claimed
-- Reason: M1, M2, and M3 are closed after clean code reviews. No review-resolution is required. This slice did not change repository GitHub Actions workflows, so no ci-maintenance workflow-authoring handoff is triggered by the review.
+- Next stage: verify
+- Final closeout readiness: ready for verify; PR readiness is not claimed
+- Reason: M1, M2, and M3 are closed after clean code reviews. No review-resolution is required. Explain-change is recorded. This slice did not change repository GitHub Actions workflows, so no ci-maintenance workflow-authoring handoff is triggered by the review.
 
 ## Milestones
 
@@ -242,6 +243,7 @@ Final pre-PR validation must include the milestone validations plus:
 - 2026-05-26: M3 implementation started.
 - 2026-05-26: M3 updated tracked adapter metadata, added adopter-facing migration guidance, validated temporary adapter archives, recorded generated-output proof, and handed to code-review.
 - 2026-05-26: M3 closed after clean code-review-r1. All implementation milestones are closed; next stage is explain-change.
+- 2026-05-26: Explain-change recorded durable change rationale; next stage is verify.
 
 ## Decision Log
 
@@ -299,6 +301,7 @@ Final pre-PR validation must include the milestone validations plus:
 - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring` passed after M3 with 8 reviews, 6 findings, 8 log entries, and 6 resolution entries.
 - `git diff -- .github/workflows` produced no output after M3.
 - `git diff --check --` passed after M3.
+- `docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/explain-change.md` records the reviewed implementation rationale and routes to verify without claiming verify or PR readiness.
 
 ## Outcome and Retrospective
 
@@ -306,12 +309,11 @@ Pending. This plan remains active until all implementation milestones close and 
 
 ## Readiness
 
-Ready for explain-change.
+Ready for verify.
 
 Remaining gates before Done:
 
 - review-resolution, when triggered
 - ci-maintenance, when triggered
-- explain-change
 - verify
 - pr
