@@ -37,8 +37,9 @@ tests:
   - code-review-m3-r1 clean-with-notes
   - explain-change recorded before verify
   - verify-r1 branch-ready local validation passed
+  - PR #96 is open against release/v0.3.1 for hosted CI and human review
 review:
-  status: branch_ready_after_verify_r1
+  status: pr_96_open_hosted_ci_pending
   unresolved_items: 0
   location: docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md
 validation:
@@ -294,6 +295,8 @@ validation:
     result: pass_during_verify_r1
   - command: bash scripts/ci.sh --mode pr --base release/v0.3.1 --head HEAD
     result: pass_selected_ci_checks_during_verify_r1
+  - command: gh pr create --base release/v0.3.1 --head proposal/spec-review-testability-routing --title "refactor: separate spec-review routing and readiness"
+    result: opened_pr_96
 changed_files:
   - specs/test-spec-readiness-and-skill-workflow-alignment.md
   - specs/test-spec-readiness-and-skill-workflow-alignment.test.md

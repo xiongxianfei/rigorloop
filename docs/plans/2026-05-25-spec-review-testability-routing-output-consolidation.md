@@ -69,13 +69,13 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: verify complete; branch-ready
+- Current milestone state: PR open
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r1 clean-with-notes; all implementation milestones closed
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: local verify passed; PR handoff remains, and hosted CI is not claimed.
+- Next stage: hosted CI and human review for PR #96
+- Final closeout readiness: PR open; hosted CI and human review pending
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, explain-change is recorded, local verify passed, and PR #96 is open; hosted CI and human review are not complete.
 
 ## Milestones
 
@@ -323,6 +323,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-26: Code-review-m3-r1 closed M3 with no material findings; no in-scope implementation milestones remain.
 - 2026-05-26: Explain-change recorded the rationale from proposal through M1/M2/M3 implementation, reviews, validation, and material-finding closeout; next stage is verify.
 - 2026-05-26: Verify-r1 passed local final validation, selected PR-mode CI checks, temporary adapter archive validation, and archive content inspection; branch is ready for PR handoff.
+- 2026-05-26: PR #96 opened against `release/v0.3.1`; hosted CI and human review are pending.
 
 ## Decision log
 
@@ -368,9 +369,9 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 
 ## Outcome and retrospective
 
-- Verify-r1 passed locally. PR handoff remains.
+- PR #96 is open. Hosted CI and human review are pending.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Branch-ready for `pr`. Readiness is not Done; PR handoff and hosted CI remain.
+- PR #96 is open; hosted CI and human review are pending.
