@@ -532,7 +532,7 @@ R9. Once repository CI exists, the starter kit MUST treat routine CI validation 
 
 R9a. In the lifecycle stage table, `ci-maintenance` MUST refer to creating or updating hosted CI workflow files, validation automation, or related platform configuration needed to cover material change risk. It MUST NOT refer to running validation, designing tests, specifying validation commands, or waiting for existing CI checks to run.
 
-R9b. The existing `skills/ci/` path MAY remain the skill entrypoint for CI infrastructure work as long as contributor-visible workflow guidance uses `ci-maintenance` for the stage/action label and keeps validation execution under `verify`.
+R9b. The `skills/ci-maintenance/` path is the skill entrypoint for CI infrastructure work. Contributor-visible workflow guidance uses `ci-maintenance` for the stage/action label and keeps validation execution under `verify`.
 
 R10. The starter kit MUST treat `explain-change` as:
 - required in PR summary form for every change;
@@ -997,7 +997,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Creating learn session templates, topic templates, empty topic files, a fixed topic taxonomy, automated lesson triage, or historical-note migration.
 - Removing `explore`, `research`, or `learn`; they remain available through their trigger rules.
 - Rewriting project vision content or revisiting the completed `VISION.md` migration.
-- Renaming the `skills/ci/` directory as a contract requirement.
+- Adding a duplicate active legacy CI-maintenance entrypoint.
 - Inspecting hosted PR-description event metadata for merge-dependent language in the first enforcement slice.
 - Defining a merge-SHA recording exception before a real immutable-merge-metadata case exists.
 - Treating deploy, release, package publication, or external migration completion as repo-local lifecycle state that can be made true by the PR tree.
@@ -1061,7 +1061,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 ## Open questions
 
-- None for the single standard workflow amendment. The `skills/ci/` path remains allowed while the visible stage/action label remains `ci-maintenance`; detailed periodic `learn` cadence scheduling remains outside this workflow contract.
+- None for the single standard workflow amendment. The visible stage/action label and skill entrypoint are both `ci-maintenance`; detailed periodic `learn` cadence scheduling remains outside this workflow contract.
 
 ## Next artifacts
 
