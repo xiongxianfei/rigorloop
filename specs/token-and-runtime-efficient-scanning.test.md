@@ -119,7 +119,7 @@
   - canonical `skills/architecture/SKILL.md`
   - `skills/architecture-review/SKILL.md`
   - `skills/bugfix/SKILL.md`
-  - `skills/ci/SKILL.md`
+  - `skills/ci-maintenance/SKILL.md`
   - `skills/code-review/SKILL.md`
   - `skills/explain-change/SKILL.md`
   - `skills/implement/SKILL.md`

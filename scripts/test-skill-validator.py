@@ -22,7 +22,7 @@ SCAN_SENSITIVE_SKILLS = [
     "architecture",
     "architecture-review",
     "bugfix",
-    "ci",
+    "ci-maintenance",
     "code-review",
     "explain-change",
     "implement",
@@ -198,7 +198,7 @@ CUSTOMER_PORTABLE_ALLOWED_GUARD_TERMS = [
     "direct target",
 ]
 SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS = [
-    "ci-maintenance",
+    "ci",
     "review-resolution",
     "ui-design",
     "ui-design-review",
@@ -2883,7 +2883,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         proposal_review = (
             ROOT / "skills" / "proposal-review" / "SKILL.md"
         ).read_text(encoding="utf-8")
-        ci = (ROOT / "skills" / "ci" / "SKILL.md").read_text(encoding="utf-8")
+        ci = (ROOT / "skills" / "ci-maintenance" / "SKILL.md").read_text(encoding="utf-8")
         learn = (ROOT / "skills" / "learn" / "SKILL.md").read_text(encoding="utf-8")
         verify = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
 
@@ -4038,7 +4038,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Public shared blocks are copied and checked in v1, not generated into skills.",
             "Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, shared-block implementation details, or RigorLoop-local examples.",
             "The baseline normalization first slice and published-skill design pilot MUST NOT add broad natural-language quality scoring.",
-            "The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.",
+            "The `ci-maintenance` skill is the entrypoint for the `ci-maintenance` stage label.",
         ]
         for term in required_spec_terms:
             with self.subTest(file="spec", term=term):
@@ -4077,13 +4077,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(surface="plan", skill=skill_name):
                 self.assertIn(f"skills/{skill_name}/SKILL.md", plan)
 
-        self.assertIn(
-            "The `ci` skill MUST be treated as the skill entrypoint for the visible `ci-maintenance` workflow stage label",
-            spec,
-        )
+        self.assertIn("The `ci-maintenance` skill MUST be treated as the skill entrypoint", spec)
         self.assertIn("The baseline normalization first slice MUST NOT normalize every skill.", spec)
         self.assertIn("Do not implement Phase 2, Phase 3, or Phase 4 skill normalization", plan)
-        self.assertTrue((ROOT / "skills" / "ci" / "SKILL.md").exists())
+        self.assertTrue((ROOT / "skills" / "ci-maintenance" / "SKILL.md").exists())
 
         for skill_name in SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS:
             with self.subTest(forbidden_skill=skill_name):

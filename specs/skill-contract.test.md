@@ -116,7 +116,7 @@
 | `E4` | `T9`, `T14` | Generated skill mirrors and adapter outputs stay derived, while public skills omit maintainer mechanics |
 | `E5` | `T10` | Overclaim validation is narrow and positive-first |
 | `E6` | `T11` | One-off behavior does not create a new skill |
-| `E7` | `T3`, `T12` | `ci-maintenance` maps to existing `ci` skill entrypoint |
+| `E7` | `T3`, `T12` | `ci-maintenance` maps to the `ci-maintenance` skill entrypoint |
 | `E8` | `T17`, `T19` | `description` carries portable routing before skill bodies load |
 | `E9` | `T18` | Packaged scripts are allowed when mapped with load conditions and failure behavior |
 | `E10` | `T18` | Repository-root scripts are blocked as normal customer-project dependencies |
@@ -306,9 +306,9 @@
   - repository `skills/` tree
 - Steps:
   - Assert the first implementation slice names only `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`.
-  - Assert Phase 2 includes core lifecycle authoring/review skills and the existing `ci` skill for the `ci-maintenance` stage label.
+  - Assert Phase 2 includes core lifecycle authoring/review skills and the `ci-maintenance` skill.
   - Assert Phase 3 and Phase 4 are described as later work.
-  - Assert no implementation creates or requires `skills/ci-maintenance/SKILL.md`, standalone `review-resolution` skill, or Phase 4 optional skill paths.
+  - Assert no implementation creates a duplicate active legacy CI-maintenance skill, standalone `review-resolution` skill, or Phase 4 optional skill paths.
   - Manually confirm unnormalized Phase 2/3/4 skills are not treated as failing first-slice proof.
 - Expected result:
   - The implementation stays reviewable and does not accidentally normalize every skill.
@@ -526,7 +526,7 @@
   - `AGENTS.md`
 - Steps:
   - Confirm existing unnormalized skills remain valid until their approved phase.
-  - Confirm existing `skills/ci/` path remains valid for `ci-maintenance` and no `skills/ci-maintenance/SKILL.md` path exists.
+  - Confirm `skills/ci-maintenance/SKILL.md` is valid for `ci-maintenance` and no duplicate active legacy CI-maintenance path exists.
   - Confirm no standalone `review-resolution` skill is introduced.
   - Confirm Phase 4 candidate skills are not created solely because they are named in the spec.
   - Confirm generated output refreshes do not commit secrets, credentials, tokens, private keys, private user data, or machine-local paths.
@@ -1398,7 +1398,7 @@
 ## Migration or compatibility tests
 
 - Existing unnormalized skills remain valid until later phases: `T3`, `T12`.
-- Existing `skills/ci/SKILL.md` remains the `ci-maintenance` entrypoint: `T3`, `T12`.
+- `skills/ci-maintenance/SKILL.md` is the `ci-maintenance` entrypoint: `T3`, `T12`.
 - Generated `.codex/skills/` and `dist/adapters/` output remain derived and deterministic: `T9`, `T13`.
 - Rollback for wording-only skill changes reverts canonical skills, shared blocks, validator checks, and generated output together; manual recovery review is covered by `T13`.
 - Existing skills outside `proposal` and `proposal-review` remain valid until their approved implementation slice: `T16`, `T20`.
