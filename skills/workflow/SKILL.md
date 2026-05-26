@@ -73,7 +73,7 @@ Produce a routing decision, current stage assessment, blockers or assumptions, a
 ## Handoff
 
 - Normal next stage: the next valid skill or stop condition for the standard workflow state.
-- Conditional next stages: `explore`, `research`, `architecture`, `ci`, or `learn` only when their trigger is active; `code-review`, `ci-maintenance`, `explain-change`, `verify`, or `pr` only when the workflow state and readiness allow them.
+- Conditional next stages: `explore`, `research`, `architecture`, `ci-maintenance`, or `learn` only when their trigger is active; `code-review`, `explain-change`, `verify`, or `pr` only when the workflow state and readiness allow them.
 - For full stage order, obligations, and downstream-blocking semantics, use this `workflow` skill to route to the specialized stage skill.
 
 ## Claims this skill must not make
@@ -111,7 +111,7 @@ Use the adopted workflow contract for full category detail. Operationally, route
 - Standing artifacts: project vision and constitution.
 - Living references: project map and workflow guidance.
 - Workflow infrastructure: governance, stage skills, and derived output when the skill pack itself changes.
-- On-demand support: `explore`, `research`, `architecture`, `ci`, or `learn` only when triggered.
+- On-demand support: `explore`, `research`, `architecture`, `ci-maintenance`, or `learn` only when triggered.
 - Per-change chain:
 
 ```text

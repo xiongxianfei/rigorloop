@@ -60,7 +60,7 @@ Splitting this spec into multiple files MUST be pursued through a separate propo
 - `result block`: the compact `## Result` summary at the start of a skill's expected output.
 - `shared skill policy block`: canonical wording under `templates/shared/<block-name>.md` that is copied verbatim into consuming skills and checked for drift.
 - `minimum viable skill`: the smallest justified new skill that owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.
-- `ci-maintenance`: the visible workflow stage label for CI infrastructure maintenance. The existing `ci` skill remains the skill entrypoint for that stage label unless a later approved spec changes it.
+- `ci-maintenance`: the visible workflow stage label and canonical skill entrypoint for CI infrastructure maintenance after the approved ci-maintenance skill rename.
 - `token-cost discipline`: selecting the smallest evidence surface that can answer the current question before broadening.
 - `bounded evidence`: a small evidence surface such as a changed-path list, inventory, heading list, stable ID, count, matching line number, or targeted excerpt.
 - `high-volume surface`: a file set, artifact, log, generated output tree, or historical record set likely to produce large output.
@@ -148,12 +148,12 @@ Given a contributor wants a one-time formatting checklist
 When the behavior does not own a distinct artifact, gate, review responsibility, recurring action, or approved operational process
 Then the contributor updates an existing skill, template, or docs surface instead of adding a new skill.
 
-### Example E7: CI stage label and skill entrypoint differ
+### Example E7: CI stage label and skill entrypoint are aligned after the rename
 
 Given the workflow stage label is `ci-maintenance`
 When contributors invoke the current skill entrypoint
-Then they use the existing `ci` skill for CI infrastructure maintenance
-And the spec does not require a `skills/ci-maintenance/SKILL.md` path.
+Then they use the `ci-maintenance` skill for CI infrastructure maintenance
+And the canonical authored path is `skills/ci-maintenance/SKILL.md`.
 
 ### Example E8: description carries portable routing
 
@@ -329,11 +329,11 @@ R5b. Review skills MUST preserve the governing formal review recording rules whe
 
 R6. Normalized execution skills MUST define proof expectations, state updates, stop conditions, and claims they must not make.
 
-R6a. Execution skills include `implement`, `verify`, `pr`, and `ci`.
+R6a. Execution skills include `implement`, `verify`, `pr`, and `ci-maintenance`.
 
-R6b. The `ci` skill MUST be treated as the skill entrypoint for the visible `ci-maintenance` workflow stage label unless a later approved spec renames the skill path.
+R6b. The `ci-maintenance` skill MUST be treated as the skill entrypoint for the visible `ci-maintenance` workflow stage label.
 
-R6c. A skill contract implementation MUST NOT require a `skills/ci-maintenance/SKILL.md` path in this slice.
+R6c. The canonical authored CI maintenance skill path is `skills/ci-maintenance/SKILL.md`.
 
 R7. Normalized periodic, on-demand, or support skills MUST define trigger, output, handoff, stop conditions, and claim boundaries appropriate to their obligation.
 
@@ -368,7 +368,7 @@ R8h. The baseline normalization first slice MUST keep repository-maintainer gene
 
 R9. Later-phase normalization MUST proceed in the order approved by the proposal unless a later approved proposal changes the order.
 
-R9a. Phase 2 MUST normalize core lifecycle authoring and review skills: `proposal`, `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan-review`, `test-spec`, `explain-change`, and the `ci` skill for the `ci-maintenance` stage label.
+R9a. Phase 2 MUST normalize core lifecycle authoring and review skills: `proposal`, `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan-review`, `test-spec`, `explain-change`, and the `ci-maintenance` skill.
 
 R9b. Phase 3 MUST normalize on-demand and standing or living-reference skills: `explore`, `research`, `vision`, `project-map`, and `bugfix`.
 
@@ -803,7 +803,7 @@ Outputs:
 - Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, shared-block implementation details, or RigorLoop-local examples.
 - Published skill portability checks apply only to shipped skill text and generated public skill copies, not internal maintainer surfaces.
 - The baseline normalization first slice is limited to seven canonical skills.
-- The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.
+- The `ci-maintenance` skill is the entrypoint for the `ci-maintenance` stage label.
 - `description` remains the portable routing source for published skills.
 - Normalized published skills carry reviewed frontmatter version metadata.
 - Packaged skill-local resources are allowed only when included in adapter output and mapped in `SKILL.md`.
@@ -821,7 +821,7 @@ Outputs:
 - If generated `.codex/skills/` or `dist/adapters/` output drifts from canonical skills, generated-output drift validation MUST fail.
 - If a normalized skill cannot satisfy a required core section without creating misleading content, the implementation MUST stop for spec review or owner decision rather than inventing a hollow section.
 - If a proposed forbidden phrase check blocks explicit negative guidance, the check MUST be narrowed before it is relied on.
-- If the workflow stage label `ci-maintenance` is used in a normalization list, spec and plan authors MUST map it to the existing `ci` skill entrypoint unless a later approved spec renames the skill path.
+- If the workflow stage label `ci-maintenance` is used in a normalization list, spec and plan authors MUST map it to the `ci-maintenance` skill entrypoint.
 - If a new optional skill does not yet exist or lacks approved artifact or gate ownership, it MUST NOT be included in implementation scope solely because it is named as a Phase 4 candidate.
 - If `description` exceeds 1024 characters, validation MUST fail.
 - If a normalized published skill omits `version` or `schema-version`, contract validation or manual review MUST fail for that skill.
@@ -851,7 +851,7 @@ Outputs:
 - Existing unnormalized skills remain valid until their approved normalization phase.
 - The baseline normalization first slice does not require all skills to adopt the required core sections at once.
 - Existing contributor generated-output policy remains unchanged: edit canonical skill source, regenerate generated output, and validate drift. That policy is contributor-maintenance guidance and is not copied into published skill text.
-- Existing `skills/ci/` path remains valid for `ci-maintenance`.
+- Existing direct `ci` invocations should migrate to `ci-maintenance` after the approved rename.
 - Existing formal review recording rules remain authoritative for review records; this spec only defines how shared review guidance is copied and checked in skills.
 - Rollback for wording-only skill changes may revert the affected canonical skills, shared blocks, validator checks, and generated output together.
 - Existing skills are not invalid solely because their `description` exceeds 1024 characters or lacks the new routing structure until the approved implementation slice brings them into scope.
@@ -933,7 +933,7 @@ This change has no user-interface surface. The relevant user experience is contr
 - Do not normalize every skill in the baseline normalization first slice.
 - Do not add a standalone `review-resolution` skill.
 - Do not add a standalone `token-budget` skill.
-- Do not add a `skills/ci-maintenance/SKILL.md` path in this slice.
+- Do not add duplicate active CI maintenance skill entrypoints.
 - Do not add broad semantic quality scoring for skill prose.
 - Do not generate shared blocks into skills in v1.
 - Do not hand-edit generated `.codex/skills/` or `dist/adapters/` output.
@@ -960,7 +960,7 @@ This change has no user-interface surface. The relevant user experience is contr
 - A reviewer can identify `specs/skill-contract.md` as the normative skill-contract source.
 - A reviewer can distinguish skill-contract behavior from workflow-routing behavior owned by `specs/rigorloop-workflow.md`.
 - A contributor can identify the required core sections for a normalized skill.
-- A contributor can see that `ci` is the skill entrypoint for `ci-maintenance`.
+- A contributor can see that `ci-maintenance` is the skill entrypoint for CI infrastructure maintenance.
 
 ### Baseline normalization first slice (R8-R26)
 

@@ -647,13 +647,13 @@
 - Fixture/setup:
   - `docs/workflows.md`
   - `AGENTS.md`
-  - `skills/ci/SKILL.md`
+  - `skills/ci-maintenance/SKILL.md`
   - `skills/workflow/SKILL.md`
   - `skills/verify/SKILL.md`
 - Steps:
   - Confirm contributor-facing workflow guidance uses `ci-maintenance` for hosted CI workflow files, validation automation, or platform configuration.
   - Confirm validation execution stays under `verify` and repository-owned scripts.
-  - Confirm the existing `skills/ci/` path remains allowed as the CI infrastructure skill entrypoint.
+  - Confirm `skills/ci-maintenance/` is the CI infrastructure skill entrypoint.
   - Confirm guidance does not describe `ci-maintenance` as running tests, designing tests, specifying validation commands, or waiting for existing CI checks.
 - Expected result:
   - Contributors can tell when CI infrastructure maintenance is required and when ordinary validation belongs to `verify`.
@@ -941,7 +941,7 @@
   - `skills/workflow/SKILL.md`
   - `skills/proposal/SKILL.md`
   - `skills/proposal-review/SKILL.md`
-  - `skills/ci/SKILL.md`
+  - `skills/ci-maintenance/SKILL.md`
   - `skills/learn/SKILL.md`
   - other stage skills only when M2 identifies stale duplicated handoff wording
 - Generated output:
@@ -991,7 +991,7 @@
 - `T21` verifies the `VISION.md` migration is treated as already complete and lowercase `vision.md` is not reintroduced as canonical.
 - `T21` verifies project-map lifecycle markers and freshness thresholds are not invented in this refactor.
 - `T23` verifies the workflow spec links to the final learn artifact model while preserving nonblocking default behavior.
-- `T26` verifies the `skills/ci/` path remains compatible while contributor-facing stage language uses `ci-maintenance`.
+- `T26` verifies the `skills/ci-maintenance/` path is canonical while contributor-facing stage language uses `ci-maintenance`.
 - `T25` verifies in-flight work can record its selected workflow contract without forcing unrelated active work to churn.
 - `T29` and `T30` verify existing merge-dependent closeout language is migrated when touched or relied on, while true downstream events keep lifecycle state active.
 - `T32` verifies first-slice warning detection stays repository-local and does not depend on hosted PR-description metadata.
@@ -1049,7 +1049,7 @@
 - Do not test subjective writing quality, philosophy, or style preferences in workflow or skill prose.
 - Do not implement or test project-map calendar thresholds, freshness markers, or the full project-map revision workflow.
 - Do not test detailed session-record, topic-file, evidence, classification, or routing behavior here; `specs/learn-artifact-model.test.md` owns that proof.
-- Do not rename or require renaming `skills/ci/`.
+- Do not require a duplicate active legacy CI-maintenance entrypoint.
 - Do not re-test or re-migrate root `vision.md` to `VISION.md`; this refactor only ensures `VISION.md` remains canonical.
 - Do not test hosted GitHub release publishing end to end.
 - Do not require network-dependent checks for baseline validation.

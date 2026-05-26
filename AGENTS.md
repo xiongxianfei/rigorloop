@@ -72,7 +72,7 @@ In workflow-managed completion flows, continue automatically into the next manda
 
 Add `plan-review` before spec work when the task is risky, cross-cutting, or hard to sequence cleanly.
 
-Use `bugfix` for bugs, `ci` for ci-maintenance when GitHub Actions or related automation for a material risk is missing, stale, or wrong, and `pr` only when the branch is already ready for review.
+Use `bugfix` for bugs, `ci-maintenance` when GitHub Actions or related automation for a material risk is missing, stale, or wrong, and `pr` only when the branch is already ready for review.
 
 ## Plan file policy
 

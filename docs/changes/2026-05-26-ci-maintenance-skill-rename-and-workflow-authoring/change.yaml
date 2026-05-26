@@ -1,0 +1,260 @@
+change_id: 2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+title: CI-maintenance skill rename and workflow authoring support
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md
+  spec: specs/ci-maintenance-skill.md
+  plan: docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md
+  test_spec: specs/ci-maintenance-skill.test.md
+  explain_change: docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/explain-change.md
+requirements:
+  - Record the proposal direction for renaming the CI skill to ci-maintenance before spec authoring.
+  - Preserve proposal-review findings and observations for downstream spec authoring.
+  - Author the ci-maintenance skill identity and workflow authoring contract before spec-review.
+  - Keep post-spec downstream work isolated until the user explicitly requests the next stage.
+  - Create an execution plan that sequences the approved spec into reviewable implementation milestones before test-spec.
+  - Create a traceable test spec that maps requirements, examples, edge cases, and acceptance criteria before implementation.
+tests:
+  - Proposal-review-r1 records the material findings that drove proposal revision.
+  - Review-resolution records accepted dispositions for proposal-review-r1 findings.
+  - Proposal-review-r2 records approved-with-observations readiness for spec.
+  - Spec records hard rename behavior for the first slice after checking current alias support.
+  - Spec records fail-safe risk-map behavior for unmapped changed surfaces.
+  - Spec-review-r1 records material findings before downstream planning relies on the draft spec.
+  - Spec-review-r2 records clean approval after spec revision.
+  - Plan records architecture as intentionally not required, sequences plan-review before test-spec, and keeps implementation blocked until test-spec.
+  - Plan-review-r1 records clean approval before test-spec authoring.
+  - Test spec maps the approved requirements to deterministic unit, integration, migration, manual, and smoke proof.
+  - Code-review-m1-r1 records clean approval of the canonical skill rename and packaged resources.
+  - M2 adds deterministic validator coverage for ci-maintenance front matter, stale identifiers, resources, skeleton defaults, risk-map boundaries, command blockers, and workflow-review guardrails.
+  - Code-review-m2-r1 records clean approval of validator and fixture coverage.
+  - M3 updates tracked adapter metadata, adds adopter-facing migration guidance, and records generated adapter archive proof for ci-maintenance resources.
+  - M3 preserves generated non-Codex adapter validation for transformed front matter while keeping canonical ci-maintenance metadata required.
+  - Code-review-m3-r1 records clean approval of generated adapter proof and migration evidence.
+  - Explain-change records durable rationale linking the reviewed diff to proposal, spec requirements, test spec, plan milestones, reviews, and validation evidence.
+  - Final verify records branch-ready local validation evidence before PR handoff.
+  - PR #98 is open for hosted CI and human review.
+  - Artifact lifecycle validation covers the accepted proposal and review records.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_3_findings_3_log_entries_3_resolution_entries_3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_3_findings_3_log_entries_3_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md
+    result: pass_validated_1_artifact_file
+  - command: git diff --no-index --check -- /dev/null for each new proposal and change-local review file
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md
+    result: pass_validated_2_artifact_files_after_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_3_findings_3_log_entries_3_resolution_entries_3_after_spec_authoring
+  - command: git diff --no-index --check -- /dev/null for specs/ci-maintenance-skill.md and changed proposal/change-local files
+    result: pass_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_4_findings_6_log_entries_4_resolution_entries_6_after_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1
+  - command: git diff --no-index --check -- /dev/null docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_4_findings_6_log_entries_4_resolution_entries_6_after_spec_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_spec_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_revision
+  - command: git diff --no-index --check -- /dev/null for specs/ci-maintenance-skill.md and changed change-local files
+    result: pass_after_spec_revision
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_5_findings_6_log_entries_5_resolution_entries_6_after_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_5_findings_6_log_entries_5_resolution_entries_6_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_review_r2
+  - command: git diff --no-index --check -- /dev/null for specs/ci-maintenance-skill.md and changed change-local files
+    result: pass_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_plan_creation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_5_findings_6_log_entries_5_resolution_entries_6_after_plan_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md
+    result: pass_validated_2_artifact_files_after_plan_creation
+  - command: git diff --check --
+    result: pass_after_plan_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_test_spec_creation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_6_findings_6_log_entries_6_resolution_entries_6_after_test_spec_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/plan-review-r1.md
+    result: pass_validated_3_artifact_files_after_test_spec_creation
+  - command: git diff --check --
+    result: pass_after_test_spec_creation
+  - command: python scripts/validate-skills.py skills/ci-maintenance/SKILL.md
+    result: pass_m1_validated_1_skill_file
+  - command: python scripts/validate-skills.py
+    result: pass_m1_validated_23_skill_files
+  - command: python scripts/build-skills.py --check --output-dir /tmp/rigorloop-cim-m1-skills/skills
+    result: pass_m1_generated_skill_check
+  - command: python scripts/test-skill-validator.py
+    result: pass_m1_184_tests
+  - command: rg -n 'name: ci|role_name: ci|skills/ci/SKILL.md|skills/ci/|when ci is run|when `ci` is run|ci-mantance' AGENTS.md docs/workflows.md skills specs
+    result: pass_m1_remaining_matches_intentional_hard_rename_spec_test_references_or_ci_maintenance_false_positives
+  - command: git diff -- .github/workflows
+    result: pass_m1_no_workflow_diff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_6_findings_6_log_entries_6_resolution_entries_6_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/plan-review-r1.md
+    result: pass_validated_3_artifact_files_after_m1
+  - command: git diff --check --
+    result: pass_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_7_findings_6_log_entries_7_resolution_entries_6_after_code_review_m1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_7_findings_6_log_entries_7_resolution_entries_6_after_code_review_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_code_review_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/plan-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m1-r1.md
+    result: pass_validated_3_artifact_files_after_code_review_m1
+  - command: git diff --check --
+    result: pass_after_code_review_m1
+  - command: python scripts/test-skill-validator.py
+    result: pass_m2_191_tests
+  - command: python scripts/validate-skills.py skills/ci-maintenance/SKILL.md
+    result: pass_m2_validated_1_skill_file
+  - command: python scripts/validate-skills.py
+    result: pass_m2_validated_23_skill_files
+  - command: python scripts/build-skills.py --check --output-dir /tmp/rigorloop-cim-m2-skills/skills
+    result: pass_m2_generated_skill_check
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_m2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_7_findings_6_log_entries_7_resolution_entries_6_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/behavior-preservation.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/plan-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m1-r1.md
+    result: pass_validated_3_artifact_files_after_m2
+  - command: git diff -- .github/workflows
+    result: pass_m2_no_workflow_diff
+  - command: git diff --check --
+    result: pass_after_m2_validator_implementation
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_8_findings_6_log_entries_8_resolution_entries_6_after_code_review_m2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_8_findings_6_log_entries_8_resolution_entries_6_after_code_review_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_code_review_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/behavior-preservation.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/plan-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m1-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m2-r1.md
+    result: pass_validated_3_artifact_files_after_code_review_m2
+  - command: git diff --check --
+    result: pass_after_code_review_m2
+  - command: python scripts/test-skill-validator.py
+    result: pass_m3_191_tests
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_m3_112_tests
+  - command: python scripts/validate-skills.py
+    result: pass_m3_validated_23_skill_files
+  - command: python scripts/build-skills.py --check --output-dir /tmp/rigorloop-cim-m3-skills/skills
+    result: pass_m3_generated_skill_check
+  - command: python scripts/build-adapters.py --check --version v0.1.5 --verbose
+    result: expected_tracked_tree_archive_era_drift_and_existing_command_aliases_version_diagnostic
+  - command: tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5
+    result: pass_m3_temporary_adapter_archives_validated_under_/tmp/tmp.eXBa1HTkJk
+  - command: inspect /tmp/tmp.eXBa1HTkJk/*.zip for ci-maintenance and /ci/ paths
+    result: pass_m3_all_archives_include_ci_maintenance_skill_and_resources_no_active_ci_skill_body
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/behavior-preservation.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/generated-output-proof.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/plan-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m1-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m2-r1.md
+    result: pass_validated_3_artifact_files_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_8_findings_6_log_entries_8_resolution_entries_6_after_m3
+  - command: git diff -- .github/workflows
+    result: pass_m3_no_workflow_diff
+  - command: git diff --check --
+    result: pass_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_9_findings_6_log_entries_9_resolution_entries_6_after_code_review_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_reviews_9_findings_6_log_entries_9_resolution_entries_6_after_code_review_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_code_review_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/behavior-preservation.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/generated-output-proof.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/plan-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m1-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m2-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m3-r1.md
+    result: pass_validated_3_artifact_files_after_code_review_m3
+  - command: git diff --check --
+    result: pass_after_code_review_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/behavior-preservation.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/generated-output-proof.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/explain-change.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/plan-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m1-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m2-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m3-r1.md
+    result: pass_validated_3_artifact_files_after_explain_change
+  - command: git diff --check --
+    result: pass_after_explain_change
+  - command: python scripts/test-skill-validator.py
+    result: pass_final_verify_191_tests
+  - command: python scripts/validate-skills.py
+    result: pass_final_verify_validated_23_skill_files
+  - command: python scripts/build-skills.py --check --output-dir /tmp/rigorloop-cim-final-skills/skills
+    result: pass_final_verify_generated_skill_check
+  - command: tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5
+    result: pass_final_verify_temporary_adapter_archives_validated_under_/tmp/tmp.iRzhsy5JFA
+  - command: inspect /tmp/tmp.iRzhsy5JFA/*.zip for ci-maintenance and /ci/ paths
+    result: pass_final_verify_all_archives_include_ci_maintenance_skill_and_resources_no_active_ci_skill_body
+  - command: bash scripts/ci.sh --mode explicit --path skills/ci-maintenance/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path dist/adapters/manifest.yaml --path dist/adapters/README.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md
+    result: pass_final_verify_selected_checks_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_regression_adapters_drift_adapters_validate_artifact_lifecycle_validate
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring
+    result: pass_final_verify_reviews_9_findings_6_log_entries_9_resolution_entries_6
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+    result: pass_final_verify_recorded
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/behavior-preservation.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/generated-output-proof.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/explain-change.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/plan-review-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m1-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m2-r1.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m3-r1.md
+    result: pass_final_verify_recorded_validated_3_artifact_files
+  - command: git diff -- .github/workflows
+    result: pass_final_verify_no_workflow_diff
+  - command: git diff --check --
+    result: pass_final_verify_recorded
+changed_files:
+  - docs/plan.md
+  - docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md
+  - specs/ci-maintenance-skill.test.md
+  - docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md
+  - specs/ci-maintenance-skill.md
+  - skills/ci-maintenance/SKILL.md
+  - skills/ci-maintenance/assets/github-workflow-skeleton.yml
+  - skills/ci-maintenance/references/risk-to-check-map.md
+  - skills/ci/SKILL.md
+  - AGENTS.md
+  - skills/workflow/SKILL.md
+  - specs/skill-contract.md
+  - specs/skill-contract.test.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - specs/rigorloop-workflow.md
+  - specs/rigorloop-workflow.test.md
+  - specs/workflow-stage-autoprogression.test.md
+  - specs/token-and-runtime-efficient-scanning.test.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/behavior-preservation.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/proposal-review-r3.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r1.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/spec-review-r2.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/plan-review-r1.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/generated-output-proof.md
+  - docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/explain-change.md
+  - dist/adapters/manifest.yaml
+  - dist/adapters/README.md
+review:
+  status: m3_clean_review_recorded
+  unresolved_items: 0
+  location: docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/reviews/code-review-m3-r1.md

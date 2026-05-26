@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 import re
+import shutil
 import subprocess
 import sys
 import unittest
 import math
 import tempfile
 import textwrap
+from collections.abc import Callable
 from pathlib import Path
 
 import skill_validation
@@ -22,7 +24,7 @@ SCAN_SENSITIVE_SKILLS = [
     "architecture",
     "architecture-review",
     "bugfix",
-    "ci",
+    "ci-maintenance",
     "code-review",
     "explain-change",
     "implement",
@@ -198,7 +200,7 @@ CUSTOMER_PORTABLE_ALLOWED_GUARD_TERMS = [
     "direct target",
 ]
 SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS = [
-    "ci-maintenance",
+    "ci",
     "review-resolution",
     "ui-design",
     "ui-design-review",
@@ -654,6 +656,29 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         )
         self.assertIn(expected_text, combined_output)
 
+    def copy_ci_maintenance_fixture(self, root: Path) -> Path:
+        source = ROOT / "skills" / "ci-maintenance"
+        target = root / "ci-maintenance"
+        shutil.copytree(source, target)
+        return target
+
+    def assertCiMaintenanceFixtureFails(
+        self,
+        mutate: Callable[[Path], None],
+        expected_text: str,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_dir = self.copy_ci_maintenance_fixture(Path(temporary))
+            mutate(skill_dir)
+            result = run_validator(skill_dir)
+            combined_output = f"{result.stdout}\n{result.stderr}"
+            self.assertNotEqual(
+                result.returncode,
+                0,
+                msg=f"expected ci-maintenance fixture to fail\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+            )
+            self.assertIn(expected_text, combined_output)
+
     def test_valid_skill_passes(self) -> None:
         self.assertFixturePasses("valid-basic")
 
@@ -848,6 +873,107 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertFixtureFails(
             "published-design/plan-assets-section-mismatch",
             "plan-skeleton section set does not match SKILL.md expected sections",
+        )
+
+    def test_ci_maintenance_contract_validates_canonical_skill(self) -> None:
+        result = run_validator(ROOT / "skills" / "ci-maintenance" / "SKILL.md")
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"expected canonical ci-maintenance skill to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+
+    def test_ci_maintenance_contract_rejects_stale_identifier_surfaces(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace("role_name: ci-maintenance", "role_name: ci"),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "stale ci-maintenance identifier",
+        )
+
+    def test_ci_maintenance_contract_rejects_missing_schema_version(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace("schema-version: skill-readability-v1\n", ""),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "ci-maintenance frontmatter must include schema-version",
+        )
+
+    def test_ci_maintenance_contract_requires_resource_map_verbs(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace(
+                    "- READ `references/risk-to-check-map.md`",
+                    "- COPY `references/risk-to-check-map.md`",
+                ),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "Resource map entry for 'references/risk-to-check-map.md' must use literal READ",
+        )
+
+    def test_ci_maintenance_contract_requires_skeleton_defaults(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skeleton_path = skill_dir / "assets" / "github-workflow-skeleton.yml"
+            text = skeleton_path.read_text(encoding="utf-8")
+            skeleton_path.write_text(
+                text.replace("permissions:\n  contents: read\n\n", ""),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "workflow skeleton must include least-privilege permissions",
+        )
+
+    def test_ci_maintenance_contract_requires_risk_map_split_and_fail_safe(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            risk_map_path = skill_dir / "references" / "risk-to-check-map.md"
+            text = risk_map_path.read_text(encoding="utf-8")
+            risk_map_path.write_text(
+                text.replace(
+                    "Unmapped changed surfaces are not no-risk surfaces. If a changed path does not match this map, flag it for reviewer judgment, route it to a conservative boundary check, or both.\n\n",
+                    "",
+                ),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "risk map must include unmapped-surface fail-safe",
+        )
+
+    def test_ci_maintenance_contract_requires_review_guardrails_and_command_blocker(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace("overbroad permissions", "permission concerns").replace(
+                    "report a blocker instead of guessing",
+                    "continue with a likely command",
+                ),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "ci-maintenance must flag overbroad permissions during workflow review",
         )
 
     def test_spec_family_asset_valid_fixture_passes(self) -> None:
@@ -2883,7 +3009,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         proposal_review = (
             ROOT / "skills" / "proposal-review" / "SKILL.md"
         ).read_text(encoding="utf-8")
-        ci = (ROOT / "skills" / "ci" / "SKILL.md").read_text(encoding="utf-8")
+        ci = (ROOT / "skills" / "ci-maintenance" / "SKILL.md").read_text(encoding="utf-8")
         learn = (ROOT / "skills" / "learn" / "SKILL.md").read_text(encoding="utf-8")
         verify = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
 
@@ -4038,7 +4164,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Public shared blocks are copied and checked in v1, not generated into skills.",
             "Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, shared-block implementation details, or RigorLoop-local examples.",
             "The baseline normalization first slice and published-skill design pilot MUST NOT add broad natural-language quality scoring.",
-            "The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.",
+            "The `ci-maintenance` skill is the entrypoint for the `ci-maintenance` stage label.",
         ]
         for term in required_spec_terms:
             with self.subTest(file="spec", term=term):
@@ -4077,13 +4203,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(surface="plan", skill=skill_name):
                 self.assertIn(f"skills/{skill_name}/SKILL.md", plan)
 
-        self.assertIn(
-            "The `ci` skill MUST be treated as the skill entrypoint for the visible `ci-maintenance` workflow stage label",
-            spec,
-        )
+        self.assertIn("The `ci-maintenance` skill MUST be treated as the skill entrypoint", spec)
         self.assertIn("The baseline normalization first slice MUST NOT normalize every skill.", spec)
         self.assertIn("Do not implement Phase 2, Phase 3, or Phase 4 skill normalization", plan)
-        self.assertTrue((ROOT / "skills" / "ci" / "SKILL.md").exists())
+        self.assertTrue((ROOT / "skills" / "ci-maintenance" / "SKILL.md").exists())
 
         for skill_name in SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS:
             with self.subTest(forbidden_skill=skill_name):
