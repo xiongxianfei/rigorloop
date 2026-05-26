@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring`
 - Current owner: agent
-- Current stage: implement
-- Next stage: implement M3
+- Current stage: code-review
+- Next stage: code-review M3
 - Blockers: none
 
 ## Purpose / Big Picture
@@ -67,13 +67,13 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
 ## Current Handoff Summary
 
 - Current milestone: M3 - Generated Adapter Proof and Migration Evidence
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2 - Validator and Fixture Coverage
-- Review status: M2 code-review-r1 completed with no material findings; M2 is closed
-- Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Review status: M3 implementation complete; code-review requested
+- Remaining in-scope implementation milestones: none; M3 is awaiting review
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason: M2 is closed after clean code review. Generated-adapter proof and migration evidence remain pending.
+- Reason: M3 generated-adapter proof and migration evidence are implemented with targeted validation passing. M3 has not been reviewed.
 
 ## Milestones
 
@@ -150,12 +150,13 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
 
 ### M3 - Generated Adapter Proof and Migration Evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove generated public adapters include `ci-maintenance` and packaged resources, prove generated adapters do not expose active `ci`, and record adopter-visible hard-rename guidance.
 - Requirements: `CIM-R7` through `CIM-R11`, `CIM-R62` through `CIM-R65`, `AC-CIM-013` through `AC-CIM-015`.
 - Likely files:
   - `dist/adapters/manifest.yaml`
   - `dist/adapters/README.md`
+  - `scripts/skill_validation.py`
   - `docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/behavior-preservation.md`
   - `docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/generated-output-proof.md`
   - `docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml`
@@ -166,9 +167,11 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
   3. Build generated local skill output from canonical skills and prove the renamed skill and resources appear.
   4. Build temporary public adapter archives for `v0.1.5` and validate those archives.
   5. Inspect generated archive contents or validation output to prove `ci-maintenance` resources are packaged and no active `ci` skill body is exposed.
-  6. Record behavior-preservation and generated-output proof.
+  6. Preserve validator compatibility with generated non-Codex adapter skill bodies, where `version` and `schema-version` front matter are intentionally transformed out.
+  7. Record behavior-preservation and generated-output proof.
 - Validation:
   - `python scripts/test-skill-validator.py`
+  - `python scripts/test-adapter-distribution.py`
   - `python scripts/validate-skills.py`
   - `python scripts/build-skills.py --check --output-dir /tmp/rigorloop-cim-m3-skills/skills`
   - `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5`
@@ -176,7 +179,7 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md --path docs/plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md --path docs/plan.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-log.md --path docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/review-resolution.md`
   - `git diff --check --`
-- Result: pending
+- Result: implemented. Tracked adapter metadata now exposes `ci-maintenance` instead of `ci`, adapter README migration guidance tells adopters to update direct `ci` invocations, generated non-Codex adapter validation still honors established front matter transforms, and generated-output proof records temporary archive validation plus archive-content inspection for the renamed skill and packaged resources.
 - Risks:
   - `build-adapters.py --check` may report expected tracked-tree deferral for `v0.1.3` and later; temporary output build plus `validate-adapters.py` remains the packaging proof.
   - Adapter metadata could be updated without validating archive contents.
@@ -236,6 +239,8 @@ Final pre-PR validation must include the milestone validations plus:
 - 2026-05-26: M2 implementation started.
 - 2026-05-26: M2 added targeted validator coverage and copied-fixture regression tests, then handed to code-review.
 - 2026-05-26: M2 closed after clean code-review-r1.
+- 2026-05-26: M3 implementation started.
+- 2026-05-26: M3 updated tracked adapter metadata, added adopter-facing migration guidance, validated temporary adapter archives, recorded generated-output proof, and handed to code-review.
 
 ## Decision Log
 
@@ -248,6 +253,8 @@ Final pre-PR validation must include the milestone validations plus:
 ## Surprises and Discoveries
 
 - M2 did not need separate static fixture directories. Copying the canonical `ci-maintenance` skill into temporary directories and mutating one contract surface per test gives focused negative coverage without creating brittle duplicated skill bodies.
+- `python scripts/build-adapters.py --check --version v0.1.5 --verbose` still reports tracked-tree drift because `v0.1.3` and later public adapter skill bodies are release archives rather than tracked source under `dist/adapters/`. Temporary archive generation plus `validate-adapters.py --root` is the generated-adapter proof for M3.
+- `python scripts/test-adapter-distribution.py` initially failed after M3 because release-validation fixtures applied the new `ci-maintenance` front matter requirement to generated Claude/OpenCode skill bodies after their established `version` and `schema-version` transforms. `validate_ci_maintenance_contract` now keeps those fields mandatory for canonical and Codex skill bodies while allowing transformed non-Codex adapter bodies.
 
 ## Validation Notes
 
@@ -279,6 +286,18 @@ Final pre-PR validation must include the milestone validations plus:
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed after M2 for the proposal, spec, test spec, plan, plan index, change metadata, review log, review resolution, behavior-preservation proof, and review records.
 - `git diff -- .github/workflows` produced no output after M2.
 - `git diff --check --` passed after M2 validator implementation.
+- `python scripts/test-skill-validator.py` passed after M3 with 191 tests.
+- `python scripts/test-adapter-distribution.py` passed after M3 with 112 tests.
+- `python scripts/validate-skills.py` passed after M3, validating 23 canonical skill files.
+- `python scripts/build-skills.py --check --output-dir /tmp/rigorloop-cim-m3-skills/skills` passed after M3.
+- `python scripts/build-adapters.py --check --version v0.1.5 --verbose` failed with expected tracked-tree archive-era drift and existing `command_aliases` version-support diagnostics; temporary archive proof remains authoritative for M3.
+- `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` passed after M3.
+- Archive content inspection of `/tmp/tmp.eXBa1HTkJk/*.zip` found `ci-maintenance/SKILL.md`, `assets/github-workflow-skeleton.yml`, and `references/risk-to-check-map.md` for Codex, Claude, and opencode, with no active `/ci/` skill body.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml` passed after M3.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed after M3 for the proposal, spec, test spec, plan, plan index, change metadata, review log, review resolution, behavior-preservation proof, generated-output proof, and review records.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring` passed after M3 with 8 reviews, 6 findings, 8 log entries, and 6 resolution entries.
+- `git diff -- .github/workflows` produced no output after M3.
+- `git diff --check --` passed after M3.
 
 ## Outcome and Retrospective
 
@@ -286,11 +305,10 @@ Pending. This plan remains active until all implementation milestones close and 
 
 ## Readiness
 
-Ready for implement M3.
+Ready for code-review M3.
 
 Remaining gates before Done:
 
-- implementation milestone M3
 - code-review M3
 - review-resolution, when triggered
 - ci-maintenance, when triggered
