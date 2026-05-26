@@ -10,7 +10,6 @@ Index policy:
 -->
 
 ## Active
-- [2026-05-26 CI-Maintenance Skill Rename and Workflow Authoring](plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md) - PR #98 open after local final verify; hosted CI and human review pending.
 - [2026-05-25 Spec-Review Testability Routing and Output Consolidation](plans/2026-05-25-spec-review-testability-routing-output-consolidation.md) - PR #96 open against `release/v0.3.1` after local final verify; hosted CI and human review pending.
 - [2026-05-25 Adopter-Facing Vision and README Principle Rewrite](plans/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite.md) - PR #94 merged into `release/v0.3.1`; included in release-to-main PR #95; blockers: none.
 - [2026-05-24 Target-Native Init Commands](plans/2026-05-24-target-native-init-commands.md) - active execution plan for implementing the 0.3.0 target-native `rigorloop init <target>` contract, default install-only behavior, explicit `--write-state`, target-oriented state schemas, release-smoke hardening, and docs/package updates; M1 is closed after clean code-review-r2, M2 is closed after clean code-review-r4, M3 is closed after clean code-review-r6, M4 is closed after clean code-review-r7, final verify passed, and PR handoff is next.
@@ -27,6 +26,7 @@ Index policy:
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-05-26 CI-Maintenance Skill Rename and Workflow Authoring](plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md) - done; terminal state: done; PR #98 merged.
 - [2026-05-23 Public Discovery and Developer Adoption Surface](plans/2026-05-23-public-discovery-and-developer-adoption-surface.md) - done; terminal state: done; PR #90 merged.
 - [2026-05-23 Release Process Contract](plans/2026-05-23-release-process-contract.md) - done; terminal state: done; PR #89 merged.
 - [2026-05-23 Validation Idempotency and Cache-Hit Safety](plans/2026-05-23-validation-idempotency-cache-hit-safety.md) - done; terminal state: done; PR #88 merged.
@@ -36,7 +36,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-05-21 Review-Skill Family Consistency and Parser-Owned Finding Shape](plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md) - done; terminal state: done; PR #82 merged.
 - [2026-05-20 Spec-Family Assets Progressive Disclosure](plans/2026-05-20-spec-family-assets-progressive-disclosure.md) - done; terminal state: done; PR #80 merged.
 - [2026-05-20 Spec-Family Readability Pass](plans/2026-05-20-spec-family-readability-pass.md) - done; terminal state: done; PR #79 merged.
-- [2026-05-20 Test-Spec Contract Normalization](plans/2026-05-20-test-spec-contract-normalization.md) - done; terminal state: done; PR #77 merged.
 
 ## Superseded
 - none yet
