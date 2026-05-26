@@ -119,7 +119,7 @@
   - `skills/implement/SKILL.md`
   - `skills/code-review/SKILL.md`
   - `skills/verify/SKILL.md`
-  - `skills/ci/SKILL.md`
+  - `skills/ci-maintenance/SKILL.md`
   - `skills/explain-change/SKILL.md`
   - `skills/pr/SKILL.md`
 - Steps:
