@@ -2,13 +2,13 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Change ID: `2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring`
 - Current owner: agent
-- Current stage: pr
-- Next stage: hosted CI and human review
+- Current stage: done
+- Next stage: none
 - Blockers: none
 
 ## Purpose / Big Picture
@@ -72,9 +72,9 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
 - Last reviewed milestone: M3 - Generated Adapter Proof and Migration Evidence
 - Review status: M3 code-review-r1 completed with no material findings; all implementation milestones are closed
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #98
-- Final closeout readiness: PR #98 is open; hosted CI and human review are pending
-- Reason: M1, M2, and M3 are closed after clean code reviews. No review-resolution is required. Explain-change is recorded. Final local verification passed. PR #98 is open for review.
+- Next stage: none
+- Final closeout readiness: done
+- Reason: PR #98 merged into `main` on 2026-05-26. M1, M2, and M3 are closed after clean code reviews. No review-resolution is required. Explain-change is recorded. Final local verification passed.
 
 ## Milestones
 
@@ -246,6 +246,7 @@ Final pre-PR validation must include the milestone validations plus:
 - 2026-05-26: Explain-change recorded durable change rationale; next stage is verify.
 - 2026-05-26: Final verify passed local validation and lifecycle checks; next stage is pr.
 - 2026-05-26: PR #98 opened: https://github.com/xiongxianfei/rigorloop/pull/98. Hosted CI and human review are pending.
+- 2026-05-26: PR #98 merged into `main` with merge commit `e6d3a10ca10a2439b03a8f970f82b11bf8435e88`; plan marked done.
 
 ## Decision Log
 
@@ -318,14 +319,12 @@ Final pre-PR validation must include the milestone validations plus:
 
 ## Outcome and Retrospective
 
-Pending. This plan remains active until all implementation milestones close and downstream `explain-change`, `verify`, and `pr` gates are complete.
+Done. The authored `ci` skill was renamed to `ci-maintenance`, workflow authoring resources and validator coverage were added, generated adapter proof was recorded, final local verification passed, and PR #98 merged into `main`.
 
 ## Readiness
 
-PR #98 is open. Hosted CI and human review are pending.
+Done.
 
 Remaining gates before Done:
 
-- review-resolution, when triggered
-- ci-maintenance, when triggered
-- hosted CI and human review
+- none
