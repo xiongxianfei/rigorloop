@@ -68,14 +68,14 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 
 ## Current Handoff Summary
 
-- Current milestone: M3
-- Current milestone state: closed
+- Current milestone: final closeout
+- Current milestone state: explain-change recorded
 - Last reviewed milestone: M3
-- Review status: code-review-m3-r1 clean-with-notes; M3 closed
+- Review status: code-review-m3-r1 clean-with-notes; all implementation milestones closed
 - Remaining in-scope implementation milestones: none
-- Next stage: final closeout, starting with explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: verify and PR handoff remain.
 
 ## Milestones
 
@@ -321,6 +321,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-25: Code-review-m2-r2 closed M2 with no material findings; next stage is implement M3.
 - 2026-05-26: M3 generated local skill and temporary adapter archive proof completed; M3 is ready for code-review.
 - 2026-05-26: Code-review-m3-r1 closed M3 with no material findings; no in-scope implementation milestones remain.
+- 2026-05-26: Explain-change recorded the rationale from proposal through M1/M2/M3 implementation, reviews, validation, and material-finding closeout; next stage is verify.
 
 ## Decision log
 
@@ -361,12 +362,13 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-26: M3 validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check -- ...`.
 - 2026-05-26: Code-review-m3-r1 reran `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-srto-m3-review-adapters-JwPaBr`, `python scripts/validate-adapters.py --root /tmp/rigorloop-srto-m3-review-adapters-JwPaBr --version v0.1.5`, and Python `zipfile` content inspection of the generated archives; all passed.
 - 2026-05-26: Code-review-m3-r1 recording validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check -- ...`.
+- 2026-05-26: Explain-change validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, and `git diff --check -- ...`.
 
 ## Outcome and retrospective
 
-- Pending explain-change, verify, and PR handoff.
+- Explain-change is recorded. Verify and PR handoff remain.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for final closeout, starting with `explain-change`. Readiness is not Done; explain-change, verify, and PR gates remain.
+- Ready for `verify`. Readiness is not Done; verify and PR gates remain.
