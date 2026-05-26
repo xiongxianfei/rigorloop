@@ -69,13 +69,13 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: explain-change recorded
+- Current milestone state: verify complete; branch-ready
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r1 clean-with-notes; all implementation milestones closed
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: verify and PR handoff remain.
+- Next stage: pr
+- Final closeout readiness: branch-ready
+- Reason final closeout is or is not ready: local verify passed; PR handoff remains, and hosted CI is not claimed.
 
 ## Milestones
 
@@ -322,6 +322,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-26: M3 generated local skill and temporary adapter archive proof completed; M3 is ready for code-review.
 - 2026-05-26: Code-review-m3-r1 closed M3 with no material findings; no in-scope implementation milestones remain.
 - 2026-05-26: Explain-change recorded the rationale from proposal through M1/M2/M3 implementation, reviews, validation, and material-finding closeout; next stage is verify.
+- 2026-05-26: Verify-r1 passed local final validation, selected PR-mode CI checks, temporary adapter archive validation, and archive content inspection; branch is ready for PR handoff.
 
 ## Decision log
 
@@ -363,12 +364,13 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-26: Code-review-m3-r1 reran `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-srto-m3-review-adapters-JwPaBr`, `python scripts/validate-adapters.py --root /tmp/rigorloop-srto-m3-review-adapters-JwPaBr --version v0.1.5`, and Python `zipfile` content inspection of the generated archives; all passed.
 - 2026-05-26: Code-review-m3-r1 recording validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check -- ...`.
 - 2026-05-26: Explain-change validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, and `git diff --check -- ...`.
+- 2026-05-26: Verify-r1 validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-srto-verify-adapters-UwkDGX`, `python scripts/validate-adapters.py --root /tmp/rigorloop-srto-verify-adapters-UwkDGX --version v0.1.5`, Python archive content inspection, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation`, `python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, `git diff --check -- ...`, and `bash scripts/ci.sh --mode pr --base release/v0.3.1 --head HEAD`.
 
 ## Outcome and retrospective
 
-- Explain-change is recorded. Verify and PR handoff remain.
+- Verify-r1 passed locally. PR handoff remains.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `verify`. Readiness is not Done; verify and PR gates remain.
+- Branch-ready for `pr`. Readiness is not Done; PR handoff and hosted CI remain.
