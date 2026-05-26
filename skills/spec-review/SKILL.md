@@ -18,7 +18,7 @@ Your job is to make the spec precise enough that tests, architecture, and implem
 - role_name: spec-review
 - stage: review
 - upstream: feature spec, linked proposal, exploration, research, local contracts, and workflow evidence
-- downstream: architecture, plan, test-spec, spec revision, or review-resolution when triggered
+- downstream: spec revision, review-resolution, architecture, plan, no handoff, and eventual test-spec readiness assessment
 - summary: Review the feature spec as a lifecycle gate and record approval, changes requested, blockers, or inconclusive state.
 - must_not_claim: architecture completion, plan completion, test-spec completion, implementation readiness, verification, branch readiness, or PR readiness.
 
@@ -68,10 +68,10 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 ## Resource map
 
 - COPY `assets/review-result-skeleton.md` when recording the review result.
-  Fill: review title, result fields, findings summary, next stage, eventual test-spec readiness, and stop condition.
+  Fill: review title, result fields, findings summary, immediate next stage, eventual test-spec readiness, and stop condition.
   Do not emit unfilled placeholders.
 - COPY `assets/material-finding.md` when recording each material finding.
-  Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed.
+  Fill: the fields defined in the asset, including Finding ID:.
   Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
   Do not emit unfilled placeholders.
 
@@ -118,6 +118,45 @@ For every material finding, include evidence, the required outcome, and a safe r
 
 If a safe resolution cannot be chosen without an owner decision, use a `needs-decision` rationale that names the decision needed and owning stage. A material finding lacking evidence, required outcome, or safe resolution or `needs-decision` rationale is incomplete.
 
+## Routing and testability assessment
+
+Keep immediate routing separate from eventual testability.
+
+`Immediate next stage` is the routing field. Use only:
+
+```text
+spec revision
+review-resolution
+architecture
+plan
+none
+```
+
+Do not put `test-spec` in `Immediate next stage`.
+
+The values `architecture` and `plan` are forward repository-stage handoff values. The values `spec revision`, `review-resolution`, and `none` are revision, disposition, or no-handoff routing values.
+
+Bind routing to review status:
+
+- `approved` uses `architecture` when architecture remains required, or `plan` when architecture is not required or already settled.
+- `changes-requested` uses `spec revision` or `review-resolution`.
+- `blocked` uses `review-resolution` or `none`.
+- `inconclusive` uses `none`.
+
+`Eventual test-spec readiness` is the quality assessment. Use only:
+
+```text
+ready
+conditionally-ready
+not-ready
+```
+
+Do not report `Review status: approved` unless `Eventual test-spec readiness` is `ready` or `conditionally-ready`.
+
+`conditionally-ready` names the condition. Use `not-ready` for `changes-requested`, `blocked`, or `inconclusive` outcomes.
+
+If required inputs are missing, use `Review status: inconclusive`, `Immediate next stage: none`, `Eventual test-spec readiness: not-ready`, and an explicit stop condition.
+
 ## Isolation and Recording
 
 Isolation governs handoff. Recording follows formal review triggers.
@@ -147,14 +186,7 @@ For material findings or blocking outcomes, create the required detailed review
 record and disposition artifacts.
 Use a detailed review record for material or blocking review outcomes.
 
-Material findings must include:
-
-- Finding ID
-- Severity
-- Location
-- Evidence
-- Required outcome
-- Safe resolution path, or `needs-decision` rationale
+Use `assets/material-finding.md` for each material finding block.
 
 Do not merely tell the user that review artifacts should be created. Create
 or update them before final output, or report `Recording status: blocked` with
@@ -178,15 +210,12 @@ must state:
 - Do not require implementation detail unless it is needed for the observable contract.
 - Do not edit the spec unless the user explicitly asks.
 - When the review outcome is `approved`, the tracked spec should be ready to normalize to `approved` before architecture, plan, test-spec, or implementation relies on it. Do not leave a governing spec in durable `reviewed` state.
-- Do not report `approved` without explicit eventual `test-spec` readiness of `ready` or `conditionally-ready`.
-- Do not use pseudo-routing states such as `blocker handling` or `missing-context resolution` in the immediate-next-stage field.
-- Do not name `test-spec` as the immediate next stage while `architecture` or `plan` still remains.
-- When required inputs are missing, use `inconclusive`, record the missing required input and stop condition, and leave the immediate-next-stage field empty.
+- Follow the routing and testability assessment contract for every review result.
 
 ## Workflow handoff behavior
 
 - Direct or review-only `spec-review` requests remain isolated by default.
-- In v1, `spec-review` does not auto-continue into `architecture`, `plan`, or `test-spec`; it reports review outcome, immediate next repository stage, eventual `test-spec` readiness, and any stop condition, then stops there unless the user explicitly requests a later stage.
+- In v1, `spec-review` does not auto-continue into `architecture`, `plan`, or `test-spec`; it reports review outcome, `Immediate next stage`, eventual `test-spec` readiness, and any stop condition, then stops there unless the user explicitly requests a later stage.
 - Keep review-to-next-authoring transitions out of scope in this skill's wording.
 
 ## Evidence collection efficiency

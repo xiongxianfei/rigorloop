@@ -1687,6 +1687,324 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertIn("Eventual test-spec readiness", result_skeleton)
         self.assertNotIn("clean-with-notes", result_skeleton)
 
+    def test_spec_review_canonical_contract_enforces_routing_readiness_split(self) -> None:
+        skill_path = ROOT / "skills" / "spec-review" / "SKILL.md"
+
+        self.assertEqual(
+            skill_validation.validate_spec_review_canonical_contract(skill_path),
+            [],
+        )
+
+    def test_spec_review_canonical_contract_rejects_test_spec_immediate_stage(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            skill_dir = self.write_spec_family_asset_fixture(
+                root,
+                "spec-review",
+                {
+                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
+                        template="spec-review-result-skeleton-v1",
+                        skill="spec-review",
+                        body=(
+                            "## Result\n\n"
+                            "- Review status: <approved | changes-requested | blocked | inconclusive>\n"
+                            "- Immediate next stage: <architecture | plan | test-spec>\n"
+                            "- Eventual test-spec readiness: <ready | conditionally-ready | not-ready>\n"
+                            "- Stop condition: <none or stop condition>\n"
+                        ),
+                    ),
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="spec-review-material-finding-v1",
+                        skill="spec-review",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Finding ID: <finding id>\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                            "- needs-decision rationale: <needs-decision rationale>\n"
+                        ),
+                    ),
+                },
+            )
+
+            errors = skill_validation.validate_spec_review_canonical_contract(
+                skill_dir / "SKILL.md"
+            )
+
+        self.assertIn(
+            "spec-review result skeleton Immediate next stage enum must exclude test-spec",
+            "\n".join(errors),
+        )
+
+    def test_spec_review_canonical_contract_rejects_duplicate_material_field_list(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            skill_dir = self.write_spec_family_asset_fixture(
+                root,
+                "spec-review",
+                {
+                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
+                        template="spec-review-result-skeleton-v1",
+                        skill="spec-review",
+                        body=(
+                            "## Result\n\n"
+                            "- Review status: <approved | changes-requested | blocked | inconclusive>\n"
+                            "- Immediate next stage: <spec revision | review-resolution | architecture | plan | none>\n"
+                            "- Eventual test-spec readiness: <ready | conditionally-ready | not-ready>\n"
+                            "- Stop condition: <none or stop condition>\n"
+                        ),
+                    ),
+                    "assets/material-finding.md": self.review_family_asset_text(
+                        template="spec-review-material-finding-v1",
+                        skill="spec-review",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Finding ID: <finding id>\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Evidence: <evidence>\n"
+                            "- Required outcome: <required outcome>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                            "- needs-decision rationale: <needs-decision rationale>\n"
+                        ),
+                    ),
+                },
+            )
+            skill_path = skill_dir / "SKILL.md"
+            skill_path.write_text(
+                skill_path.read_text(encoding="utf-8")
+                + textwrap.dedent(
+                    """
+
+                    ## Isolation and Recording
+
+                    Material findings must include:
+
+                    - Finding ID
+                    - Severity
+                    - Location
+                    - Evidence
+                    - Required outcome
+                    - Safe resolution path
+                    """
+                ),
+                encoding="utf-8",
+            )
+
+            errors = skill_validation.validate_spec_review_canonical_contract(skill_path)
+
+        self.assertIn(
+            "spec-review SKILL.md must not re-enumerate the complete material-finding field list outside the Resource map",
+            "\n".join(errors),
+        )
+
+    def test_spec_review_routing_adjacent_skills_preserve_direct_contracts(self) -> None:
+        plan_review = (ROOT / "skills" / "plan-review" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        test_spec = (ROOT / "skills" / "test-spec" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        workflow_spec = (ROOT / "specs" / "rigorloop-workflow.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("- Immediate next stage: <test-spec | plan revision | blocked>", plan_review)
+        self.assertIn("implementation-readiness notes only when clearly downstream", plan_review)
+        self.assertNotIn("not-assessed", test_spec)
+        self.assertIn("eventual `test-spec` readiness as `not-ready`", test_spec)
+        self.assertNotIn("not-assessed", workflow_spec)
+        self.assertIn("spec revision", workflow_spec)
+        self.assertIn("review-resolution", workflow_spec)
+        self.assertIn("Immediate next stage", workflow_spec)
+        self.assertIn("Immediate next stage: none", workflow_spec)
+        self.assertNotIn(
+            "without naming any immediate next repository stage", workflow_spec
+        )
+        self.assertNotIn("no immediate-next-stage value", workflow_spec)
+        self.assertNotIn("no immediate next-stage value", workflow_spec)
+        self.assertIn(
+            "Only `architecture` and `plan` are forward repository-stage handoff values",
+            workflow_spec,
+        )
+        self.assertIn(
+            "`spec revision`, `review-resolution`, and `none` are routing or no-handoff values",
+            workflow_spec,
+        )
+
+    def assertSpecReviewResultPasses(self, result_text: str) -> None:
+        errors = skill_validation.validate_spec_review_result_fields(
+            textwrap.dedent(result_text)
+        )
+        self.assertEqual(errors, [])
+
+    def assertSpecReviewResultFails(self, result_text: str, expected_text: str) -> None:
+        errors = skill_validation.validate_spec_review_result_fields(
+            textwrap.dedent(result_text)
+        )
+        self.assertTrue(errors, "expected controlled spec-review result fixture to fail")
+        self.assertIn(expected_text, "\n".join(errors))
+
+    def test_spec_review_result_fixture_accepts_allowed_immediate_next_stage_values(self) -> None:
+        fixtures = {
+            "spec revision": (
+                "Review status: changes-requested\n"
+                "Immediate next stage: spec revision\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: none\n"
+            ),
+            "review-resolution": (
+                "Review status: blocked\n"
+                "Immediate next stage: review-resolution\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: material findings require disposition\n"
+            ),
+            "architecture": (
+                "Review status: approved\n"
+                "Immediate next stage: architecture\n"
+                "Eventual test-spec readiness: conditionally-ready\n"
+                "Readiness condition: architecture must be completed before test-spec authoring\n"
+                "Stop condition: none\n"
+            ),
+            "plan": (
+                "Review status: approved\n"
+                "Immediate next stage: plan\n"
+                "Eventual test-spec readiness: ready\n"
+                "Stop condition: none\n"
+            ),
+            "none": (
+                "Review status: inconclusive\n"
+                "Immediate next stage: none\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: missing reviewer input\n"
+            ),
+        }
+
+        for stage, fixture in fixtures.items():
+            with self.subTest(stage=stage):
+                self.assertSpecReviewResultPasses(fixture)
+
+    def test_spec_review_result_fixture_rejects_test_spec_as_immediate_next_stage(self) -> None:
+        self.assertSpecReviewResultFails(
+            """
+            Review status: approved
+            Immediate next stage: test-spec
+            Eventual test-spec readiness: ready
+            Stop condition: none
+            """,
+            "Immediate next stage must not be test-spec",
+        )
+
+    def test_spec_review_result_fixture_rejects_pseudo_routing_values(self) -> None:
+        for stage in ("blocker handling", "missing-context resolution", "ready for test-spec"):
+            with self.subTest(stage=stage):
+                self.assertSpecReviewResultFails(
+                    f"""
+                    Review status: blocked
+                    Immediate next stage: {stage}
+                    Eventual test-spec readiness: not-ready
+                    Stop condition: blocker
+                    """,
+                    "Immediate next stage is not an allowed value",
+                )
+
+    def test_spec_review_result_fixture_rejects_approved_not_ready(self) -> None:
+        self.assertSpecReviewResultFails(
+            """
+            Review status: approved
+            Immediate next stage: plan
+            Eventual test-spec readiness: not-ready
+            Stop condition: none
+            """,
+            "approved requires Eventual test-spec readiness ready or conditionally-ready",
+        )
+
+    def test_spec_review_result_fixture_rejects_not_assessed_readiness(self) -> None:
+        self.assertSpecReviewResultFails(
+            """
+            Review status: inconclusive
+            Immediate next stage: none
+            Eventual test-spec readiness: not-assessed
+            Stop condition: missing reviewer input
+            """,
+            "Eventual test-spec readiness must not be not-assessed",
+        )
+
+    def test_spec_review_result_fixture_rejects_status_to_routing_contradictions(self) -> None:
+        invalid = {
+            "approved spec revision": (
+                "Review status: approved\n"
+                "Immediate next stage: spec revision\n"
+                "Eventual test-spec readiness: ready\n"
+                "Stop condition: none\n",
+                "approved requires Immediate next stage architecture or plan",
+            ),
+            "approved review-resolution": (
+                "Review status: approved\n"
+                "Immediate next stage: review-resolution\n"
+                "Eventual test-spec readiness: ready\n"
+                "Stop condition: none\n",
+                "approved requires Immediate next stage architecture or plan",
+            ),
+            "approved none": (
+                "Review status: approved\n"
+                "Immediate next stage: none\n"
+                "Eventual test-spec readiness: ready\n"
+                "Stop condition: none\n",
+                "approved requires Immediate next stage architecture or plan",
+            ),
+            "changes-requested plan": (
+                "Review status: changes-requested\n"
+                "Immediate next stage: plan\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: none\n",
+                "changes-requested requires Immediate next stage spec revision or review-resolution",
+            ),
+            "blocked architecture": (
+                "Review status: blocked\n"
+                "Immediate next stage: architecture\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: blocker\n",
+                "blocked requires Immediate next stage review-resolution or none",
+            ),
+            "inconclusive plan": (
+                "Review status: inconclusive\n"
+                "Immediate next stage: plan\n"
+                "Eventual test-spec readiness: not-ready\n"
+                "Stop condition: missing input\n",
+                "inconclusive requires Immediate next stage none",
+            ),
+        }
+
+        for name, (fixture, expected) in invalid.items():
+            with self.subTest(name=name):
+                self.assertSpecReviewResultFails(fixture, expected)
+
+    def test_spec_review_result_fixture_requires_stop_condition_for_inconclusive(self) -> None:
+        self.assertSpecReviewResultFails(
+            """
+            Review status: inconclusive
+            Immediate next stage: none
+            Eventual test-spec readiness: not-ready
+            Stop condition: none
+            """,
+            "inconclusive requires a concrete Stop condition",
+        )
+
+    def test_spec_review_result_fixture_requires_condition_for_conditionally_ready(self) -> None:
+        self.assertSpecReviewResultFails(
+            """
+            Review status: approved
+            Immediate next stage: architecture
+            Eventual test-spec readiness: conditionally-ready
+            Stop condition: none
+            """,
+            "conditionally-ready requires a named condition",
+        )
+
     def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -2882,6 +3200,13 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     self.assertNotIn(term, body)
 
     def test_formal_review_skills_define_detailed_record_triggers(self) -> None:
+        asset_owned_material_terms = {
+            "Severity",
+            "Location",
+            "Evidence",
+            "Required outcome",
+            "Safe resolution path",
+        }
         skill_required_terms = [
             "Every formal lifecycle review result must be recorded or explicitly blocked.",
             "lightweight review receipt",
@@ -2910,9 +3235,17 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         ]
         for skill_name in FORMAL_REVIEW_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            material_asset = ""
+            if skill_name == "spec-review":
+                material_asset = (
+                    ROOT / "skills" / skill_name / "assets" / "material-finding.md"
+                ).read_text(encoding="utf-8")
             for term in skill_required_terms:
                 with self.subTest(skill=skill_name, term=term):
-                    self.assertIn(term, body)
+                    if skill_name == "spec-review" and term in asset_owned_material_terms:
+                        self.assertIn(f"- {term}:", material_asset)
+                    else:
+                        self.assertIn(term, body)
             for term in skill_forbidden_terms:
                 with self.subTest(skill=skill_name, forbidden_term=term):
                     self.assertNotIn(term, body)
@@ -2943,7 +3276,13 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(skill=skill_name):
                 body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
                 copied = extract_markdown_block(body, "Isolation and Recording")
-                self.assertEqual(copied, canonical)
+                if skill_name == "spec-review":
+                    self.assertIn(
+                        "Use `assets/material-finding.md` for each material finding block.",
+                        copied,
+                    )
+                else:
+                    self.assertEqual(copied, canonical)
 
         forbidden_inside_block = [
             "proposal-review",
@@ -2958,6 +3297,13 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 self.assertNotIn(term, canonical)
 
     def test_formal_review_skills_define_recording_status_output(self) -> None:
+        asset_owned_material_terms = {
+            "Severity",
+            "Location",
+            "Evidence",
+            "Required outcome",
+            "Safe resolution path",
+        }
         required_terms = [
             "Every formal lifecycle review result must be recorded or explicitly blocked.",
             "`Recording status: recorded`",
@@ -2990,9 +3336,17 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         for skill_name in FORMAL_REVIEW_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            material_asset = ""
+            if skill_name == "spec-review":
+                material_asset = (
+                    ROOT / "skills" / skill_name / "assets" / "material-finding.md"
+                ).read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
-                    self.assertIn(term, body)
+                    if skill_name == "spec-review" and term in asset_owned_material_terms:
+                        self.assertIn(f"- {term}:", material_asset)
+                    else:
+                        self.assertIn(term, body)
             for term in forbidden_exact_fields:
                 with self.subTest(skill=skill_name, forbidden_field=term):
                     self.assertNotIn(term, body)

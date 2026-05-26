@@ -329,27 +329,33 @@ R7f. In v1, manual skill invocations and bugfix skill invocations remain isolate
 
 R7g. Direct invocation of `pr` remains allowed. Isolation prevents downstream continuation beyond `pr`, but it MUST NOT downgrade `pr` itself from opening a pull request when readiness passes.
 
-R7h. Workflow-facing review outputs that report both stage handoff and later-stage fitness MUST distinguish immediate next repository stage from downstream readiness.
+R7h. Workflow-facing review outputs that report both stage handoff and later-stage fitness MUST distinguish the `Immediate next stage` result field from downstream readiness.
 
-R7i. `spec-review` output MUST report review outcome, immediate next repository stage, and eventual `test-spec` readiness separately.
+R7i. `spec-review` output MUST report review outcome, `Immediate next stage`, and eventual `test-spec` readiness separately.
 
-R7j. `spec-review` immediate next repository stage MUST use only repository stages:
+R7j. `spec-review` `Immediate next stage` MUST use exactly one of:
+- `spec revision`;
+- `review-resolution`;
+- `architecture`;
+- `plan`;
+- `none`.
+
+For forward repository-stage handoff values, `spec-review` uses:
 - `architecture` when the review outcome is approved and a separate architecture step remains required;
-- `plan` when the review outcome is approved and no separate architecture step remains required;
-- `spec` when the review outcome is `changes-requested` or `blocked`;
-- omitted or explicitly empty when the review outcome is `inconclusive`.
+- `plan` when the review outcome is approved and no separate architecture step remains required.
+
+The values `spec revision`, `review-resolution`, and `none` are revision, disposition, or no-handoff routing values, not forward repository-stage handoff values.
 
 R7k. `spec-review` eventual `test-spec` readiness MUST use exactly one of:
 - `ready`;
 - `conditionally-ready`;
-- `not-ready`;
-- `not-assessed`.
+- `not-ready`.
 
 R7l. Approved `spec-review` MUST pair only with eventual `test-spec` readiness `ready` or `conditionally-ready`. `conditionally-ready` MUST name the remaining intermediate dependency or dependencies.
 
-R7m. `changes-requested` and `blocked` spec-review outcomes MUST pair with eventual `test-spec` readiness `not-ready`. `inconclusive` MUST pair with eventual `test-spec` readiness `not-assessed`.
+R7m. `changes-requested`, `blocked`, and `inconclusive` spec-review outcomes MUST pair with eventual `test-spec` readiness `not-ready`.
 
-R7n. When eventual `test-spec` readiness is `not-ready`, the output MUST state that downstream planning stops, name `spec` as the required upstream fix surface, and identify the blocking defect category. When eventual `test-spec` readiness is `not-assessed`, the output MUST record the stop condition and missing required input without naming any immediate next repository stage.
+R7n. When eventual `test-spec` readiness is `not-ready`, the output MUST state that downstream planning stops, name the required upstream fix surface as `spec revision` or `review-resolution`, and identify the blocking defect category. For inconclusive reviews, the output MUST use `Immediate next stage: none` and record the stop condition and missing required input.
 
 R7o. Missing input and blocker conditions MUST be expressed as stop conditions rather than pseudo-routing states in immediate-next-stage fields.
 
@@ -948,8 +954,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 12. An ordinary non-trivial change may satisfy the baseline change-local pack with `docs/changes/<change-id>/change.yaml` plus `docs/changes/<change-id>/explain-change.md` when standalone `review-resolution.md` and `verify-report.md` triggers do not apply.
 13. `docs/changes/0001-skill-validator/` may include more artifacts than an ordinary non-trivial change without making those additional artifacts universal requirements.
 14. Approved legacy top-level explain artifacts under `docs/explain/` remain valid for already-shipped work until they are migrated, superseded, archived, or otherwise retired.
-15. Successful `spec-review` may still say the immediate next repository stage is `architecture` while separately reporting eventual `test-spec` readiness `conditionally-ready`.
-16. `inconclusive` may record a missing-input stop condition without naming any immediate next repository stage.
+15. Successful `spec-review` may still report `Immediate next stage: architecture` while separately reporting `Eventual test-spec readiness: conditionally-ready`; `architecture` is a forward repository-stage handoff value.
+16. `inconclusive` `spec-review` uses `Immediate next stage: none`, `Eventual test-spec readiness: not-ready`, and a stop condition naming the missing input, blocker, or ambiguity. The `Immediate next stage` field is not omitted or left empty for inconclusive or missing-input cases.
 17. `plan-review` may mention implementation readiness only after preserving `test-spec` as the immediate next handoff.
 18. `explore` and `research` may be absent from a normal non-trivial change when the problem and facts are already settled, but they block downstream reliance after their triggers are active or their artifacts are cited as dependencies.
 19. `learn` may be absent from an ordinary PR package, but a repeated finding, blocker or major workflow-process finding, failed release or adapter smoke, accepted postmortem action, cadence run, incident response, contributor observation, or explicit maintainer request must be closed through a `docs/learn/sessions/**` session record once Frame is reached, or through a scheduled follow-up, deferral, or explicit no-learn rationale before a session runs. It blocks downstream only when a higher-priority artifact explicitly makes it blocking.
@@ -1018,7 +1024,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A reviewer can distinguish milestone commit boundaries from pull-request boundaries by inspecting standardized milestone commit subjects and the associated plan updates.
 - A reviewer can tell that planned implementation milestone state uses one authoritative field and that `review-requested` and `resolution-needed` block premature final closeout readiness.
 - A reviewer can tell that clean non-final implementation milestone reviews route to the next implementation milestone, while clean final implementation milestone reviews route to final closeout.
-- A reviewer can tell when `spec-review` is reporting immediate next repository stage versus eventual `test-spec` readiness without inferring that `test-spec` skips required intermediate stages.
+- A reviewer can tell that `spec-review` output distinguishes the `Immediate next stage` result field from `Eventual test-spec readiness`, that only `architecture` and `plan` are forward repository-stage handoff values, and that `test-spec` is not an `Immediate next stage` value.
+- Only `architecture` and `plan` are forward repository-stage handoff values for `spec-review`; `spec revision`, `review-resolution`, and `none` are routing or no-handoff values.
 - A reviewer can tell that `plan-review` preserves `test-spec` as the immediate next handoff even when later implementation readiness is also discussed.
 - A contributor can tell that `explore` and `research` are on-demand support rather than default prerequisites.
 - A contributor can tell that triggered `learn` creates a tracked session record after Frame, that pre-session follow-up, deferral, or no-learn closeout is recorded in an allowed contributor-visible tracked or review-visible surface, that durable topic guidance uses `docs/learn/topics/**`, and that triggered `learn` blocks downstream only when a higher-priority artifact explicitly makes it blocking.
