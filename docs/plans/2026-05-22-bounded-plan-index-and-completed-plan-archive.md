@@ -2,10 +2,10 @@
 
 ## Status
 
-active
+done
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 ## Purpose / big picture
 
@@ -67,14 +67,14 @@ The main implementation surfaces are:
 
 ## Current Handoff Summary
 
-- Current milestone: PR handoff
-- Current milestone state: closed
+- Current milestone: final closeout
+- Current milestone state: done
 - Last reviewed milestone: M6. Lifecycle closeout and handoff evidence
 - Review status: code-review M6 R1 clean-with-notes; no open findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #86
-- Final closeout readiness: PR open
-- Reason final closeout is or is not ready: explain-change is current, review-resolution is closed, final selected CI and broad smoke passed from the synced branch, and PR #86 is open. Hosted CI and human review remain.
+- Next stage: none
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #86 merged into `main` on 2026-05-22.
 
 ## Milestones
 
@@ -484,9 +484,8 @@ The main implementation surfaces are:
 
 ## Outcome and retrospective
 
-- Pending.
+- PR #86 merged into `main` at `0d204c2f50e2920be8ac43db5bc85027ccaa958d`.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- PR #86 is open after final local verify. Hosted CI success, human review, merge, and Done are not claimed.
+- Done. PR #86 merged and no downstream lifecycle gates remain.

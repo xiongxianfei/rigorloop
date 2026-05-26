@@ -2,13 +2,13 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Owner: maintainers
 - Start date: 2026-05-25
-- Last updated: 2026-05-25
-- Related issue or PR: none yet
+- Last updated: 2026-05-26
+- Related issue or PR: PR #96
 - Supersedes: none
 
 ## Purpose / big picture
@@ -69,13 +69,13 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: PR open
+- Current milestone state: done
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r1 clean-with-notes; all implementation milestones closed
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #96
-- Final closeout readiness: PR open; hosted CI and human review pending
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, explain-change is recorded, local verify passed, and PR #96 is open; hosted CI and human review are not complete.
+- Next stage: none
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #96 merged into `release/v0.3.1` on 2026-05-26 and is present on `main` through the release merge.
 
 ## Milestones
 
@@ -324,6 +324,7 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 - 2026-05-26: Explain-change recorded the rationale from proposal through M1/M2/M3 implementation, reviews, validation, and material-finding closeout; next stage is verify.
 - 2026-05-26: Verify-r1 passed local final validation, selected PR-mode CI checks, temporary adapter archive validation, and archive content inspection; branch is ready for PR handoff.
 - 2026-05-26: PR #96 opened against `release/v0.3.1`; hosted CI and human review are pending.
+- 2026-05-26: PR #96 merged into `release/v0.3.1` at `a0023873fffc1fdaa7c37551f84e6eb209225146` and is present on `main`.
 
 ## Decision log
 
@@ -369,9 +370,8 @@ The matching test spec previously contained older `not-assessed`, empty-route, a
 
 ## Outcome and retrospective
 
-- PR #96 is open. Hosted CI and human review are pending.
+- PR #96 merged into `release/v0.3.1` and is present on `main`.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- PR #96 is open; hosted CI and human review are pending.
+- Done. PR #96 merged and no downstream lifecycle gates remain.

@@ -1,9 +1,11 @@
 # Proposal-Family Assets Progressive Disclosure
 
-- Status: active
+- Status: done
+Plan lifecycle state: done
+Terminal disposition: merged
 - Owner: maintainers
 - Start date: 2026-05-20
-- Last updated: 2026-05-20
+- Last updated: 2026-05-26
 - Related issue or PR: PR #81
 - Supersedes: none
 
@@ -53,14 +55,14 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Generated Output, Token, Cold-Read, and Lifecycle Evidence
-- Current milestone state: closed
+- Current milestone: final closeout
+- Current milestone state: done
 - Last reviewed milestone: M4. Generated Output, Token, Cold-Read, and Lifecycle Evidence
 - Review status: code-review M4 R1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #81
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR #81 is open; hosted CI and human review are pending.
+- Next stage: none
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #81 merged into `main` on 2026-05-21.
 
 ## Milestones
 
@@ -331,6 +333,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - 2026-05-20: Explain-change recorded durable rationale in `docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/explain-change.md`; next stage is verify.
 - 2026-05-20: Final local verify passed, `verify-report.md` was recorded, and the branch is ready for PR handoff.
 - 2026-05-20: Opened PR #81 for hosted CI and human review.
+- 2026-05-21: PR #81 merged into `main` at `cbac052bd4baffedeae28d50a8569cbf4759195c`.
 
 ## Decision log
 
@@ -438,9 +441,8 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 
 ## Outcome and retrospective
 
-- PR #81 is open. Final plan closeout remains pending until hosted CI and human review complete.
+- PR #81 merged into `main`.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- PR #81 is open for hosted CI and human review. Final closeout remains incomplete until those downstream checks close.
+- Done. PR #81 merged and no downstream lifecycle gates remain.

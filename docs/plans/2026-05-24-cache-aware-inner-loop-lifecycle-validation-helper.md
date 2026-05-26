@@ -2,13 +2,13 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Owner: maintainers
 - Start date: 2026-05-24
-- Last updated: 2026-05-24
-- Related issue or PR: none yet
+- Last updated: 2026-05-26
+- Related issue or PR: PR #91
 - Supersedes: none
 
 ## Purpose / big picture
@@ -67,14 +67,14 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ## Current Handoff Summary
 
-- Current milestone: implementation milestones complete
-- Current milestone state: closed
+- Current milestone: final closeout
+- Current milestone state: done
 - Last reviewed milestone: M6 lifecycle closeout
 - Review status: code-review M6 R1 clean-with-notes with no material findings.
 - Remaining in-scope implementation milestones: none.
-- Next stage: pr
-- Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: final verify passed from clean tracked branch state with plan/test-spec validation commands, PR-mode selected CI over `main...HEAD`, local-mode selected CI over explicit branch changed paths, review-artifact closeout, change metadata validation, lifecycle validation, and whitespace checks. Hosted CI is not claimed.
+- Next stage: none
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #91 merged into `main` on 2026-05-24.
 
 ## Milestones
 
@@ -621,9 +621,8 @@ The plan keeps the helper inside the existing validation-cache architecture. It 
 
 ## Outcome and retrospective
 
-- Branch-ready after final verify. PR handoff remains.
+- Branch-ready after final verify. PR #91 merged into `main` at `70005f2168be01a848814b5d86e4104992096e92`.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- Branch-ready for PR handoff. Readiness is not Done; PR handoff and hosted CI remain downstream.
+- Done. PR #91 merged and no downstream lifecycle gates remain.
