@@ -2,7 +2,7 @@
 
 ## Scope
 
-This proof covers M1: canonical skill rename, packaged workflow resources, and direct authored skill-identifier reference updates.
+This proof covers M1 and M2: canonical skill rename, packaged workflow resources, direct authored skill-identifier reference updates, and deterministic validator coverage for the renamed skill contract.
 
 ## Preservation Matrix
 
@@ -15,6 +15,7 @@ This proof covers M1: canonical skill rename, packaged workflow resources, and d
 | Command ownership | Existing skill said validation commands come from spec, test spec, and plan. | Renamed skill keeps that boundary and expands it to approved project sources, existing scripts/conventions, or explicit user commands. | strengthened |
 | Public portability | Existing skill was short and project-neutral. | New public skill text uses project-local sources when present and labels RigorLoop-only risk-map rows as project-specific examples. | preserved |
 | Repository workflow behavior | No `.github/workflows/*.yml` change was in scope. | M1 does not edit `.github/workflows/*.yml`. | unchanged |
+| Validator coverage | Existing validator had generic skill checks and no `ci-maintenance`-specific resource/skeleton/risk-map checks. | M2 adds deterministic checks for renamed front matter, stale identifiers, resource-map verbs, skeleton defaults, risk-map split/fail-safe language, command blockers, and workflow-review guardrails. | strengthened |
 | Generated adapters | Baseline generated adapter support still names `ci`. | Generated adapter migration is intentionally deferred to M3, where adapter proof is planned. | pending by plan |
 
 ## Stale Reference Classification
@@ -26,3 +27,16 @@ Other touched governance and test surfaces were updated when they asserted that 
 ## Workflow Diff Proof
 
 M1 does not intentionally modify `.github/workflows/*.yml`. Final M1 validation must include either `git diff -- .github/workflows` with no output or an equivalent review-visible statement that no repository workflow files changed.
+
+## M2 Validator Proof
+
+M2 adds copied-fixture regression tests in `scripts/test-skill-validator.py`. Each test copies the canonical `skills/ci-maintenance/` directory into a temporary directory, mutates one required contract surface, and proves `scripts/validate-skills.py` fails with a stable error. This keeps the negative fixtures close to the canonical skill shape without duplicating a permanent fixture tree.
+
+Covered M2 regression surfaces:
+
+- missing `schema-version`;
+- stale `role_name: ci`;
+- wrong `READ`/`COPY` resource-map verb;
+- missing skeleton `permissions: contents: read`;
+- missing unmapped-surface fail-safe language;
+- weakened command blocker and workflow-review guardrails.

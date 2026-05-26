@@ -251,6 +251,9 @@ PROPOSAL_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN = re.compile(
     r"review[- ]dimension[- ]guidance)\b",
     re.IGNORECASE,
 )
+CI_MAINTENANCE_SKILL_NAME = "ci-maintenance"
+CI_MAINTENANCE_SKELETON = "assets/github-workflow-skeleton.yml"
+CI_MAINTENANCE_RISK_MAP = "references/risk-to-check-map.md"
 REVIEW_FAMILY_FIRST_SLICE_SKILLS = {
     "code-review",
     "proposal-review",
@@ -1878,6 +1881,161 @@ def _validate_resource_map(path: Path, body: str) -> list[str]:
     return errors
 
 
+def _validate_ci_maintenance_skeleton(path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    required_terms = {
+        "PR trigger structure": ("pull_request:",),
+        "boundary trigger structure": ("workflow_dispatch:", "schedule:"),
+        "least-privilege permissions": ("permissions:\n  contents: read",),
+        "concurrency": ("concurrency:", "cancel-in-progress: true"),
+        "changed-risk job": ("changed-risk:", "Changed-risk checks"),
+        "boundary-check job": ("boundary:", "Boundary checks"),
+        "job timeout placeholders": ("timeout-minutes: <timeout>",),
+        "action-reference placeholders": ("<full-length-sha-or-policy-approved-ref>",),
+        "deterministic install placeholder": (
+            "<deterministic install command from allowed command source>",
+        ),
+        "validation command placeholders": (
+            "<scoped validation command from allowed command source>",
+            "<comprehensive validation command from allowed command source>",
+        ),
+        "dependency cache placeholder": (
+            "actions/cache@<full-length-sha-or-policy-approved-ref>",
+            "hashFiles('<lockfile path>')",
+        ),
+    }
+    for label, terms in required_terms.items():
+        if not all(term in text for term in terms):
+            errors.append(f"{path}: workflow skeleton must include {label}")
+
+    if re.search(r"@[0-9a-fA-F]{40}\b", text):
+        errors.append(f"{path}: workflow skeleton must not include invented real action SHAs")
+    return errors
+
+
+def _validate_ci_maintenance_risk_map(path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    required_terms = {
+        "portable core": ("## Portable core", "workflow files", "source code"),
+        "project-specific extensions": ("## Project-specific extensions", "Example only"),
+        "changed-surface table": ("Changed surface", "PR check", "Boundary check"),
+        "unmapped-surface fail-safe": (
+            "Unmapped changed surfaces",
+            "reviewer judgment",
+            "conservative boundary check",
+        ),
+        "bounded risk claim": ("not no-risk surfaces",),
+    }
+    for label, terms in required_terms.items():
+        if not all(term in text for term in terms):
+            errors.append(f"{path}: risk map must include {label}")
+    if "non-RigorLoop projects do not need this" not in text:
+        errors.append(f"{path}: risk map must label RigorLoop rows as project-specific examples")
+    return errors
+
+
+def validate_ci_maintenance_contract(
+    path: Path,
+    metadata: dict[str, str],
+    body: str,
+) -> list[str]:
+    is_ci_maintenance_path = path.parent.name == CI_MAINTENANCE_SKILL_NAME
+    is_ci_maintenance_name = metadata.get("name") == CI_MAINTENANCE_SKILL_NAME
+    if not is_ci_maintenance_path and not is_ci_maintenance_name:
+        return []
+
+    errors: list[str] = []
+    if metadata.get("name") != CI_MAINTENANCE_SKILL_NAME:
+        errors.append(f"{path}: ci-maintenance frontmatter must use name: ci-maintenance")
+    if not metadata.get("version"):
+        errors.append(f"{path}: ci-maintenance frontmatter must include version")
+    if metadata.get("schema-version") != READABILITY_SCHEMA_VERSION:
+        errors.append(f"{path}: ci-maintenance frontmatter must include schema-version")
+
+    stale_identifier_patterns = (
+        r"(?m)^\s*-\s*role_name:\s*ci\s*$",
+        r"\bwhen ci is run\b",
+        r"\bwhen `ci` is run\b",
+        r"\bci-mantance\b",
+    )
+    for pattern in stale_identifier_patterns:
+        if re.search(pattern, body):
+            errors.append(f"{path}: stale ci-maintenance identifier reference")
+            break
+
+    if re.search(r"\bnarrower(?:\s+job-specific)?\s+elevation\b", body, re.IGNORECASE):
+        errors.append(f"{path}: permissions wording must not say narrower elevation")
+
+    resource_map = _extract_markdown_section(body, "Resource map")
+    if resource_map is None:
+        errors.append(f"{path}: ci-maintenance requires a Resource map")
+    else:
+        skeleton_entry = _resource_entry_text(resource_map, CI_MAINTENANCE_SKELETON)
+        if skeleton_entry is None:
+            errors.append(
+                f"{path}: Resource map must name packaged resource '{CI_MAINTENANCE_SKELETON}'"
+            )
+        elif not skeleton_entry.startswith(f"- COPY `{CI_MAINTENANCE_SKELETON}`"):
+            errors.append(
+                f"{path}: Resource map entry for '{CI_MAINTENANCE_SKELETON}' must use literal COPY"
+            )
+
+        risk_entry = _resource_entry_text(resource_map, CI_MAINTENANCE_RISK_MAP)
+        if risk_entry is None:
+            errors.append(
+                f"{path}: Resource map must name packaged resource '{CI_MAINTENANCE_RISK_MAP}'"
+            )
+        elif not risk_entry.startswith(f"- READ `{CI_MAINTENANCE_RISK_MAP}`"):
+            errors.append(
+                f"{path}: Resource map entry for '{CI_MAINTENANCE_RISK_MAP}' must use literal READ"
+            )
+
+    skeleton_path = path.parent / CI_MAINTENANCE_SKELETON
+    if skeleton_path.is_file():
+        errors.extend(
+            _validate_ci_maintenance_skeleton(
+                skeleton_path,
+                skeleton_path.read_text(encoding="utf-8"),
+            )
+        )
+    else:
+        errors.append(f"{path}: missing ci-maintenance workflow skeleton asset")
+
+    risk_map_path = path.parent / CI_MAINTENANCE_RISK_MAP
+    if risk_map_path.is_file():
+        errors.extend(
+            _validate_ci_maintenance_risk_map(
+                risk_map_path,
+                risk_map_path.read_text(encoding="utf-8"),
+            )
+        )
+    else:
+        errors.append(f"{path}: missing ci-maintenance risk-to-check reference")
+
+    required_body_terms = {
+        "known command blocker": ("report a blocker instead of guessing",),
+        "allowed command sources": ("Allowed command sources", "explicit user-provided commands"),
+        "overbroad permissions during workflow review": ("overbroad permissions",),
+        "unsafe path filters during workflow review": (
+            "path filters that skip required checks",
+        ),
+        "slow PR checks during workflow review": ("slow comprehensive checks on every PR",),
+        "pull_request_target warning": ("pull_request_target", "untrusted code"),
+        "risk coverage review": ("missing risk coverage", "unmapped changed surfaces"),
+    }
+    for label, terms in required_body_terms.items():
+        if not all(term in body for term in terms):
+            errors.append(f"{path}: ci-maintenance must flag {label}")
+
+    if "Do not invent validation commands" not in body:
+        errors.append(f"{path}: ci-maintenance must forbid invented validation commands")
+    if "Add broader job-specific permissions only when a known workflow need requires them" not in body:
+        errors.append(f"{path}: ci-maintenance must require rationale for broader permissions")
+    if "Use dependency caches only when a stable invalidation key exists" not in body:
+        errors.append(f"{path}: ci-maintenance must require stable cache invalidation keys")
+    return errors
+
+
 def _validate_published_self_containment(path: Path, metadata: dict[str, str], body: str) -> list[str]:
     if metadata.get("schema-version") != READABILITY_SCHEMA_VERSION:
         return []
@@ -2050,6 +2208,7 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
 
     errors.extend(_validate_published_description(path, metadata))
     errors.extend(_validate_resource_map(path, body))
+    errors.extend(validate_ci_maintenance_contract(path, metadata, body))
     errors.extend(_validate_published_self_containment(path, metadata, body))
     errors.extend(validate_readability_contract(path, metadata, body))
     errors.extend(
@@ -2163,5 +2322,12 @@ def validate_skill_tree(target: Path, *, allow_generated: bool = False) -> Valid
                 "review-family material-finding parser-owned field block must be byte-identical "
                 f"across first-slice review skills: {skills}"
             )
+
+    canonical_root = CANONICAL_SKILLS_DIR.resolve()
+    if (
+        resolved_target == canonical_root
+        or _is_relative_to(resolved_target, canonical_root)
+    ) and "ci" in owners:
+        errors.append("stale active ci skill body is not allowed after ci-maintenance hard rename")
 
     return ValidationResult(checked_files=checked_files, errors=errors)
