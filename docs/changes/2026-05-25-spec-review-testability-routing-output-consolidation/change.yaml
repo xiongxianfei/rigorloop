@@ -32,8 +32,9 @@ tests:
   - SRTR-CR1 resolved by workflow-spec revision
   - code-review-m2-r2 clean-with-notes
   - M3 generated local skill and temporary adapter archive proof completed
+  - code-review-m3-r1 clean-with-notes
 review:
-  status: clean_after_code_review_m2_r2
+  status: clean_after_code_review_m3_r1
   unresolved_items: 0
   location: docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md
 validation:
@@ -235,6 +236,22 @@ validation:
     result: pass_validated_3_artifact_files_during_m3
   - command: git diff --check -- docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md
     result: pass_during_m3
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-srto-m3-review-adapters-JwPaBr
+    result: pass_built_codex_claude_opencode_archives_during_code_review_m3_r1
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-srto-m3-review-adapters-JwPaBr --version v0.1.5
+    result: pass_during_code_review_m3_r1
+  - command: python zipfile content inspection of /tmp/rigorloop-srto-m3-review-adapters-JwPaBr/*v0.1.5.zip
+    result: pass_spec_review_skill_and_result_skeleton_include_updated_routing_readiness_contract_during_code_review_m3_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_10_findings_4_log_entries_10_resolution_entries_4_after_code_review_m3_r1_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation
+    result: pass_reviews_10_findings_4_log_entries_10_resolution_entries_4_after_code_review_m3_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml
+    result: pass_after_code_review_m3_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path skills/spec-review/SKILL.md --path skills/spec-review/assets/review-result-skeleton.md --path skills/spec-review/assets/material-finding.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/behavior-preservation.md --path docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md --path docs/plan.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/change.yaml --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-log.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/review-resolution.md --path docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/code-review-m3-r1.md
+    result: pass_validated_3_artifact_files_after_code_review_m3_r1_recording
+  - command: git diff --check -- docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation docs/plans/2026-05-25-spec-review-testability-routing-output-consolidation.md docs/plan.md
+    result: pass_after_code_review_m3_r1_recording
 changed_files:
   - specs/test-spec-readiness-and-skill-workflow-alignment.md
   - specs/test-spec-readiness-and-skill-workflow-alignment.test.md
@@ -255,6 +272,7 @@ changed_files:
   - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-25-spec-review-testability-routing-output-consolidation/reviews/code-review-m3-r1.md
   - skills/spec-review/SKILL.md
   - skills/spec-review/assets/review-result-skeleton.md
   - skills/test-spec/SKILL.md

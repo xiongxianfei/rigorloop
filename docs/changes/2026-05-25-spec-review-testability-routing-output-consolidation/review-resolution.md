@@ -14,11 +14,12 @@ Review closeout: plan-review-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m3-r1
 
-- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
 - Findings resolved: 4
 - Unresolved findings: 0
-- Final result: `SRTR-SR1` and `SRTR-SR2` were accepted and resolved in the spec amendment. `spec-review-r2` and `spec-review-r3` approved the revised spec with no material findings. `SRTR-PR1` was accepted and resolved by revising the plan's M1/M2 milestone boundary. `plan-review-r2` approved the revised plan with no material findings. `code-review-m1-r1` closed M1 with no material findings. `SRTR-CR1` was accepted and resolved by aligning the durable workflow spec with the explicit `Immediate next stage: none` contract. `code-review-m2-r2` closed M2 with no material findings.
+- Final result: `SRTR-SR1` and `SRTR-SR2` were accepted and resolved in the spec amendment. `spec-review-r2` and `spec-review-r3` approved the revised spec with no material findings. `SRTR-PR1` was accepted and resolved by revising the plan's M1/M2 milestone boundary. `plan-review-r2` approved the revised plan with no material findings. `code-review-m1-r1` closed M1 with no material findings. `SRTR-CR1` was accepted and resolved by aligning the durable workflow spec with the explicit `Immediate next stage: none` contract. `code-review-m2-r2` closed M2 with no material findings. `code-review-m3-r1` closed M3 with no material findings.
 
 ## Resolution Overview
 
@@ -120,3 +121,9 @@ Validation evidence: `python scripts/test-skill-validator.py -k spec_review_rout
 Review closeout: closed
 
 No material findings. Clean M2 rerun implementation review is recorded in `reviews/code-review-m2-r2.md`. M2 is closed, and the remaining implementation milestone is M3.
+
+### code-review-m3-r1
+
+Review closeout: closed
+
+No material findings. Clean M3 implementation review is recorded in `reviews/code-review-m3-r1.md`. M3 is closed, and no in-scope implementation milestones remain.
