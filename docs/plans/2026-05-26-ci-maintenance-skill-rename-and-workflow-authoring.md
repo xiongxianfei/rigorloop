@@ -8,7 +8,7 @@ Terminal disposition: none
 - Change ID: `2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring`
 - Current owner: agent
 - Current stage: implement
-- Next stage: code-review M2
+- Next stage: implement M3
 - Blockers: none
 
 ## Purpose / Big Picture
@@ -66,14 +66,14 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
 
 ## Current Handoff Summary
 
-- Current milestone: M2 - Validator and Fixture Coverage
-- Current milestone state: review-requested
-- Last reviewed milestone: M1 - Canonical skill rename and packaged resources
-- Review status: M2 implementation complete; code-review requested
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2
+- Current milestone: M3 - Generated Adapter Proof and Migration Evidence
+- Current milestone state: planned
+- Last reviewed milestone: M2 - Validator and Fixture Coverage
+- Review status: M2 code-review-r1 completed with no material findings; M2 is closed
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason: M2 validator and fixture coverage is implemented with targeted validation passing. M2 has not been reviewed; generated-adapter proof remains pending.
+- Reason: M2 is closed after clean code review. Generated-adapter proof and migration evidence remain pending.
 
 ## Milestones
 
@@ -120,7 +120,7 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
 
 ### M2 - Validator and Fixture Coverage
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Make the rename, resource map, skeleton defaults, risk-map boundary, command blocker, and workflow-review checks deterministic through repository-owned validation.
 - Requirements: `CIM-R50` through `CIM-R61`, `AC-CIM-FM-004`, `AC-CIM-PERM-001` through `AC-CIM-PERM-004`.
 - Likely files:
@@ -141,7 +141,7 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
   - `python scripts/build-skills.py --check --output-dir /tmp/rigorloop-cim-m2-skills/skills`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml`
   - `git diff --check --`
-- Result: implemented. Added deterministic `ci-maintenance` contract validation for front matter, hard-rename stale identifiers, resource-map verbs, skeleton defaults, risk-map structure and fail-safe language, command blockers, permissions/cache guardrails, and workflow-review risk flags. Added copied-fixture regression tests proving the validator fails when those M2 contract surfaces are removed or weakened.
+- Result: closed after clean code-review-r1. Added deterministic `ci-maintenance` contract validation for front matter, hard-rename stale identifiers, resource-map verbs, skeleton defaults, risk-map structure and fail-safe language, command blockers, permissions/cache guardrails, and workflow-review risk flags. Added copied-fixture regression tests proving the validator fails when those M2 contract surfaces are removed or weakened.
 - Risks:
   - Validator assertions could become brittle if they overfit exact prose instead of checking stable contract markers.
   - Review fixtures could accidentally test behavior that belongs to `verify` or `test-spec`.
@@ -235,6 +235,7 @@ Final pre-PR validation must include the milestone validations plus:
 - 2026-05-26: M1 closed after clean code-review-r1.
 - 2026-05-26: M2 implementation started.
 - 2026-05-26: M2 added targeted validator coverage and copied-fixture regression tests, then handed to code-review.
+- 2026-05-26: M2 closed after clean code-review-r1.
 
 ## Decision Log
 
@@ -285,11 +286,10 @@ Pending. This plan remains active until all implementation milestones close and 
 
 ## Readiness
 
-Ready for code-review M2.
+Ready for implement M3.
 
 Remaining gates before Done:
 
-- code-review M2
 - implementation milestone M3
 - code-review M3
 - review-resolution, when triggered
