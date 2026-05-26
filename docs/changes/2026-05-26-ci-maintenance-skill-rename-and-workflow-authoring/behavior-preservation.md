@@ -16,7 +16,8 @@ This proof covers M1 and M2: canonical skill rename, packaged workflow resources
 | Public portability | Existing skill was short and project-neutral. | New public skill text uses project-local sources when present and labels RigorLoop-only risk-map rows as project-specific examples. | preserved |
 | Repository workflow behavior | No `.github/workflows/*.yml` change was in scope. | M1 does not edit `.github/workflows/*.yml`. | unchanged |
 | Validator coverage | Existing validator had generic skill checks and no `ci-maintenance`-specific resource/skeleton/risk-map checks. | M2 adds deterministic checks for renamed front matter, stale identifiers, resource-map verbs, skeleton defaults, risk-map split/fail-safe language, command blockers, and workflow-review guardrails. | strengthened |
-| Generated adapters | Baseline generated adapter support still names `ci`. | Generated adapter migration is intentionally deferred to M3, where adapter proof is planned. | pending by plan |
+| Generated adapters | Baseline generated adapter support still named `ci`. | M3 updates tracked adapter metadata to `ci-maintenance` and records temporary archive proof that all public adapters package `ci-maintenance` and its resources without an active `ci` body. | migrated |
+| Migration guidance | No adopter-facing rename note existed. | M3 adds adapter README migration guidance telling adopters to update direct `ci` invocations to `ci-maintenance` and stating that no `ci` compatibility alias is installed in this release. | strengthened |
 
 ## Stale Reference Classification
 
@@ -40,3 +41,14 @@ Covered M2 regression surfaces:
 - missing skeleton `permissions: contents: read`;
 - missing unmapped-surface fail-safe language;
 - weakened command blocker and workflow-review guardrails.
+
+## M3 Generated Adapter Proof
+
+M3 records generated-output evidence in `generated-output-proof.md`.
+
+The proof uses temporary generated output rather than hand-edited adapter package output. It validates `v0.1.5` adapter archives and inspects archive contents for:
+
+- `ci-maintenance/SKILL.md`;
+- `ci-maintenance/assets/github-workflow-skeleton.yml`;
+- `ci-maintenance/references/risk-to-check-map.md`;
+- absence of an active `/ci/` skill body.

@@ -9,7 +9,7 @@ skills:
   bugfix:
     portable: true
     adapters: [codex, claude, opencode]
-  ci:
+  ci-maintenance:
     portable: true
     adapters: [codex, claude, opencode]
   code-review:

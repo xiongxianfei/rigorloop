@@ -1947,10 +1947,12 @@ def validate_ci_maintenance_contract(
     errors: list[str] = []
     if metadata.get("name") != CI_MAINTENANCE_SKILL_NAME:
         errors.append(f"{path}: ci-maintenance frontmatter must use name: ci-maintenance")
-    if not metadata.get("version"):
-        errors.append(f"{path}: ci-maintenance frontmatter must include version")
-    if metadata.get("schema-version") != READABILITY_SCHEMA_VERSION:
-        errors.append(f"{path}: ci-maintenance frontmatter must include schema-version")
+    non_codex_adapter_path = any(part in {".claude", ".opencode"} for part in path.parts)
+    if not non_codex_adapter_path:
+        if not metadata.get("version"):
+            errors.append(f"{path}: ci-maintenance frontmatter must include version")
+        if metadata.get("schema-version") != READABILITY_SCHEMA_VERSION:
+            errors.append(f"{path}: ci-maintenance frontmatter must include schema-version")
 
     stale_identifier_patterns = (
         r"(?m)^\s*-\s*role_name:\s*ci\s*$",
