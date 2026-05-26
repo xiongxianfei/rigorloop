@@ -34,6 +34,7 @@ tests:
   - Code-review-m3-r1 records clean approval of generated adapter proof and migration evidence.
   - Explain-change records durable rationale linking the reviewed diff to proposal, spec requirements, test spec, plan milestones, reviews, and validation evidence.
   - Final verify records branch-ready local validation evidence before PR handoff.
+  - PR #98 is open for hosted CI and human review.
   - Artifact lifecycle validation covers the accepted proposal and review records.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring

@@ -8,7 +8,7 @@ Terminal disposition: none
 - Change ID: `2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring`
 - Current owner: agent
 - Current stage: pr
-- Next stage: pr
+- Next stage: hosted CI and human review
 - Blockers: none
 
 ## Purpose / Big Picture
@@ -72,9 +72,9 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
 - Last reviewed milestone: M3 - Generated Adapter Proof and Migration Evidence
 - Review status: M3 code-review-r1 completed with no material findings; all implementation milestones are closed
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready; PR body/open readiness is not claimed
-- Reason: M1, M2, and M3 are closed after clean code reviews. No review-resolution is required. Explain-change is recorded. Final local verification passed. This slice did not change repository GitHub Actions workflows, so no ci-maintenance workflow-authoring handoff is triggered by the review.
+- Next stage: hosted CI and human review for PR #98
+- Final closeout readiness: PR #98 is open; hosted CI and human review are pending
+- Reason: M1, M2, and M3 are closed after clean code reviews. No review-resolution is required. Explain-change is recorded. Final local verification passed. PR #98 is open for review.
 
 ## Milestones
 
@@ -245,6 +245,7 @@ Final pre-PR validation must include the milestone validations plus:
 - 2026-05-26: M3 closed after clean code-review-r1. All implementation milestones are closed; next stage is explain-change.
 - 2026-05-26: Explain-change recorded durable change rationale; next stage is verify.
 - 2026-05-26: Final verify passed local validation and lifecycle checks; next stage is pr.
+- 2026-05-26: PR #98 opened: https://github.com/xiongxianfei/rigorloop/pull/98. Hosted CI and human review are pending.
 
 ## Decision Log
 
@@ -321,10 +322,10 @@ Pending. This plan remains active until all implementation milestones close and 
 
 ## Readiness
 
-Ready for pr.
+PR #98 is open. Hosted CI and human review are pending.
 
 Remaining gates before Done:
 
 - review-resolution, when triggered
 - ci-maintenance, when triggered
-- pr
+- hosted CI and human review
