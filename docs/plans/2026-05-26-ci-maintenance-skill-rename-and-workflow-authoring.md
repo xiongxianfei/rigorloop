@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring`
 - Current owner: agent
-- Current stage: verify
-- Next stage: verify
+- Current stage: pr
+- Next stage: pr
 - Blockers: none
 
 ## Purpose / Big Picture
@@ -72,9 +72,9 @@ Architecture is intentionally skipped. The approved spec and spec-review record 
 - Last reviewed milestone: M3 - Generated Adapter Proof and Migration Evidence
 - Review status: M3 code-review-r1 completed with no material findings; all implementation milestones are closed
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: ready for verify; PR readiness is not claimed
-- Reason: M1, M2, and M3 are closed after clean code reviews. No review-resolution is required. Explain-change is recorded. This slice did not change repository GitHub Actions workflows, so no ci-maintenance workflow-authoring handoff is triggered by the review.
+- Next stage: pr
+- Final closeout readiness: branch-ready; PR body/open readiness is not claimed
+- Reason: M1, M2, and M3 are closed after clean code reviews. No review-resolution is required. Explain-change is recorded. Final local verification passed. This slice did not change repository GitHub Actions workflows, so no ci-maintenance workflow-authoring handoff is triggered by the review.
 
 ## Milestones
 
@@ -244,6 +244,7 @@ Final pre-PR validation must include the milestone validations plus:
 - 2026-05-26: M3 updated tracked adapter metadata, added adopter-facing migration guidance, validated temporary adapter archives, recorded generated-output proof, and handed to code-review.
 - 2026-05-26: M3 closed after clean code-review-r1. All implementation milestones are closed; next stage is explain-change.
 - 2026-05-26: Explain-change recorded durable change rationale; next stage is verify.
+- 2026-05-26: Final verify passed local validation and lifecycle checks; next stage is pr.
 
 ## Decision Log
 
@@ -302,6 +303,17 @@ Final pre-PR validation must include the milestone validations plus:
 - `git diff -- .github/workflows` produced no output after M3.
 - `git diff --check --` passed after M3.
 - `docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/explain-change.md` records the reviewed implementation rationale and routes to verify without claiming verify or PR readiness.
+- `python scripts/test-skill-validator.py` passed during final verify with 191 tests.
+- `python scripts/validate-skills.py` passed during final verify, validating 23 canonical skill files.
+- `python scripts/build-skills.py --check --output-dir /tmp/rigorloop-cim-final-skills/skills` passed during final verify.
+- `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` passed during final verify with output root `/tmp/tmp.iRzhsy5JFA`.
+- Archive content inspection of `/tmp/tmp.iRzhsy5JFA/*.zip` found `ci-maintenance/SKILL.md`, `assets/github-workflow-skeleton.yml`, and `references/risk-to-check-map.md` for Codex, Claude, and opencode, with no active `/ci/` skill body.
+- `bash scripts/ci.sh --mode explicit --path skills/ci-maintenance/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path dist/adapters/manifest.yaml --path dist/adapters/README.md --path specs/ci-maintenance-skill.md --path specs/ci-maintenance-skill.test.md` passed during final verify. Selected checks: `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, and `artifact_lifecycle.validate`.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring` passed during final verify with 9 reviews, 6 findings, 9 log entries, and 6 resolution entries.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring/change.yaml` passed during final verify.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed during final verify for proposal, spec, test spec, plan, plan index, change metadata, review log, review resolution, behavior-preservation proof, generated-output proof, explain-change, and review records.
+- `git diff -- .github/workflows` produced no output during final verify.
+- `git diff --check --` passed during final verify.
 
 ## Outcome and Retrospective
 
@@ -309,11 +321,10 @@ Pending. This plan remains active until all implementation milestones close and 
 
 ## Readiness
 
-Ready for verify.
+Ready for pr.
 
 Remaining gates before Done:
 
 - review-resolution, when triggered
 - ci-maintenance, when triggered
-- verify
 - pr
