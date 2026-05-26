@@ -2,13 +2,13 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Owner: maintainers
 - Start date: 2026-05-24
-- Last updated: 2026-05-24
-- Related issue or PR: none yet
+- Last updated: 2026-05-26
+- Related issue or PR: PR #92
 - Supersedes: none
 
 ## Purpose / big picture
@@ -67,14 +67,14 @@ Important constraints:
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Lifecycle Closeout And Broad Validation
-- Current milestone state: closed
+- Current milestone: final closeout
+- Current milestone state: done
 - Last reviewed milestone: M3. Release, Docs, And Package Validation Hardening
 - Review status: M4 closed after clean code-review-r7
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: final verify passed; PR handoff has not happened yet.
+- Next stage: none
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #92 merged into the stacked cache-aware branch on 2026-05-25 and the merge commit is present on `main`.
 
 ## Milestones
 
@@ -401,12 +401,12 @@ Important constraints:
 - 2026-05-24: M4 explicit lifecycle validation, review-artifact closeout validation, change metadata validation, and `git diff --check --` passed after the selected CI run.
 - 2026-05-24: Initial verify blocked because authoritative new artifacts were still untracked. The full change pack was committed in `33d41c6`, resolving the tracked-branch-state blocker.
 - 2026-05-24: Final verify passed after commit. `python scripts/query-change-record.py 2026-05-24-target-native-init-commands-and-adapter-terminology-retirement summary`, review-artifact closeout validation, change metadata validation, explicit artifact lifecycle validation, and `bash scripts/ci.sh --mode pr --base main --head HEAD` passed. PR-mode selected CI included broad smoke and validated the full stacked branch range.
+- 2026-05-25: PR #92 merged at `a4fcca4b57acc703ac2fe337ed29b596be75dfda`; the stacked merge is present on `main`.
 
 ## Outcome and retrospective
 
-- Implementation milestones are complete and code-reviewed. Final verification passed. PR handoff remains pending.
+- Implementation milestones are complete and code-reviewed. Final verification passed. PR #92 merged and is present on `main`.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- M1 is closed after clean code-review-r2, M2 is closed after clean code-review-r4, M3 is closed after clean code-review-r6, and M4 is closed after clean code-review-r7. Final verify passed; PR handoff is next.
+- Done. PR #92 merged and no downstream lifecycle gates remain.

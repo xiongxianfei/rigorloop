@@ -2,13 +2,13 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Owner: maintainers
 - Start date: 2026-05-25
-- Last updated: 2026-05-25
-- Related issue or PR: none yet
+- Last updated: 2026-05-26
+- Related issue or PR: PR #93
 - Supersedes: none
 
 ## Purpose / big picture
@@ -58,14 +58,14 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Generated Output Proof and Cold-Read Evidence
-- Current milestone state: closed
+- Current milestone: final closeout
+- Current milestone state: done
 - Last reviewed milestone: M3. Generated Output Proof and Cold-Read Evidence
 - Review status: code-review-m3-r1 clean-with-notes; M3 closed
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #93
-- Final closeout readiness: PR open; hosted CI and human review pending
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, explain-change is recorded, final verify passed locally, and PR #93 is open; hosted CI and human review are not complete.
+- Next stage: none
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #93 merged into `main` on 2026-05-25.
 
 ## Milestones
 
@@ -260,6 +260,7 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 - 2026-05-25: Recorded `explain-change.md`; next stage is verify.
 - 2026-05-25: Final verify passed locally and recorded `verify-report.md`; branch-ready for PR handoff.
 - 2026-05-25: PR #93 opened; hosted CI and human review are pending.
+- 2026-05-25: PR #93 merged into `main` at `d765bd044bad6ffc5b0f259f1335f386d03b14cf`.
 
 ## Decision log
 
@@ -321,9 +322,8 @@ The governing behavior is in `specs/installed-skill-artifact-placement-contract.
 
 ## Outcome and retrospective
 
-- Pending completion.
+- PR #93 merged into `main`.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- PR #93 is open; hosted CI and human review are pending.
+- Done. PR #93 merged and no downstream lifecycle gates remain.

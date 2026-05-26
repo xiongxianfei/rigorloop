@@ -2,12 +2,12 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Owner: maintainers
 - Start date: 2026-05-25
-- Last updated: 2026-05-25
+- Last updated: 2026-05-26
 - Related issue or PR: PR #94
 - Supersedes: none
 
@@ -80,14 +80,14 @@ approved CLI contract and package docs.
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Vision, README, and Evidence Rewrite
-- Current milestone state: closed
+- Current milestone: final closeout
+- Current milestone state: done
 - Last reviewed milestone: M1. Vision, README, and Evidence Rewrite
 - Review status: code-review-m1-r3 clean-with-notes after branch stacking boundary closeout
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review on PR #94
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR #94 is open; hosted CI and human review remain.
+- Next stage: none
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #94 merged into `release/v0.3.1` on 2026-05-25 and is present on `main` through release PR #95.
 
 ## Milestones
 
@@ -200,6 +200,7 @@ approved CLI contract and package docs.
 - 2026-05-25: explain-change recorded durable rationale for the M1 vision/README rewrite and moved the next stage to verify.
 - 2026-05-25: local final verify passed, `verify-report.md` was recorded, and the next stage moved to PR handoff.
 - 2026-05-25: PR #94 opened against `release/v0.3.1` so the review diff matches the stacked-branch boundary recorded in verify evidence.
+- 2026-05-25: PR #94 merged into `release/v0.3.1` at `99c978b76a44500205a25061ce34a94d1713dca2`; release PR #95 then merged it to `main`.
 - 2026-05-25: hosted CI failed because `cold-read-review.md` and `vision-readme-sync-proof.md` were deterministic change-local evidence without selector evidence-class registrations; registered both proof files, added selector regression coverage, and local PR-mode CI passed.
 
 ## Decision log
@@ -248,9 +249,8 @@ approved CLI contract and package docs.
 
 ## Outcome and retrospective
 
-- Pending downstream implementation, review, explain-change, verify, PR handoff, hosted CI, and human review.
+- PR #94 merged into `release/v0.3.1` and is present on `main` through PR #95.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- M1, explain-change, local final verify, and PR handoff are complete. PR #94 is open for hosted CI and human review. Readiness is not lifecycle Done.
+- Done. PR #94 merged and no downstream lifecycle gates remain.

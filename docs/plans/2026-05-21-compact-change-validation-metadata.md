@@ -2,7 +2,10 @@
 
 ## Status
 
-active
+done
+
+Plan lifecycle state: done
+Terminal disposition: merged
 
 ## Purpose / big picture
 
@@ -48,14 +51,14 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Reconstruction, Summary Derivation, Review Counts, And Compactness Proof
-- Current milestone state: closed
+- Current milestone: final closeout
+- Current milestone state: done
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r2 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: Final verify passed from clean tracked branch state after the lifecycle heading fix, including compact metadata regressions, lifecycle heading compatibility, selector regression, representative and full branch selected CI, broad smoke, active change metadata validation, review-artifact closeout validation, and artifact lifecycle validation. After recording verify evidence, post-commit branch-tip selected CI and artifact checks also passed. PR handoff is the next stage.
+- Next stage: none
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #84 merged into `main` on 2026-05-22.
 
 ## Milestones
 
@@ -374,9 +377,8 @@ Implement the approved compact `change.yaml` validation metadata contract while 
 
 ## Outcome and retrospective
 
-- Implementation milestones M1, M2, and M3 are closed after code review, ci-maintenance fixed selected-CI fixture routing, explain-change has been refreshed, and final verify passed from clean tracked branch state. The branch is ready for PR handoff.
+- Implementation milestones M1, M2, and M3 are closed after code review, ci-maintenance fixed selected-CI fixture routing, explain-change has been refreshed, final verify passed, and PR #84 merged into `main` at `cbffe866e6676aed1d3efdda2e6c80e014ed142f`.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- Branch-ready for `pr` handoff.
+- Done. PR #84 merged and no downstream lifecycle gates remain.

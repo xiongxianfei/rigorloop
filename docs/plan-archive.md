@@ -4,6 +4,14 @@ Completed plan history moved out of the common-read plan index.
 
 ## Done (archive)
 
+- [2026-05-23 Release Process Contract](plans/2026-05-23-release-process-contract.md) - done; terminal state: done; PR #89 merged.
+- [2026-05-23 Validation Idempotency and Cache-Hit Safety](plans/2026-05-23-validation-idempotency-cache-hit-safety.md) - done; terminal state: done; PR #88 merged.
+- [2026-05-22 Change-Record Catalog Registration and Bounded Read Model](plans/2026-05-22-change-record-catalog-registration-and-bounded-read-model.md) - done; terminal state: done; PR #87 merged.
+- [2026-05-22 Broad-Smoke and Fixture-Suite Output Compaction](plans/2026-05-22-broad-smoke-and-fixture-suite-output-compaction.md) - done; terminal state: done; PR #85 merged.
+- [2026-05-21 Script Output Optimization](plans/2026-05-21-script-output-optimization.md) - done; terminal state: done; PR #83 merged.
+- [2026-05-21 Review-Skill Family Consistency and Parser-Owned Finding Shape](plans/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape.md) - done; terminal state: done; PR #82 merged.
+- [2026-05-20 Spec-Family Assets Progressive Disclosure](plans/2026-05-20-spec-family-assets-progressive-disclosure.md) - done; terminal state: done; PR #80 merged.
+- [2026-05-20 Spec-Family Readability Pass](plans/2026-05-20-spec-family-readability-pass.md) - done; terminal state: done; PR #79 merged.
 - [2026-05-20 Test-Spec Contract Normalization](plans/2026-05-20-test-spec-contract-normalization.md) - done; terminal state: done; PR #77 merged.
 - [2026-05-19 Spec and Test-Spec Structural Hygiene](plans/2026-05-19-spec-and-test-spec-structural-hygiene.md) - done; terminal state: done; disposition recorded in plan body.
 - [2026-05-19 Assets-First Progressive Disclosure Pilot](plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) - done; terminal state: done; PR #75 passed hosted CI.
