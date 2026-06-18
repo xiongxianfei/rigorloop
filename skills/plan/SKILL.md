@@ -155,6 +155,7 @@ Use `Readiness is not Done` as the default interpretation for handoff lines. Kee
 - Do not omit validation commands.
 - Keep `docs/plan.md` as an index, not a second long-form plan body.
 - Keep `docs/plan.md` bounded: Active and Blocked first, at most the recent completed window in `Done (recent)`, and older terminal history in `docs/plan-archive.md`.
+- In `docs/plan.md` and `docs/plan-archive.md`, write plan references as clickable Markdown links relative to the index file, for example `[Title](plans/YYYY-MM-DD-slug.md)`; do not leave bare `docs/plans/...` text as the index entry.
 - Use the plan body's explicit `## Status` lifecycle marker fields `Plan lifecycle state` and `Terminal disposition`; do not infer terminal state from prose.
 - Update the plan index surfaces and the plan body together when starting, replacing, transitioning, archiving older terminal history, or before the PR opens for review.
 - Keep superseded entries in `docs/plan.md` only while they include `superseded by:` and non-empty `active-context:`; move terminal superseded history without active context to `docs/plan-archive.md`.
