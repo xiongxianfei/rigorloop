@@ -2,7 +2,7 @@
 
 ## Status
 
-draft
+approved
 
 ## Related proposal
 
@@ -402,8 +402,10 @@ pr
 
 ## Follow-on artifacts
 
-None yet
+- Spec review R2: [spec-review-r2](../docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md)
+- Plan: [Workflow Skill Artifact-Location Map Plan](../docs/plans/2026-06-18-workflow-skill-artifact-location-map.md)
+- Test spec: [Workflow Skill Artifact-Location Map Test Spec](workflow-skill-artifact-location-map.test.md)
 
 ## Readiness
 
-Ready for `spec-review`.
+Approved by spec-review R2 and ready for execution planning.

@@ -47,3 +47,31 @@ Resolution: review-resolution.md#proposal-review-r2
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: spec-review-r2
+Stage: spec-review
+Round: 2
+Reviewed artifact: specs/workflow-skill-artifact-location-map.md
+Status: approved
+Detailed record: reviews/spec-review-r2.md
+Record: reviews/spec-review-r2.md
+Resolution: review-resolution.md#spec-review-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: plan-review-r1
+Stage: plan-review
+Round: 1
+Reviewed artifact: docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+Status: approved
+Detailed record: reviews/plan-review-r1.md
+Record: reviews/plan-review-r1.md
+Resolution: review-resolution.md#plan-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded

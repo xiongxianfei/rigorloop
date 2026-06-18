@@ -9,6 +9,8 @@ Closeout status: closed
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: spec-review-r1
+Review closeout: spec-review-r2
+Review closeout: plan-review-r1
 
 ## Resolution Entries
 
@@ -51,6 +53,14 @@ Validation target: Proposal defines the stage-skill edit boundary before spec.
 Validation evidence: Proposal sections `Stage-Skill Edit Policy`, `Scope budget`, `Architecture Impact`, `Acceptance Criteria`, `Open Questions`, and `Decision Log`.
 
 ### proposal-review-r2
+
+No material findings.
+
+### spec-review-r2
+
+No material findings.
+
+### plan-review-r1
 
 No material findings.
 
@@ -122,3 +132,15 @@ Validation evidence: Revised spec example E9, requirements R35-R37a, EC14a, EC14
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md` passed after spec revision.
 - `git diff --check -- docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md specs/workflow-skill-artifact-location-map.md docs/changes/2026-06-17-workflow-skill-artifact-location-map` passed after spec revision.
 - `bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md` passed selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate` after spec revision.
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-17-workflow-skill-artifact-location-map` passed with 4 reviews, 6 findings, 4 log entries, and 6 resolution entries after spec-review R2.
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml` passed after spec-review R2.
+- `git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map` passed after spec-review R2.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map` passed with 4 reviews, 6 findings, 4 log entries, and 6 resolution entries after spec-review R2.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md` passed after spec-review R2.
+- `bash scripts/ci.sh --mode explicit --path specs/workflow-skill-artifact-location-map.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md` passed selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate` after spec-review R2.
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-17-workflow-skill-artifact-location-map` passed with 5 reviews, 6 findings, 5 log entries, and 6 resolution entries after plan-review R1.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map` passed with 5 reviews, 6 findings, 5 log entries, and 6 resolution entries after plan-review R1.
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml` passed after plan-review R1.
+- `git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md specs/workflow-skill-artifact-location-map.md` passed after plan-review R1.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/plan-review-r1.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md` passed after plan-review R1.
+- `bash scripts/ci.sh --mode explicit --path specs/workflow-skill-artifact-location-map.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/plan-review-r1.md` passed selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate` after plan-review R1.

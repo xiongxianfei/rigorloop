@@ -138,7 +138,9 @@ State-sync checks update affected owners before downstream readiness is claimed.
 
 ## Project workflow guide
 
-The workflow skill creates or refreshes the project workflow guide and artifact-location map. The guide tells users where artifacts go; the owning stage skill still authors its own artifact content.
+The workflow skill creates or refreshes the project workflow guide and artifact-location map. The guide tells users where artifacts go; the owning stage skill still authors its own artifact content, artifact schemas, stage-specific rules, and portable defaults.
+
+Treat `docs/workflows.md` as tracked workflow contract documentation maintained by the workflow skill, not disposable generated output. The project-local map customizes placement for artifact types it specifies. Stage skills still protect skill-only adopters with portable defaults when the guide is absent or silent.
 
 ## Customer-project workflow guide
 
@@ -157,9 +159,15 @@ Create or refresh the guide when:
 
 For ordinary routing where the guide is current, reference the guide rather than rewrite it.
 
+When changing the workflow guide, record the update reason in a tracked artifact or review-visible surface: affected artifact types, old path or placement representation, new path or placement representation, whether migration is needed, affected skills, and validation run.
+
 For path or state lookup, start from the active plan, current artifact metadata, `docs/workflows.md`, default paths, and targeted headings before broader searches. Expand when narrower evidence is incomplete, contradictory, or insufficient.
 
 The workflow skill must not author proposals, specs, plans, reviews, ADRs, or exact schemas solely because it owns the artifact-location map. Route users to the owning stage skill for artifact content.
+
+Formal workflow-managed lifecycle recording creates or identifies `docs/changes/<change-id>/` before recording change metadata, formal review records, review log, review resolution, explain-change, verify report, or change-local PR handoff evidence. The detailed plan body remains `docs/plans/YYYY-MM-DD-slug.md`, not `docs/changes/<change-id>/plan.md`.
+
+Unknown artifact types are blockers. If the workflow guide is present but silent for an artifact type, use a safe owning-skill portable default. If no safe default exists, request an explicit path or workflow-map update instead of deriving a path from naming convention, prior chat, or a learn session.
 
 ## Follow-up routing
 
@@ -336,9 +344,15 @@ docs/architecture/YYYY-MM-DD-slug.md
 docs/adr/YYYY-MM-DD-slug.md
 docs/plans/YYYY-MM-DD-slug.md
 docs/plan.md
+docs/changes/<change-id>/change.yaml
+docs/changes/<change-id>/reviews/<stage>-r<n>.md
+docs/changes/<change-id>/review-log.md
+docs/changes/<change-id>/review-resolution.md
+docs/changes/<change-id>/explain-change.md
+docs/changes/<change-id>/verify-report.md
 specs/slug.md
 specs/slug.test.md
-docs/explain/YYYY-MM-DD-slug.md
+docs/learn/sessions/YYYY-MM-DD-slug.md
 ```
 
 Do not overwrite older durable artifacts for a new initiative. Create a new dated file and update the relevant index.
