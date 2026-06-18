@@ -9,6 +9,8 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from skill_validation import validate_workflow_artifact_map_contract
+
 
 PRIMARY_GUIDE_LINKS = (
     "VISION.md",
@@ -111,21 +113,9 @@ def _validate_workflow_guide(repo: Path, messages: list[str]) -> None:
             "stage-skill content ownership and portable defaults"
         )
 
-    registry_blocks = _yaml_registry_blocks(text)
-    if len(registry_blocks) != 1:
-        messages.append(
-            "GUIDE-008: docs/workflows.md must contain exactly one canonical "
-            "artifact_locations YAML registry"
-        )
-        return
-
-    registry = registry_blocks[0]
-    for token in ("proposal:", "change_plan:", "formal_review_record:", "plan_index:"):
-        if token not in registry:
-            messages.append(
-                "GUIDE-008: docs/workflows.md artifact registry is missing "
-                f"required entry {token.rstrip(':')}"
-            )
+    workflow_errors = validate_workflow_artifact_map_contract(repo / "docs/workflows.md", text)
+    for error in workflow_errors:
+        messages.append(f"GUIDE-008: workflow map contract failed: {error}")
 
 
 def _validate_project_map(repo: Path, messages: list[str]) -> None:

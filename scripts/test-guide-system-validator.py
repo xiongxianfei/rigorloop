@@ -59,47 +59,7 @@ class GuideSystemValidatorTests(unittest.TestCase):
         )
         self.write("VISION.md", "# Vision\n")
         self.write("CONSTITUTION.md", "# Constitution\n")
-        self.write(
-            "docs/workflows.md",
-            """# Workflow guide
-
-## Artifact registry
-
-```yaml
-artifact_locations:
-  proposal:
-    owner: proposal
-    path: docs/proposals/<change-id>.md
-  plan_index:
-    owner: plan
-    path: docs/plan.md
-  change_plan:
-    owner: plan
-    path: docs/plans/YYYY-MM-DD-slug.md
-  formal_review_record:
-    owner: review skills
-    path: docs/changes/<change-id>/reviews/<stage>-r<n>.md
-```
-
-## Guide ownership
-
-| Question | Primary guide | Secondary source | Owner |
-|---|---|---|---|
-| How do I perform one stage? | `skills/<stage>/SKILL.md` | workflow guide | owning stage skill |
-
-Stage skills own artifact content and portable defaults. The workflow guide routes
-project-local artifact placement without replacing the owning stage skill.
-
-## Artifact locations
-
-| Artifact | Path |
-|---|---|
-| Proposal | `docs/proposals/<change-id>.md` |
-| Plan body | `docs/plans/YYYY-MM-DD-slug.md` |
-
-Learn sessions are historical rationale, not live routing authority.
-""",
-        )
+        self.write("docs/workflows.md", (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8"))
         self.write(
             "docs/project-map.md",
             """# Project map
@@ -248,6 +208,35 @@ artifact_locations:
         )
 
         self.assertFailsWith("GUIDE-008")
+
+    def test_workflow_registry_table_mismatch_is_reported_by_workflow_map_validator(self) -> None:
+        workflows = (self.repo / "docs/workflows.md").read_text(encoding="utf-8")
+        self.write(
+            "docs/workflows.md",
+            workflows.replace(
+                "| Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |",
+                "| Proposals | `docs/proposals/WRONG.md` | `proposal` | Proposal stage. |",
+            ),
+        )
+
+        result = self.result()
+
+        self.assertFalse(result.ok, result.messages)
+        self.assertTrue(
+            any(
+                message.startswith("GUIDE-008:")
+                and "workflow map contract failed" in message
+                and "artifact table row Proposals" in message
+                for message in result.messages
+            ),
+            result.messages,
+        )
+
+    def test_guide_validator_does_not_define_required_registry_entry_list(self) -> None:
+        validator_source = VALIDATOR.read_text(encoding="utf-8")
+
+        self.assertNotIn('("proposal:", "change_plan:", "formal_review_record:", "plan_index:")', validator_source)
+        self.assertNotIn("artifact registry is missing required entry", validator_source)
 
 
 if __name__ == "__main__":

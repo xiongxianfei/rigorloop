@@ -26,6 +26,7 @@ requirements:
   - Route guide-system validation through selected validation for changed guide surfaces and validator source changes.
   - Keep workflow-map registry/table semantics delegated to the existing workflow map contract.
   - Record code-review M2 R1 and route material finding GUIDE-CR1 through review-resolution before M2 can close.
+  - Resolve GUIDE-CR1 by composing the existing workflow-map validator instead of duplicating registry/table semantics in guide-system validation.
 tests:
   - Proposal-review R1 approved the revised proposal with no material findings.
   - The proposal keeps open-question decisions recorded and leaves no unresolved proposal-review blocker before spec.
@@ -44,6 +45,7 @@ tests:
   - M2 selector routing selects guide_system.validate for README, workflow guidance, project-map, plan-index, learn, vision, and governance surfaces, and guide_system.regression for guide validator source changes.
   - M2 kept validate-skills.py unchanged; no cross-guide checks were added to skill validation.
   - Code-review M2 R1 found GUIDE-CR1 because guide-system validation partially duplicates workflow-map registry checks instead of composing or selecting the existing workflow-map validator that owns registry/table consistency.
+  - GUIDE-CR1 was accepted and resolved by refactoring GUIDE-008 to compose skill_validation.validate_workflow_artifact_map_contract and adding regression coverage for workflow-map-owned registry/table mismatch reporting.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
     result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
@@ -177,6 +179,26 @@ validation:
     result: pass_code_review_m2_r1
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-resolution.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m2-r1.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md
     result: pass_code_review_m2_r1_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate
+  - command: python scripts/test-guide-system-validator.py
+    result: pass_guide_cr1_resolution_10_tests
+  - command: python scripts/validate-guide-system.py
+    result: pass_guide_cr1_resolution
+  - command: python scripts/test-select-validation.py
+    result: pass_guide_cr1_resolution_99_tests
+  - command: python scripts/test-skill-validator.py -k workflow
+    result: pass_guide_cr1_resolution_31_tests
+  - command: python scripts/test-skill-validator.py
+    result: pass_guide_cr1_resolution_200_tests
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_guide_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_guide_cr1_resolution_reviews_6_findings_1_log_entries_6_resolution_entries_1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-resolution.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m2-r1.md
+    result: pass_guide_cr1_resolution_validated_3_artifact_files
+  - command: git diff --check --
+    result: pass_guide_cr1_resolution
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validate-guide-system.py --path scripts/test-guide-system-validator.py --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-resolution.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m2-r1.md
+    result: pass_guide_cr1_resolution_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_regression_guide_system_validate_selector_regression
 changed_files:
   - README.md
   - docs/workflows.md
