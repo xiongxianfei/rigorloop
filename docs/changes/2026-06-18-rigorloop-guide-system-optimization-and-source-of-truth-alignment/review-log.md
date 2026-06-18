@@ -16,4 +16,16 @@ This ledger records formal lifecycle reviews for the RigorLoop guide system opti
 
 ## Review Entries
 
-None yet.
+### Review entry
+
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: M2. Cross-guide validation
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: GUIDE-CR1
+Open findings: GUIDE-CR1
+Recording status: recorded
