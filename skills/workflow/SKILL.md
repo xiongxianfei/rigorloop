@@ -165,7 +165,7 @@ For path or state lookup, start from the active plan, current artifact metadata,
 
 The workflow skill must not author proposals, specs, plans, reviews, ADRs, or exact schemas solely because it owns the artifact-location map. Route users to the owning stage skill for artifact content.
 
-Formal workflow-managed lifecycle recording creates or identifies `docs/changes/<change-id>/` before recording change metadata, formal review records, review log, review resolution, explain-change, verify report, or change-local PR handoff evidence. The detailed plan body remains `docs/plans/YYYY-MM-DD-slug.md`, not `docs/changes/<change-id>/plan.md`.
+For formal workflow-managed lifecycle recording, create or identify `docs/changes/<change-id>/` before recording change metadata, formal review records, review log, review resolution, explain-change, verify report, or change-local PR handoff evidence. Use `docs/plans/YYYY-MM-DD-slug.md` for the detailed plan body and `docs/plan.md` for the lifecycle index. Treat `docs/changes/<change-id>/plan.md` as a non-canonical historical or rejected plan-body path.
 
 Unknown artifact types are blockers. If the workflow guide is present but silent for an artifact type, use a safe owning-skill portable default. If no safe default exists, request an explicit path or workflow-map update instead of deriving a path from naming convention, prior chat, or a learn session.
 

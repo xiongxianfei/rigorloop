@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-06-17-workflow-skill-artifact-location-map`
 - Current owner: agent
-- Current stage: verify
-- Next stage: pr
+- Current stage: pr
+- Next stage: hosted CI and human review
 - Blockers: none
 
 ## Purpose / big picture
@@ -67,9 +67,9 @@ Relevant surfaces:
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready for PR handoff
-- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, explain-change is current, and local selected verification passed; PR body/open readiness remains owned by the PR stage.
+- Next stage: hosted CI and human review
+- Final closeout readiness: PR opened
+- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, explain-change is current, local selected verification passed, and PR #99 is open; hosted CI and human review remain before final lifecycle Done.
 
 ## Milestones
 
@@ -266,6 +266,7 @@ Relevant surfaces:
 - 2026-06-18: Recorded code-review M3 R1 as clean-with-notes with no material findings. Closed M3 and handed off to final closeout.
 - 2026-06-18: Refreshed `explain-change.md` after code-review M3 R1 with problem, decision trail, file-by-file rationale, test and validation evidence, review-resolution summary, alternatives, scope control, and risks. Handoff moves to verify.
 - 2026-06-18: Final verify passed local selected validation across the full branch change surface, recorded `verify-report.md`, fixed stale readiness text in this plan tail, and established branch-ready for PR handoff. Hosted CI remains a PR-stage observation.
+- 2026-06-18: Opened PR #99. Refined published workflow skill wording to positively route formal lifecycle evidence, detailed plan bodies, and the lifecycle index; reran selected CI for the touched skill/evidence surfaces.
 
 ## Decision log
 
@@ -344,11 +345,11 @@ Relevant surfaces:
 
 ## Outcome and retrospective
 
-- Final local verify passed and established branch-ready for PR handoff.
+- Final local verify passed and established branch-ready for PR handoff; PR #99 is open.
 - No lifecycle order, artifact content schema, historical plan migration, or generated public adapter hand-edit was introduced.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Branch-ready for `pr` handoff.
-- PR body/open readiness, hosted CI success, merge readiness, and final lifecycle Done are not claimed by this plan.
+- PR #99 is open.
+- Hosted CI success, merge readiness, and final lifecycle Done are not claimed by this plan.
