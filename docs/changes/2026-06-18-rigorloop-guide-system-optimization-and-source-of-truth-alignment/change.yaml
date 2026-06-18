@@ -1,0 +1,34 @@
+change_id: 2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+title: RigorLoop guide system optimization and source-of-truth alignment
+classification: proposal-review-recording
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md
+requirements:
+  - Record the guide-system optimization proposal before proposal-review.
+  - Review the revised proposal for readiness for spec after GUIDE-PR1, GUIDE-PR2, and GUIDE-PR3 revisions.
+  - Preserve the workflow-map plan-location dependency instead of treating this proposal as the owner of exact plan-body path policy.
+tests:
+  - Proposal-review R1 approved the revised proposal with no material findings.
+  - The proposal keeps open-question decisions recorded and leaves no unresolved proposal-review blocker before spec.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_after_artifact_key_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md
+    result: pass_validated_1_artifact_file
+  - command: git diff --check -- docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate
+changed_files:
+  - docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md
+  - docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+  - docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md
+  - docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md
+  review_log: docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md
