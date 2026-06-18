@@ -4939,6 +4939,345 @@ and result format.
             with self.subTest(term=term):
                 self.assertIn(term, artifact_locations)
 
+    def test_workflow_map_m1_workflows_doc_contains_canonical_artifact_registry(self) -> None:
+        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        registry = extract_markdown_block(workflows, "Artifact registry")
+
+        required_terms = [
+            "canonical fenced YAML artifact registry",
+            "```yaml",
+            "artifact_locations:",
+            "proposal:",
+            "path: docs/proposals/YYYY-MM-DD-slug.md",
+            "spec:",
+            "path: specs/slug.md",
+            "test_spec:",
+            "path: specs/slug.test.md",
+            "plan_index:",
+            "path: docs/plan.md",
+            "change_plan:",
+            "path: docs/plans/YYYY-MM-DD-slug.md",
+            "change_metadata:",
+            "path: docs/changes/<change-id>/change.yaml",
+            "formal_review_record:",
+            "path: docs/changes/<change-id>/reviews/<stage>-r<n>.md",
+            "review_log:",
+            "path: docs/changes/<change-id>/review-log.md",
+            "review_resolution:",
+            "path: docs/changes/<change-id>/review-resolution.md",
+            "explain_change:",
+            "path: docs/changes/<change-id>/explain-change.md",
+            "verify_report:",
+            "path: docs/changes/<change-id>/verify-report.md",
+            "pr_handoff:",
+            "external_surface: pull_request_body",
+            "learn_session:",
+            "path: docs/learn/sessions/YYYY-MM-DD-slug.md",
+            "required_when:",
+            "owner:",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, registry)
+
+        self.assertNotIn(
+            "docs/changes/<change-id>/plan.md",
+            registry,
+            "workflow registry must not make change-pack plan.md a canonical plan-body path",
+        )
+
+    def test_workflow_map_m1_workflow_skill_default_paths_match_change_pack_contract(
+        self,
+    ) -> None:
+        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+        defaults = extract_markdown_block(workflow, "Default artifact paths")
+
+        required_terms = [
+            "docs/workflows.md",
+            "docs/plan.md",
+            "docs/proposals/YYYY-MM-DD-slug.md",
+            "specs/slug.md",
+            "specs/slug.test.md",
+            "docs/plans/YYYY-MM-DD-slug.md",
+            "docs/changes/<change-id>/change.yaml",
+            "docs/changes/<change-id>/reviews/<stage>-r<n>.md",
+            "docs/changes/<change-id>/review-log.md",
+            "docs/changes/<change-id>/review-resolution.md",
+            "docs/changes/<change-id>/explain-change.md",
+            "docs/changes/<change-id>/verify-report.md",
+            "docs/learn/sessions/YYYY-MM-DD-slug.md",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, defaults)
+
+        forbidden_terms = [
+            "docs/changes/<change-id>/plan.md",
+            "docs/explain/YYYY-MM-DD-slug.md",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, defaults)
+
+    def test_workflow_map_m2_validator_accepts_current_registry_and_tables(self) -> None:
+        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        workflow_skill = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        stage_skills = {
+            name: (ROOT / "skills" / name / "SKILL.md").read_text(encoding="utf-8")
+            for name in ("plan", "proposal-review", "spec-review")
+        }
+
+        errors = skill_validation.validate_workflow_artifact_map_contract(
+            SKILL_CONTRACT_WORKFLOWS_DOC,
+            workflows,
+            workflow_skill_text=workflow_skill,
+            stage_skill_texts=stage_skills,
+        )
+
+        self.assertEqual(errors, [])
+
+    def test_workflow_map_m2_validator_requires_architecture_registry_entries(
+        self,
+    ) -> None:
+        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        without_architecture_record = workflows.replace(
+            "  architecture_record:\n"
+            "    owner: architecture\n"
+            "    path: docs/architecture/YYYY-MM-DD-slug.md\n"
+            "    required_when: architecture stage is triggered\n",
+            "",
+        )
+        without_adr = workflows.replace(
+            "  adr:\n"
+            "    owner: architecture\n"
+            "    path: docs/adr/ADR-YYYYMMDD-slug.md\n"
+            "    required_when: durable architecture decision is recorded\n",
+            "",
+        )
+
+        architecture_record_errors = (
+            skill_validation.validate_workflow_artifact_map_contract(
+                SKILL_CONTRACT_WORKFLOWS_DOC,
+                without_architecture_record,
+            )
+        )
+        adr_errors = skill_validation.validate_workflow_artifact_map_contract(
+            SKILL_CONTRACT_WORKFLOWS_DOC,
+            without_adr,
+        )
+
+        self.assertTrue(
+            any(
+                error.endswith(
+                    ": artifact registry missing required entry architecture_record"
+                )
+                for error in architecture_record_errors
+            ),
+            architecture_record_errors,
+        )
+        self.assertTrue(
+            any(
+                error.endswith(": artifact registry missing required entry adr")
+                for error in adr_errors
+            ),
+            adr_errors,
+        )
+
+    def test_workflow_map_m2_validator_rejects_registry_shape_errors(self) -> None:
+        workflows = """
+        # Workflows
+
+        ## Artifact registry
+
+        ```yaml
+        artifact_locations:
+          proposal:
+            path: docs/proposals/YYYY-MM-DD-slug.md
+            required_when: proposal stage
+          change_plan:
+            owner: plan
+            path: docs/plans/YYYY-MM-DD-slug.md
+        ```
+
+        ## Artifact locations
+
+        | Artifact type | Default location | Owning skill | Required when |
+        | --- | --- | --- | --- |
+        | Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |
+        | Plans | `docs/plans/YYYY-MM-DD-slug.md` | `plan` | Planned initiative. |
+        """
+
+        errors = skill_validation.validate_workflow_artifact_map_contract(
+            Path("docs/workflows.md"),
+            textwrap.dedent(workflows),
+        )
+
+        self.assertIn(
+            "docs/workflows.md: artifact registry entry proposal missing owner",
+            errors,
+        )
+        self.assertIn(
+            "docs/workflows.md: artifact registry entry change_plan missing required_when",
+            errors,
+        )
+
+    def test_workflow_map_m2_validator_rejects_duplicate_registry_keys(self) -> None:
+        workflows = """
+        # Workflows
+
+        ## Artifact registry
+
+        ```yaml
+        artifact_locations:
+          verify_report:
+            owner: verify
+            path: docs/changes/<change-id>/verify-report.md
+            required_when: verify stage
+          verify_report:
+            owner: verify
+            path: docs/changes/<change-id>/verify-report.md
+            required_when: duplicate verify stage
+          proposal:
+            owner: proposal
+            path: docs/proposals/YYYY-MM-DD-slug.md
+            path: docs/proposals/duplicate.md
+            required_when: proposal stage
+        ```
+
+        ## Artifact locations
+
+        | Artifact type | Default location | Owning skill | Required when |
+        | --- | --- | --- | --- |
+        | Verify report | `docs/changes/<change-id>/verify-report.md` | `verify` | Verify stage. |
+        | Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |
+        """
+
+        errors = skill_validation.validate_workflow_artifact_map_contract(
+            Path("docs/workflows.md"),
+            textwrap.dedent(workflows),
+        )
+
+        self.assertIn(
+            "docs/workflows.md: artifact registry has duplicate entry verify_report",
+            errors,
+        )
+        self.assertIn(
+            "docs/workflows.md: artifact registry entry proposal has duplicate field path",
+            errors,
+        )
+
+    def test_workflow_map_m2_validator_rejects_ambiguous_placement(self) -> None:
+        workflows = """
+        # Workflows
+
+        ## Artifact registry
+
+        ```yaml
+        artifact_locations:
+          proposal:
+            owner: proposal
+            required_when: proposal stage
+          pr_handoff:
+            owner: pr
+            path: docs/changes/<change-id>/pr.md
+            external_surface: pull_request_body
+            required_when: pr stage
+        ```
+
+        ## Artifact locations
+
+        | Artifact type | Default location | Owning skill | Required when |
+        | --- | --- | --- | --- |
+        | Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |
+        | PR handoff | Pull request body | `pr` | PR stage. |
+        """
+
+        errors = skill_validation.validate_workflow_artifact_map_contract(
+            Path("docs/workflows.md"),
+            textwrap.dedent(workflows),
+        )
+
+        self.assertIn(
+            "docs/workflows.md: repository-local artifact proposal must define exactly one path",
+            errors,
+        )
+        self.assertIn(
+            "docs/workflows.md: artifact registry entry pr_handoff must define exactly one placement representation",
+            errors,
+        )
+
+    def test_workflow_map_m2_validator_rejects_table_and_path_drift(self) -> None:
+        workflows = """
+        # Workflows
+
+        ## Artifact registry
+
+        ```yaml
+        artifact_locations:
+          change_plan:
+            owner: plan
+            path: docs/changes/<change-id>/plan.md
+            required_when: planned initiative
+          formal_review_record:
+            owner: review skills
+            path: docs/reviews/<stage>-r<n>.md
+            required_when: formal lifecycle review
+        ```
+
+        ## Artifact locations
+
+        | Artifact type | Default location | Owning skill | Required when |
+        | --- | --- | --- | --- |
+        | Plans | `docs/plans/YYYY-MM-DD-slug.md` | `plan` | Planned initiative. |
+        | Formal review records | `docs/reviews/<stage>-r<n>.md` | review skills | Formal lifecycle review. |
+        """
+
+        errors = skill_validation.validate_workflow_artifact_map_contract(
+            Path("docs/workflows.md"),
+            textwrap.dedent(workflows),
+            workflow_skill_text="docs/plans/YYYY-MM-DD-slug.md",
+            stage_skill_texts={
+                "plan": "Canonical plan path: docs/changes/<change-id>/plan.md",
+                "proposal-review": "Record at docs/reviews/proposal-review-r<n>.md",
+            },
+        )
+
+        self.assertIn(
+            "docs/workflows.md: change_plan must use docs/plans/YYYY-MM-DD-slug.md, not docs/changes/<change-id>/plan.md",
+            errors,
+        )
+        self.assertIn(
+            "docs/workflows.md: formal_review_record must route under docs/changes/<change-id>/reviews/",
+            errors,
+        )
+        self.assertIn(
+            "docs/workflows.md: artifact table row Plans placement docs/plans/YYYY-MM-DD-slug.md does not match registry entry change_plan placement docs/changes/<change-id>/plan.md",
+            errors,
+        )
+        self.assertIn(
+            "skills/plan/SKILL.md: stage skill contradicts plan-body registry with docs/changes/<change-id>/plan.md",
+            errors,
+        )
+        self.assertIn(
+            "skills/proposal-review/SKILL.md: stage skill routes formal reviews outside docs/changes/<change-id>/reviews/",
+            errors,
+        )
+
+    def test_workflow_map_m2_validator_rejects_unknown_artifact_input(self) -> None:
+        errors = skill_validation.validate_workflow_artifact_map_lookup(
+            {"proposal": {"path": "docs/proposals/YYYY-MM-DD-slug.md"}},
+            ["proposal", "release_attestation"],
+        )
+
+        self.assertEqual(
+            errors,
+            [
+                "unknown artifact type release_attestation has unresolved placement; request an explicit path or workflow-map update"
+            ],
+        )
+
     def test_project_artifact_location_m1_workflows_doc_names_source_rank(self) -> None:
         workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
         source_rank = extract_markdown_block(workflows, "Artifact-location source rank")
@@ -5346,6 +5685,10 @@ and result format.
             "skills/plan/SKILL.md: installed-skill plan surface contract must distinguish docs/workflows.md, docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/",
             errors,
         )
+        self.assertIn(
+            "skills/plan/SKILL.md: installed-skill plan surface contract must tell plan authors to use clickable relative Markdown links like [Title](plans/YYYY-MM-DD-slug.md) in docs/plan.md",
+            errors,
+        )
 
     def test_installed_skill_plan_surface_contract_helper_accepts_explicit_surfaces(
         self,
@@ -5359,6 +5702,7 @@ and result format.
             Update the plan body at `docs/plans/YYYY-MM-DD-slug.md`.
             Use change metadata at `docs/changes/<change-id>/change.yaml`.
             Record review evidence under `docs/changes/<change-id>/`.
+            Write index links as `[Title](plans/YYYY-MM-DD-slug.md)`.
             """
         )
 

@@ -708,6 +708,8 @@ R41b. `skills/plan/SKILL.md` MUST retain the rule that the Current Handoff Summa
 
 R41c. If `current-handoff-summary.md` cannot satisfy `R41` through `R41b`, the handoff summary template MUST remain inline in `skills/plan/SKILL.md` for this pilot.
 
+R41d. `skills/plan/SKILL.md` MUST instruct plan authors to write `docs/plan.md` and `docs/plan-archive.md` plan references as clickable Markdown links relative to the index file, such as `[Title](plans/YYYY-MM-DD-slug.md)`, instead of bare repository-root plan paths.
+
 R42. Every assets-first plan pilot asset MUST include metadata comments for template name and version, skill name, template status, structural fingerprint, and maintained-alongside path.
 
 R42a. Asset template status MUST use one of: `normative`, `optional`, `example`, `deprecated`.

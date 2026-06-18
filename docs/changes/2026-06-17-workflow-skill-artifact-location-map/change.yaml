@@ -1,0 +1,391 @@
+change_id: 2026-06-17-workflow-skill-artifact-location-map
+title: Workflow skill artifact-location map
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
+  spec: specs/workflow-skill-artifact-location-map.md
+  test_spec: specs/workflow-skill-artifact-location-map.test.md
+  explain_change: docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
+  verify_report: docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md
+  review_resolution: docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md
+requirements:
+  - Record the workflow skill artifact-location map proposal before proposal-review.
+  - Record proposal-review R1 findings and dispositions in durable change-local artifacts.
+  - Revise the proposal to resolve WFO-PR1 through WFO-PR3 before downstream spec reliance.
+  - Record proposal-review R2 after proposal revision.
+  - Settle the accepted proposal status before downstream spec reliance.
+  - Draft the workflow skill artifact-location map spec before spec-review.
+  - Record spec-review R1 findings before spec revision.
+  - Revise the proposal and spec after owner correction to preserve docs/plans/YYYY-MM-DD-slug.md as the canonical detailed plan-body location.
+  - Resolve WFO-SR1 through WFO-SR3 before requesting the next spec-review pass.
+  - Record spec-review R2 after spec revision.
+  - Settle the approved spec status before downstream plan reliance.
+  - Create the execution plan and update docs/plan.md before plan-review.
+  - Record plan-review R1 after execution plan review.
+  - Create the test spec before implementation.
+  - Record owner approval of the active test spec before implementation reliance.
+  - Implement M1 workflow map and skill contract updates with tests first.
+  - Record code-review M1 R1 before M2 implementation reliance.
+  - Implement M2 workflow-map structural validation and drift checks with tests first.
+  - Record code-review M2 R1 findings before review-resolution.
+  - Resolve WFO-CR1 before returning M2 to code-review.
+  - Record code-review M2 R2 before M3 implementation reliance.
+  - Implement M3 adapter proof, cold-read evidence, behavior-preservation evidence, and explain-change evidence before M3 code-review.
+  - Record code-review M3 R1 before final closeout reliance.
+  - Refresh explain-change after code-review M3 R1 before verify.
+  - Run final verify before PR handoff.
+  - Clarify published workflow skill wording to state the positive formal lifecycle evidence and plan-surface routing contract.
+tests:
+  - Proposal-review R1 found WFO-PR1 through WFO-PR3 and requested proposal revision.
+  - Proposal revision initially accepted WFO-PR1 by choosing docs/changes/<change-id>/plan.md, then the 2026-06-18 owner correction superseded that direction with docs/plans/YYYY-MM-DD-slug.md as the repository-standard detailed plan-body location.
+  - Proposal revision accepts WFO-PR2 by choosing a canonical fenced YAML artifact registry plus synchronized Markdown tables for docs/workflows.md.
+  - Proposal revision accepts WFO-PR3 by limiting first-slice stage-skill edits to directly contradictory placement text.
+  - Proposal-review R2 approves the revised proposal with no material findings.
+  - Upstream status settlement updates the proposal status from draft to accepted.
+  - Spec authoring creates specs/workflow-skill-artifact-location-map.md with requirements for workflow-map generation, YAML registry shape, Markdown projection consistency, plan-location policy, review placement, source rank, portability, drift validation, and migration boundaries.
+  - Spec-review R1 found WFO-SR1 through WFO-SR3 and requested spec revision.
+  - Spec revision resolves WFO-SR1 by aligning the spec with the repository-standard docs/plans/YYYY-MM-DD-slug.md plan-body contract.
+  - Spec revision resolves WFO-SR2 by allowing deterministic non-path PR handoff registry entries through external_surface or policy.
+  - Spec revision resolves WFO-SR3 by requiring project-local formal review customizations to remain under docs/changes/<change-id>/reviews/ unless a higher-priority source permits another path.
+  - Spec-review R2 approves the revised spec with no material findings.
+  - Upstream status settlement updates the spec status from draft to approved.
+  - Plan authoring creates docs/plans/2026-06-18-workflow-skill-artifact-location-map.md with M1 workflow map and skill contract updates, M2 validation and drift checks, and M3 adapter proof and lifecycle closeout.
+  - docs/plan.md indexes the active plan with a relative clickable link.
+  - Plan-review R1 approves the execution plan with no material findings.
+  - Test spec authoring creates specs/workflow-skill-artifact-location-map.test.md with requirement, example, edge-case, fixture, validation-command, and manual cold-read proof coverage.
+  - Owner approval confirms the active test spec is approved for implementation reliance.
+  - M1 implementation adds workflow-map registry/default-path tests, updates docs/workflows.md with the canonical artifact registry and Markdown projections, and updates skills/workflow/SKILL.md with current artifact-location behavior and default paths.
+  - M1 leaves skills/plan/SKILL.md, skills/proposal-review/SKILL.md, and skills/spec-review/SKILL.md unchanged because inspected placement text already matched the approved map.
+  - Code-review M1 R1 is clean-with-notes with no material findings and hands off to M2 implementation.
+  - M2 implementation adds structural artifact registry validation, registry/table drift checks, workflow skill default drift checks, directly affected stage-skill contradiction checks, stale change-pack plan-path rejection, formal review path rejection outside the change pack, and unknown artifact-type blocker tests.
+  - Code-review M2 R1 found WFO-CR1 and requested review-resolution.
+  - WFO-CR1 resolution requires architecture_record and adr in workflow artifact-map required-entry validation and adds regression coverage for both missing-entry cases.
+  - Code-review M2 R2 is clean-with-notes with no material findings and hands off to M3 implementation.
+  - M3 implementation records behavior-preservation evidence with cold-read answers for required placement questions and explain-change rationale before M3 code-review.
+  - Code-review M3 R1 is clean-with-notes with no material findings and hands off to final closeout.
+  - Explain-change is refreshed after code-review M3 R1 and hands off to verify.
+  - Final verify passes local selected validation across the full branch change surface and records branch-ready for PR handoff.
+  - Published workflow skill wording now tells agents to use the change pack for formal lifecycle evidence, `docs/plans/YYYY-MM-DD-slug.md` for detailed plan bodies, and `docs/plan.md` for the lifecycle index.
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m3-r1.md
+  review_log: docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md
+  location: docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_1_findings_3_log_entries_1_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: fail_missing_changed_files_before_metadata_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md
+    result: pass_validated_1_artifact_file
+  - command: git diff --check -- docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: fail_review_status_must_be_clean_before_metadata_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: fail_proposal_review_r2_log_resolution_anchor_missing_before_review_resolution_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_2_findings_3_log_entries_2_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md
+    result: pass_validated_1_artifact_file_after_proposal_review_r2
+  - command: git diff --check -- docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_after_proposal_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_spec_authoring
+  - command: git diff --check -- docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md specs/workflow-skill-artifact-location-map.md docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_after_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_3_findings_6_log_entries_3_resolution_entries_6_after_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: fail_clean_receipt_root_reserved_fields_before_open_review_metadata_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_3_findings_6_log_entries_3_resolution_entries_6_after_spec_review_r1_final
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1
+  - command: git diff --check -- docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md specs/workflow-skill-artifact-location-map.md docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_after_spec_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: fail_missing_validation_evidence_before_spec_review_resolution_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_3_findings_6_log_entries_3_resolution_entries_6_after_spec_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_spec_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_revision
+  - command: git diff --check -- docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md specs/workflow-skill-artifact-location-map.md docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_after_spec_revision
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_spec_revision
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_4_findings_6_log_entries_4_resolution_entries_6_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_spec_review_r2
+  - command: git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_after_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_4_findings_6_log_entries_4_resolution_entries_6_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
+    result: pass_validated_2_artifact_files_after_spec_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path specs/workflow-skill-artifact-location-map.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
+    result: pass_validated_2_artifact_files_after_plan_authoring
+  - command: git diff --check -- specs/workflow-skill-artifact-location-map.md docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_plan_authoring
+  - command: bash scripts/ci.sh --mode explicit --path specs/workflow-skill-artifact-location-map.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_plan_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_5_findings_6_log_entries_5_resolution_entries_6_after_plan_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_5_findings_6_log_entries_5_resolution_entries_6_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_plan_review_r1
+  - command: git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md specs/workflow-skill-artifact-location-map.md
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/plan-review-r1.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
+    result: pass_validated_2_artifact_files_after_plan_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path specs/workflow-skill-artifact-location-map.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/plan-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/plan-review-r1.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
+    result: fail_stale_readiness_wording_before_test_spec_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_test_spec_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/plan-review-r1.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
+    result: pass_validated_3_artifact_files_after_test_spec_authoring
+  - command: git diff --check -- specs/workflow-skill-artifact-location-map.test.md specs/workflow-skill-artifact-location-map.md docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_test_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/plan-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_test_spec_authoring
+  - command: python scripts/test-skill-validator.py -k workflow_map_m1
+    result: fail_expected_before_m1_workflow_map_updates
+  - command: python scripts/test-skill-validator.py -k workflow_map_m1
+    result: pass_after_m1_workflow_map_updates
+  - command: python scripts/test-skill-validator.py -k project_artifact_location_m1
+    result: pass_after_m1_workflow_map_updates
+  - command: python scripts/test-skill-validator.py -k workflow
+    result: pass_after_m1_workflow_map_updates
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_validated_0_artifact_files_after_m1
+  - command: git diff --check -- docs/workflows.md skills/workflow/SKILL.md skills/plan/SKILL.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md scripts/test-skill-validator.py
+    result: pass_after_m1
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_selected_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression
+  - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_selected_checks_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: fail_missing_clean_receipt_fields_before_code_review_record_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: fail_missing_clean_receipt_fields_before_code_review_record_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_code_review_m1_r1
+  - command: git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_6_findings_6_log_entries_6_resolution_entries_6_after_code_review_m1_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_6_findings_6_log_entries_6_resolution_entries_6_after_code_review_m1_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m1-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_code_review_m1_r1
+  - command: git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md
+    result: pass_after_code_review_m1_r1_final
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_code_review_m1_r1_final
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m1-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_m1_r1
+  - command: python scripts/test-skill-validator.py -k workflow_map_m2
+    result: fail_expected_before_m2_validator_helpers
+  - command: python scripts/test-skill-validator.py -k workflow_map_m2
+    result: pass_after_m2_validator_helpers
+  - command: python scripts/test-skill-validator.py -k workflow
+    result: pass_after_m2_validator_helpers
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m2
+  - command: python scripts/test-skill-validator.py
+    result: pass_199_tests_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_validated_0_artifact_files_after_m2
+  - command: git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/workflows.md docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md
+    result: pass_after_m2
+  - command: git diff --name-status -- docs/plans
+    result: pass_only_active_plan_modified_after_m2
+  - command: python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_selected_skills_regression_skills_generation_regression_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_m2_plan_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_validated_3_artifact_files_after_m2_plan_state_update
+  - command: git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/workflows.md docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_m2_plan_state_update
+  - command: bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_selected_checks_skills_regression_skills_generation_regression_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_m2
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: fail_missing_needs_decision_fields_before_code_review_m2_record_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: fail_clean_receipt_root_shape_before_code_review_m2_metadata_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_code_review_m2_r1
+  - command: git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_7_findings_7_log_entries_7_resolution_entries_7_after_code_review_m2_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_code_review_m2_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_m2_r1
+  - command: python scripts/test-skill-validator.py -k workflow_map_m2
+    result: fail_test_expectation_before_wfo_cr1_diagnostic_shape_fix
+  - command: python scripts/test-skill-validator.py -k workflow_map_m2
+    result: pass_after_wfo_cr1
+  - command: python scripts/test-skill-validator.py -k workflow
+    result: pass_after_wfo_cr1
+  - command: python scripts/test-skill-validator.py
+    result: pass_200_tests_after_wfo_cr1
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_wfo_cr1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: fail_open_finding_before_wfo_cr1_review_log_closeout_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_7_findings_7_log_entries_7_resolution_entries_7_after_wfo_cr1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_wfo_cr1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py
+    result: pass_validated_3_artifact_files_after_wfo_cr1
+  - command: git diff --check --
+    result: pass_after_wfo_cr1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md
+    result: pass_selected_checks_skills_regression_skills_generation_regression_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_wfo_cr1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_8_findings_7_log_entries_8_resolution_entries_7_after_code_review_m2_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_code_review_m2_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_code_review_m2_r2
+  - command: git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md
+    result: pass_after_code_review_m2_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_m2_r2
+  - command: python scripts/build-skills.py --check
+    result: pass_validated_generated_skills_using_temporary_output_after_m3
+  - command: python scripts/test-build-skills.py
+    result: pass_5_tests_after_m3
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: pass_1_test_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_8_findings_7_log_entries_8_resolution_entries_7_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: fail_unsupported_behavior_preservation_and_cold_read_artifact_keys_before_metadata_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/cold-read-proof.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
+    result: pass_validated_3_artifact_files_before_cold_read_consolidation
+  - command: python scripts/test-skill-validator.py
+    result: pass_200_tests_after_m3
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_m3_metadata_shape_fix
+  - command: git diff --check --
+    result: pass_after_m3_metadata_shape_fix
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/cold-read-proof.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
+    result: fail_unregistered_cold_read_proof_before_consolidation
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
+    result: pass_selected_checks_after_cold_read_consolidation
+  - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
+    result: pass_selected_checks_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_9_findings_7_log_entries_9_resolution_entries_7_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m3-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_code_review_m3_r1
+  - command: git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md
+    result: pass_after_code_review_m3_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m3-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_explain_change_refresh
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md
+    result: pass_validated_3_artifact_files_after_explain_change_refresh
+  - command: git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md
+    result: pass_after_explain_change_refresh
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_explain_change_refresh
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_9_findings_7_log_entries_9_resolution_entries_7_before_verify_report
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_before_verify_report
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md
+    result: pass_validated_3_artifact_files_before_verify_report
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m1-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m3-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/plan-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md --path docs/plan.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md --path docs/workflows.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md
+    result: pass_selected_checks_full_branch_surface_before_verify_report
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_9_findings_7_log_entries_9_resolution_entries_7_after_verify_report
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_verify_report
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md
+    result: pass_validated_3_artifact_files_after_verify_report
+  - command: git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md
+    result: pass_after_verify_report
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_verify_report
+  - command: python scripts/test-skill-validator.py -k workflow_map
+    result: pass_10_tests_after_workflow_skill_positive_routing_wording
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_workflow_skill_positive_routing_wording
+  - command: git diff --check -- skills/workflow/SKILL.md docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md
+    result: pass_after_workflow_skill_positive_routing_wording
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md
+    result: pass_selected_checks_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_workflow_skill_positive_routing_wording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_pr_open_state_and_positive_routing_wording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_validated_3_artifact_files_after_pr_open_state_and_positive_routing_wording
+  - command: git diff --check -- skills/workflow/SKILL.md docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md
+    result: pass_after_pr_open_state_and_positive_routing_wording
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
+    result: pass_selected_checks_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_pr_open_state_and_positive_routing_wording
+changed_files:
+  - docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
+  - specs/workflow-skill-artifact-location-map.md
+  - specs/workflow-skill-artifact-location-map.test.md
+  - docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+  - docs/plan.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r1.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/plan-review-r1.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m1-r1.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r1.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r2.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m3-r1.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md
+  - docs/workflows.md
+  - skills/workflow/SKILL.md
+  - scripts/test-skill-validator.py
+  - scripts/skill_validation.py
