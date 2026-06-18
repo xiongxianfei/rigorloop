@@ -11,6 +11,8 @@ Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
 ## Resolution Entries
 
@@ -36,7 +38,7 @@ No material findings.
 
 ### code-review-m2-r1
 
-Review closeout: open
+Review closeout: closed
 
 #### GUIDE-CR1
 
@@ -50,3 +52,7 @@ Chosen action: Refactored `scripts/validate-guide-system.py` so `GUIDE-008` comp
 Rationale: This preserves the approved ownership boundary. Guide-system validation still owns guide links, guide ownership, project-map scope, plan-index boundary, learn-session non-authority, stage-skill drift, and duplicate registry placement outside `docs/workflows.md`; workflow-map registry/table semantics remain owned by the existing workflow-map validator.
 Validation target: Rerun guide-system validator tests, selector tests, workflow-map/skill-validator tests, guide-system validation, change metadata validation, artifact lifecycle validation for touched artifacts, and selected CI for the M2 surfaces.
 Validation evidence: `python scripts/test-guide-system-validator.py`, `python scripts/validate-guide-system.py`, `python scripts/test-select-validation.py`, `python scripts/test-skill-validator.py -k workflow`, and `python scripts/test-skill-validator.py` passed after the fix. Final lifecycle and selected CI evidence is recorded in `change.yaml`.
+
+### code-review-m2-r2
+
+No material findings. `GUIDE-CR1` remains resolved and M2 is closed after clean rerun.
