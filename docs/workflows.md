@@ -190,6 +190,27 @@ The workflow guide takes precedence only for artifact types it specifies. If thi
 
 Unknown artifact types are not placed by naming convention. If an artifact type is absent from this guide and no owning skill has a safe portable default, block and request a workflow-map update or explicit path.
 
+## Guide ownership
+
+Each guide should answer one kind of question. This table routes users to the
+primary live surface without making orientation guides duplicate specs, schemas,
+or stage-skill contracts.
+
+| Question | Primary guide | Secondary source | Owner |
+| --- | --- | --- | --- |
+| Why does this project exist? | `VISION.md` | README summary | `vision` / proposal |
+| What rules govern source of truth? | `CONSTITUTION.md` | this workflow guide summary | constitution |
+| Where does an artifact go? | this workflow guide | owning stage skill portable default | `workflow` |
+| What does this repo contain? | `docs/project-map.md` | README links | `project-map` |
+| What work is active? | `docs/plan.md` | active plan body | `plan` / workflow bookkeeping |
+| What happened in one change? | `docs/changes/<change-id>/` | `docs/plan.md` index entry | relevant stage skills |
+| How do I perform one stage? | `skills/<stage>/SKILL.md` | this workflow guide | owning stage skill |
+| Why did a rule change? | proposal, spec, or learn session | promoted live guide or contract | proposal / learn / owning stage |
+
+Learn sessions explain historical rationale. They are not live routing authority
+unless the rule also appears in this guide, an approved spec, a schema, or an
+owning stage skill.
+
 ## Customer-project portability
 
 Public skills operate in customer-project mode by default.

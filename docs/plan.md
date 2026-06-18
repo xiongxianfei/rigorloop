@@ -13,6 +13,7 @@ Index policy:
 
 ## Active
 - [2026-06-18 Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) - active; PR #99 open; next stage: hosted CI and human review; change: `2026-06-17-workflow-skill-artifact-location-map`.
+- [2026-06-18 Guide System Source-of-Truth Alignment](plans/2026-06-18-guide-system-source-of-truth-alignment.md) - active; next stage: code-review M1; change: `2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`.
 
 ## Blocked
 - none yet

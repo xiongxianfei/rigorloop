@@ -4,13 +4,36 @@ classification: proposal-review-recording
 risk: medium
 artifacts:
   proposal: docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md
+  spec: specs/guide-system-source-of-truth-alignment.md
+  test_spec: specs/guide-system-source-of-truth-alignment.test.md
+  plan: docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md
 requirements:
   - Record the guide-system optimization proposal before proposal-review.
   - Review the revised proposal for readiness for spec after GUIDE-PR1, GUIDE-PR2, and GUIDE-PR3 revisions.
+  - Settle the approved proposal status before downstream spec reliance.
+  - Create the guide system source-of-truth alignment spec before spec-review.
+  - Record spec-review R1 after spec authoring.
+  - Record spec-review R2 after explicit spec-review invocation.
+  - Settle the approved spec status before downstream plan reliance.
+  - Create the execution plan and update docs/plan.md before plan-review.
+  - Record plan-review R1 before test-spec reliance.
+  - Create the active test spec before implementation reliance.
+  - Record maintainer approval of the test spec before implementation reliance.
+  - Implement M1 guide surface alignment for README, workflow guide, project map, and plan index boundary.
   - Preserve the workflow-map plan-location dependency instead of treating this proposal as the owner of exact plan-body path policy.
 tests:
   - Proposal-review R1 approved the revised proposal with no material findings.
   - The proposal keeps open-question decisions recorded and leaves no unresolved proposal-review blocker before spec.
+  - Upstream status settlement updated the proposal status from draft to accepted before spec reliance.
+  - Spec authoring created specs/guide-system-source-of-truth-alignment.md with guide ownership, source-rank, guide-index, validation ownership, baseline drift, proof, and non-goal requirements.
+  - Spec-review R1 approved the spec with no material findings.
+  - Spec-review R2 approved the spec with no material findings.
+  - Upstream status settlement updated the spec status from draft to approved before plan reliance.
+  - Plan authoring created docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md and added an active docs/plan.md entry.
+  - Plan-review R1 approved the execution plan with no material findings.
+  - Test-spec authoring created specs/guide-system-source-of-truth-alignment.test.md with requirement, example, edge-case, validator, proof, compatibility, and manual QA coverage.
+  - Maintainer approved specs/guide-system-source-of-truth-alignment.test.md for implementation on 2026-06-18.
+  - M1 added README guide navigation, workflow guide ownership routing, and project-map boundary wording; stage skills were unchanged because no direct contradiction was found.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
     result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
@@ -22,13 +45,99 @@ validation:
     result: pass
   - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md
     result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_spec_authoring_reviews_1_findings_0_log_entries_1_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_after_spec_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_authoring
+  - command: git diff --check -- docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md specs/guide-system-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_spec_review_r1_reviews_2_findings_0_log_entries_2_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1
+  - command: git diff --check -- docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md specs/guide-system-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_spec_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_spec_review_r2_reviews_3_findings_0_log_entries_3_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_review_r2
+  - command: git diff --check -- docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md specs/guide-system-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_spec_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_after_plan_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_plan_authoring_reviews_3_findings_0_log_entries_3_resolution_entries_0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md
+    result: pass_validated_2_artifact_files_after_plan_authoring
+  - command: git diff --check -- docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md specs/guide-system-source-of-truth-alignment.md docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/plan.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_plan_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_plan_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_plan_review_r1_reviews_4_findings_0_log_entries_4_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/plan-review-r1.md
+    result: pass_validated_2_artifact_files_after_plan_review_r1
+  - command: git diff --check -- docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_plan_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/plan-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_after_test_spec_authoring
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_test_spec_authoring_reviews_4_findings_0_log_entries_4_resolution_entries_0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.test.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/plan-review-r1.md
+    result: pass_validated_3_artifact_files_after_test_spec_authoring
+  - command: git diff --check -- specs/guide-system-source-of-truth-alignment.test.md specs/guide-system-source-of-truth-alignment.md docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/plan.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_after_test_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.test.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/plan-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_test_spec_authoring
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_after_test_spec_approval
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/guide-system-source-of-truth-alignment.test.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_validated_3_artifact_files_after_test_spec_approval
+  - command: git diff --check -- specs/guide-system-source-of-truth-alignment.test.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_after_test_spec_approval
+  - command: bash scripts/ci.sh --mode explicit --path specs/guide-system-source-of-truth-alignment.test.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_test_spec_approval
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_validated_3_artifact_files_for_m1
+  - command: bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_readme_validate_readme_vision_markers_selector_regression_for_m1
+  - command: git diff --check -- README.md docs/workflows.md docs/project-map.md docs/plan.md docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
+    result: pass_for_m1
+  - command: bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.md --path specs/guide-system-source-of-truth-alignment.test.md --path docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/plan-review-r1.md
+    result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_readme_validate_readme_vision_markers_selector_regression_for_m1_full_surface
 changed_files:
+  - README.md
+  - docs/workflows.md
+  - docs/project-map.md
   - docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md
+  - specs/guide-system-source-of-truth-alignment.md
+  - specs/guide-system-source-of-truth-alignment.test.md
+  - docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md
+  - docs/plan.md
   - docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
   - docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md
   - docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md
+  - docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md
+  - docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/plan-review-r1.md
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md
+  reviewed_artifact: docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md
   review_log: docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md

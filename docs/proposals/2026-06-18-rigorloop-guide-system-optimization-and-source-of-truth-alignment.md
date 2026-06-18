@@ -2,7 +2,7 @@
 
 ## Status
 
-draft
+accepted
 
 ## Problem
 
@@ -595,11 +595,12 @@ A spec is recommended because this proposal defines guide ownership and source-o
 
 ## Follow-on Artifacts
 
-None yet
+- Proposal review: `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md`
+- Spec: `specs/guide-system-source-of-truth-alignment.md`
 
 ## Readiness
 
-Ready for `proposal-review`.
+Accepted after proposal-review. Ready for spec authoring and spec-review.
 
 The remaining key dependency before spec is the plan-location relationship with the workflow artifact-location map work. Downstream work should not leave `docs/plans/*.md` and `docs/changes/<change-id>/plan.md` as competing canonical locations for the same workflow-managed plan role.
 
