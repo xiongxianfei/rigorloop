@@ -8,7 +8,7 @@ Terminal disposition: none
 - Change ID: `2026-06-17-workflow-skill-artifact-location-map`
 - Current owner: agent
 - Current stage: implement
-- Next stage: implement M2
+- Next stage: code-review
 - Blockers: none
 
 ## Purpose / big picture
@@ -63,13 +63,13 @@ Relevant surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M2. Workflow-map validation and drift checks
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: code-review-m1-r1 clean-with-notes; no material findings
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Review status: code-review-m1-r1 clean-with-notes; M2 implementation ready for code-review
+- Remaining in-scope implementation milestones: M2 pending code-review, M3
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 and M3 implementation, their required code-review gates, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 code-review, M3 implementation and code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -118,7 +118,7 @@ Relevant surfaces:
 
 ### M2. Workflow-map validation and drift checks
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add deterministic validation for registry shape, registry/table agreement, stale plan-path drift, review path drift, unknown artifact blocking, and affected skill defaults.
 - Requirements: R6-R15, R42-R47, AC3-AC6, AC11-AC16, AC19-AC20
 - Files/components likely touched:
@@ -243,6 +243,8 @@ Relevant surfaces:
 - 2026-06-18: Implemented M1. Added focused tests first for workflow-map registry and workflow-skill default paths. Updated `docs/workflows.md` with canonical YAML registry, Markdown projections, review placement, plan surfaces, customization, and migration notes. Updated `skills/workflow/SKILL.md` to define map ownership, tracked-guide behavior, source-rank fallback, formal change-pack evidence boundaries, unknown-artifact blocking, map-update reason recording, and current default paths.
 - 2026-06-18: Inspected `skills/plan/SKILL.md`, `skills/proposal-review/SKILL.md`, and `skills/spec-review/SKILL.md`; no M1 edit was needed because their plan and review placement text already matched the approved map.
 - 2026-06-18: Recorded code-review M1 R1 as clean-with-notes with no material findings. Closed M1 and handed off to M2 implementation.
+- 2026-06-18: Started M2 implementation for workflow-map structural validation and drift checks.
+- 2026-06-18: Implemented M2. Added structural workflow artifact-map validation to `scripts/skill_validation.py` and fixture-backed tests in `scripts/test-skill-validator.py` for registry parsing, missing fields, duplicate registry keys, ambiguous placement representations, table/registry mismatch, stale change-pack plan paths, review records outside the change pack, workflow-skill default drift, affected stage-skill contradictions, and unknown artifact types. Wired the validator into canonical workflow skill validation.
 
 ## Decision log
 
@@ -283,6 +285,19 @@ Relevant surfaces:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m1-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md`
   - `git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md`
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m1-r1.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md`
+- 2026-06-18: M2 implementation validation passed:
+  - `python scripts/test-skill-validator.py -k workflow_map_m2` first failed before validator helper implementation, then passed after implementation.
+  - `python scripts/test-skill-validator.py -k workflow`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md`
+  - `git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/workflows.md docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md`
+  - `git diff --name-status -- docs/plans`
+  - `python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml`
+  - `git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/workflows.md docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml`
 
 ## Outcome and retrospective
 
@@ -291,4 +306,4 @@ Relevant surfaces:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M2`; not ready for M3, final closeout, verify, or PR.
+- Ready for `code-review` of M2; not ready for M3, final closeout, verify, or PR.
