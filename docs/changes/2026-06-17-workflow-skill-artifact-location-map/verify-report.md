@@ -58,6 +58,8 @@ Working directory:
 | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md` | pass; validated 3 artifact files |
 | `bash scripts/ci.sh --mode explicit ...` across the full branch change surface | pass; selected checks passed |
 | `bash scripts/ci.sh --mode explicit ...` for the final verify-report state | pass; selected checks passed |
+| `bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md` | pass after published workflow skill wording refinement |
+| `bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/verify-report.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md` | pass after recording PR-open lifecycle state |
 
 Full branch-surface selected CI passed these check IDs:
 
@@ -83,6 +85,21 @@ change_metadata.regression
 change_metadata.validate
 ```
 
+Post-PR workflow skill wording refinement selected CI passed these check IDs:
+
+```text
+skills.validate
+skills.regression
+skills.generation_regression
+skills.drift
+adapters.drift
+artifact_lifecycle.validate
+change_metadata.regression
+change_metadata.validate
+```
+
+Final PR-open lifecycle selected CI passed the same check IDs after updating the active plan and plan index.
+
 ## CI Status
 
 Local selected CI passed. Hosted CI was not observed during this local verify run and must be observed after PR handoff.
@@ -103,6 +120,8 @@ No blocking artifact drift found.
 
 Branch-ready: yes.
 
-Next stage: `pr`.
+PR handoff: PR #99 is open.
 
-This report does not claim PR-body readiness, PR-open readiness, hosted CI success, merge readiness, or final lifecycle Done.
+Next stage: hosted CI and human review.
+
+This report does not claim hosted CI success, merge readiness, or final lifecycle Done.

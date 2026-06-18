@@ -39,7 +39,7 @@ Basis:
 - `docs/workflows.md` registry and review-placement sections place formal review records under `docs/changes/<change-id>/reviews/`.
 - `skills/workflow/SKILL.md` says formal lifecycle recording creates or identifies the change pack before formal review records.
 - `docs/workflows.md` plan surfaces identify `docs/plans/YYYY-MM-DD-slug.md` as the plan body path.
-- `skills/workflow/SKILL.md` lists `docs/plans/YYYY-MM-DD-slug.md` as the detailed plan default and explicitly rejects `docs/changes/<change-id>/plan.md` as the plan body.
+- `skills/workflow/SKILL.md` tells agents to use `docs/plans/YYYY-MM-DD-slug.md` for the detailed plan body and `docs/plan.md` for the lifecycle index, while treating `docs/changes/<change-id>/plan.md` as a non-canonical historical or rejected plan-body path.
 - `docs/workflows.md`, `skills/workflow/SKILL.md`, and the index policy comment at the top of `docs/plan.md` all describe `docs/plan.md` as an index.
 
 ## Boundary Check
