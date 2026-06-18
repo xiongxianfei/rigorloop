@@ -66,20 +66,20 @@ Relevant surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Guide surface alignment
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: plan-review-r1 approved
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review M1
+- Current milestone: M2. Cross-guide validation
+- Current milestone state: planned
+- Last reviewed milestone: M1. Guide surface alignment
+- Review status: code-review-m1-r1 clean-with-notes
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 implementation is ready for code-review; M1 is not closed, M2 and M3 are not started, and code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 is closed after clean code-review; M2 and M3 are not started, and explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
 ### M1. Guide surface alignment
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Update human-facing guide surfaces and directly contradictory stage-skill text so each guide answers its assigned question without duplicating another contract.
 - Requirements: R1-R31, R44-R49
 - Files/components likely touched:
@@ -255,6 +255,7 @@ Relevant surfaces:
 - 2026-06-18: Plan-review R1 approved the plan with no material findings; created the active test spec for implementation proof.
 - 2026-06-18: Started M1 implementation for guide surface alignment.
 - 2026-06-18: Completed M1 guide surface alignment and moved M1 to review-requested for code-review.
+- 2026-06-18: Code-review M1 R1 returned clean-with-notes and closed M1; next stage is implement M2.
 
 ## Decision log
 
@@ -283,6 +284,8 @@ Relevant surfaces:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml` passed.
   - `bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml` passed selected checks: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, `selector.regression`.
   - `git diff --check -- README.md docs/workflows.md docs/project-map.md docs/plan.md docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment` passed.
+- M1 review:
+  - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m1-r1.md` recorded clean-with-notes with no material findings.
 
 ## Outcome and retrospective
 
@@ -291,4 +294,4 @@ Relevant surfaces:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M1`; M1 is not closed until code-review and any required review-resolution complete. M2, M3, explain-change, verify, and PR handoff remain incomplete.
+- Ready for `implement M2`; M1 is closed. M2, M3, explain-change, verify, and PR handoff remain incomplete.
