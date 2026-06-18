@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-06-17-workflow-skill-artifact-location-map`
 - Current owner: agent
-- Current stage: explain-change
-- Next stage: verify
+- Current stage: verify
+- Next stage: pr
 - Blockers: none
 
 ## Purpose / big picture
@@ -67,9 +67,9 @@ Relevant surfaces:
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: final closeout in progress
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed and no review-resolution is required; explain-change is current after code-review M3 R1, while verify and PR handoff remain owned downstream stages.
+- Next stage: pr
+- Final closeout readiness: branch-ready for PR handoff
+- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, explain-change is current, and local selected verification passed; PR body/open readiness remains owned by the PR stage.
 
 ## Milestones
 
@@ -265,6 +265,7 @@ Relevant surfaces:
 - 2026-06-18: Implemented M3 proof surfaces. Added behavior-preservation evidence with cold-read placement answers, added explain-change rationale, ran adapter proof and selected CI, and set M3 to review-requested for code-review.
 - 2026-06-18: Recorded code-review M3 R1 as clean-with-notes with no material findings. Closed M3 and handed off to final closeout.
 - 2026-06-18: Refreshed `explain-change.md` after code-review M3 R1 with problem, decision trail, file-by-file rationale, test and validation evidence, review-resolution summary, alternatives, scope control, and risks. Handoff moves to verify.
+- 2026-06-18: Final verify passed local selected validation across the full branch change surface, recorded `verify-report.md`, fixed stale readiness text in this plan tail, and established branch-ready for PR handoff. Hosted CI remains a PR-stage observation.
 
 ## Decision log
 
@@ -343,9 +344,11 @@ Relevant surfaces:
 
 ## Outcome and retrospective
 
-- Pending completion.
+- Final local verify passed and established branch-ready for PR handoff.
+- No lifecycle order, artifact content schema, historical plan migration, or generated public adapter hand-edit was introduced.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M3`; not ready for final closeout, verify, or PR.
+- Branch-ready for `pr` handoff.
+- PR body/open readiness, hosted CI success, merge readiness, and final lifecycle Done are not claimed by this plan.
