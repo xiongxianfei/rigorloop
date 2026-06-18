@@ -267,6 +267,7 @@ Relevant surfaces:
 - 2026-06-18: Completed final verify, recorded `verify-report.md`, and marked the branch ready for PR handoff. PR body readiness remains for the `pr` stage.
 - 2026-06-18: Opened PR #100 for guide system source-of-truth alignment; next stage is hosted CI and human review.
 - 2026-06-18: Clarified README new-repository adoption flow after PR feedback showed users could still confuse adapter installation, standing guide bootstrap, and the per-change lifecycle.
+- 2026-06-18: Adjusted README bootstrap order to put `vision` before `constitution` and explicitly include `docs/plan.md` as the small live-work index.
 
 ## Decision log
 
@@ -364,8 +365,9 @@ Relevant surfaces:
   - Hosted CI was not observed before PR creation; it remains part of the next stage.
 - PR feedback clarification:
   - README now states that `init codex` installs agent support and does not replace standing guide artifacts.
-  - README now gives the new-repository order: install adapter, bootstrap `CONSTITUTION.md`, `VISION.md`, `docs/project-map.md`, and `docs/workflows.md`, then run the per-change lifecycle.
+  - README now gives the new-repository order: install adapter, bootstrap `VISION.md`, `CONSTITUTION.md`, `docs/project-map.md`, `docs/workflows.md`, and `docs/plan.md`, then run the per-change lifecycle.
   - Validation passed: `python scripts/validate-readme.py README.md`, `python scripts/validate-guide-system.py`, explicit-path lifecycle validation, selected CI for README and lifecycle surfaces, and `git diff --check -- README.md`.
+  - Follow-up validation after swapping vision before constitution passed: `python scripts/validate-readme.py README.md`, `python scripts/validate-guide-system.py`, selected CI for README and lifecycle surfaces, and `git diff --check -- README.md`.
 
 ## Outcome and retrospective
 
