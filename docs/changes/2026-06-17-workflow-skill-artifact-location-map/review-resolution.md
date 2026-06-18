@@ -4,7 +4,7 @@
 
 This record closes formal lifecycle review findings for the workflow skill artifact-location map proposal revision.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -12,6 +12,7 @@ Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
 
 ## Resolution Entries
 
@@ -68,6 +69,24 @@ No material findings.
 ### code-review-m1-r1
 
 No material findings.
+
+### code-review-m2-r1
+
+#### WFO-CR1
+
+Finding ID: WFO-CR1
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Apply the targeted M2 validator fix and record validation evidence before closing WFO-CR1.
+Suggested resolution: Add `architecture_record` and `adr` to the workflow artifact-map required registry-entry set, add a targeted regression fixture or assertion that missing architecture and ADR entries fail, and rerun the M2 validation set.
+Rationale: The code-review finding is fixable inside the approved M2 validation scope, but the implementation author must still apply and validate the resolution before the finding can close.
+Required outcome: The workflow-map validator fails when either `architecture_record` or `adr` is missing from `artifact_locations`.
+Stop state: blocked until targeted M2 review-resolution fix and validation evidence are recorded
+Validation target: `python scripts/test-skill-validator.py -k workflow_map_m2`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, selected lifecycle validation, and selected CI for the touched M2 surfaces.
+Validation evidence: pending
 
 ### spec-review-r1
 
