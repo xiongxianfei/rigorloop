@@ -64,6 +64,8 @@ EXPECTED_CATALOG = {
     "release.validate": "python scripts/validate-release-ci.py --version <version>",
     "readme.validate": "python scripts/validate-readme.py README.md",
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
+    "guide_system.regression": "python scripts/test-guide-system-validator.py",
+    "guide_system.validate": "python scripts/validate-guide-system.py",
     "selector.regression": "python scripts/test-select-validation.py",
     "token_cost.regression": "python scripts/test-token-cost-measurement.py",
     "token_cost.report_regression": "python scripts/test-token-cost-report-validation.py",
@@ -872,6 +874,7 @@ raise SystemExit({exit_code})
             "docs/changes/2026-04-25-example/readme-ownership-proof.md",
             "docs/changes/2026-04-25-example/vision-readme-sync-proof.md",
             "docs/changes/2026-04-25-example/cold-read-review.md",
+            "docs/changes/2026-04-25-example/guide-cold-read.md",
             "docs/changes/2026-04-25-example/repository-metadata-proof.md",
             "docs/changes/2026-04-25-example/version-sync-proof.md",
             "docs/changes/2026-04-25-example/baseline.md",
@@ -1161,6 +1164,7 @@ raise SystemExit({exit_code})
             "artifact_lifecycle.regression",
             "change_record_query.regression",
             "change_metadata.regression",
+            "guide_system.regression",
             "review_artifacts.regression",
             "selector.regression",
             "skills.generation_regression",
@@ -1383,7 +1387,7 @@ raise SystemExit({exit_code})
                 "path": "docs/workflows.md",
                 "category": "workflow-guidance",
                 "status": "ok",
-                "checks": {"selector.regression"},
+                "checks": {"selector.regression", "guide_system.validate"},
             },
             {
                 "path": ".gitignore",
@@ -1395,7 +1399,7 @@ raise SystemExit({exit_code})
                 "path": "CONSTITUTION.md",
                 "category": "governance",
                 "status": "ok",
-                "checks": {"selector.regression"},
+                "checks": {"selector.regression", "guide_system.validate"},
             },
             {
                 "path": "schemas/change.schema.json",
@@ -1438,6 +1442,18 @@ raise SystemExit({exit_code})
                 "category": "validator-skills",
                 "status": "ok",
                 "checks": {"skills.regression", "skills.generation_regression"},
+            },
+            {
+                "path": "scripts/validate-guide-system.py",
+                "category": "guide-system-validator",
+                "status": "ok",
+                "checks": {"guide_system.regression", "guide_system.validate"},
+            },
+            {
+                "path": "scripts/test-guide-system-validator.py",
+                "category": "guide-system-validator",
+                "status": "ok",
+                "checks": {"guide_system.regression", "guide_system.validate"},
             },
             {
                 "path": "scripts/change_metadata_semantics.py",
@@ -1497,13 +1513,13 @@ raise SystemExit({exit_code})
                 "path": "docs/plan.md",
                 "category": "plan-index",
                 "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
+                "checks": {"artifact_lifecycle.validate", "guide_system.validate"},
             },
             {
                 "path": "docs/plan-archive.md",
                 "category": "plan-index",
                 "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
+                "checks": {"artifact_lifecycle.validate", "guide_system.validate"},
             },
             {
                 "path": "docs/changes/2026-04-25-example/plan-index-migration.md",
@@ -1573,6 +1589,12 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/cold-read-review.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/guide-cold-read.md",
                 "category": "registered-change-evidence",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
@@ -1876,7 +1898,7 @@ raise SystemExit({exit_code})
                 self.assertIn({"path": path, "category": "learn-artifact"}, payload["classified_paths"])
 
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
-        self.assertEqual(payload["selected_checks"], [])
+        self.assertEqual({"guide_system.validate"}, selected_ids(payload))
 
     def test_docs_examples_paths_are_known_non_lifecycle_paths(self) -> None:
         paths = [
@@ -1928,7 +1950,7 @@ raise SystemExit({exit_code})
                 )
 
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
-        self.assertEqual(payload["selected_checks"], [])
+        self.assertEqual({"guide_system.validate"}, selected_ids(payload))
 
     def test_follow_up_register_path_selects_static_validation(self) -> None:
         path = "docs/follow-ups.md"
@@ -2047,8 +2069,20 @@ raise SystemExit({exit_code})
         self.assertIn({"path": "README.md", "category": "readme"}, payload["classified_paths"])
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertIn("readme.validate", selected_ids(payload))
+        self.assertIn("guide_system.validate", selected_ids(payload))
         self.assertNotIn("readme.vision_markers", selected_ids(payload))
         self.assertFalse(payload["blocking_results"])
+
+    def test_workflow_guidance_selects_composed_guide_system_validator(self) -> None:
+        result = self.select(["docs/workflows.md"])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertIn({"path": "docs/workflows.md", "category": "workflow-guidance"}, payload["classified_paths"])
+        self.assertIn("guide_system.validate", selected_ids(payload))
+        guide_check = next(check for check in payload["selected_checks"] if check["id"] == "guide_system.validate")
+        self.assertEqual(guide_check["command"], "python scripts/validate-guide-system.py")
+        self.assertIn("cross-guide validation", guide_check["reason"])
 
     def test_readme_marker_validation_is_selected_for_marker_block_or_vision_scope(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-readme-markers-"))
@@ -2245,6 +2279,7 @@ raise SystemExit({exit_code})
                 "artifact_lifecycle.validate",
                 "change_metadata.regression",
                 "change_metadata.validate",
+                "guide_system.validate",
                 "readme.validate",
                 "readme.vision_markers",
                 "selector.regression",
