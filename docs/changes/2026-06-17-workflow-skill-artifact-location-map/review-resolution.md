@@ -14,6 +14,7 @@ Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m3-r1
 
 ## Resolution Entries
 
@@ -87,6 +88,10 @@ Validation target: `python scripts/test-skill-validator.py -k workflow_map_m2`, 
 Validation evidence: `python scripts/test-skill-validator.py -k workflow_map_m2`, `python scripts/test-skill-validator.py -k workflow`, `python scripts/test-skill-validator.py`, and `python scripts/validate-skills.py` passed after the fix.
 
 ### code-review-m2-r2
+
+No material findings.
+
+### code-review-m3-r1
 
 No material findings.
 
