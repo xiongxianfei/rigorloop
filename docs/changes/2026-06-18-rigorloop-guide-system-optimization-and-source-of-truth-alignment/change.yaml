@@ -31,6 +31,7 @@ requirements:
   - Record code-review M2 R2 before closing M2 and handing off to M3.
   - Record M3 behavior-preservation proof, cold-read proof, explain-change rationale, and lifecycle handoff evidence before code-review M3.
   - Record code-review M3 R1 before handing off to explain-change.
+  - Update explain-change from the actual branch diff, requirements, tests, reviews, and validation evidence before verify.
 tests:
   - Proposal-review R1 approved the revised proposal with no material findings.
   - The proposal keeps open-question decisions recorded and leaves no unresolved proposal-review blocker before spec.
@@ -56,6 +57,7 @@ tests:
   - M3 added explain-change durable reasoning and recorded that adapter packaging proof is not triggered because no canonical skill files or generated adapter outputs changed.
   - M3 registered the exact guide-cold-read.md change-local evidence path after selected CI blocked unregistered deterministic evidence.
   - Code-review M3 R1 closed M3 with no material findings.
+  - Explain-change updated the durable rationale with file-by-file diff rationale, test mapping, review-resolution summary, alternatives, scope control, and remaining risks.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
     result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
@@ -261,6 +263,16 @@ validation:
     result: pass_code_review_m3_r1_recording
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m3-r1.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md
     result: pass_code_review_m3_r1_recording_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/explain-change.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md
+    result: pass_explain_change_validated_3_artifact_files
+  - command: python scripts/validate-guide-system.py
+    result: pass_explain_change
+  - command: git diff --check -- docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/explain-change.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/plan.md
+    result: pass_explain_change
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/explain-change.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md
+    result: pass_explain_change_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate
 changed_files:
   - README.md
   - docs/workflows.md
