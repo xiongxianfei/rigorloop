@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-06-17-workflow-skill-artifact-location-map`
 - Current owner: agent
-- Current stage: implement
-- Next stage: code-review M3
+- Current stage: code-review
+- Next stage: final closeout
 - Blockers: none
 
 ## Purpose / big picture
@@ -63,13 +63,13 @@ Relevant surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M3. Adapter proof, cold-read evidence, and lifecycle closeout
-- Current milestone state: review-requested
-- Last reviewed milestone: M2
-- Review status: code-review-m2-r2 clean-with-notes; no material findings
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review M3
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 code-review, verify, and PR handoff remain. Explain-change evidence exists, but it must be checked again after any M3 review changes.
+- Current milestone state: closed
+- Last reviewed milestone: M3
+- Review status: code-review-m3-r1 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: final closeout
+- Final closeout readiness: ready to enter final closeout
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed and no review-resolution is required; final closeout still needs explain-change freshness check, verify, and PR handoff through their owning stages.
 
 ## Milestones
 
@@ -161,7 +161,7 @@ Relevant surfaces:
 
 ### M3. Adapter proof, cold-read evidence, and lifecycle closeout
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Prove packaged workflow skill output is current when relevant, record cold-read placement proof, and synchronize lifecycle evidence before final review and verification.
 - Requirements: R48-R53, AC16-AC20
 - Files/components likely touched:
@@ -263,6 +263,7 @@ Relevant surfaces:
 - 2026-06-18: Started M3 implementation. Adapter proof is in scope because `dist/adapters/manifest.yaml` packages the `workflow` skill.
 - 2026-06-18: Consolidated required cold-read proof into registered change evidence at `docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md`; removed the separate unregistered cold-read evidence file after validation selector blocked it as evidence-registration debt.
 - 2026-06-18: Implemented M3 proof surfaces. Added behavior-preservation evidence with cold-read placement answers, added explain-change rationale, ran adapter proof and selected CI, and set M3 to review-requested for code-review.
+- 2026-06-18: Recorded code-review M3 R1 as clean-with-notes with no material findings. Closed M3 and handed off to final closeout.
 
 ## Decision log
 
