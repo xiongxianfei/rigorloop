@@ -8,7 +8,7 @@ Terminal disposition: none
 - Change ID: `2026-06-17-workflow-skill-artifact-location-map`
 - Current owner: agent
 - Current stage: implement
-- Next stage: code-review
+- Next stage: implement M3
 - Blockers: none
 
 ## Purpose / big picture
@@ -62,14 +62,14 @@ Relevant surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Workflow-map validation and drift checks
-- Current milestone state: review-requested
-- Last reviewed milestone: M1
-- Review status: WFO-CR1 resolved; M2 returned to code-review
-- Remaining in-scope implementation milestones: M2 pending code-review, M3
-- Next stage: code-review
+- Current milestone: M3. Adapter proof, cold-read evidence, and lifecycle closeout
+- Current milestone state: planned
+- Last reviewed milestone: M2
+- Review status: code-review-m2-r2 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 re-review, M3 implementation and code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M3 implementation and code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -118,7 +118,7 @@ Relevant surfaces:
 
 ### M2. Workflow-map validation and drift checks
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add deterministic validation for registry shape, registry/table agreement, stale plan-path drift, review path drift, unknown artifact blocking, and affected skill defaults.
 - Requirements: R6-R15, R42-R47, AC3-AC6, AC11-AC16, AC19-AC20
 - Files/components likely touched:
@@ -247,6 +247,7 @@ Relevant surfaces:
 - 2026-06-18: Implemented M2. Added structural workflow artifact-map validation to `scripts/skill_validation.py` and fixture-backed tests in `scripts/test-skill-validator.py` for registry parsing, missing fields, duplicate registry keys, ambiguous placement representations, table/registry mismatch, stale change-pack plan paths, review records outside the change pack, workflow-skill default drift, affected stage-skill contradictions, and unknown artifact types. Wired the validator into canonical workflow skill validation.
 - 2026-06-18: Recorded code-review M2 R1 as changes-requested with WFO-CR1 open. M2 needs review-resolution before re-review.
 - 2026-06-18: Resolved WFO-CR1 by requiring `architecture_record` and `adr` in workflow artifact-map required-entry validation and adding targeted regression coverage for both missing-entry cases. Returned M2 to code-review.
+- 2026-06-18: Recorded code-review M2 R2 as clean-with-notes with no material findings. Closed M2 and handed off to M3 implementation.
 
 ## Decision log
 
@@ -316,6 +317,12 @@ Relevant surfaces:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py`
   - `git diff --check --`
   - `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md`
+- 2026-06-18: Code-review M2 R2 recording validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md`
+  - `git diff --check -- docs/changes/2026-06-17-workflow-skill-artifact-location-map docs/plans/2026-06-18-workflow-skill-artifact-location-map.md docs/plan.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md`
 
 ## Outcome and retrospective
 
@@ -324,4 +331,4 @@ Relevant surfaces:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review` of M2 after WFO-CR1 resolution; not ready for M3, final closeout, verify, or PR.
+- Ready for `implement M3`; not ready for final closeout, verify, or PR.
