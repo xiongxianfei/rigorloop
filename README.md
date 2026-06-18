@@ -51,6 +51,29 @@ Then use the repository workflow docs when you want to understand or customize t
 
 Key paths: [workflow](docs/workflows.md) · [proof example](docs/changes/0001-skill-validator/) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
 
+## Starting a new repository
+
+Use `init` to install agent support. It does not replace the standing guide
+artifacts that make a repository understandable.
+
+```bash
+npx @xiongxianfei/rigorloop@latest init codex
+```
+
+For a new repository, use this order:
+
+1. Install the adapter for your agent: `init codex`, `init claude`, or `init opencode`.
+2. Bootstrap standing repository guidance:
+   - `constitution` creates or updates `CONSTITUTION.md` for source-of-truth and governance rules.
+   - `vision` creates or updates `VISION.md` for project direction and fit checks.
+   - `project-map` creates or updates `docs/project-map.md` when repository orientation is needed.
+   - `workflow` creates or refreshes `docs/workflows.md` for the project-local workflow and artifact-location map.
+3. Start the first real change with the per-change lifecycle:
+   `proposal -> proposal-review -> spec -> spec-review -> architecture when needed -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`.
+
+For an existing repository, do the same bootstrap only for missing or stale
+standing guidance. Do not rewrite durable guides just for symmetry.
+
 ## Where to go next
 
 | Need | Read |
