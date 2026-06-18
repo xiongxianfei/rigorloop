@@ -6,6 +6,8 @@ This map describes the current repository shape for contributors and agents who 
 
 It does not replace the normative source-of-truth order in `CONSTITUTION.md`, the workflow contract in `specs/rigorloop-workflow.md`, the canonical architecture package in `docs/architecture/system/architecture.md`, or change-specific artifacts under `docs/changes/`.
 
+This map orients readers to repository structure and boundaries. It does not own workflow stage order, exact lifecycle artifact placement, or current milestone state.
+
 Observed basis: direct inspection of `README.md`, `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md`, `docs/architecture/system/architecture.md`, selected specs, schemas, scripts, workflows, tests, adapter support files, and repository layout.
 
 ## Map Metadata

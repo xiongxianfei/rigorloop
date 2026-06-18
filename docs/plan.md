@@ -1,5 +1,7 @@
 # Plan index
 
+`docs/plan.md` is the bounded lifecycle index for active, blocked, recent done, and superseded planned work. It is not the body of a plan.
+
 <!--
 Index policy:
 - Active and Blocked are complete and first.
@@ -13,6 +15,7 @@ Index policy:
 
 ## Active
 - [2026-06-18 Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) - active; PR #99 open; next stage: hosted CI and human review; change: `2026-06-17-workflow-skill-artifact-location-map`.
+- [2026-06-18 Guide System Source-of-Truth Alignment](plans/2026-06-18-guide-system-source-of-truth-alignment.md) - active; PR #100 open; next stage: hosted CI and human review; change: `2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`.
 
 ## Blocked
 - none yet
