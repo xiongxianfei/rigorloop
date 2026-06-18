@@ -5346,6 +5346,10 @@ and result format.
             "skills/plan/SKILL.md: installed-skill plan surface contract must distinguish docs/workflows.md, docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/",
             errors,
         )
+        self.assertIn(
+            "skills/plan/SKILL.md: installed-skill plan surface contract must tell plan authors to use clickable relative Markdown links like [Title](plans/YYYY-MM-DD-slug.md) in docs/plan.md",
+            errors,
+        )
 
     def test_installed_skill_plan_surface_contract_helper_accepts_explicit_surfaces(
         self,
@@ -5359,6 +5363,7 @@ and result format.
             Update the plan body at `docs/plans/YYYY-MM-DD-slug.md`.
             Use change metadata at `docs/changes/<change-id>/change.yaml`.
             Record review evidence under `docs/changes/<change-id>/`.
+            Write index links as `[Title](plans/YYYY-MM-DD-slug.md)`.
             """
         )
 

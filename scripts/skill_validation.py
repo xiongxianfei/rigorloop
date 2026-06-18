@@ -619,6 +619,7 @@ INSTALLED_SKILL_PLAN_SURFACE_PATHS = (
     "docs/changes/<change-id>/change.yaml",
     "docs/changes/<change-id>/",
 )
+INSTALLED_SKILL_PLAN_INDEX_LINK_EXAMPLE = "[Title](plans/YYYY-MM-DD-slug.md)"
 
 
 @dataclass(frozen=True)
@@ -896,6 +897,10 @@ def validate_installed_skill_plan_surface_contract(
     if missing:
         errors.append(
             f"{path}: installed-skill plan surface contract must distinguish docs/workflows.md, docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/"
+        )
+    if skill_name == "plan" and INSTALLED_SKILL_PLAN_INDEX_LINK_EXAMPLE not in body:
+        errors.append(
+            f"{path}: installed-skill plan surface contract must tell plan authors to use clickable relative Markdown links like {INSTALLED_SKILL_PLAN_INDEX_LINK_EXAMPLE} in docs/plan.md"
         )
     return errors
 

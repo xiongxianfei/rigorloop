@@ -5,6 +5,8 @@ Index policy:
 - Active and Blocked are complete and first.
 - Done (recent) keeps the most recent 10 completed plans.
 - Older Done entries move to docs/plan-archive.md.
+- Plan links use relative Markdown targets from this file, for example `[Title](plans/YYYY-MM-DD-slug.md)`.
+- Do not use bare repository-root plan paths in this index; they may not render as clickable links.
 - Done entries are one line: date, title, plan link, terminal state, PR/disposition.
 - Do not place active, blocked, unresolved, or review-needed work in the archive.
 -->

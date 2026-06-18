@@ -1,0 +1,49 @@
+# Workflow Skill Artifact-Location Map Review Log
+
+## Scope
+
+This ledger records formal lifecycle reviews for the workflow skill artifact-location map change.
+
+## Review Entries
+
+### Review entry
+
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: 1
+Reviewed artifact: docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
+Status: changes-requested
+Detailed record: reviews/proposal-review-r1.md
+Record: reviews/proposal-review-r1.md
+Resolution: review-resolution.md#proposal-review-r1
+Material findings: WFO-PR1, WFO-PR2, WFO-PR3
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: spec-review-r1
+Stage: spec-review
+Round: 1
+Reviewed artifact: specs/workflow-skill-artifact-location-map.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r1.md
+Record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: WFO-SR1, WFO-SR2, WFO-SR3
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r2
+Stage: proposal-review
+Round: 2
+Reviewed artifact: docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
+Status: approved
+Detailed record: reviews/proposal-review-r2.md
+Record: reviews/proposal-review-r2.md
+Resolution: review-resolution.md#proposal-review-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
