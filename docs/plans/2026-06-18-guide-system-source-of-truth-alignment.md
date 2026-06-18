@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`
 - Current owner: agent
-- Current stage: implement
-- Next stage: implement M3
+- Current stage: explain-change
+- Next stage: verify
 - Blockers: none
 
 ## Purpose / big picture
@@ -71,9 +71,9 @@ Relevant surfaces:
 - Last reviewed milestone: M2. Cross-guide validation
 - Review status: code-review-m3-r1 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: ready to start downstream closeout; not complete
-- Reason final closeout is or is not ready: M1, M2, and M3 are closed after clean code-review; downstream explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1, M2, and M3 are closed after clean code-review; explain-change is updated, and downstream verify and PR handoff remain.
 
 ## Milestones
 
@@ -263,6 +263,7 @@ Relevant surfaces:
 - 2026-06-18: Started M3 proof, packaging, and lifecycle closeout implementation.
 - 2026-06-18: Completed M3 proof artifacts and lifecycle handoff updates; moved M3 to review-requested for code-review.
 - 2026-06-18: Code-review M3 R1 returned clean-with-notes and closed the final implementation milestone; next stage is explain-change.
+- 2026-06-18: Updated explain-change rationale from the actual branch diff, requirements, tests, review-resolution, and validation evidence; next stage is verify.
 
 ## Decision log
 
@@ -345,6 +346,9 @@ Relevant surfaces:
   - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m3-r1.md` recorded clean-with-notes with no material findings and closed M3.
   - Code-review rerun validation passed: `python scripts/test-select-validation.py`, `python scripts/validate-guide-system.py`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`, `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`, and `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`.
   - Review-recording validation passed: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`, `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m3-r1.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md`, `git diff --check -- docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/plan.md`, and selected CI for the review-recording surfaces.
+- Explain-change:
+  - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/explain-change.md` now links the actual branch diff to the proposal, requirements, plan milestones, tests, review outcomes, `GUIDE-CR1` review-resolution, validation evidence, alternatives rejected, scope control, and remaining risks.
+  - Explain-change validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/explain-change.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md`, `python scripts/validate-guide-system.py`, `git diff --check -- docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/explain-change.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/plan.md`, and selected CI for the explain-change surfaces.
 
 ## Outcome and retrospective
 
@@ -353,4 +357,4 @@ Relevant surfaces:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `explain-change`; M1, M2, and M3 are closed after clean code-review, and downstream verify and PR handoff remain incomplete.
+- Ready for `verify`; M1, M2, M3, and explain-change are complete, and downstream PR handoff remains incomplete.
