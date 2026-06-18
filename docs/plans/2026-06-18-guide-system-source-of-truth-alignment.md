@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`
 - Current owner: agent
-- Current stage: test-spec
-- Next stage: implement M1
+- Current stage: implement
+- Next stage: implement M3
 - Blockers: none
 
 ## Purpose / big picture
@@ -66,14 +66,14 @@ Relevant surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Cross-guide validation
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Guide surface alignment
-- Review status: GUIDE-CR1 resolved, code-review M2 rerun requested
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2 rerun
+- Current milestone: M3. Proof, packaging, and lifecycle closeout
+- Current milestone state: planned
+- Last reviewed milestone: M2. Cross-guide validation
+- Review status: code-review-m2-r2 clean-with-notes
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review; M2 review-resolution for GUIDE-CR1 is implemented and awaiting code-review rerun, M3 is not started, and explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 and M2 are closed after clean code-review; M3 is not started, and explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -122,7 +122,7 @@ Relevant surfaces:
 
 ### M2. Cross-guide validation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add deterministic cross-guide validation through a dedicated guide-system validator or artifact-lifecycle guide-system mode while keeping `validate-skills.py` scoped to skill-file checks.
 - Requirements: R32-R43, R48-R49, R52
 - Files/components likely touched:
@@ -259,6 +259,7 @@ Relevant surfaces:
 - 2026-06-18: Completed M2 cross-guide validator implementation and moved M2 to review-requested for code-review.
 - 2026-06-18: Code-review M2 R1 requested changes for `GUIDE-CR1`; M2 is resolution-needed.
 - 2026-06-18: Implemented review-resolution for `GUIDE-CR1` and moved M2 back to review-requested for code-review rerun.
+- 2026-06-18: Code-review M2 R2 returned clean-with-notes and closed M2; next stage is implement M3.
 
 ## Decision log
 
@@ -318,6 +319,10 @@ Relevant surfaces:
   - `python scripts/test-skill-validator.py -k workflow` passed 31 tests.
   - `python scripts/test-skill-validator.py` passed 200 tests.
   - Final `GUIDE-CR1` resolution checks passed: `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-resolution.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m2-r1.md`; `git diff --check --`; and selected CI for the implementation and lifecycle surfaces.
+- M2 review rerun:
+  - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m2-r2.md` recorded clean-with-notes with no material findings and closed M2.
+  - Code-review rerun validation passed: `python scripts/test-guide-system-validator.py`, `python scripts/validate-guide-system.py`, `python scripts/test-select-validation.py`, and `python scripts/test-skill-validator.py -k workflow`.
+  - Review-recording validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`, `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-resolution.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m2-r2.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md`, `git diff --check -- docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/plan.md`, and selected CI for the review-recording surfaces.
 
 ## Outcome and retrospective
 
@@ -326,4 +331,4 @@ Relevant surfaces:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M2 rerun`; M1 is closed, `GUIDE-CR1` has been resolved and recorded, and M3, explain-change, verify, and PR handoff remain incomplete.
+- Ready for `implement M3`; M1 and M2 are closed, and M3, explain-change, verify, and PR handoff remain incomplete.
