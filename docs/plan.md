@@ -15,7 +15,6 @@ Index policy:
 
 ## Active
 - [2026-06-18 Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) - active; PR #99 open; next stage: hosted CI and human review; change: `2026-06-17-workflow-skill-artifact-location-map`.
-- [2026-06-18 Guide System Source-of-Truth Alignment](plans/2026-06-18-guide-system-source-of-truth-alignment.md) - active; PR #100 open; next stage: hosted CI and human review; change: `2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`.
 
 ## Blocked
 - none yet
@@ -24,6 +23,7 @@ Index policy:
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-06-18 Guide System Source-of-Truth Alignment](plans/2026-06-18-guide-system-source-of-truth-alignment.md) - done; terminal state: done; PR #100 merged.
 - [2026-05-26 CI-Maintenance Skill Rename and Workflow Authoring](plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md) - done; terminal state: done; PR #98 merged.
 - [2026-05-25 Spec-Review Testability Routing and Output Consolidation](plans/2026-05-25-spec-review-testability-routing-output-consolidation.md) - done; terminal state: done; PR #96 merged.
 - [2026-05-25 Adopter-Facing Vision and README Principle Rewrite](plans/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite.md) - done; terminal state: done; PR #94 merged through release PR #95.
@@ -33,7 +33,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-05-23 Public Discovery and Developer Adoption Surface](plans/2026-05-23-public-discovery-and-developer-adoption-surface.md) - done; terminal state: done; PR #90 merged.
 - [2026-05-22 Bounded Plan Index and Completed-Plan Archive](plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md) - done; terminal state: done; PR #86 merged.
 - [2026-05-21 Compact Change Validation Metadata](plans/2026-05-21-compact-change-validation-metadata.md) - done; terminal state: done; PR #84 merged.
-- [2026-05-20 Proposal-Family Assets Progressive Disclosure](plans/2026-05-20-proposal-family-assets-progressive-disclosure.md) - done; terminal state: done; PR #81 merged.
 
 ## Superseded
 - none yet
