@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`
 - Current owner: agent
-- Current stage: verify
-- Next stage: pr
+- Current stage: pr
+- Next stage: hosted CI and human review
 - Blockers: none
 
 ## Purpose / big picture
@@ -71,9 +71,9 @@ Relevant surfaces:
 - Last reviewed milestone: M3. Proof, packaging, and lifecycle closeout
 - Review status: code-review-m3-r1 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready; PR handoff remains incomplete
-- Reason final closeout is or is not ready: M1, M2, and M3 are closed after clean code-review; review-resolution is closed; explain-change is current; final verify passed focused validation, selected CI, broad smoke, and lifecycle checks. PR body readiness and PR open readiness remain owned by the `pr` stage.
+- Next stage: hosted CI and human review
+- Final closeout readiness: PR #100 open; final lifecycle Done remains incomplete
+- Reason final closeout is or is not ready: M1, M2, and M3 are closed after clean code-review; review-resolution is closed; explain-change is current; final verify passed focused validation, selected CI, broad smoke, and lifecycle checks; PR #100 is open. Hosted CI and human review remain before terminal lifecycle closeout.
 
 ## Milestones
 
@@ -265,6 +265,7 @@ Relevant surfaces:
 - 2026-06-18: Code-review M3 R1 returned clean-with-notes and closed the final implementation milestone; next stage is explain-change.
 - 2026-06-18: Updated explain-change rationale from the actual branch diff, requirements, tests, review-resolution, and validation evidence; next stage is verify.
 - 2026-06-18: Completed final verify, recorded `verify-report.md`, and marked the branch ready for PR handoff. PR body readiness remains for the `pr` stage.
+- 2026-06-18: Opened PR #100 for guide system source-of-truth alignment; next stage is hosted CI and human review.
 
 ## Decision log
 
@@ -357,6 +358,9 @@ Relevant surfaces:
   - Selected CI passed with `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, `guide_system.regression`, `guide_system.validate`, and `selector.regression`.
   - Broad smoke passed: `bash scripts/ci.sh --mode broad-smoke` reported 12 checks passed.
   - `git diff --check --` passed.
+- PR handoff:
+  - PR #100 opened with a body grounded in the proposal, spec, test spec, plan, explain-change, review-resolution, verify report, actual diff, and validation evidence.
+  - Hosted CI was not observed before PR creation; it remains part of the next stage.
 
 ## Outcome and retrospective
 
@@ -365,4 +369,4 @@ Relevant surfaces:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `pr`; M1, M2, M3, explain-change, and final verify are complete. Branch-ready is recorded, and PR body/open readiness remains incomplete until the `pr` stage.
+- PR #100 is open. M1, M2, M3, explain-change, final verify, and PR handoff are complete; hosted CI and human review remain before terminal lifecycle closeout.

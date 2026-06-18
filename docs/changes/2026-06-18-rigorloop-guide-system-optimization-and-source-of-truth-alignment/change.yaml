@@ -34,6 +34,7 @@ requirements:
   - Record code-review M3 R1 before handing off to explain-change.
   - Update explain-change from the actual branch diff, requirements, tests, reviews, and validation evidence before verify.
   - Run final verify, record branch-ready evidence, and hand off to pr without claiming PR body readiness.
+  - Open the pull request after branch-ready, pr-body-ready, and pr-open-ready checks pass.
 tests:
   - Proposal-review R1 approved the revised proposal with no material findings.
   - The proposal keeps open-question decisions recorded and leaves no unresolved proposal-review blocker before spec.
@@ -61,6 +62,7 @@ tests:
   - Code-review M3 R1 closed M3 with no material findings.
   - Explain-change updated the durable rationale with file-by-file diff rationale, test mapping, review-resolution summary, alternatives, scope control, and remaining risks.
   - Final verify passed focused guide-system validation, review closeout validation, selected CI, broad smoke, lifecycle validation, and whitespace checks.
+  - PR #100 was opened for human review after branch-ready and PR handoff checks passed.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
     result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
@@ -308,6 +310,8 @@ validation:
     result: pass_verify_report_sync_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate
   - command: git diff --check --
     result: pass_verify_report_sync
+  - command: gh pr create --base main --head guide-system-optimization-proposal --title "docs: align guide source of truth" --body "<grounded PR body>"
+    result: opened_pr_100
 changed_files:
   - README.md
   - docs/workflows.md
