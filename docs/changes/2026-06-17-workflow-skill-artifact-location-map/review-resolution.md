@@ -13,6 +13,7 @@ Review closeout: spec-review-r2
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
 ## Resolution Entries
 
@@ -84,6 +85,10 @@ Rationale: R15 requires both architecture records and ADRs in the canonical arti
 Required outcome: The workflow-map validator fails when either `architecture_record` or `adr` is missing from `artifact_locations`.
 Validation target: `python scripts/test-skill-validator.py -k workflow_map_m2`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, selected lifecycle validation, and selected CI for the touched M2 surfaces.
 Validation evidence: `python scripts/test-skill-validator.py -k workflow_map_m2`, `python scripts/test-skill-validator.py -k workflow`, `python scripts/test-skill-validator.py`, and `python scripts/validate-skills.py` passed after the fix.
+
+### code-review-m2-r2
+
+No material findings.
 
 ### spec-review-r1
 
