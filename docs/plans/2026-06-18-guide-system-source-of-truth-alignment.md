@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`
 - Current owner: agent
-- Current stage: explain-change
-- Next stage: verify
+- Current stage: verify
+- Next stage: pr
 - Blockers: none
 
 ## Purpose / big picture
@@ -68,12 +68,12 @@ Relevant surfaces:
 
 - Current milestone: M3. Proof, packaging, and lifecycle closeout
 - Current milestone state: closed
-- Last reviewed milestone: M2. Cross-guide validation
+- Last reviewed milestone: M3. Proof, packaging, and lifecycle closeout
 - Review status: code-review-m3-r1 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: ready to start downstream closeout; not complete
-- Reason final closeout is or is not ready: M1, M2, and M3 are closed after clean code-review; explain-change is updated, and downstream verify and PR handoff remain.
+- Next stage: pr
+- Final closeout readiness: branch-ready; PR handoff remains incomplete
+- Reason final closeout is or is not ready: M1, M2, and M3 are closed after clean code-review; review-resolution is closed; explain-change is current; final verify passed focused validation, selected CI, broad smoke, and lifecycle checks. PR body readiness and PR open readiness remain owned by the `pr` stage.
 
 ## Milestones
 
@@ -264,6 +264,7 @@ Relevant surfaces:
 - 2026-06-18: Completed M3 proof artifacts and lifecycle handoff updates; moved M3 to review-requested for code-review.
 - 2026-06-18: Code-review M3 R1 returned clean-with-notes and closed the final implementation milestone; next stage is explain-change.
 - 2026-06-18: Updated explain-change rationale from the actual branch diff, requirements, tests, review-resolution, and validation evidence; next stage is verify.
+- 2026-06-18: Completed final verify, recorded `verify-report.md`, and marked the branch ready for PR handoff. PR body readiness remains for the `pr` stage.
 
 ## Decision log
 
@@ -349,6 +350,13 @@ Relevant surfaces:
 - Explain-change:
   - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/explain-change.md` now links the actual branch diff to the proposal, requirements, plan milestones, tests, review outcomes, `GUIDE-CR1` review-resolution, validation evidence, alternatives rejected, scope control, and remaining risks.
   - Explain-change validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/explain-change.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md`, `python scripts/validate-guide-system.py`, `git diff --check -- docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/explain-change.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/plan.md`, and selected CI for the explain-change surfaces.
+- Verify:
+  - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/verify-report.md` records branch-ready evidence and the `pr` handoff.
+  - Focused checks passed: `python scripts/test-guide-system-validator.py`, `python scripts/validate-guide-system.py`, `python scripts/test-select-validation.py`, `python scripts/test-skill-validator.py -k workflow`, and `python scripts/test-skill-validator.py`.
+  - Lifecycle and review closeout checks passed: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`, `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`, and explicit-path artifact lifecycle validation for the touched guide, spec, plan, change-local, and validator surfaces.
+  - Selected CI passed with `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, `guide_system.regression`, `guide_system.validate`, and `selector.regression`.
+  - Broad smoke passed: `bash scripts/ci.sh --mode broad-smoke` reported 12 checks passed.
+  - `git diff --check --` passed.
 
 ## Outcome and retrospective
 
@@ -357,4 +365,4 @@ Relevant surfaces:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `verify`; M1, M2, M3, and explain-change are complete, and downstream PR handoff remains incomplete.
+- Ready for `pr`; M1, M2, M3, explain-change, and final verify are complete. Branch-ready is recorded, and PR body/open readiness remains incomplete until the `pr` stage.
