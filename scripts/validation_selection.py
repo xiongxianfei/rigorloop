@@ -263,6 +263,14 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("cold-read reviewer evidence is recorded",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="guide-cold-read-proof",
+        patterns=("guide-cold-read.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("guide-system cold-read proof is recorded",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="repository-metadata-proof",
         patterns=("repository-metadata-proof.md",),
         selector_routes=("artifact_lifecycle.validate",),
