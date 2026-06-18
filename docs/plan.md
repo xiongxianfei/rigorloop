@@ -12,7 +12,7 @@ Index policy:
 -->
 
 ## Active
-- [2026-06-18 Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) - active; current milestone: M3 closed; next stage: final closeout; change: `2026-06-17-workflow-skill-artifact-location-map`.
+- [2026-06-18 Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) - active; current milestone: M3 closed; next stage: verify; change: `2026-06-17-workflow-skill-artifact-location-map`.
 
 ## Blocked
 - none yet

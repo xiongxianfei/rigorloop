@@ -7,8 +7,8 @@ Terminal disposition: none
 
 - Change ID: `2026-06-17-workflow-skill-artifact-location-map`
 - Current owner: agent
-- Current stage: code-review
-- Next stage: final closeout
+- Current stage: explain-change
+- Next stage: verify
 - Blockers: none
 
 ## Purpose / big picture
@@ -67,9 +67,9 @@ Relevant surfaces:
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: final closeout
-- Final closeout readiness: ready to enter final closeout
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed and no review-resolution is required; final closeout still needs explain-change freshness check, verify, and PR handoff through their owning stages.
+- Next stage: verify
+- Final closeout readiness: final closeout in progress
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed and no review-resolution is required; explain-change is current after code-review M3 R1, while verify and PR handoff remain owned downstream stages.
 
 ## Milestones
 
@@ -264,6 +264,7 @@ Relevant surfaces:
 - 2026-06-18: Consolidated required cold-read proof into registered change evidence at `docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md`; removed the separate unregistered cold-read evidence file after validation selector blocked it as evidence-registration debt.
 - 2026-06-18: Implemented M3 proof surfaces. Added behavior-preservation evidence with cold-read placement answers, added explain-change rationale, ran adapter proof and selected CI, and set M3 to review-requested for code-review.
 - 2026-06-18: Recorded code-review M3 R1 as clean-with-notes with no material findings. Closed M3 and handed off to final closeout.
+- 2026-06-18: Refreshed `explain-change.md` after code-review M3 R1 with problem, decision trail, file-by-file rationale, test and validation evidence, review-resolution summary, alternatives, scope control, and risks. Handoff moves to verify.
 
 ## Decision log
 
