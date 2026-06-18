@@ -2066,6 +2066,17 @@ raise SystemExit({exit_code})
         self.assertNotIn("readme.vision_markers", selected_ids(payload))
         self.assertFalse(payload["blocking_results"])
 
+    def test_workflow_guidance_selects_composed_guide_system_validator(self) -> None:
+        result = self.select(["docs/workflows.md"])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertIn({"path": "docs/workflows.md", "category": "workflow-guidance"}, payload["classified_paths"])
+        self.assertIn("guide_system.validate", selected_ids(payload))
+        guide_check = next(check for check in payload["selected_checks"] if check["id"] == "guide_system.validate")
+        self.assertEqual(guide_check["command"], "python scripts/validate-guide-system.py")
+        self.assertIn("cross-guide validation", guide_check["reason"])
+
     def test_readme_marker_validation_is_selected_for_marker_block_or_vision_scope(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-readme-markers-"))
         self.addCleanupTree(temp_root)

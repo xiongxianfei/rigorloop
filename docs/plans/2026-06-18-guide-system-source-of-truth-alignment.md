@@ -67,13 +67,13 @@ Relevant surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M2. Cross-guide validation
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Guide surface alignment
-- Review status: code-review-m2-r1 changes-requested
-- Remaining in-scope implementation milestones: M2 resolution-needed, M3
-- Next stage: review-resolution M2
+- Review status: GUIDE-CR1 resolved, code-review M2 rerun requested
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: code-review M2 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review; M2 has an open material code-review finding requiring review-resolution, M3 is not started, and explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 is closed after clean code-review; M2 review-resolution for GUIDE-CR1 is implemented and awaiting code-review rerun, M3 is not started, and explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -122,7 +122,7 @@ Relevant surfaces:
 
 ### M2. Cross-guide validation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Add deterministic cross-guide validation through a dedicated guide-system validator or artifact-lifecycle guide-system mode while keeping `validate-skills.py` scoped to skill-file checks.
 - Requirements: R32-R43, R48-R49, R52
 - Files/components likely touched:
@@ -258,6 +258,7 @@ Relevant surfaces:
 - 2026-06-18: Code-review M1 R1 returned clean-with-notes and closed M1; next stage is implement M2.
 - 2026-06-18: Completed M2 cross-guide validator implementation and moved M2 to review-requested for code-review.
 - 2026-06-18: Code-review M2 R1 requested changes for `GUIDE-CR1`; M2 is resolution-needed.
+- 2026-06-18: Implemented review-resolution for `GUIDE-CR1` and moved M2 back to review-requested for code-review rerun.
 
 ## Decision log
 
@@ -307,6 +308,16 @@ Relevant surfaces:
   - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m2-r1.md` recorded `changes-requested` with material finding `GUIDE-CR1`.
   - `GUIDE-CR1` requires review-resolution because the new guide-system validator partially duplicates workflow-map registry checks instead of composing or selecting the existing workflow-map validator that owns registry/table consistency.
   - Review recording validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`, `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-resolution.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m2-r1.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md`, `git diff --check -- docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/plan.md`, and selected CI for the review-recording surfaces.
+- M2 review-resolution:
+  - `GUIDE-CR1` was accepted and resolved by composing the existing workflow-map validator from `scripts/validate-guide-system.py` instead of carrying a partial guide-owned registry contract.
+  - Added guide-system validator regression coverage proving a registry/table mismatch fails through `workflow map contract failed`, and static coverage preventing a guide-owned required-entry list from returning.
+  - Added selector regression coverage documenting that `docs/workflows.md` changes select the composed guide-system validator.
+  - `python scripts/test-guide-system-validator.py` passed 10 tests.
+  - `python scripts/validate-guide-system.py` passed.
+  - `python scripts/test-select-validation.py` passed 99 tests.
+  - `python scripts/test-skill-validator.py -k workflow` passed 31 tests.
+  - `python scripts/test-skill-validator.py` passed 200 tests.
+  - Final `GUIDE-CR1` resolution checks passed: `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-resolution.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m2-r1.md`; `git diff --check --`; and selected CI for the implementation and lifecycle surfaces.
 
 ## Outcome and retrospective
 
@@ -315,4 +326,4 @@ Relevant surfaces:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `review-resolution M2`; M1 is closed, M2 has open material finding `GUIDE-CR1`, and M3, explain-change, verify, and PR handoff remain incomplete.
+- Ready for `code-review M2 rerun`; M1 is closed, `GUIDE-CR1` has been resolved and recorded, and M3, explain-change, verify, and PR handoff remain incomplete.
