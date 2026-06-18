@@ -4,7 +4,7 @@
 
 This record closes formal lifecycle review findings for the workflow skill artifact-location map proposal revision.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -75,18 +75,15 @@ No material findings.
 #### WFO-CR1
 
 Finding ID: WFO-CR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
-Decision owner: implementation author
-Decision needed: Apply the targeted M2 validator fix and record validation evidence before closing WFO-CR1.
-Suggested resolution: Add `architecture_record` and `adr` to the workflow artifact-map required registry-entry set, add a targeted regression fixture or assertion that missing architecture and ADR entries fail, and rerun the M2 validation set.
-Rationale: The code-review finding is fixable inside the approved M2 validation scope, but the implementation author must still apply and validate the resolution before the finding can close.
+Chosen action: Added `architecture_record` and `adr` to the workflow artifact-map required registry-entry set and added targeted regression coverage that removes each entry from the real workflow map and expects an artifact-specific missing-entry diagnostic.
+Rationale: R15 requires both architecture records and ADRs in the canonical artifact registry, and the validator must fail deterministically when either required entry is absent.
 Required outcome: The workflow-map validator fails when either `architecture_record` or `adr` is missing from `artifact_locations`.
-Stop state: blocked until targeted M2 review-resolution fix and validation evidence are recorded
 Validation target: `python scripts/test-skill-validator.py -k workflow_map_m2`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, selected lifecycle validation, and selected CI for the touched M2 surfaces.
-Validation evidence: pending
+Validation evidence: `python scripts/test-skill-validator.py -k workflow_map_m2`, `python scripts/test-skill-validator.py -k workflow`, `python scripts/test-skill-validator.py`, and `python scripts/validate-skills.py` passed after the fix.
 
 ### spec-review-r1
 
