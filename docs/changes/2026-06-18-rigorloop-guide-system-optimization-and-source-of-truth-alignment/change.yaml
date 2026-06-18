@@ -36,6 +36,7 @@ requirements:
   - Run final verify, record branch-ready evidence, and hand off to pr without claiming PR body readiness.
   - Open the pull request after branch-ready, pr-body-ready, and pr-open-ready checks pass.
   - Clarify the new-repository adoption path when PR feedback shows the user-facing README flow is ambiguous.
+  - Close the planned initiative after PR #100 merges and hosted CI succeeds.
 tests:
   - Proposal-review R1 approved the revised proposal with no material findings.
   - The proposal keeps open-question decisions recorded and leaves no unresolved proposal-review blocker before spec.
@@ -66,6 +67,7 @@ tests:
   - PR #100 was opened for human review after branch-ready and PR handoff checks passed.
   - README now separates adapter installation, standing repository guide bootstrap, and the per-change lifecycle.
   - README now lists the usual new-repository bootstrap order as vision before constitution, then project map, workflow guide, and `docs/plan.md`.
+  - PR #100 merged after hosted CI success; the plan body is terminal done, the plan index moved the initiative to Done recent, and the oldest Done recent entry moved to the archive.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
     result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
@@ -333,6 +335,16 @@ validation:
     result: pass_pr_feedback_vision_first_order_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_readme_validate_readme_vision_markers_guide_system_validate
   - command: git diff --check -- README.md
     result: pass_pr_feedback_vision_first_order
+  - command: gh pr view 100 --json number,state,mergedAt,mergeCommit,statusCheckRollup
+    result: merged_pr_100_hosted_ci_success
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_terminal_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md --path docs/plan-archive.md
+    result: pass_terminal_closeout_validated_3_artifact_files
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md --path docs/plan-archive.md
+    result: pass_terminal_closeout_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate
+  - command: git diff --check --
+    result: pass_terminal_closeout
 changed_files:
   - README.md
   - docs/workflows.md

@@ -2,13 +2,13 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Change ID: `2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`
 - Current owner: agent
-- Current stage: pr
-- Next stage: hosted CI and human review
+- Current stage: done
+- Next stage: none
 - Blockers: none
 
 ## Purpose / big picture
@@ -69,11 +69,11 @@ Relevant surfaces:
 - Current milestone: M3. Proof, packaging, and lifecycle closeout
 - Current milestone state: closed
 - Last reviewed milestone: M3. Proof, packaging, and lifecycle closeout
-- Review status: code-review-m3-r1 clean-with-notes
+- Review status: PR #100 merged after hosted CI success
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review
-- Final closeout readiness: PR #100 open; final lifecycle Done remains incomplete
-- Reason final closeout is or is not ready: M1, M2, and M3 are closed after clean code-review; review-resolution is closed; explain-change is current; final verify passed focused validation, selected CI, broad smoke, and lifecycle checks; PR #100 is open. Hosted CI and human review remain before terminal lifecycle closeout.
+- Next stage: none
+- Final closeout readiness: terminal done
+- Reason final closeout is or is not ready: M1, M2, and M3 closed after clean code-review; review-resolution closed; explain-change and verify evidence are current; PR #100 merged after hosted CI success on 2026-06-18. No downstream lifecycle stage remains for this initiative.
 
 ## Milestones
 
@@ -268,6 +268,7 @@ Relevant surfaces:
 - 2026-06-18: Opened PR #100 for guide system source-of-truth alignment; next stage is hosted CI and human review.
 - 2026-06-18: Clarified README new-repository adoption flow after PR feedback showed users could still confuse adapter installation, standing guide bootstrap, and the per-change lifecycle.
 - 2026-06-18: Adjusted README bootstrap order to put `vision` before `constitution` and explicitly include `docs/plan.md` as the small live-work index.
+- 2026-06-18: PR #100 merged after hosted CI success; terminal lifecycle closeout moved this plan to done and moved the plan index entry from Active to Done (recent).
 
 ## Decision log
 
@@ -368,12 +369,20 @@ Relevant surfaces:
   - README now gives the new-repository order: install adapter, bootstrap `VISION.md`, `CONSTITUTION.md`, `docs/project-map.md`, `docs/workflows.md`, and `docs/plan.md`, then run the per-change lifecycle.
   - Validation passed: `python scripts/validate-readme.py README.md`, `python scripts/validate-guide-system.py`, explicit-path lifecycle validation, selected CI for README and lifecycle surfaces, and `git diff --check -- README.md`.
   - Follow-up validation after swapping vision before constitution passed: `python scripts/validate-readme.py README.md`, `python scripts/validate-guide-system.py`, selected CI for README and lifecycle surfaces, and `git diff --check -- README.md`.
+- Terminal closeout:
+  - PR #100 merged after hosted CI success.
+  - `docs/plan.md` moved this initiative from Active to Done (recent).
+  - `docs/plan-archive.md` received the oldest Done recent entry to keep the plan index bounded.
+  - Validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md --path docs/plan-archive.md`, selected CI for terminal closeout surfaces, and `git diff --check --`.
 
 ## Outcome and retrospective
 
-- Filled after completion.
+- PR #100 merged on 2026-06-18.
+- The guide system now has a clearer user-facing repository bootstrap path, source-ranked guide ownership, cross-guide validation, behavior-preservation proof, and cold-read proof.
+- `GUIDE-CR1` was resolved by keeping workflow-map registry/table semantics delegated to the workflow-map validator instead of duplicating that contract in guide-system validation.
+- No historical artifacts were migrated, no lifecycle stage order changed, no artifact schemas changed, and no generated adapter output was hand-edited.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #100 is open. M1, M2, M3, explain-change, final verify, and PR handoff are complete; hosted CI and human review remain before terminal lifecycle closeout.
+- Terminal done. No downstream lifecycle stage remains for this initiative.
