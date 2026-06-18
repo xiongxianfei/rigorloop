@@ -67,13 +67,13 @@ Relevant surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M2. Cross-guide validation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Guide surface alignment
 - Review status: code-review-m1-r1 clean-with-notes
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review; M2 and M3 are not started, and explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 is closed after clean code-review; M2 is implemented and awaiting code-review, M3 is not started, and explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -122,7 +122,7 @@ Relevant surfaces:
 
 ### M2. Cross-guide validation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add deterministic cross-guide validation through a dedicated guide-system validator or artifact-lifecycle guide-system mode while keeping `validate-skills.py` scoped to skill-file checks.
 - Requirements: R32-R43, R48-R49, R52
 - Files/components likely touched:
@@ -256,6 +256,7 @@ Relevant surfaces:
 - 2026-06-18: Started M1 implementation for guide surface alignment.
 - 2026-06-18: Completed M1 guide surface alignment and moved M1 to review-requested for code-review.
 - 2026-06-18: Code-review M1 R1 returned clean-with-notes and closed M1; next stage is implement M2.
+- 2026-06-18: Completed M2 cross-guide validator implementation and moved M2 to review-requested for code-review.
 
 ## Decision log
 
@@ -286,6 +287,21 @@ Relevant surfaces:
   - `git diff --check -- README.md docs/workflows.md docs/project-map.md docs/plan.md docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment` passed.
 - M1 review:
   - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m1-r1.md` recorded clean-with-notes with no material findings.
+- M2 content audit:
+  - Added `scripts/validate-guide-system.py` as the dedicated cross-guide validator.
+  - Added `scripts/test-guide-system-validator.py` fixture coverage for README guide links, workflow guide sections, project-map scope, plan-index boundary, learn-session non-authority, stage-skill plan defaults, and duplicate registry placement.
+  - Updated `scripts/validation_selection.py` so guide surfaces select `guide_system.validate`, and guide-validator source changes select `guide_system.regression`.
+  - Updated selector regression expectations in `scripts/test-select-validation.py`.
+  - Kept `scripts/validate-skills.py` unchanged; cross-guide checks were not added to skill validation.
+  - Added small M1-surface clarifications needed for deterministic validation: `docs/workflows.md` now explicitly says the workflow guide routes placement while stage skills own artifact content, and `docs/plan.md` has visible bounded-index wording.
+- M2 validation:
+  - `python scripts/test-guide-system-validator.py` passed 8 tests.
+  - `python scripts/validate-guide-system.py` passed.
+  - `python scripts/test-select-validation.py` passed 98 tests.
+  - `python scripts/test-artifact-lifecycle-validator.py` passed 76 tests.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path specs/guide-system-source-of-truth-alignment.md` passed.
+  - `bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path scripts/validation_selection.py --path scripts/validate-guide-system.py --path scripts/test-guide-system-validator.py --path specs/guide-system-source-of-truth-alignment.md` passed selected checks: `artifact_lifecycle.validate`, `readme.validate`, `readme.vision_markers`, `guide_system.regression`, `guide_system.validate`, `selector.regression`.
+  - Final M2 consistency checks passed after lifecycle state synchronization: `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`; `git diff --check -- README.md docs/workflows.md docs/project-map.md docs/plan.md scripts/validate-guide-system.py scripts/test-guide-system-validator.py scripts/validation_selection.py scripts/test-select-validation.py docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`; and `bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path scripts/validation_selection.py --path scripts/validate-guide-system.py --path scripts/test-guide-system-validator.py --path scripts/test-select-validation.py --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`.
 
 ## Outcome and retrospective
 
@@ -294,4 +310,4 @@ Relevant surfaces:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M2`; M1 is closed. M2, M3, explain-change, verify, and PR handoff remain incomplete.
+- Ready for `code-review M2`; M1 is closed, M2 is implemented and awaiting review. M3, explain-change, verify, and PR handoff remain incomplete.

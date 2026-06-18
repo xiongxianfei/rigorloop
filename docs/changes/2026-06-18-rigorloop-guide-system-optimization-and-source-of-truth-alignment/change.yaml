@@ -22,6 +22,9 @@ requirements:
   - Implement M1 guide surface alignment for README, workflow guide, project map, and plan index boundary.
   - Record code-review M1 R1 before closing M1 and handing off to M2.
   - Preserve the workflow-map plan-location dependency instead of treating this proposal as the owner of exact plan-body path policy.
+  - Add dedicated cross-guide validation without expanding validate-skills.py beyond skill-file checks.
+  - Route guide-system validation through selected validation for changed guide surfaces and validator source changes.
+  - Keep workflow-map registry/table semantics delegated to the existing workflow map contract.
 tests:
   - Proposal-review R1 approved the revised proposal with no material findings.
   - The proposal keeps open-question decisions recorded and leaves no unresolved proposal-review blocker before spec.
@@ -36,6 +39,9 @@ tests:
   - Maintainer approved specs/guide-system-source-of-truth-alignment.test.md for implementation on 2026-06-18.
   - M1 added README guide navigation, workflow guide ownership routing, and project-map boundary wording; stage skills were unchanged because no direct contradiction was found.
   - Code-review M1 R1 closed M1 with no material findings.
+  - M2 added scripts/validate-guide-system.py and regression fixtures for README guide links, workflow guide sections, project-map scope, plan-index boundary, learn-session non-authority, stage-skill plan defaults, and registry duplication.
+  - M2 selector routing selects guide_system.validate for README, workflow guidance, project-map, plan-index, learn, vision, and governance surfaces, and guide_system.regression for guide validator source changes.
+  - M2 kept validate-skills.py unchanged; no cross-guide checks were added to skill validation.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment
     result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
@@ -133,6 +139,26 @@ validation:
     result: pass_after_code_review_m1_r1
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/review-log.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/code-review-m1-r1.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/plan.md
     result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_m1_r1
+  - command: python scripts/test-guide-system-validator.py
+    result: pass_m2_8_tests
+  - command: python scripts/validate-guide-system.py
+    result: pass_m2
+  - command: python scripts/test-select-validation.py
+    result: pass_m2_98_tests
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_m2_76_tests
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path specs/guide-system-source-of-truth-alignment.md
+    result: pass_m2_validated_1_artifact_file
+  - command: bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path scripts/validation_selection.py --path scripts/validate-guide-system.py --path scripts/test-guide-system-validator.py --path specs/guide-system-source-of-truth-alignment.md
+    result: pass_m2_selected_checks_artifact_lifecycle_validate_readme_validate_readme_vision_markers_guide_system_regression_guide_system_validate_selector_regression
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_m2_validated_3_artifact_files
+  - command: git diff --check -- README.md docs/workflows.md docs/project-map.md docs/plan.md scripts/validate-guide-system.py scripts/test-guide-system-validator.py scripts/validation_selection.py scripts/test-select-validation.py docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_m2
+  - command: bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path scripts/validation_selection.py --path scripts/validate-guide-system.py --path scripts/test-guide-system-validator.py --path scripts/test-select-validation.py --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml
+    result: pass_m2_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_readme_validate_readme_vision_markers_guide_system_regression_guide_system_validate_selector_regression
 changed_files:
   - README.md
   - docs/workflows.md
@@ -140,6 +166,10 @@ changed_files:
   - docs/proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md
   - specs/guide-system-source-of-truth-alignment.md
   - specs/guide-system-source-of-truth-alignment.test.md
+  - scripts/validate-guide-system.py
+  - scripts/test-guide-system-validator.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
   - docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md
   - docs/plan.md
   - docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml

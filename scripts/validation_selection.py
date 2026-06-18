@@ -129,6 +129,17 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-readme.py README.md --vision-markers",
         "readme",
     ),
+    "guide_system.regression": CheckCatalogEntry(
+        "guide_system.regression",
+        "python scripts/test-guide-system-validator.py",
+        "guide-system",
+        parallel_safe=True,
+    ),
+    "guide_system.validate": CheckCatalogEntry(
+        "guide_system.validate",
+        "python scripts/validate-guide-system.py",
+        "guide-system",
+    ),
     "selector.regression": CheckCatalogEntry(
         "selector.regression",
         "python scripts/test-select-validation.py",
@@ -966,6 +977,11 @@ def _apply_path_selection(
         return
 
     if category == "plan-index":
+        _add_check(
+            selected,
+            "guide_system.validate",
+            "Changed plan index surface requires cross-guide boundary validation.",
+        )
         context_paths = _plan_index_context_paths(changed_paths)
         for index_path in _plan_index_surface_paths():
             _add_check(
@@ -1014,15 +1030,30 @@ def _apply_path_selection(
 
     if category == "readme":
         _add_check(selected, "readme.validate", "Changed README requires lightweight README validation.")
+        _add_check(
+            selected,
+            "guide_system.validate",
+            "Changed README requires cross-guide index validation.",
+        )
         return
 
     if category == "learn-artifact":
+        _add_check(
+            selected,
+            "guide_system.validate",
+            "Changed learn session requires non-authority guide validation.",
+        )
         return
 
     if category == "examples":
         return
 
     if category == "living-reference/project-map":
+        _add_check(
+            selected,
+            "guide_system.validate",
+            "Changed project map requires cross-guide scope validation.",
+        )
         return
 
     if category == "follow-up-register":
@@ -1038,6 +1069,24 @@ def _apply_path_selection(
             selected,
             "readme.vision_markers",
             "Changed root vision requires README vision marker validation.",
+        )
+        _add_check(
+            selected,
+            "guide_system.validate",
+            "Changed root vision requires cross-guide registry duplication validation.",
+        )
+        return
+
+    if category == "guide-system-validator":
+        _add_check(
+            selected,
+            "guide_system.regression",
+            "Changed guide-system validator requires guide-system regression fixtures.",
+        )
+        _add_check(
+            selected,
+            "guide_system.validate",
+            "Changed guide-system validator requires live guide-system validation.",
         )
         return
 
@@ -1190,6 +1239,11 @@ def _apply_path_selection(
             selected,
             "selector.regression",
             f"Changed {category} path requires selector and workflow routing regression fixtures.",
+        )
+        _add_check(
+            selected,
+            "guide_system.validate",
+            f"Changed {category} path requires cross-guide validation.",
         )
         _add_lifecycle_warning_check(
             selected,
@@ -1504,6 +1558,8 @@ def _path_category(path: str) -> str | None:
         "scripts/validate-readme.py",
     }:
         return "selector"
+    if path in {"scripts/validate-guide-system.py", "scripts/test-guide-system-validator.py"}:
+        return "guide-system-validator"
     if path == "scripts/ci.sh":
         return "ci-wrapper"
     if path == ".gitignore":
