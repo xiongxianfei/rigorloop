@@ -6,6 +6,7 @@ artifacts:
   proposal: docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
   spec: specs/workflow-skill-artifact-location-map.md
   test_spec: specs/workflow-skill-artifact-location-map.test.md
+  explain_change: docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
   review_resolution: docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md
 requirements:
   - Record the workflow skill artifact-location map proposal before proposal-review.
@@ -29,6 +30,7 @@ requirements:
   - Record code-review M2 R1 findings before review-resolution.
   - Resolve WFO-CR1 before returning M2 to code-review.
   - Record code-review M2 R2 before M3 implementation reliance.
+  - Implement M3 adapter proof, cold-read evidence, behavior-preservation evidence, and explain-change evidence before M3 code-review.
 tests:
   - Proposal-review R1 found WFO-PR1 through WFO-PR3 and requested proposal revision.
   - Proposal revision initially accepted WFO-PR1 by choosing docs/changes/<change-id>/plan.md, then the 2026-06-18 owner correction superseded that direction with docs/plans/YYYY-MM-DD-slug.md as the repository-standard detailed plan-body location.
@@ -55,6 +57,7 @@ tests:
   - Code-review M2 R1 found WFO-CR1 and requested review-resolution.
   - WFO-CR1 resolution requires architecture_record and adr in workflow artifact-map required-entry validation and adds regression coverage for both missing-entry cases.
   - Code-review M2 R2 is clean-with-notes with no material findings and hands off to M3 implementation.
+  - M3 implementation records behavior-preservation evidence with cold-read answers for required placement questions and explain-change rationale before M3 code-review.
 review:
   status: clean
   unresolved_items: 0
@@ -274,6 +277,32 @@ validation:
     result: pass_after_code_review_m2_r2
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r2.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-log.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/review-resolution.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md
     result: pass_selected_checks_review_artifacts_validate_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_after_code_review_m2_r2
+  - command: python scripts/build-skills.py --check
+    result: pass_validated_generated_skills_using_temporary_output_after_m3
+  - command: python scripts/test-build-skills.py
+    result: pass_5_tests_after_m3
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: pass_1_test_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map
+    result: pass_reviews_8_findings_7_log_entries_8_resolution_entries_7_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: fail_unsupported_behavior_preservation_and_cold_read_artifact_keys_before_metadata_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/cold-read-proof.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
+    result: pass_validated_3_artifact_files_before_cold_read_consolidation
+  - command: python scripts/test-skill-validator.py
+    result: pass_200_tests_after_m3
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml
+    result: pass_after_m3_metadata_shape_fix
+  - command: git diff --check --
+    result: pass_after_m3_metadata_shape_fix
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/cold-read-proof.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
+    result: fail_unregistered_cold_read_proof_before_consolidation
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
+    result: pass_selected_checks_after_cold_read_consolidation
+  - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
+    result: pass_selected_checks_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_selector_regression_after_m3
 changed_files:
   - docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md
   - specs/workflow-skill-artifact-location-map.md
@@ -291,6 +320,8 @@ changed_files:
   - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m1-r1.md
   - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r1.md
   - docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/code-review-m2-r2.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md
+  - docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md
   - docs/workflows.md
   - skills/workflow/SKILL.md
   - scripts/test-skill-validator.py

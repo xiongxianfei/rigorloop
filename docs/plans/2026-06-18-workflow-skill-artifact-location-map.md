@@ -8,7 +8,7 @@ Terminal disposition: none
 - Change ID: `2026-06-17-workflow-skill-artifact-location-map`
 - Current owner: agent
 - Current stage: implement
-- Next stage: implement M3
+- Next stage: code-review M3
 - Blockers: none
 
 ## Purpose / big picture
@@ -63,13 +63,13 @@ Relevant surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M3. Adapter proof, cold-read evidence, and lifecycle closeout
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2
 - Review status: code-review-m2-r2 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 implementation and code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M3 code-review, verify, and PR handoff remain. Explain-change evidence exists, but it must be checked again after any M3 review changes.
 
 ## Milestones
 
@@ -161,7 +161,7 @@ Relevant surfaces:
 
 ### M3. Adapter proof, cold-read evidence, and lifecycle closeout
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove packaged workflow skill output is current when relevant, record cold-read placement proof, and synchronize lifecycle evidence before final review and verification.
 - Requirements: R48-R53, AC16-AC20
 - Files/components likely touched:
@@ -189,6 +189,18 @@ Relevant surfaces:
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map`
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml`
   - `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml`
+- Validation evidence:
+  - `python scripts/build-skills.py --check`: passed.
+  - `python scripts/test-build-skills.py`: passed, 5 tests.
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives`: passed, 1 test.
+  - `python scripts/test-skill-validator.py`: passed, 200 tests.
+  - `python scripts/validate-skills.py`: passed, 23 skill files.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-17-workflow-skill-artifact-location-map`: passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml`: passed after removing unsupported custom artifact keys for behavior-preservation and cold-read evidence.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md --path docs/plan.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/change.yaml --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md --path docs/changes/2026-06-17-workflow-skill-artifact-location-map/explain-change.md`: passed, 3 artifact files.
+  - `python scripts/select-validation.py --mode explicit ...`: passed after consolidating cold-read evidence into registered `behavior-preservation.md`.
+  - `bash scripts/ci.sh --mode explicit ...`: passed selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+  - `git diff --check --`: passed.
 - Expected observable result: The branch has current canonical skill, workflow-map, validation, adapter proof, cold-read proof, and lifecycle evidence ready for final code-review, explain-change, verify, and PR handoff.
 - Commit message: `M3: prove workflow map packaging and closeout`
 - Milestone closeout:
@@ -248,6 +260,9 @@ Relevant surfaces:
 - 2026-06-18: Recorded code-review M2 R1 as changes-requested with WFO-CR1 open. M2 needs review-resolution before re-review.
 - 2026-06-18: Resolved WFO-CR1 by requiring `architecture_record` and `adr` in workflow artifact-map required-entry validation and adding targeted regression coverage for both missing-entry cases. Returned M2 to code-review.
 - 2026-06-18: Recorded code-review M2 R2 as clean-with-notes with no material findings. Closed M2 and handed off to M3 implementation.
+- 2026-06-18: Started M3 implementation. Adapter proof is in scope because `dist/adapters/manifest.yaml` packages the `workflow` skill.
+- 2026-06-18: Consolidated required cold-read proof into registered change evidence at `docs/changes/2026-06-17-workflow-skill-artifact-location-map/behavior-preservation.md`; removed the separate unregistered cold-read evidence file after validation selector blocked it as evidence-registration debt.
+- 2026-06-18: Implemented M3 proof surfaces. Added behavior-preservation evidence with cold-read placement answers, added explain-change rationale, ran adapter proof and selected CI, and set M3 to review-requested for code-review.
 
 ## Decision log
 
