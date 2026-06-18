@@ -619,6 +619,93 @@ INSTALLED_SKILL_PLAN_SURFACE_PATHS = (
     "docs/changes/<change-id>/change.yaml",
     "docs/changes/<change-id>/",
 )
+INSTALLED_SKILL_PLAN_INDEX_LINK_EXAMPLE = "[Title](plans/YYYY-MM-DD-slug.md)"
+WORKFLOW_ARTIFACT_PLACEMENT_FIELDS = ("path", "external_surface", "policy")
+WORKFLOW_ARTIFACT_REPOSITORY_LOCAL_ENTRIES = {
+    "project_vision",
+    "project_map",
+    "workflow_guide",
+    "follow_up_register",
+    "examples",
+    "proposal",
+    "spec",
+    "test_spec",
+    "architecture_record",
+    "adr",
+    "plan_index",
+    "change_plan",
+    "plan_archive",
+    "change_root",
+    "change_metadata",
+    "formal_review_record",
+    "review_log",
+    "review_resolution",
+    "explain_change",
+    "verify_report",
+    "learn_session",
+    "token_cost_summary",
+    "adapter_artifact_metadata",
+}
+WORKFLOW_ARTIFACT_TABLE_LABELS = {
+    "Project vision": "project_vision",
+    "Project map": "project_map",
+    "Workflow guide": "workflow_guide",
+    "Follow-up register": "follow_up_register",
+    "Examples": "examples",
+    "Proposals": "proposal",
+    "Specs": "spec",
+    "Test specs": "test_spec",
+    "Architecture": "architecture_record",
+    "ADRs": "adr",
+    "Plan index": "plan_index",
+    "Plans": "change_plan",
+    "Plan archive": "plan_archive",
+    "Change root": "change_root",
+    "Change metadata": "change_metadata",
+    "Formal review records": "formal_review_record",
+    "Review log": "review_log",
+    "Review resolution": "review_resolution",
+    "Explain change": "explain_change",
+    "Verify report": "verify_report",
+    "PR handoff": "pr_handoff",
+    "Learn session": "learn_session",
+    "Adapter artifact metadata": "adapter_artifact_metadata",
+}
+WORKFLOW_ARTIFACT_REQUIRED_REGISTRY_ENTRIES = {
+    "adr",
+    "architecture_record",
+    "proposal",
+    "spec",
+    "test_spec",
+    "plan_index",
+    "change_plan",
+    "change_metadata",
+    "formal_review_record",
+    "review_log",
+    "review_resolution",
+    "explain_change",
+    "verify_report",
+    "pr_handoff",
+    "learn_session",
+}
+WORKFLOW_ARTIFACT_REQUIRED_DEFAULT_ENTRIES = {
+    "proposal",
+    "spec",
+    "test_spec",
+    "plan_index",
+    "change_plan",
+    "change_metadata",
+    "formal_review_record",
+    "review_log",
+    "review_resolution",
+    "explain_change",
+    "verify_report",
+    "learn_session",
+}
+WORKFLOW_ARTIFACT_CANONICAL_PLAN_PATH = "docs/plans/YYYY-MM-DD-slug.md"
+WORKFLOW_ARTIFACT_STALE_CHANGE_PLAN_PATH = "docs/changes/<change-id>/plan.md"
+WORKFLOW_ARTIFACT_REVIEW_ROOT_PATH = "docs/changes/<change-id>/reviews/"
+WORKFLOW_ARTIFACT_REVIEW_PATH = "docs/changes/<change-id>/reviews/<stage>-r<n>.md"
 
 
 @dataclass(frozen=True)
@@ -747,6 +834,263 @@ def _extract_markdown_section(body: str, heading: str) -> str | None:
             break
         section_lines.append(line)
     return "\n".join(section_lines).strip()
+
+
+def _extract_first_fenced_block(section: str, language: str) -> str | None:
+    lines = section.splitlines()
+    start_index = None
+    language_marker = f"```{language}"
+    for index, line in enumerate(lines):
+        if line.strip() == language_marker:
+            start_index = index + 1
+            break
+    if start_index is None:
+        return None
+    block: list[str] = []
+    for line in lines[start_index:]:
+        if line.strip() == "```":
+            return "\n".join(block)
+        block.append(line)
+    return None
+
+
+def _parse_workflow_artifact_registry(
+    path: Path,
+    registry_yaml: str,
+) -> tuple[dict[str, dict[str, str]], list[str]]:
+    registry: dict[str, dict[str, str]] = {}
+    errors: list[str] = []
+    lines = registry_yaml.splitlines()
+    if not any(line.strip() == "artifact_locations:" for line in lines):
+        return registry, [f"{path}: artifact registry missing top-level artifact_locations"]
+
+    in_locations = False
+    current_artifact: str | None = None
+    artifact_keys: set[str] = set()
+    field_keys: dict[str, set[str]] = {}
+    for raw_line in lines:
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+        indent = len(raw_line) - len(raw_line.lstrip(" "))
+        line = raw_line.strip()
+
+        if indent == 0:
+            if line == "artifact_locations:":
+                in_locations = True
+                continue
+            if in_locations:
+                errors.append(f"{path}: artifact registry only supports artifact_locations")
+            continue
+
+        if not in_locations:
+            continue
+        if ":" not in line:
+            errors.append(f"{path}: artifact registry has unparseable line: {line}")
+            continue
+
+        key, value = line.split(":", 1)
+        key = key.strip()
+        value = _strip_quotes(value.strip())
+        if indent == 2 and not value:
+            if key in artifact_keys:
+                errors.append(f"{path}: artifact registry has duplicate entry {key}")
+            artifact_keys.add(key)
+            current_artifact = key
+            registry.setdefault(key, {})
+            field_keys.setdefault(key, set())
+            continue
+        if indent == 4 and current_artifact:
+            if key in field_keys[current_artifact]:
+                errors.append(
+                    f"{path}: artifact registry entry {current_artifact} has duplicate field {key}"
+                )
+            field_keys[current_artifact].add(key)
+            registry[current_artifact][key] = value
+            continue
+        errors.append(f"{path}: artifact registry has unsupported indentation: {line}")
+
+    return registry, errors
+
+
+def _markdown_cell_text(cell: str) -> str:
+    stripped = cell.strip()
+    return re.sub(r"`([^`]+)`", r"\1", stripped)
+
+
+def _placement_from_table_cell(cell: str) -> str:
+    match = re.search(r"`([^`]+)`", cell)
+    if match:
+        return match.group(1)
+    normalized = _markdown_cell_text(cell).strip().lower()
+    if normalized == "pull request body":
+        return "pull_request_body"
+    return _markdown_cell_text(cell).strip()
+
+
+def _parse_workflow_artifact_table(section: str) -> dict[str, str]:
+    rows: dict[str, str] = {}
+    for raw_line in section.splitlines():
+        line = raw_line.strip()
+        if not line.startswith("|") or "---" in line:
+            continue
+        cells = [cell.strip() for cell in line.strip("|").split("|")]
+        if len(cells) < 2 or cells[0] == "Artifact type":
+            continue
+        artifact_key = WORKFLOW_ARTIFACT_TABLE_LABELS.get(_markdown_cell_text(cells[0]))
+        if artifact_key:
+            rows[artifact_key] = _placement_from_table_cell(cells[1])
+    return rows
+
+
+def _registry_placement(entry: dict[str, str]) -> str | None:
+    for field in WORKFLOW_ARTIFACT_PLACEMENT_FIELDS:
+        value = entry.get(field)
+        if value:
+            return value
+    return None
+
+
+def _is_allowed_noncanonical_plan_reference(text: str) -> bool:
+    normalized = _normalized_prose(text)
+    return (
+        WORKFLOW_ARTIFACT_STALE_CHANGE_PLAN_PATH in text
+        and (
+            "not docs/changes/<change-id>/plan.md" in normalized
+            or f"not `{WORKFLOW_ARTIFACT_STALE_CHANGE_PLAN_PATH}`" in normalized
+            or "non-canonical" in normalized
+            or "rejected alternative" in normalized
+            or "historical" in normalized
+        )
+    )
+
+
+def validate_workflow_artifact_map_lookup(
+    registry: dict[str, dict[str, str]],
+    artifact_types: list[str],
+) -> list[str]:
+    errors: list[str] = []
+    for artifact_type in artifact_types:
+        if artifact_type not in registry:
+            errors.append(
+                f"unknown artifact type {artifact_type} has unresolved placement; request an explicit path or workflow-map update"
+            )
+    return errors
+
+
+def validate_workflow_artifact_map_contract(
+    path: Path,
+    workflow_text: str,
+    *,
+    workflow_skill_text: str | None = None,
+    stage_skill_texts: dict[str, str] | None = None,
+) -> list[str]:
+    errors: list[str] = []
+    registry_section = _extract_markdown_section(workflow_text, "Artifact registry")
+    if registry_section is None:
+        return [f"{path}: missing Artifact registry section"]
+
+    registry_yaml = _extract_first_fenced_block(registry_section, "yaml")
+    if registry_yaml is None:
+        return [f"{path}: artifact registry missing fenced yaml block"]
+
+    registry, parse_errors = _parse_workflow_artifact_registry(path, registry_yaml)
+    errors.extend(parse_errors)
+
+    missing_entries = sorted(WORKFLOW_ARTIFACT_REQUIRED_REGISTRY_ENTRIES - registry.keys())
+    for artifact_type in missing_entries:
+        errors.append(f"{path}: artifact registry missing required entry {artifact_type}")
+
+    for artifact_type, entry in registry.items():
+        if "owner" not in entry or not entry["owner"]:
+            errors.append(f"{path}: artifact registry entry {artifact_type} missing owner")
+        if "required_when" not in entry or not entry["required_when"]:
+            errors.append(
+                f"{path}: artifact registry entry {artifact_type} missing required_when"
+            )
+        placement_fields = [
+            field for field in WORKFLOW_ARTIFACT_PLACEMENT_FIELDS if entry.get(field)
+        ]
+        if artifact_type in WORKFLOW_ARTIFACT_REPOSITORY_LOCAL_ENTRIES:
+            if placement_fields != ["path"]:
+                errors.append(
+                    f"{path}: repository-local artifact {artifact_type} must define exactly one path"
+                )
+        elif len(placement_fields) != 1:
+            errors.append(
+                f"{path}: artifact registry entry {artifact_type} must define exactly one placement representation"
+            )
+
+    change_plan = registry.get("change_plan", {})
+    if change_plan.get("path") == WORKFLOW_ARTIFACT_STALE_CHANGE_PLAN_PATH:
+        errors.append(
+            f"{path}: change_plan must use {WORKFLOW_ARTIFACT_CANONICAL_PLAN_PATH}, not {WORKFLOW_ARTIFACT_STALE_CHANGE_PLAN_PATH}"
+        )
+    if change_plan.get("path") and change_plan.get("path") != WORKFLOW_ARTIFACT_CANONICAL_PLAN_PATH:
+        errors.append(
+            f"{path}: change_plan path must match {WORKFLOW_ARTIFACT_CANONICAL_PLAN_PATH}"
+        )
+
+    review_path = registry.get("formal_review_record", {}).get("path", "")
+    if review_path and not review_path.startswith(WORKFLOW_ARTIFACT_REVIEW_ROOT_PATH):
+        errors.append(
+            f"{path}: formal_review_record must route under {WORKFLOW_ARTIFACT_REVIEW_ROOT_PATH}"
+        )
+
+    table_section = _extract_markdown_section(workflow_text, "Artifact locations")
+    if table_section is None:
+        errors.append(f"{path}: missing Artifact locations section")
+        table_rows: dict[str, str] = {}
+    else:
+        table_rows = _parse_workflow_artifact_table(table_section)
+
+    for artifact_type in WORKFLOW_ARTIFACT_REQUIRED_REGISTRY_ENTRIES:
+        if artifact_type not in table_rows:
+            errors.append(f"{path}: artifact table missing projection for {artifact_type}")
+            continue
+        registry_value = _registry_placement(registry.get(artifact_type, {}))
+        table_value = table_rows[artifact_type]
+        if registry_value and table_value != registry_value:
+            label = next(
+                label
+                for label, key in WORKFLOW_ARTIFACT_TABLE_LABELS.items()
+                if key == artifact_type
+            )
+            errors.append(
+                f"{path}: artifact table row {label} placement {table_value} does not match registry entry {artifact_type} placement {registry_value}"
+            )
+
+    if workflow_skill_text is not None:
+        for artifact_type in sorted(WORKFLOW_ARTIFACT_REQUIRED_DEFAULT_ENTRIES):
+            expected = registry.get(artifact_type, {}).get("path")
+            if expected and expected not in workflow_skill_text:
+                errors.append(
+                    f"skills/workflow/SKILL.md: default paths missing registry path for {artifact_type}: {expected}"
+                )
+
+    for skill_name, skill_text in (stage_skill_texts or {}).items():
+        skill_path = f"skills/{skill_name}/SKILL.md"
+        if (
+            skill_name == "plan"
+            and WORKFLOW_ARTIFACT_STALE_CHANGE_PLAN_PATH in skill_text
+            and not _is_allowed_noncanonical_plan_reference(skill_text)
+        ):
+            errors.append(
+                f"{skill_path}: stage skill contradicts plan-body registry with {WORKFLOW_ARTIFACT_STALE_CHANGE_PLAN_PATH}"
+            )
+        if skill_name in {"proposal-review", "spec-review"}:
+            expected_stage_path = (
+                f"docs/changes/<change-id>/reviews/{skill_name}-r<n>.md"
+            )
+            if expected_stage_path not in skill_text:
+                errors.append(
+                    f"{skill_path}: stage skill missing formal review path {expected_stage_path}"
+                )
+            if re.search(r"docs/(?:reviews|review-records)/", skill_text):
+                errors.append(
+                    f"{skill_path}: stage skill routes formal reviews outside {WORKFLOW_ARTIFACT_REVIEW_ROOT_PATH}"
+                )
+
+    return errors
 
 
 def _normalized_prose(text: str) -> str:
@@ -896,6 +1240,10 @@ def validate_installed_skill_plan_surface_contract(
     if missing:
         errors.append(
             f"{path}: installed-skill plan surface contract must distinguish docs/workflows.md, docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/"
+        )
+    if skill_name == "plan" and INSTALLED_SKILL_PLAN_INDEX_LINK_EXAMPLE not in body:
+        errors.append(
+            f"{path}: installed-skill plan surface contract must tell plan authors to use clickable relative Markdown links like {INSTALLED_SKILL_PLAN_INDEX_LINK_EXAMPLE} in docs/plan.md"
         )
     return errors
 
@@ -2265,6 +2613,24 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
             )
         if skill_name == "spec-review":
             errors.extend(validate_spec_review_canonical_contract(path))
+        if skill_name == "workflow" and workflow_text is not None:
+            stage_skill_texts: dict[str, str] = {}
+            for stage_skill_name in ("plan", "proposal-review", "spec-review"):
+                stage_skill_path = (
+                    CANONICAL_SKILLS_DIR / stage_skill_name / "SKILL.md"
+                )
+                if stage_skill_path.is_file():
+                    stage_skill_texts[stage_skill_name] = stage_skill_path.read_text(
+                        encoding="utf-8"
+                    )
+            errors.extend(
+                validate_workflow_artifact_map_contract(
+                    WORKFLOWS_DOC_PATH,
+                    workflow_text,
+                    workflow_skill_text=body,
+                    stage_skill_texts=stage_skill_texts,
+                )
+            )
 
     return errors, skill_name
 

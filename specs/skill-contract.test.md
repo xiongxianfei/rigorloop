@@ -1178,6 +1178,7 @@
   - Assert `assets/current-handoff-summary.md` contains only section headings, field labels, and placeholders.
   - Assert `assets/current-handoff-summary.md` does not define lifecycle status values, next-stage transition rules, claim ownership, branch-ready semantics, PR-ready semantics, or validation requirements.
   - Assert `skills/plan/SKILL.md` retains the rule that the Current Handoff Summary stays consistent with the active plan, plan index, and change metadata.
+  - Assert `skills/plan/SKILL.md` tells plan authors to write `docs/plan.md` and `docs/plan-archive.md` plan references as clickable Markdown links relative to the index file, such as `[Title](plans/YYYY-MM-DD-slug.md)`, instead of bare repository-root plan paths.
   - If `current-handoff-summary.md` cannot satisfy the boundary, assert the handoff summary template remains inline in `skills/plan/SKILL.md` for this pilot.
   - Manually confirm behavior-preservation evidence maps any moved behavior-significant wording to the preserved rule location.
 - Expected result:
