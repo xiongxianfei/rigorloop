@@ -1,0 +1,294 @@
+# Guide System Source-of-Truth Alignment Plan
+
+## Status
+
+Plan lifecycle state: active
+Terminal disposition: none
+
+- Change ID: `2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`
+- Current owner: agent
+- Current stage: test-spec
+- Next stage: implement M1
+- Blockers: none
+
+## Purpose / big picture
+
+Implement the approved guide-system source-of-truth alignment contract. The change makes RigorLoop's guide surfaces easier to navigate without turning README, learn sessions, project-map, or plan index into competing workflow contracts. It also adds cross-guide drift validation and records proof that the new guide system can be used without chat history.
+
+## Source artifacts
+
+- Proposal: [RigorLoop Guide System Optimization and Source-of-Truth Alignment](../proposals/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment.md)
+- Spec: [Guide System Source-of-Truth Alignment](../../specs/guide-system-source-of-truth-alignment.md)
+- Architecture: not required; spec-review R1/R2 concluded this preserves existing architecture boundaries and is guide, skill-wording, validation-ownership, and proof-contract work.
+- Test spec: [Guide System Source-of-Truth Alignment Test Spec](../../specs/guide-system-source-of-truth-alignment.test.md)
+- Proposal review: [proposal-review-r1](../changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md)
+- Spec reviews: [spec-review-r1](../changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r1.md), [spec-review-r2](../changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/spec-review-r2.md)
+- Change metadata: [change.yaml](../changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml)
+
+## Context and orientation
+
+The implementation touches guide surfaces, canonical skill wording only when directly contradictory, validation scripts, and change-local proof artifacts.
+
+Relevant surfaces:
+
+- `README.md`: first-contact landing guide that should link out to primary guides without restating their full contracts.
+- `docs/workflows.md`: project-local workflow guide and artifact-location map. It should gain guide ownership/source-rank guidance while preserving the workflow-map spec's registry contract.
+- `docs/project-map.md`: repository orientation map. It may mention workflow surfaces for orientation but must not own workflow policy or lifecycle artifact placement.
+- `docs/plan.md`: bounded live-work index. It must be updated with this active plan but must not become a long-form plan body.
+- `skills/*/SKILL.md`: stage-skill portable defaults and placement text. Edit only direct contradictions in affected skills.
+- `scripts/`: likely home for a dedicated guide-system validator or an artifact-lifecycle guide-system mode plus selector routing.
+- `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/`: change-local metadata, review records, behavior-preservation proof, cold-read proof, explain-change, and later verify evidence.
+
+## Non-goals
+
+- Do not rewrite every guide in one slice.
+- Do not create `docs/guides.md` in this slice.
+- Do not change lifecycle stage order.
+- Do not change artifact content schemas.
+- Do not change exact artifact-location registry semantics outside the workflow-map contract.
+- Do not make README the authoritative workflow manual.
+- Do not make `docs/workflows.md` the only source for skill-only adopters.
+- Do not treat learn sessions as live routing authority.
+- Do not migrate historical artifacts in this slice.
+- Do not add a new CLI scaffold.
+- Do not hand-edit generated adapter output.
+- Do not bulk-edit stage skills for style or symmetry.
+
+## Requirements covered
+
+- R1-R5: M1 classifies guide surfaces and updates README guide-index behavior.
+- R6-R15: M1 preserves `VISION.md`, `CONSTITUTION.md`, and `docs/workflows.md` ownership while adding guide ownership/source-rank guidance without replacing the workflow-map registry contract.
+- R16-R24: M1 keeps `docs/project-map.md` as orientation and `docs/plan.md` as bounded index; plan-body placement remains aligned with the workflow-map contract.
+- R25-R31: M1 clarifies learn-session non-authority and stage-skill edit boundaries.
+- R32-R43: M2 adds cross-guide validation ownership and deterministic checks.
+- R44-R49: M2/M3 preserve baseline-drift, migration, lifecycle-order, schema, validation, and generated-output boundaries.
+- R50-R52: M3 records behavior-preservation proof, cold-read proof, and final evidence for stale guide-artifact handling.
+
+## Current Handoff Summary
+
+- Current milestone: M1. Guide surface alignment
+- Current milestone state: review-requested
+- Last reviewed milestone: none
+- Review status: plan-review-r1 approved
+- Remaining in-scope implementation milestones: M1, M2, M3
+- Next stage: code-review M1
+- Final closeout readiness: not ready
+- Reason final closeout is or is not ready: M1 implementation is ready for code-review; M1 is not closed, M2 and M3 are not started, and code-review, explain-change, verify, and PR handoff remain.
+
+## Milestones
+
+### M1. Guide surface alignment
+
+- Milestone state: review-requested
+- Goal: Update human-facing guide surfaces and directly contradictory stage-skill text so each guide answers its assigned question without duplicating another contract.
+- Requirements: R1-R31, R44-R49
+- Files/components likely touched:
+  - `README.md`
+  - `docs/workflows.md`
+  - `docs/project-map.md`
+  - `docs/plan.md`
+  - `skills/workflow/SKILL.md`
+  - directly contradictory stage skills only, if inspection finds any
+- Dependencies:
+  - Approved spec.
+  - Plan-review approval.
+  - Test spec coverage for guide-surface expectations before implementation.
+- Tests to add/update:
+  - Test-spec cases for README guide index, workflow guide ownership, project-map scope, plan index boundary, learn-session non-authority, and stage-skill direct contradiction checks.
+- Implementation steps:
+  - Add or tighten README "where to go next" guide index.
+  - Add guide ownership/source-rank guidance to `docs/workflows.md` without changing exact artifact-location registry semantics outside the workflow-map contract.
+  - Clarify `docs/project-map.md` purpose boundary only if current wording claims workflow policy ownership.
+  - Clarify `docs/plan.md` index-only boundary only if current wording is insufficient or stale.
+  - Inspect relevant stage skills and edit only direct contradictions with the approved workflow guide, source-rank model, or artifact-location registry.
+  - Leave learn sessions as historical artifacts; do not migrate historical records.
+- Validation commands:
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`
+  - `git diff --check -- README.md docs/workflows.md docs/project-map.md docs/plan.md docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`
+- Expected observable result: A contributor can start from README, find the workflow guide for artifact routing, use project-map for repository orientation, use `docs/plan.md` for active work, and understand that learn sessions are historical rationale only.
+- Commit message: `M1: align guide surfaces`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone committed
+- Risks:
+  - README or `docs/workflows.md` becomes too long by duplicating contracts.
+  - Stage skills are edited for style instead of direct contradiction.
+- Rollback/recovery:
+  - Revert guide-surface wording as a unit and keep the approved spec/plan intact for a narrower follow-up implementation.
+
+### M2. Cross-guide validation
+
+- Milestone state: planned
+- Goal: Add deterministic cross-guide validation through a dedicated guide-system validator or artifact-lifecycle guide-system mode while keeping `validate-skills.py` scoped to skill-file checks.
+- Requirements: R32-R43, R48-R49, R52
+- Files/components likely touched:
+  - `scripts/validate-guide-system.py` or an artifact-lifecycle guide-system validation module
+  - `scripts/validation_selection.py`
+  - relevant `scripts/test-*.py`
+  - `tests/fixtures/` if fixture coverage is needed
+  - `scripts/validate-skills.py` only if a check directly inspects packaged skill content
+- Dependencies:
+  - M1 guide-surface shape.
+  - Test spec must name exact guide checks and failure fixtures.
+- Tests to add/update:
+  - README guide index link checks.
+  - `docs/workflows.md` guide ownership and artifact-location section checks.
+  - Workflow guide ownership vs stage-skill content ownership checks.
+  - `docs/project-map.md` workflow-stage-order ownership rejection.
+  - `docs/plan.md` bounded-index shape checks.
+  - Learn-session live-authority rejection fixture.
+  - Directly affected stage-skill placement contradiction checks.
+  - Selector routing for guide-system validation.
+- Implementation steps:
+  - Choose the concrete validator form allowed by the spec.
+  - Implement stable parsing against links, headings, fenced YAML, tables, stable text fixtures, or check IDs rather than broad prose scoring.
+  - Route selected validation for changed guide surfaces.
+  - Keep workflow-map registry/table consistency owned by existing workflow-map validation; call or compose it without making a second registry contract.
+  - Ensure failures report stable guide check IDs.
+- Validation commands:
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-select-validation.py`
+  - `python scripts/test-skill-validator.py` if skill checks are touched
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path specs/guide-system-source-of-truth-alignment.md`
+  - `bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path scripts/validation_selection.py --path specs/guide-system-source-of-truth-alignment.md`
+- Expected observable result: Selected validation fails deterministically for broken guide links, missing workflow guide ownership, project-map workflow-policy ownership, plan-index bloat indicators, learn-only routing authority, and affected stage-skill placement contradictions.
+- Commit message: `M2: validate guide system drift`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone committed
+- Risks:
+  - Validator overfits prose or becomes a broad natural-language quality checker.
+  - Cross-guide checks accidentally move into `validate-skills.py`.
+- Rollback/recovery:
+  - Disable the new guide-system validator entry point or selector route, preserve M1 guide text, and record the validation blocker for follow-up.
+
+### M3. Proof, packaging, and lifecycle closeout
+
+- Milestone state: planned
+- Goal: Record behavior-preservation proof, cold-read proof, generated adapter proof when changed skill content is packaged, and final lifecycle evidence before verification.
+- Requirements: R43-R52
+- Files/components likely touched:
+  - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/behavior-preservation.md`
+  - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/guide-cold-read.md` or consolidated registered proof surface if metadata constraints require it
+  - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/explain-change.md`
+  - `docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`
+  - `docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md`
+  - `docs/plan.md`
+  - generated adapter proof through repository-owned commands only, if canonical skill changes require it
+- Dependencies:
+  - M1 and M2 closed after code-review.
+  - Review-resolution closed if any material findings appear.
+- Tests to add/update:
+  - Manual cold-read proof answering the spec's guide-routing questions.
+  - Behavior-preservation matrix for README, `VISION.md`, `CONSTITUTION.md`, `docs/workflows.md`, `docs/project-map.md`, `docs/plan.md`, stage skills, and learn sessions.
+  - Adapter packaging proof when changed canonical skill content affects packaged skills.
+- Implementation steps:
+  - Record behavior-preservation proof.
+  - Record cold-read proof without relying on chat history.
+  - Run generated skill/adapter checks if canonical skill changes require them.
+  - Refresh change metadata, plan progress, validation notes, and explain-change.
+  - Prepare final handoff to code-review, explain-change, verify, and PR stages.
+- Validation commands:
+  - `python scripts/build-skills.py --check` if canonical skill files changed
+  - `python scripts/test-build-skills.py` if canonical skill files changed
+  - `python scripts/test-adapter-distribution.py` if generated adapter proof is required by selected validation
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path specs/guide-system-source-of-truth-alignment.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`
+- Expected observable result: The branch has guide-surface changes, deterministic guide validation, behavior-preservation evidence, cold-read proof, and lifecycle metadata ready for code-review and later verify.
+- Commit message: `M3: prove guide system alignment`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone committed
+- Risks:
+  - Cold-read proof repeats intended policy instead of inspecting the actual guide system.
+  - Metadata constraints reject standalone proof artifact keys.
+- Rollback/recovery:
+  - Consolidate proof into an allowed registered change-local surface if metadata rejects standalone proof keys; otherwise revise proof artifacts and rerun validation.
+
+## Validation plan
+
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment`: review-recording structure during planning and review.
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml`: active metadata integrity.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`: lifecycle status and stale wording checks for touched proposal, spec, plan, review, guide, and metadata artifacts.
+- `bash scripts/ci.sh --mode explicit --path ...`: selected repository-owned validation for touched surfaces before each handoff.
+- `python scripts/test-artifact-lifecycle-validator.py`: validator regression if artifact-lifecycle guide-system mode is used.
+- `python scripts/test-select-validation.py`: selector regression if guide-system validation gets selected-check routing.
+- `python scripts/test-skill-validator.py` and `python scripts/validate-skills.py`: skill validation when canonical skill files change.
+- `python scripts/build-skills.py --check` and `python scripts/test-build-skills.py`: generated local skill proof when canonical skill files change.
+- `python scripts/test-adapter-distribution.py`: adapter packaging proof when changed canonical skill content affects generated adapters.
+
+## Risks and recovery
+
+- Risk: Guide surfaces duplicate contracts and become second sources of truth.
+  - Recovery: Move duplicated detail back to the owning spec, workflow map, or stage skill; keep guide text focused on orientation and routing.
+- Risk: The guide-system validator overfits prose.
+  - Recovery: Narrow checks to stable links, headings, fenced YAML, table fields, fixture text, and check IDs.
+- Risk: Plan-location confusion reappears.
+  - Recovery: Keep this plan aligned with the approved workflow-map spec: `docs/plans/YYYY-MM-DD-slug.md` is the detailed plan-body path, `docs/plan.md` is the index.
+- Risk: Stage-skill portability regresses.
+  - Recovery: Revert broad skill edits and preserve portable defaults; edit only direct contradictions.
+- Risk: Historical artifacts are accidentally migrated.
+  - Recovery: Revert migrations and record baseline drift; create a separate migration proposal if needed.
+
+## Dependencies
+
+- Spec-review R2 approved with no material findings.
+- Plan-review must approve this plan before test-spec and implementation reliance.
+- Test spec must map each `MUST` requirement to concrete tests or manual proof before implementation.
+- Existing workflow-map spec remains the owner of exact artifact-location registry semantics.
+- No architecture stage is required unless plan-review identifies a cross-component design gap.
+
+## Progress
+
+- 2026-06-18: Created execution plan after spec-review R2 approved the guide-system source-of-truth alignment spec.
+- 2026-06-18: Plan-review R1 approved the plan with no material findings; created the active test spec for implementation proof.
+- 2026-06-18: Started M1 implementation for guide surface alignment.
+- 2026-06-18: Completed M1 guide surface alignment and moved M1 to review-requested for code-review.
+
+## Decision log
+
+| Date | Decision | Reason | Alternatives rejected |
+| --- | --- | --- | --- |
+| 2026-06-18 | Use three implementation milestones: guide surfaces, validation, proof/closeout. | This separates human-facing guide edits, validator work, and lifecycle proof into reviewable slices. | One broad implementation milestone. |
+| 2026-06-18 | No architecture stage before plan. | Spec-review R1/R2 found the change preserves existing architecture boundaries. | Add architecture artifact by default. |
+| 2026-06-18 | Keep exact artifact-location registry semantics delegated to the workflow-map spec. | The guide-system spec owns guide alignment, not a second registry contract. | Redefine registry semantics in this plan. |
+
+## Surprises and discoveries
+
+- None yet.
+
+## Validation notes
+
+- Plan-review R1 validation passed before test-spec authoring.
+- Pending test-spec validation after this artifact, the test spec, and `docs/plan.md` are updated.
+- M1 content audit:
+  - `README.md` now includes a compact "Where to go next" guide index.
+  - `docs/workflows.md` now includes a guide ownership matrix and learn-session non-authority reminder.
+  - `docs/project-map.md` now states that it does not own workflow stage order, exact lifecycle artifact placement, or current milestone state.
+  - `docs/plan.md` was already a bounded index and only needed current active-state synchronization.
+  - Stage skills were unchanged because inspection found no direct contradiction with the approved workflow guide, source-rank model, or artifact-location registry.
+  - Historical artifacts were not migrated.
+- M1 validation:
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml` passed.
+  - `bash scripts/ci.sh --mode explicit --path README.md --path docs/workflows.md --path docs/project-map.md --path docs/plan.md --path docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md --path docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/change.yaml` passed selected checks: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, `selector.regression`.
+  - `git diff --check -- README.md docs/workflows.md docs/project-map.md docs/plan.md docs/plans/2026-06-18-guide-system-source-of-truth-alignment.md docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment` passed.
+
+## Outcome and retrospective
+
+- Filled after completion.
+
+## Readiness
+
+- See `Current Handoff Summary`.
+- Ready for `code-review M1`; M1 is not closed until code-review and any required review-resolution complete. M2, M3, explain-change, verify, and PR handoff remain incomplete.

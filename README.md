@@ -51,6 +51,17 @@ Then use the repository workflow docs when you want to understand or customize t
 
 Key paths: [workflow](docs/workflows.md) · [proof example](docs/changes/0001-skill-validator/) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
 
+## Where to go next
+
+| Need | Read |
+| --- | --- |
+| Understand project direction | [VISION.md](VISION.md) |
+| Understand governance and source-of-truth order | [CONSTITUTION.md](CONSTITUTION.md) |
+| Find workflow stages and artifact paths | [docs/workflows.md](docs/workflows.md) |
+| Orient to repository structure | [docs/project-map.md](docs/project-map.md) |
+| See active, blocked, and recent work | [docs/plan.md](docs/plan.md) |
+| Use one lifecycle stage | [skills/](skills/) |
+
 ## Workflow At A Glance
 
 ```mermaid
