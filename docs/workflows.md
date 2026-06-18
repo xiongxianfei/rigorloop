@@ -329,7 +329,7 @@ artifact_locations:
 
 The table defines default locations and owning skills. It is the human-readable artifact-location map projection of the canonical registry above.
 
-This workflow guide summarizes and customizes artifact placement. It does not replace the owning stage skill's placement contract, and installed skills carry portable defaults for skill-only adopters.
+This workflow guide routes project-local artifact placement. Stage skills own artifact content, do not lose their placement contracts here, and carry portable defaults for skill-only adopters.
 
 It does not define full artifact schemas, required fields, lifecycle status values, or validation rules. For exact shapes, use the governing spec, schema, or reference for that artifact type.
 
