@@ -4939,6 +4939,86 @@ and result format.
             with self.subTest(term=term):
                 self.assertIn(term, artifact_locations)
 
+    def test_workflow_map_m1_workflows_doc_contains_canonical_artifact_registry(self) -> None:
+        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        registry = extract_markdown_block(workflows, "Artifact registry")
+
+        required_terms = [
+            "canonical fenced YAML artifact registry",
+            "```yaml",
+            "artifact_locations:",
+            "proposal:",
+            "path: docs/proposals/YYYY-MM-DD-slug.md",
+            "spec:",
+            "path: specs/slug.md",
+            "test_spec:",
+            "path: specs/slug.test.md",
+            "plan_index:",
+            "path: docs/plan.md",
+            "change_plan:",
+            "path: docs/plans/YYYY-MM-DD-slug.md",
+            "change_metadata:",
+            "path: docs/changes/<change-id>/change.yaml",
+            "formal_review_record:",
+            "path: docs/changes/<change-id>/reviews/<stage>-r<n>.md",
+            "review_log:",
+            "path: docs/changes/<change-id>/review-log.md",
+            "review_resolution:",
+            "path: docs/changes/<change-id>/review-resolution.md",
+            "explain_change:",
+            "path: docs/changes/<change-id>/explain-change.md",
+            "verify_report:",
+            "path: docs/changes/<change-id>/verify-report.md",
+            "pr_handoff:",
+            "external_surface: pull_request_body",
+            "learn_session:",
+            "path: docs/learn/sessions/YYYY-MM-DD-slug.md",
+            "required_when:",
+            "owner:",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, registry)
+
+        self.assertNotIn(
+            "docs/changes/<change-id>/plan.md",
+            registry,
+            "workflow registry must not make change-pack plan.md a canonical plan-body path",
+        )
+
+    def test_workflow_map_m1_workflow_skill_default_paths_match_change_pack_contract(
+        self,
+    ) -> None:
+        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+        defaults = extract_markdown_block(workflow, "Default artifact paths")
+
+        required_terms = [
+            "docs/workflows.md",
+            "docs/plan.md",
+            "docs/proposals/YYYY-MM-DD-slug.md",
+            "specs/slug.md",
+            "specs/slug.test.md",
+            "docs/plans/YYYY-MM-DD-slug.md",
+            "docs/changes/<change-id>/change.yaml",
+            "docs/changes/<change-id>/reviews/<stage>-r<n>.md",
+            "docs/changes/<change-id>/review-log.md",
+            "docs/changes/<change-id>/review-resolution.md",
+            "docs/changes/<change-id>/explain-change.md",
+            "docs/changes/<change-id>/verify-report.md",
+            "docs/learn/sessions/YYYY-MM-DD-slug.md",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, defaults)
+
+        forbidden_terms = [
+            "docs/changes/<change-id>/plan.md",
+            "docs/explain/YYYY-MM-DD-slug.md",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, defaults)
+
     def test_project_artifact_location_m1_workflows_doc_names_source_rank(self) -> None:
         workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
         source_rank = extract_markdown_block(workflows, "Artifact-location source rank")

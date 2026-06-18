@@ -188,6 +188,8 @@ If a conflict is discovered between this guide and a higher-priority source, the
 
 The workflow guide takes precedence only for artifact types it specifies. If this guide is present but silent for a particular artifact type, use the owning skill's portable default path before blocking on ambiguity.
 
+Unknown artifact types are not placed by naming convention. If an artifact type is absent from this guide and no owning skill has a safe portable default, block and request a workflow-map update or explicit path.
+
 ## Customer-project portability
 
 Public skills operate in customer-project mode by default.
@@ -198,40 +200,173 @@ Do not require RigorLoop repository-internal `specs/`, `docs/`, `CONSTITUTION.md
 
 When local guidance is absent, use portable defaults where safe and block on ambiguity where no safe default exists.
 
+## Artifact registry
+
+The following canonical fenced YAML artifact registry is the machine-checkable source of truth for project-local workflow-managed artifact placement. Markdown tables in this guide are human-readable projections of this registry and must not contradict it.
+
+```yaml
+artifact_locations:
+  project_vision:
+    owner: vision
+    path: VISION.md
+    required_when: project vision exists or is being bootstrapped
+  project_map:
+    owner: project-map
+    path: docs/project-map.md
+    required_when: architecture or repository orientation depends on it
+  workflow_guide:
+    owner: workflow
+    path: docs/workflows.md
+    required_when: RigorLoop is adopted or artifact locations change
+  follow_up_register:
+    owner: workflow
+    path: docs/follow-ups.md
+    required_when: unowned cross-change follow-up exists
+  examples:
+    owner: none
+    path: docs/examples/
+    required_when: illustrative examples are maintained
+  proposal:
+    owner: proposal
+    path: docs/proposals/YYYY-MM-DD-slug.md
+    required_when: proposal stage
+  spec:
+    owner: spec
+    path: specs/slug.md
+    required_when: spec stage
+  test_spec:
+    owner: test-spec
+    path: specs/slug.test.md
+    required_when: test-spec stage
+  architecture_record:
+    owner: architecture
+    path: docs/architecture/YYYY-MM-DD-slug.md
+    required_when: architecture stage is triggered
+  adr:
+    owner: architecture
+    path: docs/adr/ADR-YYYYMMDD-slug.md
+    required_when: durable architecture decision is recorded
+  plan_index:
+    owner: plan / workflow
+    path: docs/plan.md
+    required_when: planned initiatives exist
+  change_plan:
+    owner: plan
+    path: docs/plans/YYYY-MM-DD-slug.md
+    required_when: planned initiative
+  plan_archive:
+    owner: lifecycle closeout
+    path: docs/plan-archive.md
+    required_when: terminal plan history exceeds recent index window
+  change_root:
+    owner: current change lifecycle
+    path: docs/changes/<change-id>/
+    required_when: workflow-managed formal lifecycle evidence exists
+  change_metadata:
+    owner: relevant stage / workflow
+    path: docs/changes/<change-id>/change.yaml
+    required_when: non-trivial workflow-managed change
+  formal_review_record:
+    owner: review skills
+    path: docs/changes/<change-id>/reviews/<stage>-r<n>.md
+    required_when: formal lifecycle review
+  review_log:
+    owner: review skills
+    path: docs/changes/<change-id>/review-log.md
+    required_when: formal lifecycle review
+  review_resolution:
+    owner: review-resolution
+    path: docs/changes/<change-id>/review-resolution.md
+    required_when: material findings, blocking outcomes, accepted dispositions, or another governing trigger
+  explain_change:
+    owner: explain-change
+    path: docs/changes/<change-id>/explain-change.md
+    required_when: final rationale for non-trivial change
+  verify_report:
+    owner: verify
+    path: docs/changes/<change-id>/verify-report.md
+    required_when: verify stage requires a standalone report
+  pr_handoff:
+    owner: pr
+    external_surface: pull_request_body
+    required_when: pr stage
+  learn_session:
+    owner: learn
+    path: docs/learn/sessions/YYYY-MM-DD-slug.md
+    required_when: learn session reaches Frame
+  token_cost_summary:
+    owner: workflow / measurement
+    path: docs/reports/token-cost/lifecycle/<change-id>.md
+    required_when: token-cost summary trigger applies
+  adapter_artifact_metadata:
+    owner: release workflow
+    path: docs/reports/adapter-artifacts/releases/
+    required_when: adapter artifact metadata is produced
+```
+
 ## Artifact locations
 
-The table defines default locations and owning skills.
+The table defines default locations and owning skills. It is the human-readable artifact-location map projection of the canonical registry above.
 
 This workflow guide summarizes and customizes artifact placement. It does not replace the owning stage skill's placement contract, and installed skills carry portable defaults for skill-only adopters.
 
 It does not define full artifact schemas, required fields, lifecycle status values, or validation rules. For exact shapes, use the governing spec, schema, or reference for that artifact type.
 
-If this project customizes artifact locations, update this table. Skills use rows in this table for the artifact types those rows specify, then fall back to portable defaults when this guide is silent for an artifact type.
+If this project customizes artifact locations, update the registry and this table together. Skills use rows in this table for the artifact types those rows specify, then fall back to portable defaults when this guide is silent for an artifact type.
 
-| Artifact type | Default location | Owning skill |
+| Artifact type | Default location | Owning skill | Required when |
+| --- | --- | --- | --- |
+| Project vision | `VISION.md` | `vision` | Project vision exists or is being bootstrapped. |
+| Project map | `docs/project-map.md` | `project-map` | Architecture or repository orientation depends on it. |
+| Workflow guide | `docs/workflows.md` | `workflow` | RigorLoop is adopted or artifact locations change. |
+| Follow-up register | `docs/follow-ups.md` | `workflow` | Unowned cross-change follow-up exists. |
+| Examples | `docs/examples/` | none; examples are non-normative | Illustrative examples are maintained. |
+| Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |
+| Specs | `specs/slug.md` | `spec` | Spec stage. |
+| Test specs | `specs/slug.test.md` | `test-spec` | Test-spec stage. |
+| Architecture | `docs/architecture/YYYY-MM-DD-slug.md` | `architecture` | Architecture stage is triggered. |
+| ADRs | `docs/adr/ADR-YYYYMMDD-slug.md` | `architecture` | Durable architecture decision is recorded. |
+| Plan index | `docs/plan.md` | `plan` / workflow bookkeeping | Planned initiatives exist. |
+| Plans | `docs/plans/YYYY-MM-DD-slug.md` | `plan` | Planned initiative. |
+| Plan archive | `docs/plan-archive.md` | lifecycle closeout / archive maintenance | Terminal plan history exceeds recent index window. |
+| Change root | `docs/changes/<change-id>/` | current change lifecycle | Workflow-managed formal lifecycle evidence exists. |
+| Change metadata | `docs/changes/<change-id>/change.yaml` | relevant stage / workflow | Non-trivial workflow-managed change. |
+| Formal review records | `docs/changes/<change-id>/reviews/<stage>-r<n>.md`; default location only; exact receipt/root rules are owned by the formal review recording contract | review skills | Formal lifecycle review. |
+| Review log | `docs/changes/<change-id>/review-log.md` | review skills | Formal lifecycle review. |
+| Review resolution | `docs/changes/<change-id>/review-resolution.md` when findings or blocking outcomes require disposition | `review-resolution` | Material findings, blocking outcomes, accepted dispositions, or another governing trigger. |
+| Explain change | `docs/changes/<change-id>/explain-change.md` | `explain-change` | Final rationale for non-trivial change. |
+| Verify report | `docs/changes/<change-id>/verify-report.md` when required | `verify` | Verify stage requires a standalone report. |
+| PR handoff | Pull request body | `pr` | PR stage. |
+| Learn session | `docs/learn/sessions/YYYY-MM-DD-slug.md` | `learn` | Learn session reaches Frame. |
+| Reports | `docs/reports/` | release / verify / measurement workflows | Report-producing workflow is triggered. |
+| Adapter artifact metadata | `docs/reports/adapter-artifacts/releases/` | release workflow | Adapter artifact metadata is produced. |
+
+## Review record placement
+
+| Review type | Path | Creates review-log entry? | Creates review-resolution? |
+| --- | --- | --- | --- |
+| Proposal review | `docs/changes/<change-id>/reviews/proposal-review-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
+| Spec review | `docs/changes/<change-id>/reviews/spec-review-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
+| Architecture review | `docs/changes/<change-id>/reviews/architecture-review-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
+| Plan review | `docs/changes/<change-id>/reviews/plan-review-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
+| Code review | `docs/changes/<change-id>/reviews/code-review-<milestone>-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
+
+## Plan surfaces
+
+| Surface | Path | Purpose |
 | --- | --- | --- |
-| Project vision | `VISION.md` | `vision` |
-| Project map | `docs/project-map.md` | `project-map` |
-| Workflow guide | `docs/workflows.md` | `workflow` |
-| Follow-up register | `docs/follow-ups.md` | `workflow` |
-| Examples | `docs/examples/` | none; examples are non-normative |
-| Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` |
-| Specs | `specs/slug.md` | `spec` |
-| Test specs | `specs/slug.test.md` | `test-spec` |
-| Architecture | `docs/architecture/` or project-configured architecture path | `architecture` |
-| ADRs | `docs/adr/ADR-YYYYMMDD-slug.md` | `architecture` |
-| Plans | `docs/plans/YYYY-MM-DD-slug.md` | `plan` |
-| Plan index | `docs/plan.md` | `plan` / workflow bookkeeping |
-| Plan archive | `docs/plan-archive.md` | lifecycle closeout / archive maintenance |
-| Change root | `docs/changes/<change-id>/` | current change lifecycle |
-| Change metadata | `docs/changes/<change-id>/change.yaml` | relevant stage / workflow |
-| Formal review records | `docs/changes/<change-id>/reviews/<stage>-r<n>.md`; default location only; exact receipt/root rules are owned by the formal review recording contract | review skills |
-| Review log | `docs/changes/<change-id>/review-log.md` | review skills |
-| Review resolution | `docs/changes/<change-id>/review-resolution.md` when findings or blocking outcomes require disposition | `review-resolution` |
-| Explain change | `docs/changes/<change-id>/explain-change.md` | `explain-change` |
-| Verify report | `docs/changes/<change-id>/verify-report.md` when required | `verify` |
-| Reports | `docs/reports/` | release / verify / measurement workflows |
-| Adapter artifact metadata | `docs/reports/adapter-artifacts/releases/` | release workflow |
+| Plan index | `docs/plan.md` | Bounded lifecycle index of active, blocked, recent done, and active supersession context. |
+| Plan body | `docs/plans/YYYY-MM-DD-slug.md` | Concrete execution plan for one workflow-managed planned initiative. |
+| Change metadata | `docs/changes/<change-id>/change.yaml` | Compact change metadata and validation ledger. |
+| Change-local evidence | `docs/changes/<change-id>/` | Reviews, rationale, verification, PR handoff evidence, and other scoped lifecycle evidence. |
+
+## Customization and migration notes
+
+- The registry is the current project-local map; update it and the Markdown projections together when artifact placement changes.
+- `docs/plan.md` remains the plan index. Concrete plan bodies remain under `docs/plans/`.
+- Existing `docs/plans/*.md` files are not migrated by this workflow-map optimization.
+- Formal review records stay under `docs/changes/<change-id>/reviews/` unless a higher-priority explicit path, active metadata, approved spec, schema, safety constraint, or user instruction permits another path.
+- Learn sessions may explain historical decisions, but they are not live placement authority unless the current rule also appears in this guide, an approved spec, a schema, or owning stage-skill guidance.
 
 ## Lifecycle Token-Cost Summaries
 
