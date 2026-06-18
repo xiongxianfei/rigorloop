@@ -23,7 +23,7 @@ npx @xiongxianfei/rigorloop@latest init opencode
 Use a pinned version when you want reproducible setup:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.3.1 init codex
+npx @xiongxianfei/rigorloop@0.3.2 init codex
 ```
 
 Install as a project-local development dependency:
@@ -56,23 +56,23 @@ rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
 Initialize target support from the verified official release archive:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.3.1 init codex --json
-npx @xiongxianfei/rigorloop@0.3.1 init claude --json
-npx @xiongxianfei/rigorloop@0.3.1 init opencode --json
+npx @xiongxianfei/rigorloop@0.3.2 init codex --json
+npx @xiongxianfei/rigorloop@0.3.2 init claude --json
+npx @xiongxianfei/rigorloop@0.3.2 init opencode --json
 ```
 
 Preview the write plan without mutating files:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.3.1 init opencode --dry-run --json
+npx @xiongxianfei/rigorloop@0.3.2 init opencode --dry-run --json
 ```
 
 Use `--from-archive` when you already downloaded the matching official archive, or when Node `fetch()` cannot reach GitHub from your network:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.3.1 init codex --from-archive ./rigorloop-adapter-codex-v0.3.1.zip --json
-npx @xiongxianfei/rigorloop@0.3.1 init claude --from-archive ./rigorloop-adapter-claude-v0.3.1.zip --json
-npx @xiongxianfei/rigorloop@0.3.1 init opencode --from-archive ./rigorloop-adapter-opencode-v0.3.1.zip --json
+npx @xiongxianfei/rigorloop@0.3.2 init codex --from-archive ./rigorloop-adapter-codex-v0.3.2.zip --json
+npx @xiongxianfei/rigorloop@0.3.2 init claude --from-archive ./rigorloop-adapter-claude-v0.3.2.zip --json
+npx @xiongxianfei/rigorloop@0.3.2 init opencode --from-archive ./rigorloop-adapter-opencode-v0.3.2.zip --json
 ```
 
 Default init installs verified target support without writing `rigorloop.yaml` or `rigorloop.lock`. Use `--write-state` when you want RigorLoop-managed project state files. The command verifies the selected archive before extraction and verifies the installed tree before reporting success. Runtime roots are target-specific:
@@ -90,20 +90,20 @@ Network installs use Node `fetch()`. If download fails in a proxied environment,
 Create a new change metadata scaffold:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.3.1 new-change my-change --title "Describe the change" --json
+npx @xiongxianfei/rigorloop@0.3.2 new-change my-change --title "Describe the change" --json
 ```
 
 Preview the scaffold first:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.3.1 new-change my-change --title "Describe the change" --dry-run --json
+npx @xiongxianfei/rigorloop@0.3.2 new-change my-change --title "Describe the change" --dry-run --json
 ```
 
 `new-change` creates `docs/changes/<change-id>/change.yaml`. It does not claim that proposal, spec, review, verification, or PR readiness is complete.
 
 ## Version Guidance
 
-Use `@latest` for manual exploration. Use an explicit version such as `@0.3.1` for CI, onboarding docs, and repeatable agent setup.
+Use `@latest` for manual exploration. Use an explicit version such as `@0.3.2` for CI, onboarding docs, and repeatable agent setup.
 
 ## Source of Truth
 

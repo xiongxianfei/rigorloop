@@ -1,0 +1,42 @@
+schema_version: 1
+
+release:
+  version: v0.3.2
+  source_commit: 93903a0
+  date: "2026-06-18"
+
+generator:
+  command: "python scripts/build-adapters.py --version v0.3.2 --output-dir <release-output-dir>"
+  source_skills: "skills/"
+  manifest: "dist/adapters/manifest.yaml"
+
+artifacts:
+  - adapter: codex
+    archive: rigorloop-adapter-codex-v0.3.2.zip
+    sha256: 3a38680d7f732388570fce49e0f92515aafbbbb177974ec7212626b567df4229
+    install_root: .agents/skills/
+    result: pass
+  - adapter: claude
+    archive: rigorloop-adapter-claude-v0.3.2.zip
+    sha256: f485c25dce4c2d7d0d53bd244b50aba99addaf6242b9e8b68b08f95ccdad858b
+    install_root: .claude/skills/
+    result: pass
+  - adapter: opencode
+    archive: rigorloop-adapter-opencode-v0.3.2.zip
+    sha256: db9141359505bb3be10854016554e5da38732b6e7f0d8b1cb7d0f18b029cbbd1
+    install_root: .opencode/skills/
+    result: pass
+
+combined_artifact:
+  required: false
+  archive: rigorloop-adapters-v0.3.2.tar.gz
+  sha256: ""
+  included_adapters:
+    - codex
+    - claude
+    - opencode
+
+validation:
+  command: "python scripts/validate-adapters.py --root <release-output-dir> --version v0.3.2"
+  result: pass
+  validated_at: "2026-06-18"
