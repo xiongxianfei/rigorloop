@@ -672,6 +672,8 @@ WORKFLOW_ARTIFACT_TABLE_LABELS = {
     "Adapter artifact metadata": "adapter_artifact_metadata",
 }
 WORKFLOW_ARTIFACT_REQUIRED_REGISTRY_ENTRIES = {
+    "adr",
+    "architecture_record",
     "proposal",
     "spec",
     "test_spec",
@@ -1088,12 +1090,6 @@ def validate_workflow_artifact_map_contract(
                     f"{skill_path}: stage skill routes formal reviews outside {WORKFLOW_ARTIFACT_REVIEW_ROOT_PATH}"
                 )
 
-    errors.extend(
-        validate_workflow_artifact_map_lookup(
-            registry,
-            sorted(WORKFLOW_ARTIFACT_REQUIRED_REGISTRY_ENTRIES),
-        )
-    )
     return errors
 
 

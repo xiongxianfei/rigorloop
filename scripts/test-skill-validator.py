@@ -5038,6 +5038,53 @@ and result format.
 
         self.assertEqual(errors, [])
 
+    def test_workflow_map_m2_validator_requires_architecture_registry_entries(
+        self,
+    ) -> None:
+        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        without_architecture_record = workflows.replace(
+            "  architecture_record:\n"
+            "    owner: architecture\n"
+            "    path: docs/architecture/YYYY-MM-DD-slug.md\n"
+            "    required_when: architecture stage is triggered\n",
+            "",
+        )
+        without_adr = workflows.replace(
+            "  adr:\n"
+            "    owner: architecture\n"
+            "    path: docs/adr/ADR-YYYYMMDD-slug.md\n"
+            "    required_when: durable architecture decision is recorded\n",
+            "",
+        )
+
+        architecture_record_errors = (
+            skill_validation.validate_workflow_artifact_map_contract(
+                SKILL_CONTRACT_WORKFLOWS_DOC,
+                without_architecture_record,
+            )
+        )
+        adr_errors = skill_validation.validate_workflow_artifact_map_contract(
+            SKILL_CONTRACT_WORKFLOWS_DOC,
+            without_adr,
+        )
+
+        self.assertTrue(
+            any(
+                error.endswith(
+                    ": artifact registry missing required entry architecture_record"
+                )
+                for error in architecture_record_errors
+            ),
+            architecture_record_errors,
+        )
+        self.assertTrue(
+            any(
+                error.endswith(": artifact registry missing required entry adr")
+                for error in adr_errors
+            ),
+            adr_errors,
+        )
+
     def test_workflow_map_m2_validator_rejects_registry_shape_errors(self) -> None:
         workflows = """
         # Workflows
