@@ -1,0 +1,518 @@
+change_id: 2026-06-22-published-skill-resource-integrity-architecture-pilot
+title: Specify published skill resource integrity architecture pilot
+classification: spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md
+  spec: specs/skill-contract.md
+  test_spec: specs/skill-contract.test.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260623-published-skill-resource-integrity.md
+  plan: docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
+  explain_change: docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md
+requirements:
+  - R46
+  - R46a
+  - R47
+  - R47a
+  - R47b
+  - R47c
+  - R47d
+  - R47e
+  - R48
+  - R48a
+  - R48b
+  - R49
+  - R49a
+  - R49b
+  - R49c
+  - R49d
+  - R50
+  - R50a
+  - R50b
+  - R50c
+  - R50d
+  - R51
+  - R51a
+  - R52
+  - R52a
+  - R52b
+  - R52c
+  - R53
+  - R53a
+  - R53b
+  - R54
+  - R54a
+  - R54b
+  - R54c
+  - R54d
+  - R55
+  - R55a
+  - R55b
+  - R55c
+  - R55d
+  - R55e
+tests:
+  - specs/skill-contract.test.md
+validation:
+  - command: git diff --check -- docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot specs/skill-contract.md specs/skill-contract.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260623-published-skill-resource-integrity.md docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md docs/plan.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260623-published-skill-resource-integrity.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md docs/plan.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/build-skills.py --output-dir /tmp/rigorloop-sri-audit-generated-skills
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-audit-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-audit-release-output
+    result: pass
+  - command: node /home/xiongxianfei/data/20260419-rigorloop/packages/rigorloop/dist/bin/rigorloop.js init codex --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-codex-v0.3.2.zip --json
+    result: pass
+  - command: node /home/xiongxianfei/data/20260419-rigorloop/packages/rigorloop/dist/bin/rigorloop.js init claude --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-claude-v0.3.2.zip --json
+    result: pass
+  - command: node /home/xiongxianfei/data/20260419-rigorloop/packages/rigorloop/dist/bin/rigorloop.js init opencode --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-opencode-v0.3.2.zip --json
+    result: pass_with_warning_opencode_command_aliases_not_declared
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
+    result: pass
+  - command: git diff --check -- docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md docs/plan.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: rm -rf /tmp/rigorloop-sri-final-release-output && python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-final-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-final-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-final-release-output --clean-install-smoke --skill architecture
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path specs/skill-contract.md --path specs/skill-contract.test.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_release_ci_recorded_source_mode_preserves_release_metadata_validation AdapterDistributionTests.test_release_ci_validation_uses_recorded_source_commit_for_v0_1_5 AdapterDistributionTests.test_recorded_source_profile_preserves_release_metadata_validation AdapterDistributionTests.test_recorded_source_profile_skips_only_current_skill_content_policy AdapterDistributionTests.test_recorded_source_profile_rejects_missing_mapped_resource_in_archive AdapterDistributionTests.test_recorded_source_profile_rejects_stale_mapped_resource_even_with_current_metadata AdapterDistributionTests.test_recorded_source_profile_without_resource_map_still_checks_archive_presence AdapterDistributionTests.test_recorded_source_profile_rejects_malformed_resource_map AdapterDistributionTests.test_release_validation_fails_when_archive_validation_does_not_execute AdapterDistributionTests.test_release_validation_rejects_unknown_profile
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/validate-release-ci.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m4-r3.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r2.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r3.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r4.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_current_architecture_resource_map_uses_packaged_assets
+    result: fail_expected_before_m3_normalization
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_current_architecture_resource_map_uses_packaged_assets
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path skills/architecture/assets/architecture-skeleton.md --path skills/architecture/assets/adr-skeleton.md --path skills/architecture/assets/diagram-styles.mmd --path scripts/test-skill-validator.py --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path skills/architecture/SKILL.md --path skills/architecture/assets/adr-skeleton.md --path skills/architecture/assets/architecture-skeleton.md --path skills/architecture/assets/diagram-styles.mmd
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m3-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_published_skill_architecture_legacy_references_fail_after_m3
+    result: fail_expected_before_exception_removal
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_published_skill_architecture_legacy_references_fail_after_m3
+    result: pass
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_current_architecture_resource_map_uses_packaged_assets
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path skills/architecture
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/architecture
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m3-r2.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-build-skills.py BuildSkillsTests.test_generated_resource_parity_reports_stale_mapped_resource_hashes
+    result: fail_expected_before_generated_resource_parity_helper
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_archives_rejects_stale_mapped_resource_hashes
+    result: fail_expected_before_adapter_archive_resource_parity_diagnostics
+  - command: python scripts/test-build-skills.py BuildSkillsTests.test_generated_resource_parity_reports_stale_mapped_resource_hashes BuildSkillsTests.test_generated_resource_parity_reports_missing_mapped_resource
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_archives_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/build-skills.py --path scripts/test-build-skills.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validate-release-ci.py --path scripts/validate-adapters.py --path skills/architecture
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-release-output
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/architecture
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m4-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_release_ci_recorded_source_mode_preserves_release_metadata_validation AdapterDistributionTests.test_release_ci_validation_uses_recorded_source_commit_for_v0_1_5 AdapterDistributionTests.test_recorded_source_profile_preserves_release_metadata_validation AdapterDistributionTests.test_recorded_source_profile_skips_only_current_skill_content_policy AdapterDistributionTests.test_release_validation_rejects_unknown_profile
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/validate-release-ci.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m4-r2.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_clean_install_smoke_installs_mapped_resources_from_local_archives AdapterDistributionTests.test_clean_install_smoke_rejects_non_installing_command_runner AdapterDistributionTests.test_clean_install_smoke_rejects_stale_installed_mapped_resource AdapterDistributionTests.test_validate_adapters_cli_rejects_clean_install_smoke_without_archive_root
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-install-release-output
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/adapter_distribution.py --path scripts/validate-adapters.py --path scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output --clean-install-smoke --skill architecture
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m5-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/test-adapter-distribution.py -k clean_install_smoke_rejects_missing_installed_mapped_resource
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_clean_install_smoke_installs_mapped_resources_from_local_archives AdapterDistributionTests.test_clean_install_smoke_rejects_non_installing_command_runner AdapterDistributionTests.test_clean_install_smoke_rejects_missing_installed_mapped_resource AdapterDistributionTests.test_clean_install_smoke_rejects_stale_installed_mapped_resource AdapterDistributionTests.test_validate_adapters_cli_rejects_clean_install_smoke_without_archive_root
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/adapter_distribution.py --path scripts/validate-adapters.py --path scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-install-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output --clean-install-smoke --skill architecture
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m5-r2.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path skills/architecture-review/SKILL.md --path skills/architecture/SKILL.md --path skills/bugfix/SKILL.md --path skills/ci-maintenance/SKILL.md --path skills/code-review/SKILL.md --path skills/constitution/SKILL.md --path skills/explain-change/SKILL.md --path skills/explore/SKILL.md --path skills/implement/SKILL.md --path skills/learn/SKILL.md --path skills/plan-review/SKILL.md --path skills/plan/SKILL.md --path skills/pr/SKILL.md --path skills/project-map/SKILL.md --path skills/proposal-review/SKILL.md --path skills/proposal/SKILL.md --path skills/research/SKILL.md --path skills/spec-review/SKILL.md --path skills/spec/SKILL.md --path skills/test-spec/SKILL.md --path skills/verify/SKILL.md --path skills/vision/SKILL.md --path skills/workflow/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/repository-wide-resource-audit.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m6-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m7-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: rm -rf /tmp/rigorloop-sri-verify-release-output && python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-verify-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-verify-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-verify-release-output --clean-install-smoke --skill architecture
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path specs/skill-contract.md --path specs/skill-contract.test.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260623-published-skill-resource-integrity.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/repository-wide-resource-audit.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/build-skills.py --path scripts/test-build-skills.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validate-adapters.py --path scripts/validate-release-ci.py --path skills/architecture --path specs/skill-contract.md --path specs/skill-contract.test.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+changed_files:
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/architecture-review-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/plan-review-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/plan-review-r2.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/spec-review-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m1-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r2.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r3.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r4.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m3-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m3-r2.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m4-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m4-r2.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m5-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m5-r2.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m6-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m7-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/repository-wide-resource-audit.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md
+  - docs/plan.md
+  - docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
+  - docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md
+  - docs/adr/ADR-20260623-published-skill-resource-integrity.md
+  - docs/architecture/system/architecture.md
+  - specs/skill-contract.md
+  - specs/skill-contract.test.md
+  - scripts/skill_validation.py
+  - scripts/build-skills.py
+  - scripts/test-build-skills.py
+  - scripts/adapter_distribution.py
+  - scripts/test-adapter-distribution.py
+  - scripts/validate-adapters.py
+  - scripts/validate-release-ci.py
+  - scripts/test-skill-validator.py
+  - skills/architecture/SKILL.md
+  - skills/architecture/assets/architecture-skeleton.md
+  - skills/architecture/assets/adr-skeleton.md
+  - skills/architecture/assets/diagram-styles.mmd
+review:
+  status: clean_after_code_review_m7_r1
+  unresolved_items: 0
+test_spec:
+  status: owner-approved
+  path: specs/skill-contract.test.md

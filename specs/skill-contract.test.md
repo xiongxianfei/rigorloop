@@ -22,6 +22,9 @@
 - Current structural-hygiene plan: [Spec and Test-Spec Structural Hygiene Execution Plan](../docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md), active after clean plan-review R1.
 - Current test-spec normalization proposal: [Test-Spec Contract Normalization](../docs/proposals/2026-05-20-test-spec-contract-normalization.md), accepted.
 - Current test-spec normalization plan: [Test-Spec Contract Normalization Plan](../docs/plans/2026-05-20-test-spec-contract-normalization.md), active after clean plan-review R1.
+- Current resource-integrity proposal: [Published Skill Resource Integrity with an Architecture-Skill Pilot](../docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md), accepted.
+- Current resource-integrity architecture: [System Architecture](../docs/architecture/system/architecture.md) and [ADR-20260623 Published Skill Resource Integrity](../docs/adr/ADR-20260623-published-skill-resource-integrity.md), approved and accepted.
+- Current resource-integrity plan: [Published Skill Resource Integrity Architecture Pilot](../docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md), active after clean plan-review R2.
 - Architecture: not required. The approved slices change workflow-governance Markdown, canonical skill guidance, shared text blocks, static validation, generated skill mirrors, public adapter validation, and pilot skill wording. They do not add runtime components, storage, API boundaries, deployment boundaries, or a new validation architecture.
 - Project map: `docs/project-map.md` is present and was read for repository orientation. This test spec relies on the approved spec, active plan, workflow specs, stage skills, shared templates, generator scripts, existing validator patterns, and change-local pilot evidence.
 - Related proof surfaces:
@@ -50,6 +53,7 @@
 - Use deterministic validator tests and fixtures for the assets-first plan pilot: exact asset inventory, metadata, resource-map `COPY` entries, placeholders, forbidden root dependencies, structural fingerprints, section-set parity, and generated adapter asset presence.
 - Use change-local evidence for assets-first behavior and benefit proof: behavior preservation, behavior parity, historical coverage, token cost, and milestone asset reuse.
 - Use focused proof for the test-spec normalization slice: frontmatter metadata, `Workflow role`, dedicated `Stop conditions`, output-skeleton preservation, behavior parity on a representative input, and current generated-output validation from canonical `skills/`.
+- Use focused proof for the published-skill resource-integrity pilot: pre-change architecture resource-chain evidence before mutation, validator fixtures for mapped resources and bounded legacy lint, architecture behavior-preservation evidence, raw-byte SHA-256 parity for generated and packed output, clean-install target-tree inspection from locally packed candidates, and repository-wide audit/enforcement evidence.
 - Do not add runtime workflow simulation, natural-language scoring, broad prose linting, a shared-block generation build step, a standalone `review-resolution` skill, or a `skills/ci-maintenance/SKILL.md` path.
 - Do not claim routing fixtures prove deterministic model auto-selection unless a later approved routing harness exists.
 
@@ -106,6 +110,22 @@
 | `R37`, `R37a`, `R37b`, `R37c`, `R37d`, `R38`, `R38a`, `R38b`, `R38c`, `R39`, `R39a`, `R39b`, `R39c`, `R39d`, `R40`, `R40a`, `R40b`, `R40c`, `R41`, `R41a`, `R41b`, `R41c`, `R42`, `R42a`, `R42b`, `R42c`, `R42d`, `R42e`, `R43`, `R43a`, `R43b`, `R43c`, `R43d`, `R44`, `R44a`, `R44b`, `R44c`, `R44d`, `R44e`, `R45`, `R45a`, `R45b`, `R45c`, `R45d`, `R45e` | `T33`, `T34`, `T35`, `T36` | integration, manual, smoke | Assets-first plan pilot scope, four normative assets, resource-map contract, output skeleton boundary, handoff asset boundary, metadata and drift checks, deterministic validation, improvement gate, adapter packaging, and parity corpus split |
 | `R29g`, `R29h`, `R30`, `R30a`, `R31e`, `R34`, `R34c` | `T37`, `T38`, `T39`, `T40` | integration, manual, smoke | Test-spec contract normalization frontmatter metadata, Workflow role, surfaced stop conditions, output skeleton, preservation proof, behavior parity, and generated-output validation |
 
+### Published-skill resource integrity pilot (R46-R55)
+
+| Requirement IDs | Covered by | Level | Notes |
+| --- | --- | --- | --- |
+| `R46`, `R46a` | `T42`, `T48` | contract, integration | Generic resource-integrity rules stay in `specs/skill-contract.md`; architecture-pilot evidence remains change-local and does not create a competing contract. |
+| `R47`, `R47a`, `R47b`, `R47c`, `R47d`, `R47e` | `T42`, `T43`, `T44` | unit, integration | Resource-map verbs map to approved packaged classes, paths remain contained in the skill root, and `templates/` is not silently accepted as a packaged class. |
+| `R48`, `R48a`, `R48b` | `T42`, `T44`, `T45` | unit, integration | Mapped resources must exist in canonical skill source, be packageable from the skill root, and fail canonical validation when missing. |
+| `R49`, `R49a`, `R49b`, `R49c`, `R49d` | `T42`, `T43`, `T47` | unit, integration, migration | Required skill-local resource dependencies use `Resource map`; bounded legacy lint catches unmapped resource-loading references without broad path scanning. |
+| `R50`, `R50a`, `R50b`, `R50c`, `R50d` | `T41`, `T45`, `T46`, `T48` | integration, smoke | Parity uses skill-root relative path plus raw-byte SHA-256 across canonical, generated, packed, release-candidate, and installed target trees. |
+| `R51`, `R51a` | `T45` | unit, integration | Any transformed mapped resource must have a complete transformation contract or fail parity validation. |
+| `R52`, `R52a`, `R52b`, `R52c` | `T41`, `T46`, `T48` | smoke, integration | Clean-install proof uses locally packed release candidates in empty Codex, Claude, and opencode projects, inspects real installed trees, and does not require live registry proof. |
+| `R53`, `R53a`, `R53b` | `T42`, `T47`, `T48` | integration, migration | Current skills start in audit mode, new or changed skills enforce immediately after implementation, and global enforcement waits for clean or explicitly resolved drift. |
+| `R54`, `R54a`, `R54b`, `R54c`, `R54d` | `T42`, `T44`, `T48` | integration, manual | Runtime fallback remains separate from package validity, and missing normative or non-obvious structural resources stop execution. |
+| `R55`, `R55a`, `R55b` | `T41`, `T48` | integration, smoke, manual | M1 must complete the pre-change architecture resource-chain audit and identify the first divergent layer before architecture resources change. |
+| `R55c`, `R55d`, `R55e` | `T44`, `T48` | integration, manual | Architecture skeletons and diagram conventions are classified by content, and architecture behavior obligations are preserved. |
+
 ## Example coverage map
 
 | Example | Covered by | Notes |
@@ -127,6 +147,11 @@
 | `E15` | `T33`, `T35` | `current-handoff-summary.md` remains structure-only and does not hide lifecycle policy |
 | `E16` | `T36` | Historical plans are coverage evidence only, not strict structural parity references |
 | `E17` | `T37`, `T39` | `test-spec` gains contract metadata and structure while preservation evidence maps moved stop conditions and skeletonized obligations back to source wording |
+| `E18` | `T43` | Legacy `templates/...` architecture instructions outside a `Resource map` are detected and resolved through mapping, removal, or approved temporary exception |
+| `E19` | `T43` | Artifact examples such as `docs/changes/<change-id>/review-log.md` are not classified as packaged skill resources |
+| `E20` | `T45` | Stale generated mapped resources fail raw-byte SHA-256 parity with the canonical relative path |
+| `E21` | `T41`, `T46` | Clean-install proof uses locally packed release candidates and inspects installed Codex, Claude, and opencode target skill roots |
+| `E22` | `T42`, `T44`, `T48` | Runtime fallback may continue only within bounds, while package validation still fails for the missing mapped resource |
 
 ## Edge case coverage
 
@@ -169,6 +194,22 @@
 - EC37, `test-spec` output skeleton implies a new required section, test-case field, coverage map, or output obligation: `T37`, `T39`
 - EC38, existing validators already cover test-spec normalization and no validator change is needed: `T38`
 - EC39, generated adapter validation finds unrelated stale output after the canonical `test-spec` edit: `T40`
+- EC40, M1 attempts to close without clean-installed Codex evidence: `T41`
+- EC41, M1 attempts to close without clean-installed Claude evidence: `T41`
+- EC42, M1 attempts to close without clean-installed opencode evidence: `T41`
+- EC43, clean-install tooling is absent and M1 tries to defer installed-tree proof past M3: `T41`
+- EC44, a `COPY` entry points to `references/`, a `READ` entry points to `assets/`, or a `RUN` entry points outside `scripts/`: `T42`
+- EC45, a mapped path uses `../`, an absolute path, or a repository-root-only dependency: `T42`
+- EC46, a legacy `templates/...` load instruction appears outside the `Resource map`: `T43`
+- EC47, a Markdown code sample, artifact path, customer-project path, or repository docs path looks path-like but is not a skill-local resource dependency: `T43`
+- EC48, an architecture skeleton, ADR skeleton, or diagram convention duplicates inline rules and does not earn a separate resource file: `T44`
+- EC49, architecture normalization moves trigger logic, security policy, review rules, lifecycle stage rules, or verification claims out of `SKILL.md`: `T44`
+- EC50, generated local mirror, adapter package, release candidate, or archive contains the mapped path but stale bytes: `T45`
+- EC51, a transformed resource is present without input path, transformation owner, output path, expected identity, or validation command: `T45`
+- EC52, clean-install smoke inspects an archive, dry-run plan, or unpackaged source directory instead of the installed target skill root: `T46`
+- EC53, target install roots differ but the relative path beneath the installed skill root is wrong: `T46`
+- EC54, repository-wide audit finds unrelated drift while new or changed skills still need immediate enforcement: `T47`
+- EC55, runtime fallback safely continues for a redundant convenience resource but validation reports the package as valid: `T48`
 
 ## Acceptance criteria coverage map
 
@@ -241,6 +282,22 @@
 | Test-spec normalization surfaces invocation-blocking conditions in a dedicated `Stop conditions` section with source-to-destination preservation evidence | `T37`, `T39` |
 | Test-spec normalization adds a fenced output skeleton that preserves the existing required section set, test-case format, coverage maps, and output obligations | `T37`, `T39` |
 | Test-spec generated adapter output is rebuilt or validated from canonical `skills/`, or a reviewed plan update records an explicit deferral | `T40` |
+
+### Published-skill resource integrity pilot (R46-R55)
+
+| Acceptance criterion | Covered by |
+| --- | --- |
+| Generic published-skill resource-integrity rules amend `specs/skill-contract.md` and do not create a competing contract | `T42`, `T48` |
+| Explicit `Resource map` entries validate verb/class mapping, path containment, canonical existence, and packageability | `T42` |
+| Legacy unmapped `templates/...` instructions are detected without broad path-like Markdown scanning | `T43` |
+| Architecture resource-chain baseline identifies the first divergent layer before architecture resource changes | `T41` |
+| Clean-installed Codex, Claude, and opencode baseline evidence exists before M3 | `T41` |
+| Architecture resources are classified as `assets/` or `references/` only when they earn files | `T44` |
+| Architecture trigger behavior, arc42 sections, C4 obligations, ADR structure, architecture-review boundaries, and handoff semantics are preserved | `T44` |
+| Generated local mirror, adapter package, and release archive parity compare relative path plus raw-byte SHA-256 | `T45` |
+| Locally packed clean-install smoke inspects real installed target trees, not dry-run output or source directories | `T46` |
+| Repository-wide audit starts in audit mode and enables global enforcement only after drift is resolved, deferred, or excepted | `T47` |
+| Runtime fallback never converts a broken package into a passing validation result | `T42`, `T44`, `T48` |
 
 ## Test cases
 
@@ -1335,6 +1392,228 @@
   - `python scripts/validate-adapters.py --version v0.1.5`
   - `bash scripts/ci.sh --mode explicit --path skills/test-spec/SKILL.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml`
 
+### Published-skill resource integrity pilot (R46-R55)
+
+#### T41. Pre-change architecture resource-chain baseline
+
+- Covers: `R50`, `R52`, `R52a`, `R52b`, `R52c`, `R55`, `R55a`, `R55b`, E21, EC40, EC41, EC42, EC43
+- Level: integration, smoke, manual
+- Fixture/setup:
+  - `skills/architecture/SKILL.md`
+  - current root `templates/architecture.md`, `templates/adr.md`, and `templates/diagram-styles.mmd`
+  - generated local skill mirror output
+  - locally packed Codex, Claude, and opencode release candidates
+  - empty temporary target projects for Codex, Claude, and opencode
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md`
+- Steps:
+  - Before changing architecture resources or architecture `SKILL.md` references, inventory the pre-change canonical architecture skill and the legacy referenced resource paths.
+  - Build the pre-change generated local skill mirror.
+  - Build pre-change Codex, Claude, and opencode adapter or release candidates into a temporary release-output directory.
+  - Install the locally packed candidates into empty temporary target projects using the supported local-archive init route.
+  - Inspect the real installed architecture skill root for each target; do not substitute archive inspection, dry-run output, or an unpackaged source directory.
+  - Record expected path, actual result, relative path, presence, raw-byte SHA-256 when files exist, status, commands used, temporary roots, reproducibility, uninspectable layers, and the first divergent layer.
+  - Block M1 closeout if any layer is unproved or any target install cannot be inspected.
+- Expected result:
+  - The audit identifies the first divergent layer across canonical, built, adapter/archive, release-candidate, and installed Codex/Claude/opencode target trees before any architecture resource mutation.
+- Failure proves:
+  - The implementation can change architecture resources before reconstructing the original resource-loss boundary.
+- Automation location:
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-audit-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --release-output-dir /tmp/rigorloop-sri-audit-release-output`
+  - `node packages/rigorloop/dist/bin/rigorloop.js init codex --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-codex-v0.3.2.zip --json`
+  - `node packages/rigorloop/dist/bin/rigorloop.js init claude --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-claude-v0.3.2.zip --json`
+  - `node packages/rigorloop/dist/bin/rigorloop.js init opencode --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-opencode-v0.3.2.zip --json`
+  - `python scripts/audit-skill-resource-chain.py --skill architecture --release-output-dir /tmp/rigorloop-sri-audit-release-output --target codex --target claude --target opencode` if M1 adds the audit-only helper
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md`
+
+#### T42. Resource-map contract and canonical validation
+
+- Covers: `R46`, `R46a`, `R47`, `R47a`, `R47b`, `R47c`, `R47d`, `R47e`, `R48`, `R48a`, `R48b`, `R49`, `R53`, `R53a`, `R54`, `R54a`, E22, EC44, EC45, EC55
+- Level: unit, integration
+- Fixture/setup:
+  - `scripts/skill_validation.py`
+  - `scripts/validate-skills.py`
+  - `scripts/test-skill-validator.py`
+  - fixture skill trees under `tests/fixtures/skills/published-design/`
+- Steps:
+  - Add a valid fixture with `COPY assets/...`, `READ references/...`, and `RUN scripts/...` entries pointing to existing files inside the skill root.
+  - Add invalid fixtures for `COPY references/...`, `READ assets/...`, `RUN assets/...`, `templates/...` as an approved class, path traversal, absolute paths, missing mapped files, and repository-root-only resource dependencies.
+  - Assert diagnostics identify the failing resource path and the violated verb/class, containment, existence, or packageability rule.
+  - Assert validation treats generic rules as skill-contract behavior and architecture-specific evidence as architecture-pilot evidence.
+  - Assert any missing mapped resource fails package validation even when a runtime fallback may safely continue.
+- Expected result:
+  - Canonical validation deterministically accepts only mapped resources that use approved classes, exist under the skill root, and are packageable from canonical skill source.
+- Failure proves:
+  - A published skill can declare, omit, escape, or misclassify skill-local resources without failing validation.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design`
+
+#### T43. Bounded legacy-resource lint and false-positive boundary
+
+- Covers: `R49`, `R49a`, `R49b`, `R49c`, `R49d`, E18, E19, EC46, EC47
+- Level: unit, integration, migration
+- Fixture/setup:
+  - `scripts/skill_validation.py`
+  - `scripts/test-skill-validator.py`
+  - fixtures for legacy `templates/...` instructions and non-resource path examples
+- Steps:
+  - Add a fixture where `SKILL.md` uses a recognized resource-loading instruction for `templates/architecture.md` outside the `Resource map`.
+  - Assert validation reports an unmapped legacy skill-local resource reference.
+  - Add fixtures with artifact examples, code snippets, repository docs paths, customer-project paths, and `docs/changes/<change-id>/review-log.md`.
+  - Assert those paths are not classified as skill-local packaged resources unless they appear in recognized resource-loading instructions with approved skill-local prefixes.
+  - If temporary exceptions are supported, assert an approved exception is explicit and review-visible.
+- Expected result:
+  - The validator catches the defect class that triggered this proposal without becoming a broad Markdown path scanner.
+- Failure proves:
+  - The implementation either misses raw legacy resource-loading references or creates false positives for ordinary artifact examples.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+
+#### T44. Architecture resource normalization and behavior preservation
+
+- Covers: `R47`-`R48b`, `R49`, `R54`, `R54a`, `R54b`, `R54c`, `R54d`, `R55c`, `R55d`, `R55e`, E22, EC48, EC49, EC55
+- Level: integration, manual
+- Fixture/setup:
+  - reviewed T41 architecture resource-chain audit
+  - `skills/architecture/SKILL.md`
+  - `skills/architecture/assets/architecture-skeleton.md`
+  - `skills/architecture/assets/adr-skeleton.md`
+  - `skills/architecture/references/diagram-conventions.md` or `skills/architecture/assets/diagram-styles.mmd`
+  - root `templates/architecture.md`, `templates/adr.md`, and `templates/diagram-styles.mmd` for content classification
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md`
+- Steps:
+  - Confirm M1 is closed after code review with installed Codex, Claude, and opencode baseline evidence and first divergent layer identified.
+  - Inspect the existing root templates and classify architecture and ADR skeletons as `assets/` only if they earn copy-and-fill files.
+  - Classify diagram conventions as `references/` unless inspected content is literal copied Mermaid material that earns an `assets/` file.
+  - Replace raw legacy `templates/...` load instructions with explicit `Resource map` entries and load conditions only for resources that earn files.
+  - Confirm trigger logic, workflow role, security/trust-boundary rules, review approval rules, lifecycle stage obligations, status enums, verification claims, arc42 obligations, C4 obligations, ADR structure, architecture-review boundaries, and handoff semantics stay in `SKILL.md`.
+  - Record behavior-preservation evidence for architecture trigger behavior, arc42 sections, C4 diagrams, ADR structure, architecture review, handoff, and runtime fallback boundaries.
+- Expected result:
+  - The architecture skill no longer references unavailable resources, packages only earned resources, and preserves architecture behavior.
+- Failure proves:
+  - Resource normalization either hides normative architecture policy in resources, creates redundant packaged files, or changes architecture output semantics.
+- Automation location:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md`
+  - manual behavior-preservation review during M3 and code-review
+
+#### T45. Generated local, adapter, archive, and transformation parity
+
+- Covers: `R48`, `R50`, `R50a`, `R50b`, `R50c`, `R50d`, `R51`, `R51a`, `R55a`, E20, EC50, EC51
+- Level: unit, integration
+- Fixture/setup:
+  - normalized architecture resource map and resources
+  - `scripts/build-skills.py`
+  - `scripts/adapter_distribution.py`
+  - `scripts/build-adapters.py`
+  - `scripts/validate-adapters.py`
+  - `scripts/test-build-skills.py`
+  - `scripts/test-adapter-distribution.py`
+  - fixtures under `tests/fixtures/skills/published-design/generated-output-presence/` and `tests/fixtures/adapters/`
+- Steps:
+  - Collect mapped-resource identity as skill-root relative path plus SHA-256 of raw file bytes.
+  - Assert generated local mirror output preserves each mapped resource's relative path and raw-byte SHA-256.
+  - Assert generated Codex, Claude, and opencode adapter package output preserves each mapped resource's relative path and raw-byte SHA-256.
+  - Assert release archives preserve each mapped resource's relative path and raw-byte SHA-256.
+  - Add stale-byte and missing-resource fixtures that fail with stable diagnostics naming the relative path and hash mismatch or missing path.
+  - Add a transformation-contract failure fixture: if output bytes or path differ without a complete contract naming input path, transformation owner, output path, expected identity, and validation command, validation fails.
+  - Assert file timestamps are ignored and line-ending changes are not silently normalized.
+- Expected result:
+  - Generated and packed output cannot omit or stale-copy mapped resources, and transformations require an explicit contract.
+- Failure proves:
+  - Resource parity can pass on presence-only checks, timestamp-sensitive checks, stale bytes, or undeclared transformations.
+- Automation location:
+  - `python scripts/test-build-skills.py`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --release-output-dir /tmp/rigorloop-sri-release-output`
+
+#### T46. Reusable packed clean-install regression gate
+
+- Covers: `R50`, `R50a`, `R50b`, `R52`, `R52a`, `R52b`, `R52c`, `R55a`, E21, EC52, EC53
+- Level: smoke, integration
+- Fixture/setup:
+  - normalized architecture resources after M3
+  - release archive parity after M4
+  - locally packed release-candidate archives
+  - empty temporary Codex, Claude, and opencode target projects
+  - repository-owned clean-install smoke command added or hardened by M5
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md`
+- Steps:
+  - Build locally packed release-candidate archives for Codex, Claude, and opencode.
+  - Install each packed candidate into an empty temporary target project.
+  - Inspect the real installed skill root for each target.
+  - Compare every mapped architecture resource by relative path beneath the installed skill root and raw-byte SHA-256.
+  - Assert dry-run output, archive-only evidence, and unpackaged source-directory inspection are rejected as proof.
+  - Assert target-specific install roots may differ but relative paths beneath the installed skill root must match canonical paths unless a transformation contract applies.
+- Expected result:
+  - The reusable post-change clean-install gate proves normalized resources are present and current in all target installed trees.
+- Failure proves:
+  - Release candidates can validate before real installed target trees are self-contained.
+- Automation location:
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-install-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --release-output-dir /tmp/rigorloop-sri-install-release-output`
+  - repository-owned clean-install smoke command added by M5
+
+#### T47. Repository-wide audit and enforcement rollout
+
+- Covers: `R49d`, `R53`, `R53a`, `R53b`, EC54
+- Level: integration, migration, manual
+- Fixture/setup:
+  - current `skills/` tree
+  - canonical validator after M2
+  - architecture resources after M3
+  - generated and clean-install parity proof after M4 and M5
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/repository-wide-resource-audit.md`
+- Steps:
+  - Run resource-integrity validation in audit mode across all current published skills.
+  - Record every current unmapped or invalid mapped-resource finding as clean, resolved, explicitly deferred, or excepted in review-visible evidence.
+  - Assert new or changed skills cannot introduce new resource-integrity debt once the amendment implementation is active.
+  - Enable repository-wide hard enforcement only if the audit is clean or all drift is explicitly resolved, deferred, or excepted.
+  - Confirm unrelated drift does not silently expand the architecture pilot scope.
+- Expected result:
+  - Current skill resource-integrity state is known, and enforcement state matches the approved rollout boundary.
+- Failure proves:
+  - Global enforcement can hide unresolved baseline drift, or new/changed skills can introduce new resource debt during migration.
+- Automation location:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `bash scripts/ci.sh --mode explicit --path skills --path scripts/skill_validation.py --path scripts/test-skill-validator.py`
+  - manual review of `repository-wide-resource-audit.md`
+
+#### T48. Final resource-integrity lifecycle closeout
+
+- Covers: `R46`-`R55`, E20, E21, E22, EC55
+- Level: integration, smoke, manual
+- Fixture/setup:
+  - all changed canonical skill, validator, generator, adapter, fixture, plan, test spec, architecture, ADR, review, and change-local paths
+  - active plan M7 closeout surfaces
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - final `explain-change`, review-resolution when triggered, verify evidence, and PR handoff
+- Steps:
+  - Confirm M1-M6 are closed through their required code-review gates and validation evidence.
+  - Confirm `change.yaml`, review records, plan state, test spec, behavior-preservation evidence, resource-chain audit, clean-install proof, and repository-wide audit are synchronized.
+  - Run final validation named by the active plan and this test spec, including canonical skill validation, validator tests, generated local mirror checks, adapter distribution tests, adapter build/validation, clean-install proof, lifecycle validation, review artifact validation, and change metadata validation.
+  - Confirm runtime fallback policy is documented as package-validation failure for missing mapped resources, with stop behavior for missing normative, schema, security, legal, or non-obvious structural resources.
+  - Confirm final handoff does not claim live registry proof, hosted CI, implementation review, verification, or PR readiness without actual evidence.
+- Expected result:
+  - The implemented slice has traceable proof from canonical source through generated, packed, and installed resources, and lifecycle artifacts agree on current state.
+- Failure proves:
+  - The change can close with stale lifecycle evidence, incomplete resource-chain proof, hidden fallback success, or unverified package parity.
+- Automation location:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md`
+  - final validation bundle named by the active plan after M1-M6 implementation
+
 ## Fixtures and data
 
 - No new external fixtures or runtime data are required.
@@ -1375,6 +1654,13 @@
   - `docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md`;
   - `docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md`;
   - `docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml`.
+- Change-local published-skill resource-integrity evidence uses:
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md`;
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md`;
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md`;
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md`;
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/repository-wide-resource-audit.md`;
+  - `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`.
 - Assets-first plan pilot static fixtures use:
   - `skills/plan/assets/plan-skeleton.md`;
   - `skills/plan/assets/milestone.md`;
@@ -1382,6 +1668,9 @@
   - `skills/plan/assets/decision-log-row.md`;
   - valid and invalid asset pilot fixture trees under `tests/fixtures/skills/published-design/` or another existing skill fixture root.
 - Any temporary fixture for validator failure cases should live under existing test fixture roots such as `tests/fixtures/skills/` and must not reference machine-local paths.
+- Resource-integrity validator fixtures should live under `tests/fixtures/skills/published-design/` unless implementation proves a narrower fixture root is more maintainable.
+- Generated-output parity fixtures should reuse or extend `tests/fixtures/skills/published-design/generated-output-presence/`.
+- Adapter and archive parity fixtures should reuse `tests/fixtures/adapters/` and temporary release-output directories.
 
 ## Mocking/stubbing policy
 
@@ -1395,6 +1684,9 @@
 - For the plan-family rollout, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`, `scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `scripts/measure-skill-tokens.py --skills-root skills`, or `scripts/ci.sh` when those commands are used as final milestone proof.
 - For the assets-first plan pilot, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`, `scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `scripts/measure-skill-tokens.py --skills-root skills`, `scripts/test-adapter-distribution.py`, or `scripts/ci.sh` when those commands are used as final milestone proof.
 - For the test-spec normalization slice, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --check`, `scripts/validate-adapters.py --version v0.1.5`, `scripts/validate-skills.py`, `scripts/test-skill-validator.py`, or `scripts/ci.sh` when those commands are used as final milestone proof.
+- For the resource-integrity pilot, do not stub canonical validation, generated local mirror parity, adapter/archive parity, locally packed release-candidate creation, or installed target-tree inspection when those commands are used as milestone closeout proof.
+- Unit tests may use temporary fixture skill trees, temporary adapter output roots, and intentionally stale byte copies to prove missing, stale, transformed, or false-positive behavior without mutating production skills.
+- M1 may add a minimum audit-only helper if no supported install inspection route exists, but M1 closeout still must inspect real installed target trees for Codex, Claude, and opencode.
 
 ## Migration or compatibility tests
 
@@ -1412,6 +1704,10 @@
 - Packaged skill-local resources remain allowed when mapped and included in adapter output, while repository-root internal paths remain blocked as normal customer-project dependencies: `T18`.
 - Existing skills outside `test-spec` remain valid during the test-spec normalization slice unless a reviewed plan revision changes scope: `T37`, `T39`.
 - Rollback for the test-spec normalization slice is to revert `skills/test-spec/SKILL.md` and any generated output changes together, while keeping proof artifacts if they remain useful for a narrower rewrite: `T39`, `T40`.
+- Existing published skills start resource-integrity rollout in audit mode, while new or changed skills satisfy enforcement once the implementation is active: `T47`.
+- The architecture skill may keep a bounded disclosed runtime fallback only for redundant convenience resources whose complete contract remains in `SKILL.md`; package validation still fails for missing mapped resources: `T42`, `T44`, `T48`.
+- Rollback for architecture resource normalization is to restore the prior canonical architecture skill and resource layout together and rebuild generated packages from canonical source, not to hand-copy files into installed target directories: `T44`, `T48`.
+- Live registry installation remains post-publish release evidence unless a later release contract explicitly requires it for implementation closeout: `T46`, `T48`.
 
 ## Observability verification
 
@@ -1423,6 +1719,7 @@
 - Plan-family validation output should identify deterministic `plan` and `plan-review` failures by stable check ID or fixture expectation when those checks are implemented: `T30`, `T31`.
 - Assets-first plan pilot validation output should identify asset count, approved path, metadata, resource-map coverage, `COPY`, placeholder, forbidden root dependency, structural fingerprint, section-set parity, generated adapter asset presence, and token-budget failures by stable check ID when those checks are implemented: `T34`, `T36`.
 - Test-spec normalization validation output should identify missing frontmatter metadata, wrong spec-family schema value, missing `Workflow role`, missing `Stop conditions`, missing output skeleton, generated-output drift, and lifecycle evidence gaps by stable check ID or explicit review evidence when those checks are implemented: `T38`, `T40`.
+- Resource-integrity validation output should identify verb/class mismatches, path traversal, missing mapped resources, repository-root-only dependencies, unmapped legacy references, false-positive avoidance fixtures, stale raw-byte SHA-256 parity, incomplete transformation contracts, missing installed target resources, and first divergent resource-chain layer by stable diagnostic: `T41`-`T48`.
 - Review and verification artifacts should cite concrete commands and results, not generic success claims: `T13`.
 
 ## Security/privacy verification
@@ -1433,6 +1730,8 @@
 - Published skills must not instruct users to expose secrets, credentials, proxy URLs, private hostnames, tokens, private keys, or raw environment values while using packaged resources or scripts: `T18`.
 - Assets-first plan pilot assets must not include secrets, credentials, tokens, private keys, private user data, unjustified machine-local paths, or repository-root internal paths as normal customer-project dependencies: `T33`, `T34`.
 - Test-spec normalization evidence and generated-output validation must not commit secrets, credentials, tokens, private keys, private user data, or unjustified machine-local paths: `T39`, `T40`.
+- Resource-integrity validation must keep mapped resources contained inside the skill root, reject path traversal, reject repository-root-only dependencies as packaged resource substitutes, and avoid remote resource loading or runtime downloading: `T42`, `T43`, `T46`.
+- Clean-install proof must use empty temporary projects and must not commit machine-local temp roots, private user paths, secrets, credentials, proxy URLs, or registry tokens into durable evidence: `T41`, `T46`, `T48`.
 
 ## Performance checks
 
@@ -1451,6 +1750,8 @@
 - The plan-family rollout measures token estimates for `plan` and `plan-review` before and after the rewrite and records rationale for material regression: `T29`, `T31`.
 - The assets-first plan pilot measures `skills/plan/SKILL.md` common-path body tokens separately from total packaged content, requires at least 15 percent common-path reduction, allows total packaged growth up to `+5%` with rationale, and blocks above `+10%` unless the spec is amended: `T36`.
 - Test-spec normalization does not have a token-cost target; token cost is not a driver, and no behavior-preserving output obligation may be weakened to reduce tokens: `T37`, `T39`.
+- Resource-integrity validation uses deterministic path, inventory, and raw-byte SHA-256 checks. It must not use file timestamps, broad semantic scoring, or broad Markdown path scanning: `T42`, `T43`, `T45`.
+- Clean-install proof may be more expensive than unit validation, so M1 uses the minimum complete diagnostic route and M5 productionizes the reusable gate; neither milestone may replace installed-tree proof with dry-run or source-directory inspection: `T41`, `T46`.
 
 ## Manual QA checklist
 
@@ -1490,6 +1791,14 @@
 - Confirm the `test-spec` output skeleton preserves the existing 19 required sections, test-case format, coverage maps, and coverage obligations.
 - Confirm behavior-parity evidence for `test-spec` uses the representative input named in `T37` and shows no material output change.
 - Confirm generated-output validation for `test-spec` uses canonical `skills/test-spec/SKILL.md` and does not hand-edit generated adapter bodies.
+- Confirm M1 resource-chain evidence exists before any architecture resource reference, file, map, package behavior, or installed output changes.
+- Confirm M1 inspects clean-installed Codex, Claude, and opencode target skill trees from locally packed candidates and identifies the first divergent layer.
+- Confirm resource-map validator fixtures cover valid `COPY assets/`, `READ references/`, `RUN scripts/`, missing resources, path traversal, wrong classes, and repository-root-only dependencies.
+- Confirm bounded legacy lint detects raw `templates/...` resource-loading instructions and does not classify ordinary artifact examples or code snippets as resource dependencies.
+- Confirm architecture resources earn their files and that normative trigger, review, security, lifecycle, and verification rules remain in `SKILL.md`.
+- Confirm generated local mirror, adapter package, and release archive parity checks compare skill-root relative path and raw-byte SHA-256.
+- Confirm clean-install proof rejects dry-run, archive-only, and unpackaged source-directory substitutes.
+- Confirm repository-wide audit records unrelated drift without silently expanding the architecture pilot.
 
 ## What not to test and why
 
@@ -1513,6 +1822,13 @@
 - Do not use test-spec normalization to tabulate required-section prose, fence enums, change routing description behavior, add packaged resources, or edit `spec` and `spec-review`.
 - Do not treat the `test-spec` output skeleton as permission to add, remove, rename, or reorder required sections or coverage obligations.
 - Do not treat generated adapter validation as permission to retroactively rewrite legacy adapter archives.
+- Do not create a new generic resource-integrity spec that competes with `specs/skill-contract.md`.
+- Do not validate resource dependencies by scanning every path-like Markdown string.
+- Do not support `templates/` as a packaged skill-local resource class without a later approved skill-contract amendment.
+- Do not treat resource presence without raw-byte identity as sufficient parity proof.
+- Do not treat runtime fallback as package-validation success.
+- Do not require live registry install proof for implementation closeout unless a later release contract requires it.
+- Do not hand-edit generated adapter output, historical archives, or installed target skill trees as the durable resource fix.
 
 ## Uncovered gaps
 
@@ -1523,6 +1839,7 @@
 - Current structural-hygiene rollout: `implement` M1 under [Spec and Test-Spec Structural Hygiene Execution Plan](../docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md).
 - Current rollout: `implement` M1 under [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md).
 - Current rollout: `implement` M2 under [Test-Spec Contract Normalization Plan](../docs/plans/2026-05-20-test-spec-contract-normalization.md).
+- Current rollout: `implement` M1 under [Published Skill Resource Integrity Architecture Pilot](../docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md).
 - Historical carried context: the completed plan-family rollout used `T29`-`T32` for `plan` and `plan-review`.
 - Historical carried context: the merged spec-family rollout used `T21`-`T24` for `spec` and `spec-review`.
 - Historical carried context: the merged execution/review rollout used `T25`-`T28` for `implement` and `code-review`.
@@ -1534,4 +1851,4 @@
 
 ## Readiness
 
-Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, completed spec-family rollout, completed execution/review rollout, completed plan-family rollout, assets-first plan pilot, structural-hygiene grouping, and test-spec contract normalization. The active plan `Current Handoff Summary` for each initiative owns its current workflow action.
+Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, completed spec-family rollout, completed execution/review rollout, completed plan-family rollout, assets-first plan pilot, structural-hygiene grouping, test-spec contract normalization, and the published-skill resource-integrity architecture pilot. The active plan `Current Handoff Summary` for each initiative owns its current workflow action.
