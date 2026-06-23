@@ -18,6 +18,7 @@ integrity with architecture-skill pilot change.
 | code-review-m3-r2 | code-review | 2 | commit `a2c3332`; M3. Architecture Resource Normalization and Behavior Preservation | reviews/code-review-m3-r2.md | clean-with-notes | 0 | recorded |
 | code-review-m4-r3 | code-review | 3 | commit `866523a7`; M4. Generated Package and Archive Resource Parity | reviews/code-review-m4-r3.md | clean-with-notes | 0 | recorded |
 | code-review-m5-r2 | code-review | 2 | commit `47eba3f4`; M5. Reusable Packed Clean-Install Regression Gate | reviews/code-review-m5-r2.md | clean-with-notes | 0 | recorded |
+| code-review-m6-r1 | code-review | 1 | commit `c13ce085`; M6. Repository-Wide Audit and Enforcement Decision | reviews/code-review-m6-r1.md | clean-with-notes | 0 | recorded |
 
 ### Review entry
 Review ID: plan-review-r1
