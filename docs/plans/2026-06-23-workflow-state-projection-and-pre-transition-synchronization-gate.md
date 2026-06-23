@@ -77,14 +77,14 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Review Evidence and Change Metadata Consistency
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r2.md
-- Review status: review-requested; stage=code-review; round=r3
-- Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: code-review M3
+- Current milestone: M4. Workflow Guidance, Active Audit, and Projection Normalization
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r3.md
+- Review status: approved; stage=code-review; round=r3
+- Remaining in-scope implementation milestones: M4, M5
+- Next stage: implement M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — WSS-CR3 is resolved pending code-review-m3-r3, M4 and M5 remain open, and final closeout gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M4 and M5 remain open, and final closeout gates remain.
 
 ## Milestones
 
@@ -168,7 +168,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 ### M3. Review Evidence and Change Metadata Consistency
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Make review records, `review-log.md`, `review-resolution.md`, and `change.yaml` derived summaries constrain incompatible owner state without becoming live-state owners.
 - Requirements: R64-R75, R10-R12, AC-WSS-007, AC-WSS-008, AC-WSS-012, AC-WSS-025
 - Files/components likely touched:
@@ -320,6 +320,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: WSS-CR2 resolved by routing review evidence summaries and closeout-mode validation through a shared finding closure predicate; M3 is ready for code-review R2.
 - 2026-06-23: Code-review M3 R2 confirmed WSS-CR2 resolution and requested changes for WSS-CR3; M3 remains open in review-resolution.
 - 2026-06-23: WSS-CR3 resolved by converting the shared finding closure predicate to positive-evidence closeout semantics and adding invalid-disposition, missing-closeout-status, parity, change metadata, and lifecycle regression coverage; M3 is ready for code-review R3.
+- 2026-06-23: Code-review M3 R3 approved the WSS-CR3 resolution with no material findings; M3 is closed and the next stage is implement M4.
 
 ## Decision log
 
@@ -389,6 +390,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: `python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/`, `python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml`, explicit-path artifact lifecycle validation, and `git diff --check` passed after code-review M3 R2 recording.
 - 2026-06-23: `python scripts/test-review-artifact-validator.py`, `python scripts/test-change-metadata-validator.py`, and `python scripts/test-artifact-lifecycle-validator.py` passed after WSS-CR3 resolution.
 - 2026-06-23: `python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/`, `python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml`, explicit-path artifact lifecycle validation, and `git diff --check` passed after WSS-CR3 resolution and handoff synchronization.
+- 2026-06-23: `python scripts/test-review-artifact-validator.py`, `python scripts/test-change-metadata-validator.py`, `python scripts/test-artifact-lifecycle-validator.py`, change-local review artifact validation, change metadata validation, explicit-path artifact lifecycle validation, and `git diff --check` passed during code-review M3 R3.
 
 ## Outcome and retrospective
 
