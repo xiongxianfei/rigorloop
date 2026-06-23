@@ -93,6 +93,24 @@ validated generated adapter archives and clean installs for version v0.3.2 under
 - local archive clean install succeeds for a mapped-resource fixture through the
   real `rigorloop init --from-archive` path;
 - non-mutating command output is not accepted as clean-install proof;
+- missing installed mapped-resource files fail with a target, skill, and
+  skill-root-relative resource path diagnostic;
 - stale installed mapped-resource bytes fail raw-byte SHA-256 parity;
 - `--clean-install-smoke` without `--root` is rejected so an unpackaged source
   directory cannot substitute for locally packed archives.
+
+| Case | Installed root | Mapped resource | Expected | Result |
+| --- | --- | --- | --- | --- |
+| Valid packed install | present | present, matching bytes | pass | pass |
+| No-op installer | absent | absent | fail: missing root | pass |
+| Missing mapped resource | present | absent | fail naming target/skill/path | pass |
+| Stale mapped resource | present | present, wrong SHA-256 | fail naming target/skill/path | pass |
+
+The missing-resource regression performs a real local archive installation
+first, asserts the installed `portable-with-assets` skill root and `SKILL.md`
+exist under the Codex target root, removes `assets/template.md`, and then
+expects:
+
+```text
+clean-install mapped resource missing: codex/portable-with-assets: assets/template.md
+```

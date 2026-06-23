@@ -96,4 +96,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m5-r1.md
 Resolution: review-resolution.md#code-review-m5-r1
 Material findings: SRI-M5-CR1
-Open findings: SRI-M5-CR1
+Open findings: none

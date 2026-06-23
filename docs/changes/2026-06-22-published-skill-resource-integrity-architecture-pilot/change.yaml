@@ -346,6 +346,30 @@ validation:
     result: pass
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m5-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
     result: pass
+  - command: python scripts/test-adapter-distribution.py -k clean_install_smoke_rejects_missing_installed_mapped_resource
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_clean_install_smoke_installs_mapped_resources_from_local_archives AdapterDistributionTests.test_clean_install_smoke_rejects_non_installing_command_runner AdapterDistributionTests.test_clean_install_smoke_rejects_missing_installed_mapped_resource AdapterDistributionTests.test_clean_install_smoke_rejects_stale_installed_mapped_resource AdapterDistributionTests.test_validate_adapters_cli_rejects_clean_install_smoke_without_archive_root
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/adapter_distribution.py --path scripts/validate-adapters.py --path scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-install-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output --clean-install-smoke --skill architecture
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
 changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
@@ -389,8 +413,8 @@ changed_files:
   - skills/architecture/assets/adr-skeleton.md
   - skills/architecture/assets/diagram-styles.mmd
 review:
-  status: changes_requested_code_review_m5_r1
-  unresolved_items: 1
+  status: review_requested_m5_rerun
+  unresolved_items: 0
 test_spec:
   status: owner-approved
   path: specs/skill-contract.test.md
