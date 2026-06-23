@@ -1,0 +1,105 @@
+change_id: 2026-06-22-published-skill-resource-integrity-architecture-pilot
+title: Specify published skill resource integrity architecture pilot
+classification: spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md
+  spec: specs/skill-contract.md
+  test_spec: specs/skill-contract.test.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260623-published-skill-resource-integrity.md
+  plan: docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
+requirements:
+  - R46
+  - R46a
+  - R47
+  - R47a
+  - R47b
+  - R47c
+  - R47d
+  - R47e
+  - R48
+  - R48a
+  - R48b
+  - R49
+  - R49a
+  - R49b
+  - R49c
+  - R49d
+  - R50
+  - R50a
+  - R50b
+  - R50c
+  - R50d
+  - R51
+  - R51a
+  - R52
+  - R52a
+  - R52b
+  - R52c
+  - R53
+  - R53a
+  - R53b
+  - R54
+  - R54a
+  - R54b
+  - R54c
+  - R54d
+  - R55
+  - R55a
+  - R55b
+  - R55c
+  - R55d
+  - R55e
+tests:
+  - specs/skill-contract.test.md
+validation:
+  - command: git diff --check -- docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot specs/skill-contract.md specs/skill-contract.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260623-published-skill-resource-integrity.md docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md docs/plan.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260623-published-skill-resource-integrity.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/build-skills.py --output-dir /tmp/rigorloop-sri-audit-generated-skills
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-audit-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-audit-release-output
+    result: pass
+  - command: node /home/xiongxianfei/data/20260419-rigorloop/packages/rigorloop/dist/bin/rigorloop.js init codex --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-codex-v0.3.2.zip --json
+    result: pass
+  - command: node /home/xiongxianfei/data/20260419-rigorloop/packages/rigorloop/dist/bin/rigorloop.js init claude --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-claude-v0.3.2.zip --json
+    result: pass
+  - command: node /home/xiongxianfei/data/20260419-rigorloop/packages/rigorloop/dist/bin/rigorloop.js init opencode --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-opencode-v0.3.2.zip --json
+    result: pass_with_warning_opencode_command_aliases_not_declared
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
+    result: pass
+changed_files:
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/architecture-review-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/plan-review-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/plan-review-r2.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/spec-review-r1.md
+  - docs/plan.md
+  - docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
+  - docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md
+  - docs/adr/ADR-20260623-published-skill-resource-integrity.md
+  - docs/architecture/system/architecture.md
+  - specs/skill-contract.md
+  - specs/skill-contract.test.md
+review:
+  status: clean_after_plan_review_r2
+  unresolved_items: 0
+test_spec:
+  status: owner-approved
+  path: specs/skill-contract.test.md

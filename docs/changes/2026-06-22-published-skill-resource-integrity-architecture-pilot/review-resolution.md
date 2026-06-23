@@ -1,0 +1,14 @@
+# Review Resolution
+
+Closeout status: closed
+
+### plan-review-r1
+
+Finding ID: SRI-PLAN1
+Disposition: accepted
+Owner: plan
+Owning stage: plan
+Chosen action: Revised the execution plan so the complete pre-change architecture resource-chain audit, including clean-installed Codex, Claude, and opencode target trees, finishes before architecture resources are changed. M1 now requires canonical skill inventory, generated local mirror inventory, Codex/Claude/opencode adapter or archive inventories, clean-installed Codex/Claude/opencode target inventories, relative paths and raw-byte SHA-256 when resources exist, and identification of the first divergent layer. Removed the conditional installed-tree evidence boundary and the deferral of missing installed-tree proof to M5. If minimum clean-install inspection tooling is absent, M1 adds the smallest audit-only route or remains blocked. M3 now depends on M1 closing cleanly with complete baseline evidence. M5 remains in the plan as reusable post-change packed clean-install regression enforcement and no longer owns first clean-install evidence or root-cause identification.
+Rationale: The approved spec requires the architecture resource-chain audit before adding, renaming, packaging, or removing architecture resources. The corrected sequence is complete baseline resource-chain evidence, review and close the baseline milestone, change architecture resources, then harden the baseline proof into a reusable release gate.
+Validation target: Plan-review rerun approved the revised plan and recorded no open blockers.
+Validation evidence: `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/plan-review-r2.md`; `git diff --check -- docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot specs/skill-contract.md docs/architecture/system/architecture.md docs/adr/ADR-20260623-published-skill-resource-integrity.md docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md docs/plan.md`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md --path specs/skill-contract.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260623-published-skill-resource-integrity.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md`; `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`; `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`.
