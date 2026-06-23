@@ -1099,6 +1099,33 @@ release_gate:
 
         self.assertEqual([], errors)
 
+    def clean_install_runner_with_resource_mutation(
+        self,
+        *,
+        target: str,
+        skill_name: str,
+        relative_resource_path: str,
+        mutation,
+        real_runner=subprocess.run,
+    ):
+        def runner(command, **kwargs):
+            result = real_runner(command, **kwargs)
+            installed_target = command[command.index("init") + 1]
+            if result.returncode != 0 or installed_target != target:
+                return result
+
+            project_root = Path(kwargs["cwd"])
+            skill_root = project_root / Path(ADAPTERS[target].skill_root.as_posix()) / skill_name
+            self.assertTrue(skill_root.is_dir(), skill_root)
+            self.assertTrue((skill_root / "SKILL.md").is_file(), skill_root)
+
+            resource_path = skill_root / relative_resource_path
+            self.assertTrue(resource_path.is_file(), resource_path)
+            mutation(resource_path)
+            return result
+
+        return runner
+
     def test_clean_install_smoke_rejects_non_installing_command_runner(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -1122,6 +1149,36 @@ release_gate:
             errors,
         )
 
+    def test_clean_install_smoke_rejects_missing_installed_mapped_resource(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.3.2", output_dir, skills_root=skills_root)
+
+            errors = validate_clean_install_smoke(
+                "v0.3.2",
+                output_dir,
+                skills_root=skills_root,
+                skill_names=("portable-with-assets",),
+                command_runner=self.clean_install_runner_with_resource_mutation(
+                    target="codex",
+                    skill_name="portable-with-assets",
+                    relative_resource_path="assets/template.md",
+                    mutation=lambda path: path.unlink(),
+                ),
+            )
+
+        self.assertTrue(
+            any(
+                "clean-install mapped resource missing: codex/portable-with-assets: "
+                "assets/template.md" in error
+                for error in errors
+            ),
+            errors,
+        )
+        self.assertFalse(any("skill root missing" in error for error in errors), errors)
+
     def test_clean_install_smoke_rejects_stale_installed_mapped_resource(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -1129,35 +1186,17 @@ release_gate:
             output_dir = root / "release-output"
             build_adapter_archives("v0.3.2", output_dir, skills_root=skills_root)
 
-            def stale_install_runner(command, **kwargs):
-                cwd = Path(kwargs["cwd"])
-                archive_path = Path(command[command.index("--from-archive") + 1])
-                target = command[command.index("init") + 1]
-                with zipfile.ZipFile(archive_path) as archive:
-                    for name in archive.namelist():
-                        if name.endswith("/") or name in {"AGENTS.md", "CLAUDE.md"}:
-                            continue
-                        target_path = cwd / name
-                        target_path.parent.mkdir(parents=True, exist_ok=True)
-                        target_path.write_bytes(archive.read(name))
-                if target == "claude":
-                    stale_path = (
-                        cwd
-                        / ".claude"
-                        / "skills"
-                        / "portable-with-assets"
-                        / "assets"
-                        / "template.md"
-                    )
-                    stale_path.write_text("stale installed bytes\n", encoding="utf-8")
-                return subprocess.CompletedProcess(command, 0, stdout='{"status":"success"}', stderr="")
-
             errors = validate_clean_install_smoke(
                 "v0.3.2",
                 output_dir,
                 skills_root=skills_root,
                 skill_names=("portable-with-assets",),
-                command_runner=stale_install_runner,
+                command_runner=self.clean_install_runner_with_resource_mutation(
+                    target="claude",
+                    skill_name="portable-with-assets",
+                    relative_resource_path="assets/template.md",
+                    mutation=lambda path: path.write_text("stale installed bytes\n", encoding="utf-8"),
+                ),
             )
 
         self.assertTrue(

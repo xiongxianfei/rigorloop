@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M5. Reusable Packed Clean-Install Regression Gate
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Generated Package and Archive Resource Parity
-- Review status: code-review-m5-r1 changes-requested; SRI-M5-CR1 open
+- Review status: SRI-M5-CR1 resolved after implementation; awaiting code-review rerun
 - Remaining in-scope implementation milestones: M5, M6, M7
-- Next stage: review-resolution for SRI-M5-CR1
+- Next stage: code-review M5 rerun
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -315,7 +315,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M5. Reusable Packed Clean-Install Regression Gate
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Turn the minimum pre-change clean-install proof established in M1 into a reusable, automated pre-publish regression gate for the normalized architecture resources.
 - Requirements: R52-R52c, R55a
 - Files/components likely touched:
@@ -513,6 +513,7 @@ M5 relationship to M1:
 - 2026-06-23: code-review-m4-r3 returned clean-with-notes, closed M4, and handed off to implement M5.
 - 2026-06-23: implemented M5 reusable clean-install regression gate. `validate-adapters.py --clean-install-smoke` now requires a locally packed archive root, prepares a temporary local release-candidate metadata bundle for those archives, installs Codex, Claude, and opencode archives into empty temporary projects through the real `rigorloop init --from-archive` path, and compares installed mapped resources by skill-root relative path and raw-byte SHA-256.
 - 2026-06-23: code-review-m5-r1 requested changes for SRI-M5-CR1. The clean-install smoke implementation covers successful real install, non-mutating command output, stale installed bytes, and `--root` enforcement, but it lacks direct regression proof for the named missing installed mapped-resource case where the skill root exists and a mapped resource file is absent.
+- 2026-06-23: implemented SRI-M5-CR1 resolution. Added a direct clean-install smoke regression for an installed target skill root that exists with `SKILL.md` present while `assets/template.md` is removed after real local archive installation. The test asserts the missing-resource diagnostic names Codex, `portable-with-assets`, and `assets/template.md`, and that the case is not reported as a missing skill root.
 
 ## Decision log
 
@@ -698,13 +699,19 @@ M5 relationship to M1:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m4-r3.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `git diff --check --`
 - 2026-06-23: M5 implementation validation passed:
+  - `python scripts/test-adapter-distribution.py -k clean_install_smoke_rejects_missing_installed_mapped_resource`
   - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_clean_install_smoke_installs_mapped_resources_from_local_archives AdapterDistributionTests.test_clean_install_smoke_rejects_non_installing_command_runner AdapterDistributionTests.test_clean_install_smoke_rejects_stale_installed_mapped_resource AdapterDistributionTests.test_validate_adapters_cli_rejects_clean_install_smoke_without_archive_root`
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_clean_install_smoke_installs_mapped_resources_from_local_archives AdapterDistributionTests.test_clean_install_smoke_rejects_non_installing_command_runner AdapterDistributionTests.test_clean_install_smoke_rejects_missing_installed_mapped_resource AdapterDistributionTests.test_clean_install_smoke_rejects_stale_installed_mapped_resource AdapterDistributionTests.test_validate_adapters_cli_rejects_clean_install_smoke_without_archive_root`
   - `python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-install-release-output`
   - `python scripts/select-validation.py --mode explicit --path scripts/adapter_distribution.py --path scripts/validate-adapters.py --path scripts/test-adapter-distribution.py`
   - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata`
   - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output`
   - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output --clean-install-smoke --skill architecture`
   - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md`
+  - `git diff --check --`
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md`
@@ -717,4 +724,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for review-resolution for SRI-M5-CR1.
+- Ready for code-review M5 rerun.
