@@ -164,6 +164,10 @@ Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k mul
 
 No material findings. Code-review-m4-r2 confirmed WSS-CR4 is resolved and closed the M4 review-resolution loop.
 
+### code-review-m5-r1
+
+No material findings. Code-review-m5-r1 approved M5 behavior-preservation and closeout evidence and introduced no additional resolution obligations.
+
 ## Validation Evidence
 
-Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed. Code-review-m2-r1 approved M2 with no material findings. Code-review-m3-r1 requested changes for WSS-CR2; code-review-m3-r2 confirmed WSS-CR2 is resolved and requested changes for WSS-CR3. Code-review-m3-r3 confirmed WSS-CR3 is resolved and closed M3. Code-review-m4-r2 confirmed WSS-CR4 is resolved and closed M4.
+Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed. Code-review-m2-r1 approved M2 with no material findings. Code-review-m3-r1 requested changes for WSS-CR2; code-review-m3-r2 confirmed WSS-CR2 is resolved and requested changes for WSS-CR3. Code-review-m3-r3 confirmed WSS-CR3 is resolved and closed M3. Code-review-m4-r2 confirmed WSS-CR4 is resolved and closed M4. Code-review-m5-r1 approved M5 with no material findings and closed the implementation milestone set.

@@ -58,6 +58,7 @@ tests:
   - WSS-CR4 resolves by keying active/blocked audit change metadata association by `change_id` and adding multi-active-plan regression coverage before code-review M4 R2.
   - Code-review M4 R2 approves the WSS-CR4 resolution with no material findings and closes M4.
   - M5 records behavior-preservation evidence and proves the whole workflow-state synchronization slice with the full lifecycle, review-artifact, and change-metadata validation set before code-review M5.
+  - Code-review M5 R1 approves the behavior-preservation and closeout evidence with no material findings and closes the implementation milestone set.
 validation:
   - command: git diff --check -- docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs/single-source-of-workflow-state.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass
@@ -355,6 +356,22 @@ validation:
     result: pass_during_m5_implementation
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
     result: pass_after_m5_handoff_state_sync
+  - command: git diff --check HEAD^ HEAD
+    result: pass_during_code_review_m5_r1
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_during_code_review_m5_r1
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_during_code_review_m5_r1
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_during_code_review_m5_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md --path docs/architecture/system/architecture.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md
+    result: pass_during_code_review_m5_r1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/
+    result: pass_during_code_review_m5_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_during_code_review_m5_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+    result: pass_during_code_review_m5_r1
 changed_files:
   - docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - specs/single-source-of-workflow-state.md
@@ -397,9 +414,10 @@ changed_files:
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r3.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r1.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r2.md
+  - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m5-r1.md
 review:
   status: clean
-  reviewed_artifact: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r2.md
+  reviewed_artifact: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m5-r1.md
   review_log: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md
   unresolved_items: 0
   material_findings: 7
