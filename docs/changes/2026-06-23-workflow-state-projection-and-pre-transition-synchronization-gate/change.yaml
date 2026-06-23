@@ -54,6 +54,7 @@ tests:
   - Code-review M3 R3 approves the WSS-CR3 resolution with no material findings and closes M3.
   - M4 adds static regression coverage proving workflow guidance and stage skills require a binding state-sync gate before downstream handoff claims.
   - M4 records the active/blocked audit and normalizes the missing active plan `Change ID` projection source without rewriting unrelated legacy handoff prose.
+  - Code-review M4 R1 records WSS-CR4 as an open material finding requiring review-resolution before M4 can close.
 validation:
   - command: git diff --check -- docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs/single-source-of-workflow-state.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass
@@ -297,6 +298,16 @@ validation:
     result: pass_after_m4_handoff_state_sync
   - command: git diff --check -- docs/workflows.md docs/plan.md docs/plans skills scripts/test-skill-validator.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass_after_m4_handoff_state_sync
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+    result: fail_code_review_m4_r1_wss_cr4
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r1.md
+    result: pass_after_code_review_m4_r1
+  - command: git diff --check -- docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md
+    result: pass_after_code_review_m4_r1
 changed_files:
   - docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - specs/single-source-of-workflow-state.md
@@ -336,12 +347,10 @@ changed_files:
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r2.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r3.md
+  - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r1.md
 review:
-  status: clean
-  unresolved_items: 0
-  reviewed_artifact: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r3.md
-  review_log: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md
-  review_resolution: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md
-  material_findings: 6
+  status: changes-requested
+  unresolved_items: 1
+  material_findings: 7
   closed_findings: 6
-  open_findings: 0
+  open_findings: 1

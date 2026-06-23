@@ -164,3 +164,17 @@ Resolution: review-resolution.md#code-review-m3-r3
 Material findings: none
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m4-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 361456cc
+Status: changes-requested
+Detailed record: reviews/code-review-m4-r1.md
+Record: reviews/code-review-m4-r1.md
+Resolution: review-resolution.md#code-review-m4-r1
+Material findings: WSS-CR4
+Open findings: WSS-CR4
+Recording status: recorded

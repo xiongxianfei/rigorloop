@@ -5,7 +5,7 @@
 This record tracks formal lifecycle review findings for the workflow-state
 projection and pre-transition synchronization gate change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m3-r3
@@ -141,6 +141,24 @@ Validation evidence: `python scripts/test-review-artifact-validator.py`, `python
 ### code-review-m3-r3
 
 No material findings. Code-review-m3-r3 confirmed WSS-CR3 is resolved and closed the M3 review-resolution loop.
+
+### code-review-m4-r1
+
+#### WSS-CR4
+
+Finding ID: WSS-CR4
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Chosen action: pending
+Rationale: M4 must either make active/blocked enforcement pass for the active index scope or record a valid blocker before handoff; the current implementation records the failing all-active audit as outside the slice.
+Required outcome: Active and blocked enforcement scope must satisfy R81/T19, including multi-active-plan validation, or the governing spec/plan must be revised before bypassing that scope.
+Validation target: Add or update regression coverage for the multi-active-plan active/blocked audit path, rerun the all-active audit command, and rerun M4 state-sync validation after owner/projection surfaces are updated.
+Resolution: pending
+Validation evidence: pending
 
 ## Validation Evidence
 
