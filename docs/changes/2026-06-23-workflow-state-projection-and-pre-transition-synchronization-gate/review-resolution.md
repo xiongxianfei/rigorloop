@@ -5,9 +5,9 @@
 This record tracks formal lifecycle review findings for the workflow-state
 projection and pre-transition synchronization gate change.
 
-Closeout status: closed
+Closeout status: open
 
-Review closeout: plan-review-r2
+Review closeout: code-review-m1-r1
 
 ## Resolution Entries
 
@@ -75,6 +75,24 @@ Validation evidence: Plan revision validation passed with diff cleanliness, chan
 
 No material findings. Plan-review-r2 confirmed WSS-PLAN1 is resolved and closed this review-resolution record.
 
+### code-review-m1-r1
+
+#### WSS-CR1
+
+Finding ID: WSS-CR1
+Disposition: accepted
+Status: resolved pending code-review-m1-r2
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Chosen action: Resolve plan-index owners from `docs/plan.md` through the shared workflow-state parser and union those owner paths into artifact-lifecycle state-sync validation.
+Rationale: `docs/plan.md` is the live projection surface and must fail when its projected values drift from the active plan owner, even when the index is the only explicit validation input.
+Required outcome: `docs/plan.md` projection validation runs when the plan index is in scope and compares linked structured active/blocked plan bodies against their table rows.
+Validation target: Add a regression test where `validate_repository(..., paths=["docs/plan.md"])` fails on a stale `Next stage` projection, then update the artifact-lifecycle hook so the test passes.
+Resolution: Added `resolve_owners_from_index()` to `scripts/lifecycle_state_sync.py` so the shared parser resolves active and blocked `docs/plan.md` rows to structured owner plan bodies, reports missing linked plans as projection errors, skips legacy plans without the structured handoff marker, and deduplicates explicit owner paths. Updated `scripts/artifact_lifecycle_validation.py` to call that resolver whenever the plan index is in scope before running `validate_workflow_state_sync()`.
+Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k workflow_state` passed with the WSS-CR1 regression cases. `python scripts/test-artifact-lifecycle-validator.py` passed. Direct drift-fixture validation with `paths=["docs/plan.md"]` produced one blocker on `docs/plan.md Next stage`. `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md` passed against the actual repository state.
+
 ## Validation Evidence
 
-Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved.
+Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r1 opened WSS-CR1 and keeps closeout open.

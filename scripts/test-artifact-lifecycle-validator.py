@@ -522,6 +522,11 @@ review:
         messages = "\n".join(f.message for f in result.blocking_findings)
         return result, messages
 
+    def validate_workflow_state_index_only_fixture(self, root: Path) -> tuple[object, str]:
+        result = validate_repository(root, mode="explicit-paths", paths=["docs/plan.md"])
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        return result, messages
+
     def test_workflow_state_owner_review_status_cases(self) -> None:
         valid_root = Path(tempfile.mkdtemp(prefix="workflow-state-owner-valid-"))
         self.addCleanupTree(valid_root)
@@ -597,6 +602,75 @@ review:
         result, messages = self.validate_workflow_state_fixture(fixture_root)
         self.assertTrue(result.blocking_findings)
         self.assertIn("Readiness", messages)
+
+    def test_workflow_state_index_only_catches_next_stage_drift(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-drift-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(fixture_root, plan_index_next_stage="implement M2")
+
+        result, messages = self.validate_workflow_state_index_only_fixture(fixture_root)
+
+        self.assertEqual(len(result.blocking_findings), 1, msg=messages)
+        self.assertEqual(result.blocking_findings[0].path.name, "plan.md")
+        self.assertIn("Next stage", result.blocking_findings[0].message)
+
+    def test_workflow_state_index_only_clean_passes(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-clean-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(fixture_root)
+
+        result, messages = self.validate_workflow_state_index_only_fixture(fixture_root)
+
+        self.assertFalse(result.blocking_findings, msg=messages)
+
+    def test_workflow_state_index_only_missing_link_target_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-missing-"))
+        self.addCleanupTree(fixture_root)
+        plan_path, _, _ = self.write_workflow_state_fixture(fixture_root)
+        plan_path.unlink()
+
+        result, messages = self.validate_workflow_state_index_only_fixture(fixture_root)
+
+        self.assertEqual(len(result.blocking_findings), 1, msg=messages)
+        self.assertEqual(result.blocking_findings[0].path.name, "plan.md")
+        self.assertIn("references nonexistent plan", result.blocking_findings[0].message)
+
+    def test_workflow_state_index_only_legacy_plan_is_skipped(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-legacy-"))
+        self.addCleanupTree(fixture_root)
+        plan_path, _, _ = self.write_workflow_state_fixture(fixture_root, plan_index_next_stage="implement M2")
+        plan_path.write_text(
+            """# Legacy Plan
+
+## Status
+
+- active
+
+## Readiness
+
+- Ready for historical workflow.
+""",
+            encoding="utf-8",
+        )
+
+        result, messages = self.validate_workflow_state_index_only_fixture(fixture_root)
+
+        self.assertFalse(result.blocking_findings, msg=messages)
+
+    def test_workflow_state_index_and_body_deduplicates_projection_findings(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-dedupe-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(fixture_root, plan_index_next_stage="implement M2")
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/plan.md", "docs/plans/2026-06-23-workflow-state-fixture.md"],
+        )
+        messages = "\n".join(f.message for f in result.blocking_findings)
+
+        self.assertEqual(len(result.blocking_findings), 1, msg=messages)
+        self.assertIn("Next stage", result.blocking_findings[0].message)
 
     def write_plan_archive_contract_fixture(
         self,

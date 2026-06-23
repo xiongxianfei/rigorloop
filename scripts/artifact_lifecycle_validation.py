@@ -9,7 +9,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from artifact_lifecycle_contracts import ArtifactContract, classify_artifact
-from lifecycle_state_sync import validate_workflow_state_sync
+from lifecycle_state_sync import (
+    has_structured_workflow_state_marker,
+    resolve_owners_from_index,
+    validate_workflow_state_sync,
+)
 
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|lorem ipsum)\b", re.IGNORECASE)
@@ -833,7 +837,7 @@ def _explicit_terminal_plan_body_in_scope(root: Path, scope: ValidationScope) ->
 
 def _has_structured_workflow_state_marker(root: Path, path: Path, tracked_revision: str | None = None) -> bool:
     text = _read_repo_text(root, path, tracked_revision)
-    return "## Current Handoff Summary" in text and "Latest review evidence:" in text
+    return has_structured_workflow_state_marker(text)
 
 
 def _validate_plan_surface_shape(
@@ -1639,17 +1643,30 @@ def validate_repository(
     plan_blockers, plan_warnings = _validate_plan_lifecycle_consistency(root_resolved, scope)
     blocking_findings.extend(plan_blockers)
     warning_findings.extend(plan_warnings)
-    workflow_state_plan_paths = tuple(
+    workflow_state_plan_paths = {
         path
         for path in (*scope.changed_paths, *scope.related_artifact_paths)
         if _is_plan_body_path(root_resolved, path) and _path_exists(root_resolved, path, scope.tracked_revision)
         and _has_structured_workflow_state_marker(root_resolved, path, scope.tracked_revision)
-    )
+    }
     workflow_state_plan_index = root_resolved / "docs" / "plan.md"
+    if _plan_index_surface_in_scope(root_resolved, scope) and _path_exists(root_resolved, workflow_state_plan_index, scope.tracked_revision):
+        index_resolution = resolve_owners_from_index(root_resolved, workflow_state_plan_index)
+        workflow_state_plan_paths.update(index_resolution.plan_paths)
+        for finding in index_resolution.findings:
+            blocking_findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=finding.path,
+                    artifact_class="workflow-state",
+                    status=None,
+                    message=finding.message,
+                )
+            )
     if workflow_state_plan_paths:
         for finding in validate_workflow_state_sync(
             root_resolved,
-            plan_paths=workflow_state_plan_paths,
+            plan_paths=tuple(sorted(workflow_state_plan_paths)),
             plan_index_path=workflow_state_plan_index if _path_exists(root_resolved, workflow_state_plan_index, scope.tracked_revision) else None,
             change_yaml_paths=scope.change_yaml_paths,
         ):
