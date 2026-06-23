@@ -78,13 +78,13 @@ The Single Source of Workflow State work settled ownership, but current workflow
 ## Current Handoff Summary
 
 - Current milestone: M4. Workflow Guidance, Active Audit, and Projection Normalization
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r1.md
-- Review status: changes-requested; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: review-resolution
+- Next stage: code-review M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — WSS-CR4 is open, M5 remains open, and final closeout gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — WSS-CR4 resolution is ready for code-review M4 R2, M5 remains open, and final closeout gates remain.
 
 ## Milestones
 
@@ -212,7 +212,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 ### M4. Workflow Guidance, Active Audit, and Projection Normalization
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Update canonical workflow guidance and active/blocked lifecycle surfaces so contributors and validators use the state-sync gate at transition points.
 - Requirements: R1-R21, R58-R63, R76-R81, AC-WSS-001 through AC-WSS-016
 - Files/components likely touched:
@@ -323,6 +323,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: M4 implementation started; workflow guidance, skill handoff wording, and active/blocked projection audit surfaces are in scope.
 - 2026-06-23: M4 added binding state-sync gate wording to workflow guidance and canonical stage skills, added static regression coverage, normalized the missing active plan `Change ID` projection source for the Evidence-Bound Project Map plan, and handed M4 to code-review.
 - 2026-06-23: Code-review M4 R1 requested changes for WSS-CR4; M4 remains open in review-resolution until active/blocked enforcement scope passes or the governing contract is revised.
+- 2026-06-23: WSS-CR4 resolved by changing lifecycle state-sync metadata association from cross-product comparison to `change_id`/`artifacts.plan` keyed pairing, adding multi-active-plan regression coverage, and rerunning the all-active audit cleanly; M4 is ready for code-review R2.
 
 ## Decision log
 
@@ -341,7 +342,8 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - WSS-CR2 confirmed that derived lifecycle booleans need one shared predicate; the review evidence summary and closeout-mode review validator now share `finding_closure_state()`.
 - M4 found that this repo has no authored `skills/review-resolution/SKILL.md`; review-resolution routing is covered by `code-review`, review artifacts, and workflow guidance rather than a separate canonical skill file.
 - M4 active/blocked audit found no blocked plans and one safe active projection-source normalization: `docs/plans/2026-06-23-evidence-bound-incremental-project-map.md` now carries the same `Change ID` already projected in `docs/plan.md` and `change.yaml`.
-- M4 intentionally did not rewrite older active plans' legacy handoff prose because their live downstream state belongs to separate initiatives; the current validator still grandfather-skips plans that lack the structured workflow-state marker.
+- WSS-CR4 traced the failed all-active audit to validator association logic, not bad plan data: the Evidence-Bound plan body and `change.yaml` already had matching `Change ID` values, while state-sync compared each in-scope `change.yaml` against every structured plan.
+- The WSS-CR4 resolution keeps legacy active plans under the existing structured-marker grandfather rule and skips their linked metadata consistently; truly orphaned in-scope change metadata still blocks.
 
 ## Validation notes
 
@@ -368,6 +370,8 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after M2 handoff state-sync.
 - 2026-06-23: `python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after M2 handoff state-sync.
 - 2026-06-23: `git diff --check -- scripts/lifecycle_state_sync.py scripts/artifact_lifecycle_validation.py scripts/validate-artifact-lifecycle.py scripts/test-artifact-lifecycle-validator.py tests/fixtures docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after M2 handoff state-sync.
+- 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py -k multi_active`, `python scripts/test-artifact-lifecycle-validator.py -k audit_pairs`, and `python scripts/test-artifact-lifecycle-validator.py -k workflow_state` passed after WSS-CR4 resolution.
+- 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md` passed after WSS-CR4 resolution.
 - 2026-06-23: Code-review M2 R1 found no material findings in commit `8e786154`; review evidence and lifecycle handoff now route to implement M3.
 - 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py -k open_review` failed before M3 implementation for open review findings with `review-requested` owner state, then passed after implementation.
 - 2026-06-23: `python scripts/test-change-metadata-validator.py -k review_summary` failed before M3 implementation for review count drift and next-stage-like metadata, then passed after implementation.

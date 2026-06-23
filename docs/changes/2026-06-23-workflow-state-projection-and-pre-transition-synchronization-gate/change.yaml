@@ -55,6 +55,7 @@ tests:
   - M4 adds static regression coverage proving workflow guidance and stage skills require a binding state-sync gate before downstream handoff claims.
   - M4 records the active/blocked audit and normalizes the missing active plan `Change ID` projection source without rewriting unrelated legacy handoff prose.
   - Code-review M4 R1 records WSS-CR4 as an open material finding requiring review-resolution before M4 can close.
+  - WSS-CR4 resolves by keying active/blocked audit change metadata association by `change_id` and adding multi-active-plan regression coverage before code-review M4 R2.
 validation:
   - command: git diff --check -- docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs/single-source-of-workflow-state.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass
@@ -308,6 +309,14 @@ validation:
     result: pass_after_code_review_m4_r1
   - command: git diff --check -- docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md
     result: pass_after_code_review_m4_r1
+  - command: python scripts/test-artifact-lifecycle-validator.py -k multi_active
+    result: pass_after_wss_cr4_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py -k audit_pairs
+    result: pass_after_wss_cr4_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py -k workflow_state
+    result: pass_after_wss_cr4_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+    result: pass_after_wss_cr4_resolution
 changed_files:
   - docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - specs/single-source-of-workflow-state.md
@@ -350,7 +359,7 @@ changed_files:
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r1.md
 review:
   status: changes-requested
-  unresolved_items: 1
+  unresolved_items: 0
   material_findings: 7
-  closed_findings: 6
-  open_findings: 1
+  closed_findings: 7
+  open_findings: 0

@@ -148,17 +148,17 @@ No material findings. Code-review-m3-r3 confirmed WSS-CR3 is resolved and closed
 
 Finding ID: WSS-CR4
 Disposition: accepted
-Status: open
+Status: resolved pending code-review-m4-r2
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
 Decision needed: none
-Chosen action: pending
+Chosen action: Replace cross-product change metadata association with keyed pairing by `change_id` and explicit `artifacts.plan`, add multi-active-plan regression coverage, and remove the plan-level deferral by rerunning the all-active audit cleanly.
 Rationale: M4 must either make active/blocked enforcement pass for the active index scope or record a valid blocker before handoff; the current implementation records the failing all-active audit as outside the slice.
 Required outcome: Active and blocked enforcement scope must satisfy R81/T19, including multi-active-plan validation, or the governing spec/plan must be revised before bypassing that scope.
 Validation target: Add or update regression coverage for the multi-active-plan active/blocked audit path, rerun the all-active audit command, and rerun M4 state-sync validation after owner/projection surfaces are updated.
-Resolution: pending
-Validation evidence: pending
+Resolution: The root cause was code, not plan data. The Evidence-Bound Project Map plan body and its `change.yaml` already used the same `Change ID`; `validate_workflow_state_sync()` incorrectly compared each in-scope `change.yaml` against every structured plan body. The validator now keys plan/change associations by `change_id`, uses `artifacts.plan` to report explicit plan-linked mismatches, applies review-summary owner-state blocking only to the associated plan, and keeps linked legacy plans under the existing structured-marker grandfather rule. Added multi-active-plan fixtures for correct pairings, misassigned plan IDs, missing plan IDs, unmatched metadata, and order-independent keyed pairing.
+Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k multi_active`, `python scripts/test-artifact-lifecycle-validator.py -k audit_pairs`, and `python scripts/test-artifact-lifecycle-validator.py -k workflow_state` passed. The all-active audit command from code-review M4 R1 passed after the fix: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md`.
 
 ## Validation Evidence
 

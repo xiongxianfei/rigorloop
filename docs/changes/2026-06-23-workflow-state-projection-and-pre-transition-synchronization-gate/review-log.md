@@ -176,5 +176,5 @@ Detailed record: reviews/code-review-m4-r1.md
 Record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: WSS-CR4
-Open findings: WSS-CR4
+Open findings: none
 Recording status: recorded
