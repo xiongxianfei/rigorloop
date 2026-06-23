@@ -14,7 +14,7 @@ Index policy:
 -->
 
 ## Active
-- [2026-06-23 Evidence-Bound and Incremental Project Map Skill](plans/2026-06-23-evidence-bound-incremental-project-map.md) - active; branch-ready; next stage: pr; change: `2026-06-23-evidence-bound-incremental-project-map`.
+- [2026-06-23 Evidence-Bound and Incremental Project Map Skill](plans/2026-06-23-evidence-bound-incremental-project-map.md) - active; PR #102 open; next stage: hosted CI and human review; change: `2026-06-23-evidence-bound-incremental-project-map`.
 - [2026-06-23 Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) - active; next stage: hosted CI and human review; change: `2026-06-22-published-skill-resource-integrity-architecture-pilot`.
 - [2026-06-18 Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) - active; PR #99 open; next stage: hosted CI and human review; change: `2026-06-17-workflow-skill-artifact-location-map`.
 
