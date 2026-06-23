@@ -47,6 +47,7 @@ tests:
   - M2 adds current milestone-state projection validation and stricter `Readiness` live-route rejection before code-review M2.
   - Code-review M2 R1 approves the parser and lifecycle state-sync validator slice with no material findings and closes M2.
   - M3 adds review evidence summary derivation, change metadata review count consistency, and owner-state blocking while material findings remain open.
+  - WSS-CR2 resolves the M3 review finding by routing review evidence summaries and closeout-mode review validation through one finding closure predicate.
 validation:
   - command: git diff --check -- docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs/single-source-of-workflow-state.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass
@@ -214,6 +215,20 @@ validation:
     result: pass_after_code_review_m3_r1
   - command: git diff --check -- docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
     result: pass_after_code_review_m3_r1
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_wss_cr2_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_wss_cr2_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_wss_cr2_resolution
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/
+    result: pass_after_wss_cr2_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_wss_cr2_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md
+    result: pass_after_wss_cr2_resolution
+  - command: git diff --check -- specs/single-source-of-workflow-state.md specs/single-source-of-workflow-state.test.md scripts/review_artifact_validation.py scripts/validate-change-metadata.py scripts/test-review-artifact-validator.py scripts/test-change-metadata-validator.py scripts/test-artifact-lifecycle-validator.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md
+    result: pass_after_wss_cr2_resolution
 changed_files:
   - docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - specs/single-source-of-workflow-state.md
@@ -244,8 +259,8 @@ changed_files:
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md
 review:
   status: changes-requested
-  unresolved_items: 1
+  unresolved_items: 0
   review_resolution: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md
   material_findings: 5
-  closed_findings: 4
-  open_findings: 1
+  closed_findings: 5
+  open_findings: 0

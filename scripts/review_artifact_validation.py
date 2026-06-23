@@ -165,6 +165,24 @@ class ReviewEvidenceSummary:
         return self.material_count - self.open_count
 
 
+def finding_closure_state(
+    finding_id: str,
+    review_log: list[ReviewLogEntry] | tuple[ReviewLogEntry, ...],
+    review_resolution: ReviewResolution | None,
+    review_records: list[FindingRecord] | tuple[FindingRecord, ...],
+) -> str:
+    """Return closed only when the review-finding closeout predicate is satisfied."""
+    if _finding_closure_findings(
+        finding_id,
+        review_log,
+        review_resolution,
+        review_records,
+        "closeout",
+    ):
+        return "open"
+    return "closed"
+
+
 def validate_change_root(change_root: Path, *, mode: str = "structure") -> ReviewArtifactValidationResult:
     if mode not in VALIDATION_MODES:
         raise ValueError(f"unsupported review artifact validation mode: {mode}")
@@ -242,13 +260,16 @@ def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:
     """Return derived material/open finding IDs from review evidence."""
     change_root = change_root.resolve()
     material_ids: set[str] = set()
-    open_ids: set[str] = set()
+    finding_records: list[FindingRecord] = []
+    log_entries: list[ReviewLogEntry] = []
+    resolution: ReviewResolution | None = None
 
     reviews_dir = change_root / "reviews"
     if reviews_dir.is_dir():
         for review_path in sorted(reviews_dir.glob("*.md")):
-            _, finding_records, _ = _parse_review_file(review_path, "structure")
-            for finding in finding_records:
+            _, review_findings, _ = _parse_review_file(review_path, "structure")
+            finding_records.extend(review_findings)
+            for finding in review_findings:
                 material_ids.add(finding.finding_id)
 
     review_log_path = change_root / "review-log.md"
@@ -256,13 +277,16 @@ def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:
         log_entries, _ = _parse_review_log(review_log_path, "structure")
         for entry in log_entries:
             material_ids.update(entry.material_finding_ids)
-            open_ids.update(entry.open_finding_ids)
 
     resolution_path = change_root / "review-resolution.md"
     if resolution_path.exists():
         resolution, _ = _parse_review_resolution(resolution_path, "structure")
-        if resolution is not None and resolution.closeout_status == "closed":
-            open_ids.difference_update(entry.finding_id for entry in resolution.entries)
+
+    open_ids = {
+        finding_id
+        for finding_id in material_ids
+        if finding_closure_state(finding_id, log_entries, resolution, finding_records) == "open"
+    }
 
     return ReviewEvidenceSummary(
         material_finding_ids=tuple(sorted(material_ids)),
@@ -1268,22 +1292,46 @@ def _validate_closeout(
             )
         )
 
-    if resolution is not None:
-        for entry in resolution.entries:
-            findings.extend(_validate_resolution_entry_closeout(entry, mode))
-
-    findings.extend(_validate_closeout_log_open_findings(log_entries, mode))
+    material_ids = _material_finding_ids(finding_records, log_entries)
+    for finding_id in sorted(material_ids):
+        findings.extend(_finding_closure_findings(finding_id, log_entries, resolution, finding_records, mode))
     findings.extend(_validate_blocking_review_closeout(log_entries, resolution, mode))
     return findings
 
 
-def _validate_closeout_log_open_findings(
-    log_entries: list[ReviewLogEntry],
+def _material_finding_ids(
+    finding_records: list[FindingRecord] | tuple[FindingRecord, ...],
+    log_entries: list[ReviewLogEntry] | tuple[ReviewLogEntry, ...],
+) -> set[str]:
+    material_ids = {finding.finding_id for finding in finding_records}
+    for entry in log_entries:
+        material_ids.update(entry.material_finding_ids)
+    return material_ids
+
+
+def _finding_closure_findings(
+    finding_id: str,
+    log_entries: list[ReviewLogEntry] | tuple[ReviewLogEntry, ...],
+    resolution: ReviewResolution | None,
+    finding_records: list[FindingRecord] | tuple[FindingRecord, ...],
     mode: str,
 ) -> list[ValidationFinding]:
     findings: list[ValidationFinding] = []
+    indexed = any(finding_id in entry.material_finding_ids for entry in log_entries)
+    if not indexed:
+        finding_record = next((record for record in finding_records if record.finding_id == finding_id), None)
+        findings.append(
+            ValidationFinding(
+                path=finding_record.path if finding_record is not None else Path("review-log.md"),
+                line=finding_record.line if finding_record is not None else None,
+                mode=mode,
+                message="material Finding ID missing from review-log.md",
+                review_id=finding_record.review_id if finding_record is not None else None,
+                finding_id=finding_id,
+            )
+        )
     for entry in log_entries:
-        if not entry.open_finding_ids:
+        if finding_id not in entry.open_finding_ids:
             continue
         findings.append(
             ValidationFinding(
@@ -1292,8 +1340,34 @@ def _validate_closeout_log_open_findings(
                 mode=mode,
                 message="review-log Open findings must be empty for closed closeout",
                 review_id=entry.review_id,
+                finding_id=finding_id,
             )
         )
+    if resolution is None:
+        findings.append(
+            ValidationFinding(
+                path=Path("review-resolution.md"),
+                line=None,
+                mode=mode,
+                message="material Finding ID missing from review-resolution.md",
+                finding_id=finding_id,
+            )
+        )
+        return findings
+
+    matches = [entry for entry in resolution.entries if entry.finding_id == finding_id]
+    if len(matches) != 1:
+        findings.append(
+            ValidationFinding(
+                path=resolution.path,
+                line=matches[0].line if matches else None,
+                mode=mode,
+                message="material Finding ID must appear exactly once in review-resolution.md",
+                finding_id=finding_id,
+            )
+        )
+        return findings
+    findings.extend(_validate_resolution_entry_closeout(matches[0], mode))
     return findings
 
 

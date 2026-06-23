@@ -782,6 +782,8 @@ review:
         open_findings: int = 1,
         extra_review_field: str = "",
         close_resolution: bool = False,
+        log_open_findings: str = "WSS-F1",
+        include_validation_evidence: bool = True,
     ) -> Path:
         change_yaml = root / "change.yaml"
         change_yaml.write_text(
@@ -809,7 +811,7 @@ review:
             encoding="utf-8",
         )
         (root / "review-log.md").write_text(
-            """# Review Log
+            f"""# Review Log
 
 ### Review entry
 Review ID: code-review-r1
@@ -819,13 +821,14 @@ Status: changes-requested
 Detailed record: reviews/code-review-r1.md
 Resolution: review-resolution.md#code-review-r1
 Material findings: WSS-F1
-Open findings: WSS-F1
+Open findings: {log_open_findings}
 """,
             encoding="utf-8",
         )
         if close_resolution:
+            validation_evidence = "Validation evidence: Fixture validation passed.\n" if include_validation_evidence else ""
             (root / "review-resolution.md").write_text(
-                """# Review Resolution
+                f"""# Review Resolution
 
 Closeout status: closed
 
@@ -838,8 +841,7 @@ Owning stage: review-resolution
 Chosen action: Resolve the finding.
 Rationale: Fixture models a historical open log entry closed by resolution evidence.
 Validation target: Metadata summary counts derive zero open findings.
-Validation evidence: Fixture validation passed.
-""",
+{validation_evidence}""",
                 encoding="utf-8",
             )
         return change_yaml
@@ -870,8 +872,21 @@ Validation evidence: Fixture validation passed.
                 closed_findings=1,
                 open_findings=0,
                 close_resolution=True,
+                log_open_findings="None",
             )
             self.assertPathPasses(target)
+
+        with tempfile.TemporaryDirectory(prefix="change-metadata-review-summary-missing-evidence-") as temp_dir:
+            target = self.write_review_summary_change_fixture(
+                Path(temp_dir),
+                unresolved_items=0,
+                material_findings=1,
+                closed_findings=1,
+                open_findings=0,
+                close_resolution=True,
+                include_validation_evidence=False,
+            )
+            self.assertPathFails(target, "review.unresolved_items must match review-log open finding count")
 
     def test_review_summary_rejects_next_stage_like_metadata(self) -> None:
         with tempfile.TemporaryDirectory(prefix="change-metadata-review-next-stage-") as temp_dir:
