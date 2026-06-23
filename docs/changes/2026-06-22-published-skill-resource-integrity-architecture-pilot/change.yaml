@@ -9,6 +9,7 @@ artifacts:
   architecture: docs/architecture/system/architecture.md
   adr: docs/adr/ADR-20260623-published-skill-resource-integrity.md
   plan: docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
+  explain_change: docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md
 requirements:
   - R46
   - R46a
@@ -113,6 +114,32 @@ validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
     result: pass
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: rm -rf /tmp/rigorloop-sri-final-release-output && python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-final-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-final-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-final-release-output --clean-install-smoke --skill architecture
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path specs/skill-contract.md --path specs/skill-contract.test.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md
     result: pass
   - command: git diff --check --
     result: pass
@@ -423,6 +450,7 @@ changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/repository-wide-resource-audit.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md
   - docs/plan.md
   - docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
   - docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md
@@ -444,7 +472,7 @@ changed_files:
   - skills/architecture/assets/adr-skeleton.md
   - skills/architecture/assets/diagram-styles.mmd
 review:
-  status: clean_after_code_review_m6_r1
+  status: review_requested_m7
   unresolved_items: 0
 test_spec:
   status: owner-approved

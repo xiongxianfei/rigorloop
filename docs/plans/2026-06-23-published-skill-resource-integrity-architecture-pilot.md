@@ -80,13 +80,13 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M7. Lifecycle Closeout and Release-Gate Alignment
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M6. Repository-Wide Audit and Enforcement Decision
 - Review status: code-review-m6-r1 clean-with-notes; M6 closed
 - Remaining in-scope implementation milestones: M7
-- Next stage: implement M7
+- Next stage: code-review M7
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M7 implementation, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: M7 code-review, any required review-resolution, verify, and PR handoff have not run.
 
 ## Milestones
 
@@ -405,7 +405,7 @@ M5 relationship to M1:
 
 ### M7. Lifecycle Closeout and Release-Gate Alignment
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Close the planned initiative with rationale, validation evidence, final lifecycle state synchronization, and PR-ready handoff only after all implementation milestones are closed.
 - Requirements: R46-R55 evidence coverage
 - Files/components likely touched:
@@ -517,6 +517,8 @@ M5 relationship to M1:
 - 2026-06-23: code-review-m5-r2 returned clean-with-notes, closed M5, and handed off to implement M6.
 - 2026-06-23: implemented M6 repository-wide resource audit. `python scripts/validate-skills.py` validated all 23 canonical skill files; the audit found no unmapped legacy skill-local resource references, missing mapped resources, verb/class mismatches, or required temporary exceptions. Repository-wide hard enforcement can remain enabled for current skills, and new or changed skills continue to be enforced through the same validator and regression fixtures.
 - 2026-06-23: code-review-m6-r1 returned clean-with-notes, closed M6, and handed off to implement M7.
+- 2026-06-23: started M7 lifecycle closeout. Scope is limited to durable change rationale, final validation evidence, change metadata, and plan/index synchronization before M7 code-review.
+- 2026-06-23: implemented M7 lifecycle closeout. Added `explain-change.md`, synchronized change metadata and active plan state, reran the final validation bundle, and handed M7 to code-review without claiming verify, PR, live-registry, or branch readiness.
 
 ## Decision log
 
@@ -735,6 +737,20 @@ M5 relationship to M1:
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m6-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `git diff --check --`
+- 2026-06-23: M7 implementation validation passed:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py`
+  - `rm -rf /tmp/rigorloop-sri-final-release-output && python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-final-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-final-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-final-release-output --clean-install-smoke --skill architecture`
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path specs/skill-contract.md --path specs/skill-contract.test.md`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -743,4 +759,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M6.
+- Ready for code-review M7.
