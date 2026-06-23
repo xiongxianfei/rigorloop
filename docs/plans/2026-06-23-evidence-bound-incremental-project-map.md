@@ -66,13 +66,13 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: final closeout sequence
-- Current milestone state: in-progress
+- Current milestone state: PR open
 - Last reviewed milestone: code-review-m4-r1
 - Review status: clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, and final local verify passed; PR handoff has not completed.
+- Next stage: hosted CI and human review
+- Final closeout readiness: PR open
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, final local verify passed, and PR #102 is open; hosted CI and human review have not completed.
 
 ## Milestones
 
@@ -343,6 +343,7 @@ Hard rule: no milestone may require a validation failure to remain unresolved un
 - 2026-06-23: Code-review M4 R1 recorded `clean-with-notes`; M4 closed and the next stage is the final closeout sequence starting with explain-change.
 - 2026-06-23: Recorded explain-change rationale in `docs/changes/2026-06-23-evidence-bound-incremental-project-map/explain-change.md`; next stage is verify.
 - 2026-06-23: Final local verify passed, recorded `docs/changes/2026-06-23-evidence-bound-incremental-project-map/verify-report.md`, and established branch-ready evidence for PR handoff. Hosted CI was not observed.
+- 2026-06-23: Opened PR #102 for human review; next stage is hosted CI and human review.
 
 ## Decision log
 
@@ -388,12 +389,13 @@ Hard rule: no milestone may require a validation failure to remain unresolved un
 - 2026-06-23: Code-review M4 R1 lifecycle validation passed: `python scripts/validate-review-artifacts.py docs/changes/2026-06-23-evidence-bound-incremental-project-map`; `python scripts/validate-change-metadata.py docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/review-log.md --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/reviews/code-review-m4-r1.md`; `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/review-log.md --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/reviews/code-review-m4-r1.md`; `git diff --check -- docs/plan.md docs/plans/2026-06-23-evidence-bound-incremental-project-map.md docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml docs/changes/2026-06-23-evidence-bound-incremental-project-map/review-log.md docs/changes/2026-06-23-evidence-bound-incremental-project-map/reviews/code-review-m4-r1.md` passed.
 - 2026-06-23: Explain-change validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/explain-change.md`; `git diff --check -- docs/plan.md docs/plans/2026-06-23-evidence-bound-incremental-project-map.md docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml docs/changes/2026-06-23-evidence-bound-incremental-project-map/explain-change.md`; `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/explain-change.md` passed selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `guide_system.validate`.
 - 2026-06-23: Final verify validation passed: `python scripts/query-change-record.py 2026-06-23-evidence-bound-incremental-project-map summary`; `python scripts/validate-review-artifacts.py docs/changes/2026-06-23-evidence-bound-incremental-project-map/`; `python scripts/validate-change-metadata.py docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml`; `python scripts/validate-skills.py`; `python scripts/test-skill-validator.py`; `python scripts/build-skills.py --check`; `python scripts/test-select-validation.py`; `python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-project-map-adapter-proof`; `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-project-map-adapter-proof`; direct archive inspection confirmed `project-map/assets/project-map-skeleton.md` in Codex, Claude, and opencode adapter archives; `git diff --name-only -- docs/project-map.md dist/adapters .codex/skills .agents/skills .claude/skills .opencode/skills` produced no paths; full-surface selected CI passed `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `guide_system.validate`, and `selector.regression`; `git diff --check --` passed.
+- 2026-06-23: PR handoff lifecycle sync validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/verify-report.md`; `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml --path docs/changes/2026-06-23-evidence-bound-incremental-project-map/verify-report.md`; `git diff --check --` passed.
 
 ## Outcome and retrospective
 
-- Final local verify passed and branch-ready evidence is recorded. PR handoff remains.
+- Final local verify passed, branch-ready evidence is recorded, and PR #102 is open. Hosted CI and human review remain.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `pr` per `Current Handoff Summary`. Readiness is not Done; PR handoff and hosted CI/human review remain.
+- Ready for hosted CI and human review per `Current Handoff Summary`. Readiness is not Done; hosted CI and human review remain.
