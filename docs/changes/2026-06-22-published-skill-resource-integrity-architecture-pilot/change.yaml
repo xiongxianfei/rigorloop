@@ -80,6 +80,12 @@ validation:
     result: pass_with_warning_opencode_command_aliases_not_declared
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
     result: pass
+  - command: git diff --check -- docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md docs/plan.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
 changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
@@ -90,6 +96,7 @@ changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/plan-review-r2.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/proposal-review-r1.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/spec-review-r1.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m1-r1.md
   - docs/plan.md
   - docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
   - docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md

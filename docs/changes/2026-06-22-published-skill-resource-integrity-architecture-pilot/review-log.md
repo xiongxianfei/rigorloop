@@ -13,6 +13,7 @@ integrity with architecture-skill pilot change.
 | spec-review-r1 | spec-review | 1 | specs/skill-contract.md | reviews/spec-review-r1.md | approved | 0 | recorded |
 | architecture-review-r1 | architecture-review | 1 | docs/architecture/system/architecture.md; docs/adr/ADR-20260623-published-skill-resource-integrity.md | reviews/architecture-review-r1.md | approved | 0 | recorded |
 | plan-review-r2 | plan-review | 2 | docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md | reviews/plan-review-r2.md | approved | 0 | recorded |
+| code-review-m1-r1 | code-review | 1 | commit `6ff267b`; M1. Complete Architecture Resource-Chain Baseline | reviews/code-review-m1-r1.md | clean-with-notes | 0 | recorded |
 
 ### Review entry
 Review ID: plan-review-r1
