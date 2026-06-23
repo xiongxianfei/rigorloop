@@ -79,14 +79,14 @@ Existing implementation anchors:
 
 ## Current Handoff Summary
 
-- Current milestone: M6. Repository-Wide Audit and Enforcement Decision
-- Current milestone state: review-requested
-- Last reviewed milestone: M5. Reusable Packed Clean-Install Regression Gate
-- Review status: code-review-m5-r2 clean-with-notes; M5 closed
-- Remaining in-scope implementation milestones: M6, M7
-- Next stage: code-review M6
+- Current milestone: M7. Lifecycle Closeout and Release-Gate Alignment
+- Current milestone state: planned
+- Last reviewed milestone: M6. Repository-Wide Audit and Enforcement Decision
+- Review status: code-review-m6-r1 clean-with-notes; M6 closed
+- Remaining in-scope implementation milestones: M7
+- Next stage: implement M7
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M6 code-review, remaining M7 implementation, any required review-resolution, explain-change, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: M7 implementation, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
 ## Milestones
 
@@ -365,7 +365,7 @@ M5 relationship to M1:
 
 ### M6. Repository-Wide Audit and Enforcement Decision
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Run the reusable validator across current published skills, resolve architecture drift, and decide whether global enforcement can be enabled now.
 - Requirements: R53-R53b, R49d
 - Files/components likely touched:
@@ -516,6 +516,7 @@ M5 relationship to M1:
 - 2026-06-23: implemented SRI-M5-CR1 resolution. Added a direct clean-install smoke regression for an installed target skill root that exists with `SKILL.md` present while `assets/template.md` is removed after real local archive installation. The test asserts the missing-resource diagnostic names Codex, `portable-with-assets`, and `assets/template.md`, and that the case is not reported as a missing skill root.
 - 2026-06-23: code-review-m5-r2 returned clean-with-notes, closed M5, and handed off to implement M6.
 - 2026-06-23: implemented M6 repository-wide resource audit. `python scripts/validate-skills.py` validated all 23 canonical skill files; the audit found no unmapped legacy skill-local resource references, missing mapped resources, verb/class mismatches, or required temporary exceptions. Repository-wide hard enforcement can remain enabled for current skills, and new or changed skills continue to be enforced through the same validator and regression fixtures.
+- 2026-06-23: code-review-m6-r1 returned clean-with-notes, closed M6, and handed off to implement M7.
 
 ## Decision log
 
@@ -728,6 +729,11 @@ M5 relationship to M1:
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/repository-wide-resource-audit.md`
+  - `git diff --check --`
+- 2026-06-23: M6 code-review recording validation passed:
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m6-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `git diff --check --`
 
 ## Outcome and retrospective
