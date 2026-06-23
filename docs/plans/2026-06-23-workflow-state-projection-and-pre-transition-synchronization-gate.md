@@ -77,20 +77,20 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Parser Fixture Harness and Owner-State Tests
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md#code-review-m1-r1
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review M1
+- Current milestone: M2. Parser and Lifecycle State-Sync Validator
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m1-r2.md
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M2, M3, M4, M5
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — WSS-CR1 has been resolved and awaits code-review R2, M2 through M5 remain open, and final closeout gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 through M5 remain open, and final closeout gates remain.
 
 ## Milestones
 
 ### M1. Parser Fixture Harness and Owner-State Tests
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Consume the completed test spec and add the first failing or fixture-backed validator tests plus parser scaffolding for owner-field and projection synchronization.
 - Requirements: R42-R57, R64-R75, R76-R81, AC-WSS-017 through AC-WSS-027
 - Files/components likely touched:
@@ -310,6 +310,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: M1 added shared workflow-state parser scaffolding plus executable owner-field, final-reason, plan-index projection, and readiness/stale-token boundary tests; targeted validation passed and M1 is ready for code-review.
 - 2026-06-23: Code-review M1 R1 requested changes for WSS-CR1; M1 remains open in review-resolution.
 - 2026-06-23: WSS-CR1 resolved by adding index-to-owner resolution through the shared parser; M1 is ready for code-review R2.
+- 2026-06-23: Code-review M1 R2 approved the WSS-CR1 resolution with no material findings; M1 is closed and the next stage is implement M2.
 
 ## Decision log
 
@@ -341,6 +342,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py` passed after WSS-CR1 resolution.
 - 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md` passed against the repository state after WSS-CR1 resolution.
 - 2026-06-23: Direct drift-fixture validation with `paths=["docs/plan.md"]` produced one blocker on the stale `docs/plan.md` `Next stage` projection after WSS-CR1 resolution.
+- 2026-06-23: Code-review M1 R2 found no material findings in commit `cb57b8db`; review evidence and lifecycle handoff now route to implement M2.
 
 ## Outcome and retrospective
 
