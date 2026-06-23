@@ -9,6 +9,7 @@ flowchart TB
   subgraph repo["RigorLoop repository<br/>[Git repository]"]
     governance["Governance and workflow guidance<br/>[Markdown]"]:::container
     lifecycle["Lifecycle artifacts and ADRs<br/>[Markdown and YAML]"]:::container
+    project_maps["Project maps<br/>[Markdown living references: docs/project-map.md and docs/project-map/&lt;area&gt;.md]"]:::container
     token_bench["Token-cost benchmark fixtures and reports<br/>[Markdown, YAML, JSONL]"]:::container
     cli["RigorLoop CLI package<br/>[Node/npm package]"]:::container
     architecture["Canonical architecture package<br/>[Markdown and Mermaid]"]:::container
@@ -35,6 +36,8 @@ flowchart TB
   governance -->|defines lowest-sufficient architecture-surface rules for| architecture
   governance -->|declares authored/generated boundaries for| skills
   lifecycle -->|routes architecture work to no-impact rationale, direct update, ADR, or proposal/spec gap| architecture
+  skills -->|project-map creates, refreshes, and audits| project_maps
+  architecture -->|reads current-state orientation and evidence from| project_maps
   changes -->|may expose durable truth that must be represented in| architecture
   changes -->|record reviews, explanations, validation gaps, and final closeout evidence for| lifecycle
   templates -->|scaffold architecture and ADR records in| lifecycle

@@ -375,6 +375,14 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("validator fixture evidence is recorded",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="project-map-output-proof",
+        patterns=("cold-read-proof.md", "representative-project-map-outputs.md"),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("project-map representative output or cold-read proof is recorded",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="release-process-dry-run",
         patterns=("release-process-dry-run.md",),
         selector_routes=("artifact_lifecycle.validate",),
@@ -1560,7 +1568,7 @@ def _path_category(path: str) -> str | None:
         return "change-metadata-fixtures"
     if path.startswith("tests/fixtures/adapters/"):
         return "adapters"
-    if path.startswith("tests/fixtures/skills/"):
+    if path == "tests/fixtures/skills" or path.startswith("tests/fixtures/skills/"):
         return "validator-skills"
     if path.startswith("skills/"):
         return "skills"
