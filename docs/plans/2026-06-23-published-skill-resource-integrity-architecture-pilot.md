@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M4. Generated Package and Archive Resource Parity
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Architecture Resource Normalization and Behavior Preservation
-- Review status: M3 code-review clean-with-notes; M3 closed
+- Review status: M4 implementation complete; awaiting code-review
 - Remaining in-scope implementation milestones: M4, M5, M6, M7
-- Next stage: implement M4
+- Next stage: code-review for M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -267,7 +267,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M4. Generated Package and Archive Resource Parity
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove mapped resources survive generated local mirror output, generated adapter package output, and release archives with matching relative paths and raw-byte SHA-256 unless a transformation contract applies.
 - Requirements: R50-R51a, R55a
 - Files/components likely touched:
@@ -298,7 +298,7 @@ A layer marked unproved blocks M1 closeout.
   - `python scripts/test-adapter-distribution.py`
   - `python scripts/build-skills.py --check`
   - `python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-release-output`
-  - `python scripts/validate-adapters.py --version v0.3.2 --release-output-dir /tmp/rigorloop-sri-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-release-output`
 - Expected observable result: stale or missing mapped resources fail before a release package can be treated as valid.
 - Commit message: `M4: validate generated resource parity`
 - Milestone closeout:
@@ -454,7 +454,7 @@ M5 relationship to M1:
 - `python scripts/build-skills.py --check`: generated local mirror proof.
 - `python scripts/test-adapter-distribution.py`: generated adapter and release archive regression coverage.
 - `python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-release-output`: locally packed release-candidate archive generation.
-- `python scripts/validate-adapters.py --version v0.3.2 --release-output-dir /tmp/rigorloop-sri-release-output`: release-candidate archive validation.
+- `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-release-output`: release-candidate archive validation.
 - M1 clean-install baseline commands: pre-change target-installed resource-chain proof.
 - clean-install smoke command added or hardened by M5: reusable post-change target-installed resource parity proof.
 - final `bash scripts/ci.sh --mode explicit ...` or broader command named by the approved test spec: final scoped CI-equivalent proof.
@@ -505,6 +505,7 @@ M5 relationship to M1:
 - 2026-06-23: code-review-m3-r1 requested changes for SRI-M3-CR1. The canonical architecture skill is normalized, but the architecture-specific temporary legacy-resource exceptions remain active in `scripts/skill_validation.py` and still allow the exact former architecture `templates/...` instruction to pass validation after migration.
 - 2026-06-23: implemented SRI-M3-CR1 resolution. The architecture-specific temporary resource-integrity exceptions were removed after M3 normalization, and post-M3 regression coverage now proves the exact former architecture `templates/...` instruction fails while the normalized architecture Resource map remains valid.
 - 2026-06-23: code-review-m3-r2 returned clean-with-notes, closed M3, and handed off to implement M4.
+- 2026-06-23: implemented M4 generated package and archive resource parity. Mapped resource identity is now collected as skill-root relative path plus raw-byte SHA-256; generated local mirror, generated adapter output, and release archive validation report missing or stale mapped resources with stable resource-specific diagnostics.
 
 ## Decision log
 
@@ -529,6 +530,7 @@ M5 relationship to M1:
 - SRI-M2-CR3 resolution keeps the segmenter intentionally bounded instead of adding a Markdown parser dependency. It recognizes unordered and ordered list markers, supports lazy continuation lines within one list item, and leaves mapped-resource validation as the sole owner of `## Resource map` entries.
 - M3 did not add `references/diagram-conventions.md` because the inspected diagram style resource is literal Mermaid copied material, not prose conventions. It is therefore a copyable `assets/diagram-styles.mmd` resource under R55d edge-case guidance.
 - SRI-M3-CR1 confirmed that migration exceptions need an explicit expiry cleanup in the same milestone that removes the underlying debt. The post-M3 validator state now rejects the former architecture `templates/...` instructions.
+- M4 exposed that `validate-release-ci.py` materialized historical recorded source commits but validated them with the current in-process release validator. That retroactively applied post-M3 skill lint to historical v0.1.5 source. The wrapper now rebuilds archives from the recorded source and validates tracked adapter artifact metadata/checksums for that recorded-source path.
 
 ## Validation notes
 
@@ -632,6 +634,25 @@ M5 relationship to M1:
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m3-r2.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `git diff --check --`
+- 2026-06-23: M4 red/green proof and validation passed:
+  - `python scripts/test-build-skills.py BuildSkillsTests.test_generated_resource_parity_reports_stale_mapped_resource_hashes` failed before the generated-resource parity helper existed.
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_archives_rejects_stale_mapped_resource_hashes` failed before adapter/archive validators emitted mapped-resource SHA-256 parity diagnostics.
+  - `python scripts/test-build-skills.py BuildSkillsTests.test_generated_resource_parity_reports_stale_mapped_resource_hashes BuildSkillsTests.test_generated_resource_parity_reports_missing_mapped_resource`
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_archives_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource`
+  - `python scripts/test-build-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/build-skills.py --path scripts/test-build-skills.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validate-release-ci.py --path scripts/validate-adapters.py --path skills/architecture`
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-release-output`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/architecture`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -640,4 +661,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for implement M4.
+- Ready for M4 code-review.

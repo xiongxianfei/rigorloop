@@ -950,6 +950,109 @@ release_gate:
 
             self.assertEqual([], validate_adapter_archives("v0.1.5", output_dir, skills_root=root / "skills"))
 
+    def test_validate_adapter_output_rejects_stale_mapped_resource_hashes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(
+                root,
+                ("portable-with-assets",),
+            )
+            generated_resource = (
+                output_root
+                / "codex"
+                / ".agents"
+                / "skills"
+                / "portable-with-assets"
+                / "assets"
+                / "template.md"
+            )
+            generated_resource.write_text(
+                generated_resource.read_text(encoding="utf-8") + "\nstale\n",
+                encoding="utf-8",
+            )
+
+            errors = validate_adapter_output(
+                "0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+            )
+
+            self.assertTrue(
+                any(
+                    "mapped resource parity mismatch: codex/portable-with-assets: "
+                    "assets/template.md" in error
+                    and "canonical sha256=" in error
+                    and "generated sha256=" in error
+                    for error in errors
+                ),
+                errors,
+            )
+
+    def test_validate_adapter_archives_rejects_stale_mapped_resource_hashes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.5", output_dir, skills_root=root / "skills")
+            archive_path = output_dir / adapter_archive_name("codex", "v0.1.5")
+            entry_name = ".agents/skills/portable-with-assets/assets/template.md"
+
+            with zipfile.ZipFile(archive_path) as archive:
+                entries = {
+                    name: archive.read(name)
+                    for name in archive.namelist()
+                    if not name.endswith("/")
+                }
+            entries[entry_name] = b"stale\n"
+            with zipfile.ZipFile(archive_path, "w") as archive:
+                for name, content in sorted(entries.items()):
+                    archive.writestr(name, content)
+
+            errors = validate_adapter_archives("v0.1.5", output_dir, skills_root=root / "skills")
+
+            self.assertTrue(
+                any(
+                    "mapped resource parity mismatch: codex/portable-with-assets: "
+                    "assets/template.md" in error
+                    and "canonical sha256=" in error
+                    and "archive sha256=" in error
+                    for error in errors
+                ),
+                errors,
+            )
+
+    def test_validate_adapter_output_rejects_missing_mapped_resource(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(
+                root,
+                ("portable-with-assets",),
+            )
+            (
+                output_root
+                / "claude"
+                / ".claude"
+                / "skills"
+                / "portable-with-assets"
+                / "assets"
+                / "template.md"
+            ).unlink()
+
+            errors = validate_adapter_output(
+                "0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+            )
+
+            self.assertTrue(
+                any(
+                    "mapped resource missing: claude/portable-with-assets: "
+                    "assets/template.md in generated adapter output claude" in error
+                    for error in errors
+                ),
+                errors,
+            )
+
     def test_validate_adapter_archives_rejects_missing_required_archive(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

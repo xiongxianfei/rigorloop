@@ -226,6 +226,42 @@ validation:
     result: pass
   - command: git diff --check --
     result: pass
+  - command: python scripts/test-build-skills.py BuildSkillsTests.test_generated_resource_parity_reports_stale_mapped_resource_hashes
+    result: fail_expected_before_generated_resource_parity_helper
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_archives_rejects_stale_mapped_resource_hashes
+    result: fail_expected_before_adapter_archive_resource_parity_diagnostics
+  - command: python scripts/test-build-skills.py BuildSkillsTests.test_generated_resource_parity_reports_stale_mapped_resource_hashes BuildSkillsTests.test_generated_resource_parity_reports_missing_mapped_resource
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_archives_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/build-skills.py --path scripts/test-build-skills.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validate-release-ci.py --path scripts/validate-adapters.py --path skills/architecture
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-release-output
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-release-output
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/architecture
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: git diff --check --
+    result: pass
 changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
@@ -253,13 +289,18 @@ changed_files:
   - specs/skill-contract.md
   - specs/skill-contract.test.md
   - scripts/skill_validation.py
+  - scripts/build-skills.py
+  - scripts/test-build-skills.py
+  - scripts/adapter_distribution.py
+  - scripts/test-adapter-distribution.py
+  - scripts/validate-release-ci.py
   - scripts/test-skill-validator.py
   - skills/architecture/SKILL.md
   - skills/architecture/assets/architecture-skeleton.md
   - skills/architecture/assets/adr-skeleton.md
   - skills/architecture/assets/diagram-styles.mmd
 review:
-  status: clean_code_review_m3_r2
+  status: review_requested_m4
   unresolved_items: 0
 test_spec:
   status: owner-approved

@@ -18,6 +18,8 @@ from skill_validation import (
     discover_source_skill_dirs,
     load_skill_file,
     load_skill_schema,
+    mapped_resource_identities_for_skill,
+    mapped_resource_parity_errors,
     validate_skill_file,
 )
 
@@ -1883,6 +1885,18 @@ def validate_adapter_output(
             errors.append(f"missing adapter skill directory: {adapter_name}: {skill_root}")
             continue
 
+        for skill_name, report in reports.items():
+            if not report.adapter_decision(adapter_name).included:
+                continue
+            errors.extend(
+                mapped_resource_parity_errors(
+                    report.path.parent,
+                    skill_root / skill_name,
+                    skill_label=f"{adapter_name}/{skill_name}",
+                    surface_label=f"generated adapter output {adapter_name}",
+                )
+            )
+
         for skill_path in _generated_skill_files(output_root, config):
             skill_name = skill_path.parent.name
             generated_by_adapter[adapter_name].add(skill_name)
@@ -1998,6 +2012,7 @@ def validate_adapter_archives(
         skills_root=skills_root,
         template_root=template_root,
     )
+    reports = collect_skill_reports(skills_root)
 
     for adapter_name in SUPPORTED_ADAPTERS:
         config = ADAPTERS[adapter_name]
@@ -2038,6 +2053,29 @@ def validate_adapter_archives(
             skill_root = config.skill_root.as_posix().rstrip("/") + "/"
             if not any(name.startswith(skill_root) for name in entries):
                 errors.append(f"adapter archive missing skill root: {adapter_name}: {config.skill_root}")
+
+            for report in reports:
+                if not report.adapter_decision(adapter_name).included:
+                    continue
+                for identity in mapped_resource_identities_for_skill(report.path.parent):
+                    resource_entry = (
+                        config.skill_root
+                        / report.name
+                        / PurePosixPath(identity.relative_path)
+                    ).as_posix()
+                    label = f"{adapter_name}/{report.name}"
+                    if resource_entry not in entries:
+                        errors.append(
+                            f"mapped resource missing: {label}: {identity.relative_path} "
+                            f"in adapter archive {archive_path}"
+                        )
+                        continue
+                    actual_sha256 = hashlib.sha256(archive.read(resource_entry)).hexdigest()
+                    if actual_sha256 != identity.sha256:
+                        errors.append(
+                            f"mapped resource parity mismatch: {label}: {identity.relative_path}: "
+                            f"canonical sha256={identity.sha256}; archive sha256={actual_sha256}"
+                        )
 
             for relative_path, expected_text in expected_files.items():
                 entry_name = relative_path.as_posix()
