@@ -136,3 +136,17 @@ Resolution: review-resolution.md#code-review-m3-r1
 Material findings: WSS-CR2
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m3-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit ab2af875
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r2.md
+Record: reviews/code-review-m3-r2.md
+Resolution: review-resolution.md#code-review-m3-r2
+Material findings: WSS-CR3
+Open findings: WSS-CR3
+Recording status: recorded
