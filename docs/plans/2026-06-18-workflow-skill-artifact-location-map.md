@@ -5,7 +5,7 @@
 Plan lifecycle state: active
 Terminal disposition: none
 
-- Change ID: `2026-06-17-workflow-skill-artifact-location-map`
+- Change ID: 2026-06-17-workflow-skill-artifact-location-map
 - Current owner: agent
 - Current stage: pr
 - Next stage: hosted CI and human review

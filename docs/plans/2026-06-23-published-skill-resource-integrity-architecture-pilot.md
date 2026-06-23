@@ -5,6 +5,7 @@
 Plan lifecycle state: active
 Terminal disposition: none
 
+- Change ID: 2026-06-22-published-skill-resource-integrity-architecture-pilot
 - Owner: maintainer
 - Start date: 2026-06-23
 - Last updated: 2026-06-23
