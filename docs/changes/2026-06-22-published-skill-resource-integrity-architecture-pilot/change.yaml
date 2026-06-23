@@ -148,8 +148,8 @@ changed_files:
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
 review:
-  status: changes_requested_code_review_m2_r2
-  unresolved_items: 1
+  status: review_requested_after_sri_m2_cr2_resolution
+  unresolved_items: 0
 test_spec:
   status: owner-approved
   path: specs/skill-contract.test.md

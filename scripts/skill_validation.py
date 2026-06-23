@@ -15,6 +15,30 @@ CANONICAL_SKILLS_DIR = ROOT / "skills"
 GENERATED_SKILLS_DIR = ROOT / ".codex" / "skills"
 SKILL_SCHEMA_PATH = ROOT / "schemas" / "skill.schema.json"
 WORKFLOWS_DOC_PATH = ROOT / "docs" / "workflows.md"
+
+
+@dataclass(frozen=True)
+class SkillLocalResourceReference:
+    path: str
+    start: int
+    end: int
+    line_number: int
+
+
+@dataclass(frozen=True)
+class ResourceInstructionLine:
+    text: str
+    line_offsets: tuple[tuple[int, int], ...]
+
+    def line_number_for_offset(self, offset: int) -> int:
+        line_number = self.line_offsets[0][1]
+        for line_start, candidate_line_number in self.line_offsets:
+            if line_start > offset:
+                break
+            line_number = candidate_line_number
+        return line_number
+
+
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD)\b")
 READABILITY_SCHEMA_VERSION = "skill-readability-v1"
 READABILITY_STAGE_VALUES = {
@@ -87,7 +111,7 @@ PUBLISHED_RESOURCE_LOADING_VERBS = (
 SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN = re.compile(
     r"`?(?P<path>(?<![A-Za-z0-9._/-])(?:"
     + "|".join(re.escape(prefix[:-1]) for prefix in PUBLISHED_SKILL_LOCAL_RESOURCE_PREFIXES)
-    + r")/[A-Za-z0-9._/-]+)`?"
+    + r")/[A-Za-z0-9_/-](?:[A-Za-z0-9._/-]*[A-Za-z0-9_/-])?)`?"
 )
 LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN = re.compile(
     r"\b(?:"
@@ -95,18 +119,56 @@ LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN = re.compile(
     + r")\b",
     re.IGNORECASE,
 )
-PUBLISHED_RESOURCE_EXTERNAL_CONTEXT_PATTERN = re.compile(
-    r"\b(?:project-provided|repository-provided|project-local|repository-root|"
-    r"user-provided|user-supplied|illustrative path|example path|"
-    r"when the project provides)\b",
+PUBLISHED_RESOURCE_EXTERNAL_PREFIX_PATTERN = re.compile(
+    r"(?:(?:^|[\s(\[])(?:the\s+)?(?:project|repository|user)[- ]"
+    r"(?:provided|supplied|owned)(?:\s+(?:resource|file|path))?"
+    r"(?:\s+(?:at|from))?\s*[`'\"]?$|"
+    r"(?:^|[\s(\[])(?:the\s+)?repository-root\s*[`'\"]?$|"
+    r"\bwhen the project provides\b)",
     re.IGNORECASE,
 )
+PUBLISHED_RESOURCE_EXTERNAL_SUFFIX_PATTERN = re.compile(
+    r"^(?:[`'\"]?\s*(?:provided|supplied|owned)\s+by\s+"
+    r"(?:the\s+)?(?:project|repository|user)\b|"
+    r"[^.;:]*\bwhen the project provides\b)",
+    re.IGNORECASE,
+)
+PUBLISHED_RESOURCE_ILLUSTRATIVE_PREFIX_PATTERN = re.compile(
+    r"(?:^|[\s(\[])(?:example|illustrative)\s+"
+    r"(?:resource|file|path)\s*:\s*[`'\"]?$",
+    re.IGNORECASE,
+)
+PUBLISHED_PROJECT_PROVIDED_HELPER_PATHS = {
+    "scripts/query-change-record.py",
+}
 TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS = {
     # Recorded as migration debt by the M1 architecture resource-chain audit.
     # M3 removes these entries by normalizing the architecture Resource map.
-    ("architecture", "templates/architecture.md"),
-    ("architecture", "templates/diagram-styles.mmd"),
-    ("architecture", "templates/adr.md"),
+    (
+        "architecture",
+        "templates/architecture.md",
+        "Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.",
+    ),
+    (
+        "architecture",
+        "templates/diagram-styles.mmd",
+        "Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.",
+    ),
+    (
+        "architecture",
+        "templates/adr.md",
+        "Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.",
+    ),
+    (
+        "architecture",
+        "templates/diagram-styles.mmd",
+        "Use separate Mermaid `.mmd` source files for default diagrams and link them from `architecture.md` with relative Markdown links. Do not embed package diagrams in Markdown. For Mermaid flowchart or graph diagrams, use `templates/diagram-styles.mmd` or an explicitly equivalent copied block so people, systems, external systems, and containers are distinguishable.",
+    ),
+    (
+        "architecture",
+        "templates/adr.md",
+        "Use `templates/adr.md` and store real ADRs under `docs/adr/`. Each ADR includes title, status, context, decision, alternatives considered, consequences, and follow-up.",
+    ),
 }
 RESOURCE_LOAD_CONDITION_PATTERN = re.compile(
     r"\b(when|if|only|use|read|run|load)\b",
@@ -888,6 +950,43 @@ def _iter_lines_outside_resource_map_and_fences(body: str) -> list[tuple[int, st
     return lines
 
 
+def _iter_resource_instruction_lines(body: str) -> list[ResourceInstructionLine]:
+    instructions: list[ResourceInstructionLine] = []
+    current_parts: list[str] = []
+    current_offsets: list[tuple[int, int]] = []
+
+    def flush() -> None:
+        nonlocal current_parts, current_offsets
+        if current_parts:
+            instructions.append(
+                ResourceInstructionLine(
+                    text=" ".join(current_parts),
+                    line_offsets=tuple(current_offsets),
+                )
+            )
+        current_parts = []
+        current_offsets = []
+
+    current_offset = 0
+    for line_number, line in _iter_lines_outside_resource_map_and_fences(body):
+        stripped = line.strip()
+        if not stripped:
+            flush()
+            current_offset = 0
+            continue
+        if stripped.startswith("## "):
+            flush()
+            current_offset = 0
+            continue
+        if current_parts:
+            current_offset += 1
+        current_offsets.append((current_offset, line_number))
+        current_parts.append(stripped)
+        current_offset += len(stripped)
+    flush()
+    return instructions
+
+
 def _extract_markdown_section(body: str, heading: str) -> str | None:
     marker = f"## {heading}"
     lines = body.splitlines()
@@ -1415,25 +1514,80 @@ def _skill_name_for_path(path: Path) -> str:
     return path.parent.name
 
 
-def _has_resource_integrity_exception(path: Path, resource_path: str) -> bool:
-    return (_skill_name_for_path(path), resource_path) in TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS
+def _has_resource_integrity_exception(path: Path, resource_path: str, line: str) -> bool:
+    return (
+        _skill_name_for_path(path),
+        resource_path,
+        line,
+    ) in TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS
+
+
+def _find_skill_local_resource_references(
+    instruction: ResourceInstructionLine,
+) -> tuple[SkillLocalResourceReference, ...]:
+    references: list[SkillLocalResourceReference] = []
+    for match in SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN.finditer(instruction.text):
+        references.append(
+            SkillLocalResourceReference(
+                path=match.group("path"),
+                start=match.start("path"),
+                end=match.end("path"),
+                line_number=instruction.line_number_for_offset(match.start("path")),
+            )
+        )
+    return tuple(references)
+
+
+def _resource_reference_has_external_context(
+    line: str,
+    reference: SkillLocalResourceReference,
+    *,
+    previous_reference_end: int,
+    next_reference_start: int,
+) -> bool:
+    prefix = line[previous_reference_end : reference.start]
+    suffix = line[reference.end : next_reference_start]
+    full_prefix = line[: reference.start]
+    return bool(
+        PUBLISHED_RESOURCE_EXTERNAL_PREFIX_PATTERN.search(prefix)
+        or PUBLISHED_RESOURCE_EXTERNAL_SUFFIX_PATTERN.match(suffix)
+        or PUBLISHED_RESOURCE_ILLUSTRATIVE_PREFIX_PATTERN.search(prefix)
+        or (
+            reference.path in PUBLISHED_PROJECT_PROVIDED_HELPER_PATHS
+            and re.search(r"\bwhen the project provides the helper\b", full_prefix, re.IGNORECASE)
+        )
+    )
 
 
 def _iter_unmapped_skill_local_resource_references(
+    path: Path,
     body: str,
     mapped_resources: set[str],
 ) -> list[tuple[int, str, str]]:
     references: list[tuple[int, str, str]] = []
-    for line_number, line in _iter_lines_outside_resource_map_and_fences(body):
-        if not LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN.search(line):
+    for instruction in _iter_resource_instruction_lines(body):
+        if not LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN.search(instruction.text):
             continue
-        if PUBLISHED_RESOURCE_EXTERNAL_CONTEXT_PATTERN.search(line):
-            continue
-        for match in SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN.finditer(line):
-            resource_path = match.group("path")
-            if resource_path in mapped_resources:
+        line_references = _find_skill_local_resource_references(instruction)
+        for index, reference in enumerate(line_references):
+            if reference.path in mapped_resources:
                 continue
-            references.append((line_number, resource_path, line.strip()))
+            previous_reference_end = line_references[index - 1].end if index else 0
+            next_reference_start = (
+                line_references[index + 1].start
+                if index + 1 < len(line_references)
+                else len(instruction.text)
+            )
+            if _resource_reference_has_external_context(
+                instruction.text,
+                reference,
+                previous_reference_end=previous_reference_end,
+                next_reference_start=next_reference_start,
+            ):
+                continue
+            if _has_resource_integrity_exception(path, reference.path, instruction.text):
+                continue
+            references.append((reference.line_number, reference.path, instruction.text.strip()))
     return references
 
 
@@ -2392,11 +2546,10 @@ def _validate_resource_map(path: Path, body: str) -> list[str]:
                     f"{path}: packaged script '{relative_resource}' map entry must describe failure behavior"
                 )
     for line_number, resource_path, line in _iter_unmapped_skill_local_resource_references(
+        path,
         body,
         mapped_resources,
     ):
-        if _has_resource_integrity_exception(path, resource_path):
-            continue
         skill_name = _skill_name_for_path(path)
         errors.append(
             f"{path}:{line_number}: {skill_name}: unmapped skill-local resource "

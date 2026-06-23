@@ -28,12 +28,15 @@ skill-local resource files.
 | Path containment | `test_published_skill_resource_map_rejects_path_traversal` and `test_published_skill_resource_map_rejects_absolute_path`. |
 | Legacy unmapped reference | `test_published_skill_legacy_template_loading_instruction_fails` covers `assets/`, `references/`, `scripts/`, and legacy `templates/` resource-loading instructions with ordinary load-condition wording such as `when relevant`, `when available`, `when needed`, and `if present`. |
 | False-positive boundary | `test_published_skill_legacy_lint_avoids_examples_and_docs_paths` covers explicit project-provided, repository-root, and user-provided ownership wording, illustrative examples, fenced examples, generated-artifact strings, and non-skill-local `docs/templates/...` paths. |
+| Per-reference context | `test_published_skill_legacy_lint_checks_each_reference_on_mixed_line` covers mixed instructions where one path is explicitly external or illustrative and another path remains an unqualified skill-local reference. |
+| Individually qualified references | `test_published_skill_legacy_lint_allows_individually_qualified_references` covers multiple references where each path has its own explicit ownership context. |
 | Temporary architecture migration debt | `test_current_architecture_legacy_references_are_temporary_migration_debt` and `test_published_skill_architecture_migration_exception_is_exact`. |
 
 The legacy-resource lint uses resource-lint-specific context rules. It does not
 reuse the broader repository-root dependency allowlist, and ordinary
 load-condition wording does not suppress unqualified skill-local resource
-references.
+references. External ownership and illustrative context are evaluated per
+matched resource reference, not once for the whole instruction line.
 
 ## Temporary Exception
 
@@ -46,6 +49,8 @@ architecture skill resource map and resources.
 The exception does not add `templates/` as a supported resource class. A mapped
 `templates/...` resource still fails verb-to-class validation.
 
-The exception is skill-specific and path-specific: another skill using
-`templates/architecture.md` fails, and the architecture skill using an
-unapproved `templates/...` path fails.
+The exception is skill-specific, path-specific, and instruction-specific:
+another skill using `templates/architecture.md` fails, the architecture skill
+using an unapproved `templates/...` path fails, and a modified mixed-reference
+architecture instruction fails unless it matches an approved temporary
+exception.
