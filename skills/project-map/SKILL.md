@@ -2,12 +2,7 @@
 name: project-map
 version: "1.0.0"
 schema-version: skill-readability-v1
-description: >
-  Build, refresh, or audit a current-state repository orientation map. Use when
-  architecture, module boundaries, runtime flow, data flow, test layout, CI,
-  ownership, or change placement is unclear. This skill records observed
-  repository structure and bounded inferences; it does not invent future
-  architecture or act as a backlog.
+description: Build, refresh, or audit a current-state repository orientation map. Use when architecture, module boundaries, runtime flow, data flow, test layout, CI, ownership, or change placement is unclear. This skill records observed repository structure and bounded inferences; it does not invent future architecture or act as a backlog.
 argument-hint: [repository, area, orientation question, or refresh scope]
 ---
 
