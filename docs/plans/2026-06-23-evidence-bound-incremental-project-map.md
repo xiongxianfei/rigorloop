@@ -6,6 +6,7 @@ Plan lifecycle state: active
 Terminal disposition: none
 
 - Owner: maintainer
+- Change ID: 2026-06-23-evidence-bound-incremental-project-map
 - Start date: 2026-06-23
 - Last updated: 2026-06-23
 - Related issue or PR: none yet
