@@ -2,41 +2,30 @@
 
 ## Summary
 
-This change makes published skill-local resources explicit, packageable, and
-verifiable across the canonical, generated, packed, and installed skill chain.
+This change makes published skill-local resources explicit, packageable, and verifiable across the canonical, generated, packed, and installed skill chain.
 
-The concrete incident was the architecture skill: installed
-`.agents/skills/architecture/SKILL.md` referenced `templates/architecture.md`,
-`templates/diagram-styles.mmd`, and `templates/adr.md`, but the installed skill
-directory contained only `SKILL.md`. The runtime architecture fallback was
-honest and bounded, but the package was not self-contained.
+The concrete incident was the architecture skill: installed `.agents/skills/architecture/SKILL.md` referenced `templates/architecture.md`, `templates/diagram-styles.mmd`, and `templates/adr.md`, but the installed skill directory contained only `SKILL.md`.
+The runtime architecture fallback was honest and bounded, but the package was not self-contained.
 
 The implementation repairs that defect and adds reusable validation:
 
-- canonical `Resource map` entries validate verb, class, containment, existence,
-  and packageability;
-- bounded legacy-resource lint catches unmapped `assets/`, `references/`,
-  `scripts/`, and legacy `templates/` load instructions without scanning every
-  path-like string;
+- canonical `Resource map` entries validate verb, class, containment, existence, and packageability;
+- bounded legacy-resource lint catches unmapped `assets/`, `references/`, `scripts/`, and legacy `templates/` load instructions without scanning every path-like string;
 - architecture resources are normalized under approved `assets/`;
-- generated local mirrors, adapter output, release archives, and clean installs
-  preserve mapped-resource relative paths and raw-byte SHA-256;
-- recorded-source release compatibility skips only current canonical skill
-  policy, while retaining release metadata and archive-integrity checks;
+- generated local mirrors, adapter output, release archives, and clean installs preserve mapped-resource relative paths and raw-byte SHA-256;
+- recorded-source release compatibility skips only current canonical skill policy, while retaining release metadata and archive-integrity checks;
 - repository-wide current skill audit is clean.
 
-This artifact is M7 rationale and closeout evidence. It does not claim final
-verify, PR readiness, live registry proof, or hosted CI success.
+This artifact is M7 rationale and closeout evidence.
+It does not claim final verify, PR readiness, live registry proof, or hosted CI success.
 
 ## Problem
 
-The original package contract allowed a shipped skill to tell an agent to load a
-skill-local resource that was absent from the installed skill tree. That can
-produce inconsistent artifacts, invented template content, missing required
-schema or security wording, and late customer-repository failures.
+The original package contract allowed a shipped skill to tell an agent to load a skill-local resource that was absent from the installed skill tree.
+That can produce inconsistent artifacts, invented template content, missing required schema or security wording, and late customer-repository failures.
 
-The proposal treated this as package integrity rather than an architecture
-design failure. The important distinction was:
+The proposal treated this as package integrity rather than an architecture design failure.
+The important distinction was:
 
 ```text
 runtime fallback:
@@ -88,8 +77,8 @@ package validation:
 
 ## Validation Evidence Available Before Final Verify
 
-M1 through M6 validation is recorded in the active plan and `change.yaml`. Key
-proof includes:
+M1 through M6 validation is recorded in the active plan and `change.yaml`.
+Key proof includes:
 
 - `python scripts/build-skills.py --check`
 - `python scripts/build-skills.py --output-dir /tmp/rigorloop-sri-audit-generated-skills`
@@ -109,8 +98,8 @@ proof includes:
 - `bash scripts/ci.sh --mode explicit` with every current `skills/*/SKILL.md` plus validator/test files
 - lifecycle, review-artifact, change-metadata, and `git diff --check --` validation after each milestone or review recording step
 
-M7 reruns the final validation bundle before code-review handoff. Final verify,
-hosted CI, live registry proof, and PR readiness remain downstream.
+M7 reruns the final validation bundle before code-review handoff.
+Final verify, hosted CI, live registry proof, and PR readiness remain downstream.
 
 ## Review Resolution Summary
 
@@ -128,24 +117,17 @@ No open findings remain in `review-log.md`.
 | `SRI-M4-CR2` | accepted | Recorded-source archive validation inspects rebuilt archives and mapped-resource parity. |
 | `SRI-M5-CR1` | accepted | Clean-install smoke has direct missing-installed-mapped-resource regression coverage. |
 
-Clean code reviews closed M1 through M6. M7 is the final implementation
-milestone and still requires code-review after this handoff.
+Clean code reviews closed M1 through M6.
+M7 is the final implementation milestone and still requires code-review after this handoff.
 
 ## Alternatives Rejected
 
-- Hand-copying missing files into `.agents/skills/architecture/`: rejected
-  because it fixes one installed tree without repairing canonical packaging.
-- Adding an implicit `templates/` packaged-resource class: rejected because the
-  existing contract already distinguishes `assets/`, `references/`, and
-  `scripts/`.
-- Broad Markdown path scanning: rejected because it would classify artifact
-  examples, repository paths, and customer-project paths as packaged resources.
-- Presence-only parity: rejected because it cannot detect stale generated,
-  archive, or installed resource bytes.
-- Live registry proof during implementation closeout: rejected because the
-  accepted contract keeps live registry installation as release-owned evidence.
-- Historical archive repair: rejected as out of scope for immutable or
-  compatibility-sensitive release artifacts.
+- Hand-copying missing files into `.agents/skills/architecture/`: rejected because it fixes one installed tree without repairing canonical packaging.
+- Adding an implicit `templates/` packaged-resource class: rejected because the existing contract already distinguishes `assets/`, `references/`, and `scripts/`.
+- Broad Markdown path scanning: rejected because it would classify artifact examples, repository paths, and customer-project paths as packaged resources.
+- Presence-only parity: rejected because it cannot detect stale generated, archive, or installed resource bytes.
+- Live registry proof during implementation closeout: rejected because the accepted contract keeps live registry installation as release-owned evidence.
+- Historical archive repair: rejected as out of scope for immutable or compatibility-sensitive release artifacts.
 
 ## Scope Control
 
@@ -161,19 +143,14 @@ Preserved non-goals:
 
 ## Risks And Follow-Ups
 
-- Final verify still needs to assess whole-branch artifact-code-test coherence
-  after M7 code-review closes.
-- Live registry proof remains release-owned and is not part of this
-  implementation closeout.
-- Future resource classes, if needed, require a separate skill-contract
-  amendment with verbs, packaging semantics, and validation behavior.
-- Historical adapter archive diagnostics remain a possible follow-up; this
-  change validates recorded-source compatibility without rewriting history.
+- Final verify still needs to assess whole-branch artifact-code-test coherence after M7 code-review closes.
+- Live registry proof remains release-owned and is not part of this implementation closeout.
+- Future resource classes, if needed, require a separate skill-contract amendment with verbs, packaging semantics, and validation behavior.
+- Historical adapter archive diagnostics remain a possible follow-up; this change validates recorded-source compatibility without rewriting history.
 
 ## Readiness
 
-M1 through M6 are closed after clean code reviews. M7 records the durable
-rationale and final implementation validation before handing the milestone to
-`code-review`.
+M1 through M6 are closed after clean code reviews.
+M7 records the durable rationale and final implementation validation before handing the milestone to `code-review`.
 
 Next stage after M7 implementation handoff: `code-review`.
