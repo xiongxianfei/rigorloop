@@ -77,14 +77,14 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Parser and Lifecycle State-Sync Validator
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m1-r2.md
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M2
+- Current milestone: M3. Review Evidence and Change Metadata Consistency
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m2-r1.md
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 awaits code review, M3 through M5 remain open, and final closeout gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 through M5 remain open, and final closeout gates remain.
 
 ## Milestones
 
@@ -129,7 +129,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 ### M2. Parser and Lifecycle State-Sync Validator
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Implement reusable workflow-state parsing and state-sync validation through the artifact-lifecycle validation boundary.
 - Requirements: R22-R63, R76-R81, AC-WSS-001 through AC-WSS-006, AC-WSS-009 through AC-WSS-027
 - Files/components likely touched:
@@ -313,6 +313,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: Code-review M1 R2 approved the WSS-CR1 resolution with no material findings; M1 is closed and the next stage is implement M2.
 - 2026-06-23: M2 implementation started; scope is current milestone-state projection validation, stricter `Readiness` live-route rejection, and artifact-lifecycle state-sync coverage.
 - 2026-06-23: M2 added current milestone-state projection validation, missing-current-milestone detection, and stricter `Readiness` rejection for stale lifecycle route claims; targeted validation passed and M2 is ready for code-review.
+- 2026-06-23: Code-review M2 R1 approved the parser and lifecycle state-sync validator slice with no material findings; M2 is closed and the next stage is implement M3.
 
 ## Decision log
 
@@ -353,6 +354,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after M2 handoff state-sync.
 - 2026-06-23: `python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after M2 handoff state-sync.
 - 2026-06-23: `git diff --check -- scripts/lifecycle_state_sync.py scripts/artifact_lifecycle_validation.py scripts/validate-artifact-lifecycle.py scripts/test-artifact-lifecycle-validator.py tests/fixtures docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after M2 handoff state-sync.
+- 2026-06-23: Code-review M2 R1 found no material findings in commit `8e786154`; review evidence and lifecycle handoff now route to implement M3.
 
 ## Outcome and retrospective
 

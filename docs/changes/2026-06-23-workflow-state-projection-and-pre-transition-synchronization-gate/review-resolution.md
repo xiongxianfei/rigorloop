@@ -97,6 +97,10 @@ Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k wor
 
 No material findings. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed this review-resolution record.
 
+### code-review-m2-r1
+
+No material findings. Code-review-m2-r1 approved the M2 parser and lifecycle state-sync validator slice and introduced no additional resolution obligations.
+
 ## Validation Evidence
 
-Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed.
+Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed. Code-review-m2-r1 approved M2 with no material findings.
