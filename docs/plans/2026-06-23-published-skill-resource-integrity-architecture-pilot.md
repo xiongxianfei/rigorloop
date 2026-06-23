@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Complete Architecture Resource-Chain Baseline
-- Review status: M1 code-review clean-with-notes; no review-resolution required
+- Review status: M2 implementation ready for code-review
 - Remaining in-scope implementation milestones: M2, M3, M4, M5, M6, M7
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -174,7 +174,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M2. Canonical Resource-Integrity Validator and Fixtures
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Implement deterministic canonical validation for resource maps, approved resource classes, path containment, mapped-resource existence, and bounded legacy-reference lint.
 - Requirements: R46-R49d, R53-R53b, R54-R54a
 - Files/components likely touched:
@@ -492,6 +492,7 @@ M5 relationship to M1:
 - 2026-06-23: started M1 implementation. Scope is limited to pre-change architecture resource-chain evidence, audit documentation, and minimum audit-only tooling only if the supported install path cannot produce installed-tree proof.
 - 2026-06-23: completed M1 audit evidence in `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md`; first divergent layer is canonical skill source.
 - 2026-06-23: code-review-m1-r1 returned clean-with-notes, closed M1, and handed off to implement M2.
+- 2026-06-23: implemented M2 canonical resource-integrity validation and fixture coverage. Explicit `Resource map` entries now validate verb-to-class mapping, skill-root containment, canonical file existence, and bounded unmapped legacy references. The existing architecture `templates/...` references remain a temporary recorded migration exception until M3.
 
 ## Decision log
 
@@ -509,6 +510,7 @@ M5 relationship to M1:
 - The current `validate-adapters.py` archive-validation interface uses `--root`, not `--release-output-dir`; M1 used and recorded the supported `--root` flag.
 - The architecture resource defect predates package assembly: `skills/architecture/` contains only `SKILL.md` while `SKILL.md` references `templates/...` paths, and generated, archived, and clean-installed outputs preserve that incomplete inventory.
 - Clean opencode local-archive install completed with `opencode-command-aliases-not-declared`; this did not block architecture skill-root inspection.
+- M2 kept the legacy-reference lint narrow after an initial test pass showed repository-provided helper references such as `scripts/query-change-record.py` can otherwise be misclassified as skill-local packaged resources.
 
 ## Validation notes
 
@@ -536,6 +538,11 @@ M5 relationship to M1:
   - `git diff --check -- docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md docs/plan.md`
   - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+- 2026-06-23: M2 implementation validation passed:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design`
+  - `python scripts/test-build-skills.py`
 
 ## Outcome and retrospective
 
@@ -544,4 +551,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for implement M2.
+- Ready for code-review M2.

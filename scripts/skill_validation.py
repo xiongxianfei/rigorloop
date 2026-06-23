@@ -59,6 +59,29 @@ ROUTING_HINT_PATTERN = re.compile(
     re.IGNORECASE,
 )
 PACKAGED_RESOURCE_DIRS = ("references", "scripts", "assets")
+RESOURCE_MAP_VERB_CLASSES = {
+    "COPY": "assets/",
+    "READ": "references/",
+    "RUN": "scripts/",
+}
+RESOURCE_MAP_ENTRY_PATTERN = re.compile(
+    r"^\s*-\s*(?P<verb>COPY|READ|RUN)\s+`(?P<path>[^`]+)`",
+    re.IGNORECASE,
+)
+SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN = re.compile(
+    r"`?(?P<path>(?:assets|references|scripts|templates)/[A-Za-z0-9._/-]+)`?"
+)
+LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN = re.compile(
+    r"\b(?:copy|read|run|load|use)\b",
+    re.IGNORECASE,
+)
+TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS = {
+    # Recorded as migration debt by the M1 architecture resource-chain audit.
+    # M3 removes these entries by normalizing the architecture Resource map.
+    ("architecture", "templates/architecture.md"),
+    ("architecture", "templates/diagram-styles.mmd"),
+    ("architecture", "templates/adr.md"),
+}
 RESOURCE_LOAD_CONDITION_PATTERN = re.compile(
     r"\b(when|if|only|use|read|run|load)\b",
     re.IGNORECASE,
@@ -112,6 +135,7 @@ PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS = [
     "if present",
     "when available",
     "when relevant",
+    "when the project provides",
     "when operating inside the RigorLoop repository",
     "when those paths are the target",
     "when this repository is the target",
@@ -1293,6 +1317,81 @@ def _resource_entry_text(section: str, relative_resource: str) -> str | None:
     return None
 
 
+def _resource_map_entries(section: str) -> list[tuple[str, str, str]]:
+    entries: list[tuple[str, str, str]] = []
+    lines = section.splitlines()
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        match = RESOURCE_MAP_ENTRY_PATTERN.match(line)
+        if not match:
+            index += 1
+            continue
+        entry_lines = [line.strip()]
+        index += 1
+        while index < len(lines):
+            continuation = lines[index]
+            if RESOURCE_MAP_ENTRY_PATTERN.match(continuation):
+                break
+            if continuation.startswith("- ") and continuation.strip():
+                break
+            if continuation.strip():
+                entry_lines.append(continuation.strip())
+            index += 1
+        entries.append(
+            (
+                match.group("verb").upper(),
+                match.group("path").strip(),
+                " ".join(entry_lines),
+            )
+        )
+    return entries
+
+
+def _mapped_resource_containment_error(resource_path: str, skill_dir: Path) -> str | None:
+    raw_path = Path(resource_path)
+    if raw_path.is_absolute():
+        return (
+            f"mapped resource path '{resource_path}' must be relative to the skill root "
+            "and stay inside it"
+        )
+    resolved = (skill_dir / resource_path).resolve()
+    if not _is_relative_to(resolved, skill_dir.resolve()):
+        return (
+            f"mapped resource path '{resource_path}' must be relative to the skill root "
+            "and stay inside it"
+        )
+    return None
+
+
+def _skill_name_for_path(path: Path) -> str:
+    return path.parent.name
+
+
+def _has_resource_integrity_exception(path: Path, resource_path: str) -> bool:
+    return (_skill_name_for_path(path), resource_path) in TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS
+
+
+def _iter_unmapped_skill_local_resource_references(
+    body: str,
+    mapped_resources: set[str],
+) -> list[tuple[int, str, str]]:
+    scan_text = _sectionless_text(body, "Resource map")
+    references: list[tuple[int, str, str]] = []
+    for line_number, line in enumerate(_iter_lines_outside_fences(scan_text), start=1):
+        if not LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN.search(line):
+            continue
+        normalized = line.lower()
+        if any(term.lower() in normalized for term in PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS):
+            continue
+        for match in SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN.finditer(line):
+            resource_path = match.group("path")
+            if resource_path in mapped_resources:
+                continue
+            references.append((line_number, resource_path, line.strip()))
+    return references
+
+
 def _asset_metadata(text: str) -> dict[str, str]:
     metadata: dict[str, str] = {}
     for line in text.splitlines():
@@ -2193,14 +2292,35 @@ def _validate_published_description(path: Path, metadata: dict[str, str]) -> lis
 
 def _validate_resource_map(path: Path, body: str) -> list[str]:
     resources = _resource_files(path.parent)
-    if not resources:
-        return []
-
     section = _extract_markdown_section(body, "Resource map")
-    if section is None:
+    if section is None and resources:
         return [f"{path}: packaged resources require a '## Resource map' section"]
+    if section is None:
+        section = ""
 
     errors: list[str] = []
+    entries = _resource_map_entries(section)
+    mapped_resources = {resource_path for _, resource_path, _ in entries}
+
+    for verb, resource_path, _entry in entries:
+        containment_error = _mapped_resource_containment_error(resource_path, path.parent)
+        if containment_error:
+            errors.append(f"{path}: {containment_error}")
+            continue
+
+        required_prefix = RESOURCE_MAP_VERB_CLASSES[verb]
+        if not resource_path.startswith(required_prefix):
+            errors.append(
+                f"{path}: Resource map entry '{verb} {resource_path}' must point to {required_prefix}"
+            )
+            continue
+
+        resource_file = path.parent / resource_path
+        if not resource_file.is_file():
+            errors.append(
+                f"{path}: mapped resource '{resource_path}' does not exist in canonical skill source"
+            )
+
     for resource in resources:
         relative_resource = resource.relative_to(path.parent).as_posix()
         entry = _resource_entry_text(section, relative_resource)
@@ -2226,6 +2346,16 @@ def _validate_resource_map(path: Path, body: str) -> list[str]:
                 errors.append(
                     f"{path}: packaged script '{relative_resource}' map entry must describe failure behavior"
                 )
+    for line_number, resource_path, line in _iter_unmapped_skill_local_resource_references(
+        body,
+        mapped_resources,
+    ):
+        if _has_resource_integrity_exception(path, resource_path):
+            continue
+        errors.append(
+            f"{path}:{line_number}: unmapped legacy skill-local resource reference "
+            f"'{resource_path}': {line}"
+        )
     return errors
 
 
