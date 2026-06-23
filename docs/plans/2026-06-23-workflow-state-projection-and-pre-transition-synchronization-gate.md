@@ -78,13 +78,13 @@ The Single Source of Workflow State work settled ownership, but current workflow
 ## Current Handoff Summary
 
 - Current milestone: M5. Integration, Behavior Preservation, and Closeout Evidence
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r2.md
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M5
-- Next stage: code-review M5
+- Current milestone state: closed
+- Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m5-r1.md
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M5 is awaiting code review and final closeout gates remain.
+- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — M5 code review is complete; explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -255,7 +255,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 ### M5. Integration, Behavior Preservation, and Closeout Evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Prove the whole workflow-state synchronization slice preserves existing ownership boundaries while catching representative incomplete transitions before handoff.
 - Requirements: all approved workflow-state synchronization requirements and acceptance criteria
 - Files/components likely touched:
@@ -327,6 +327,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: Code-review M4 R2 approved the WSS-CR4 resolution with no material findings; M4 is closed and the next stage is implement M5.
 - 2026-06-23: M5 implementation started; behavior-preservation evidence and whole-slice validation proof are in scope.
 - 2026-06-23: M5 recorded behavior-preservation evidence, confirmed the whole-slice transition proof through the full lifecycle/review/metadata validation set, and is ready for code-review.
+- 2026-06-23: Code-review M5 R1 approved the behavior-preservation and closeout evidence with no material findings; all implementation milestones are closed and the next stage is explain-change.
 
 ## Decision log
 
@@ -379,6 +380,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/test-review-artifact-validator.py`, and `python scripts/test-change-metadata-validator.py` passed during M5 implementation.
 - 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md --path docs/architecture/system/architecture.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md`, `python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/`, `python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml`, and `git diff --check -- docs/plan.md docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs scripts docs/workflows.md skills docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate` passed during M5 implementation.
 - 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md` passed after M5 handoff state-sync.
+- 2026-06-23: `git diff --check HEAD^ HEAD`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/test-change-metadata-validator.py`, focused explicit-path lifecycle validation, review artifact validation, change metadata validation, and the all-active audit passed during code-review M5 R1.
 - 2026-06-23: Code-review M2 R1 found no material findings in commit `8e786154`; review evidence and lifecycle handoff now route to implement M3.
 - 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py -k open_review` failed before M3 implementation for open review findings with `review-requested` owner state, then passed after implementation.
 - 2026-06-23: `python scripts/test-change-metadata-validator.py -k review_summary` failed before M3 implementation for review count drift and next-stage-like metadata, then passed after implementation.
