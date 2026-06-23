@@ -10,7 +10,7 @@ argument-hint: [repository, area, orientation question, or refresh scope]
 
 Build, refresh, or audit an evidence-bound map of the repository as it exists today.
 
-This skill is for current-state orientation. It must not design future architecture, approve future architecture, claim implementation readiness, claim review approval, claim validation success, claim branch readiness, claim PR readiness, or claim final lifecycle closeout.
+Core invariant: a project map is trustworthy only when it says what it covers, what repository state it describes, which claims are observed, which are inferred, and what remains unknown.
 
 ## Workflow role
 
@@ -20,6 +20,8 @@ This skill is for current-state orientation. It must not design future architect
 - downstream: explore, proposal, architecture, workflow, or none
 - summary: Create, refresh, or audit a current-state repository map with cited evidence, bounded inference, known gaps, and downstream orientation.
 - must_not_claim: future architecture approval, implementation readiness, review approval, validation success, branch readiness, PR readiness, or final lifecycle closeout
+
+`support` is used because `skill-readability-v1` has no `orientation` stage; it is the closest approved workflow-role stage for this living-reference skill.
 
 ## Quick operating guide
 
@@ -39,16 +41,7 @@ Produce:
 - visible labels for inference and unknowns;
 - freshness metadata, known gaps, correction notes when needed, and a next-stage recommendation.
 
-Stop when:
-
-- artifact placement is ambiguous after the lookup order;
-- required evidence is unavailable for a `current` status;
-- overlapping maps contradict each other;
-- the requested command would mutate state, hit the network, or run a test/build suite without user go-ahead.
-
-Do not claim:
-
-- future design approval, implementation readiness, review approval, validation success, branch readiness, PR readiness, or final lifecycle closeout.
+For blocked cases, use `Stop conditions`. For claim boundaries, use `must_not_claim` in `Workflow role`.
 
 Next stage:
 
@@ -59,6 +52,8 @@ Next stage:
 - COPY `assets/project-map-skeleton.md` when creating a new root or area project map.
   Fill: metadata fields, applicable sections, evidence paths, known gaps, correction notes, evidence-trail entries, and area registration fields.
   Do not emit unfilled placeholders.
+
+The skeleton's structural sections must match `Required output structure`.
 
 ## Customer-project orientation
 
@@ -125,7 +120,20 @@ A map must not claim `current` merely because the skill produced or refreshed a 
 
 When Git is available, record the baseline commit SHA or ref and the last-reviewed date. If inspected files include uncommitted changes, record `<sha>+dirty` and list the inspected uncommitted paths. When Git is unavailable, record the last-reviewed date plus a clear evidence baseline such as inspected archive, workspace, or supplied path set.
 
-Refresh affected maps when changes modify top-level or package boundaries, runtime entry points, public module interfaces, service-to-service calls, storage models, schemas, migrations, build or package manifests, test layout or commands, CI, release, deployment, infrastructure configuration, generated-source ownership, ownership boundaries, external integrations, or files cited by the map in a way that changes the map conclusion.
+Refresh affected maps when changes modify:
+
+- top-level or package boundaries;
+- runtime entry points;
+- public module interfaces;
+- service-to-service calls;
+- storage models, schemas, or migrations;
+- build or package manifests;
+- test layout or commands;
+- CI, release, deployment, or infrastructure configuration;
+- generated-source ownership;
+- ownership boundaries;
+- external integrations;
+- files cited by the map in a way that changes the map conclusion.
 
 Unrelated repository changes do not automatically make every map stale.
 
@@ -190,6 +198,8 @@ An area map names its parent map. Use area maps only for durable repository boun
 
 When two maps overlap, each map names the overlap, one map owns the detailed description, and the other links rather than duplicates. Contradictions between overlapping maps block a clean refresh result.
 
+If a refresh finds that a root registration table links to a missing area-map file, mark the refresh result `blocked` unless the user requested an audit. In audit mode, report the root map as `partial` with the missing area map as a known gap.
+
 ## Required output structure
 
 Root and area maps include these structural sections:
@@ -243,11 +253,14 @@ Do not automatically start a downstream stage during an isolated invocation.
 
 It does not own deferred execution or act as a backlog.
 
-When a risk needs action, route it to `proposal`, `plan`, `learn`, review-resolution, release evidence, or `docs/follow-ups.md` through the workflow guide.
+It may record unclear ownership, fragile coupling, missing tests, undocumented boundaries, stale documentation, or unverified runtime assumptions as orientation evidence. When a risk needs action, route it through the appropriate owner surface:
 
-`project-map` may record unclear ownership, fragile coupling, missing tests, undocumented boundaries, stale documentation, or unverified runtime assumptions as orientation evidence.
-
-Risks and open questions do not become execution commitments automatically. Route actionable follow-up work through the appropriate owner surface, such as proposal, plan, learn, review resolution, release evidence, or a project-local follow-up artifact according to project workflow guidance.
+- `proposal`
+- `plan`
+- `learn`
+- review resolution
+- release evidence
+- `docs/follow-ups.md` or another project-local follow-up artifact according to workflow guidance
 
 ## Stop conditions
 
@@ -262,9 +275,7 @@ Stop and report a blocked result when:
 
 ## Evidence collection efficiency
 
-Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-
-Use bounded evidence before broad reads. Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations, summaries, stable IDs, path inventories, matching line numbers, targeted excerpts, file counts, and validation summaries before broad scans or raw excerpts. Read exact ranges after locating relevant lines, then expand only when narrower evidence is insufficient.
+Use bounded evidence plus summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations, path inventories, matching line numbers, targeted excerpts, file counts, and validation summaries before broad scans. Read exact ranges after locating relevant lines, then expand only when narrower evidence is insufficient.
 
 Do not read every repository file. Read enough source, configuration, schemas, tests, CI, and current-state documentation to support the mapped scope and the material claims you write.
 
@@ -288,20 +299,6 @@ Read the full file when the whole file is the review target or map target, relev
 
 ## Expected output
 
-Start with:
+Start with the `Output skeleton` result block. Then include the created, refreshed, or audited map path; concise repository orientation; evidence classes; cited material claims; freshness metadata; risks and open questions; and the immediate next stage.
 
-```md
-## Result
-
-- Skill: project-map
-- Status: <created | updated | audited | blocked>
-- Mode: <create | refresh | area | audit>
-- Map scope: <repository | area:slug>
-- Artifacts changed: <paths or none>
-- Freshness result: <current | partial | stale>
-- Correction note: <note or none>
-- Open blockers: <blockers or none>
-- Next stage: <explore | proposal | architecture | workflow | none>
-```
-
-Then include the created, refreshed, or audited map path; concise repository orientation; evidence classes; cited material claims; freshness metadata; risks and open questions; and the immediate next stage. Do not claim review approval, validation success, branch readiness, PR readiness, final lifecycle closeout, or future architecture approval.
+The `Output skeleton` result block reports on the skill invocation. The artifact's `Map metadata` block lives inside the project map and describes the map artifact itself.
