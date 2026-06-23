@@ -310,6 +310,8 @@ R65. A material finding MUST be treated as open until review-log indexes it, rev
 
 R65a. Any derived finding-closure, drift, or readiness boolean consumed by more than one validator or command MUST be computed by one shared predicate, with other paths acting as thin callers rather than reimplementing the rule.
 
+R65b. A shared closure predicate MUST be evaluated as a conjunction of positive evidence. Missing, ambiguous, or unparseable inputs MUST produce the failure verdict rather than success; no closure path may return `closed` because an early-exit branch returned no findings.
+
 R66. While accepted material findings remain open, `Current milestone state` MUST be `resolution-needed`.
 
 R67. While accepted material findings remain open, `Final closeout readiness` MUST be `not ready`.

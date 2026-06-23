@@ -218,6 +218,46 @@ def accepted_closed_resolution_without_validation_text() -> str:
     """
 
 
+def accepted_closed_resolution_with_disposition_text(disposition: str | None, *, duplicate: bool = False) -> str:
+    disposition_block = "" if disposition is None else f"Disposition: {disposition}\n"
+    duplicate_block = "Disposition: accepted\n" if duplicate else ""
+    return f"""
+    # Review Resolution
+
+    Closeout status: closed
+    Review closeout: code-review-r1
+
+    ### code-review-r1
+
+    Finding ID: CR1-F1
+    {disposition_block}{duplicate_block}Owner: implementer
+    Owning stage: implement
+    Chosen action: Add direct validator coverage for malformed disposition state.
+    Rationale: The review evidence identified a material Finding ID without guaranteed traceability.
+    Validation target: Run the focused review artifact validator tests.
+    Validation evidence: `python scripts/test-review-artifact-validator.py` passed.
+    """
+
+
+def accepted_resolution_without_closeout_status_text() -> str:
+    return """
+    # Review Resolution
+
+    Review closeout: code-review-r1
+
+    ### code-review-r1
+
+    Finding ID: CR1-F1
+    Disposition: accepted
+    Owner: implementer
+    Owning stage: implement
+    Chosen action: Add direct validator coverage for malformed closeout state.
+    Rationale: The review evidence identified a material Finding ID without guaranteed traceability.
+    Validation target: Run the focused review artifact validator tests.
+    Validation evidence: `python scripts/test-review-artifact-validator.py` passed.
+    """
+
+
 def scan_first_closed_resolution_text() -> str:
     return """
     # Review Resolution: Example Change
@@ -473,6 +513,61 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         self.assertSummaryOpen(root)
         self.assertCloseoutFails(root, "accepted finding missing chosen action")
 
+    def test_missing_disposition_keeps_finding_open(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-missing-disposition-"))
+        self.addCleanupTree(root)
+        self.write_closure_fixture(
+            root,
+            resolution_text_value=accepted_closed_resolution_with_disposition_text(None),
+        )
+
+        self.assertSummaryOpen(root)
+        self.assertCloseoutFails(root, "resolution entry missing disposition")
+
+    def test_unsupported_disposition_keeps_finding_open(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-unsupported-disposition-"))
+        self.addCleanupTree(root)
+        self.write_closure_fixture(
+            root,
+            resolution_text_value=accepted_closed_resolution_with_disposition_text("deferred-to-next-quarter"),
+        )
+
+        self.assertSummaryOpen(root)
+        self.assertCloseoutFails(root, "unsupported disposition")
+
+    def test_multiple_dispositions_keep_finding_open(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-duplicate-disposition-"))
+        self.addCleanupTree(root)
+        self.write_closure_fixture(
+            root,
+            resolution_text_value=accepted_closed_resolution_with_disposition_text("accepted", duplicate=True),
+        )
+
+        self.assertSummaryOpen(root)
+        self.assertCloseoutFails(root, "disposition must appear exactly once")
+
+    def test_missing_closeout_status_keeps_finding_open(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-missing-closeout-status-"))
+        self.addCleanupTree(root)
+        self.write_closure_fixture(root, resolution_text_value=accepted_resolution_without_closeout_status_text())
+
+        self.assertSummaryOpen(root)
+        self.assertCloseoutFails(root, "closeout status is missing or invalid")
+
+    def test_all_blockers_surface_in_one_round(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-all-blockers-"))
+        self.addCleanupTree(root)
+        resolution_text_value = accepted_closed_resolution_with_disposition_text(None).replace(
+            "Validation evidence: `python scripts/test-review-artifact-validator.py` passed.\n",
+            "",
+        )
+        self.write_closure_fixture(root, resolution_text_value=resolution_text_value)
+
+        result = self.validateCloseout(root)
+        combined = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("resolution entry missing disposition", combined)
+        self.assertIn("finding closeout missing validation evidence", combined)
+
     def test_later_review_reopen_overrides_closed_status(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="review-artifact-later-reopen-"))
         self.addCleanupTree(root)
@@ -501,6 +596,15 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                 ),
                 False,
             ),
+            ("missing-disposition", False, accepted_closed_resolution_with_disposition_text(None), False),
+            (
+                "unsupported-disposition",
+                False,
+                accepted_closed_resolution_with_disposition_text("deferred-to-next-quarter"),
+                False,
+            ),
+            ("duplicate-disposition", False, accepted_closed_resolution_with_disposition_text("accepted", duplicate=True), False),
+            ("missing-closeout-status", False, accepted_resolution_without_closeout_status_text(), False),
             ("later-reopen", False, accepted_closed_resolution_text(), True),
             ("full-closeout", False, accepted_closed_resolution_text(), False),
         ]

@@ -112,6 +112,7 @@ class ResolutionRecord:
     line: int
     finding_id: str
     disposition: str | None
+    disposition_count: int
     fields: dict[str, FieldValue]
 
 
@@ -832,8 +833,19 @@ def _parse_resolution_entries(
                 )
             )
 
+        disposition_values = block_fields.get("Disposition", [])
         disposition_value = _first_nonempty(block_fields, "Disposition")
         disposition = disposition_value.value if disposition_value else None
+        if len(disposition_values) > 1:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=disposition_values[1].line,
+                    mode=mode,
+                    message="resolution entry must contain exactly one Disposition",
+                    finding_id=finding_id,
+                )
+            )
         if disposition is None:
             findings.append(
                 ValidationFinding(
@@ -860,6 +872,7 @@ def _parse_resolution_entries(
             line=finding_id_field.line,
             finding_id=finding_id,
             disposition=disposition,
+            disposition_count=len(disposition_values),
             fields={label: values[0] for label, values in block_fields.items() if values},
         )
         _validate_resolution_entry_structure(entry, mode, findings)
@@ -1355,6 +1368,17 @@ def _finding_closure_findings(
         )
         return findings
 
+    if resolution.closeout_status is None:
+        findings.append(
+            ValidationFinding(
+                path=resolution.path,
+                line=resolution.closeout_line,
+                mode=mode,
+                message="review-resolution.md closeout status is missing or invalid",
+                finding_id=finding_id,
+            )
+        )
+
     matches = [entry for entry in resolution.entries if entry.finding_id == finding_id]
     if len(matches) != 1:
         findings.append(
@@ -1376,8 +1400,46 @@ def _validate_resolution_entry_closeout(
     mode: str,
 ) -> list[ValidationFinding]:
     findings: list[ValidationFinding] = []
-    if entry.disposition is None or entry.disposition not in APPROVED_DISPOSITIONS:
-        return findings
+    if entry.disposition_count != 1:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="resolution entry disposition must appear exactly once",
+                finding_id=entry.finding_id,
+            )
+        )
+    if entry.disposition is None:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="resolution entry missing disposition",
+                finding_id=entry.finding_id,
+            )
+        )
+    elif entry.disposition not in APPROVED_DISPOSITIONS:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message=f"unsupported disposition '{entry.disposition}'",
+                finding_id=entry.finding_id,
+            )
+        )
+    if not _entry_has(entry, "Validation evidence"):
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="finding closeout missing validation evidence",
+                finding_id=entry.finding_id,
+            )
+        )
 
     if entry.disposition == "needs-decision":
         findings.append(
@@ -1389,7 +1451,6 @@ def _validate_resolution_entry_closeout(
                 finding_id=entry.finding_id,
             )
         )
-        return findings
 
     if entry.disposition == "accepted":
         if not _entry_has_any(entry, ("Chosen action", "Final action")):
@@ -1412,7 +1473,6 @@ def _validate_resolution_entry_closeout(
                     finding_id=entry.finding_id,
                 )
             )
-        return findings
 
     if entry.disposition == "rejected":
         if not _entry_has(entry, "Rationale"):
@@ -1425,7 +1485,6 @@ def _validate_resolution_entry_closeout(
                     finding_id=entry.finding_id,
                 )
             )
-        return findings
 
     if entry.disposition == "deferred":
         if not _entry_has(entry, "Rationale"):
@@ -1448,7 +1507,6 @@ def _validate_resolution_entry_closeout(
                     finding_id=entry.finding_id,
                 )
             )
-        return findings
 
     if entry.disposition == "partially-accepted":
         if not _entry_has(entry, "Accepted portion"):

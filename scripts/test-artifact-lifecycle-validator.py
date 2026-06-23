@@ -409,6 +409,8 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         review_unresolved_items: int = 0,
         review_resolution_closeout: str = "open",
         review_resolution_validation_evidence: bool = False,
+        review_resolution_disposition: str | None = "accepted",
+        include_review_resolution_closeout: bool = True,
         progress: str = "- 2026-06-23: Historical note says Ready for implement M1 and code-review-r1.",
     ) -> tuple[Path, Path, Path]:
         plan_path = root / "docs" / "plans" / "2026-06-23-workflow-state-fixture.md"
@@ -553,16 +555,15 @@ Open findings: WSS-F1
                 encoding="utf-8",
             )
             validation_evidence = "Validation evidence: Fixture validation passed.\n" if review_resolution_validation_evidence else ""
+            closeout_line = f"Closeout status: {review_resolution_closeout}\n\n" if include_review_resolution_closeout else ""
+            disposition_line = "" if review_resolution_disposition is None else f"Disposition: {review_resolution_disposition}\n"
             (change_yaml.parent / "review-resolution.md").write_text(
                 f"""# Review Resolution
 
-Closeout status: {review_resolution_closeout}
-
-### code-review-r1
+{closeout_line}### code-review-r1
 
 Finding ID: WSS-F1
-Disposition: accepted
-Owner: implementation author
+{disposition_line}Owner: implementation author
 Owning stage: review-resolution
 Chosen action: Fix the open finding.
 Rationale: The fixture represents unresolved review evidence.
@@ -727,6 +728,32 @@ Validation target: Focused lifecycle validation fails until owner state is resol
 
         self.assertTrue(result.blocking_findings)
         self.assertIn("resolution-needed", messages)
+
+    def test_workflow_state_invalid_disposition_blocks_review_requested_owner_state(self) -> None:
+        invalid_cases = {
+            "missing-disposition": {"review_resolution_disposition": None},
+            "unsupported-disposition": {"review_resolution_disposition": "deferred-to-next-quarter"},
+            "missing-closeout-status": {"include_review_resolution_closeout": False},
+        }
+        for name, kwargs in invalid_cases.items():
+            fixture_root = Path(tempfile.mkdtemp(prefix=f"workflow-state-invalid-resolution-{name}-"))
+            self.addCleanupTree(fixture_root)
+            self.write_workflow_state_fixture(
+                fixture_root,
+                include_open_review_finding=True,
+                review_unresolved_items=1,
+                review_resolution_closeout="closed",
+                review_resolution_validation_evidence=True,
+                current_milestone_state="review-requested",
+                review_status="review-requested; stage=code-review; round=r2",
+                next_stage="code-review M2",
+                **kwargs,
+            )
+
+            result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+            self.assertTrue(result.blocking_findings, msg=f"{name} should fail")
+            self.assertIn("resolution-needed", messages)
 
     def test_workflow_state_closed_status_missing_validation_blocks_review_requested_owner_state(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-closed-missing-validation-"))

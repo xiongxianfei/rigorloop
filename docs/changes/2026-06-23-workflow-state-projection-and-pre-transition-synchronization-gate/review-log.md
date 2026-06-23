@@ -148,5 +148,5 @@ Detailed record: reviews/code-review-m3-r2.md
 Record: reviews/code-review-m3-r2.md
 Resolution: review-resolution.md#code-review-m3-r2
 Material findings: WSS-CR3
-Open findings: WSS-CR3
+Open findings: none
 Recording status: recorded

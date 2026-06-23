@@ -125,7 +125,7 @@ Validation evidence: `python scripts/test-review-artifact-validator.py` passed w
 
 Finding ID: WSS-CR3
 Disposition: accepted
-Status: open
+Status: resolved pending code-review-m3-r3
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
@@ -134,7 +134,9 @@ Chosen action: Make the shared finding closure predicate fail closed when a revi
 Rationale: R65 requires final disposition before a material finding can close, and R65a requires every shared derived open/closed predicate consumer to observe that same failure state.
 Required outcome: `finding_closure_state()` reports `open` for missing or unsupported disposition values, and the summary, change metadata, lifecycle, and closeout-mode paths all agree on that open verdict.
 Validation target: Add regression coverage where `summarize_review_evidence()` reports one open finding for a missing or unsupported disposition and where change metadata and lifecycle validation reject downstream-ready state for the same fixture.
+Resolution: Reworked the closure predicate to require positive evidence for parseable disposition state, exactly one disposition field, valid closeout status, and validation evidence. Added regression coverage for missing, unsupported, and duplicate dispositions; missing closeout status; all-blockers reporting; parity with closeout-mode review validation; change metadata count blocking; and lifecycle owner-state blocking.
+Validation evidence: `python scripts/test-review-artifact-validator.py`, `python scripts/test-change-metadata-validator.py`, and `python scripts/test-artifact-lifecycle-validator.py` passed after the WSS-CR3 resolution.
 
 ## Validation Evidence
 
-Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed. Code-review-m2-r1 approved M2 with no material findings. Code-review-m3-r1 requested changes for WSS-CR2; code-review-m3-r2 confirmed WSS-CR2 is resolved and requested changes for WSS-CR3.
+Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed. Code-review-m2-r1 approved M2 with no material findings. Code-review-m3-r1 requested changes for WSS-CR2; code-review-m3-r2 confirmed WSS-CR2 is resolved and requested changes for WSS-CR3. WSS-CR3 is resolved pending code-review-m3-r3.
