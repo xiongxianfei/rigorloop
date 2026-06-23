@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Review status: SRI-M2-CR2 accepted fix implemented; awaiting M2 code-review rerun
+- Review status: M2 code-review changes-requested; SRI-M2-CR3 requires review-resolution
 - Remaining in-scope implementation milestones: M2, M3, M4, M5, M6, M7
-- Next stage: code-review for M2 SRI-M2-CR2 resolution
+- Next stage: review-resolution for SRI-M2-CR3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -174,7 +174,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M2. Canonical Resource-Integrity Validator and Fixtures
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Implement deterministic canonical validation for resource maps, approved resource classes, path containment, mapped-resource existence, and bounded legacy-reference lint.
 - Requirements: R46-R49d, R53-R53b, R54-R54a
 - Files/components likely touched:
@@ -497,6 +497,7 @@ M5 relationship to M1:
 - 2026-06-23: implemented SRI-M2-CR1 resolution. Legacy-resource lint now uses resource-lint-specific external ownership context rules instead of the broad project-local allowlist, conditional load wording no longer suppresses unqualified skill-local resource references, and the temporary architecture migration exception is covered as exact by skill and path.
 - 2026-06-23: code-review-m2-r2 requested changes for SRI-M2-CR2. The legacy-resource lint now uses resource-specific context constants, but external ownership context is still applied at whole-line scope and can suppress an unrelated unqualified skill-local resource on the same line.
 - 2026-06-23: implemented SRI-M2-CR2 resolution. Legacy-resource lint now evaluates external and illustrative context for each matched path, preserves exact source line numbers for multi-line instructions, reports unqualified mixed-line references, suppresses only individually qualified references, and keeps the temporary architecture migration exception exact by skill, path, and approved instruction.
+- 2026-06-23: code-review-m2-r3 requested changes for SRI-M2-CR3. The CR2 fix joins every contiguous nonblank non-heading line into one instruction, so a resource-loading verb in one Markdown list item can make a separate generated-artifact or example path list item fail as an unmapped skill-local resource.
 
 ## Decision log
 
@@ -517,6 +518,7 @@ M5 relationship to M1:
 - M2 kept the legacy-reference lint narrow after an initial test pass showed repository-provided helper references such as `scripts/query-change-record.py` can otherwise be misclassified as skill-local packaged resources.
 - SRI-M2-CR1 resolution kept `when the project provides` as explicit external ownership context for repository-provided helper references while removing generic load-condition suppressors such as `when relevant`, `when available`, `when needed`, and `if present`.
 - SRI-M2-CR2 resolution needed one narrow compatibility case for existing project-provided helper guidance: `scripts/query-change-record.py` is treated as external only when an explicit preceding `when the project provides the helper` clause is present.
+- SRI-M2-CR3 shows the validator needs an instruction-boundary model, not only path-specific context windows. Wrapped lines in one instruction need to stay together, but independent Markdown list items must not share loading verbs.
 
 ## Validation notes
 
@@ -575,4 +577,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M2 code-review rerun on the SRI-M2-CR2 resolution.
+- Ready for review-resolution on SRI-M2-CR3.
