@@ -46,6 +46,7 @@ REVIEW_STATUS_PATTERN = re.compile(
 FIELD_PATTERN = re.compile(r"^\s*-?\s*(?P<label>[A-Za-z][A-Za-z -]*):\s*(?P<value>.+?)\s*$")
 HANDOFF_FIELD_PATTERN = re.compile(r"^\s*-\s*(?P<label>[A-Za-z][A-Za-z -]*):\s*(?P<value>.+?)\s*$")
 MARKDOWN_LINK_PATTERN = re.compile(r"^\[(?P<text>[^\]]+)\]\((?P<target>[^)]+)\)$")
+READINESS_STAGE_CLAIM_PATTERN = re.compile(r"\b(?:ready for|next stage|current stage|current round)\b", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -57,6 +58,10 @@ class StateSyncFinding:
 @dataclass(frozen=True)
 class HandoffSummary:
     fields: dict[str, str]
+
+    @property
+    def current_milestone(self) -> str:
+        return self.fields["Current milestone"]
 
     @property
     def current_milestone_state(self) -> str:
@@ -416,6 +421,65 @@ def _validate_readiness_pointer(path: Path, text: str, handoff: HandoffSummary) 
                 )
             )
             break
+    if READINESS_STAGE_CLAIM_PATTERN.search(readiness):
+        findings.append(
+            StateSyncFinding(
+                path,
+                "Readiness must not state current or stale lifecycle routing; point to Current Handoff Summary instead",
+            )
+        )
+    return findings
+
+
+def _current_milestone_projection_state(text: str, current_milestone: str) -> tuple[str | None, list[str]]:
+    sections = _sections(text)
+    milestones = sections.get("Milestones")
+    if milestones is None:
+        return None, ["Current milestone section missing: Milestones"]
+
+    current_body: list[str] | None = None
+    body: list[str] = []
+    active_heading: str | None = None
+    for line in milestones.splitlines():
+        if line.startswith("### "):
+            if active_heading == current_milestone:
+                current_body = body
+            active_heading = line[4:].strip()
+            body = []
+            continue
+        if active_heading is not None:
+            body.append(line)
+    if active_heading == current_milestone:
+        current_body = body
+
+    if current_body is None:
+        return None, [f"Current milestone section missing: {current_milestone}"]
+
+    values: list[str] = []
+    malformed: list[str] = []
+    for line in current_body:
+        match = FIELD_PATTERN.match(line)
+        if match is None:
+            if "milestone state" in line.casefold():
+                malformed.append(line.strip())
+            continue
+        if match.group("label").casefold() == "milestone state":
+            values.append(match.group("value").strip())
+    if malformed or len(values) != 1:
+        return None, [f"Current milestone Milestone state must appear exactly once for {current_milestone}"]
+    return values[0], []
+
+
+def _validate_current_milestone_projection(path: Path, text: str, handoff: HandoffSummary) -> list[StateSyncFinding]:
+    projection, errors = _current_milestone_projection_state(text, handoff.current_milestone)
+    findings = [StateSyncFinding(path, message) for message in errors]
+    if projection is not None and projection != handoff.current_milestone_state:
+        findings.append(
+            StateSyncFinding(
+                path,
+                "Current milestone Milestone state must match Current Handoff Summary Current milestone state",
+            )
+        )
     return findings
 
 
@@ -440,6 +504,7 @@ def validate_workflow_state_sync(
             findings.append(StateSyncFinding(plan_path, message))
         if state.handoff is not None:
             findings.extend(_validate_readiness_pointer(plan_path, text, state.handoff))
+            findings.extend(_validate_current_milestone_projection(plan_path, text, state.handoff))
 
     if plan_index_path is not None and plan_index_path.exists():
         rows, row_errors = _parse_plan_index_rows(root, plan_index_path, plan_index_path.read_text(encoding="utf-8"))
