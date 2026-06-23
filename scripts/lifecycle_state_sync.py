@@ -397,6 +397,21 @@ def _change_yaml_id(text: str) -> str | None:
     return None
 
 
+def _change_yaml_artifact_plan(text: str) -> str | None:
+    in_artifacts = False
+    for line in text.splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        if not line.startswith((" ", "\t")):
+            in_artifacts = line.strip() == "artifacts:"
+            continue
+        if in_artifacts:
+            stripped = line.strip()
+            if stripped.startswith("plan:"):
+                return stripped.split(":", 1)[1].strip().strip("'\"")
+    return None
+
+
 def _validate_readiness_pointer(path: Path, text: str, handoff: HandoffSummary) -> list[StateSyncFinding]:
     readiness = _sections(text).get("Readiness")
     if readiness is None:
@@ -540,19 +555,75 @@ def validate_workflow_state_sync(
             elif row.change_id != state.change_id:
                 findings.append(StateSyncFinding(plan_index_path, f"docs/plan.md Change ID must match plan-body Change ID for {target}"))
 
+    plan_states_by_change_id: dict[str, list[tuple[Path, PlanBodyState]]] = {}
+    for plan_path, state in plan_states.items():
+        if state.change_id:
+            plan_states_by_change_id.setdefault(state.change_id, []).append((plan_path, state))
+
     for change_yaml_path in change_yaml_paths:
         if not change_yaml_path.exists():
             continue
-        yaml_id = _change_yaml_id(change_yaml_path.read_text(encoding="utf-8"))
+        yaml_text = change_yaml_path.read_text(encoding="utf-8")
+        yaml_id = _change_yaml_id(yaml_text)
+        artifact_plan = _change_yaml_artifact_plan(yaml_text)
         review_summary = summarize_review_evidence(change_yaml_path.parent)
-        for plan_path, state in plan_states.items():
-            if state.change_id and yaml_id and yaml_id != state.change_id:
+        matching_plan_states = plan_states_by_change_id.get(yaml_id or "", [])
+
+        if yaml_id and change_yaml_path.parent.name != yaml_id:
+            findings.append(
+                StateSyncFinding(
+                    change_yaml_path,
+                    f"change.yaml change_id must match change directory name: {yaml_id}",
+                )
+            )
+
+        if artifact_plan:
+            artifact_plan_path = (root / artifact_plan).resolve()
+            artifact_state = plan_states.get(artifact_plan_path)
+            if (
+                artifact_state is None
+                and artifact_plan_path.exists()
+                and not has_structured_workflow_state_marker(artifact_plan_path.read_text(encoding="utf-8"))
+            ):
+                continue
+            if artifact_state is not None:
+                if artifact_state.change_id is None:
+                    findings.append(
+                        StateSyncFinding(
+                            artifact_plan_path,
+                            f"Change ID field must match associated change.yaml change_id for {change_yaml_path.relative_to(root)}",
+                        )
+                    )
+                elif yaml_id and artifact_state.change_id != yaml_id:
+                    findings.append(
+                        StateSyncFinding(
+                            change_yaml_path,
+                            f"change.yaml change_id must match plan-body Change ID for {artifact_plan_path.relative_to(root)}",
+                        )
+                    )
+
+        if yaml_id and not matching_plan_states:
+            if artifact_plan:
+                artifact_plan_path = (root / artifact_plan).resolve()
+                artifact_state = plan_states.get(artifact_plan_path)
+                if artifact_state is not None:
+                    matching_plan_states = [(artifact_plan_path, artifact_state)]
+                else:
+                    findings.append(
+                        StateSyncFinding(
+                            change_yaml_path,
+                            f"change.yaml change_id has no matching plan-body Change ID: {yaml_id}",
+                        )
+                    )
+            else:
                 findings.append(
                     StateSyncFinding(
                         change_yaml_path,
-                        f"change.yaml change_id must match plan-body Change ID for {plan_path.relative_to(root)}",
+                        f"change.yaml change_id has no matching plan-body Change ID: {yaml_id}",
                     )
                 )
+
+        for plan_path, state in matching_plan_states:
             if review_summary.open_count and state.handoff is not None:
                 if state.handoff.current_milestone_state != "resolution-needed":
                     findings.append(

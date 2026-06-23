@@ -574,6 +574,145 @@ Validation target: Focused lifecycle validation fails until owner state is resol
             )
         return plan_path, plan_index, change_yaml
 
+    def write_multi_active_workflow_state_fixture(
+        self,
+        root: Path,
+        plans: list[dict[str, object]],
+        *,
+        extra_change_yamls: list[dict[str, object]] | None = None,
+    ) -> list[str]:
+        (root / "docs" / "plans").mkdir(parents=True, exist_ok=True)
+        (root / "docs" / "changes").mkdir(parents=True, exist_ok=True)
+        rows: list[str] = []
+        validation_paths = ["docs/plan.md"]
+
+        for plan in plans:
+            slug = str(plan["slug"])
+            title = str(plan.get("title", slug.replace("-", " ").title()))
+            change_id = str(plan["change_id"]) if plan.get("change_id") is not None else None
+            yaml_id = str(plan.get("yaml_id", change_id or f"{slug}-change"))
+            plan_path = root / "docs" / "plans" / f"{slug}.md"
+            validation_paths.append(plan_path.relative_to(root).as_posix())
+            change_field = f"- Change ID: {change_id}\n" if change_id is not None else ""
+            next_stage = str(plan.get("next_stage", f"code-review {slug}"))
+            plan_path.write_text(
+                f"""# {title}
+
+## Status
+
+Plan lifecycle state: active
+Terminal disposition: none
+
+{change_field}
+## Current Handoff Summary
+
+- Current milestone: M1. {title}
+- Current milestone state: review-requested
+- Latest review evidence: none
+- Review status: review-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M1
+- Next stage: {next_stage}
+- Final closeout readiness: not ready
+- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 is awaiting review and final closeout gates remain.
+
+## Milestones
+
+### M1. {title}
+
+- Milestone state: review-requested
+
+## Progress
+
+- 2026-06-23: Fixture active plan.
+
+## Readiness
+
+- See `Current Handoff Summary`.
+- Readiness is not Done.
+""",
+                encoding="utf-8",
+            )
+            projected_id = change_id or ""
+            rows.append(
+                f"| [{title}](plans/{slug}.md) | active | {next_stage} | `{projected_id}` |\n"
+            )
+
+            if plan.get("write_change_yaml", True):
+                change_yaml = root / "docs" / "changes" / yaml_id / "change.yaml"
+                change_yaml.parent.mkdir(parents=True, exist_ok=True)
+                artifact_plan = str(plan.get("artifact_plan", plan_path.relative_to(root).as_posix()))
+                change_yaml.write_text(
+                    f"""change_id: {yaml_id}
+title: {title}
+classification: implementation
+risk: low
+artifacts:
+  plan: {artifact_plan}
+requirements:
+  - fixture
+tests:
+  - fixture
+validation:
+  - command: fixture
+    result: pass
+changed_files:
+  - {artifact_plan}
+review:
+  status: clean
+  unresolved_items: 0
+""",
+                    encoding="utf-8",
+                )
+                validation_paths.append(change_yaml.relative_to(root).as_posix())
+
+        for extra in extra_change_yamls or []:
+            change_id = str(extra["change_id"])
+            change_yaml = root / "docs" / "changes" / change_id / "change.yaml"
+            change_yaml.parent.mkdir(parents=True, exist_ok=True)
+            artifact_plan = extra.get("artifact_plan")
+            artifact_block = f"  plan: {artifact_plan}\n" if artifact_plan else "  note: no associated plan\n"
+            change_yaml.write_text(
+                f"""change_id: {change_id}
+title: Orphan change metadata
+classification: implementation
+risk: low
+artifacts:
+{artifact_block}requirements:
+  - fixture
+tests:
+  - fixture
+validation:
+  - command: fixture
+    result: pass
+changed_files:
+  - docs/plan.md
+review:
+  status: clean
+  unresolved_items: 0
+""",
+                encoding="utf-8",
+            )
+            validation_paths.append(change_yaml.relative_to(root).as_posix())
+
+        plan_index = root / "docs" / "plan.md"
+        plan_index.parent.mkdir(parents=True, exist_ok=True)
+        plan_index.write_text(
+            """# Plan index
+
+## Active
+
+| Plan | State | Next stage | Change ID |
+| --- | --- | --- | --- |
+"""
+            + "".join(rows)
+            + """## Blocked
+
+No blocked plans.
+""",
+            encoding="utf-8",
+        )
+        return validation_paths
+
     def validate_workflow_state_fixture(self, root: Path) -> tuple[object, str]:
         result = validate_repository(
             root,
@@ -656,6 +795,107 @@ Validation target: Focused lifecycle validation fails until owner state is resol
             result, messages = self.validate_workflow_state_fixture(fixture_root)
             self.assertTrue(result.blocking_findings, msg=f"{name} should fail")
             self.assertIn(expected, messages)
+
+    def test_multi_active_plans_correct_change_ids_pass(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-multi-pass-"))
+        self.addCleanupTree(fixture_root)
+        paths = self.write_multi_active_workflow_state_fixture(
+            fixture_root,
+            [
+                {"slug": "plan-a", "change_id": "change-a"},
+                {"slug": "plan-b", "change_id": "change-b"},
+            ],
+        )
+
+        result = validate_repository(fixture_root, mode="explicit-paths", paths=paths)
+        messages = "\n".join(f.message for f in result.blocking_findings)
+
+        self.assertFalse(result.blocking_findings, msg=messages)
+
+    def test_multi_active_plan_misassigned_change_id_blocks(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-multi-misassigned-"))
+        self.addCleanupTree(fixture_root)
+        paths = self.write_multi_active_workflow_state_fixture(
+            fixture_root,
+            [
+                {"slug": "plan-a", "change_id": "change-b", "yaml_id": "change-a"},
+                {"slug": "plan-b", "change_id": "change-c", "yaml_id": "change-c"},
+            ],
+        )
+
+        result = validate_repository(fixture_root, mode="explicit-paths", paths=paths)
+        messages = "\n".join(f"{f.path.relative_to(fixture_root)}: {f.message}" for f in result.blocking_findings)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("plan-a", messages)
+        self.assertIn("change-a", messages)
+
+    def test_multi_active_plan_missing_change_id_blocks_only_that_plan(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-multi-missing-id-"))
+        self.addCleanupTree(fixture_root)
+        paths = self.write_multi_active_workflow_state_fixture(
+            fixture_root,
+            [
+                {"slug": "plan-a", "change_id": None, "yaml_id": "change-a"},
+                {"slug": "plan-b", "change_id": "change-b"},
+            ],
+        )
+
+        result = validate_repository(fixture_root, mode="explicit-paths", paths=paths)
+        messages = "\n".join(f"{f.path.relative_to(fixture_root)}: {f.message}" for f in result.blocking_findings)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("plan-a", messages)
+        self.assertNotIn("plan-b", messages)
+
+    def test_multi_active_plan_unmatched_change_yaml_blocks(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-multi-unmatched-yaml-"))
+        self.addCleanupTree(fixture_root)
+        paths = self.write_multi_active_workflow_state_fixture(
+            fixture_root,
+            [
+                {"slug": "plan-a", "change_id": "change-a"},
+                {"slug": "plan-b", "change_id": "change-b"},
+            ],
+            extra_change_yamls=[{"change_id": "change-orphan"}],
+        )
+
+        result = validate_repository(fixture_root, mode="explicit-paths", paths=paths)
+        messages = "\n".join(f"{f.path.relative_to(fixture_root)}: {f.message}" for f in result.blocking_findings)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("change-orphan", messages)
+        self.assertIn("no matching plan-body Change ID", messages)
+
+    def test_audit_pairs_by_key_not_order(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-multi-keyed-"))
+        self.addCleanupTree(fixture_root)
+        paths = self.write_multi_active_workflow_state_fixture(
+            fixture_root,
+            [
+                {"slug": "plan-a", "change_id": "change-a"},
+                {"slug": "plan-b", "change_id": "change-b"},
+                {"slug": "plan-c", "change_id": "change-x", "yaml_id": "change-c"},
+            ],
+        )
+        paths = [
+            "docs/plan.md",
+            "docs/changes/change-c/change.yaml",
+            "docs/changes/change-b/change.yaml",
+            "docs/changes/change-a/change.yaml",
+            "docs/plans/plan-c.md",
+            "docs/plans/plan-b.md",
+            "docs/plans/plan-a.md",
+        ]
+
+        result = validate_repository(fixture_root, mode="explicit-paths", paths=paths)
+        messages = "\n".join(f"{f.path.relative_to(fixture_root)}: {f.message}" for f in result.blocking_findings)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("plan-c", messages)
+        self.assertIn("change-c", messages)
+        self.assertNotIn("docs/plans/plan-a.md", messages)
+        self.assertNotIn("docs/plans/plan-b.md", messages)
 
     def test_workflow_state_readiness_live_surface_rejects_historical_token_drift(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-stale-readiness-"))
