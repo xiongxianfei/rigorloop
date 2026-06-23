@@ -991,9 +991,12 @@ class SkillValidatorFixtureTests(unittest.TestCase):
     def test_published_skill_legacy_lint_avoids_examples_and_docs_paths(self) -> None:
         cases = [
             "Use the project-provided templates/architecture.md when relevant.",
+            "Use templates/custom.md provided by the project.",
             "Read the repository-root templates/architecture.md when available.",
+            "Read references/policy.md supplied by the repository.",
             "Use the user-provided references/diagram-conventions.md.",
             "Example path: templates/architecture.md",
+            "Illustrative resource: references/diagram.md",
             "The generated artifact may contain the string templates/architecture.md.",
             "Inspect docs/templates/architecture.md when that artifact is the review target.",
             """\
@@ -1025,6 +1028,85 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                         msg=f"expected non-resource example to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
                     )
 
+    def test_published_skill_legacy_lint_checks_each_reference_on_mixed_line(self) -> None:
+        cases = [
+            (
+                """\
+                Use the user-provided references/external.md and
+                templates/architecture.md when relevant.
+                """,
+                "templates/architecture.md",
+                "references/external.md",
+            ),
+            (
+                """\
+                Use templates/architecture.md when relevant and the user-provided
+                references/external.md.
+                """,
+                "templates/architecture.md",
+                "references/external.md",
+            ),
+            (
+                "Use the user-provided references/a.md and references/b.md.",
+                "references/b.md",
+                "references/a.md",
+            ),
+            (
+                "Example path: references/example.md; use templates/architecture.md.",
+                "templates/architecture.md",
+                "references/example.md",
+            ),
+        ]
+        for instruction, reported_path, suppressed_path in cases:
+            with self.subTest(instruction=instruction):
+                with tempfile.TemporaryDirectory() as temporary:
+                    skill_dir = self.write_resource_integrity_skill(
+                        Path(temporary),
+                        resource_entries="""\
+                        - READ `references/guidance.md` when reviewing guidance.
+                        """,
+                        resources={"references/guidance.md": "# Guidance\n"},
+                        body_extra=instruction,
+                    )
+                    result = run_validator(skill_dir)
+                    combined_output = f"{result.stdout}\n{result.stderr}"
+                    self.assertNotEqual(
+                        result.returncode,
+                        0,
+                        msg=f"expected mixed reference fixture to fail\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+                    )
+                    self.assertIn(
+                        f"unmapped skill-local resource reference `{reported_path}`",
+                        combined_output,
+                    )
+                    self.assertNotIn(
+                        f"unmapped skill-local resource reference `{suppressed_path}`",
+                        combined_output,
+                    )
+
+    def test_published_skill_legacy_lint_allows_individually_qualified_references(self) -> None:
+        cases = [
+            "Use the user-provided references/external.md and the project-provided templates/custom.md.",
+            "Use the user-provided references/external.md and templates/custom.md provided by the project.",
+        ]
+        for instruction in cases:
+            with self.subTest(instruction=instruction):
+                with tempfile.TemporaryDirectory() as temporary:
+                    skill_dir = self.write_resource_integrity_skill(
+                        Path(temporary),
+                        resource_entries="""\
+                        - READ `references/guidance.md` when reviewing guidance.
+                        """,
+                        resources={"references/guidance.md": "# Guidance\n"},
+                        body_extra=instruction,
+                    )
+                    result = run_validator(skill_dir)
+                    self.assertEqual(
+                        result.returncode,
+                        0,
+                        msg=f"expected individually qualified references to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+                    )
+
     def test_published_skill_architecture_migration_exception_is_exact(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             architecture_dir = self.write_resource_integrity_skill(
@@ -1033,7 +1115,11 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 - READ `references/guidance.md` when reviewing guidance.
                 """,
                 resources={"references/guidance.md": "# Guidance\n"},
-                body_extra="Use templates/architecture.md when relevant.",
+                body_extra=(
+                    "Use `templates/architecture.md` for the full 12-section arc42 structure. "
+                    "Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. "
+                    "Use `templates/adr.md` for ADR structure."
+                ),
                 skill_name="architecture",
             )
             architecture_result = run_validator(architecture_dir)
@@ -1063,6 +1149,16 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             body_extra="Use templates/unapproved.md when relevant.",
             skill_name="architecture",
             expected_text="architecture: unmapped skill-local resource reference `templates/unapproved.md`",
+        )
+
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `references/guidance.md` when reviewing guidance.
+            """,
+            resources={"references/guidance.md": "# Guidance\n"},
+            body_extra="Use the user-provided references/external.md and templates/architecture.md when relevant.",
+            skill_name="architecture",
+            expected_text="architecture: unmapped skill-local resource reference `templates/architecture.md`",
         )
 
     def test_current_architecture_legacy_references_are_temporary_migration_debt(self) -> None:

@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Review status: M2 code-review changes-requested; SRI-M2-CR2 requires review-resolution
+- Review status: SRI-M2-CR2 accepted fix implemented; awaiting M2 code-review rerun
 - Remaining in-scope implementation milestones: M2, M3, M4, M5, M6, M7
-- Next stage: review-resolution for SRI-M2-CR2
+- Next stage: code-review for M2 SRI-M2-CR2 resolution
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -174,7 +174,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M2. Canonical Resource-Integrity Validator and Fixtures
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Implement deterministic canonical validation for resource maps, approved resource classes, path containment, mapped-resource existence, and bounded legacy-reference lint.
 - Requirements: R46-R49d, R53-R53b, R54-R54a
 - Files/components likely touched:
@@ -496,6 +496,7 @@ M5 relationship to M1:
 - 2026-06-23: code-review-m2-r1 requested changes for SRI-M2-CR1. The legacy-resource lint suppresses broad allowed terms such as `when relevant`, which can miss recognized `templates/...` loading instructions.
 - 2026-06-23: implemented SRI-M2-CR1 resolution. Legacy-resource lint now uses resource-lint-specific external ownership context rules instead of the broad project-local allowlist, conditional load wording no longer suppresses unqualified skill-local resource references, and the temporary architecture migration exception is covered as exact by skill and path.
 - 2026-06-23: code-review-m2-r2 requested changes for SRI-M2-CR2. The legacy-resource lint now uses resource-specific context constants, but external ownership context is still applied at whole-line scope and can suppress an unrelated unqualified skill-local resource on the same line.
+- 2026-06-23: implemented SRI-M2-CR2 resolution. Legacy-resource lint now evaluates external and illustrative context for each matched path, preserves exact source line numbers for multi-line instructions, reports unqualified mixed-line references, suppresses only individually qualified references, and keeps the temporary architecture migration exception exact by skill, path, and approved instruction.
 
 ## Decision log
 
@@ -515,6 +516,7 @@ M5 relationship to M1:
 - Clean opencode local-archive install completed with `opencode-command-aliases-not-declared`; this did not block architecture skill-root inspection.
 - M2 kept the legacy-reference lint narrow after an initial test pass showed repository-provided helper references such as `scripts/query-change-record.py` can otherwise be misclassified as skill-local packaged resources.
 - SRI-M2-CR1 resolution kept `when the project provides` as explicit external ownership context for repository-provided helper references while removing generic load-condition suppressors such as `when relevant`, `when available`, `when needed`, and `if present`.
+- SRI-M2-CR2 resolution needed one narrow compatibility case for existing project-provided helper guidance: `scripts/query-change-record.py` is treated as external only when an explicit preceding `when the project provides the helper` clause is present.
 
 ## Validation notes
 
@@ -556,6 +558,15 @@ M5 relationship to M1:
   - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md`
   - `git diff --check --`
+- 2026-06-23: SRI-M2-CR2 review-resolution validation passed:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design`
+  - `python scripts/test-build-skills.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -564,4 +575,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for review-resolution on SRI-M2-CR2.
+- Ready for M2 code-review rerun on the SRI-M2-CR2 resolution.
