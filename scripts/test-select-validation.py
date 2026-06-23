@@ -879,6 +879,8 @@ raise SystemExit({exit_code})
             "docs/changes/2026-04-25-example/version-sync-proof.md",
             "docs/changes/2026-04-25-example/baseline.md",
             "docs/changes/2026-04-25-example/token-cost.md",
+            "docs/changes/2026-04-25-example/cold-read-proof.md",
+            "docs/changes/2026-04-25-example/representative-project-map-outputs.md",
         ]
         result = self.select(paths)
         payload = result.to_json_dict()
@@ -1475,6 +1477,12 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md",
+                "category": "validator-skills",
+                "status": "ok",
+                "checks": {"skills.regression", "skills.generation_regression"},
+            },
+            {
+                "path": "tests/fixtures/skills",
                 "category": "validator-skills",
                 "status": "ok",
                 "checks": {"skills.regression", "skills.generation_regression"},
