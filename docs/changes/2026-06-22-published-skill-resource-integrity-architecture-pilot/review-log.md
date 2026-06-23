@@ -16,6 +16,7 @@ integrity with architecture-skill pilot change.
 | code-review-m1-r1 | code-review | 1 | commit `6ff267b`; M1. Complete Architecture Resource-Chain Baseline | reviews/code-review-m1-r1.md | clean-with-notes | 0 | recorded |
 | code-review-m2-r4 | code-review | 4 | commit `007ebdf`; M2. Canonical Resource-Integrity Validator and Fixtures | reviews/code-review-m2-r4.md | clean-with-notes | 0 | recorded |
 | code-review-m3-r2 | code-review | 2 | commit `a2c3332`; M3. Architecture Resource Normalization and Behavior Preservation | reviews/code-review-m3-r2.md | clean-with-notes | 0 | recorded |
+| code-review-m4-r3 | code-review | 3 | commit `866523a7`; M4. Generated Package and Archive Resource Parity | reviews/code-review-m4-r3.md | clean-with-notes | 0 | recorded |
 
 ### Review entry
 Review ID: plan-review-r1
