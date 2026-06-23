@@ -17,10 +17,10 @@ Validation evidence: `docs/changes/2026-06-22-published-skill-resource-integrity
 
 Finding ID: SRI-M2-CR1
 Disposition: accepted
-Status: open
+Status: resolved after implementation
 Owner: implementer
 Owning stage: implement
-Chosen action: Narrow bounded legacy-resource lint suppression so ordinary resource-loading instructions such as `Use templates/architecture.md when relevant.` still fail, and add direct regression coverage for that wording.
+Chosen action: Replaced broad project-local allowlist suppression in `_iter_unmapped_skill_local_resource_references` with resource-lint-specific external ownership context rules. Ordinary load-condition wording such as `when relevant`, `when available`, `when needed`, and `if present` no longer suppresses unqualified skill-local resource references. Added direct regression coverage for `assets/`, `references/`, `scripts/`, and legacy `templates/` resource-loading instructions, explicit external ownership false positives, and the exact temporary architecture migration exception.
 Rationale: Code-review M2 R1 found that reusing the full repository-root dependency allowed-term list can suppress recognized legacy `templates/...` loading instructions, which violates R49b/R49d and leaves a T43 false-negative gap.
 Validation target: Rerun resource-integrity validator tests, canonical skill validation, selector-selected validation, lifecycle validation, change metadata validation, review artifact validation, and whitespace checks after the fix.
-Validation evidence: pending accepted finding fix.
+Validation evidence: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design`; `python scripts/test-build-skills.py`; `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`; `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md`; `git diff --check --`.

@@ -68,11 +68,37 @@ RESOURCE_MAP_ENTRY_PATTERN = re.compile(
     r"^\s*-\s*(?P<verb>COPY|READ|RUN)\s+`(?P<path>[^`]+)`",
     re.IGNORECASE,
 )
+PUBLISHED_SKILL_LOCAL_RESOURCE_PREFIXES = (
+    "assets/",
+    "references/",
+    "scripts/",
+    "templates/",
+)
+PUBLISHED_RESOURCE_LOADING_VERBS = (
+    "copy",
+    "read",
+    "run",
+    "use",
+    "load",
+    "open",
+    "consult",
+    "execute",
+)
 SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN = re.compile(
-    r"`?(?P<path>(?:assets|references|scripts|templates)/[A-Za-z0-9._/-]+)`?"
+    r"`?(?P<path>(?<![A-Za-z0-9._/-])(?:"
+    + "|".join(re.escape(prefix[:-1]) for prefix in PUBLISHED_SKILL_LOCAL_RESOURCE_PREFIXES)
+    + r")/[A-Za-z0-9._/-]+)`?"
 )
 LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN = re.compile(
-    r"\b(?:copy|read|run|load|use)\b",
+    r"\b(?:"
+    + "|".join(re.escape(verb) for verb in PUBLISHED_RESOURCE_LOADING_VERBS)
+    + r")\b",
+    re.IGNORECASE,
+)
+PUBLISHED_RESOURCE_EXTERNAL_CONTEXT_PATTERN = re.compile(
+    r"\b(?:project-provided|repository-provided|project-local|repository-root|"
+    r"user-provided|user-supplied|illustrative path|example path|"
+    r"when the project provides)\b",
     re.IGNORECASE,
 )
 TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS = {
@@ -841,6 +867,27 @@ def _iter_lines_outside_fences(text: str) -> list[str]:
     return lines
 
 
+def _iter_lines_outside_resource_map_and_fences(body: str) -> list[tuple[int, str]]:
+    lines: list[tuple[int, str]] = []
+    in_fence = False
+    in_resource_map = False
+    for line_number, line in enumerate(body.splitlines(), start=1):
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        if stripped == "## Resource map":
+            in_resource_map = True
+            continue
+        if in_resource_map and line.startswith("## "):
+            in_resource_map = False
+        if not in_resource_map:
+            lines.append((line_number, line))
+    return lines
+
+
 def _extract_markdown_section(body: str, heading: str) -> str | None:
     marker = f"## {heading}"
     lines = body.splitlines()
@@ -1376,13 +1423,11 @@ def _iter_unmapped_skill_local_resource_references(
     body: str,
     mapped_resources: set[str],
 ) -> list[tuple[int, str, str]]:
-    scan_text = _sectionless_text(body, "Resource map")
     references: list[tuple[int, str, str]] = []
-    for line_number, line in enumerate(_iter_lines_outside_fences(scan_text), start=1):
+    for line_number, line in _iter_lines_outside_resource_map_and_fences(body):
         if not LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN.search(line):
             continue
-        normalized = line.lower()
-        if any(term.lower() in normalized for term in PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS):
+        if PUBLISHED_RESOURCE_EXTERNAL_CONTEXT_PATTERN.search(line):
             continue
         for match in SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN.finditer(line):
             resource_path = match.group("path")
@@ -2352,9 +2397,11 @@ def _validate_resource_map(path: Path, body: str) -> list[str]:
     ):
         if _has_resource_integrity_exception(path, resource_path):
             continue
+        skill_name = _skill_name_for_path(path)
         errors.append(
-            f"{path}:{line_number}: unmapped legacy skill-local resource reference "
-            f"'{resource_path}': {line}"
+            f"{path}:{line_number}: {skill_name}: unmapped skill-local resource "
+            f"reference `{resource_path}`; declare it in `## Resource map`, migrate "
+            f"it to an approved resource class, or remove the instruction: {line}"
         )
     return errors
 
