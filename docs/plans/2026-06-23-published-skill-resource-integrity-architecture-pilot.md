@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M5. Reusable Packed Clean-Install Regression Gate
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M4. Generated Package and Archive Resource Parity
-- Review status: M5 implemented; awaiting code-review
+- Review status: code-review-m5-r1 changes-requested; SRI-M5-CR1 open
 - Remaining in-scope implementation milestones: M5, M6, M7
-- Next stage: code-review M5
+- Next stage: review-resolution for SRI-M5-CR1
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -315,7 +315,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M5. Reusable Packed Clean-Install Regression Gate
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Turn the minimum pre-change clean-install proof established in M1 into a reusable, automated pre-publish regression gate for the normalized architecture resources.
 - Requirements: R52-R52c, R55a
 - Files/components likely touched:
@@ -512,6 +512,7 @@ M5 relationship to M1:
 - 2026-06-23: implemented SRI-M4-CR2 resolution. Recorded-source archive validation now returns a structured result, inspects rebuilt archive presence, structure, required recorded-source skill roots, and mapped-resource parity when recorded source declares a valid Resource map, and fails closed if no archive checks execute.
 - 2026-06-23: code-review-m4-r3 returned clean-with-notes, closed M4, and handed off to implement M5.
 - 2026-06-23: implemented M5 reusable clean-install regression gate. `validate-adapters.py --clean-install-smoke` now requires a locally packed archive root, prepares a temporary local release-candidate metadata bundle for those archives, installs Codex, Claude, and opencode archives into empty temporary projects through the real `rigorloop init --from-archive` path, and compares installed mapped resources by skill-root relative path and raw-byte SHA-256.
+- 2026-06-23: code-review-m5-r1 requested changes for SRI-M5-CR1. The clean-install smoke implementation covers successful real install, non-mutating command output, stale installed bytes, and `--root` enforcement, but it lacks direct regression proof for the named missing installed mapped-resource case where the skill root exists and a mapped resource file is absent.
 
 ## Decision log
 
@@ -716,4 +717,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M5.
+- Ready for review-resolution for SRI-M5-CR1.
