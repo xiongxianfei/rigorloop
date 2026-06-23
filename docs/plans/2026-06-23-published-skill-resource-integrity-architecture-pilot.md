@@ -79,12 +79,12 @@ Existing implementation anchors:
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Complete Architecture Resource-Chain Baseline
-- Current milestone state: review-requested
-- Last reviewed milestone: planning gate
-- Review status: M1 implementation ready for code-review
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5, M6, M7
-- Next stage: code-review M1
+- Current milestone: M2. Canonical Resource-Integrity Validator and Fixtures
+- Current milestone state: planned
+- Last reviewed milestone: M1. Complete Architecture Resource-Chain Baseline
+- Review status: M1 code-review clean-with-notes; no review-resolution required
+- Remaining in-scope implementation milestones: M2, M3, M4, M5, M6, M7
+- Next stage: implement M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -92,7 +92,7 @@ Existing implementation anchors:
 
 ### M1. Complete Architecture Resource-Chain Baseline
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Identify the first divergent resource-chain layer before changing any canonical architecture resource reference, file, resource map, packaging behavior, or installed output.
 - Requirements: R55, R55a, R55b
 - Files/components likely touched:
@@ -491,6 +491,7 @@ M5 relationship to M1:
 - 2026-06-23: owner approved the test-spec coverage and M1 remains ready for implementation.
 - 2026-06-23: started M1 implementation. Scope is limited to pre-change architecture resource-chain evidence, audit documentation, and minimum audit-only tooling only if the supported install path cannot produce installed-tree proof.
 - 2026-06-23: completed M1 audit evidence in `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md`; first divergent layer is canonical skill source.
+- 2026-06-23: code-review-m1-r1 returned clean-with-notes, closed M1, and handed off to implement M2.
 
 ## Decision log
 
@@ -531,6 +532,10 @@ M5 relationship to M1:
   - `node /home/xiongxianfei/data/20260419-rigorloop/packages/rigorloop/dist/bin/rigorloop.js init claude --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-claude-v0.3.2.zip --json`
   - `node /home/xiongxianfei/data/20260419-rigorloop/packages/rigorloop/dist/bin/rigorloop.js init opencode --from-archive /tmp/rigorloop-sri-audit-release-output/rigorloop-adapter-opencode-v0.3.2.zip --json`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md`
+- 2026-06-23: M1 code-review recording validation passed:
+  - `git diff --check -- docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md docs/plan.md`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
 
 ## Outcome and retrospective
 
@@ -539,4 +544,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for plan-review rerun for SRI-PLAN1.
+- Ready for implement M2.
