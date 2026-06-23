@@ -78,13 +78,13 @@ The Single Source of Workflow State work settled ownership, but current workflow
 ## Current Handoff Summary
 
 - Current milestone: M2. Parser and Lifecycle State-Sync Validator
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m1-r2.md
-- Review status: approved; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 through M5 remain open, and final closeout gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 awaits code review, M3 through M5 remain open, and final closeout gates remain.
 
 ## Milestones
 
@@ -129,7 +129,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 ### M2. Parser and Lifecycle State-Sync Validator
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Implement reusable workflow-state parsing and state-sync validation through the artifact-lifecycle validation boundary.
 - Requirements: R22-R63, R76-R81, AC-WSS-001 through AC-WSS-006, AC-WSS-009 through AC-WSS-027
 - Files/components likely touched:
@@ -311,6 +311,8 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: Code-review M1 R1 requested changes for WSS-CR1; M1 remains open in review-resolution.
 - 2026-06-23: WSS-CR1 resolved by adding index-to-owner resolution through the shared parser; M1 is ready for code-review R2.
 - 2026-06-23: Code-review M1 R2 approved the WSS-CR1 resolution with no material findings; M1 is closed and the next stage is implement M2.
+- 2026-06-23: M2 implementation started; scope is current milestone-state projection validation, stricter `Readiness` live-route rejection, and artifact-lifecycle state-sync coverage.
+- 2026-06-23: M2 added current milestone-state projection validation, missing-current-milestone detection, and stricter `Readiness` rejection for stale lifecycle route claims; targeted validation passed and M2 is ready for code-review.
 
 ## Decision log
 
@@ -324,6 +326,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - Existing active plans predate the new exact `Current Handoff Summary` grammar, so M4 includes the active/blocked audit and normalization required before enforcement is enabled.
 - Plan-review R1 exposed that test-spec authoring had been folded into M1; the revision keeps lifecycle sequencing aligned with the standard workflow.
 - M1 state-sync enforcement is guarded to plans already carrying the structured `Latest review evidence` handoff field so legacy active plans remain compatible until the M4 audit and normalization milestone.
+- M2 found that owner-field and plan-index projection parsing were already present from M1 and WSS-CR1 resolution, so the remaining parser gap was the current milestone-state projection plus stale lifecycle route claims in `Readiness`.
 
 ## Validation notes
 
@@ -343,6 +346,13 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md` passed against the repository state after WSS-CR1 resolution.
 - 2026-06-23: Direct drift-fixture validation with `paths=["docs/plan.md"]` produced one blocker on the stale `docs/plan.md` `Next stage` projection after WSS-CR1 resolution.
 - 2026-06-23: Code-review M1 R2 found no material findings in commit `cb57b8db`; review evidence and lifecycle handoff now route to implement M2.
+- 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py -k workflow_state` failed before M2 implementation for missing current milestone-state projection and stale `Readiness` route checks, then passed after implementation.
+- 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py` passed after M2 implementation.
+- 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md` passed after M2 implementation.
+- 2026-06-23: `git diff --check -- scripts/lifecycle_state_sync.py scripts/artifact_lifecycle_validation.py scripts/validate-artifact-lifecycle.py scripts/test-artifact-lifecycle-validator.py tests/fixtures docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md` passed after M2 implementation.
+- 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after M2 handoff state-sync.
+- 2026-06-23: `python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after M2 handoff state-sync.
+- 2026-06-23: `git diff --check -- scripts/lifecycle_state_sync.py scripts/artifact_lifecycle_validation.py scripts/validate-artifact-lifecycle.py scripts/test-artifact-lifecycle-validator.py tests/fixtures docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after M2 handoff state-sync.
 
 ## Outcome and retrospective
 

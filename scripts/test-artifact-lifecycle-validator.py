@@ -404,11 +404,13 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         duplicate_row: bool = False,
         include_change_id_field: bool = True,
         change_yaml_id: str | None = None,
+        milestone_projection_state: str | None = None,
         progress: str = "- 2026-06-23: Historical note says Ready for implement M1 and code-review-r1.",
     ) -> tuple[Path, Path, Path]:
         plan_path = root / "docs" / "plans" / "2026-06-23-workflow-state-fixture.md"
         plan_path.parent.mkdir(parents=True, exist_ok=True)
         change_field = f"- Change ID: {change_id}\n" if include_change_id_field else ""
+        projected_milestone_state = current_milestone_state if milestone_projection_state is None else milestone_projection_state
         plan_path.write_text(
             f"""# Workflow State Fixture
 
@@ -437,7 +439,7 @@ Terminal disposition: none
 
 ### M2. Parser Fixture Harness
 
-- Milestone state: {current_milestone_state}
+- Milestone state: {projected_milestone_state}
 
 ## Progress
 
@@ -602,6 +604,50 @@ review:
         result, messages = self.validate_workflow_state_fixture(fixture_root)
         self.assertTrue(result.blocking_findings)
         self.assertIn("Readiness", messages)
+
+    def test_workflow_state_current_milestone_projection_must_match_owner(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-milestone-state-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            current_milestone_state="review-requested",
+            milestone_projection_state="implementing",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("Current milestone Milestone state", messages)
+
+    def test_workflow_state_missing_current_milestone_projection_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-missing-milestone-"))
+        self.addCleanupTree(fixture_root)
+        plan_path, _, _ = self.write_workflow_state_fixture(fixture_root)
+        text = plan_path.read_text(encoding="utf-8")
+        plan_path.write_text(text.replace("### M2. Parser Fixture Harness", "### M2. Renamed Fixture Harness"), encoding="utf-8")
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("Current milestone section", messages)
+
+    def test_workflow_state_readiness_rejects_live_stage_restatements(self) -> None:
+        cases = {
+            "next-stage": "- See `Current Handoff Summary`.\n- Ready for code-review M2.",
+            "review-round": "- See `Current Handoff Summary`.\n- Current round is r1.",
+            "milestone-state": "- See `Current Handoff Summary`.\n- Milestone is review-requested.",
+            "final-readiness": "- See `Current Handoff Summary`.\n- Final closeout readiness is not ready.",
+            "stale-stage": "- See `Current Handoff Summary`.\n- Ready for implement M1.",
+        }
+        for name, readiness in cases.items():
+            fixture_root = Path(tempfile.mkdtemp(prefix=f"workflow-state-readiness-{name}-"))
+            self.addCleanupTree(fixture_root)
+            self.write_workflow_state_fixture(fixture_root, readiness=readiness)
+
+            result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+            self.assertTrue(result.blocking_findings, msg=f"{name} should fail")
+            self.assertIn("Readiness", messages)
 
     def test_workflow_state_index_only_catches_next_stage_drift(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-drift-"))
