@@ -7,6 +7,8 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+from review_artifact_validation import summarize_review_evidence
+
 
 REQUIRED_HANDOFF_FIELDS = (
     "Current milestone",
@@ -542,6 +544,7 @@ def validate_workflow_state_sync(
         if not change_yaml_path.exists():
             continue
         yaml_id = _change_yaml_id(change_yaml_path.read_text(encoding="utf-8"))
+        review_summary = summarize_review_evidence(change_yaml_path.parent)
         for plan_path, state in plan_states.items():
             if state.change_id and yaml_id and yaml_id != state.change_id:
                 findings.append(
@@ -550,5 +553,28 @@ def validate_workflow_state_sync(
                         f"change.yaml change_id must match plan-body Change ID for {plan_path.relative_to(root)}",
                     )
                 )
+            if review_summary.open_count and state.handoff is not None:
+                if state.handoff.current_milestone_state != "resolution-needed":
+                    findings.append(
+                        StateSyncFinding(
+                            plan_path,
+                            "Current milestone state must be resolution-needed while accepted material findings remain open",
+                        )
+                    )
+                if state.handoff.final_closeout_readiness != "not ready":
+                    findings.append(
+                        StateSyncFinding(
+                            plan_path,
+                            "Final closeout readiness must be not ready while accepted material findings remain open",
+                        )
+                    )
+                review_match = REVIEW_STATUS_PATTERN.fullmatch(state.handoff.review_status)
+                if review_match is not None and review_match.group("status") == "review-requested":
+                    findings.append(
+                        StateSyncFinding(
+                            plan_path,
+                            "Review status must not be review-requested while required finding dispositions remain unresolved",
+                        )
+                    )
 
     return findings

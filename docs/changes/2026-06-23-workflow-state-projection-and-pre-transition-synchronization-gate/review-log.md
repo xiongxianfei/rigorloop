@@ -22,7 +22,7 @@ Detailed record: reviews/spec-review-r1.md
 Record: reviews/spec-review-r1.md
 Resolution: review-resolution.md#spec-review-r1
 Material findings: WSS-SR1, WSS-SR2
-Open findings: WSS-SR1, WSS-SR2
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -64,7 +64,7 @@ Detailed record: reviews/plan-review-r1.md
 Record: reviews/plan-review-r1.md
 Resolution: review-resolution.md#plan-review-r1
 Material findings: WSS-PLAN1
-Open findings: WSS-PLAN1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -92,7 +92,7 @@ Detailed record: reviews/code-review-m1-r1.md
 Record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: WSS-CR1
-Open findings: WSS-CR1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
