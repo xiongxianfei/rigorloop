@@ -14,7 +14,7 @@ Index policy:
 -->
 
 ## Active
-- [2026-06-23 Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) - active; next stage: code-review M5 rerun; change: `2026-06-22-published-skill-resource-integrity-architecture-pilot`.
+- [2026-06-23 Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) - active; next stage: implement M6; change: `2026-06-22-published-skill-resource-integrity-architecture-pilot`.
 - [2026-06-18 Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) - active; PR #99 open; next stage: hosted CI and human review; change: `2026-06-17-workflow-skill-artifact-location-map`.
 
 ## Blocked

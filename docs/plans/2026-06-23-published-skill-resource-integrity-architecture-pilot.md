@@ -79,12 +79,12 @@ Existing implementation anchors:
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Reusable Packed Clean-Install Regression Gate
-- Current milestone state: review-requested
-- Last reviewed milestone: M4. Generated Package and Archive Resource Parity
-- Review status: SRI-M5-CR1 resolved after implementation; awaiting code-review rerun
-- Remaining in-scope implementation milestones: M5, M6, M7
-- Next stage: code-review M5 rerun
+- Current milestone: M6. Repository-Wide Audit and Enforcement Decision
+- Current milestone state: planned
+- Last reviewed milestone: M5. Reusable Packed Clean-Install Regression Gate
+- Review status: code-review-m5-r2 clean-with-notes; M5 closed
+- Remaining in-scope implementation milestones: M6, M7
+- Next stage: implement M6
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -315,7 +315,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M5. Reusable Packed Clean-Install Regression Gate
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Turn the minimum pre-change clean-install proof established in M1 into a reusable, automated pre-publish regression gate for the normalized architecture resources.
 - Requirements: R52-R52c, R55a
 - Files/components likely touched:
@@ -514,6 +514,7 @@ M5 relationship to M1:
 - 2026-06-23: implemented M5 reusable clean-install regression gate. `validate-adapters.py --clean-install-smoke` now requires a locally packed archive root, prepares a temporary local release-candidate metadata bundle for those archives, installs Codex, Claude, and opencode archives into empty temporary projects through the real `rigorloop init --from-archive` path, and compares installed mapped resources by skill-root relative path and raw-byte SHA-256.
 - 2026-06-23: code-review-m5-r1 requested changes for SRI-M5-CR1. The clean-install smoke implementation covers successful real install, non-mutating command output, stale installed bytes, and `--root` enforcement, but it lacks direct regression proof for the named missing installed mapped-resource case where the skill root exists and a mapped resource file is absent.
 - 2026-06-23: implemented SRI-M5-CR1 resolution. Added a direct clean-install smoke regression for an installed target skill root that exists with `SKILL.md` present while `assets/template.md` is removed after real local archive installation. The test asserts the missing-resource diagnostic names Codex, `portable-with-assets`, and `assets/template.md`, and that the case is not reported as a missing skill root.
+- 2026-06-23: code-review-m5-r2 returned clean-with-notes, closed M5, and handed off to implement M6.
 
 ## Decision log
 
@@ -724,4 +725,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M5 rerun.
+- Ready for implement M6.
