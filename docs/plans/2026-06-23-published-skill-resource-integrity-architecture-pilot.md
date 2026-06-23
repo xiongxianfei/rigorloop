@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M1. Complete Architecture Resource-Chain Baseline
-- Review status: M2 implementation ready for code-review
+- Review status: M2 code-review changes-requested; SRI-M2-CR1 requires review-resolution
 - Remaining in-scope implementation milestones: M2, M3, M4, M5, M6, M7
-- Next stage: code-review M2
+- Next stage: review-resolution for SRI-M2-CR1
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -174,7 +174,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M2. Canonical Resource-Integrity Validator and Fixtures
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Implement deterministic canonical validation for resource maps, approved resource classes, path containment, mapped-resource existence, and bounded legacy-reference lint.
 - Requirements: R46-R49d, R53-R53b, R54-R54a
 - Files/components likely touched:
@@ -493,6 +493,7 @@ M5 relationship to M1:
 - 2026-06-23: completed M1 audit evidence in `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md`; first divergent layer is canonical skill source.
 - 2026-06-23: code-review-m1-r1 returned clean-with-notes, closed M1, and handed off to implement M2.
 - 2026-06-23: implemented M2 canonical resource-integrity validation and fixture coverage. Explicit `Resource map` entries now validate verb-to-class mapping, skill-root containment, canonical file existence, and bounded unmapped legacy references. The existing architecture `templates/...` references remain a temporary recorded migration exception until M3.
+- 2026-06-23: code-review-m2-r1 requested changes for SRI-M2-CR1. The legacy-resource lint suppresses broad allowed terms such as `when relevant`, which can miss recognized `templates/...` loading instructions.
 
 ## Decision log
 
@@ -551,4 +552,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M2.
+- Ready for review-resolution on SRI-M2-CR1.
