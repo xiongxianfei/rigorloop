@@ -30,13 +30,17 @@ skill-local resource files.
 | False-positive boundary | `test_published_skill_legacy_lint_avoids_examples_and_docs_paths` covers explicit project-provided, repository-root, and user-provided ownership wording, illustrative examples, fenced examples, generated-artifact strings, and non-skill-local `docs/templates/...` paths. |
 | Per-reference context | `test_published_skill_legacy_lint_checks_each_reference_on_mixed_line` covers mixed instructions where one path is explicitly external or illustrative and another path remains an unqualified skill-local reference. |
 | Individually qualified references | `test_published_skill_legacy_lint_allows_individually_qualified_references` covers multiple references where each path has its own explicit ownership context. |
+| Instruction segmentation | `test_published_skill_legacy_lint_checks_each_reference_on_mixed_line`, `test_published_skill_legacy_lint_keeps_instruction_boundaries`, and `test_published_skill_legacy_lint_ignores_resource_map_entries` cover same-line mixed references, wrapped prose instructions, wrapped list-item instructions, separate unordered and ordered list items, separate paragraphs, heading boundaries, fenced examples, and Resource map boundaries. |
 | Temporary architecture migration debt | `test_current_architecture_legacy_references_are_temporary_migration_debt` and `test_published_skill_architecture_migration_exception_is_exact`. |
 
 The legacy-resource lint uses resource-lint-specific context rules. It does not
 reuse the broader repository-root dependency allowlist, and ordinary
 load-condition wording does not suppress unqualified skill-local resource
 references. External ownership and illustrative context are evaluated per
-matched resource reference, not once for the whole instruction line.
+matched resource reference, not once for the whole instruction line. Loading
+intent is evaluated inside one Markdown instruction segment: a prose paragraph
+or one list item plus its continuation lines. A new list item, blank line,
+heading, fenced block, or Resource map boundary terminates the current segment.
 
 ## Temporary Exception
 

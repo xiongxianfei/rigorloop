@@ -26,17 +26,14 @@ class SkillLocalResourceReference:
 
 
 @dataclass(frozen=True)
-class ResourceInstructionLine:
+class ResourceInstructionSegment:
     text: str
-    line_offsets: tuple[tuple[int, int], ...]
+    start_line: int
+    end_line: int
+    kind: str
 
     def line_number_for_offset(self, offset: int) -> int:
-        line_number = self.line_offsets[0][1]
-        for line_start, candidate_line_number in self.line_offsets:
-            if line_start > offset:
-                break
-            line_number = candidate_line_number
-        return line_number
+        return self.start_line + self.text[:offset].count("\n")
 
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD)\b")
@@ -91,6 +88,9 @@ RESOURCE_MAP_VERB_CLASSES = {
 RESOURCE_MAP_ENTRY_PATTERN = re.compile(
     r"^\s*-\s*(?P<verb>COPY|READ|RUN)\s+`(?P<path>[^`]+)`",
     re.IGNORECASE,
+)
+MARKDOWN_LIST_ITEM_PATTERN = re.compile(
+    r"^(?P<indent>[ \t]*)(?P<marker>[-+*]|\d+[.)])(?P<spacing>[ \t]+)(?P<body>.*)$"
 )
 PUBLISHED_SKILL_LOCAL_RESOURCE_PREFIXES = (
     "assets/",
@@ -929,62 +929,72 @@ def _iter_lines_outside_fences(text: str) -> list[str]:
     return lines
 
 
-def _iter_lines_outside_resource_map_and_fences(body: str) -> list[tuple[int, str]]:
-    lines: list[tuple[int, str]] = []
+def _iter_resource_instruction_segments(body: str) -> list[ResourceInstructionSegment]:
+    segments: list[ResourceInstructionSegment] = []
+    current_parts: list[str] = []
+    current_start_line: int | None = None
+    current_end_line: int | None = None
+    current_kind: str | None = None
+
+    def flush() -> None:
+        nonlocal current_parts, current_start_line, current_end_line, current_kind
+        if current_parts and current_start_line is not None and current_end_line is not None:
+            segments.append(
+                ResourceInstructionSegment(
+                    text="\n".join(current_parts),
+                    start_line=current_start_line,
+                    end_line=current_end_line,
+                    kind=current_kind or "paragraph",
+                )
+            )
+        current_parts = []
+        current_start_line = None
+        current_end_line = None
+        current_kind = None
+
     in_fence = False
     in_resource_map = False
     for line_number, line in enumerate(body.splitlines(), start=1):
         stripped = line.strip()
-        if stripped.startswith("```"):
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            flush()
             in_fence = not in_fence
             continue
         if in_fence:
             continue
         if stripped == "## Resource map":
+            flush()
             in_resource_map = True
             continue
-        if in_resource_map and line.startswith("## "):
-            in_resource_map = False
-        if not in_resource_map:
-            lines.append((line_number, line))
-    return lines
-
-
-def _iter_resource_instruction_lines(body: str) -> list[ResourceInstructionLine]:
-    instructions: list[ResourceInstructionLine] = []
-    current_parts: list[str] = []
-    current_offsets: list[tuple[int, int]] = []
-
-    def flush() -> None:
-        nonlocal current_parts, current_offsets
-        if current_parts:
-            instructions.append(
-                ResourceInstructionLine(
-                    text=" ".join(current_parts),
-                    line_offsets=tuple(current_offsets),
-                )
-            )
-        current_parts = []
-        current_offsets = []
-
-    current_offset = 0
-    for line_number, line in _iter_lines_outside_resource_map_and_fences(body):
-        stripped = line.strip()
+        if in_resource_map:
+            if line.startswith("## "):
+                in_resource_map = False
+            else:
+                continue
         if not stripped:
             flush()
-            current_offset = 0
             continue
         if stripped.startswith("## "):
             flush()
-            current_offset = 0
             continue
-        if current_parts:
-            current_offset += 1
-        current_offsets.append((current_offset, line_number))
+        list_match = MARKDOWN_LIST_ITEM_PATTERN.match(line)
+        if list_match:
+            flush()
+            current_parts.append(stripped)
+            current_start_line = line_number
+            current_end_line = line_number
+            current_kind = "list-item"
+            continue
+        if current_kind is None:
+            current_parts.append(stripped)
+            current_start_line = line_number
+            current_end_line = line_number
+            current_kind = "paragraph"
+            continue
         current_parts.append(stripped)
-        current_offset += len(stripped)
+        current_end_line = line_number
     flush()
-    return instructions
+    return segments
 
 
 def _extract_markdown_section(body: str, heading: str) -> str | None:
@@ -1523,16 +1533,16 @@ def _has_resource_integrity_exception(path: Path, resource_path: str, line: str)
 
 
 def _find_skill_local_resource_references(
-    instruction: ResourceInstructionLine,
+    segment: ResourceInstructionSegment,
 ) -> tuple[SkillLocalResourceReference, ...]:
     references: list[SkillLocalResourceReference] = []
-    for match in SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN.finditer(instruction.text):
+    for match in SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN.finditer(segment.text):
         references.append(
             SkillLocalResourceReference(
                 path=match.group("path"),
                 start=match.start("path"),
                 end=match.end("path"),
-                line_number=instruction.line_number_for_offset(match.start("path")),
+                line_number=segment.line_number_for_offset(match.start("path")),
             )
         )
     return tuple(references)
@@ -1565,10 +1575,10 @@ def _iter_unmapped_skill_local_resource_references(
     mapped_resources: set[str],
 ) -> list[tuple[int, str, str]]:
     references: list[tuple[int, str, str]] = []
-    for instruction in _iter_resource_instruction_lines(body):
-        if not LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN.search(instruction.text):
+    for segment in _iter_resource_instruction_segments(body):
+        if not LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN.search(segment.text):
             continue
-        line_references = _find_skill_local_resource_references(instruction)
+        line_references = _find_skill_local_resource_references(segment)
         for index, reference in enumerate(line_references):
             if reference.path in mapped_resources:
                 continue
@@ -1576,18 +1586,18 @@ def _iter_unmapped_skill_local_resource_references(
             next_reference_start = (
                 line_references[index + 1].start
                 if index + 1 < len(line_references)
-                else len(instruction.text)
+                else len(segment.text)
             )
             if _resource_reference_has_external_context(
-                instruction.text,
+                segment.text,
                 reference,
                 previous_reference_end=previous_reference_end,
                 next_reference_start=next_reference_start,
             ):
                 continue
-            if _has_resource_integrity_exception(path, reference.path, instruction.text):
+            if _has_resource_integrity_exception(path, reference.path, segment.text):
                 continue
-            references.append((reference.line_number, reference.path, instruction.text.strip()))
+            references.append((reference.line_number, reference.path, segment.text.strip()))
     return references
 
 

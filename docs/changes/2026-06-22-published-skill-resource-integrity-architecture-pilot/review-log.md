@@ -53,4 +53,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r3.md
 Resolution: review-resolution.md#code-review-m2-r3
 Material findings: SRI-M2-CR3
-Open findings: SRI-M2-CR3
+Open findings: none
