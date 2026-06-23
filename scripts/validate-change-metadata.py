@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from change_metadata_semantics import validate_clean_receipt_root_review_metadata
+from review_artifact_validation import summarize_review_evidence
 from review_artifact_validation import validate_change_root as validate_review_artifact_root
 
 
@@ -421,7 +422,7 @@ def validate_against_schema(schema: dict[str, Any], value: Any, path: str = "$")
     return errors
 
 
-def validate_metadata_semantics(data: Any) -> list[str]:
+def validate_metadata_semantics(data: Any, metadata_path: Path | None = None) -> list[str]:
     if not isinstance(data, dict):
         return []
 
@@ -444,6 +445,10 @@ def validate_metadata_semantics(data: Any) -> list[str]:
         review_log = review.get("review_log")
         if review_log is not None and not isinstance(review_log, str):
             errors.append("review.review_log: expected string")
+        if "next_stage" in review or "next-stage" in review:
+            errors.append("review.next_stage must not author live planned-initiative next stage")
+        if metadata_path is not None:
+            errors.extend(validate_review_summary_counts(review, metadata_path.parent))
     errors.extend(validate_clean_receipt_root_review_metadata(data))
 
     artifacts = data.get("artifacts")
@@ -457,6 +462,33 @@ def validate_metadata_semantics(data: Any) -> list[str]:
                 f"{path_label('$', 'artifacts')}.{key}: invalid artifact key; "
                 f"use one of: {allowed_keys}"
             )
+    return errors
+
+
+def validate_review_summary_counts(review: dict[str, Any], change_root: Path) -> list[str]:
+    evidence_paths = (change_root / "review-log.md", change_root / "reviews")
+    if not any(path.exists() for path in evidence_paths):
+        return []
+    summary = summarize_review_evidence(change_root)
+    errors: list[str] = []
+    expected = {
+        "unresolved_items": summary.open_count,
+        "material_findings": summary.material_count,
+        "open_findings": summary.open_count,
+        "closed_findings": summary.closed_count,
+    }
+    for field, expected_value in expected.items():
+        if field not in review:
+            continue
+        actual = review.get(field)
+        if not isinstance(actual, int):
+            errors.append(f"review.{field}: expected integer")
+            continue
+        if actual != expected_value:
+            if field == "unresolved_items":
+                errors.append("review.unresolved_items must match review-log open finding count")
+            else:
+                errors.append(f"review.{field} must match review evidence")
     return errors
 
 
@@ -1710,7 +1742,7 @@ def validate_file(path: Path) -> list[str]:
     schema_errors = validate_against_schema(schema, data)
     if schema_errors:
         return schema_errors
-    return validate_metadata_semantics(data)
+    return validate_metadata_semantics(data, path)
 
 
 def main(argv: list[str]) -> int:

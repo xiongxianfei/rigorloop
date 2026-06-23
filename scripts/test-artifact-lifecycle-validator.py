@@ -405,6 +405,8 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         include_change_id_field: bool = True,
         change_yaml_id: str | None = None,
         milestone_projection_state: str | None = None,
+        include_open_review_finding: bool = False,
+        review_unresolved_items: int = 0,
         progress: str = "- 2026-06-23: Historical note says Ready for implement M1 and code-review-r1.",
     ) -> tuple[Path, Path, Path]:
         plan_path = root / "docs" / "plans" / "2026-06-23-workflow-state-fixture.md"
@@ -506,9 +508,65 @@ changed_files:
   - docs/plans/2026-06-23-workflow-state-fixture.md
 review:
   status: clean
+  unresolved_items: {review_unresolved_items}
 """,
             encoding="utf-8",
         )
+        if include_open_review_finding:
+            reviews_dir = change_yaml.parent / "reviews"
+            reviews_dir.mkdir(parents=True, exist_ok=True)
+            (reviews_dir / "code-review-r1.md").write_text(
+                """# Code Review R1
+
+Review ID: code-review-r1
+Stage: code-review
+Round: 1
+Reviewer: Codex review fixture
+Target: fixture
+Status: changes-requested
+
+## Findings
+
+Finding ID: WSS-F1
+Severity: major
+Evidence: Fixture keeps a material finding open.
+Required outcome: Owner state must route to resolution while the finding remains open.
+Safe resolution: Move owner state to resolution-needed or close the finding with evidence.
+""",
+                encoding="utf-8",
+            )
+            (change_yaml.parent / "review-log.md").write_text(
+                """# Review Log
+
+### Review entry
+Review ID: code-review-r1
+Stage: code-review
+Round: 1
+Status: changes-requested
+Detailed record: reviews/code-review-r1.md
+Resolution: review-resolution.md#code-review-r1
+Material findings: WSS-F1
+Open findings: WSS-F1
+""",
+                encoding="utf-8",
+            )
+            (change_yaml.parent / "review-resolution.md").write_text(
+                """# Review Resolution
+
+Closeout status: open
+
+### code-review-r1
+
+Finding ID: WSS-F1
+Disposition: accepted
+Owner: implementation author
+Owning stage: review-resolution
+Chosen action: Fix the open finding.
+Rationale: The fixture represents unresolved review evidence.
+Validation target: Focused lifecycle validation fails until owner state is resolution-needed.
+""",
+                encoding="utf-8",
+            )
         return plan_path, plan_index, change_yaml
 
     def validate_workflow_state_fixture(self, root: Path) -> tuple[object, str]:
@@ -648,6 +706,40 @@ review:
 
             self.assertTrue(result.blocking_findings, msg=f"{name} should fail")
             self.assertIn("Readiness", messages)
+
+    def test_workflow_state_open_review_finding_blocks_review_requested_owner_state(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-open-review-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=True,
+            review_unresolved_items=1,
+            current_milestone_state="review-requested",
+            review_status="review-requested; stage=code-review; round=r2",
+            next_stage="code-review M2",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("resolution-needed", messages)
+
+    def test_workflow_state_open_review_finding_accepts_resolution_needed_owner_state(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-open-review-ok-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=True,
+            review_unresolved_items=1,
+            current_milestone_state="resolution-needed",
+            review_status="changes-requested; stage=code-review; round=r1",
+            next_stage="review-resolution / implement M2 fixes",
+            reason="implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertFalse(result.blocking_findings, msg=messages)
 
     def test_workflow_state_index_only_catches_next_stage_drift(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-drift-"))

@@ -147,6 +147,24 @@ class ReviewArtifactValidationResult:
     closeout_status: str | None
 
 
+@dataclass(frozen=True)
+class ReviewEvidenceSummary:
+    material_finding_ids: tuple[str, ...]
+    open_finding_ids: tuple[str, ...]
+
+    @property
+    def material_count(self) -> int:
+        return len(self.material_finding_ids)
+
+    @property
+    def open_count(self) -> int:
+        return len(self.open_finding_ids)
+
+    @property
+    def closed_count(self) -> int:
+        return self.material_count - self.open_count
+
+
 def validate_change_root(change_root: Path, *, mode: str = "structure") -> ReviewArtifactValidationResult:
     if mode not in VALIDATION_MODES:
         raise ValueError(f"unsupported review artifact validation mode: {mode}")
@@ -218,6 +236,38 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
         findings.extend(_validate_closeout(finding_records, log_entries, resolution, mode))
 
     return _result(change_root, mode, findings, review_records, finding_records, log_entries, resolution)
+
+
+def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:
+    """Return derived material/open finding IDs from review evidence."""
+    change_root = change_root.resolve()
+    material_ids: set[str] = set()
+    open_ids: set[str] = set()
+
+    reviews_dir = change_root / "reviews"
+    if reviews_dir.is_dir():
+        for review_path in sorted(reviews_dir.glob("*.md")):
+            _, finding_records, _ = _parse_review_file(review_path, "structure")
+            for finding in finding_records:
+                material_ids.add(finding.finding_id)
+
+    review_log_path = change_root / "review-log.md"
+    if review_log_path.exists():
+        log_entries, _ = _parse_review_log(review_log_path, "structure")
+        for entry in log_entries:
+            material_ids.update(entry.material_finding_ids)
+            open_ids.update(entry.open_finding_ids)
+
+    resolution_path = change_root / "review-resolution.md"
+    if resolution_path.exists():
+        resolution, _ = _parse_review_resolution(resolution_path, "structure")
+        if resolution is not None and resolution.closeout_status == "closed":
+            open_ids.difference_update(entry.finding_id for entry in resolution.entries)
+
+    return ReviewEvidenceSummary(
+        material_finding_ids=tuple(sorted(material_ids)),
+        open_finding_ids=tuple(sorted(open_ids)),
+    )
 
 
 def format_finding(finding: ValidationFinding, *, root: Path | None = None) -> str:
