@@ -16,6 +16,10 @@ from typing import Any, Iterable
 
 from skill_validation import (
     CANONICAL_SKILLS_DIR,
+    MappedResourceIdentity,
+    _extract_markdown_section,
+    _mapped_resource_containment_error,
+    _resource_map_entries,
     discover_source_skill_dirs,
     load_skill_file,
     load_skill_schema,
@@ -76,6 +80,20 @@ NORMAL_FAILURE_ENTRY_LIMIT = 10
 class ReleaseValidationProfile(Enum):
     CURRENT_SOURCE = "current-source"
     RECORDED_SOURCE = "recorded-source"
+
+
+@dataclass(frozen=True)
+class AdapterArchiveValidationContext:
+    profile: ReleaseValidationProfile
+    source_root: Path
+
+
+@dataclass(frozen=True)
+class AdapterArchiveValidationResult:
+    errors: tuple[str, ...]
+    checks_run: tuple[str, ...]
+    mapped_resource_skills: tuple[str, ...]
+    not_applicable: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -2098,6 +2116,204 @@ def validate_adapter_archives(
     return _dedupe_errors(errors)
 
 
+def _skill_name_from_source(skill_dir: Path) -> tuple[str, str | None]:
+    skill_file = skill_dir / "SKILL.md"
+    try:
+        metadata, _body = load_skill_file(skill_file)
+    except (OSError, ValueError) as exc:
+        return skill_dir.name, str(exc)
+    name = metadata.get("name")
+    if isinstance(name, str) and name:
+        return name, None
+    return skill_dir.name, f"{skill_file}: frontmatter name is required"
+
+
+def _recorded_source_mapped_resource_inventory(
+    skills_root: Path,
+) -> tuple[tuple[MappedResourceIdentity, ...], tuple[str, ...]]:
+    identities: list[MappedResourceIdentity] = []
+    errors: list[str] = []
+    if not skills_root.exists():
+        return (), (f"recorded-source skills root does not exist: {skills_root}",)
+
+    for skill_dir in discover_source_skill_dirs(skills_root):
+        skill_file = skill_dir / "SKILL.md"
+        try:
+            metadata, body = load_skill_file(skill_file)
+        except (OSError, ValueError) as exc:
+            errors.append(str(exc))
+            continue
+        skill_name = metadata.get("name")
+        if not isinstance(skill_name, str) or not skill_name:
+            skill_name = skill_dir.name
+        section = _extract_markdown_section(body, "Resource map")
+        if section is None:
+            continue
+        entries = _resource_map_entries(section)
+        if not entries and section.strip():
+            errors.append(f"{skill_file}: malformed Resource map: no parseable resource entries")
+            continue
+        for _verb, relative_path, _entry in entries:
+            containment_error = _mapped_resource_containment_error(relative_path, skill_dir)
+            if containment_error is not None:
+                errors.append(f"{skill_file}: {containment_error}")
+                continue
+            resource_path = skill_dir / relative_path
+            if not resource_path.is_file():
+                errors.append(
+                    f"{skill_file}: mapped resource missing in recorded source: {relative_path}"
+                )
+                continue
+            identities.append(
+                MappedResourceIdentity(
+                    skill_name=skill_name,
+                    relative_path=relative_path,
+                    path=resource_path,
+                    sha256=_sha256_file(resource_path),
+                )
+            )
+    return tuple(identities), tuple(errors)
+
+
+def _recorded_source_skill_names(skills_root: Path) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    names: list[str] = []
+    errors: list[str] = []
+    if not skills_root.exists():
+        return (), (f"recorded-source skills root does not exist: {skills_root}",)
+    for skill_dir in discover_source_skill_dirs(skills_root):
+        name, error = _skill_name_from_source(skill_dir)
+        names.append(name)
+        if error is not None:
+            errors.append(error)
+    return tuple(sorted(set(names))), tuple(errors)
+
+
+def _validate_recorded_source_adapter_archives(
+    version: str,
+    root: Path,
+    *,
+    skills_root: Path,
+) -> AdapterArchiveValidationResult:
+    errors: list[str] = []
+    checks_run: list[str] = []
+    not_applicable: list[str] = ["current-canonical-skill-policy"]
+
+    source_skill_names, skill_name_errors = _recorded_source_skill_names(skills_root)
+    errors.extend(skill_name_errors)
+    identities, inventory_errors = _recorded_source_mapped_resource_inventory(skills_root)
+    errors.extend(inventory_errors)
+    mapped_resource_skills = tuple(sorted({identity.skill_name for identity in identities}))
+
+    checks_run.append("archive-presence")
+    checks_run.append("archive-structure")
+    checks_run.append("required-skill-root")
+    if identities:
+        checks_run.append("mapped-resource-parity")
+    else:
+        not_applicable.append("mapped-resource-parity:no-recorded-resource-map")
+
+    for adapter_name in SUPPORTED_ADAPTERS:
+        config = ADAPTERS[adapter_name]
+        archive_path = root / adapter_archive_name(adapter_name, version)
+        if not archive_path.is_file():
+            errors.append(f"missing adapter archive: {adapter_name}: {archive_path}")
+            continue
+        try:
+            archive = zipfile.ZipFile(archive_path)
+        except zipfile.BadZipFile:
+            errors.append(f"invalid adapter archive: {adapter_name}: {archive_path}")
+            continue
+        with archive:
+            entries = tuple(sorted(name for name in archive.namelist() if not name.endswith("/")))
+            entrypoint = config.entrypoint.as_posix()
+            if entrypoint not in entries:
+                errors.append(f"adapter archive missing entrypoint: {adapter_name}: {entrypoint}")
+            skill_root = config.skill_root.as_posix().rstrip("/") + "/"
+            if not any(name.startswith(skill_root) for name in entries):
+                errors.append(f"adapter archive missing skill root: {adapter_name}: {config.skill_root}")
+            for skill_name in source_skill_names:
+                skill_entry = (config.skill_root / skill_name / "SKILL.md").as_posix()
+                if skill_entry not in entries:
+                    errors.append(
+                        f"adapter archive missing recorded-source skill: {adapter_name}/{skill_name}: "
+                        f"{skill_entry}"
+                    )
+            for identity in identities:
+                resource_entry = (
+                    config.skill_root
+                    / identity.skill_name
+                    / PurePosixPath(identity.relative_path)
+                ).as_posix()
+                label = f"{adapter_name}/{identity.skill_name}"
+                if resource_entry not in entries:
+                    errors.append(
+                        f"mapped resource missing: {label}: {identity.relative_path} "
+                        f"in adapter archive {archive_path}"
+                    )
+                    continue
+                actual_sha256 = hashlib.sha256(archive.read(resource_entry)).hexdigest()
+                if actual_sha256 != identity.sha256:
+                    errors.append(
+                        f"mapped resource parity mismatch: {label}: {identity.relative_path}: "
+                        f"canonical sha256={identity.sha256}; archive sha256={actual_sha256}"
+                    )
+
+    return AdapterArchiveValidationResult(
+        errors=tuple(_dedupe_errors(errors)),
+        checks_run=tuple(checks_run),
+        mapped_resource_skills=mapped_resource_skills,
+        not_applicable=tuple(not_applicable),
+    )
+
+
+def validate_adapter_archives_for_profile(
+    version: str,
+    root: Path,
+    *,
+    context: AdapterArchiveValidationContext,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> AdapterArchiveValidationResult:
+    if not isinstance(context.profile, ReleaseValidationProfile):
+        return AdapterArchiveValidationResult(
+            errors=(f"invalid release validation profile: {context.profile}",),
+            checks_run=(),
+            mapped_resource_skills=(),
+            not_applicable=(),
+        )
+    if context.profile is ReleaseValidationProfile.CURRENT_SOURCE:
+        errors = validate_adapter_archives(
+            version,
+            root,
+            skills_root=context.source_root,
+            template_root=template_root,
+        )
+        return AdapterArchiveValidationResult(
+            errors=tuple(errors),
+            checks_run=(
+                "archive-presence",
+                "archive-structure",
+                "required-skill-root",
+                "mapped-resource-parity",
+                "current-archive-content-policy",
+            ),
+            mapped_resource_skills=tuple(
+                sorted(
+                    {
+                        identity.skill_name
+                        for skill_dir in discover_source_skill_dirs(context.source_root)
+                        for identity in mapped_resource_identities_for_skill(skill_dir)
+                    }
+                )
+            ),
+            not_applicable=(),
+        )
+    return _validate_recorded_source_adapter_archives(
+        version,
+        root,
+        skills_root=context.source_root,
+    )
+
+
 def _sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -3502,16 +3718,18 @@ def validate_release_output(
                 f"release-output-dir is required for adapter artifact metadata validation: {version}"
             )
         else:
-            adapter_archive_errors = (
-                validate_adapter_archives(
-                    version,
-                    release_output_dir,
-                    skills_root=skills_root,
-                    template_root=template_root,
-                )
-                if current_source_profile
-                else []
+            adapter_archive_result = validate_adapter_archives_for_profile(
+                version,
+                release_output_dir,
+                context=AdapterArchiveValidationContext(
+                    profile=profile,
+                    source_root=skills_root,
+                ),
+                template_root=template_root,
             )
+            adapter_archive_errors = list(adapter_archive_result.errors)
+            if not adapter_archive_result.checks_run:
+                adapter_archive_errors.append("adapter archive validation did not execute")
             adapter_artifact_metadata_errors = validate_adapter_artifact_metadata(
                 version,
                 release_output_dir,
