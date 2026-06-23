@@ -27,6 +27,20 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-m4-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit 84f55c42
+Status: clean-with-notes
+Detailed record: reviews/code-review-m4-r2.md
+Record: reviews/code-review-m4-r2.md
+Resolution: review-resolution.md#code-review-m4-r2
+Material findings: none
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
 Review ID: spec-review-r2
 Stage: spec-review
 Round: 2

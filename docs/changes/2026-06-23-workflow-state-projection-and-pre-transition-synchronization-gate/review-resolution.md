@@ -148,7 +148,7 @@ No material findings. Code-review-m3-r3 confirmed WSS-CR3 is resolved and closed
 
 Finding ID: WSS-CR4
 Disposition: accepted
-Status: resolved pending code-review-m4-r2
+Status: resolved and confirmed by code-review-m4-r2
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
@@ -160,6 +160,10 @@ Validation target: Add or update regression coverage for the multi-active-plan a
 Resolution: The root cause was code, not plan data. The Evidence-Bound Project Map plan body and its `change.yaml` already used the same `Change ID`; `validate_workflow_state_sync()` incorrectly compared each in-scope `change.yaml` against every structured plan body. The validator now keys plan/change associations by `change_id`, uses `artifacts.plan` to report explicit plan-linked mismatches, applies review-summary owner-state blocking only to the associated plan, and keeps linked legacy plans under the existing structured-marker grandfather rule. Added multi-active-plan fixtures for correct pairings, misassigned plan IDs, missing plan IDs, unmatched metadata, and order-independent keyed pairing.
 Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k multi_active`, `python scripts/test-artifact-lifecycle-validator.py -k audit_pairs`, and `python scripts/test-artifact-lifecycle-validator.py -k workflow_state` passed. The all-active audit command from code-review M4 R1 passed after the fix: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md`.
 
+### code-review-m4-r2
+
+No material findings. Code-review-m4-r2 confirmed WSS-CR4 is resolved and closed the M4 review-resolution loop.
+
 ## Validation Evidence
 
-Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed. Code-review-m2-r1 approved M2 with no material findings. Code-review-m3-r1 requested changes for WSS-CR2; code-review-m3-r2 confirmed WSS-CR2 is resolved and requested changes for WSS-CR3. Code-review-m3-r3 confirmed WSS-CR3 is resolved and closed M3.
+Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed. Code-review-m2-r1 approved M2 with no material findings. Code-review-m3-r1 requested changes for WSS-CR2; code-review-m3-r2 confirmed WSS-CR2 is resolved and requested changes for WSS-CR3. Code-review-m3-r3 confirmed WSS-CR3 is resolved and closed M3. Code-review-m4-r2 confirmed WSS-CR4 is resolved and closed M4.

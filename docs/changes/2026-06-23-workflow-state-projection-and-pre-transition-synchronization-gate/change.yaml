@@ -56,6 +56,7 @@ tests:
   - M4 records the active/blocked audit and normalizes the missing active plan `Change ID` projection source without rewriting unrelated legacy handoff prose.
   - Code-review M4 R1 records WSS-CR4 as an open material finding requiring review-resolution before M4 can close.
   - WSS-CR4 resolves by keying active/blocked audit change metadata association by `change_id` and adding multi-active-plan regression coverage before code-review M4 R2.
+  - Code-review M4 R2 approves the WSS-CR4 resolution with no material findings and closes M4.
 validation:
   - command: git diff --check -- docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs/single-source-of-workflow-state.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass
@@ -317,6 +318,26 @@ validation:
     result: pass_after_wss_cr4_resolution
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
     result: pass_after_wss_cr4_resolution
+  - command: git diff --check HEAD^ HEAD
+    result: pass_during_code_review_m4_r2
+  - command: python scripts/test-artifact-lifecycle-validator.py -k multi_active
+    result: pass_during_code_review_m4_r2
+  - command: python scripts/test-artifact-lifecycle-validator.py -k audit_pairs
+    result: pass_during_code_review_m4_r2
+  - command: python scripts/test-artifact-lifecycle-validator.py -k workflow_state
+    result: pass_during_code_review_m4_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+    result: pass_during_code_review_m4_r2
+  - command: git diff --check -- docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md
+    result: pass_after_code_review_m4_r2_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_code_review_m4_r2_recording
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/
+    result: pass_after_code_review_m4_r2_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r2.md
+    result: pass_after_code_review_m4_r2_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+    result: pass_after_code_review_m4_r2_recording
 changed_files:
   - docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - specs/single-source-of-workflow-state.md
@@ -357,8 +378,11 @@ changed_files:
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r2.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r3.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r1.md
+  - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r2.md
 review:
-  status: changes-requested
+  status: clean
+  reviewed_artifact: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m4-r2.md
+  review_log: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md
   unresolved_items: 0
   material_findings: 7
   closed_findings: 7
