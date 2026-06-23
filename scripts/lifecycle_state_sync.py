@@ -99,6 +99,12 @@ class PlanIndexRow:
     change_id: str
 
 
+@dataclass(frozen=True)
+class IndexOwnerResolution:
+    plan_paths: tuple[Path, ...]
+    findings: tuple[StateSyncFinding, ...]
+
+
 def _sections(text: str) -> dict[str, str]:
     sections: dict[str, str] = {}
     current: str | None = None
@@ -197,6 +203,14 @@ def parse_handoff_summary(text: str) -> tuple[HandoffSummary | None, list[str]]:
     if errors:
         return None, errors
     return HandoffSummary(fields=fields), []
+
+
+def has_structured_workflow_state_marker(text: str) -> bool:
+    sections = _sections(text)
+    handoff = next((body for name, body in sections.items() if name.casefold() == "current handoff summary"), None)
+    if handoff is None:
+        return False
+    return "Latest review evidence:" in handoff
 
 
 def _validate_milestone_state(value: str) -> list[str]:
@@ -336,6 +350,30 @@ def _parse_plan_index_rows(root: Path, plan_index: Path, text: str) -> tuple[lis
                 )
             )
     return rows, errors
+
+
+def resolve_owners_from_index(root: Path, plan_index_path: Path) -> IndexOwnerResolution:
+    if not plan_index_path.exists():
+        return IndexOwnerResolution(plan_paths=(), findings=())
+    rows, row_errors = _parse_plan_index_rows(root, plan_index_path, plan_index_path.read_text(encoding="utf-8"))
+    findings = [StateSyncFinding(plan_index_path, message) for message in row_errors]
+    plan_paths: set[Path] = set()
+    for row in rows:
+        if row.section.casefold() not in LIVE_INDEX_STATES:
+            continue
+        plan_path = (root / row.plan_target).resolve()
+        if not plan_path.exists():
+            findings.append(
+                StateSyncFinding(
+                    plan_index_path,
+                    f"docs/plan.md row references nonexistent plan: {row.plan_target}",
+                )
+            )
+            continue
+        if not has_structured_workflow_state_marker(plan_path.read_text(encoding="utf-8")):
+            continue
+        plan_paths.add(plan_path)
+    return IndexOwnerResolution(plan_paths=tuple(sorted(plan_paths)), findings=tuple(findings))
 
 
 def _read_optional(root: Path, relative_path: str) -> str | None:

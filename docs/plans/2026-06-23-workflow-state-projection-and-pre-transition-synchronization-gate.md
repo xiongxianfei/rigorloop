@@ -79,12 +79,12 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 - Current milestone: M1. Parser Fixture Harness and Owner-State Tests
 - Current milestone state: review-requested
-- Latest review evidence: none
-- Review status: review-requested; stage=code-review; round=r1
+- Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md#code-review-m1-r1
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
 - Next stage: code-review M1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 implementation is awaiting code review, M2 through M5 remain open, and final closeout gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — WSS-CR1 has been resolved and awaits code-review R2, M2 through M5 remain open, and final closeout gates remain.
 
 ## Milestones
 
@@ -308,6 +308,8 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: Test spec approved by maintainer; M1 may consume the active test spec.
 - 2026-06-23: M1 implementation started; owner-field, reason-code, and plan-index projection parser fixtures are in scope first.
 - 2026-06-23: M1 added shared workflow-state parser scaffolding plus executable owner-field, final-reason, plan-index projection, and readiness/stale-token boundary tests; targeted validation passed and M1 is ready for code-review.
+- 2026-06-23: Code-review M1 R1 requested changes for WSS-CR1; M1 remains open in review-resolution.
+- 2026-06-23: WSS-CR1 resolved by adding index-to-owner resolution through the shared parser; M1 is ready for code-review R2.
 
 ## Decision log
 
@@ -335,6 +337,10 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: `git diff --check -- scripts/lifecycle_state_sync.py scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py scripts/test-review-artifact-validator.py scripts/test-change-metadata-validator.py tests/fixtures docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md` passed after M1 parser implementation.
 - 2026-06-23: `python scripts/test-review-artifact-validator.py` passed after M1 parser implementation.
 - 2026-06-23: `python scripts/test-change-metadata-validator.py` passed after M1 parser implementation.
+- 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py -k workflow_state` passed after WSS-CR1 resolution.
+- 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py` passed after WSS-CR1 resolution.
+- 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md` passed against the repository state after WSS-CR1 resolution.
+- 2026-06-23: Direct drift-fixture validation with `paths=["docs/plan.md"]` produced one blocker on the stale `docs/plan.md` `Next stage` projection after WSS-CR1 resolution.
 
 ## Outcome and retrospective
 
