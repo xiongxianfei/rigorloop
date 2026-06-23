@@ -24,3 +24,15 @@ Chosen action: Replaced broad project-local allowlist suppression in `_iter_unma
 Rationale: Code-review M2 R1 found that reusing the full repository-root dependency allowed-term list can suppress recognized legacy `templates/...` loading instructions, which violates R49b/R49d and leaves a T43 false-negative gap.
 Validation target: Rerun resource-integrity validator tests, canonical skill validation, selector-selected validation, lifecycle validation, change metadata validation, review artifact validation, and whitespace checks after the fix.
 Validation evidence: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design`; `python scripts/test-build-skills.py`; `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`; `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md`; `git diff --check --`.
+
+### code-review-m2-r2
+
+Finding ID: SRI-M2-CR2
+Disposition: accepted
+Status: open
+Owner: implementer
+Owning stage: implement
+Chosen action: Update the legacy-resource lint so explicit external ownership context is evaluated per resource reference instead of suppressing every resource-looking path on the same line.
+Rationale: Code-review M2 R2 found that the SRI-M2-CR1 resolution moved to resource-lint-specific context rules, but still applies external context at whole-line scope before iterating references. A mixed instruction can therefore let a user-provided path suppress an unrelated unqualified legacy `templates/...` reference.
+Validation target: Add a regression where a mixed line containing an explicitly user-provided resource and an unqualified legacy `templates/...` reference fails for the unqualified path while existing false-positive fixtures remain green. Rerun resource-integrity validator tests, canonical skill validation, selector-selected validation, lifecycle validation, change metadata validation, review artifact validation, and whitespace checks after the fix.
+Validation evidence: pending accepted finding fix.

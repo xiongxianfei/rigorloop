@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Review status: SRI-M2-CR1 accepted fix implemented; awaiting M2 code-review rerun
+- Review status: M2 code-review changes-requested; SRI-M2-CR2 requires review-resolution
 - Remaining in-scope implementation milestones: M2, M3, M4, M5, M6, M7
-- Next stage: code-review for M2 SRI-M2-CR1 resolution
+- Next stage: review-resolution for SRI-M2-CR2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -174,7 +174,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M2. Canonical Resource-Integrity Validator and Fixtures
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Implement deterministic canonical validation for resource maps, approved resource classes, path containment, mapped-resource existence, and bounded legacy-reference lint.
 - Requirements: R46-R49d, R53-R53b, R54-R54a
 - Files/components likely touched:
@@ -495,6 +495,7 @@ M5 relationship to M1:
 - 2026-06-23: implemented M2 canonical resource-integrity validation and fixture coverage. Explicit `Resource map` entries now validate verb-to-class mapping, skill-root containment, canonical file existence, and bounded unmapped legacy references. The existing architecture `templates/...` references remain a temporary recorded migration exception until M3.
 - 2026-06-23: code-review-m2-r1 requested changes for SRI-M2-CR1. The legacy-resource lint suppresses broad allowed terms such as `when relevant`, which can miss recognized `templates/...` loading instructions.
 - 2026-06-23: implemented SRI-M2-CR1 resolution. Legacy-resource lint now uses resource-lint-specific external ownership context rules instead of the broad project-local allowlist, conditional load wording no longer suppresses unqualified skill-local resource references, and the temporary architecture migration exception is covered as exact by skill and path.
+- 2026-06-23: code-review-m2-r2 requested changes for SRI-M2-CR2. The legacy-resource lint now uses resource-specific context constants, but external ownership context is still applied at whole-line scope and can suppress an unrelated unqualified skill-local resource on the same line.
 
 ## Decision log
 
@@ -563,4 +564,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M2 code-review rerun on the SRI-M2-CR1 resolution.
+- Ready for review-resolution on SRI-M2-CR2.
