@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Workflow-State Projection and Pre-Transition Synchronization Gate](plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md) | active | code-review M1 | `2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate` |
+| [Workflow-State Projection and Pre-Transition Synchronization Gate](plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md) | active | implement M2 | `2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate` |
 | [Evidence-Bound and Incremental Project Map Skill](plans/2026-06-23-evidence-bound-incremental-project-map.md) | active | hosted CI and human review | `2026-06-23-evidence-bound-incremental-project-map` |
 | [Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) | active | hosted CI and human review | `2026-06-22-published-skill-resource-integrity-architecture-pilot` |
 | [Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) | active | hosted CI and human review | `2026-06-17-workflow-skill-artifact-location-map` |

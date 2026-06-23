@@ -94,3 +94,17 @@ Resolution: review-resolution.md#code-review-m1-r1
 Material findings: WSS-CR1
 Open findings: WSS-CR1
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit cb57b8db
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r2.md
+Record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: none
+Open findings: none
+Recording status: recorded

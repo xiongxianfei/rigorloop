@@ -43,6 +43,7 @@ tests:
   - Artifact-lifecycle validation rejects malformed structured owner fields, invalid final-closeout reason-code combinations, plan-index projection drift, change-id drift, duplicate active projection rows, and live readiness restatements.
   - Code-review M1 R1 records WSS-CR1 as an open material finding requiring review-resolution before M1 can close.
   - WSS-CR1 resolution adds shared index-to-owner resolution and regression coverage for index-only projection validation before code-review M1 R2.
+  - Code-review M1 R2 approves the WSS-CR1 resolution with no material findings and closes M1.
 validation:
   - command: git diff --check -- docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs/single-source-of-workflow-state.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass
@@ -146,6 +147,14 @@ validation:
     result: pass_after_wss_cr1_resolution
   - command: direct drift-fixture validation with paths=["docs/plan.md"]
     result: pass_after_wss_cr1_resolution_detected_expected_blocker
+  - command: git diff --check -- docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m1-r2.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_code_review_m1_r2
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/
+    result: pass_after_code_review_m1_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_code_review_m1_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m1-r2.md
+    result: pass_after_code_review_m1_r2
 changed_files:
   - docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - specs/single-source-of-workflow-state.md
@@ -168,12 +177,13 @@ changed_files:
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/plan-review-r1.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/plan-review-r2.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m1-r1.md
+  - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m1-r2.md
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/plan-review-r2.md
+  reviewed_artifact: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m1-r2.md
   review_log: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md
   review_resolution: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md
-  material_findings: 3
-  closed_findings: 3
+  material_findings: 4
+  closed_findings: 4
   open_findings: 0
