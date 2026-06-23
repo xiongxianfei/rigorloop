@@ -141,35 +141,7 @@ PUBLISHED_RESOURCE_ILLUSTRATIVE_PREFIX_PATTERN = re.compile(
 PUBLISHED_PROJECT_PROVIDED_HELPER_PATHS = {
     "scripts/query-change-record.py",
 }
-TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS = {
-    # Recorded as migration debt by the M1 architecture resource-chain audit.
-    # M3 removes these entries by normalizing the architecture Resource map.
-    (
-        "architecture",
-        "templates/architecture.md",
-        "Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.",
-    ),
-    (
-        "architecture",
-        "templates/diagram-styles.mmd",
-        "Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.",
-    ),
-    (
-        "architecture",
-        "templates/adr.md",
-        "Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.",
-    ),
-    (
-        "architecture",
-        "templates/diagram-styles.mmd",
-        "Use separate Mermaid `.mmd` source files for default diagrams and link them from `architecture.md` with relative Markdown links. Do not embed package diagrams in Markdown. For Mermaid flowchart or graph diagrams, use `templates/diagram-styles.mmd` or an explicitly equivalent copied block so people, systems, external systems, and containers are distinguishable.",
-    ),
-    (
-        "architecture",
-        "templates/adr.md",
-        "Use `templates/adr.md` and store real ADRs under `docs/adr/`. Each ADR includes title, status, context, decision, alternatives considered, consequences, and follow-up.",
-    ),
-}
+TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS: set[tuple[str, str, str]] = set()
 RESOURCE_LOAD_CONDITION_PATTERN = re.compile(
     r"\b(when|if|only|use|read|run|load)\b",
     re.IGNORECASE,
