@@ -79,14 +79,14 @@ Existing implementation anchors:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Current milestone state: review-requested
+- Current milestone: M3. Architecture Resource Normalization and Behavior Preservation
+- Current milestone state: planned
 - Last reviewed milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Review status: SRI-M2-CR3 accepted fix implemented; awaiting M2 code-review rerun
-- Remaining in-scope implementation milestones: M2, M3, M4, M5, M6, M7
-- Next stage: code-review for M2 SRI-M2-CR3 resolution
+- Review status: M2 code-review clean-with-notes; M2 closed
+- Remaining in-scope implementation milestones: M3, M4, M5, M6, M7
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
 ## Milestones
 
@@ -174,7 +174,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M2. Canonical Resource-Integrity Validator and Fixtures
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Implement deterministic canonical validation for resource maps, approved resource classes, path containment, mapped-resource existence, and bounded legacy-reference lint.
 - Requirements: R46-R49d, R53-R53b, R54-R54a
 - Files/components likely touched:
@@ -499,6 +499,7 @@ M5 relationship to M1:
 - 2026-06-23: implemented SRI-M2-CR2 resolution. Legacy-resource lint now evaluates external and illustrative context for each matched path, preserves exact source line numbers for multi-line instructions, reports unqualified mixed-line references, suppresses only individually qualified references, and keeps the temporary architecture migration exception exact by skill, path, and approved instruction.
 - 2026-06-23: code-review-m2-r3 requested changes for SRI-M2-CR3. The CR2 fix joins every contiguous nonblank non-heading line into one instruction, so a resource-loading verb in one Markdown list item can make a separate generated-artifact or example path list item fail as an unmapped skill-local resource.
 - 2026-06-23: implemented SRI-M2-CR3 resolution. Legacy-resource lint now segments Markdown into prose paragraphs or individual list items with continuation lines before detecting loading intent. New list items, blank lines, headings, fenced blocks, and Resource map boundaries terminate the segment, while CR2 per-reference ownership checks and exact temporary architecture exceptions remain intact.
+- 2026-06-23: code-review-m2-r4 returned clean-with-notes, closed M2, and handed off to implement M3.
 
 ## Decision log
 
@@ -580,6 +581,11 @@ M5 relationship to M1:
   - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md`
   - `git diff --check --`
+- 2026-06-23: M2 code-review recording validation passed:
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r4.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -588,4 +594,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M2 code-review rerun on the SRI-M2-CR3 resolution.
+- Ready for implement M3.
