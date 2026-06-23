@@ -156,6 +156,32 @@ validation:
     result: pass
   - command: git diff --check --
     result: pass
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_current_architecture_resource_map_uses_packaged_assets
+    result: fail_expected_before_m3_normalization
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_current_architecture_resource_map_uses_packaged_assets
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path skills/architecture/assets/architecture-skeleton.md --path skills/architecture/assets/adr-skeleton.md --path skills/architecture/assets/diagram-styles.mmd --path scripts/test-skill-validator.py --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path skills/architecture/SKILL.md --path skills/architecture/assets/adr-skeleton.md --path skills/architecture/assets/architecture-skeleton.md --path skills/architecture/assets/diagram-styles.mmd
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md
+    result: pass
+  - command: git diff --check --
+    result: pass
 changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
@@ -171,6 +197,7 @@ changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r2.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r3.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r4.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md
   - docs/plan.md
   - docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
   - docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md
@@ -181,8 +208,12 @@ changed_files:
   - specs/skill-contract.test.md
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
+  - skills/architecture/SKILL.md
+  - skills/architecture/assets/architecture-skeleton.md
+  - skills/architecture/assets/adr-skeleton.md
+  - skills/architecture/assets/diagram-styles.mmd
 review:
-  status: clean_code_review_m2_r4
+  status: review_requested_after_m3_implementation
   unresolved_items: 0
 test_spec:
   status: owner-approved

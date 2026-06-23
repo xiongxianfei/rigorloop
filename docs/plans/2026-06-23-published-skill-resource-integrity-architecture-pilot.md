@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M3. Architecture Resource Normalization and Behavior Preservation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Review status: M2 code-review clean-with-notes; M2 closed
+- Review status: M3 implementation complete; awaiting code-review
 - Remaining in-scope implementation milestones: M3, M4, M5, M6, M7
-- Next stage: implement M3
+- Next stage: code-review for M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -220,7 +220,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M3. Architecture Resource Normalization and Behavior Preservation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Normalize the architecture skill resources and `Resource map` without changing architecture output behavior.
 - Requirements: R47-R48b, R49, R54-R54d, R55c-R55e
 - Files/components likely touched:
@@ -500,6 +500,8 @@ M5 relationship to M1:
 - 2026-06-23: code-review-m2-r3 requested changes for SRI-M2-CR3. The CR2 fix joins every contiguous nonblank non-heading line into one instruction, so a resource-loading verb in one Markdown list item can make a separate generated-artifact or example path list item fail as an unmapped skill-local resource.
 - 2026-06-23: implemented SRI-M2-CR3 resolution. Legacy-resource lint now segments Markdown into prose paragraphs or individual list items with continuation lines before detecting loading intent. New list items, blank lines, headings, fenced blocks, and Resource map boundaries terminate the segment, while CR2 per-reference ownership checks and exact temporary architecture exceptions remain intact.
 - 2026-06-23: code-review-m2-r4 returned clean-with-notes, closed M2, and handed off to implement M3.
+- 2026-06-23: started M3 implementation. Existing root `templates/architecture.md` and `templates/adr.md` are copy-and-fill skeletons that earn `assets/` resources; `templates/diagram-styles.mmd` is literal Mermaid class material, so it is classified as a copyable `assets/` resource rather than a `references/` guidance file.
+- 2026-06-23: implemented M3 architecture resource normalization. `skills/architecture/SKILL.md` now uses an explicit `Resource map` for `assets/architecture-skeleton.md`, `assets/adr-skeleton.md`, and `assets/diagram-styles.mmd`; the legacy `templates/...` instructions were removed from the canonical skill; behavior-preservation evidence was recorded.
 
 ## Decision log
 
@@ -522,6 +524,7 @@ M5 relationship to M1:
 - SRI-M2-CR2 resolution needed one narrow compatibility case for existing project-provided helper guidance: `scripts/query-change-record.py` is treated as external only when an explicit preceding `when the project provides the helper` clause is present.
 - SRI-M2-CR3 shows the validator needs an instruction-boundary model, not only path-specific context windows. Wrapped lines in one instruction need to stay together, but independent Markdown list items must not share loading verbs.
 - SRI-M2-CR3 resolution keeps the segmenter intentionally bounded instead of adding a Markdown parser dependency. It recognizes unordered and ordered list markers, supports lazy continuation lines within one list item, and leaves mapped-resource validation as the sole owner of `## Resource map` entries.
+- M3 did not add `references/diagram-conventions.md` because the inspected diagram style resource is literal Mermaid copied material, not prose conventions. It is therefore a copyable `assets/diagram-styles.mmd` resource under R55d edge-case guidance.
 
 ## Validation notes
 
@@ -586,6 +589,20 @@ M5 relationship to M1:
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r4.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `git diff --check --`
+- 2026-06-23: M3 red/green proof and validation passed:
+  - `python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_current_architecture_resource_map_uses_packaged_assets` failed before architecture resources were normalized.
+  - `python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_current_architecture_resource_map_uses_packaged_assets`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md`
+  - `python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path skills/architecture/assets/architecture-skeleton.md --path skills/architecture/assets/adr-skeleton.md --path skills/architecture/assets/diagram-styles.mmd --path scripts/test-skill-validator.py --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md`
+  - `python scripts/test-build-skills.py`
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path skills/architecture/SKILL.md --path skills/architecture/assets/adr-skeleton.md --path skills/architecture/assets/architecture-skeleton.md --path skills/architecture/assets/diagram-styles.mmd`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -594,4 +611,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for implement M3.
+- Ready for M3 code-review.
