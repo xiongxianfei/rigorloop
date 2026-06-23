@@ -1,6 +1,6 @@
 # Review Resolution
 
-Closeout status: open
+Closeout status: closed
 
 ### plan-review-r1
 

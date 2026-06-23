@@ -84,9 +84,9 @@ Existing implementation anchors:
 - Last reviewed milestone: M7. Lifecycle Closeout and Release-Gate Alignment
 - Review status: code-review-m7-r1 clean-with-notes; M7 closed
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: verify and PR handoff have not run.
+- Reason final closeout is or is not ready: PR handoff has not run.
 
 ## Milestones
 
@@ -520,6 +520,7 @@ M5 relationship to M1:
 - 2026-06-23: started M7 lifecycle closeout. Scope is limited to durable change rationale, final validation evidence, change metadata, and plan/index synchronization before M7 code-review.
 - 2026-06-23: implemented M7 lifecycle closeout. Added `explain-change.md`, synchronized change metadata and active plan state, reran the final validation bundle, and handed M7 to code-review without claiming verify, PR, live-registry, or branch readiness.
 - 2026-06-23: code-review-m7-r1 returned clean-with-notes, closed M7, and handed off to verify.
+- 2026-06-23: final verify passed local branch-readiness checks, closed the stale review-resolution status drift discovered during verification, and handed off to `pr` without claiming PR body readiness, PR open readiness, hosted CI, or live-registry proof.
 
 ## Decision log
 
@@ -757,6 +758,22 @@ M5 relationship to M1:
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m7-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `git diff --check --`
+- 2026-06-23: final verify validation passed:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py`
+  - `rm -rf /tmp/rigorloop-sri-verify-release-output && python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-verify-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-verify-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-verify-release-output --clean-install-smoke --skill architecture`
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path specs/skill-contract.md --path specs/skill-contract.test.md`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260623-published-skill-resource-integrity.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/repository-wide-resource-audit.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md`
+  - `python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/build-skills.py --path scripts/test-build-skills.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validate-adapters.py --path scripts/validate-release-ci.py --path skills/architecture --path specs/skill-contract.md --path specs/skill-contract.test.md`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -765,4 +782,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for verify.
+- Branch-ready for `pr` handoff.
