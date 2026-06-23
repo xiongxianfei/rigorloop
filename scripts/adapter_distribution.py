@@ -10,6 +10,7 @@ import subprocess
 import sys
 import zipfile
 from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
 
@@ -70,6 +71,11 @@ ADAPTER_DRIFT_CATEGORIES = (
 NORMAL_OUTPUT_TARGET_LINES = 40
 NORMAL_OUTPUT_WARNING_LINES = 80
 NORMAL_FAILURE_ENTRY_LIMIT = 10
+
+
+class ReleaseValidationProfile(Enum):
+    CURRENT_SOURCE = "current-source"
+    RECORDED_SOURCE = "recorded-source"
 
 
 @dataclass(frozen=True)
@@ -3320,8 +3326,12 @@ def validate_release_output(
     changed_paths: Iterable[str | Path] | None = None,
     tracked_files: Iterable[str | Path] | None = None,
     codex_skills_ignored: bool | None = None,
+    profile: ReleaseValidationProfile = ReleaseValidationProfile.CURRENT_SOURCE,
 ) -> list[str]:
     """Validate one target-version release metadata and notes surface."""
+
+    if not isinstance(profile, ReleaseValidationProfile):
+        return [f"invalid release validation profile: {profile}"]
 
     errors: list[str] = []
     target = RELEASE_TARGETS.get(version)
@@ -3425,27 +3435,29 @@ def validate_release_output(
             f"found {manifest.version}"
         )
 
+    current_source_profile = profile is ReleaseValidationProfile.CURRENT_SOURCE
+
     generated_sync_errors = (
-        []
-        if untracked_public_adapters
-        else collect_adapter_drift(
+        collect_adapter_drift(
             expected_manifest_version,
             skills_root=skills_root,
             template_root=template_root,
             output_root=output_root,
         )
+        if current_source_profile and not untracked_public_adapters
+        else []
     )
     errors.extend(generated_sync_errors)
 
     adapter_validation_errors = (
-        []
-        if untracked_public_adapters
-        else validate_adapter_output(
+        validate_adapter_output(
             expected_manifest_version,
             skills_root=skills_root,
             template_root=template_root,
             output_root=output_root,
         )
+        if current_source_profile and not untracked_public_adapters
+        else []
     )
     errors.extend(adapter_validation_errors)
 
@@ -3490,11 +3502,15 @@ def validate_release_output(
                 f"release-output-dir is required for adapter artifact metadata validation: {version}"
             )
         else:
-            adapter_archive_errors = validate_adapter_archives(
-                version,
-                release_output_dir,
-                skills_root=skills_root,
-                template_root=template_root,
+            adapter_archive_errors = (
+                validate_adapter_archives(
+                    version,
+                    release_output_dir,
+                    skills_root=skills_root,
+                    template_root=template_root,
+                )
+                if current_source_profile
+                else []
             )
             adapter_artifact_metadata_errors = validate_adapter_artifact_metadata(
                 version,

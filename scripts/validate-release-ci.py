@@ -13,8 +13,10 @@ from pathlib import Path
 
 from adapter_distribution import (
     ADAPTER_ARTIFACT_REPORT_ROOT,
+    ADAPTER_TEMPLATE_ROOT,
+    ReleaseValidationProfile,
     parse_adapter_artifact_metadata_yaml,
-    validate_adapter_artifact_metadata,
+    validate_release_output,
 )
 
 
@@ -76,10 +78,19 @@ def validate_from_recorded_source(version: str, source_commit: str) -> int:
         if build_status:
             return build_status
 
-        errors = validate_adapter_artifact_metadata(
+        print(
+            "[INFO] recorded-source profile: current canonical skill/archive "
+            f"content policy is not applied to historical release source {version}"
+        )
+        errors = validate_release_output(
             version,
-            release_output,
+            skills_root=source_root / "skills",
+            template_root=source_root / "scripts" / "adapter_templates"
+            if (source_root / "scripts" / "adapter_templates").is_dir()
+            else ADAPTER_TEMPLATE_ROOT,
+            release_output_dir=release_output,
             release_commit=source_commit,
+            profile=ReleaseValidationProfile.RECORDED_SOURCE,
         )
         if errors:
             for error in errors:

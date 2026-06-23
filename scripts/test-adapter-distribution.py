@@ -28,6 +28,7 @@ from adapter_distribution import (  # noqa: E402
     ADAPTERS,
     AdapterDriftEntry,
     OPENCODE_COMMAND_ALIASES,
+    ReleaseValidationProfile,
     SUPPORTED_ADAPTERS,
     adapter_archive_name,
     build_adapter_archives,
@@ -52,6 +53,19 @@ from adapter_distribution import (  # noqa: E402
 
 def load_validate_release_module():
     spec = importlib.util.spec_from_file_location("validate_release_test", VALIDATE_RELEASE)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_validate_release_ci_module():
+    spec = importlib.util.spec_from_file_location(
+        "validate_release_ci_test",
+        ROOT / "scripts" / "validate-release-ci.py",
+    )
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -3440,6 +3454,140 @@ release_gate:
         )
         self.assertIn("validated release metadata for v0.1.5 from recorded source", result.stdout)
         self.assertNotIn("sha256 mismatch", result.stdout)
+
+    def test_release_ci_recorded_source_mode_preserves_release_metadata_validation(self) -> None:
+        module = load_validate_release_ci_module()
+        source_commit = "0123456789abcdef0123456789abcdef01234567"
+        captured: dict[str, object] = {}
+
+        def fake_materialize_git_source(commit: str, destination: Path) -> int:
+            captured["commit"] = commit
+            captured["source_root"] = destination
+            (destination / "scripts").mkdir(parents=True)
+            (destination / "scripts" / "build-adapters.py").write_text("", encoding="utf-8")
+            return 0
+
+        def fake_run_command(args: list[str]) -> int:
+            captured["build_args"] = args
+            return 0
+
+        def fake_validate_release_output(version: str, **kwargs):
+            captured["version"] = version
+            captured.update(kwargs)
+            return ["release metadata failed under recorded-source profile"]
+
+        with (
+            patch.object(module, "materialize_git_source", fake_materialize_git_source),
+            patch.object(module, "run_command", fake_run_command),
+            patch.object(module, "validate_release_output", fake_validate_release_output),
+        ):
+            result = module.validate_from_recorded_source("v0.1.5", source_commit)
+
+        self.assertEqual(result, 1)
+        self.assertEqual(captured["commit"], source_commit)
+        self.assertEqual(captured["version"], "v0.1.5")
+        self.assertIs(captured["profile"], ReleaseValidationProfile.RECORDED_SOURCE)
+        self.assertEqual(captured["release_commit"], source_commit)
+        self.assertIn("release-output", str(captured["release_output_dir"]))
+
+    def test_recorded_source_profile_preserves_release_metadata_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.5")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.5", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.5",
+            ).parent
+            release_root = root / "docs" / "releases"
+            shutil.copytree(ROOT / "docs" / "releases" / "v0.1.5", release_root / "v0.1.5")
+            release_path = release_root / "v0.1.5" / "release.yaml"
+            release_path.write_text(
+                release_path.read_text(encoding="utf-8").replace(
+                    "release_type: final",
+                    "release_type: beta",
+                ),
+                encoding="utf-8",
+            )
+
+            errors = validate_release_output(
+                "v0.1.5",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                profile=ReleaseValidationProfile.RECORDED_SOURCE,
+            )
+
+        self.assertTrue(any("release_type mismatch" in error for error in errors), errors)
+        self.assertFalse(any("adapter_artifact_metadata" in error for error in errors), errors)
+
+    def test_recorded_source_profile_skips_only_current_skill_content_policy(self) -> None:
+        legacy_skill = "\n".join(
+            [
+                "---",
+                "name: architecture",
+                "description: Architecture skill fixture.",
+                "---",
+                "",
+                "# Architecture",
+                "",
+                "Use templates/architecture.md when relevant.",
+                "",
+            ]
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            (skills_root / "architecture" / "SKILL.md").write_text(legacy_skill, encoding="utf-8")
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.5")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.5", release_output_dir)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.5",
+            ).parent
+            release_root = root / "docs" / "releases"
+            shutil.copytree(ROOT / "docs" / "releases" / "v0.1.5", release_root / "v0.1.5")
+
+            recorded_errors = validate_release_output(
+                "v0.1.5",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                profile=ReleaseValidationProfile.RECORDED_SOURCE,
+            )
+            current_errors = validate_release_output(
+                "v0.1.5",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                profile=ReleaseValidationProfile.CURRENT_SOURCE,
+            )
+
+        self.assertFalse(any("canonical skill validation failed" in error for error in recorded_errors), recorded_errors)
+        self.assertTrue(any("canonical skill validation failed" in error for error in current_errors), current_errors)
+
+    def test_release_validation_rejects_unknown_profile(self) -> None:
+        errors = validate_release_output("v0.1.5", profile="recorded-source")
+
+        self.assertEqual(["invalid release validation profile: recorded-source"], errors)
 
     def test_release_verify_script_accepts_github_ref_name(self) -> None:
         result = subprocess.run(
