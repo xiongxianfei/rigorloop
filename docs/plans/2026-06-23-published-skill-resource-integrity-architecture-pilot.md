@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M4. Generated Package and Archive Resource Parity
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Architecture Resource Normalization and Behavior Preservation
-- Review status: M4 implementation complete; awaiting code-review
-- Remaining in-scope implementation milestones: M4, M5, M6, M7
-- Next stage: code-review for M4
+- Current milestone state: resolution-needed
+- Last reviewed milestone: M4. Generated Package and Archive Resource Parity
+- Review status: code-review-m4-r1 requested changes for SRI-M4-CR1
+- Remaining in-scope implementation milestones: M4 resolution, M5, M6, M7
+- Next stage: review-resolution for SRI-M4-CR1
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -267,7 +267,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M4. Generated Package and Archive Resource Parity
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Prove mapped resources survive generated local mirror output, generated adapter package output, and release archives with matching relative paths and raw-byte SHA-256 unless a transformation contract applies.
 - Requirements: R50-R51a, R55a
 - Files/components likely touched:
@@ -506,6 +506,7 @@ M5 relationship to M1:
 - 2026-06-23: implemented SRI-M3-CR1 resolution. The architecture-specific temporary resource-integrity exceptions were removed after M3 normalization, and post-M3 regression coverage now proves the exact former architecture `templates/...` instruction fails while the normalized architecture Resource map remains valid.
 - 2026-06-23: code-review-m3-r2 returned clean-with-notes, closed M3, and handed off to implement M4.
 - 2026-06-23: implemented M4 generated package and archive resource parity. Mapped resource identity is now collected as skill-root relative path plus raw-byte SHA-256; generated local mirror, generated adapter output, and release archive validation report missing or stale mapped resources with stable resource-specific diagnostics.
+- 2026-06-23: code-review-m4-r1 requested changes for SRI-M4-CR1. The mapped-resource parity implementation is aligned, but the recorded-source release-CI compatibility change now bypasses broader release metadata and release-surface validation and must be narrowed before M4 can close.
 
 ## Decision log
 
@@ -531,6 +532,7 @@ M5 relationship to M1:
 - M3 did not add `references/diagram-conventions.md` because the inspected diagram style resource is literal Mermaid copied material, not prose conventions. It is therefore a copyable `assets/diagram-styles.mmd` resource under R55d edge-case guidance.
 - SRI-M3-CR1 confirmed that migration exceptions need an explicit expiry cleanup in the same milestone that removes the underlying debt. The post-M3 validator state now rejects the former architecture `templates/...` instructions.
 - M4 exposed that `validate-release-ci.py` materialized historical recorded source commits but validated them with the current in-process release validator. That retroactively applied post-M3 skill lint to historical v0.1.5 source. The wrapper now rebuilds archives from the recorded source and validates tracked adapter artifact metadata/checksums for that recorded-source path.
+- SRI-M4-CR1 shows that historical-source compatibility needs a narrower validation split. Avoiding current canonical skill lint for historical sources is valid, but recorded-source release CI still needs release metadata, release notes, required validation evidence, security, npm-publication, and adapter artifact metadata checks.
 
 ## Validation notes
 
@@ -653,6 +655,11 @@ M5 relationship to M1:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
   - `git diff --check --`
+- 2026-06-23: M4 code-review recording validation passed:
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m4-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -661,4 +668,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M4 code-review.
+- Ready for review-resolution for SRI-M4-CR1.
