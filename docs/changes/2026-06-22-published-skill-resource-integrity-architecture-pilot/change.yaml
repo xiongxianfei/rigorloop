@@ -190,6 +190,34 @@ validation:
     result: pass
   - command: git diff --check --
     result: pass
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_published_skill_architecture_legacy_references_fail_after_m3
+    result: fail_expected_before_exception_removal
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_published_skill_architecture_legacy_references_fail_after_m3
+    result: pass
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_current_architecture_resource_map_uses_packaged_assets
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path skills/architecture
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/architecture
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
 changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
@@ -222,8 +250,8 @@ changed_files:
   - skills/architecture/assets/adr-skeleton.md
   - skills/architecture/assets/diagram-styles.mmd
 review:
-  status: changes_requested_code_review_m3_r1
-  unresolved_items: 1
+  status: review_requested_after_sri_m3_cr1_resolution
+  unresolved_items: 0
 test_spec:
   status: owner-approved
   path: specs/skill-contract.test.md

@@ -1192,30 +1192,20 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                         msg=f"expected individually qualified references to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
                     )
 
-    def test_published_skill_architecture_migration_exception_is_exact(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            architecture_dir = self.write_resource_integrity_skill(
-                Path(temporary),
-                resource_entries="""\
-                - READ `references/guidance.md` when reviewing guidance.
-                """,
-                resources={"references/guidance.md": "# Guidance\n"},
-                body_extra=(
-                    "Use `templates/architecture.md` for the full 12-section arc42 structure. "
-                    "Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. "
-                    "Use `templates/adr.md` for ADR structure."
-                ),
-                skill_name="architecture",
-            )
-            architecture_result = run_validator(architecture_dir)
-            self.assertEqual(
-                architecture_result.returncode,
-                0,
-                msg=(
-                    "expected exact architecture migration exception to pass\n"
-                    f"stdout:\n{architecture_result.stdout}\nstderr:\n{architecture_result.stderr}"
-                ),
-            )
+    def test_published_skill_architecture_legacy_references_fail_after_m3(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `references/guidance.md` when reviewing guidance.
+            """,
+            resources={"references/guidance.md": "# Guidance\n"},
+            body_extra=(
+                "Use `templates/architecture.md` for the full 12-section arc42 structure. "
+                "Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. "
+                "Use `templates/adr.md` for ADR structure."
+            ),
+            skill_name="architecture",
+            expected_text="architecture: unmapped skill-local resource reference `templates/architecture.md`",
+        )
 
         self.assertResourceIntegritySkillFails(
             resource_entries="""\
