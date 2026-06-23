@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M3. Architecture Resource Normalization and Behavior Preservation
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Review status: M3 implementation complete; awaiting code-review
-- Remaining in-scope implementation milestones: M3, M4, M5, M6, M7
-- Next stage: code-review for M3
+- Review status: code-review-m3-r1 changes-requested; SRI-M3-CR1 open
+- Remaining in-scope implementation milestones: M3 resolution, M4, M5, M6, M7
+- Next stage: review-resolution for SRI-M3-CR1
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -220,7 +220,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M3. Architecture Resource Normalization and Behavior Preservation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Normalize the architecture skill resources and `Resource map` without changing architecture output behavior.
 - Requirements: R47-R48b, R49, R54-R54d, R55c-R55e
 - Files/components likely touched:
@@ -502,6 +502,7 @@ M5 relationship to M1:
 - 2026-06-23: code-review-m2-r4 returned clean-with-notes, closed M2, and handed off to implement M3.
 - 2026-06-23: started M3 implementation. Existing root `templates/architecture.md` and `templates/adr.md` are copy-and-fill skeletons that earn `assets/` resources; `templates/diagram-styles.mmd` is literal Mermaid class material, so it is classified as a copyable `assets/` resource rather than a `references/` guidance file.
 - 2026-06-23: implemented M3 architecture resource normalization. `skills/architecture/SKILL.md` now uses an explicit `Resource map` for `assets/architecture-skeleton.md`, `assets/adr-skeleton.md`, and `assets/diagram-styles.mmd`; the legacy `templates/...` instructions were removed from the canonical skill; behavior-preservation evidence was recorded.
+- 2026-06-23: code-review-m3-r1 requested changes for SRI-M3-CR1. The canonical architecture skill is normalized, but the architecture-specific temporary legacy-resource exceptions remain active in `scripts/skill_validation.py` and still allow the exact former architecture `templates/...` instruction to pass validation after migration.
 
 ## Decision log
 
@@ -603,6 +604,11 @@ M5 relationship to M1:
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md`
   - `git diff --check --`
+- 2026-06-23: M3 code-review recording validation passed:
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m3-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -611,4 +617,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M3 code-review.
+- Ready for review-resolution on SRI-M3-CR1.

@@ -48,3 +48,15 @@ Chosen action: Replaced broad contiguous-line assembly with bounded Markdown ins
 Rationale: Code-review M2 R3 found that the SRI-M2-CR2 resolution correctly evaluates external context per matched resource path, but `_iter_resource_instruction_lines` joins every contiguous nonblank non-heading line into one instruction. That can turn an independent generated-artifact or example path list item into an operative resource-loading instruction when the previous list item contains a loading verb.
 Validation target: Add a regression where an external resource load list item followed by a generated-artifact or example path list item passes, while existing CR2 split-continuation mixed-reference fixtures still fail for the unqualified path. Rerun resource-integrity validator tests, canonical skill validation, selector-selected validation, generated-skill regression if selected, lifecycle validation, change metadata validation, review artifact validation, and whitespace checks after the fix.
 Validation evidence: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/select-validation.py --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design`; `python scripts/test-build-skills.py`; `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`; `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md`; `git diff --check --`.
+
+### code-review-m3-r1
+
+Finding ID: SRI-M3-CR1
+Disposition: accepted
+Status: open
+Owner: implementer
+Owning stage: implement
+Chosen action: pending
+Rationale: Code-review M3 R1 found that the architecture skill was normalized, but the architecture-specific temporary legacy-resource exceptions remain active in the validator. Those exceptions were migration debt intended to be removed when M3 normalized the architecture Resource map. Leaving them active allows the exact former architecture `templates/...` instructions to pass validation after migration.
+Validation target: Remove or expire the architecture-specific temporary exceptions and update post-M3 regression coverage so the exact former architecture legacy instruction fails validation. Rerun M3 validator, skill, selected, generated-skill, lifecycle, review-artifact, change-metadata, and whitespace checks after the fix.
+Validation evidence: pending
