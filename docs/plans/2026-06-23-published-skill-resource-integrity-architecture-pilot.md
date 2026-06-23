@@ -79,12 +79,12 @@ Existing implementation anchors:
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Architecture Resource Normalization and Behavior Preservation
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Canonical Resource-Integrity Validator and Fixtures
-- Review status: SRI-M3-CR1 accepted fix implemented; awaiting M3 code-review rerun
-- Remaining in-scope implementation milestones: M3, M4, M5, M6, M7
-- Next stage: code-review for M3 SRI-M3-CR1 resolution
+- Current milestone: M4. Generated Package and Archive Resource Parity
+- Current milestone state: planned
+- Last reviewed milestone: M3. Architecture Resource Normalization and Behavior Preservation
+- Review status: M3 code-review clean-with-notes; M3 closed
+- Remaining in-scope implementation milestones: M4, M5, M6, M7
+- Next stage: implement M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -220,7 +220,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M3. Architecture Resource Normalization and Behavior Preservation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Normalize the architecture skill resources and `Resource map` without changing architecture output behavior.
 - Requirements: R47-R48b, R49, R54-R54d, R55c-R55e
 - Files/components likely touched:
@@ -504,6 +504,7 @@ M5 relationship to M1:
 - 2026-06-23: implemented M3 architecture resource normalization. `skills/architecture/SKILL.md` now uses an explicit `Resource map` for `assets/architecture-skeleton.md`, `assets/adr-skeleton.md`, and `assets/diagram-styles.mmd`; the legacy `templates/...` instructions were removed from the canonical skill; behavior-preservation evidence was recorded.
 - 2026-06-23: code-review-m3-r1 requested changes for SRI-M3-CR1. The canonical architecture skill is normalized, but the architecture-specific temporary legacy-resource exceptions remain active in `scripts/skill_validation.py` and still allow the exact former architecture `templates/...` instruction to pass validation after migration.
 - 2026-06-23: implemented SRI-M3-CR1 resolution. The architecture-specific temporary resource-integrity exceptions were removed after M3 normalization, and post-M3 regression coverage now proves the exact former architecture `templates/...` instruction fails while the normalized architecture Resource map remains valid.
+- 2026-06-23: code-review-m3-r2 returned clean-with-notes, closed M3, and handed off to implement M4.
 
 ## Decision log
 
@@ -626,6 +627,11 @@ M5 relationship to M1:
   - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md`
   - `git diff --check --`
+- 2026-06-23: M3 code-review rerun recording validation passed:
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m3-r2.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -634,4 +640,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M3 code-review rerun on the SRI-M3-CR1 resolution.
+- Ready for implement M4.
