@@ -4,15 +4,18 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import hashlib
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 import zipfile
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path, PurePosixPath
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
 from skill_validation import (
     CANONICAL_SKILLS_DIR,
@@ -46,6 +49,7 @@ OPENCODE_COMMAND_ALIASES = (
 ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_OUTPUT_ROOT = ROOT / "dist" / "adapters"
 ADAPTER_TEMPLATE_ROOT = ROOT / "scripts" / "adapter_templates"
+RIGORLOOP_CLI_DIST_ROOT = ROOT / "packages" / "rigorloop" / "dist"
 RELEASE_ROOT = ROOT / "docs" / "releases"
 ARCHIVE_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 TOKEN_COST_REPORT_ROOT = ROOT / "docs" / "reports" / "token-cost" / "releases"
@@ -94,6 +98,13 @@ class AdapterArchiveValidationResult:
     checks_run: tuple[str, ...]
     mapped_resource_skills: tuple[str, ...]
     not_applicable: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class CleanInstallMappedResource:
+    skill_name: str
+    relative_path: str
+    sha256: str
 
 
 @dataclass(frozen=True)
@@ -2312,6 +2323,218 @@ def validate_adapter_archives_for_profile(
         root,
         skills_root=context.source_root,
     )
+
+
+def _normalized_tree_hash_bytes(path: str, content: bytes) -> bytes:
+    if not path.endswith(".md"):
+        return content
+    text = content.decode("utf-8")
+    if text.startswith("\ufeff"):
+        text = text[1:]
+    return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+
+
+def _tree_hash_for_rows(rows: list[tuple[str, str]]) -> str:
+    manifest = "rigorloop-tree-hash-v1\n" + "".join(
+        f"{relative_path}\t{sha256}\n" for relative_path, sha256 in sorted(rows, key=lambda row: row[0].casefold())
+    )
+    return hashlib.sha256(manifest.encode("utf-8")).hexdigest()
+
+
+def _archive_root_hash(archive_path: Path, install_root: str) -> tuple[str, int]:
+    rows: list[tuple[str, str]] = []
+    root_prefix = install_root.rstrip("/") + "/"
+    with zipfile.ZipFile(archive_path) as archive:
+        for name in archive.namelist():
+            if name.endswith("/") or not name.startswith(root_prefix):
+                continue
+            relative_path = name[len(root_prefix) :]
+            content = _normalized_tree_hash_bytes(relative_path, archive.read(name))
+            rows.append((relative_path, hashlib.sha256(content).hexdigest()))
+    return _tree_hash_for_rows(rows), len(rows)
+
+
+def _local_release_candidate_metadata(version: str, release_output_dir: Path) -> dict[str, Any]:
+    artifacts: list[dict[str, Any]] = []
+    for adapter_name in SUPPORTED_ADAPTERS:
+        config = ADAPTERS[adapter_name]
+        archive_name = adapter_archive_name(adapter_name, version)
+        archive_path = release_output_dir / archive_name
+        install_root = config.skill_root.as_posix()
+        tree_sha256, file_count = _archive_root_hash(archive_path, install_root)
+        artifact: dict[str, Any] = {
+            "adapter": adapter_name,
+            "archive": archive_name,
+            "url": f"https://github.com/xiongxianfei/rigorloop/releases/download/{version}/{archive_name}",
+            "sha256": hashlib.sha256(archive_path.read_bytes()).hexdigest(),
+            "size_bytes": archive_path.stat().st_size,
+            "install_root": install_root,
+            "tree_hash_algorithm": "rigorloop-tree-hash-v1",
+            "tree_sha256": tree_sha256,
+            "file_count": file_count,
+        }
+        if adapter_name == "opencode":
+            artifact["skills_only_compatibility"] = {"releases": [version]}
+        artifacts.append(artifact)
+
+    return {
+        "schema_version": 1,
+        "release": {
+            "version": version,
+            "source_repository": "xiongxianfei/rigorloop",
+            "source_commit": "local-release-candidate",
+            "release_tag": version,
+            "published_at": "local-release-candidate",
+        },
+        "metadata": {
+            "url": f"https://github.com/xiongxianfei/rigorloop/releases/download/{version}/adapter-artifacts-{version}.json",
+            "sha256": "0" * 64,
+        },
+        "artifacts": artifacts,
+        "compatibility": {
+            "opencode_skills_only": {
+                "releases": [version],
+            },
+        },
+        "validation": {
+            "command": f"python scripts/validate-adapters.py --root <release-output-dir> --version {version}",
+            "result": "pass",
+        },
+    }
+
+
+def _prepare_local_cli_release_candidate(version: str, release_output_dir: Path) -> Path:
+    candidate_root = Path(tempfile.mkdtemp(prefix="rigorloop-clean-install-cli-"))
+    candidate_dist = candidate_root / "dist"
+    shutil.copytree(RIGORLOOP_CLI_DIST_ROOT, candidate_dist)
+    shutil.copy2(RIGORLOOP_CLI_DIST_ROOT.parent / "package.json", candidate_root / "package.json")
+    metadata_dir = candidate_dist / "metadata"
+    metadata_path = metadata_dir / f"adapter-artifacts-{version}.json"
+    metadata = _local_release_candidate_metadata(version, release_output_dir)
+    metadata_text = json.dumps(metadata, indent=2, sort_keys=False) + "\n"
+    metadata_path.write_text(metadata_text, encoding="utf-8")
+    release_index = {
+        "schema_version": 1,
+        "releases": {
+            version: {
+                "source_repository": "xiongxianfei/rigorloop",
+                "release_tag": version,
+                "bundled_metadata": metadata_path.name,
+                "bundled_metadata_sha256": hashlib.sha256(metadata_text.encode("utf-8")).hexdigest(),
+            }
+        },
+    }
+    (metadata_dir / "releases.json").write_text(
+        json.dumps(release_index, indent=2, sort_keys=False) + "\n",
+        encoding="utf-8",
+    )
+    return candidate_dist / "bin" / "rigorloop.js"
+
+
+def _mapped_resources_for_clean_install(
+    skills_root: Path,
+    *,
+    skill_names: tuple[str, ...],
+) -> tuple[CleanInstallMappedResource, ...]:
+    selected = set(skill_names)
+    resources: list[CleanInstallMappedResource] = []
+    for skill_dir in discover_source_skill_dirs(skills_root):
+        identities = mapped_resource_identities_for_skill(skill_dir)
+        if not identities:
+            continue
+        if selected and skill_dir.name not in selected and identities[0].skill_name not in selected:
+            continue
+        for identity in identities:
+            resources.append(
+                CleanInstallMappedResource(
+                    skill_name=identity.skill_name,
+                    relative_path=identity.relative_path,
+                    sha256=identity.sha256,
+                )
+            )
+    return tuple(resources)
+
+
+def validate_clean_install_smoke(
+    version: str,
+    release_output_dir: Path,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    skill_names: tuple[str, ...] = (),
+    command_runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
+    node_binary: str = "node",
+    temp_root: Path | None = None,
+) -> list[str]:
+    """Install locally packed archives into empty target projects and verify mapped resources."""
+
+    errors: list[str] = []
+    resources = _mapped_resources_for_clean_install(skills_root, skill_names=skill_names)
+    if not resources:
+        target = ", ".join(skill_names) if skill_names else "all skills"
+        return [f"clean-install smoke has no mapped resources to validate for {target}"]
+
+    for adapter_name in SUPPORTED_ADAPTERS:
+        archive_path = release_output_dir / adapter_archive_name(adapter_name, version)
+        if not archive_path.is_file():
+            errors.append(f"clean-install archive missing: {adapter_name}: {archive_path}")
+    if errors:
+        return _dedupe_errors(errors)
+
+    cli_path = _prepare_local_cli_release_candidate(version, release_output_dir)
+    projects_root = Path(tempfile.mkdtemp(prefix="rigorloop-clean-install-projects-", dir=temp_root))
+    try:
+        for adapter_name in SUPPORTED_ADAPTERS:
+            config = ADAPTERS[adapter_name]
+            project_root = projects_root / adapter_name
+            project_root.mkdir(parents=True, exist_ok=False)
+            archive_path = release_output_dir / adapter_archive_name(adapter_name, version)
+            command = [
+                node_binary,
+                str(cli_path),
+                "init",
+                adapter_name,
+                "--from-archive",
+                str(archive_path),
+                "--json",
+            ]
+            result = command_runner(
+                command,
+                cwd=project_root,
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                errors.append(
+                    f"clean-install command failed: {adapter_name}: exit {result.returncode}: "
+                    f"{(result.stderr or result.stdout).strip()}"
+                )
+                continue
+            for resource in resources:
+                skill_root = project_root / _path_from_posix(config.skill_root) / resource.skill_name
+                if not skill_root.is_dir():
+                    errors.append(
+                        f"clean-install skill root missing: {adapter_name}/{resource.skill_name}: {skill_root}"
+                    )
+                    continue
+                installed_resource = skill_root / resource.relative_path
+                if not installed_resource.is_file():
+                    errors.append(
+                        f"clean-install mapped resource missing: {adapter_name}/{resource.skill_name}: "
+                        f"{resource.relative_path} under {skill_root}"
+                    )
+                    continue
+                installed_sha256 = _sha256_file(installed_resource)
+                if installed_sha256 != resource.sha256:
+                    errors.append(
+                        f"clean-install mapped resource parity mismatch: {adapter_name}/{resource.skill_name}: "
+                        f"{resource.relative_path}: canonical sha256={resource.sha256}; "
+                        f"installed sha256={installed_sha256}"
+                    )
+    finally:
+        shutil.rmtree(cli_path.parents[2], ignore_errors=True)
+        shutil.rmtree(projects_root, ignore_errors=True)
+
+    return _dedupe_errors(errors)
 
 
 def _sha256_file(path: Path) -> str:

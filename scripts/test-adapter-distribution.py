@@ -47,6 +47,7 @@ from adapter_distribution import (  # noqa: E402
     validate_adapter_archives,
     validate_adapter_artifact_metadata,
     validate_adapter_output,
+    validate_clean_install_smoke,
     validate_release_output,
 )
 
@@ -1081,6 +1082,111 @@ release_gate:
                 any("missing adapter archive: claude" in error for error in errors),
                 errors,
             )
+
+    def test_clean_install_smoke_installs_mapped_resources_from_local_archives(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.3.2", output_dir, skills_root=skills_root)
+
+            errors = validate_clean_install_smoke(
+                "v0.3.2",
+                output_dir,
+                skills_root=skills_root,
+                skill_names=("portable-with-assets",),
+            )
+
+        self.assertEqual([], errors)
+
+    def test_clean_install_smoke_rejects_non_installing_command_runner(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.3.2", output_dir, skills_root=skills_root)
+
+            def fake_runner(command, **kwargs):
+                return subprocess.CompletedProcess(command, 0, stdout='{"status":"success"}', stderr="")
+
+            errors = validate_clean_install_smoke(
+                "v0.3.2",
+                output_dir,
+                skills_root=skills_root,
+                skill_names=("portable-with-assets",),
+                command_runner=fake_runner,
+            )
+
+        self.assertTrue(
+            any("clean-install skill root missing: codex/portable-with-assets" in error for error in errors),
+            errors,
+        )
+
+    def test_clean_install_smoke_rejects_stale_installed_mapped_resource(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.3.2", output_dir, skills_root=skills_root)
+
+            def stale_install_runner(command, **kwargs):
+                cwd = Path(kwargs["cwd"])
+                archive_path = Path(command[command.index("--from-archive") + 1])
+                target = command[command.index("init") + 1]
+                with zipfile.ZipFile(archive_path) as archive:
+                    for name in archive.namelist():
+                        if name.endswith("/") or name in {"AGENTS.md", "CLAUDE.md"}:
+                            continue
+                        target_path = cwd / name
+                        target_path.parent.mkdir(parents=True, exist_ok=True)
+                        target_path.write_bytes(archive.read(name))
+                if target == "claude":
+                    stale_path = (
+                        cwd
+                        / ".claude"
+                        / "skills"
+                        / "portable-with-assets"
+                        / "assets"
+                        / "template.md"
+                    )
+                    stale_path.write_text("stale installed bytes\n", encoding="utf-8")
+                return subprocess.CompletedProcess(command, 0, stdout='{"status":"success"}', stderr="")
+
+            errors = validate_clean_install_smoke(
+                "v0.3.2",
+                output_dir,
+                skills_root=skills_root,
+                skill_names=("portable-with-assets",),
+                command_runner=stale_install_runner,
+            )
+
+        self.assertTrue(
+            any(
+                "clean-install mapped resource parity mismatch: claude/portable-with-assets: "
+                "assets/template.md" in error
+                and "canonical sha256=" in error
+                and "installed sha256=" in error
+                for error in errors
+            ),
+            errors,
+        )
+
+    def test_validate_adapters_cli_rejects_clean_install_smoke_without_archive_root(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "validate-adapters.py"),
+                "--version",
+                "v0.3.2",
+                "--clean-install-smoke",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("--clean-install-smoke requires --root", result.stdout)
 
     def test_validate_adapters_cli_accepts_release_archive_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

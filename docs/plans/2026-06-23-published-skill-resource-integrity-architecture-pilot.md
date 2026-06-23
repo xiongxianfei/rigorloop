@@ -80,11 +80,11 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M5. Reusable Packed Clean-Install Regression Gate
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Generated Package and Archive Resource Parity
-- Review status: code-review-m4-r3 clean-with-notes; M4 closed
+- Review status: M5 implemented; awaiting code-review
 - Remaining in-scope implementation milestones: M5, M6, M7
-- Next stage: implement M5
+- Next stage: code-review M5
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
@@ -315,7 +315,7 @@ A layer marked unproved blocks M1 closeout.
 
 ### M5. Reusable Packed Clean-Install Regression Gate
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Turn the minimum pre-change clean-install proof established in M1 into a reusable, automated pre-publish regression gate for the normalized architecture resources.
 - Requirements: R52-R52c, R55a
 - Files/components likely touched:
@@ -342,8 +342,8 @@ A layer marked unproved blocks M1 closeout.
 - Validation commands:
   - `python scripts/test-adapter-distribution.py`
   - `python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-install-release-output`
-  - `python scripts/validate-adapters.py --version v0.3.2 --release-output-dir /tmp/rigorloop-sri-install-release-output`
-  - repository-owned clean-install smoke command added by this milestone
+  - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output --clean-install-smoke --skill architecture`
 - Expected observable result: reusable post-change clean-install gate proves normalized mapped architecture resources at the expected relative path and byte identity in all target installed trees.
 - Commit message: `M5: add reusable clean-install resource gate`
 - Milestone closeout:
@@ -511,6 +511,7 @@ M5 relationship to M1:
 - 2026-06-23: code-review-m4-r2 requested changes for SRI-M4-CR2. The recorded-source profile keeps release-surface validation active, but it currently sets adapter archive errors to empty and therefore does not inspect rebuilt archive content or mapped-resource parity for recorded-source validation.
 - 2026-06-23: implemented SRI-M4-CR2 resolution. Recorded-source archive validation now returns a structured result, inspects rebuilt archive presence, structure, required recorded-source skill roots, and mapped-resource parity when recorded source declares a valid Resource map, and fails closed if no archive checks execute.
 - 2026-06-23: code-review-m4-r3 returned clean-with-notes, closed M4, and handed off to implement M5.
+- 2026-06-23: implemented M5 reusable clean-install regression gate. `validate-adapters.py --clean-install-smoke` now requires a locally packed archive root, prepares a temporary local release-candidate metadata bundle for those archives, installs Codex, Claude, and opencode archives into empty temporary projects through the real `rigorloop init --from-archive` path, and compares installed mapped resources by skill-root relative path and raw-byte SHA-256.
 
 ## Decision log
 
@@ -538,6 +539,8 @@ M5 relationship to M1:
 - M4 exposed that `validate-release-ci.py` materialized historical recorded source commits but validated them with the current in-process release validator. That retroactively applied post-M3 skill lint to historical v0.1.5 source. The wrapper now rebuilds archives from the recorded source and validates tracked adapter artifact metadata/checksums for that recorded-source path.
 - SRI-M4-CR1 shows that historical-source compatibility needs a narrower validation split. Avoiding current canonical skill lint for historical sources is valid, but recorded-source release CI still needs release metadata, release notes, required validation evidence, security, npm-publication, and adapter artifact metadata checks.
 - SRI-M4-CR2 shows that recorded-source compatibility also needs a narrower archive split. Skipping current canonical skill lint must not mean accepting `adapter_archives: pass` without rebuilt archive-content or mapped-resource parity inspection.
+- M5 uses temporary local release-candidate CLI metadata generated from the packed archives under test. Current canonical `v0.3.2` archives intentionally do not rewrite tracked bundled release metadata during the smoke; the smoke proves the locally packed candidates through the public `init --from-archive` path.
+- M5 installer acceptance depends on adapter artifact tree-hash metadata, while resource-integrity proof remains raw-byte SHA-256 per mapped resource. The local candidate metadata therefore mirrors the CLI tree-hash contract only to let the real installer validate and extract the packed archives.
 
 ## Validation notes
 
@@ -693,6 +696,18 @@ M5 relationship to M1:
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m4-r3.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
   - `git diff --check --`
+- 2026-06-23: M5 implementation validation passed:
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_clean_install_smoke_installs_mapped_resources_from_local_archives AdapterDistributionTests.test_clean_install_smoke_rejects_non_installing_command_runner AdapterDistributionTests.test_clean_install_smoke_rejects_stale_installed_mapped_resource AdapterDistributionTests.test_validate_adapters_cli_rejects_clean_install_smoke_without_archive_root`
+  - `python scripts/build-adapters.py --version v0.3.2 --output-dir /tmp/rigorloop-sri-install-release-output`
+  - `python scripts/select-validation.py --mode explicit --path scripts/adapter_distribution.py --path scripts/validate-adapters.py --path scripts/test-adapter-distribution.py`
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata`
+  - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output`
+  - `python scripts/validate-adapters.py --version v0.3.2 --root /tmp/rigorloop-sri-install-release-output --clean-install-smoke --skill architecture`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -701,4 +716,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for implement M5.
+- Ready for code-review M5.
