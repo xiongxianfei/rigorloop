@@ -12,6 +12,7 @@
 - [Assets-First Progressive Disclosure Pilot for Published Skills](../docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md)
 - [Spec and Test-Spec Structural Hygiene](../docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md)
 - [Test-Spec Contract Normalization](../docs/proposals/2026-05-20-test-spec-contract-normalization.md)
+- [Published Skill Resource Integrity with an Architecture-Skill Pilot](../docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md)
 
 ## Goal and context
 
@@ -34,6 +35,8 @@ This amendment defines the assets-first progressive disclosure pilot for publish
 This amendment defines structural hygiene for this spec and its matching test spec. It adds slice navigation and grouping while preserving existing R-clause IDs, clause text, acceptance-criterion text, test-case IDs, and cross-references.
 
 This amendment defines the contract gap found by the test-spec contract normalization proposal. It makes normalized-skill front-matter metadata explicit, requires visible stop-condition sections for invocation-blocking boundaries, and requires preservation proof when an existing artifact-producing skill gains an output skeleton.
+
+This amendment defines published-skill resource integrity. It makes skill-local resource references explicit through resource maps, adds bounded legacy-reference migration lint, defines raw-byte parity for generated and installed mapped resources, separates runtime fallback from package validity, and uses the architecture skill as the first resource-chain pilot.
 
 ## Spec growth strategy
 
@@ -69,6 +72,12 @@ Splitting this spec into multiple files MUST be pursued through a separate propo
 - `frontmatter schema version`: the frontmatter `schema-version` value that identifies the reviewed skill structure generation.
 - `workflow role`: a short section that states a lifecycle skill's stage role, received input, produced output, and downstream claim boundary.
 - `packaged skill resource`: a file shipped inside the installed skill package, such as `<skill>/references/`, `<skill>/scripts/`, or `<skill>/assets/`.
+- `mapped skill-local resource`: a packaged skill resource named in a skill's `Resource map` with a verb, path, and load or use condition.
+- `skill root`: the directory containing one skill's `SKILL.md` and any packaged skill-local `assets/`, `references/`, or `scripts/`.
+- `resource parity identity`: the identity for an untransformed mapped resource: the relative path beneath the skill root plus the SHA-256 hash of the resource's raw file bytes.
+- `legacy skill-local resource reference`: an instruction-like reference to a skill-local resource outside the `Resource map`, including legacy `templates/` references in recognized resource-loading contexts.
+- `locally packed release candidate`: generated adapter or package output assembled from the current canonical source into the same archive or package shape that would be published, before live registry publication.
+- `resource transformation contract`: an explicit contract for any intentional content or path transformation between canonical resource source and generated, packed, or installed output.
 - `packaged asset`: a structural template shipped under a skill-local `assets/` directory and copied into an output artifact when the resource map says to use it.
 - `normative asset`: a packaged asset whose structure is part of the reviewed output contract for the skill.
 - `structural fingerprint`: a validator-recomputed digest of normalized asset structure used to detect unacknowledged asset drift.
@@ -79,7 +88,7 @@ Splitting this spec into multiple files MUST be pursued through a separate propo
 
 ## Spec navigation
 
-This spec covers four current concerns, organized by slice:
+This spec covers five current concerns, organized by slice:
 
 | Slice | Clause band | Examples | Parent proposal |
 |---|---|---|---|
@@ -87,6 +96,7 @@ This spec covers four current concerns, organized by slice:
 | Baseline normalization first slice | R8-R26 | E1, E2, E4, E5, E6, E7 | [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md) |
 | Published-skill design pilot | R27-R36 | E8-E12 | [RigorLoop Published Skill Design Contract](../docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md) |
 | Assets-first plan pilot | R37-R45 | E13-E16 | [Assets-First Progressive Disclosure Pilot for Published Skills](../docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) |
+| Published-skill resource integrity pilot | R46-R55 | E18-E22 | [Published Skill Resource Integrity with an Architecture-Skill Pilot](../docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md) |
 
 The Examples section remains a single sequence because some examples are cross-cutting. The Requirement and Acceptance criteria sections use slice headers for direct navigation.
 
@@ -99,6 +109,7 @@ This spec uses two rollout labels:
 - `baseline normalization first slice`: the historical skill-contract optimization slice covering `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`.
 - `published-skill design pilot`: the R27 through R36 amendment slice covering `proposal`, `proposal-review`, validator changes needed for the pilot, and generated adapter validation for changed skills.
 - `assets-first plan pilot`: the R37 through R45 amendment slice covering `skills/plan/SKILL.md`, exactly four normative assets under `skills/plan/assets/`, validator and adapter proof for packaged assets, token-cost measurement, and plan behavior-parity evidence.
+- `published-skill resource integrity pilot`: the R46 through R55 amendment slice covering generic mapped-resource integrity rules, bounded legacy-reference migration lint, raw-byte parity, packed clean-install proof, and architecture-skill pilot evidence.
 
 Do not use the unqualified phrase `first implementation slice` when the intended slice could be ambiguous.
 
@@ -226,6 +237,41 @@ When it gains `version`, `schema-version`, `Workflow role`, a `Stop conditions` 
 Then `schema-version` is `skill-readability-v1`
 And preservation evidence maps moved stop conditions and skeletonized output obligations back to their prior source wording
 And no new blocking state, section, field, coverage obligation, or output obligation is introduced without an approved behavior change.
+
+### Example E18: architecture legacy template reference is detected
+
+Given `skills/architecture/SKILL.md` says to use `templates/architecture.md`
+And that reference is outside a `Resource map`
+When canonical skill validation runs during the resource-integrity pilot
+Then validation reports an unmapped legacy skill-local resource reference
+And the finding is resolved by mapping the resource, removing the stale instruction, or recording an approved temporary migration exception.
+
+### Example E19: repository path example is not a resource dependency
+
+Given a skill includes an artifact example such as `docs/changes/<change-id>/review-log.md`
+When bounded legacy-reference lint runs
+Then the example is not treated as a skill-local packaged resource
+Because it is not in a recognized resource-loading instruction and does not use an approved skill-local resource prefix.
+
+### Example E20: stale generated resource fails parity
+
+Given `skills/architecture/assets/architecture-skeleton.md` is mapped in `SKILL.md`
+And generated adapter output includes the same relative path with different bytes
+When resource parity validation compares canonical and generated output
+Then validation fails with the canonical relative path and raw-byte SHA-256 mismatch.
+
+### Example E21: clean install uses packed release candidate
+
+Given a locally packed release candidate contains the architecture skill
+When pre-publish clean-install smoke installs Codex, Claude, and opencode packages into empty temporary projects
+Then each installed skill root contains every mapped resource at the same relative path beneath that target's skill root.
+
+### Example E22: runtime fallback does not validate a broken package
+
+Given a mapped redundant convenience resource is unexpectedly missing at runtime
+And `SKILL.md` already contains the complete contract needed for the current invocation
+When the agent continues with a disclosed fallback
+Then package validation still fails for the missing mapped resource.
 
 ## Requirements
 
@@ -756,6 +802,90 @@ R45d. Historical corpus gaps MUST be recorded in change-local evidence such as `
 
 R45e. Follow-on packaged-resource proposals MUST choose resource patterns by skill type: constructive skills SHOULD treat `assets/` as the primary pattern for repeated structures, while deliberative skills SHOULD treat `references/` as the primary pattern for rule-heavy judgment guidance.
 
+### Published-skill resource integrity pilot (R46-R55)
+
+R46. Generic published-skill resource-integrity rules MUST live in this spec.
+
+R46a. Architecture-pilot artifacts MAY own architecture resource classification, behavior preservation, package-chain audit evidence, fixtures, and clean-install proof, but they MUST NOT define a competing generic resource contract.
+
+R47. Resource-map verbs MUST map to approved packaged resource classes.
+
+R47a. `COPY` MUST point only to `assets/` paths unless a later approved amendment adds another copyable resource class.
+
+R47b. `READ` MUST point only to `references/` paths unless a later approved amendment adds another readable resource class.
+
+R47c. `RUN` MUST point only to `scripts/` paths unless a later approved amendment adds another executable resource class.
+
+R47d. Mapped skill-local resource paths MUST be relative to the skill root, resolve inside the skill root, and avoid path traversal.
+
+R47e. `templates/` MUST NOT become an implicit packaged resource class. Supporting `templates/` as a skill-local packaged class requires a later approved amendment that defines its verbs, packaging semantics, and validation behavior.
+
+R48. Every mapped skill-local resource MUST exist in canonical skill source before generated, packed, or installed output is considered valid.
+
+R48a. A mapped resource MUST be packageable from the skill root and MUST NOT be supplied only by a repository-root internal path.
+
+R48b. Missing mapped resources MUST fail canonical validation.
+
+R49. Steady-state published skills MUST express required skill-local resource dependencies in the `Resource map`.
+
+R49a. The resource-integrity pilot MUST add bounded migration lint for legacy skill-local resource references outside the `Resource map`.
+
+R49b. Bounded migration lint MUST examine recognized resource-loading instructions and approved skill-local prefixes: `assets/`, `references/`, `scripts/`, and legacy `templates/`.
+
+R49c. Bounded migration lint MUST NOT treat arbitrary repository paths, artifact examples, code snippets, or customer-project paths as skill-local packaged resource dependencies solely because they look path-like.
+
+R49d. An unmapped legacy skill-local resource reference MUST fail validation or be recorded as migration debt under an explicitly approved temporary exception.
+
+R50. Untransformed mapped resource parity MUST use the canonical relative path beneath the skill root plus SHA-256 of raw file bytes.
+
+R50a. Generated output, adapter packages, release candidates, and installed target trees MUST preserve mapped resource relative paths beneath the skill root unless a resource transformation contract applies.
+
+R50b. Generated output, adapter packages, release candidates, and installed target trees MUST preserve mapped resource raw-byte SHA-256 unless a resource transformation contract applies.
+
+R50c. File timestamps MUST NOT participate in resource parity.
+
+R50d. Line-ending normalization or content rewriting MUST NOT be assumed. Any intentional normalization or rewrite requires a resource transformation contract.
+
+R51. A resource transformation contract MUST name the input path, transformation owner, output path, expected output identity, and validation command.
+
+R51a. A transformed resource without a complete transformation contract MUST fail parity validation.
+
+R52. Pre-publish clean-install smoke MUST install the locally packed release candidate into empty temporary projects for Codex, Claude, and opencode.
+
+R52a. Clean-install smoke MUST inspect the real installed skill tree for each target rather than only a dry-run plan or unpackaged source directory.
+
+R52b. Target install roots MAY differ by adapter, but the relative path beneath the installed skill root MUST match the canonical mapped resource path unless a resource transformation contract applies.
+
+R52c. Live registry installation is post-publish release evidence and MUST NOT be required to close the implementation milestone unless the release contract explicitly requires it.
+
+R53. Repository-wide resource-integrity enforcement MUST start with audit mode for current published skills.
+
+R53a. New or changed skills MUST satisfy resource-integrity enforcement immediately once this amendment is implemented.
+
+R53b. Repository-wide enforcement for all skills MUST NOT be enabled until the current mapped-resource audit is clean or unresolved drift is explicitly resolved, deferred, or excepted in a review-visible surface.
+
+R54. Runtime fallback MUST NOT convert a broken package into a valid package.
+
+R54a. Missing mapped resources MUST fail package validation even when a runtime fallback safely continues.
+
+R54b. A missing required normative, schema, security, legal, or non-obvious structural resource MUST stop runtime execution with a package-integrity blocker.
+
+R54c. A missing optional resource that is not needed for the current invocation MAY be left unloaded.
+
+R54d. A missing redundant convenience resource MAY use a bounded disclosed fallback only when `SKILL.md` already contains the complete contract needed for the current invocation and no invention is required.
+
+R55. The architecture resource-integrity pilot MUST audit the architecture resource chain before adding, renaming, packaging, or removing architecture resources.
+
+R55a. The architecture resource-chain audit MUST compare expected path, presence, and content identity across canonical skill source, built skill output, adapter package or archive output, release candidate, and clean installed target trees for Codex, Claude, and opencode.
+
+R55b. The architecture pilot MUST identify the first layer where expected and actual resource inventory diverge.
+
+R55c. The architecture pilot MUST classify architecture output and ADR skeletons as `assets/` only when they earn copy-and-fill files.
+
+R55d. The architecture pilot MUST classify diagram conventions as `references/` unless the inspected content is literal copied Mermaid material that earns an `assets/` file.
+
+R55e. The architecture pilot MUST preserve architecture trigger behavior, arc42 section obligations, C4 obligations, ADR structure, architecture-review boundaries, and handoff semantics unless a later approved spec explicitly changes them.
+
 ## Inputs and outputs
 
 Inputs:
@@ -768,6 +898,7 @@ Inputs:
 - generated skill mirrors under `.codex/skills/`;
 - generated adapter output under `dist/adapters/`;
 - accepted test-spec contract normalization proposal;
+- accepted published skill resource integrity with architecture-skill pilot proposal;
 - workflow contract in `specs/rigorloop-workflow.md`;
 - contributor summaries in `docs/workflows.md` and `AGENTS.md`;
 - skill validator and generated-output drift validation scripts.
@@ -790,6 +921,8 @@ Outputs:
 - regenerated `.codex/skills/` output when canonical skills change;
 - regenerated `dist/adapters/` output when canonical skills change;
 - validator checks for required sections, description length and routing coverage, resource-map coverage, self-containment, shared-block drift, generated-output drift, and narrow overclaim assertions;
+- validator checks for mapped resource existence, bounded unmapped legacy references, raw-byte generated and installed parity, and packed clean-install resource presence;
+- architecture resource-chain audit and behavior-preservation evidence for the architecture pilot;
 - contributor summary updates when root or workflow guidance is affected.
 - grouped test-spec coverage in `specs/skill-contract.test.md` during the matching test-spec stage.
 
@@ -809,11 +942,14 @@ Outputs:
 - `description` remains the portable routing source for published skills.
 - Normalized published skills carry reviewed frontmatter version metadata.
 - Packaged skill-local resources are allowed only when included in adapter output and mapped in `SKILL.md`.
+- Required skill-local resource dependencies are represented in the `Resource map` after migration.
+- Untransformed mapped resources preserve skill-root relative path and raw-byte SHA-256 across canonical, generated, packed, and installed outputs.
 - Repository-root internal paths are not normal customer-project dependencies.
 - The published-skill design pilot does not merge, retire, rename, remove, or change ownership of skills.
 - The assets-first plan pilot is limited to `plan`, exactly four normative `assets/` templates, and deterministic validator and adapter proof.
 - The assets-first plan pilot keeps workflow rules and lifecycle handoff semantics in `SKILL.md` or governing workflow artifacts, not hidden in assets.
 - Normative asset structure is checked for drift through metadata, structural fingerprints, and section-set parity.
+- Runtime fallback can preserve useful work only within the fallback boundary; it does not prove package validity.
 - Structural hygiene amendments preserve R-clause IDs, clause text, acceptance-criterion text, test-case IDs, and cross-references.
 
 ## Error and boundary behavior
@@ -831,6 +967,15 @@ Outputs:
 - If an invocation-blocking stop condition is moved into a `Stop conditions` section, preservation evidence MUST map the source wording to the destination wording and show that no new blocking state was added without approval.
 - If an existing artifact-producing skill gains an output skeleton and the skeleton changes the required section set, item format, coverage obligation, or output obligation without an approved behavior change, the normalization MUST stop for revision.
 - If a skill ships packaged resources without a `Resource map`, validation MUST fail for that skill.
+- If a mapped skill-local resource is missing from canonical skill source, validation MUST fail for that skill.
+- If a mapped resource path escapes the skill root, validation MUST fail for that skill.
+- If a resource-map verb points to a disallowed resource class, validation MUST fail for that skill.
+- If bounded migration lint detects an unmapped legacy skill-local resource reference without an approved temporary exception, validation MUST fail for that skill.
+- If generated, packed, or installed output changes an untransformed mapped resource's relative path or raw-byte SHA-256, parity validation MUST fail.
+- If a resource transformation is claimed without a complete resource transformation contract, parity validation MUST fail.
+- If clean-install smoke uses an unpackaged source directory or dry-run plan as proof, the clean-install proof MUST be rejected.
+- If a runtime fallback continues after a mapped resource is missing, package validation MUST still fail for the missing resource.
+- If a missing resource owns required normative, schema, security, legal, or non-obvious structural content, runtime execution MUST stop with a package-integrity blocker.
 - If a published skill requires an unavailable repository-root internal path as a customer-project dependency, portability validation MUST fail.
 - If a validator cannot distinguish repository-root `scripts/` from packaged skill-local scripts, the validator MUST be narrowed before it is relied on.
 - If routing fixtures are used without an approved routing harness, review output MUST NOT claim deterministic model auto-selection.
@@ -861,6 +1006,10 @@ Outputs:
 - Existing stop-condition wording may move to a dedicated `Stop conditions` section during normalization when preservation evidence proves the blocking semantics are unchanged.
 - Optional `when_to_use` metadata remains compatible when an adapter supports it, but it is not required and does not replace `description`.
 - Existing packaged skill resources may remain until their owning skill is in scope, but once the skill is changed for this contract, resource-map coverage applies to packaged resources in that skill.
+- Existing unmapped legacy skill-local resource references remain migration debt until their owning skill is in scope, but new or changed skills must not introduce new unmapped skill-local resource references.
+- Repository-wide resource-integrity enforcement starts in audit mode for current published skills and becomes globally blocking only after current drift is clean or explicitly resolved.
+- Rollback for the architecture resource-integrity pilot is to restore the prior canonical architecture skill and resource layout together, rebuild generated packages from canonical source, and preserve audit history.
+- Rollback MUST NOT hand-copy resources into installed target directories as a durable fix.
 - Existing `plan` behavior remains the compatibility baseline. Moving structure into assets MUST NOT weaken plan section requirements, handoff consistency, validation evidence, review handoff, or claim boundaries.
 - Rollback for the assets-first plan pilot is to reinline asset skeletons into `skills/plan/SKILL.md`, remove `skills/plan/assets/`, and keep validator improvements only when they remain valid for flat skills.
 - Structural hygiene rollback is to remove the added navigation aids and slice headers while preserving unchanged clause IDs and cross-references.
@@ -875,6 +1024,8 @@ Outputs:
 - Validation output SHOULD identify missing frontmatter `version` and `schema-version` fields for normalized skills by stable check ID when those checks are implemented.
 - Validation output SHOULD identify output-skeleton preservation failures by stable check ID when those checks are implemented.
 - Assets-first plan pilot validation output SHOULD identify asset metadata, resource-map coverage, `COPY` verb, structural fingerprint, section-set parity, adapter asset presence, and token-budget failures by stable check ID when those checks are implemented.
+- Resource-integrity validation output SHOULD identify missing mapped resources, unmapped legacy resource references, path-containment failures, verb-to-class failures, generated parity mismatches, installed parity mismatches, and clean-install proof failures by stable check ID when those checks are implemented.
+- Resource-chain audit evidence SHOULD identify the first divergent layer and include expected path, presence, and content identity for each checked boundary.
 - Structural hygiene validation SHOULD identify any slice-band mismatch, changed clause ID, changed acceptance criterion, changed test-case ID, or broken cross-reference by stable location.
 
 ## Security and privacy
@@ -884,6 +1035,7 @@ Outputs:
 - Evidence-reading guidance MUST NOT encourage pasting sensitive logs or secrets into skill output.
 - Published skills MUST NOT instruct users to expose secrets, credentials, proxy URLs, private hostnames, tokens, private keys, or raw environment values while using packaged resources or scripts.
 - Packaged assets MUST NOT include secrets, credentials, tokens, private keys, machine-local paths, or private user data.
+- Packaged resources and resource transformation contracts MUST NOT require secrets, credentials, tokens, private keys, machine-local paths, or private user data.
 
 ## Accessibility and UX
 
@@ -902,6 +1054,8 @@ This change has no user-interface surface. The relevant user experience is contr
 - Behavior-parity evidence for the published-skill design pilot MUST be concrete enough for review without running broad natural-language scoring.
 - The assets-first plan pilot common-path body token reduction MUST be measured with a deterministic repository-owned script before rollout.
 - Assets-first plan pilot validation MUST remain static and repository-local except for human review of bounded qualitative evidence.
+- Resource-integrity validation SHOULD remain deterministic and repository-local before clean-install smoke.
+- Packed clean-install smoke MAY be target-scoped, but it MUST inspect real installed target trees for the targets claimed.
 
 ## Edge cases
 
@@ -927,6 +1081,10 @@ This change has no user-interface surface. The relevant user experience is contr
 20. If an asset contains a negative example of a forbidden repository-root path, validation must distinguish negative examples from required customer-project dependencies.
 21. If an example applies to more than one slice, the Examples section may remain flat while the navigation index lists the example under each relevant slice.
 22. If a future amendment adds a new slice family, the amendment must update the navigation index and grouping headers in the same change.
+23. If a skill-local path appears in a code block as an artifact example, migration lint does not classify it as a resource dependency unless the surrounding instruction tells the agent to load, copy, read, run, or use that path as a skill-local resource.
+24. If a resource is intentionally transformed during adapter generation, the transformation contract defines the parity target; otherwise raw-byte canonical identity applies.
+25. If a mapped resource is optional for a specific invocation, the resource can remain unloaded at runtime, but it still must exist in canonical, generated, packed, and installed output.
+26. If architecture diagram style content is literal Mermaid copied into diagrams, the architecture pilot may classify it as an `assets/` resource; otherwise diagram guidance belongs in `references/`.
 
 ## Non-goals
 
@@ -951,6 +1109,11 @@ This change has no user-interface surface. The relevant user experience is contr
 - Do not use packaged assets for hidden workflow rules, lifecycle transition policy, or claim ownership.
 - Do not add packaged `references/` or `scripts/` in the assets-first plan pilot.
 - Do not require historical plans to satisfy current plan structure for strict behavior parity.
+- Do not add implicit `templates/` support as a packaged resource class.
+- Do not use broad path-like Markdown scanning as the resource-integrity validator.
+- Do not treat runtime fallback as package validation success.
+- Do not require live registry installation as implementation closeout evidence unless the release contract explicitly requires it.
+- Do not hand-copy resources into installed target directories as the durable fix.
 - Do not change existing R-clause IDs, R-clause text, acceptance-criterion text, test-case IDs, or cross-references during structural hygiene.
 - Do not split this spec or its matching test spec into multiple files as part of a content amendment.
 - Do not group the Examples section when doing so would obscure cross-cutting examples.
@@ -1007,6 +1170,21 @@ This change has no user-interface surface. The relevant user experience is contr
 - A reviewer can confirm the assets-first plan pilot records behavior parity, at least 15 percent common-path body token reduction, total packaged content budget evidence, and milestone substructure reuse evidence.
 - A reviewer can confirm behavior-parity evidence separates a strict contract-era reference corpus from a historical coverage corpus.
 
+### Published-skill resource integrity pilot (R46-R55)
+
+- A reviewer can confirm generic resource-integrity rules are amendments to this spec, not a competing contract.
+- A reviewer can confirm `COPY`, `READ`, and `RUN` resource-map verbs are restricted to `assets/`, `references/`, and `scripts/` respectively.
+- A reviewer can confirm mapped resource paths are relative to the skill root, cannot traverse outside it, and exist in canonical source.
+- A reviewer can confirm a legacy `templates/...` instruction outside the `Resource map` is detected by bounded migration lint.
+- A reviewer can confirm ordinary repository paths, artifact examples, code snippets, and customer-project paths are not falsely classified as skill-local resource dependencies.
+- A reviewer can confirm untransformed generated, packed, and installed mapped resources preserve skill-root relative path and raw-byte SHA-256.
+- A reviewer can confirm any intentional resource transformation has an explicit transformation contract.
+- A reviewer can confirm pre-publish clean-install smoke uses locally packed release candidates and inspects real installed target trees for Codex, Claude, and opencode.
+- A reviewer can confirm missing mapped resources fail package validation even when a bounded runtime fallback continues.
+- A reviewer can confirm missing required normative, schema, security, legal, or non-obvious structural resources stop runtime execution.
+- A reviewer can confirm the architecture pilot identifies the first divergent layer in the resource chain before resource creation or removal.
+- A reviewer can confirm architecture behavior-preservation evidence covers trigger behavior, arc42 sections, C4 obligations, ADR structure, architecture-review boundaries, and handoff semantics.
+
 ### Structural hygiene
 
 No acceptance criteria are added in this amendment. Structural hygiene is reviewed by preserving the existing acceptance-criterion text while adding navigation headers.
@@ -1021,6 +1199,7 @@ No acceptance criteria are added in this amendment. Structural hygiene is review
 - Current draft amendment: spec-review for the assets-first `plan` progressive disclosure pilot.
 - Current draft amendment: spec-review for the spec and test-spec structural hygiene amendment.
 - Current draft amendment: spec-review for test-spec contract normalization metadata, stop-condition surfacing, and output-skeleton preservation.
+- Current draft amendment: spec-review for published-skill resource integrity and the architecture-skill pilot.
 - After plan: `plan-review`.
 - Historical carried context: `code-review M2` under [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md) after M2 implementation handoff.
 - Historical carried context: `implement M3` consumes the public skill portability proof.
@@ -1049,7 +1228,9 @@ No acceptance criteria are added in this amendment. Structural hygiene is review
 - Current amendment proposal: [Test-Spec Contract Normalization](../docs/proposals/2026-05-20-test-spec-contract-normalization.md).
 - Current amendment proposal-review: [proposal-review-r2](../docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md).
 - Current amendment spec-review: [spec-review-r1](../docs/changes/2026-05-20-test-spec-contract-normalization/reviews/spec-review-r1.md).
+- Current amendment proposal: [Published Skill Resource Integrity with an Architecture-Skill Pilot](../docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md).
+- Current amendment proposal-review: [proposal-review-r1](../docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/proposal-review-r1.md).
 
 ## Readiness
 
-Approved structural hygiene and test-spec contract normalization amendments. Current downstream workflow state is owned by the active plan for each initiative.
+Approved published-skill resource integrity amendment. Current downstream workflow state is owned by the active plan for each initiative.

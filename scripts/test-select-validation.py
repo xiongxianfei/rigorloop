@@ -1672,6 +1672,18 @@ raise SystemExit({exit_code})
                 "checks": {"artifact_lifecycle.validate"},
             },
             {
+                "path": "docs/changes/2026-04-25-example/clean-install-proof.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/validator-fixtures.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
                 "path": "docs/changes/2026-04-25-example/release-process-dry-run.md",
                 "category": "registered-change-evidence",
                 "status": "ok",

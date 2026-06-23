@@ -359,6 +359,22 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("historical coverage evidence is recorded",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="clean-install-proof",
+        patterns=("clean-install-proof.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("clean-install proof evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="validator-fixtures",
+        patterns=("validator-fixtures.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("validator fixture evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="release-process-dry-run",
         patterns=("release-process-dry-run.md",),
         selector_routes=("artifact_lifecycle.validate",),

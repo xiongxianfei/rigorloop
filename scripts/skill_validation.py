@@ -15,6 +15,35 @@ CANONICAL_SKILLS_DIR = ROOT / "skills"
 GENERATED_SKILLS_DIR = ROOT / ".codex" / "skills"
 SKILL_SCHEMA_PATH = ROOT / "schemas" / "skill.schema.json"
 WORKFLOWS_DOC_PATH = ROOT / "docs" / "workflows.md"
+
+
+@dataclass(frozen=True)
+class SkillLocalResourceReference:
+    path: str
+    start: int
+    end: int
+    line_number: int
+
+
+@dataclass(frozen=True)
+class ResourceInstructionSegment:
+    text: str
+    start_line: int
+    end_line: int
+    kind: str
+
+    def line_number_for_offset(self, offset: int) -> int:
+        return self.start_line + self.text[:offset].count("\n")
+
+
+@dataclass(frozen=True)
+class MappedResourceIdentity:
+    skill_name: str
+    relative_path: str
+    path: Path
+    sha256: str
+
+
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD)\b")
 READABILITY_SCHEMA_VERSION = "skill-readability-v1"
 READABILITY_STAGE_VALUES = {
@@ -59,6 +88,68 @@ ROUTING_HINT_PATTERN = re.compile(
     re.IGNORECASE,
 )
 PACKAGED_RESOURCE_DIRS = ("references", "scripts", "assets")
+RESOURCE_MAP_VERB_CLASSES = {
+    "COPY": "assets/",
+    "READ": "references/",
+    "RUN": "scripts/",
+}
+RESOURCE_MAP_ENTRY_PATTERN = re.compile(
+    r"^\s*-\s*(?P<verb>COPY|READ|RUN)\s+`(?P<path>[^`]+)`",
+    re.IGNORECASE,
+)
+MARKDOWN_LIST_ITEM_PATTERN = re.compile(
+    r"^(?P<indent>[ \t]*)(?P<marker>[-+*]|\d+[.)])(?P<spacing>[ \t]+)(?P<body>.*)$"
+)
+PUBLISHED_SKILL_LOCAL_RESOURCE_PREFIXES = (
+    "assets/",
+    "references/",
+    "scripts/",
+    "templates/",
+)
+PUBLISHED_RESOURCE_LOADING_VERBS = (
+    "copy",
+    "read",
+    "run",
+    "use",
+    "load",
+    "open",
+    "consult",
+    "execute",
+)
+SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN = re.compile(
+    r"`?(?P<path>(?<![A-Za-z0-9._/-])(?:"
+    + "|".join(re.escape(prefix[:-1]) for prefix in PUBLISHED_SKILL_LOCAL_RESOURCE_PREFIXES)
+    + r")/[A-Za-z0-9_/-](?:[A-Za-z0-9._/-]*[A-Za-z0-9_/-])?)`?"
+)
+LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN = re.compile(
+    r"\b(?:"
+    + "|".join(re.escape(verb) for verb in PUBLISHED_RESOURCE_LOADING_VERBS)
+    + r")\b",
+    re.IGNORECASE,
+)
+PUBLISHED_RESOURCE_EXTERNAL_PREFIX_PATTERN = re.compile(
+    r"(?:(?:^|[\s(\[])(?:the\s+)?(?:project|repository|user)[- ]"
+    r"(?:provided|supplied|owned)(?:\s+(?:resource|file|path))?"
+    r"(?:\s+(?:at|from))?\s*[`'\"]?$|"
+    r"(?:^|[\s(\[])(?:the\s+)?repository-root\s*[`'\"]?$|"
+    r"\bwhen the project provides\b)",
+    re.IGNORECASE,
+)
+PUBLISHED_RESOURCE_EXTERNAL_SUFFIX_PATTERN = re.compile(
+    r"^(?:[`'\"]?\s*(?:provided|supplied|owned)\s+by\s+"
+    r"(?:the\s+)?(?:project|repository|user)\b|"
+    r"[^.;:]*\bwhen the project provides\b)",
+    re.IGNORECASE,
+)
+PUBLISHED_RESOURCE_ILLUSTRATIVE_PREFIX_PATTERN = re.compile(
+    r"(?:^|[\s(\[])(?:example|illustrative)\s+"
+    r"(?:resource|file|path)\s*:\s*[`'\"]?$",
+    re.IGNORECASE,
+)
+PUBLISHED_PROJECT_PROVIDED_HELPER_PATHS = {
+    "scripts/query-change-record.py",
+}
+TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS: set[tuple[str, str, str]] = set()
 RESOURCE_LOAD_CONDITION_PATTERN = re.compile(
     r"\b(when|if|only|use|read|run|load)\b",
     re.IGNORECASE,
@@ -112,6 +203,7 @@ PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS = [
     "if present",
     "when available",
     "when relevant",
+    "when the project provides",
     "when operating inside the RigorLoop repository",
     "when those paths are the target",
     "when this repository is the target",
@@ -817,6 +909,74 @@ def _iter_lines_outside_fences(text: str) -> list[str]:
     return lines
 
 
+def _iter_resource_instruction_segments(body: str) -> list[ResourceInstructionSegment]:
+    segments: list[ResourceInstructionSegment] = []
+    current_parts: list[str] = []
+    current_start_line: int | None = None
+    current_end_line: int | None = None
+    current_kind: str | None = None
+
+    def flush() -> None:
+        nonlocal current_parts, current_start_line, current_end_line, current_kind
+        if current_parts and current_start_line is not None and current_end_line is not None:
+            segments.append(
+                ResourceInstructionSegment(
+                    text="\n".join(current_parts),
+                    start_line=current_start_line,
+                    end_line=current_end_line,
+                    kind=current_kind or "paragraph",
+                )
+            )
+        current_parts = []
+        current_start_line = None
+        current_end_line = None
+        current_kind = None
+
+    in_fence = False
+    in_resource_map = False
+    for line_number, line in enumerate(body.splitlines(), start=1):
+        stripped = line.strip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            flush()
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        if stripped == "## Resource map":
+            flush()
+            in_resource_map = True
+            continue
+        if in_resource_map:
+            if line.startswith("## "):
+                in_resource_map = False
+            else:
+                continue
+        if not stripped:
+            flush()
+            continue
+        if stripped.startswith("## "):
+            flush()
+            continue
+        list_match = MARKDOWN_LIST_ITEM_PATTERN.match(line)
+        if list_match:
+            flush()
+            current_parts.append(stripped)
+            current_start_line = line_number
+            current_end_line = line_number
+            current_kind = "list-item"
+            continue
+        if current_kind is None:
+            current_parts.append(stripped)
+            current_start_line = line_number
+            current_end_line = line_number
+            current_kind = "paragraph"
+            continue
+        current_parts.append(stripped)
+        current_end_line = line_number
+    flush()
+    return segments
+
+
 def _extract_markdown_section(body: str, heading: str) -> str | None:
     marker = f"## {heading}"
     lines = body.splitlines()
@@ -1291,6 +1451,207 @@ def _resource_entry_text(section: str, relative_resource: str) -> str | None:
                     entry_lines.append(continuation.strip())
             return " ".join(entry_lines)
     return None
+
+
+def _resource_map_entries(section: str) -> list[tuple[str, str, str]]:
+    entries: list[tuple[str, str, str]] = []
+    lines = section.splitlines()
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        match = RESOURCE_MAP_ENTRY_PATTERN.match(line)
+        if not match:
+            index += 1
+            continue
+        entry_lines = [line.strip()]
+        index += 1
+        while index < len(lines):
+            continuation = lines[index]
+            if RESOURCE_MAP_ENTRY_PATTERN.match(continuation):
+                break
+            if continuation.startswith("- ") and continuation.strip():
+                break
+            if continuation.strip():
+                entry_lines.append(continuation.strip())
+            index += 1
+        entries.append(
+            (
+                match.group("verb").upper(),
+                match.group("path").strip(),
+                " ".join(entry_lines),
+            )
+        )
+    return entries
+
+
+def _sha256_bytes(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def mapped_resource_identities_for_skill(skill_dir: Path) -> tuple[MappedResourceIdentity, ...]:
+    """Return mapped skill-local resource identities from canonical skill source."""
+
+    skill_file = skill_dir / "SKILL.md"
+    if not skill_file.is_file():
+        return ()
+
+    try:
+        metadata, body = load_skill_file(skill_file)
+    except (OSError, ValueError):
+        return ()
+
+    skill_name = metadata.get("name")
+    if not isinstance(skill_name, str) or not skill_name:
+        skill_name = skill_dir.name
+
+    section = _extract_markdown_section(body, "Resource map")
+    if section is None:
+        return ()
+
+    identities: list[MappedResourceIdentity] = []
+    for _verb, relative_path, _entry in _resource_map_entries(section):
+        if _mapped_resource_containment_error(relative_path, skill_dir) is not None:
+            continue
+        path = skill_dir / relative_path
+        if not path.is_file():
+            continue
+        identities.append(
+            MappedResourceIdentity(
+                skill_name=skill_name,
+                relative_path=relative_path,
+                path=path,
+                sha256=_sha256_bytes(path),
+            )
+        )
+    return tuple(identities)
+
+
+def mapped_resource_parity_errors(
+    canonical_skill_dir: Path,
+    generated_skill_dir: Path,
+    *,
+    skill_label: str | None = None,
+    surface_label: str,
+    actual_hash_label: str = "generated",
+) -> list[str]:
+    """Compare mapped resources by skill-root relative path and raw-byte SHA-256."""
+
+    errors: list[str] = []
+    for identity in mapped_resource_identities_for_skill(canonical_skill_dir):
+        label = skill_label or identity.skill_name
+        generated_path = generated_skill_dir / identity.relative_path
+        if not generated_path.is_file():
+            errors.append(
+                f"mapped resource missing: {label}: {identity.relative_path} "
+                f"in {surface_label}"
+            )
+            continue
+
+        actual_sha256 = _sha256_bytes(generated_path)
+        if actual_sha256 != identity.sha256:
+            errors.append(
+                f"mapped resource parity mismatch: {label}: {identity.relative_path}: "
+                f"canonical sha256={identity.sha256}; "
+                f"{actual_hash_label} sha256={actual_sha256}"
+            )
+    return errors
+
+
+def _mapped_resource_containment_error(resource_path: str, skill_dir: Path) -> str | None:
+    raw_path = Path(resource_path)
+    if raw_path.is_absolute():
+        return (
+            f"mapped resource path '{resource_path}' must be relative to the skill root "
+            "and stay inside it"
+        )
+    resolved = (skill_dir / resource_path).resolve()
+    if not _is_relative_to(resolved, skill_dir.resolve()):
+        return (
+            f"mapped resource path '{resource_path}' must be relative to the skill root "
+            "and stay inside it"
+        )
+    return None
+
+
+def _skill_name_for_path(path: Path) -> str:
+    return path.parent.name
+
+
+def _has_resource_integrity_exception(path: Path, resource_path: str, line: str) -> bool:
+    return (
+        _skill_name_for_path(path),
+        resource_path,
+        line,
+    ) in TEMPORARY_RESOURCE_INTEGRITY_EXCEPTIONS
+
+
+def _find_skill_local_resource_references(
+    segment: ResourceInstructionSegment,
+) -> tuple[SkillLocalResourceReference, ...]:
+    references: list[SkillLocalResourceReference] = []
+    for match in SKILL_LOCAL_RESOURCE_REFERENCE_PATTERN.finditer(segment.text):
+        references.append(
+            SkillLocalResourceReference(
+                path=match.group("path"),
+                start=match.start("path"),
+                end=match.end("path"),
+                line_number=segment.line_number_for_offset(match.start("path")),
+            )
+        )
+    return tuple(references)
+
+
+def _resource_reference_has_external_context(
+    line: str,
+    reference: SkillLocalResourceReference,
+    *,
+    previous_reference_end: int,
+    next_reference_start: int,
+) -> bool:
+    prefix = line[previous_reference_end : reference.start]
+    suffix = line[reference.end : next_reference_start]
+    full_prefix = line[: reference.start]
+    return bool(
+        PUBLISHED_RESOURCE_EXTERNAL_PREFIX_PATTERN.search(prefix)
+        or PUBLISHED_RESOURCE_EXTERNAL_SUFFIX_PATTERN.match(suffix)
+        or PUBLISHED_RESOURCE_ILLUSTRATIVE_PREFIX_PATTERN.search(prefix)
+        or (
+            reference.path in PUBLISHED_PROJECT_PROVIDED_HELPER_PATHS
+            and re.search(r"\bwhen the project provides the helper\b", full_prefix, re.IGNORECASE)
+        )
+    )
+
+
+def _iter_unmapped_skill_local_resource_references(
+    path: Path,
+    body: str,
+    mapped_resources: set[str],
+) -> list[tuple[int, str, str]]:
+    references: list[tuple[int, str, str]] = []
+    for segment in _iter_resource_instruction_segments(body):
+        if not LEGACY_RESOURCE_LOADING_CONTEXT_PATTERN.search(segment.text):
+            continue
+        line_references = _find_skill_local_resource_references(segment)
+        for index, reference in enumerate(line_references):
+            if reference.path in mapped_resources:
+                continue
+            previous_reference_end = line_references[index - 1].end if index else 0
+            next_reference_start = (
+                line_references[index + 1].start
+                if index + 1 < len(line_references)
+                else len(segment.text)
+            )
+            if _resource_reference_has_external_context(
+                segment.text,
+                reference,
+                previous_reference_end=previous_reference_end,
+                next_reference_start=next_reference_start,
+            ):
+                continue
+            if _has_resource_integrity_exception(path, reference.path, segment.text):
+                continue
+            references.append((reference.line_number, reference.path, segment.text.strip()))
+    return references
 
 
 def _asset_metadata(text: str) -> dict[str, str]:
@@ -2193,14 +2554,35 @@ def _validate_published_description(path: Path, metadata: dict[str, str]) -> lis
 
 def _validate_resource_map(path: Path, body: str) -> list[str]:
     resources = _resource_files(path.parent)
-    if not resources:
-        return []
-
     section = _extract_markdown_section(body, "Resource map")
-    if section is None:
+    if section is None and resources:
         return [f"{path}: packaged resources require a '## Resource map' section"]
+    if section is None:
+        section = ""
 
     errors: list[str] = []
+    entries = _resource_map_entries(section)
+    mapped_resources = {resource_path for _, resource_path, _ in entries}
+
+    for verb, resource_path, _entry in entries:
+        containment_error = _mapped_resource_containment_error(resource_path, path.parent)
+        if containment_error:
+            errors.append(f"{path}: {containment_error}")
+            continue
+
+        required_prefix = RESOURCE_MAP_VERB_CLASSES[verb]
+        if not resource_path.startswith(required_prefix):
+            errors.append(
+                f"{path}: Resource map entry '{verb} {resource_path}' must point to {required_prefix}"
+            )
+            continue
+
+        resource_file = path.parent / resource_path
+        if not resource_file.is_file():
+            errors.append(
+                f"{path}: mapped resource '{resource_path}' does not exist in canonical skill source"
+            )
+
     for resource in resources:
         relative_resource = resource.relative_to(path.parent).as_posix()
         entry = _resource_entry_text(section, relative_resource)
@@ -2226,6 +2608,17 @@ def _validate_resource_map(path: Path, body: str) -> list[str]:
                 errors.append(
                     f"{path}: packaged script '{relative_resource}' map entry must describe failure behavior"
                 )
+    for line_number, resource_path, line in _iter_unmapped_skill_local_resource_references(
+        path,
+        body,
+        mapped_resources,
+    ):
+        skill_name = _skill_name_for_path(path)
+        errors.append(
+            f"{path}:{line_number}: {skill_name}: unmapped skill-local resource "
+            f"reference `{resource_path}`; declare it in `## Resource map`, migrate "
+            f"it to an approved resource class, or remove the instruction: {line}"
+        )
     return errors
 
 
