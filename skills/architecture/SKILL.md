@@ -122,11 +122,17 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Resource map
 
-- COPY `assets/architecture-skeleton.md` when creating a new canonical architecture package or replacing an incomplete package scaffold. Fill all required sections. Do not emit unfilled placeholders.
+- COPY `assets/architecture-skeleton.md` when creating a new canonical
+  architecture package or replacing an incomplete package scaffold. Fill all
+  required sections. Do not emit unfilled placeholders.
 
-- COPY `assets/adr-skeleton.md` when recording a material architecture decision. Fill decision, context, status, consequences, alternatives considered, and follow-up.
+- COPY `assets/adr-skeleton.md` when recording a material architecture
+  decision. Fill decision, context, status, consequences, alternatives
+  considered, and follow-up.
 
-- COPY `assets/diagram-styles.mmd` when Mermaid flowchart or graph diagrams need copied role styles for people, systems, external systems, and containers.
+- COPY `assets/diagram-styles.mmd` when Mermaid flowchart or graph diagrams
+  need copied role styles for people, systems, external systems, and
+  containers.
 
 Full worked examples, if needed, belong outside this skill body, for example in `skills/architecture/references/architecture-example.md`.
 
