@@ -3584,6 +3584,219 @@ release_gate:
         self.assertFalse(any("canonical skill validation failed" in error for error in recorded_errors), recorded_errors)
         self.assertTrue(any("canonical skill validation failed" in error for error in current_errors), current_errors)
 
+    def test_recorded_source_profile_rejects_missing_mapped_resource_in_archive(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.5")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.5", release_output_dir, skills_root=skills_root)
+            archive_path = release_output_dir / adapter_archive_name("codex", "v0.1.5")
+            missing_entry = ".agents/skills/portable-with-assets/assets/template.md"
+            with zipfile.ZipFile(archive_path) as archive:
+                entries = {
+                    name: archive.read(name)
+                    for name in archive.namelist()
+                    if not name.endswith("/") and name != missing_entry
+                }
+            with zipfile.ZipFile(archive_path, "w") as archive:
+                for name, content in sorted(entries.items()):
+                    archive.writestr(name, content)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.5",
+            ).parent
+            release_root = root / "docs" / "releases"
+            shutil.copytree(ROOT / "docs" / "releases" / "v0.1.5", release_root / "v0.1.5")
+
+            errors = validate_release_output(
+                "v0.1.5",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                profile=ReleaseValidationProfile.RECORDED_SOURCE,
+            )
+
+        self.assertTrue(
+            any(
+                "mapped resource missing: codex/portable-with-assets: "
+                "assets/template.md in adapter archive" in error
+                for error in errors
+            ),
+            errors,
+        )
+
+    def test_recorded_source_profile_rejects_stale_mapped_resource_even_with_current_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.5")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.5", release_output_dir, skills_root=skills_root)
+            archive_path = release_output_dir / adapter_archive_name("claude", "v0.1.5")
+            stale_entry = ".claude/skills/portable-with-assets/assets/template.md"
+            with zipfile.ZipFile(archive_path) as archive:
+                entries = {
+                    name: archive.read(name)
+                    for name in archive.namelist()
+                    if not name.endswith("/")
+                }
+            entries[stale_entry] = b"stale recorded-source bytes\n"
+            with zipfile.ZipFile(archive_path, "w") as archive:
+                for name, content in sorted(entries.items()):
+                    archive.writestr(name, content)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.5",
+            ).parent
+            release_root = root / "docs" / "releases"
+            shutil.copytree(ROOT / "docs" / "releases" / "v0.1.5", release_root / "v0.1.5")
+
+            errors = validate_release_output(
+                "v0.1.5",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                profile=ReleaseValidationProfile.RECORDED_SOURCE,
+            )
+
+        self.assertTrue(
+            any(
+                "mapped resource parity mismatch: claude/portable-with-assets: "
+                "assets/template.md" in error
+                and "canonical sha256=" in error
+                and "archive sha256=" in error
+                for error in errors
+            ),
+            errors,
+        )
+
+    def test_recorded_source_profile_without_resource_map_still_checks_archive_presence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-basic",))
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.5")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.5", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.5",
+            ).parent
+            (release_output_dir / adapter_archive_name("opencode", "v0.1.5")).unlink()
+            release_root = root / "docs" / "releases"
+            shutil.copytree(ROOT / "docs" / "releases" / "v0.1.5", release_root / "v0.1.5")
+
+            errors = validate_release_output(
+                "v0.1.5",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                profile=ReleaseValidationProfile.RECORDED_SOURCE,
+            )
+
+        self.assertTrue(
+            any("missing adapter archive: opencode:" in error for error in errors),
+            errors,
+        )
+
+    def test_recorded_source_profile_rejects_malformed_resource_map(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.5")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.5", release_output_dir, skills_root=skills_root)
+            skill_path = skills_root / "portable-with-assets" / "SKILL.md"
+            skill_path.write_text(
+                skill_path.read_text(encoding="utf-8").replace(
+                    "- COPY `assets/template.md` when creating the portable fixture output.",
+                    "- COPY assets/template.md when creating the portable fixture output.",
+                ),
+                encoding="utf-8",
+            )
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.5",
+            ).parent
+            release_root = root / "docs" / "releases"
+            shutil.copytree(ROOT / "docs" / "releases" / "v0.1.5", release_root / "v0.1.5")
+
+            errors = validate_release_output(
+                "v0.1.5",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                profile=ReleaseValidationProfile.RECORDED_SOURCE,
+            )
+
+        self.assertTrue(
+            any("malformed Resource map" in error for error in errors),
+            errors,
+        )
+
+    def test_release_validation_fails_when_archive_validation_does_not_execute(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.5")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.5", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.5",
+            ).parent
+            release_root = root / "docs" / "releases"
+            shutil.copytree(ROOT / "docs" / "releases" / "v0.1.5", release_root / "v0.1.5")
+            no_check_result = adapter_distribution_module.AdapterArchiveValidationResult(
+                errors=(),
+                checks_run=(),
+                mapped_resource_skills=(),
+                not_applicable=(),
+            )
+
+            with patch.object(
+                adapter_distribution_module,
+                "validate_adapter_archives_for_profile",
+                return_value=no_check_result,
+            ):
+                errors = validate_release_output(
+                    "v0.1.5",
+                    skills_root=skills_root,
+                    output_root=output_root,
+                    release_root=release_root,
+                    release_output_dir=release_output_dir,
+                    adapter_artifact_report_root=adapter_artifact_root,
+                    release_commit="0123456789abcdef0123456789abcdef01234567",
+                    profile=ReleaseValidationProfile.RECORDED_SOURCE,
+                )
+
+        self.assertTrue(
+            any("adapter archive validation did not execute" in error for error in errors),
+            errors,
+        )
+
     def test_release_validation_rejects_unknown_profile(self) -> None:
         errors = validate_release_output("v0.1.5", profile="recorded-source")
 

@@ -85,4 +85,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r2.md
 Resolution: review-resolution.md#code-review-m4-r2
 Material findings: SRI-M4-CR2
-Open findings: SRI-M4-CR2
+Open findings: none
