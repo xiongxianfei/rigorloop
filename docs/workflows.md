@@ -457,6 +457,8 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - Use `resolution-needed` when review findings require review-resolution, fixes, owner decision, or re-review.
 - Track the current milestone, current milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, final closeout readiness, and the reason in `Current Handoff Summary`.
 - State-sync checks update affected state owners before downstream readiness is claimed.
+- Run `python scripts/validate-artifact-lifecycle.py --mode explicit-paths` after stage-owned evidence is updated and before claiming `code-review`, `verify`, or PR handoff readiness.
+- A failed state-sync gate blocks the next-stage handoff sentence until the agent either reverts its own in-progress owner/projection edits or records the failure as the current blocker with the rerun command.
 - State-sync checks update `Current Handoff Summary`, milestone state, review-resolution closeout status when findings change, review-log open findings when formal review records change, `change.yaml` compact review/status when metadata changes, and `docs/plan.md` when plan lifecycle state changes.
 - Change metadata, review-resolution, review-log, explain-change, verify output, and PR handoff own scoped evidence; they do not own the active plan's current next stage.
 - Remove or correct stale live next-stage wording in touched artifacts before claiming downstream readiness.

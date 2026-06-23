@@ -22,6 +22,7 @@ requirements:
   - Revise the execution plan to resolve WSS-PLAN1 by moving test-spec authoring out of implementation milestones.
   - Update the Single Source of Workflow State test spec with traceable workflow-state projection, owner-field, stale-token, review-evidence, and enforcement-scope tests before implementation.
   - Add M1 parser scaffolding and fixture-backed lifecycle validation tests for deterministic workflow-state owner and projection parsing.
+  - Bind workflow-state synchronization guidance to pre-transition handoff claims without making public skills depend on repository-local script paths.
 tests:
   - Proposal-review R1 approves the proposal with no material findings.
   - Review-log indexes proposal-review R1 with zero material findings.
@@ -51,6 +52,8 @@ tests:
   - Code-review M3 R2 records WSS-CR3 as an open material finding for missing or unsupported disposition handling in the shared closure predicate.
   - WSS-CR3 resolves by making the shared closure predicate require positive evidence for parseable disposition state and validation evidence across all consumers.
   - Code-review M3 R3 approves the WSS-CR3 resolution with no material findings and closes M3.
+  - M4 adds static regression coverage proving workflow guidance and stage skills require a binding state-sync gate before downstream handoff claims.
+  - M4 records the active/blocked audit and normalizes the missing active plan `Change ID` projection source without rewriting unrelated legacy handoff prose.
 validation:
   - command: git diff --check -- docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs/single-source-of-workflow-state.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass
@@ -268,6 +271,32 @@ validation:
     result: pass_after_code_review_m3_r3
   - command: git diff --check -- docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r3.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
     result: pass_after_code_review_m3_r3
+  - command: python scripts/test-skill-validator.py -k workflow_state_sync_gate_is_binding_guidance
+    result: fail_before_m4_guidance_binding
+  - command: python scripts/test-skill-validator.py -k workflow_state_sync_gate_is_binding_guidance
+    result: pass_after_m4_guidance_binding
+  - command: python scripts/validate-skills.py
+    result: pass_after_m4_portable_skill_wording
+  - command: python scripts/test-build-skills.py
+    result: pass_after_m4_portable_skill_wording
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m4_portable_skill_wording
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m4_guidance_binding
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: pass_after_m4_guidance_binding
+  - command: python scripts/validate-guide-system.py
+    result: pass_after_m4_guidance_binding
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m4_guidance_binding
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md
+    result: pass_after_m4_handoff_state_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_m4_handoff_state_sync
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/
+    result: pass_after_m4_handoff_state_sync
+  - command: git diff --check -- docs/workflows.md docs/plan.md docs/plans skills scripts/test-skill-validator.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
+    result: pass_after_m4_handoff_state_sync
 changed_files:
   - docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - specs/single-source-of-workflow-state.md
@@ -278,11 +307,20 @@ changed_files:
   - scripts/review_artifact_validation.py
   - scripts/validate-change-metadata.py
   - scripts/test-change-metadata-validator.py
+  - scripts/test-skill-validator.py
   - docs/architecture/system/architecture.md
+  - docs/workflows.md
   - docs/plan.md
   - docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
+  - docs/plans/2026-06-23-evidence-bound-incremental-project-map.md
   - docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
   - docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+  - skills/workflow/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/pr/SKILL.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md
