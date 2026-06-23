@@ -120,7 +120,19 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
-Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.
+## Resource map
+
+- COPY `assets/architecture-skeleton.md` when creating a new canonical
+  architecture package or replacing an incomplete package scaffold. Fill all
+  required sections. Do not emit unfilled placeholders.
+
+- COPY `assets/adr-skeleton.md` when recording a material architecture
+  decision. Fill decision, context, status, consequences, alternatives
+  considered, and follow-up.
+
+- COPY `assets/diagram-styles.mmd` when Mermaid flowchart or graph diagrams
+  need copied role styles for people, systems, external systems, and
+  containers.
 
 Full worked examples, if needed, belong outside this skill body, for example in `skills/architecture/references/architecture-example.md`.
 
@@ -140,7 +152,7 @@ Existing change-local architecture evidence can remain valid history. New change
 
 The canonical `architecture.md` uses repository lifecycle metadata before all 12 official arc42 sections. Keep sections concise; use `Not applicable` only with a short rationale. Do not remove or rename official arc42 sections to make the document lighter.
 
-Use the template for section structure. In the skill output, name only the sections changed or explicitly unaffected with rationale.
+Use the architecture skeleton for section structure. In the skill output, name only the sections changed or explicitly unaffected with rationale.
 
 Update section 6 when behavior, orchestration, failure paths, command flow, generated-output flow, or operational flow changes. Update section 7 when environments, packaging, generated outputs, adapters, release layout, infrastructure, or execution boundaries change. Update section 8 when validation, security, caching, portability, generation, observability, or other cross-cutting rules change. Section 9 is always present and either links ADRs or states that no ADRs are required for the update.
 
@@ -151,7 +163,7 @@ Default required C4 diagrams for the canonical package:
 - C4 system context diagram
 - C4 container diagram
 
-Use separate Mermaid `.mmd` source files for default diagrams and link them from `architecture.md` with relative Markdown links. Do not embed package diagrams in Markdown. For Mermaid flowchart or graph diagrams, use `templates/diagram-styles.mmd` or an explicitly equivalent copied block so people, systems, external systems, and containers are distinguishable.
+Use separate Mermaid `.mmd` source files for default diagrams and link them from `architecture.md` with relative Markdown links. Do not embed package diagrams in Markdown. For Mermaid flowchart or graph diagrams, copy `assets/diagram-styles.mmd` or an explicitly equivalent copied block so people, systems, external systems, and containers are distinguishable.
 
 Add a component diagram only when container-level structure is not enough to explain changed responsibilities, internal boundaries, or interactions. Add a deployment diagram only when infrastructure, runtime environment, packaging, adapter distribution, or deployment mapping needs visual explanation beyond arc42 section 7.
 
@@ -193,7 +205,7 @@ Create an ADR when the change introduces or revises a durable architecture decis
 - release architecture
 - major workflow architecture decisions
 
-Use `templates/adr.md` and store real ADRs under `docs/adr/`. Each ADR includes title, status, context, decision, alternatives considered, consequences, and follow-up.
+Use the ADR skeleton and store real ADRs under `docs/adr/`. Each ADR includes title, status, context, decision, alternatives considered, consequences, and follow-up.
 
 Accepted or active ADRs are decision history. Later changes should supersede or deprecate an old ADR with a new ADR or explicit lifecycle update rather than rewriting the old decision as if it had always been different.
 

@@ -1259,12 +1259,29 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             expected_text="architecture: unmapped skill-local resource reference `templates/unapproved.md`",
         )
 
-    def test_current_architecture_legacy_references_are_temporary_migration_debt(self) -> None:
-        result = run_validator(ROOT / "skills" / "architecture")
+    def test_current_architecture_resource_map_uses_packaged_assets(self) -> None:
+        architecture_dir = ROOT / "skills" / "architecture"
+        skill_text = (architecture_dir / "SKILL.md").read_text(encoding="utf-8")
+        expected_resources = {
+            "assets/architecture-skeleton.md",
+            "assets/adr-skeleton.md",
+            "assets/diagram-styles.mmd",
+        }
+
+        for resource_path in expected_resources:
+            with self.subTest(resource_path=resource_path):
+                self.assertIn(resource_path, skill_text)
+                self.assertTrue((architecture_dir / resource_path).is_file())
+
+        self.assertNotIn("templates/architecture.md", skill_text)
+        self.assertNotIn("templates/diagram-styles.mmd", skill_text)
+        self.assertNotIn("templates/adr.md", skill_text)
+
+        result = run_validator(architecture_dir)
         self.assertEqual(
             result.returncode,
             0,
-            msg=f"expected architecture migration exception to keep canonical validation green before M3\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+            msg=f"expected normalized architecture resource map to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
 
     def test_published_design_plan_asset_pilot_valid_fixture_passes(self) -> None:
@@ -3100,7 +3117,11 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "If the project uses different architecture paths, follow the project's configured paths.",
             "C4 system context diagram",
             "C4 container diagram",
-            "Use `templates/architecture.md` for the full 12-section arc42 structure.",
+            "## Resource map",
+            "COPY `assets/architecture-skeleton.md`",
+            "COPY `assets/adr-skeleton.md`",
+            "COPY `assets/diagram-styles.mmd`",
+            "Use the architecture skeleton for section structure.",
             "```mermaid\nC4Context",
             "```mermaid\nC4Container",
             "## ADR Triggers",
