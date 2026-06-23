@@ -1,0 +1,80 @@
+# Workflow-State Projection and Pre-Transition Synchronization Gate Review Resolution
+
+## Scope
+
+This record tracks formal lifecycle review findings for the workflow-state
+projection and pre-transition synchronization gate change.
+
+Closeout status: closed
+
+Review closeout: plan-review-r2
+
+## Resolution Entries
+
+### spec-review-r1
+
+#### WSS-SR1
+
+Finding ID: WSS-SR1
+Disposition: accepted
+Status: resolved and confirmed by spec-review-r2
+Owner: spec author
+Owning stage: spec revision
+Decision owner: spec author
+Decision needed: Choose the exact allowed `Review status` syntax and final-closeout reason-code vocabulary.
+Chosen action: Define exact structured `Review status` syntax plus closed review status, review-stage, round-token, and final-closeout reason-code vocabularies.
+Rationale: Deterministic validation requires owner fields with one parseable grammar and closed accepted values.
+Required outcome: Define exact allowed values and parseable syntax for `Review status` and final-closeout reason codes, including how review stage and round are represented when present.
+Validation target: Revised spec includes closed value tables or equivalent normative requirements and acceptance criteria for valid and invalid bounded owner-field fixtures.
+Resolution: Defined exact parseable syntax for the `Current Handoff Summary` `Review status` field: `<status>; stage=<review-stage>; round=<round-token>`. The spec now defines closed status and review-stage vocabularies and an `r<n>` or `none` round token. It also defines closed final-closeout reason-code syntax: `<reason-code-list> — <bounded detail>`, including readiness cross-field consistency rules.
+Validation evidence: Spec revision validation passed with diff cleanliness, change metadata validation, review artifact validation, and explicit-path lifecycle validation. Spec-review-r2 approved the revised contract with no material findings.
+
+#### WSS-SR2
+
+Finding ID: WSS-SR2
+Disposition: accepted
+Status: resolved and confirmed by spec-review-r2
+Owner: spec author
+Owning stage: spec revision
+Decision owner: spec author
+Decision needed: Choose the authoritative source for each `docs/plan.md` projection cell.
+Chosen action: Define an authoritative source for every `docs/plan.md` projection cell and add exact plan-body owner fields.
+Rationale: Deterministic projection validation requires each table cell to name exactly one owner or parse source.
+Required outcome: Define the authoritative source for each `docs/plan.md` projection cell, especially `State` and `Change ID`.
+Validation target: Revised spec maps `Plan`, `State`, `Next stage`, and `Change ID` to exact owner fields or artifact sources and adds acceptance criteria for projection-source validation.
+Resolution: Defined `Plan` as the actual plan-file link target, `State` as the plan-body `Plan lifecycle state`, `Next stage` as `Current Handoff Summary` `Next stage`, and `Change ID` as the plan-body `Change ID`. The spec clarifies that plan lifecycle state is distinct from current milestone state and that `change.yaml.change_id` is a consistency check rather than the owner.
+Validation evidence: Spec revision validation passed with diff cleanliness, change metadata validation, review artifact validation, and explicit-path lifecycle validation. Spec-review-r2 approved the revised contract with no material findings.
+
+### spec-review-r2
+
+No material findings. Spec-review-r2 confirmed WSS-SR1 and WSS-SR2 are resolved and closed this review-resolution record.
+
+### architecture-review-r1
+
+No material findings. Architecture-review-r1 approved the canonical architecture update and introduced no additional resolution obligations.
+
+### plan-review-r1
+
+#### WSS-PLAN1
+
+Finding ID: WSS-PLAN1
+Disposition: accepted
+Status: resolved and confirmed by plan-review-r2
+Owner: plan author
+Owning stage: plan revision
+Decision owner: plan author
+Decision needed: none
+Chosen action: Revise the plan to separate the mandatory `test-spec` lifecycle stage from implementation milestones.
+Rationale: The governing workflow chain routes clean plan-review to `test-spec`, then implementation. Treating test-spec authoring as an implementation milestone creates a stage-order contradiction before implementation begins.
+Required outcome: The plan routes clean plan-review to `test-spec`, and its first implementation milestone consumes the completed matching test spec instead of authoring it as code-reviewed implementation work.
+Validation target: Revised plan no longer lists `specs/single-source-of-workflow-state.test.md` authoring or `TWSS-*` requirement mapping as an implementation milestone deliverable; plan-review rerun approves the corrected sequencing.
+Resolution: Revised the plan so M1 no longer authors the matching test spec. The revised M1 consumes the completed test spec and starts implementation with fixture-backed validator tests and parser scaffolding. M2 now depends on the completed test spec and M1 parser fixture harness.
+Validation evidence: Plan revision validation passed with diff cleanliness, change metadata validation, and explicit-path artifact lifecycle validation. Plan-review-r2 approved the revised plan with no material findings.
+
+### plan-review-r2
+
+No material findings. Plan-review-r2 confirmed WSS-PLAN1 is resolved and closed this review-resolution record.
+
+## Validation Evidence
+
+Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved.

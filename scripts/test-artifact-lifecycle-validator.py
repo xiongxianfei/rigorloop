@@ -385,6 +385,219 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertTrue(result.warning_findings, msg=f"expected fixture '{relative_fixture}' to warn")
         self.assertIn(expected_text, combined_warnings)
 
+    def write_workflow_state_fixture(
+        self,
+        root: Path,
+        *,
+        lifecycle_state: str = "active",
+        current_milestone_state: str = "review-requested",
+        review_status: str = "review-requested; stage=code-review; round=r1",
+        next_stage: str = "code-review M2",
+        final_closeout_readiness: str = "not ready",
+        readiness: str = "- See `Current Handoff Summary`.\n- Readiness is not Done.",
+        reason: str = "implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 awaits review and later closeout gates remain.",
+        change_id: str = "2026-06-23-workflow-state-fixture",
+        plan_index_state: str | None = None,
+        plan_index_next_stage: str | None = None,
+        plan_index_change_id: str | None = None,
+        plan_index_section: str = "Active",
+        duplicate_row: bool = False,
+        include_change_id_field: bool = True,
+        change_yaml_id: str | None = None,
+        progress: str = "- 2026-06-23: Historical note says Ready for implement M1 and code-review-r1.",
+    ) -> tuple[Path, Path, Path]:
+        plan_path = root / "docs" / "plans" / "2026-06-23-workflow-state-fixture.md"
+        plan_path.parent.mkdir(parents=True, exist_ok=True)
+        change_field = f"- Change ID: {change_id}\n" if include_change_id_field else ""
+        plan_path.write_text(
+            f"""# Workflow State Fixture
+
+## Status
+
+Plan lifecycle state: {lifecycle_state}
+Terminal disposition: none
+
+{change_field}
+## Current Handoff Summary
+
+- Current milestone: M2. Parser Fixture Harness
+- Current milestone state: {current_milestone_state}
+- Latest review evidence: none
+- Review status: {review_status}
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: {next_stage}
+- Final closeout readiness: {final_closeout_readiness}
+- Reason final closeout is or is not ready: {reason}
+
+## Milestones
+
+### M1. Historical Milestone
+
+- Milestone state: closed
+
+### M2. Parser Fixture Harness
+
+- Milestone state: {current_milestone_state}
+
+## Progress
+
+{progress}
+
+## Readiness
+
+{readiness}
+""",
+            encoding="utf-8",
+        )
+
+        plan_index = root / "docs" / "plan.md"
+        plan_index.parent.mkdir(parents=True, exist_ok=True)
+        projected_state = lifecycle_state if plan_index_state is None else plan_index_state
+        projected_next_stage = next_stage if plan_index_next_stage is None else plan_index_next_stage
+        projected_change_id = change_id if plan_index_change_id is None else plan_index_change_id
+        active_rows = ""
+        blocked_rows = "No blocked plans.\n"
+        row = (
+            f"| [Workflow State Fixture](plans/2026-06-23-workflow-state-fixture.md) | "
+            f"{projected_state} | {projected_next_stage} | `{projected_change_id}` |\n"
+        )
+        duplicate = row if duplicate_row else ""
+        if plan_index_section == "Active":
+            active_rows = row + duplicate
+        else:
+            active_rows = "No active plans.\n"
+            blocked_rows = row + duplicate
+        plan_index.write_text(
+            f"""# Plan index
+
+## Active
+
+| Plan | State | Next stage | Change ID |
+| --- | --- | --- | --- |
+{active_rows}
+## Blocked
+
+| Plan | State | Next stage | Change ID |
+| --- | --- | --- | --- |
+{blocked_rows}
+""",
+            encoding="utf-8",
+        )
+
+        change_yaml = root / "docs" / "changes" / change_id / "change.yaml"
+        change_yaml.parent.mkdir(parents=True, exist_ok=True)
+        change_yaml.write_text(
+            f"""change_id: {change_yaml_id or change_id}
+title: Workflow state fixture
+classification: implementation
+risk: low
+artifacts:
+  plan: docs/plans/2026-06-23-workflow-state-fixture.md
+requirements:
+  - fixture
+tests:
+  - fixture
+validation:
+  - command: fixture
+    result: pass
+changed_files:
+  - docs/plans/2026-06-23-workflow-state-fixture.md
+review:
+  status: clean
+""",
+            encoding="utf-8",
+        )
+        return plan_path, plan_index, change_yaml
+
+    def validate_workflow_state_fixture(self, root: Path) -> tuple[object, str]:
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            paths=[
+                "docs/plan.md",
+                "docs/plans/2026-06-23-workflow-state-fixture.md",
+                "docs/changes/2026-06-23-workflow-state-fixture/change.yaml",
+            ],
+        )
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        return result, messages
+
+    def test_workflow_state_owner_review_status_cases(self) -> None:
+        valid_root = Path(tempfile.mkdtemp(prefix="workflow-state-owner-valid-"))
+        self.addCleanupTree(valid_root)
+        self.write_workflow_state_fixture(valid_root)
+        result, messages = self.validate_workflow_state_fixture(valid_root)
+        self.assertFalse(result.blocking_findings, msg=messages)
+
+        invalid_cases = {
+            "unknown": "later; stage=code-review; round=r1",
+            "cross-field": "not-started; stage=code-review; round=r1",
+            "prose": "review-requested; stage=code-review; round=r1 after fixes",
+            "round": "review-requested; stage=code-review; round=1",
+        }
+        for name, review_status in invalid_cases.items():
+            fixture_root = Path(tempfile.mkdtemp(prefix=f"workflow-state-owner-{name}-"))
+            self.addCleanupTree(fixture_root)
+            self.write_workflow_state_fixture(fixture_root, review_status=review_status)
+            result, messages = self.validate_workflow_state_fixture(fixture_root)
+            self.assertTrue(result.blocking_findings, msg=f"{name} should fail")
+            self.assertIn("Review status", messages)
+
+    def test_workflow_state_final_closeout_reason_cases(self) -> None:
+        cases = {
+            "ready_with_pending": {
+                "final_closeout_readiness": "ready",
+                "reason": "verify-pending — verify has not run.",
+            },
+            "not_ready_empty": {"reason": " — no reason code"},
+            "unknown": {"reason": "almost-ready — just waiting on review."},
+            "duplicate": {"reason": "verify-pending, verify-pending — duplicate code."},
+            "unordered": {"reason": "verify-pending, implementation-milestones-open — wrong order."},
+        }
+        for name, kwargs in cases.items():
+            fixture_root = Path(tempfile.mkdtemp(prefix=f"workflow-state-reason-{name}-"))
+            self.addCleanupTree(fixture_root)
+            self.write_workflow_state_fixture(fixture_root, **kwargs)
+            result, messages = self.validate_workflow_state_fixture(fixture_root)
+            self.assertTrue(result.blocking_findings, msg=f"{name} should fail")
+            self.assertIn("Reason final closeout", messages)
+
+    def test_workflow_state_plan_index_projection_sources(self) -> None:
+        valid_root = Path(tempfile.mkdtemp(prefix="workflow-state-proj-valid-"))
+        self.addCleanupTree(valid_root)
+        self.write_workflow_state_fixture(valid_root)
+        result, messages = self.validate_workflow_state_fixture(valid_root)
+        self.assertFalse(result.blocking_findings, msg=messages)
+
+        invalid_cases = {
+            "state": {"plan_index_state": "review-requested", "expected": "State"},
+            "next_stage": {"plan_index_next_stage": "implement M2", "expected": "Next stage"},
+            "change_id": {"plan_index_change_id": "wrong-change", "expected": "Change ID"},
+            "change_yaml": {"change_yaml_id": "wrong-change", "expected": "change.yaml change_id"},
+            "section": {"plan_index_section": "Blocked", "expected": "section"},
+            "duplicate": {"duplicate_row": True, "expected": "Duplicate"},
+            "missing_change": {"include_change_id_field": False, "expected": "Change ID"},
+        }
+        for name, kwargs in invalid_cases.items():
+            expected = kwargs.pop("expected")
+            fixture_root = Path(tempfile.mkdtemp(prefix=f"workflow-state-proj-{name}-"))
+            self.addCleanupTree(fixture_root)
+            self.write_workflow_state_fixture(fixture_root, **kwargs)
+            result, messages = self.validate_workflow_state_fixture(fixture_root)
+            self.assertTrue(result.blocking_findings, msg=f"{name} should fail")
+            self.assertIn(expected, messages)
+
+    def test_workflow_state_readiness_live_surface_rejects_historical_token_drift(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-stale-readiness-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            readiness="- Ready for implement M1.\n- Current round is r1.",
+        )
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("Readiness", messages)
+
     def write_plan_archive_contract_fixture(
         self,
         root: Path,
