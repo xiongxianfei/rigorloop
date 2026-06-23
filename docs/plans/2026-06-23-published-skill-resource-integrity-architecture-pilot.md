@@ -80,13 +80,13 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M7. Lifecycle Closeout and Release-Gate Alignment
-- Current milestone state: review-requested
-- Last reviewed milestone: M6. Repository-Wide Audit and Enforcement Decision
-- Review status: code-review-m6-r1 clean-with-notes; M6 closed
-- Remaining in-scope implementation milestones: M7
-- Next stage: code-review M7
+- Current milestone state: closed
+- Last reviewed milestone: M7. Lifecycle Closeout and Release-Gate Alignment
+- Review status: code-review-m7-r1 clean-with-notes; M7 closed
+- Remaining in-scope implementation milestones: none
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M7 code-review, any required review-resolution, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: verify and PR handoff have not run.
 
 ## Milestones
 
@@ -405,7 +405,7 @@ M5 relationship to M1:
 
 ### M7. Lifecycle Closeout and Release-Gate Alignment
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Close the planned initiative with rationale, validation evidence, final lifecycle state synchronization, and PR-ready handoff only after all implementation milestones are closed.
 - Requirements: R46-R55 evidence coverage
 - Files/components likely touched:
@@ -519,6 +519,7 @@ M5 relationship to M1:
 - 2026-06-23: code-review-m6-r1 returned clean-with-notes, closed M6, and handed off to implement M7.
 - 2026-06-23: started M7 lifecycle closeout. Scope is limited to durable change rationale, final validation evidence, change metadata, and plan/index synchronization before M7 code-review.
 - 2026-06-23: implemented M7 lifecycle closeout. Added `explain-change.md`, synchronized change metadata and active plan state, reran the final validation bundle, and handed M7 to code-review without claiming verify, PR, live-registry, or branch readiness.
+- 2026-06-23: code-review-m7-r1 returned clean-with-notes, closed M7, and handed off to verify.
 
 ## Decision log
 
@@ -751,6 +752,11 @@ M5 relationship to M1:
   - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md`
   - `git diff --check --`
+- 2026-06-23: M7 code-review recording validation passed:
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m7-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -759,4 +765,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M7.
+- Ready for verify.
