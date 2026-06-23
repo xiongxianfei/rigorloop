@@ -80,13 +80,13 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: M6. Repository-Wide Audit and Enforcement Decision
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M5. Reusable Packed Clean-Install Regression Gate
 - Review status: code-review-m5-r2 clean-with-notes; M5 closed
 - Remaining in-scope implementation milestones: M6, M7
-- Next stage: implement M6
+- Next stage: code-review M6
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: remaining implementation milestones, code-review, any required review-resolution, explain-change, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: M6 code-review, remaining M7 implementation, any required review-resolution, explain-change, verify, and PR handoff have not run.
 
 ## Milestones
 
@@ -365,7 +365,7 @@ M5 relationship to M1:
 
 ### M6. Repository-Wide Audit and Enforcement Decision
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Run the reusable validator across current published skills, resolve architecture drift, and decide whether global enforcement can be enabled now.
 - Requirements: R53-R53b, R49d
 - Files/components likely touched:
@@ -388,7 +388,7 @@ M5 relationship to M1:
 - Validation commands:
   - `python scripts/validate-skills.py`
   - `python scripts/test-skill-validator.py`
-  - `bash scripts/ci.sh --mode explicit --path skills --path scripts/skill_validation.py --path scripts/test-skill-validator.py`
+  - `bash scripts/ci.sh --mode explicit --path <each current skills/*/SKILL.md> --path scripts/skill_validation.py --path scripts/test-skill-validator.py`
 - Expected observable result: current skill resource-integrity state is known, and enforcement state matches the approved rollout boundary.
 - Commit message: `M6: audit published skill resource integrity`
 - Milestone closeout:
@@ -515,6 +515,7 @@ M5 relationship to M1:
 - 2026-06-23: code-review-m5-r1 requested changes for SRI-M5-CR1. The clean-install smoke implementation covers successful real install, non-mutating command output, stale installed bytes, and `--root` enforcement, but it lacks direct regression proof for the named missing installed mapped-resource case where the skill root exists and a mapped resource file is absent.
 - 2026-06-23: implemented SRI-M5-CR1 resolution. Added a direct clean-install smoke regression for an installed target skill root that exists with `SKILL.md` present while `assets/template.md` is removed after real local archive installation. The test asserts the missing-resource diagnostic names Codex, `portable-with-assets`, and `assets/template.md`, and that the case is not reported as a missing skill root.
 - 2026-06-23: code-review-m5-r2 returned clean-with-notes, closed M5, and handed off to implement M6.
+- 2026-06-23: implemented M6 repository-wide resource audit. `python scripts/validate-skills.py` validated all 23 canonical skill files; the audit found no unmapped legacy skill-local resource references, missing mapped resources, verb/class mismatches, or required temporary exceptions. Repository-wide hard enforcement can remain enabled for current skills, and new or changed skills continue to be enforced through the same validator and regression fixtures.
 
 ## Decision log
 
@@ -524,6 +525,7 @@ M5 relationship to M1:
 | 2026-06-23 | Sequence validator before architecture normalization. | The architecture skill should be normalized against the same deterministic contract that will protect later skills. | Fix architecture first and add reusable validation afterward. |
 | 2026-06-23 | Require minimum clean-install inspection in M1 before architecture resource changes. | R55/R55a require the complete resource chain, including all target installations, to be audited before mutation. | Defer installed-tree evidence until M5. |
 | 2026-06-23 | Retain M5 as reusable post-change clean-install enforcement. | The baseline and the durable regression gate serve different purposes. | Remove later clean-install automation after one diagnostic audit. |
+| 2026-06-23 | Keep repository-wide resource-integrity enforcement enabled after the M6 audit. | The current canonical `skills/` audit is clean and no unresolved drift requires a deferral or temporary exception. | Leave global enforcement disabled despite a clean audit. |
 
 ## Surprises and discoveries
 
@@ -544,6 +546,7 @@ M5 relationship to M1:
 - SRI-M4-CR2 shows that recorded-source compatibility also needs a narrower archive split. Skipping current canonical skill lint must not mean accepting `adapter_archives: pass` without rebuilt archive-content or mapped-resource parity inspection.
 - M5 uses temporary local release-candidate CLI metadata generated from the packed archives under test. Current canonical `v0.3.2` archives intentionally do not rewrite tracked bundled release metadata during the smoke; the smoke proves the locally packed candidates through the public `init --from-archive` path.
 - M5 installer acceptance depends on adapter artifact tree-hash metadata, while resource-integrity proof remains raw-byte SHA-256 per mapped resource. The local candidate metadata therefore mirrors the CLI tree-hash contract only to let the real installer validate and extract the packed archives.
+- M6 found that `bash scripts/ci.sh --mode explicit --path skills ...` is not a supported selector input because the v1 selector classifies individual `skills/*/SKILL.md` files, not the `skills` directory itself. M6 used the supported classified-path form with every current canonical `SKILL.md` plus the validator/test files.
 
 ## Validation notes
 
@@ -717,6 +720,15 @@ M5 relationship to M1:
   - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/clean-install-proof.md`
   - `git diff --check --`
+- 2026-06-23: M6 implementation validation passed:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `bash scripts/ci.sh --mode explicit --path skills --path scripts/skill_validation.py --path scripts/test-skill-validator.py` blocked because `skills` is not a selector-classified path.
+  - `bash scripts/ci.sh --mode explicit --path skills/architecture-review/SKILL.md --path skills/architecture/SKILL.md --path skills/bugfix/SKILL.md --path skills/ci-maintenance/SKILL.md --path skills/code-review/SKILL.md --path skills/constitution/SKILL.md --path skills/explain-change/SKILL.md --path skills/explore/SKILL.md --path skills/implement/SKILL.md --path skills/learn/SKILL.md --path skills/plan-review/SKILL.md --path skills/plan/SKILL.md --path skills/pr/SKILL.md --path skills/project-map/SKILL.md --path skills/proposal-review/SKILL.md --path skills/proposal/SKILL.md --path skills/research/SKILL.md --path skills/spec-review/SKILL.md --path skills/spec/SKILL.md --path skills/test-spec/SKILL.md --path skills/verify/SKILL.md --path skills/vision/SKILL.md --path skills/workflow/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/repository-wide-resource-audit.md`
+  - `git diff --check --`
 
 ## Outcome and retrospective
 
@@ -725,4 +737,4 @@ M5 relationship to M1:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for implement M6.
+- Ready for code-review M6.
