@@ -262,6 +262,14 @@ validation:
     result: pass
   - command: git diff --check --
     result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m4-r1.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-log.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/review-resolution.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass
+  - command: git diff --check --
+    result: pass
 changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
@@ -279,6 +287,7 @@ changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m2-r4.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m3-r1.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m3-r2.md
+  - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/code-review-m4-r1.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/behavior-preservation.md
   - docs/plan.md
   - docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
@@ -300,8 +309,8 @@ changed_files:
   - skills/architecture/assets/adr-skeleton.md
   - skills/architecture/assets/diagram-styles.mmd
 review:
-  status: review_requested_m4
-  unresolved_items: 0
+  status: changes_requested_m4_r1
+  unresolved_items: 1
 test_spec:
   status: owner-approved
   path: specs/skill-contract.test.md
