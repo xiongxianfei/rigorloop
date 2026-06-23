@@ -638,6 +638,47 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             include_metadata=include_metadata,
         )
 
+    def write_resource_integrity_skill(
+        self,
+        root: Path,
+        *,
+        resource_entries: str,
+        resources: dict[str, str] | None = None,
+        body_extra: str = "",
+        skill_name: str = "resource-integrity-fixture",
+    ) -> Path:
+        skill_dir = root / skill_name
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text(
+            "\n".join(
+                [
+                    "---",
+                    f"name: {skill_name}",
+                    "description: Validate mapped skill-local resource integrity.",
+                    "---",
+                    "",
+                    f"# {skill_name}",
+                    "",
+                    "## Resource map",
+                    "",
+                    textwrap.dedent(resource_entries).strip(),
+                    "",
+                    "## Expected output",
+                    "",
+                    "Compact output summary.",
+                    "",
+                    body_extra.strip(),
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
+        for relative_path, content in (resources or {}).items():
+            resource_path = skill_dir / relative_path
+            resource_path.parent.mkdir(parents=True, exist_ok=True)
+            resource_path.write_text(textwrap.dedent(content), encoding="utf-8")
+        return skill_dir
+
     def assertFixturePasses(self, relative_path: str) -> None:
         result = run_validator(FIXTURES / relative_path)
         self.assertEqual(
@@ -811,6 +852,159 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
     def test_published_design_packaged_script_resource_map_passes(self) -> None:
         self.assertFixturePasses("published-design/packaged-script-resource-map")
+
+    def test_published_skill_resource_map_copy_read_run_classes_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_dir = self.write_resource_integrity_skill(
+                Path(temporary),
+                resource_entries="""\
+                - COPY `assets/skeleton.md` when creating the output structure.
+                  Fill all fields and do not emit unfilled placeholders.
+                - READ `references/guidance.md` when reviewing domain guidance.
+                - RUN `scripts/check.py` when deterministic checking is needed.
+                  Input: repository root path.
+                  Output: zero exit code or diagnostic output.
+                  Failure: nonzero exit code blocks the check.
+                """,
+                resources={
+                    "assets/skeleton.md": "# Skeleton\n",
+                    "references/guidance.md": "# Guidance\n",
+                    "scripts/check.py": "print('ok')\n",
+                },
+            )
+            result = run_validator(skill_dir)
+            self.assertEqual(
+                result.returncode,
+                0,
+                msg=f"expected mapped resources to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+            )
+
+    def assertResourceIntegritySkillFails(
+        self,
+        *,
+        resource_entries: str,
+        expected_text: str,
+        resources: dict[str, str] | None = None,
+        body_extra: str = "",
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_dir = self.write_resource_integrity_skill(
+                Path(temporary),
+                resource_entries=resource_entries,
+                resources=resources,
+                body_extra=body_extra,
+            )
+            result = run_validator(skill_dir)
+            combined_output = f"{result.stdout}\n{result.stderr}"
+            self.assertNotEqual(
+                result.returncode,
+                0,
+                msg=f"expected resource-integrity fixture to fail\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+            )
+            self.assertIn(expected_text, combined_output)
+
+    def test_published_skill_resource_map_copy_must_point_to_assets(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - COPY `references/guidance.md` when creating output.
+            """,
+            resources={"references/guidance.md": "# Guidance\n"},
+            expected_text="Resource map entry 'COPY references/guidance.md' must point to assets/",
+        )
+
+    def test_published_skill_resource_map_read_must_point_to_references(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `assets/skeleton.md` when reviewing guidance.
+            """,
+            resources={"assets/skeleton.md": "# Skeleton\n"},
+            expected_text="Resource map entry 'READ assets/skeleton.md' must point to references/",
+        )
+
+    def test_published_skill_resource_map_run_must_point_to_scripts(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - RUN `assets/check.md` when checking output.
+            """,
+            resources={"assets/check.md": "# Check\n"},
+            expected_text="Resource map entry 'RUN assets/check.md' must point to scripts/",
+        )
+
+    def test_published_skill_resource_map_rejects_templates_class(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - COPY `templates/architecture.md` when creating output.
+            """,
+            resources={"templates/architecture.md": "# Architecture\n"},
+            expected_text="Resource map entry 'COPY templates/architecture.md' must point to assets/",
+        )
+
+    def test_published_skill_resource_map_rejects_missing_mapped_resource(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - COPY `assets/missing.md` when creating output.
+            """,
+            expected_text="mapped resource 'assets/missing.md' does not exist in canonical skill source",
+        )
+
+    def test_published_skill_resource_map_rejects_path_traversal(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `../references/escape.md` when reviewing guidance.
+            """,
+            expected_text="mapped resource path '../references/escape.md' must be relative to the skill root and stay inside it",
+        )
+
+    def test_published_skill_resource_map_rejects_absolute_path(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - RUN `/tmp/check.py` when checking output.
+            """,
+            expected_text="mapped resource path '/tmp/check.py' must be relative to the skill root and stay inside it",
+        )
+
+    def test_published_skill_legacy_template_loading_instruction_fails(self) -> None:
+        self.assertResourceIntegritySkillFails(
+            resource_entries="""\
+            - READ `references/guidance.md` when reviewing guidance.
+            """,
+            resources={"references/guidance.md": "# Guidance\n"},
+            body_extra="Use `templates/architecture.md` for the output skeleton.",
+            expected_text="unmapped legacy skill-local resource reference 'templates/architecture.md'",
+        )
+
+    def test_published_skill_legacy_lint_avoids_examples_and_docs_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_dir = self.write_resource_integrity_skill(
+                Path(temporary),
+                resource_entries="""\
+                - READ `references/guidance.md` when reviewing guidance.
+                """,
+                resources={"references/guidance.md": "# Guidance\n"},
+                body_extra="""\
+                Artifact examples may mention `docs/changes/example/review-log.md`.
+
+                ```text
+                Use templates/architecture.md in a customer artifact example.
+                ```
+
+                Customer projects may contain `assets/example.png` as normal data.
+                """,
+            )
+            result = run_validator(skill_dir)
+            self.assertEqual(
+                result.returncode,
+                0,
+                msg=f"expected non-resource examples to pass\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+            )
+
+    def test_current_architecture_legacy_references_are_temporary_migration_debt(self) -> None:
+        result = run_validator(ROOT / "skills" / "architecture")
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"expected architecture migration exception to keep canonical validation green before M3\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
 
     def test_published_design_plan_asset_pilot_valid_fixture_passes(self) -> None:
         self.assertFixturePasses("published-design/plan-assets-valid")
