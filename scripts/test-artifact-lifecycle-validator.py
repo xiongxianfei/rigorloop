@@ -407,6 +407,8 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         milestone_projection_state: str | None = None,
         include_open_review_finding: bool = False,
         review_unresolved_items: int = 0,
+        review_resolution_closeout: str = "open",
+        review_resolution_validation_evidence: bool = False,
         progress: str = "- 2026-06-23: Historical note says Ready for implement M1 and code-review-r1.",
     ) -> tuple[Path, Path, Path]:
         plan_path = root / "docs" / "plans" / "2026-06-23-workflow-state-fixture.md"
@@ -550,10 +552,11 @@ Open findings: WSS-F1
 """,
                 encoding="utf-8",
             )
+            validation_evidence = "Validation evidence: Fixture validation passed.\n" if review_resolution_validation_evidence else ""
             (change_yaml.parent / "review-resolution.md").write_text(
-                """# Review Resolution
+                f"""# Review Resolution
 
-Closeout status: open
+Closeout status: {review_resolution_closeout}
 
 ### code-review-r1
 
@@ -564,6 +567,7 @@ Owning stage: review-resolution
 Chosen action: Fix the open finding.
 Rationale: The fixture represents unresolved review evidence.
 Validation target: Focused lifecycle validation fails until owner state is resolution-needed.
+{validation_evidence}
 """,
                 encoding="utf-8",
             )
@@ -714,6 +718,24 @@ Validation target: Focused lifecycle validation fails until owner state is resol
             fixture_root,
             include_open_review_finding=True,
             review_unresolved_items=1,
+            current_milestone_state="review-requested",
+            review_status="review-requested; stage=code-review; round=r2",
+            next_stage="code-review M2",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("resolution-needed", messages)
+
+    def test_workflow_state_closed_status_missing_validation_blocks_review_requested_owner_state(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-closed-missing-validation-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=True,
+            review_unresolved_items=1,
+            review_resolution_closeout="closed",
             current_milestone_state="review-requested",
             review_status="review-requested; stage=code-review; round=r2",
             next_stage="code-review M2",

@@ -62,7 +62,7 @@
 | `R53`-`R55b` | `T14`, `T22` | unit, integration | Active/blocked `docs/plan.md` projection table and authoritative source fields |
 | `R56`, `R57` | `T15`, `T19`, `T22` | unit, migration | Current milestone-state projection and closed historical milestone preservation |
 | `R58`-`R63` | `T16`, `T18`, `T22` | integration, contract | Binding pre-transition state-sync gate, verify/CI enforcement, optional hooks, and partial-transition recovery |
-| `R64`-`R72` | `T17`, `T22` | integration | Review-log, review-resolution, and change metadata consistency for open material findings and derived-only metadata |
+| `R64`-`R72` | `T17`, `T22` | integration | Review-log, review-resolution, and change metadata consistency for open material findings, shared closure predicates, and derived-only metadata |
 | `R73`-`R76` | `T18`, `T22` | unit, integration | Parser-scoped stale-token detection and raw grep diagnostic boundary |
 | `R77`-`R80` | `T20` | unit, contract | Optional projection writer dry-run, write boundaries, and golden fixtures |
 | `R81`-`R83` | `T19`, `T22` | migration | First enforcement scope and historical plan compatibility |
@@ -476,7 +476,7 @@
 
 ### T17. Review evidence and change metadata constrain incompatible owner states
 
-- Covers: `R64`-`R72`, `E8`, `EB4`, `EB5`, `EB12`, `EB13`, `EC9`, `EC11`, `AC-WSS-007`, `AC-WSS-008`, `AC-WSS-012`, `AC-WSS-025`
+- Covers: `R64`-`R72`, including `R65a`, `E8`, `EB4`, `EB5`, `EB12`, `EB13`, `EC9`, `EC11`, `AC-WSS-007`, `AC-WSS-008`, `AC-WSS-012`, `AC-WSS-025`
 - Level: integration
 - Fixture/setup:
   - Formal review record fixtures with accepted material findings.
@@ -487,6 +487,7 @@
   - Fail when accepted material findings remain open but final-closeout readiness is not `not ready`.
   - Fail when `review-requested` is used while required dispositions remain unresolved.
   - Pass when findings have final dispositions, required validation evidence, no later reopening, and owner routes to rereview rather than downstream gates.
+  - Assert the finding-closure summary predicate and closeout-mode review artifact validation agree across negative and positive closeout fixtures.
   - Fail when `change.yaml` unresolved finding count or `change_id` consistency differs from owning review or plan evidence.
   - Fail when a next-stage-like `change.yaml` field acts as competing live next-stage authority.
 - Expected result:

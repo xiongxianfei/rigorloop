@@ -78,13 +78,13 @@ The Single Source of Workflow State work settled ownership, but current workflow
 ## Current Handoff Summary
 
 - Current milestone: M3. Review Evidence and Change Metadata Consistency
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md
-- Review status: changes-requested; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: review-resolution
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — WSS-CR2 remains open for M3, M4 and M5 remain open, and final closeout gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — WSS-CR2 is resolved pending code-review-m3-r2, M4 and M5 remain open, and final closeout gates remain.
 
 ## Milestones
 
@@ -168,7 +168,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 ### M3. Review Evidence and Change Metadata Consistency
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Make review records, `review-log.md`, `review-resolution.md`, and `change.yaml` derived summaries constrain incompatible owner state without becoming live-state owners.
 - Requirements: R64-R75, R10-R12, AC-WSS-007, AC-WSS-008, AC-WSS-012, AC-WSS-025
 - Files/components likely touched:
@@ -317,6 +317,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: M3 implementation started; scope is review evidence summary derivation, change metadata review count consistency, and owner-state blocking while material findings remain open.
 - 2026-06-23: M3 added review-evidence summary derivation, change metadata review count checks, next-stage-like metadata rejection, and lifecycle owner-state constraints for open material findings; targeted validation passed and M3 is ready for code-review.
 - 2026-06-23: Code-review M3 R1 requested changes for WSS-CR2; M3 remains open in review-resolution.
+- 2026-06-23: WSS-CR2 resolved by routing review evidence summaries and closeout-mode validation through a shared finding closure predicate; M3 is ready for code-review R2.
 
 ## Decision log
 
@@ -332,6 +333,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - M1 state-sync enforcement is guarded to plans already carrying the structured `Latest review evidence` handoff field so legacy active plans remain compatible until the M4 audit and normalization milestone.
 - M2 found that owner-field and plan-index projection parsing were already present from M1 and WSS-CR1 resolution, so the remaining parser gap was the current milestone-state projection plus stale lifecycle route claims in `Readiness`.
 - M3 reused the existing review artifact parser and kept change metadata as a derived consistency surface; no live next-stage ownership moved into `change.yaml`.
+- WSS-CR2 confirmed that derived lifecycle booleans need one shared predicate; the review evidence summary and closeout-mode review validator now share `finding_closure_state()`.
 
 ## Validation notes
 
@@ -373,6 +375,13 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: `python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after code-review M3 R1 recording.
 - 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md` passed after code-review M3 R1 recording.
 - 2026-06-23: `git diff --check -- docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after code-review M3 R1 recording.
+- 2026-06-23: `python scripts/test-review-artifact-validator.py` passed after WSS-CR2 resolution.
+- 2026-06-23: `python scripts/test-change-metadata-validator.py` passed after WSS-CR2 resolution.
+- 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py` passed after WSS-CR2 resolution.
+- 2026-06-23: `python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/` passed after WSS-CR2 resolution.
+- 2026-06-23: `python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml` passed after WSS-CR2 resolution.
+- 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md` passed after WSS-CR2 resolution.
+- 2026-06-23: `git diff --check -- specs/single-source-of-workflow-state.md specs/single-source-of-workflow-state.test.md scripts/review_artifact_validation.py scripts/validate-change-metadata.py scripts/test-review-artifact-validator.py scripts/test-change-metadata-validator.py scripts/test-artifact-lifecycle-validator.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md` passed after WSS-CR2 resolution.
 
 ## Outcome and retrospective
 
