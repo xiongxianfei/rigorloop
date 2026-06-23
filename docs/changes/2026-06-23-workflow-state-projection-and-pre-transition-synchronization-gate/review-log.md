@@ -122,3 +122,17 @@ Resolution: review-resolution.md#code-review-m2-r1
 Material findings: none
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m3-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 8946e67c
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r1.md
+Record: reviews/code-review-m3-r1.md
+Resolution: review-resolution.md#code-review-m3-r1
+Material findings: WSS-CR2
+Open findings: WSS-CR2
+Recording status: recorded

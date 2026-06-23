@@ -5,7 +5,7 @@
 This record tracks formal lifecycle review findings for the workflow-state
 projection and pre-transition synchronization gate change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m1-r2
 
@@ -101,6 +101,24 @@ No material findings. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed
 
 No material findings. Code-review-m2-r1 approved the M2 parser and lifecycle state-sync validator slice and introduced no additional resolution obligations.
 
+### code-review-m3-r1
+
+#### WSS-CR2
+
+Finding ID: WSS-CR2
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Chosen action: Revise review evidence summary derivation so closed/open finding counts require review-artifact closeout semantics, not only `Closeout status: closed`.
+Rationale: R65 requires material findings to stay open until final disposition, required action or accepted exception, validation evidence, and no later reopening are all satisfied.
+Required outcome: Derived `change.yaml` review counts and workflow owner-state blocking must still treat a finding as open when `review-resolution.md` lacks required closeout evidence, even if the file says `Closeout status: closed`.
+Validation target: Add failing fixtures where a closed-status resolution entry without required validation evidence is still counted open for change metadata and lifecycle owner-state checks, plus a positive fixture only after closeout validation succeeds.
+Resolution: pending
+Validation evidence: pending
+
 ## Validation Evidence
 
-Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed. Code-review-m2-r1 approved M2 with no material findings.
+Spec revision completed for WSS-SR1 and WSS-SR2. Spec-review-r2 approved the revised contract with no material findings. Architecture-review-r1 approved the canonical architecture update with no material findings. Plan-review-r2 approved the revised plan and confirmed WSS-PLAN1 is resolved. Code-review-m1-r2 confirmed WSS-CR1 is resolved and closed. Code-review-m2-r1 approved M2 with no material findings. Code-review-m3-r1 requested changes for WSS-CR2; review-resolution is open.

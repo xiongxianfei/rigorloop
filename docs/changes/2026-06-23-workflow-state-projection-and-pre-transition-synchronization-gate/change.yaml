@@ -206,6 +206,14 @@ validation:
     result: pass_after_m3_review_consistency_implementation
   - command: git diff --check -- scripts/review_artifact_validation.py scripts/change_metadata_semantics.py scripts/validate-review-artifacts.py scripts/validate-change-metadata.py scripts/test-review-artifact-validator.py scripts/test-change-metadata-validator.py scripts/test-artifact-lifecycle-validator.py tests/fixtures docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md
     result: pass_after_m3_review_consistency_implementation
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3_r1
+  - command: git diff --check -- docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_code_review_m3_r1
 changed_files:
   - docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - specs/single-source-of-workflow-state.md
@@ -233,12 +241,11 @@ changed_files:
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m1-r1.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m1-r2.md
   - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m2-r1.md
+  - docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m3-r1.md
 review:
-  status: clean
-  unresolved_items: 0
-  reviewed_artifact: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m2-r1.md
-  review_log: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md
+  status: changes-requested
+  unresolved_items: 1
   review_resolution: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md
-  material_findings: 4
+  material_findings: 5
   closed_findings: 4
-  open_findings: 0
+  open_findings: 1
