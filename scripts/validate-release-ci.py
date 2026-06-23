@@ -14,7 +14,7 @@ from pathlib import Path
 from adapter_distribution import (
     ADAPTER_ARTIFACT_REPORT_ROOT,
     parse_adapter_artifact_metadata_yaml,
-    validate_release_output,
+    validate_adapter_artifact_metadata,
 )
 
 
@@ -76,11 +76,9 @@ def validate_from_recorded_source(version: str, source_commit: str) -> int:
         if build_status:
             return build_status
 
-        errors = validate_release_output(
+        errors = validate_adapter_artifact_metadata(
             version,
-            skills_root=source_root / "skills",
-            template_root=source_root / "scripts" / "adapter_templates",
-            release_output_dir=release_output,
+            release_output,
             release_commit=source_commit,
         )
         if errors:

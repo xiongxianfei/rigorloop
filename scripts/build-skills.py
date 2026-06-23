@@ -11,6 +11,8 @@ from pathlib import Path
 from skill_validation import (
     CANONICAL_SKILLS_DIR,
     GENERATED_SKILLS_DIR,
+    discover_source_skill_dirs,
+    mapped_resource_parity_errors,
     validate_skill_tree,
 )
 
@@ -83,11 +85,27 @@ def validate_generated_output(generated_root: Path) -> list[str]:
     return result.errors
 
 
+def collect_generated_resource_parity_errors(source_root: Path, generated_root: Path) -> list[str]:
+    errors: list[str] = []
+    for skill_dir in discover_source_skill_dirs(source_root):
+        errors.extend(
+            mapped_resource_parity_errors(
+                skill_dir,
+                generated_root / skill_dir.name,
+                surface_label="generated local skill mirror",
+            )
+        )
+    return errors
+
+
 def check_generated_output(source_root: Path, output_root: Path) -> list[str]:
     sync_generated_output(source_root, output_root)
     errors = validate_generated_output(output_root)
     if errors:
         return errors
+    resource_parity_errors = collect_generated_resource_parity_errors(source_root, output_root)
+    if resource_parity_errors:
+        return resource_parity_errors
     return collect_drift(source_root, output_root)
 
 

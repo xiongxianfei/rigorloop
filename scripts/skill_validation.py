@@ -36,6 +36,14 @@ class ResourceInstructionSegment:
         return self.start_line + self.text[:offset].count("\n")
 
 
+@dataclass(frozen=True)
+class MappedResourceIdentity:
+    skill_name: str
+    relative_path: str
+    path: Path
+    sha256: str
+
+
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD)\b")
 READABILITY_SCHEMA_VERSION = "skill-readability-v1"
 READABILITY_STAGE_VALUES = {
@@ -1474,6 +1482,79 @@ def _resource_map_entries(section: str) -> list[tuple[str, str, str]]:
             )
         )
     return entries
+
+
+def _sha256_bytes(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def mapped_resource_identities_for_skill(skill_dir: Path) -> tuple[MappedResourceIdentity, ...]:
+    """Return mapped skill-local resource identities from canonical skill source."""
+
+    skill_file = skill_dir / "SKILL.md"
+    if not skill_file.is_file():
+        return ()
+
+    try:
+        metadata, body = load_skill_file(skill_file)
+    except (OSError, ValueError):
+        return ()
+
+    skill_name = metadata.get("name")
+    if not isinstance(skill_name, str) or not skill_name:
+        skill_name = skill_dir.name
+
+    section = _extract_markdown_section(body, "Resource map")
+    if section is None:
+        return ()
+
+    identities: list[MappedResourceIdentity] = []
+    for _verb, relative_path, _entry in _resource_map_entries(section):
+        if _mapped_resource_containment_error(relative_path, skill_dir) is not None:
+            continue
+        path = skill_dir / relative_path
+        if not path.is_file():
+            continue
+        identities.append(
+            MappedResourceIdentity(
+                skill_name=skill_name,
+                relative_path=relative_path,
+                path=path,
+                sha256=_sha256_bytes(path),
+            )
+        )
+    return tuple(identities)
+
+
+def mapped_resource_parity_errors(
+    canonical_skill_dir: Path,
+    generated_skill_dir: Path,
+    *,
+    skill_label: str | None = None,
+    surface_label: str,
+    actual_hash_label: str = "generated",
+) -> list[str]:
+    """Compare mapped resources by skill-root relative path and raw-byte SHA-256."""
+
+    errors: list[str] = []
+    for identity in mapped_resource_identities_for_skill(canonical_skill_dir):
+        label = skill_label or identity.skill_name
+        generated_path = generated_skill_dir / identity.relative_path
+        if not generated_path.is_file():
+            errors.append(
+                f"mapped resource missing: {label}: {identity.relative_path} "
+                f"in {surface_label}"
+            )
+            continue
+
+        actual_sha256 = _sha256_bytes(generated_path)
+        if actual_sha256 != identity.sha256:
+            errors.append(
+                f"mapped resource parity mismatch: {label}: {identity.relative_path}: "
+                f"canonical sha256={identity.sha256}; "
+                f"{actual_hash_label} sha256={actual_sha256}"
+            )
+    return errors
 
 
 def _mapped_resource_containment_error(resource_path: str, skill_dir: Path) -> str | None:

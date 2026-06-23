@@ -90,6 +90,56 @@ class BuildSkillsTests(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn("file must begin with YAML frontmatter", output.getvalue())
 
+    def test_generated_resource_parity_reports_stale_mapped_resource_hashes(self) -> None:
+        output_dir = self.tmpdir / "generated-skills"
+        self.build_skills.sync_generated_output(
+            self.build_skills.CANONICAL_SKILLS_DIR,
+            output_dir,
+        )
+        generated_resource = output_dir / "architecture" / "assets" / "architecture-skeleton.md"
+        generated_resource.write_text(
+            generated_resource.read_text(encoding="utf-8") + "\nstale\n",
+            encoding="utf-8",
+        )
+
+        errors = self.build_skills.collect_generated_resource_parity_errors(
+            self.build_skills.CANONICAL_SKILLS_DIR,
+            output_dir,
+        )
+
+        self.assertTrue(
+            any(
+                "mapped resource parity mismatch: architecture: assets/architecture-skeleton.md"
+                in error
+                and "canonical sha256=" in error
+                and "generated sha256=" in error
+                for error in errors
+            ),
+            errors,
+        )
+
+    def test_generated_resource_parity_reports_missing_mapped_resource(self) -> None:
+        output_dir = self.tmpdir / "generated-skills"
+        self.build_skills.sync_generated_output(
+            self.build_skills.CANONICAL_SKILLS_DIR,
+            output_dir,
+        )
+        (output_dir / "architecture" / "assets" / "adr-skeleton.md").unlink()
+
+        errors = self.build_skills.collect_generated_resource_parity_errors(
+            self.build_skills.CANONICAL_SKILLS_DIR,
+            output_dir,
+        )
+
+        self.assertTrue(
+            any(
+                "mapped resource missing: architecture: assets/adr-skeleton.md "
+                "in generated local skill mirror" in error
+                for error in errors
+            ),
+            errors,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
