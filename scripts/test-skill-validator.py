@@ -6560,7 +6560,8 @@ and result format.
             "## Follow-up boundary",
             "`project-map` may record risks and open questions for orientation.",
             "It does not own deferred execution or act as a backlog.",
-            "route it to `proposal`, `plan`, `learn`, review-resolution, release evidence, or `docs/follow-ups.md` through the workflow guide.",
+            "route it through the appropriate owner surface:",
+            "`docs/follow-ups.md` or another project-local follow-up artifact according to workflow guidance",
         ]
         for term in required_terms:
             with self.subTest(term=term):
