@@ -15,7 +15,9 @@ Index policy:
 
 ## Active
 
-No active plans.
+| Plan | State | Next stage | Change ID |
+| --- | --- | --- | --- |
+| [2026-06-24 Semantic Source-Line Contract](plans/2026-06-24-semantic-source-line-contract.md) | active | code-review | `2026-06-24-semantic-source-line-contract` |
 
 ## Blocked
 
