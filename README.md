@@ -110,36 +110,24 @@ lifecycle.
 
 ## Proposal-Gated Automatic Workflow
 
-For substantive workflow-managed work, the recommended automation boundary is
-the proposal gate. Review and improve the proposal manually first; then let the
-workflow continue through deterministic authoring and review stages only after
-the formal proposal review is clean.
+For substantive workflow-managed work, the recommended automation boundary is the proposal gate. Review and improve the proposal manually first; then let the workflow continue through deterministic authoring and review stages only after the formal proposal review is clean.
 
 Use this sequence:
 
 1. Draft the proposal with `proposal`.
-2. Human-review the proposal for problem fit, scope, tradeoffs, risks, and
-   intended outcome.
+2. Human-review the proposal for problem fit, scope, tradeoffs, risks, and intended outcome.
 3. Revise the proposal until it is the version you want judged.
 4. Run `proposal-review`.
 5. If proposal review records findings, pause and resolve them manually.
-6. After an accepted proposal and clean recorded proposal review, resume the
-   workflow:
+6. After an accepted proposal and clean recorded proposal review, resume the workflow:
 
    ```text
    workflow auto-through: plan-review
    ```
 
-`auto-through: plan-review` maps to the bounded
-`authoring-through-plan-review` profile. In workflow-managed context it may run
-`spec`, `spec-review`, architecture assessment, conditional `architecture` and
-`architecture-review`, `plan`, and `plan-review`; then it stops. It reports
-`test-spec` as the next stage but does not start test-spec, implementation,
-verification, PR, release, deploy, merge, or automatic review-fix loops.
+`auto-through: plan-review` maps to the bounded `authoring-through-plan-review` profile. In workflow-managed context it may run `spec`, `spec-review`, architecture assessment, conditional `architecture` and `architecture-review`, `plan`, and `plan-review`; then it stops. It reports `test-spec` as the next stage but does not start test-spec, implementation, verification, PR, release, deploy, merge, or automatic review-fix loops.
 
-The profile is off by default. Direct review requests such as `spec-review` or
-`plan-review` remain isolated unless you explicitly resume the workflow-managed
-change with the profile armed.
+The profile is off by default. Direct review requests such as `spec-review` or `plan-review` remain isolated unless you explicitly resume the workflow-managed change with the profile armed.
 
 ## Worked Example
 
