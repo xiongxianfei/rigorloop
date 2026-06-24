@@ -70,9 +70,9 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - Last reviewed milestone: M3
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open,explain-change-pending,verify-pending,pr-handoff-pending — all implementation milestones are closed, and later lifecycle gates remain before final closeout.
+- Reason final closeout is or is not ready: lifecycle-gates-open,verify-pending,pr-handoff-pending — all implementation milestones are closed, explain-change is recorded, and later lifecycle gates remain before final closeout.
 
 ## Milestones
 
@@ -292,6 +292,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: Code-review M2 R1 found no material findings and closed M2; next stage is M3 implementation.
 - 2026-06-24: M3 implementation added documentation prose selected-validation routing for Tier A enforcement and Tier B audit, added a `--changed-file` alias for the plan's selector command, recorded behavior-preservation evidence, and handed the milestone to code-review R1.
 - 2026-06-24: Code-review M3 R1 found no material findings and closed M3; all implementation milestones are closed and the next stage is explain-change.
+- 2026-06-24: Explain-change recorded durable rationale for the semantic source-line contract and handed the change to verify.
 
 ## Decision log
 
@@ -337,6 +338,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: `python scripts/test-documentation-prose-validator.py` passed with 14 tests after M3.
 - 2026-06-24: `python scripts/select-validation.py --mode explicit --changed-file README.md --changed-file VISION.md` passed and selected `documentation_prose.enforce`, `readme.validate`, `readme.vision_markers`, and `guide_system.validate`.
 - 2026-06-24: Code-review M3 R1 passed with no material findings and closed M3.
+- 2026-06-24: `python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md` passed for explain-change prose.
 
 ## Outcome and retrospective
 

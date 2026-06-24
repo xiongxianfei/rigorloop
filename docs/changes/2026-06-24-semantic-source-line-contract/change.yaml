@@ -41,6 +41,7 @@ tests:
   - Code-review M2 R1 confirms contributor guidance, formatter guardrails, and Tier A cleanup before M3.
   - M3 routes documentation prose validation through selected validation and records behavior preservation.
   - Code-review M3 R1 confirms selected-validation routing and behavior-preservation evidence before final closeout.
+  - Explain-change records durable rationale before final verify.
 workflow:
   autoprogression:
     profile: authoring-through-plan-review
@@ -106,6 +107,10 @@ validation:
     result: pass_selects_documentation_prose_enforce_readme_validate_readme_vision_markers_guide_system_validate
   - command: code-review-m3-r1
     result: clean_with_notes_no_material_findings_m3_closed
+  - command: explain-change
+    result: durable_rationale_recorded
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md
+    result: pass_explain_change_audit
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
     result: pass_structure_reviews_5_findings_2_log_entries_5_resolution_entries_2_after_code_review_m1_r2
   - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
@@ -166,6 +171,7 @@ changed_files:
   - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m2-r1.md
   - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m3-r1.md
   - docs/changes/2026-06-24-semantic-source-line-contract/review-resolution.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md
   - .prettierrc.json
   - .markdownlint.json
   - CONTRIBUTING.md
