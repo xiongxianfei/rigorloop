@@ -140,6 +140,16 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-guide-system.py",
         "guide-system",
     ),
+    "documentation_prose.enforce": CheckCatalogEntry(
+        "documentation_prose.enforce",
+        "python scripts/validate-documentation-prose.py --mode enforce --path <path>...",
+        "documentation-prose",
+    ),
+    "documentation_prose.audit": CheckCatalogEntry(
+        "documentation_prose.audit",
+        "python scripts/validate-documentation-prose.py --mode audit --path <path>...",
+        "documentation-prose",
+    ),
     "selector.regression": CheckCatalogEntry(
         "selector.regression",
         "python scripts/test-select-validation.py",
@@ -633,6 +643,20 @@ def catalog_command(
         if not paths:
             raise ValueError("token_cost.report_validate requires at least one report YAML path")
         return _join("python", "scripts/validate-token-cost-report.py", *paths)
+    if check_id == "documentation_prose.enforce":
+        if not paths:
+            raise ValueError("documentation_prose.enforce requires at least one path")
+        args = ["python", "scripts/validate-documentation-prose.py", "--mode", "enforce"]
+        for path in paths:
+            args.extend(["--path", path])
+        return _join(*args)
+    if check_id == "documentation_prose.audit":
+        if not paths:
+            raise ValueError("documentation_prose.audit requires at least one path")
+        args = ["python", "scripts/validate-documentation-prose.py", "--mode", "audit"]
+        for path in paths:
+            args.extend(["--path", path])
+        return _join(*args)
 
     return CHECK_CATALOG[check_id].command_template
 
@@ -801,6 +825,14 @@ def _apply_path_selection(
     release_versions: set[str],
     repo_root: Path,
 ) -> None:
+    if _is_tier_b_documentation_prose_path(path):
+        _add_check(
+            selected,
+            "documentation_prose.audit",
+            "Changed Tier B Markdown prose requires documentation prose audit validation.",
+            path=path,
+        )
+
     if category == "skills":
         root = _skill_root(path)
         if root:
@@ -1061,6 +1093,12 @@ def _apply_path_selection(
         return
 
     if category == "readme":
+        _add_check(
+            selected,
+            "documentation_prose.enforce",
+            "Changed Tier A README prose requires documentation prose enforcement validation.",
+            path=path,
+        )
         _add_check(selected, "readme.validate", "Changed README requires lightweight README validation.")
         _add_check(
             selected,
@@ -1097,6 +1135,12 @@ def _apply_path_selection(
         return
 
     if category == "vision":
+        _add_check(
+            selected,
+            "documentation_prose.enforce",
+            "Changed Tier A VISION prose requires documentation prose enforcement validation.",
+            path=path,
+        )
         _add_check(
             selected,
             "readme.vision_markers",
@@ -1770,6 +1814,14 @@ def _is_lifecycle_path(path: str) -> bool:
     if path.startswith("docs/vision/") and path.endswith(".md"):
         return True
     if path.startswith("docs/explain/") and path.endswith(".md"):
+        return True
+    return False
+
+
+def _is_tier_b_documentation_prose_path(path: str) -> bool:
+    if path.startswith("skills/") and path.endswith("/SKILL.md"):
+        return True
+    if path.startswith("docs/changes/") and path.endswith("/explain-change.md"):
         return True
     return False
 

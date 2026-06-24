@@ -39,6 +39,7 @@ tests:
   - Code-review M1 R2 confirms review-resolution and closes M1.
   - M2 adds concise contributor guidance, formatter guardrails, and Tier A source-line cleanup.
   - Code-review M2 R1 confirms contributor guidance, formatter guardrails, and Tier A cleanup before M3.
+  - M3 routes documentation prose validation through selected validation and records behavior preservation.
 workflow:
   autoprogression:
     profile: authoring-through-plan-review
@@ -96,6 +97,12 @@ validation:
     result: clean_with_notes_no_material_findings_m1_closed
   - command: code-review-m2-r1
     result: clean_with_notes_no_material_findings_m2_closed
+  - command: python scripts/test-select-validation.py
+    result: pass_103_tests_after_m3_documentation_prose_routing
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_14_tests_after_m3
+  - command: python scripts/select-validation.py --mode explicit --changed-file README.md --changed-file VISION.md
+    result: pass_selects_documentation_prose_enforce_readme_validate_readme_vision_markers_guide_system_validate
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
     result: pass_structure_reviews_5_findings_2_log_entries_5_resolution_entries_2_after_code_review_m1_r2
   - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
@@ -161,8 +168,12 @@ changed_files:
   - docs/workflows.md
   - README.md
   - VISION.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/behavior-preservation.md
+  - scripts/select-validation.py
+  - scripts/validation_selection.py
   - scripts/validate-documentation-prose.py
   - scripts/test-documentation-prose-validator.py
+  - scripts/test-select-validation.py
   - tests/fixtures/documentation-prose/pass/semantic-lines.md
   - tests/fixtures/documentation-prose/pass/structural-exclusions.md
   - tests/fixtures/documentation-prose/pass/explicit-hard-break.md
