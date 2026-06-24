@@ -66,6 +66,7 @@ tests:
   - Final verify passes PR-mode selected CI, broad smoke, review closeout validation, change metadata validation, focused lifecycle validation, and all-active lifecycle audit before PR handoff.
   - PR handoff synchronizes the active plan and plan index to hosted CI and human review before opening the pull request.
   - PR #103 is open for hosted CI and human review.
+  - PR #103 merged after hosted CI success, and terminal closeout moves the plan from Active to Done.
 validation:
   - command: git diff --check -- docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs/single-source-of-workflow-state.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass
@@ -411,6 +412,14 @@ validation:
     result: pass_during_verify
   - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/plan.md docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
     result: pass_during_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_pr_103_merge_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_pr_103_merge_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+    result: pass_after_pr_103_merge_closeout
+  - command: git diff --check -- docs/plan.md docs/plan-archive.md docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_after_pr_103_merge_closeout
 changed_files:
   - docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - specs/single-source-of-workflow-state.md
@@ -427,6 +436,7 @@ changed_files:
   - docs/architecture/system/architecture.md
   - docs/workflows.md
   - docs/plan.md
+  - docs/plan-archive.md
   - docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - docs/plans/2026-06-23-evidence-bound-incremental-project-map.md
   - docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
