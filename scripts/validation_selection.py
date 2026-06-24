@@ -315,7 +315,7 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
     ),
     EvidenceClassRegistration(
         evidence_class_id="baseline",
-        patterns=("baseline.md", "selected-tests-baseline.txt"),
+        patterns=("baseline.md", "selected-tests-baseline.txt", "script-performance-baseline.yaml"),
         selector_routes=("artifact_lifecycle.validate",),
         required_validator="validate-artifact-lifecycle",
         lifecycle_stage="implementation",
