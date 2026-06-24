@@ -180,6 +180,27 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
 }
 
+BOUNDARY_CHECK_IDS = frozenset(
+    {
+        "broad_smoke.repo",
+        "release.validate",
+        "adapters.drift",
+        "adapters.validate",
+    }
+)
+AUTHORITATIVE_ARTIFACT_PREFIXES = (
+    "docs/proposals/",
+    "docs/plans/",
+    "docs/architecture/",
+    "docs/adr/",
+    "specs/",
+    "skills/",
+    "schemas/",
+    "scripts/",
+    "templates/",
+)
+AUTHORITATIVE_ARTIFACT_FILES = frozenset({"AGENTS.md", "CONSTITUTION.md", "VISION.md", "docs/plan.md", "docs/workflows.md"})
+
 
 @dataclass(frozen=True)
 class EvidenceClassRegistration:
@@ -200,6 +221,12 @@ class EvidenceDeferralStatus:
     missing_fields: tuple[str, ...] = ()
     invalid_fields: tuple[str, ...] = ()
     deferral: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class RepositoryPreflightContext:
+    tracked_paths: frozenset[str]
+    unmerged_paths: tuple[str, ...]
 
 
 EVIDENCE_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
@@ -464,6 +491,7 @@ class SelectionResult:
     affected_roots: tuple[str, ...]
     broad_smoke_required: bool
     blocking_results: tuple[dict[str, str], ...]
+    preflight_results: tuple[dict[str, Any], ...]
     registration_debt: tuple[dict[str, Any], ...]
     rationale: tuple[str, ...]
     broad_smoke: dict[str, Any]
@@ -480,6 +508,7 @@ class SelectionResult:
             "broad_smoke_required": self.broad_smoke_required,
             "broad_smoke": self.broad_smoke,
             "blocking_results": list(self.blocking_results),
+            "preflight_results": list(self.preflight_results),
             "registration_debt": list(self.registration_debt),
             "rationale": list(self.rationale),
         }
@@ -509,6 +538,7 @@ def error_result(mode: str, message: str, *, code: str = "invalid-invocation") -
         affected_roots=set(),
         broad_smoke_sources=[],
         blocking_results=[{"code": code, "message": message}],
+        preflight_results=[],
         status="error",
     )
 
@@ -650,6 +680,10 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
     affected_roots: set[str] = set()
     blocking_results: list[dict[str, str]] = []
     blocking_results.extend(normalization_blocks)
+    preflight_results = _preflight_results(changed_paths, repo_root=repo_root)
+    blocking_results.extend(
+        result for result in preflight_results if result.get("result") == "blocked"
+    )
     registration_debt: list[dict[str, Any]] = []
 
     release_versions: set[str] = set()
@@ -709,6 +743,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
         affected_roots=affected_roots,
         broad_smoke_sources=broad_smoke_sources,
         blocking_results=blocking_results,
+        preflight_results=preflight_results,
         registration_debt=registration_debt,
         status=status,
         adapter_version=request.adapter_version,
@@ -764,6 +799,109 @@ def _resolve_changed_paths(
             normalized_paths.append(normalized.path)
             seen.add(normalized.path)
     return normalized_paths, blocks
+
+
+def _is_authoritative_artifact(path: str) -> bool:
+    return path in AUTHORITATIVE_ARTIFACT_FILES or path.startswith(AUTHORITATIVE_ARTIFACT_PREFIXES)
+
+
+def _run_git(
+    repo_root: Path,
+    args: list[str],
+) -> subprocess.CompletedProcess[str] | None:
+    try:
+        return subprocess.run(
+            ["git", *args],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except (FileNotFoundError, OSError):
+        return None
+
+
+def _inside_git_worktree(repo_root: Path) -> bool:
+    result = _run_git(repo_root, ["rev-parse", "--is-inside-work-tree"])
+    return bool(result and result.returncode == 0 and result.stdout.strip() == "true")
+
+
+def _git_unmerged_paths(repo_root: Path) -> list[str]:
+    result = _run_git(repo_root, ["status", "--porcelain=v1", "--untracked-files=no"])
+    if not result or result.returncode != 0:
+        return []
+    paths: list[str] = []
+    for line in result.stdout.splitlines():
+        if len(line) < 4:
+            continue
+        index_status = line[0]
+        worktree_status = line[1]
+        if "U" in {index_status, worktree_status} or (index_status, worktree_status) in {
+            ("A", "A"),
+            ("D", "D"),
+        }:
+            paths.append(line[3:])
+    return paths
+
+
+def _git_tracked_paths(repo_root: Path) -> frozenset[str]:
+    result = _run_git(repo_root, ["ls-files", "-z"])
+    if not result or result.returncode != 0:
+        return frozenset()
+    return frozenset(path for path in result.stdout.split("\0") if path)
+
+
+def _build_preflight_context(repo_root: Path) -> RepositoryPreflightContext:
+    return RepositoryPreflightContext(
+        tracked_paths=_git_tracked_paths(repo_root),
+        unmerged_paths=tuple(_git_unmerged_paths(repo_root)),
+    )
+
+
+def _preflight_results(changed_paths: list[str], *, repo_root: Path) -> list[dict[str, str]]:
+    if not _inside_git_worktree(repo_root):
+        return []
+
+    results: list[dict[str, str]] = []
+    context = _build_preflight_context(repo_root)
+    unmerged = list(context.unmerged_paths)
+    if unmerged:
+        results.append(
+            {
+                "check": "unmerged_paths",
+                "result": "blocked",
+                "code": "unmerged-paths",
+                "path": ", ".join(unmerged),
+                "message": "unmerged paths make validation readiness ambiguous",
+                "corrective_action": "resolve merge conflicts, then rerun validation",
+            }
+        )
+    else:
+        results.append({"check": "unmerged_paths", "result": "pass"})
+
+    untracked_authoritative = [
+        path
+        for path in changed_paths
+        if _is_authoritative_artifact(path)
+        and (repo_root / path).exists()
+        and path not in context.tracked_paths
+    ]
+    if untracked_authoritative:
+        path_list = ", ".join(untracked_authoritative)
+        results.append(
+            {
+                "check": "tracked_authoritative_artifacts",
+                "result": "blocked",
+                "code": "untracked-authoritative-artifacts",
+                "path": path_list,
+                "message": "authoritative artifacts must be tracked before broad validation can prove branch readiness",
+                "corrective_action": f"git add -- {path_list}",
+            }
+        )
+    else:
+        results.append({"check": "tracked_authoritative_artifacts", "result": "pass"})
+
+    return results
 
 
 def _git_local_changed_paths(repo_root: Path) -> list[str]:
@@ -1491,6 +1629,7 @@ def _build_result(
     affected_roots: set[str],
     broad_smoke_sources: list[dict[str, str]],
     blocking_results: list[dict[str, str]],
+    preflight_results: list[dict[str, Any]] | None = None,
     registration_debt: list[dict[str, Any]] | None = None,
     status: str,
     adapter_version: str = DEFAULT_ADAPTER_VERSION,
@@ -1524,6 +1663,8 @@ def _build_result(
             "id": check_id,
             "command": command,
             "reason": " ".join(draft.reasons),
+            "phase": "boundary" if check_id in BOUNDARY_CHECK_IDS else "focused",
+            "cache_status": "not-applicable",
         }
         if paths:
             entry["paths"] = list(paths)
@@ -1549,6 +1690,7 @@ def _build_result(
             "sources": list(broad_smoke_sources),
         },
         blocking_results=tuple(combined_blocking),
+        preflight_results=tuple(preflight_results or []),
         registration_debt=tuple(registration_debt or []),
         rationale=tuple(entry["reason"] for entry in selected_checks),
     )
