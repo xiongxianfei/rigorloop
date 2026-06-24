@@ -150,6 +150,12 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-documentation-prose.py --mode audit --path <path>...",
         "documentation-prose",
     ),
+    "documentation_prose.regression": CheckCatalogEntry(
+        "documentation_prose.regression",
+        "python scripts/test-documentation-prose-validator.py",
+        "documentation-prose",
+        parallel_safe=True,
+    ),
     "selector.regression": CheckCatalogEntry(
         "selector.regression",
         "python scripts/test-select-validation.py",
@@ -1293,6 +1299,14 @@ def _apply_path_selection(
         )
         return
 
+    if category == "validator-documentation-prose":
+        _add_check(
+            selected,
+            "documentation_prose.regression",
+            "Changed documentation prose validator, fixtures, or formatter guardrails require prose validator regression fixtures.",
+        )
+        return
+
     if category == "validator-skills":
         _add_check(selected, "skills.regression", "Changed skill generation or validation requires skill regression fixtures.")
         _add_check(
@@ -1325,6 +1339,24 @@ def _apply_path_selection(
             selected,
             path,
             f"Changed {category} path can carry lifecycle policy and requires lifecycle-language warning validation.",
+        )
+        return
+
+    if category == "contributor-guidance":
+        _add_check(
+            selected,
+            "selector.regression",
+            "Changed contributor guidance requires selector and workflow routing regression fixtures.",
+        )
+        _add_check(
+            selected,
+            "guide_system.validate",
+            "Changed contributor guidance requires cross-guide validation.",
+        )
+        _add_lifecycle_warning_check(
+            selected,
+            path,
+            "Changed contributor guidance can carry lifecycle policy and requires lifecycle-language warning validation.",
         )
         return
 
@@ -1610,6 +1642,8 @@ def _path_category(path: str) -> str | None:
         return "review-artifact-fixtures"
     if path == "tests/fixtures/change-metadata" or path.startswith("tests/fixtures/change-metadata/"):
         return "change-metadata-fixtures"
+    if path.startswith("tests/fixtures/documentation-prose/"):
+        return "validator-documentation-prose"
     if path.startswith("tests/fixtures/adapters/"):
         return "adapters"
     if path == "tests/fixtures/skills" or path.startswith("tests/fixtures/skills/"):
@@ -1662,6 +1696,11 @@ def _path_category(path: str) -> str | None:
         "scripts/test-change-metadata-validator.py",
     }:
         return "validator-change-metadata"
+    if path in {
+        "scripts/validate-documentation-prose.py",
+        "scripts/test-documentation-prose-validator.py",
+    }:
+        return "validator-documentation-prose"
     if path in {
         "scripts/query-change-record.py",
         "scripts/test-query-change-record.py",
@@ -1765,6 +1804,10 @@ def _path_category(path: str) -> str | None:
         return "release"
     if path == "docs/workflows.md":
         return "workflow-guidance"
+    if path == "CONTRIBUTING.md":
+        return "contributor-guidance"
+    if path in {".prettierrc.json", ".markdownlint.json"}:
+        return "validator-documentation-prose"
     if path in {"AGENTS.md", "CONSTITUTION.md"}:
         return "governance"
     if path.startswith("templates/"):

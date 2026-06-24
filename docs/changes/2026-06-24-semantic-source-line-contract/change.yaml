@@ -44,6 +44,7 @@ tests:
   - Explain-change records durable rationale before final verify.
   - Verify confirms local branch-ready evidence for the semantic change slice and records stacked-base PR targeting constraints.
   - PR handoff opens PR #107 against the stacked predecessor base.
+  - CI failure resolution registers documentation prose validator, fixture, formatter, and contributor-guidance paths in selected validation.
 workflow:
   autoprogression:
     profile: authoring-through-plan-review
@@ -145,6 +146,14 @@ validation:
     result: opened_pr_107_against_feature_proposal_gated_authoring_autoprogression
   - command: plan index archive update
     result: moved_oldest_recent_done_entry_to_docs_plan_archive_to_preserve_recent_done_cap
+  - command: ci failure diagnosis
+    result: hosted_ci_failed_because_pr_selector_blocked_unclassified_documentation_prose_validator_fixture_formatter_and_contributor_guidance_paths
+  - command: python scripts/test-select-validation.py
+    result: pass_105_tests_after_ci_selector_fix
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_14_tests_after_ci_selector_fix
+  - command: bash scripts/ci.sh --mode pr --base f51ec5ab593415fb0e6ecdcb0cb0a1af39e92d85 --head HEAD
+    result: pass_selected_ci_checks_after_selector_fix
   - command: python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md
     result: pass_explain_change_audit
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/

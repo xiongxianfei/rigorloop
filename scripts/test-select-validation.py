@@ -68,6 +68,7 @@ EXPECTED_CATALOG = {
     "guide_system.validate": "python scripts/validate-guide-system.py",
     "documentation_prose.enforce": "python scripts/validate-documentation-prose.py --mode enforce --path <path>...",
     "documentation_prose.audit": "python scripts/validate-documentation-prose.py --mode audit --path <path>...",
+    "documentation_prose.regression": "python scripts/test-documentation-prose-validator.py",
     "selector.regression": "python scripts/test-select-validation.py",
     "token_cost.regression": "python scripts/test-token-cost-measurement.py",
     "token_cost.report_regression": "python scripts/test-token-cost-report-validation.py",
@@ -1227,6 +1228,53 @@ raise SystemExit({exit_code})
         self.assertIn("review_artifacts.validate", selected_ids(payload))
         self.assertIn("guide_system.validate", selected_ids(payload))
 
+    def test_documentation_prose_validator_surfaces_route_without_manual_blocks(self) -> None:
+        result = self.select(
+            [
+                ".markdownlint.json",
+                ".prettierrc.json",
+                "scripts/validate-documentation-prose.py",
+                "scripts/test-documentation-prose-validator.py",
+                "tests/fixtures/documentation-prose/pass/semantic-lines.md",
+                "tests/fixtures/documentation-prose/fail/mechanical-wrap.md",
+                "tests/fixtures/documentation-prose/warn/ambiguous-clause.md",
+            ]
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(payload["unclassified_paths"])
+        self.assertFalse(payload["blocking_results"])
+        expected_categories = {
+            ".markdownlint.json": "validator-documentation-prose",
+            ".prettierrc.json": "validator-documentation-prose",
+            "scripts/validate-documentation-prose.py": "validator-documentation-prose",
+            "scripts/test-documentation-prose-validator.py": "validator-documentation-prose",
+            "tests/fixtures/documentation-prose/pass/semantic-lines.md": "validator-documentation-prose",
+            "tests/fixtures/documentation-prose/fail/mechanical-wrap.md": "validator-documentation-prose",
+            "tests/fixtures/documentation-prose/warn/ambiguous-clause.md": "validator-documentation-prose",
+        }
+        for path, category in expected_categories.items():
+            with self.subTest(path=path):
+                self.assertIn({"path": path, "category": category}, payload["classified_paths"])
+        self.assertIn("documentation_prose.regression", selected_ids(payload))
+
+    def test_contributing_guidance_routes_without_manual_block(self) -> None:
+        result = self.select(["CONTRIBUTING.md"])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(payload["unclassified_paths"])
+        self.assertFalse(payload["blocking_results"])
+        self.assertIn({"path": "CONTRIBUTING.md", "category": "contributor-guidance"}, payload["classified_paths"])
+        self.assertTrue(
+            {
+                "selector.regression",
+                "guide_system.validate",
+                "artifact_lifecycle.validate",
+            }.issubset(selected_ids(payload))
+        )
+
     def test_catalog_records_initial_parallel_safe_allowlist(self) -> None:
         from validation_selection import is_parallel_safe_check
 
@@ -1235,6 +1283,7 @@ raise SystemExit({exit_code})
             "artifact_lifecycle.regression",
             "change_record_query.regression",
             "change_metadata.regression",
+            "documentation_prose.regression",
             "guide_system.regression",
             "review_artifacts.regression",
             "selector.regression",
