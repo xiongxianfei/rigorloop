@@ -173,6 +173,8 @@ Use `Readiness is not Done` as the default interpretation for handoff lines. Kee
 
 Each implementation milestone has exactly one `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
 
+For verify-bounded implementation autoprogression, record `auto-through: verify` only as separate authorization policy, not as live next-stage ownership. Plans that support `implementation-through-verify` must keep ordered implementation milestones, approved validation commands, phase, promotion evidence expectations, and stop-before-PR boundaries explicit.
+
 Use `review-requested` after implementation and validation. Use `resolution-needed` for review-resolution, fixes, owner decision, or re-review. `implementation-complete` and `review-clean` are evidence descriptions, not milestone state values.
 
 Normal loop:

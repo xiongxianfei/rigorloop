@@ -328,6 +328,14 @@ For a milestone-based plan, identify the reviewed milestone and inspect the acti
 
 A clean review of one non-final implementation milestone is not proof that the whole plan is ready for final closeout.
 
+## Implementation autoprogression review
+
+Under `implementation-through-verify`, every implementation milestone receives an independent review with context-reset evidence. Material findings must include reviewer-owned `auto_fix_class`; missing classification is treated as `none` and pauses automatic correction.
+
+Use `mechanical` only for closed deterministic fix kinds with affected paths, deterministic authority, and required validation. Use `declared-safe` only when the review record provides a deterministic recipe, named inputs and outputs, forbidden paths, acceptance criteria, required validation commands, and no owner decision. The orchestrator must not upgrade unclassified findings.
+
+Before `explain-change` in Phase C, require a final full code-review against the governing contract even if the latest review was a targeted rereview.
+
 ## Plan closeout check
 
 For milestone-based plans, the review output must include or require a current handoff summary with:

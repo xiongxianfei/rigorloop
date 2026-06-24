@@ -126,6 +126,8 @@ File | Change | Reason | Source artifact | Test/evidence
 - In a workflow-managed standard workflow, successful `explain-change` completion hands off to `verify` unless a stop condition applies.
 - Direct `explain-change` requests remain isolated by default unless the user explicitly asks to continue beyond the explanation.
 - If explanation work surfaces a validation gap, stale artifact, or other blocker, stop and report it instead of implying the change is ready for `verify` or `pr`.
+- Under `implementation-through-verify`, automatic `explain-change` is Phase C behavior only. It requires all implementation milestones closed, required review-resolution closed, a final full code-review, and promotion evidence.
+- In that profile, explain from the final reviewed diff and record remaining validation gaps without claiming final verify or PR readiness. `explain-change` does not open `pr`.
 
 ## Evidence collection efficiency
 

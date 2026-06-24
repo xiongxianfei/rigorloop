@@ -108,6 +108,10 @@ must state:
 
 For `authoring-through-plan-review`, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any profile-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
 
+## Implementation Profile Readiness
+
+When a plan is intended to support `implementation-through-verify`, review that implementation automation has separate authorization from authoring automation, explicit ordered milestones, approved commands, phase-aware boundaries, promotion evidence expectations, and a stop before PR. A clean plan-review does not authorize the implementation profile by itself.
+
 ## Rules
 
 - Do not rubber-stamp organized-looking plans.

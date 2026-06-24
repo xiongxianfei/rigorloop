@@ -9,6 +9,7 @@
 - [Milestone-aware review handoff](../docs/proposals/2026-05-07-milestone-aware-review-handoff.md)
 - [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md)
 - [Proposal-Gated Authoring Autoprogression Through Plan Review](../docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md)
+- [Separately Armed Implementation Autoprogression Through Verify](../docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md)
 
 ## Goal and context
 
@@ -31,6 +32,8 @@ This spec is also amended by the single standard workflow contract. After implem
 
 This amendment adds a bounded, explicitly armed authoring autoprogression profile that starts only after the proposal gate is clean and stops after `plan-review`. It extends review-to-next-authoring continuation only for that profile and does not widen implementation, test-spec, PR, bugfix, fast-lane, direct review, or review-fix-loop behavior.
 
+This amendment also adds a separately armed implementation autoprogression profile. That profile starts only after clean planning, uses test-spec settlement, may execute implementation milestones and reviewer-declared auto-fix loops within bounded phases, may eventually run `explain-change` and fresh `verify`, and stops before `pr`.
+
 ## Glossary
 
 - `workflow-managed completion flow`: a change flow where the agent is carrying work through its normal downstream stages toward completion under the standard workflow.
@@ -43,6 +46,12 @@ This amendment adds a bounded, explicitly armed authoring autoprogression profil
 - `stop condition`: a documented reason the agent must not continue automatically.
 - `autoprogression profile`: a closed workflow policy value that defines which bounded downstream stage set may run automatically for one change.
 - `authoring-through-plan-review`: the change-local autoprogression profile that may run `spec`, `spec-review`, recorded architecture assessment, conditional `architecture`, conditional `architecture-review`, `plan`, and `plan-review`, then stop.
+- `implementation-through-verify`: the change-local autoprogression profile that may run settled `test-spec`, implementation milestones, independent `code-review` rounds, bounded reviewer-declared correction loops, `explain-change`, and fresh `verify` according to its persisted rollout phase, then stop before `pr`.
+- `test-spec settlement`: the deterministic gate proving a test spec is active, complete, mapped to applicable requirements and acceptance criteria, free of unresolved gaps or `needs-decision`, structurally valid, and synchronized with its input artifacts before implementation begins.
+- `auto-fix classification`: the reviewer-owned field that classifies whether a material code-review finding may be resolved automatically by the implementation profile.
+- `mechanical finding kind`: a closed kind of finding whose correction is uniquely determined by tracked artifacts or project-owned deterministic tooling.
+- `declared-safe recipe`: a reviewer-authored deterministic recipe that bounds a non-mechanical finding's automatic correction without requiring owner judgment.
+- `profile phase`: the persisted rollout phase for `implementation-through-verify`, selected from `A`, `B`, or `C`.
 - `proposal gate`: the artifact and review state proving that proposal direction is settled enough for downstream authoring.
 - `gate-ready proposal`: a proposal whose artifacts and review evidence satisfy the proposal gate, independent of whether the user has authorized automation.
 - `armed profile`: a profile value explicitly authorized by the user for a change but not yet active until its activation gate passes.
@@ -191,6 +200,55 @@ And approved `spec-review` is recorded
 When architecture assessment records `architecture-ambiguous`
 Then the profile pauses and reports the ambiguity, last completed stage, required next action, and profile state.
 
+### Example E21: implementation profile activates after clean planning
+
+Given `authoring-through-plan-review` completed or an approved manually authored plan is recorded
+And `plan-review` is approved and recorded
+And implementation milestones are explicit and ordered
+And the user has authorized `auto-through: verify`
+When durable authorization is persisted and the workflow-state synchronization gate passes
+Then the workflow may activate `implementation-through-verify` according to its persisted phase.
+
+### Example E22: implementation profile settles test-spec before implementation
+
+Given `implementation-through-verify` is active
+When `test-spec` authoring completes
+Then the workflow records deterministic settlement evidence before invoking the first implementation milestone.
+
+### Example E23: reviewer-declared mechanical finding is auto-fixed
+
+Given code-review records only material findings with `auto_fix_class=mechanical`
+And each finding uses an allowed mechanical kind with affected paths and required validation
+When loop guardrails pass
+Then the workflow may apply only the declared correction, rerun required validation, and invoke a fresh independent code-review round.
+
+### Example E24: unclassified finding pauses implementation profile
+
+Given code-review records a material finding without `auto_fix_class`
+When `implementation-through-verify` evaluates the correction loop
+Then the finding is treated as `auto_fix_class=none` and the profile pauses for owner or reviewer action.
+
+### Example E25: new finding after auto-fix pauses
+
+Given an automatic correction round resolves one finding
+When the next independent code-review round reports a finding ID or finding class not present in the preceding unresolved set
+Then the profile pauses even if the new finding may be valid, because new discovery requires human decision.
+
+### Example E26: Phase B stops after final clean code review
+
+Given `implementation-through-verify` has persisted phase `B`
+And the final implementation milestone has clean code-review
+When the profile would otherwise continue to `explain-change`
+Then the workflow refuses that transition and pauses or reports phase completion because Phase C is not enabled.
+
+### Example E27: Phase C stops before PR
+
+Given `implementation-through-verify` has persisted phase `C`
+And `explain-change` is current
+And fresh actual-run `verify` passes
+When the workflow reaches the PR boundary
+Then the profile marks itself completed, reports `pr` as next, and does not invoke `pr`.
+
 ## Requirements
 
 R1. The workflow MUST distinguish workflow-managed completion flows from isolated stage requests.
@@ -313,6 +371,111 @@ R2ak. Before invoking any stage in the active profile, the orchestrator MUST ins
 
 R2al. The orchestrator MUST NOT recreate a completed artifact, rerun a clean review without an explicit rereview trigger, skip an incomplete or conflicting artifact, or infer completion from file existence alone.
 
+R2am. The workflow MUST support the closed implementation profile value `implementation-through-verify`.
+
+R2an. Unknown implementation profile values MUST fail closed before downstream execution.
+
+R2ao. The user-facing authorization `auto-through: verify` MUST map to the canonical profile `implementation-through-verify`.
+
+R2ap. `implementation-through-verify` MUST be change-local and explicitly user-authorized separately from `authoring-through-plan-review`.
+
+R2aq. Authorization for `authoring-through-plan-review` MUST NOT authorize `implementation-through-verify`.
+
+R2ar. The workflow MUST persist `implementation-through-verify` authorization independently from authoring-profile authorization, with separate profile key, state, phase, `authorized_by`, `authorized_at`, change ID, and cancellation data.
+
+R2as. `implementation-through-verify` MUST activate only when all of the following are true:
+- authoring-through-plan-review completed or a manually authored plan with recorded `plan-review` approval and synchronized plan state exists;
+- `plan-review` is approved and recorded;
+- the active plan is synchronized;
+- implementation milestones are explicit and ordered;
+- test-spec inputs are complete;
+- user authorization is explicit and durably recorded;
+- working-tree baseline is recorded;
+- unrelated dirty changes are absent or explicitly excluded;
+- required commands are approved by the plan or settled test spec;
+- no open proposal, spec, architecture, or plan findings remain;
+- artifact placement is unambiguous;
+- workflow-state synchronization passes.
+
+R2at. `implementation-through-verify` MUST use persisted rollout phases selected from:
+- `A`;
+- `B`;
+- `C`.
+
+R2au. Phase `A` MUST be audit-only. It may evaluate and record what would run, pause, or complete, but it MUST NOT execute implementation, review-fix commands, `explain-change`, or `verify`.
+
+R2av. Phase `B` MAY run test-spec settlement, implementation milestones, independent code-review rounds, reviewer-declared correction loops, and final clean code-review. It MUST NOT run `explain-change` or `verify`.
+
+R2aw. Phase `C` MAY run `explain-change` and fresh `verify` only after persisted promotion evidence links to Phase B dogfood-cycle audit records and synthetic stop-condition fixture results.
+
+R2ax. The orchestrator MUST refuse transitions outside the persisted phase.
+
+R2ay. `implementation-through-verify` MUST run test-spec authoring and deterministic test-spec settlement before starting the first implementation milestone.
+
+R2az. Test-spec settlement MUST require active or settled test-spec status, coverage mapping for applicable requirements and acceptance criteria, required negative and boundary cases, no uncovered gaps except `none`, no `needs-decision`, named validation commands, no contradiction with approved governing artifacts, structural/static validation, and workflow-state synchronization.
+
+R2ba. Test-spec settlement evidence MUST record durable input identities for the approved spec, relevant architecture or ADR, plan, and test spec.
+
+R2bb. The first implementation milestone's code-review round MUST recheck settlement input identities against current artifacts. A mismatch MUST pause the profile.
+
+R2bc. `implementation-through-verify` MUST execute implementation milestones in approved plan order and MUST NOT skip ahead because later milestones appear independent.
+
+R2bd. Every implementation milestone executed by `implementation-through-verify` MUST receive an independent code-review round before the milestone closes.
+
+R2be. Every material code-review finding under `implementation-through-verify` MUST include `auto_fix_class`, or it MUST be treated as `auto_fix_class=none`.
+
+R2bf. `auto_fix_class` values MUST be closed to:
+- `none`;
+- `mechanical`;
+- `declared-safe`.
+
+R2bg. `none` MUST pause the profile and MUST be used when owner intent is required, alternatives remain, behavior or compatibility could change, a governing artifact may need revision, affected paths are not bounded, validation is not deterministic, or classification is omitted.
+
+R2bh. `mechanical` MUST be accepted only for a closed eligible finding kind whose correction is uniquely determined by tracked artifacts.
+
+R2bi. The first-slice mechanical finding kinds MUST be:
+- `formatter-output`;
+- `lint-autofix`;
+- `generated-output-refresh`;
+- `exact-approved-rename`;
+- `unique-required-field-value`;
+- `mechanical-state-projection-sync`;
+- `deterministic-manifest-regeneration`.
+
+R2bj. A mechanical finding MUST name `auto_fix_kind`, affected paths, deterministic authority, and required validation.
+
+R2bk. `declared-safe` MUST require affected paths, resolution recipe, named inputs, named outputs, forbidden paths, acceptance criteria, required validation commands, and scope-preservation rule.
+
+R2bl. A `declared-safe` recipe that changes production code MUST include a test exercising the changed behavior or cite existing test-spec mappings that already prove the changed behavior.
+
+R2bm. Automatic correction rounds MUST be limited to three per milestone, and the across-activation ceiling MUST be the sum of per-milestone caps with no extra headroom.
+
+R2bn. Each automatic correction round MUST reduce the unresolved finding set.
+
+R2bo. Any finding ID or finding class not present in the preceding unresolved set MUST pause the profile.
+
+R2bp. Automatic correction diffs MUST touch only reviewer-declared affected paths, approved generated outputs derived from those paths, approved workflow-state projections, and required review or evidence records.
+
+R2bq. Automatic corrections MUST NOT introduce an unplanned component, dependency, public interface, external integration, security boundary, migration, or generated artifact class.
+
+R2br. Automatic review-driven fixes MUST NOT substantively edit proposals, specs, test specs, architecture documents, ADRs, plans, constitutions, workflow policy, release policy, or security policy.
+
+R2bs. The only automated governing or lifecycle surface updates allowed during review-driven correction are machine-owned state projections and append-only evidence required by the approved workflow-state contract.
+
+R2bt. Auto-fix commands MUST come from the approved plan, settled test spec, reviewer-declared recipe, or project-owned deterministic scripts.
+
+R2bu. Automatic `ci-maintenance` inside an implementation milestone MUST require explicit plan enumeration of CI files in scope and a deny-list check for credential handling, deploy targets, hosted-runner privilege changes, and secrets references.
+
+R2bv. `implementation-through-verify` MUST require a final full code-review against the governing contract before entering `explain-change`.
+
+R2bw. Automatic `verify` under `implementation-through-verify` MUST use fresh actual-run evidence for correctness-bearing, security-sensitive, release-sensitive, artifact lifecycle, review closeout, change metadata, generated-output, and required test-suite checks.
+
+R2bx. Cache hits for purely informational verify sub-checks MAY be used only when their timestamps are strictly after the activation baseline and the audit record names the sub-check and cache timestamp.
+
+R2by. A verify failure MUST pause the profile and MUST NOT trigger automatic repair. Any correction after verify failure requires explicit user direction and re-enters implementation, code-review, explanation refresh, and verify.
+
+R2bz. After successful verify, `implementation-through-verify` MUST mark the profile completed, compute branch readiness through the workflow-state synchronizer from recorded verify evidence, report `pr` as the next stage, and stop before invoking `pr`.
+
 R3. In the standard workflow execution flow, successful `implement` completion MUST continue into `code-review` unless a stop condition applies.
 
 R3a. In the standard workflow execution flow, if `code-review` finds issues that can be resolved without a new user decision, the workflow MUST enter the `review-resolution` loop for the reviewed scope and rerun `code-review` before proceeding.
@@ -394,11 +557,14 @@ Inputs:
 - whether workflow-managed context is present
 - the active autoprogression profile, if any
 - user authorization for `auto-through: plan-review`, when supplied
+- user authorization for `auto-through: verify`, when supplied
 - durable authorization policy record and write outcome for the active change-local surface, when `authoring-through-plan-review` is armed or activating
+- durable implementation-profile authorization policy record, phase, state, baseline, and write outcome when `implementation-through-verify` is armed or activating
 - explicit user stop or continue instructions
 - current validation and review results
 - proposal status, proposal-review result, review recording status, and open review findings for proposal-gate evaluation
 - architecture assessment result when the authoring profile reaches post-spec-review routing
+- test-spec settlement result, input artifact identities, reviewer auto-fix classifications, correction-round state, and fresh verify evidence when the implementation profile is active
 - branch and worktree state relevant to `pr`
 - governing spec, plan, and workflow artifacts when they define checkpoints or blockers
 
@@ -423,6 +589,10 @@ Outputs:
 - Review-to-next-authoring-stage transitions remain outside default autoprogression.
 - `authoring-through-plan-review` is the only review-to-next-authoring profile defined by this amendment.
 - `authoring-through-plan-review` starts only after `armed && gate-ready` and ends at clean `plan-review`.
+- `implementation-through-verify` is separately authorized from `authoring-through-plan-review`.
+- `implementation-through-verify` never opens a PR, publishes, deploys, releases, merges, or performs destructive Git actions.
+- Reviewer-declared auto-fix authority cannot be inferred or upgraded by the orchestrator.
+- Implementation-profile correction loops are bounded, shrinking, path-local, independent, and auditable.
 - Profile policy metadata records authorization only; live stage and readiness ownership remains with existing workflow artifacts.
 - Durable profile authorization is an activation precondition once a change-local persistence surface exists.
 - Review stages remain independent and recorded even when a profile runs them consecutively.
@@ -439,6 +609,11 @@ Outputs:
 - If durable authorization is missing, malformed, partially written, or cannot be written at activation time, the workflow MUST pause with stop reason `authorization-not-persisted`.
 - If the proposal gate is incomplete, the authoring profile MUST remain armed or off according to its current policy state and MUST NOT enter `spec`.
 - If architecture assessment records `architecture-ambiguous`, the authoring profile MUST pause rather than selecting `architecture` or `plan`.
+- If implementation-profile phase does not authorize a transition, the workflow MUST refuse that transition and pause or stop at the phase boundary.
+- If test-spec settlement is incomplete, contradictory, or stale, the implementation profile MUST pause before implementation.
+- If any code-review finding under the implementation profile is unclassified or `auto_fix_class=none`, the profile MUST pause.
+- If a correction round fails to shrink findings, introduces a new finding ID or class, exceeds the per-milestone cap, touches unauthorized paths, or requires substantive governing-artifact edits, the implementation profile MUST pause.
+- If final verify fails under the implementation profile, the profile MUST pause without automatic repair.
 - If a profile pause is caused by non-clean review, material finding, or owner decision, manual correction MUST NOT auto-resume the profile.
 - If a cancellation request cannot be durably recorded, the workflow MUST pause and leave the prior durable profile state unchanged.
 - If a profile is already partially executed and reliable completion evidence is missing, the workflow MUST pause rather than duplicate or skip the stage.
@@ -460,6 +635,8 @@ Outputs:
 - Direct review requests remain isolated even when a change has an armed profile, unless invoked through workflow-managed resume context.
 - Existing change records without autoprogression profile policy are treated as `off`.
 - Existing change records without durable autoprogression profile policy cannot activate `authoring-through-plan-review`; they remain `off` unless the user re-asserts authorization and the workflow records it durably.
+- Existing change records without durable `implementation-through-verify` policy cannot activate that profile; they remain off unless the user explicitly authorizes the implementation profile and the workflow records it durably.
+- Phase C behavior remains unavailable until Phase B promotion evidence exists and the persisted phase is `C`.
 - Review-only requests remain compatible because they stay isolated unless the user asks to continue.
 - Existing milestone-free plans remain compatible with the ordinary standard workflow continuation sequence. Touched milestone-based plans MUST use milestone-aware handoff wording and the `explain-change -> verify -> pr` final order when current review or readiness state changes.
 - Existing open PRs or feature branches are unaffected until the workflow guidance and skills are updated to use this contract.
@@ -475,6 +652,8 @@ Outputs:
 - When `workflow-policy.yaml` is used instead of `change.yaml`, the audit trail MUST state that the change-metadata contract rejected policy data and record the fallback path.
 - The recorded architecture assessment MUST be inspectable as audit evidence for why architecture was run or skipped.
 - Clean profile completion MUST visibly report `test-spec` as the next stage and that it was not invoked.
+- Implementation-profile output MUST record activation baseline, phase, milestone, review round, finding IDs, reviewer classifications, recipes, actual paths changed, before/after unresolved-finding sets, commands run, validation results, and review-context reset evidence for every automatic correction round.
+- Implementation-profile completion output MUST record that `verify` completed, PR was not opened, and human authorization is required for `pr`.
 - `pr` output MUST make clear whether a PR was actually opened or only deemed ready.
 - Workflow-managed readiness text in plans or related artifacts SHOULD identify the actual next stage rather than implying manual re-invocation is required.
 - When a directly invoked stage is treated as isolated, the output SHOULD make that classification explicit instead of implying that downstream continuation was forgotten.
@@ -483,6 +662,8 @@ Outputs:
 
 - Automatic continuation MUST NOT expand into destructive or externally publishing actions beyond PR creation by default.
 - `authoring-through-plan-review` MUST NOT start implementation, run code, open pull requests, publish packages, release, deploy, merge, or perform destructive Git actions.
+- `implementation-through-verify` MUST NOT open pull requests, publish packages, push branches, post to external systems, release, deploy, merge, or perform destructive Git actions.
+- Automatic CI maintenance in the implementation profile MUST pause on credential, secret, deploy-target, or hosted-runner privilege ambiguity.
 - Profile metadata MUST NOT include secrets or credentials and MUST NOT expose private user data beyond ordinary workflow attribution such as `authorized_by: user`.
 - Profile authorization metadata MUST be limited to workflow policy fields such as profile name, `authorized_by`, authorization timestamp, change ID, profile status, and fallback-path evidence.
 - PR creation output MUST NOT falsely claim hosted CI passed when only local checks were observed.
@@ -557,6 +738,22 @@ EC30. A user cancels an armed or active profile, but cancellation cannot be dura
 
 EC31. The change-metadata contract rejects policy data in `change.yaml`. The workflow writes `workflow-policy.yaml` only for that reason and records the fallback decision in the activation audit trail.
 
+EC32. `implementation-through-verify` is armed while `authoring-through-plan-review` has not completed and no manually approved plan-review exists. The workflow pauses before test-spec.
+
+EC33. `implementation-through-verify` has persisted phase `A`. The workflow records audit-only transition decisions and does not execute implementation.
+
+EC34. `implementation-through-verify` has persisted phase `B` and reaches final clean code-review. The workflow stops before `explain-change`.
+
+EC35. A test-spec settlement input identity changes before the first milestone's code-review. The profile pauses before relying on settlement.
+
+EC36. A material code-review finding omits `auto_fix_class`. The profile treats it as `none` and pauses.
+
+EC37. A declared-safe recipe touches a forbidden path or a substantive governing artifact. The profile pauses even when the reviewer intended auto-fix.
+
+EC38. A correction round produces a new finding class. The profile pauses instead of chasing the new finding.
+
+EC39. Phase C verify passes. The profile reports `pr` next and human authorization required, but does not invoke `pr`.
+
 ## Non-goals
 
 - Auto-merging pull requests.
@@ -568,6 +765,8 @@ EC31. The change-metadata contract rejects policy data in `change.yaml`. The wor
 - Widening `authoring-through-plan-review` to include `test-spec`, implementation, verification, PR, release, deploy, merge, or automatic review-fix loops.
 - Adding a repository-wide default for `authoring-through-plan-review`.
 - Adding future profiles without separate proposal and spec amendments.
+- Opening a PR, publishing, deploying, merging, pushing, or repairing verify failures under `implementation-through-verify`.
+- Automatically choosing owner intent for code-review findings.
 
 ## Acceptance criteria
 
@@ -595,18 +794,27 @@ EC31. The change-metadata contract rejects policy data in `change.yaml`. The wor
 - The spec requires review independence and formal review recording for automatic review stages.
 - The spec defines transition-budget and resume behavior well enough for fixture-backed tests.
 - The spec pauses with `authorization-not-persisted` when authorization is absent, malformed, partially written, missing required fields, or cannot be written.
+- The spec defines `implementation-through-verify` as a separate explicitly armed profile.
+- The spec requires implementation-profile phase persistence and refuses transitions outside the persisted phase.
+- The spec requires deterministic test-spec settlement and first-review settlement identity recheck.
+- The spec makes missing `auto_fix_class` fail closed.
+- The spec bounds mechanical and declared-safe auto-fixes with path, command, validation, and scope controls.
+- The spec limits correction rounds to three per milestone and pauses on non-shrinking or new-finding rounds.
+- The spec blocks substantive governing-artifact edits during automatic review-driven fixes.
+- The spec allows automatic closeout through fresh verify only in Phase C and stops before PR.
 
 ## Open questions
 
 - Should a future revision add a structured `pause-after` or `checkpoint` syntax, or remain chat-instruction-only?
 - If the repository later adds executable workflow orchestration, should that live in repo-owned scripts or in skill guidance only?
 - What exact schema validation should enforce `workflow.autoprogression.profile` in `change.yaml`, if the change-metadata spec accepts policy data there?
+- What exact dogfood sample threshold should trigger a follow-on proposal for `test-spec-review` if settlement proves insufficient?
 
 These questions do not block spec-review for this amendment.
 
 ## Next artifacts
 
-- Architecture and architecture-review for the profile, change-metadata policy field, and generated-skill impact.
+- Architecture and architecture-review for implementation-profile state, review classification, correction-loop, and verify-boundary design.
 - Amend `workflow`, `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, and `plan-review` skill guidance when the spec is approved.
 - Add or update test-spec coverage for APGA checks.
 
@@ -618,9 +826,11 @@ These questions do not block spec-review for this amendment.
 - `plan`: [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md)
 - `plan-review`: approved in [plan-review-r2](../docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r2.md)
 - `test-spec`: [Workflow stage autoprogression test spec](workflow-stage-autoprogression.test.md) confirms the active autoprogression proof map.
+- `proposal`: [Separately Armed Implementation Autoprogression Through Verify](../docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md)
+- `proposal-review`: approved in [proposal-review-r1](../docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/proposal-review-r1.md)
+- `spec-review`: approved in [spec-review-r1](../docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/spec-review-r1.md)
 
 ## Readiness
 
-- Approved amendment for proposal-gated authoring autoprogression through plan-review after `spec-review-r2`.
-- Architecture design remains tracked in `docs/architecture/2026-04-21-workflow-stage-autoprogression.md`.
-- Ready for architecture assessment and architecture-review before downstream planning or implementation relies on the new profile.
+- Approved amendment for separately armed implementation autoprogression through verify.
+- Ready for architecture assessment before downstream planning or implementation relies on the new profile.

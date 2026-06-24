@@ -1,0 +1,27 @@
+change_id: 2026-06-24-separately-armed-implementation-autoprogression-through-verify
+title: Policy fixture
+classification: spec
+risk: low
+artifacts: {}
+requirements:
+  - fixture
+tests:
+  - fixture
+validation:
+  - command: fixture
+    result: pass
+changed_files:
+  - docs/example.md
+review:
+  status: pending
+  unresolved_items: 0
+workflow:
+  autoprogression:
+    next_stage: implement M1
+    implementation_through_verify:
+      profile: implementation-through-verify
+      state: armed
+      phase: B
+      authorized_by: user
+      authorized_at: 2026-06-24T12:05:00Z
+      change_id: 2026-06-24-separately-armed-implementation-autoprogression-through-verify
