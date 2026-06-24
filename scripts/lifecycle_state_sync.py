@@ -58,6 +58,13 @@ class StateSyncFinding:
 
 
 @dataclass(frozen=True)
+class AuthoringAutoprogressionRoute:
+    profile_state: str
+    next_stage: str | None
+    stop_reason: str | None
+
+
+@dataclass(frozen=True)
 class HandoffSummary:
     fields: dict[str, str]
 
@@ -177,7 +184,7 @@ def _parse_exact_fields(section: str, required_labels: tuple[str, ...]) -> tuple
         if label in allowed:
             found[label].append(value)
         elif label in {"Last reviewed milestone"}:
-            malformed.append(f"{label} is derived evidence, not a Current Handoff Summary owner field")
+            continue
         else:
             malformed.append(f"unexpected Current Handoff Summary field: {label}")
 
@@ -200,9 +207,12 @@ def parse_handoff_summary(text: str) -> tuple[HandoffSummary | None, list[str]]:
     matching_sections = [name for name in sections if name.casefold() == "current handoff summary"]
     if len(matching_sections) != 1:
         return None, ["Current Handoff Summary must appear exactly once"]
-    fields, errors = _parse_exact_fields(sections[matching_sections[0]], REQUIRED_HANDOFF_FIELDS)
+    section = sections[matching_sections[0]]
+    if "Latest review evidence:" not in section:
+        return None, ["structured-handoff-not-parseable: Current Handoff Summary missing Latest review evidence owner marker"]
+    fields, errors = _parse_exact_fields(section, REQUIRED_HANDOFF_FIELDS)
     if errors:
-        return None, errors
+        return None, [f"structured-handoff-incomplete: {message}" for message in errors]
 
     errors.extend(_validate_milestone_state(fields["Current milestone state"]))
     errors.extend(_validate_review_status(fields["Review status"]))
@@ -218,6 +228,11 @@ def has_structured_workflow_state_marker(text: str) -> bool:
     if handoff is None:
         return False
     return "Latest review evidence:" in handoff
+
+
+def has_workflow_state_handoff_section(text: str) -> bool:
+    sections = _sections(text)
+    return any(name.casefold() == "current handoff summary" for name in sections)
 
 
 def _validate_milestone_state(value: str) -> list[str]:
@@ -274,6 +289,215 @@ def _validate_final_closeout(readiness: str, reason: str) -> list[str]:
         if not codes:
             errors.append("Reason final closeout is or is not ready must include non-ready reason codes when readiness is not ready")
     return errors
+
+
+AUTHORING_PROFILE = "authoring-through-plan-review"
+AUTHORING_PROFILE_STAGES = (
+    "spec",
+    "spec-review",
+    "architecture",
+    "architecture-review",
+    "plan",
+    "plan-review",
+)
+AUTHORING_PROFILE_REVIEW_STAGES = {
+    "proposal-review",
+    "spec-review",
+    "architecture-review",
+    "plan-review",
+}
+AUTHORING_PROFILE_NONCLEAN_REVIEW_STATUSES = {
+    "changes-requested",
+    "blocked",
+    "inconclusive",
+}
+AUTHORING_PROFILE_DURABLE_AUTHORIZATION_FAILURES = {
+    "missing",
+    "malformed",
+    "partial",
+    "failed",
+}
+AUTHORING_PROFILE_STATES = {
+    "off",
+    "armed",
+    "active",
+    "paused",
+    "completed",
+}
+
+
+def _stop(profile_state: str, reason: str) -> AuthoringAutoprogressionRoute:
+    return AuthoringAutoprogressionRoute(
+        profile_state=profile_state,
+        next_stage=None,
+        stop_reason=reason,
+    )
+
+
+def _continue(profile_state: str, next_stage: str) -> AuthoringAutoprogressionRoute:
+    return AuthoringAutoprogressionRoute(
+        profile_state=profile_state,
+        next_stage=next_stage,
+        stop_reason=None,
+    )
+
+
+def _is_clean_proposal_gate(gate: object) -> bool:
+    if not isinstance(gate, dict):
+        return False
+    return (
+        gate.get("proposal_exists") is True
+        and gate.get("proposal_status") == "accepted"
+        and gate.get("proposal_review_status") == "approved"
+        and gate.get("proposal_review_recording") == "recorded"
+        and gate.get("proposal_review_material_findings") == 0
+        and gate.get("proposal_review_open_blockers") == 0
+        and gate.get("scope_settled") is True
+        and gate.get("open_questions_block_spec") is False
+        and gate.get("standing_gates_satisfied") is True
+        and gate.get("change_identity_unambiguous") is True
+        and gate.get("artifact_placement_unambiguous") is True
+    )
+
+
+def _profile_route_from_current_stage(stage: str, architecture_assessment: object) -> str | None:
+    if stage == "proposal-review":
+        return "spec"
+    if stage == "spec":
+        return "spec-review"
+    if stage == "spec-review":
+        return "architecture-assessment"
+    if stage == "architecture-assessment":
+        if architecture_assessment == "architecture-required":
+            return "architecture"
+        if architecture_assessment == "architecture-not-required":
+            return "plan"
+        return None
+    if stage == "architecture":
+        return "architecture-review"
+    if stage == "architecture-review":
+        return "plan"
+    if stage == "plan":
+        return "plan-review"
+    if stage == "plan-review":
+        return "test-spec"
+    return None
+
+
+def _profile_route_from_completed_stages(completed_stages: object, architecture_assessment: object) -> str | None:
+    if not isinstance(completed_stages, list):
+        return None
+    completed = [stage for stage in completed_stages if isinstance(stage, str)]
+    if len(completed) != len(set(completed)):
+        return None
+    completed_set = set(completed)
+
+    if "spec" not in completed_set:
+        return "spec"
+    if "spec-review" not in completed_set:
+        return "spec-review"
+    if architecture_assessment == "architecture-ambiguous":
+        return None
+    if architecture_assessment == "architecture-required":
+        if "architecture" not in completed_set:
+            return "architecture"
+        if "architecture-review" not in completed_set:
+            return "architecture-review"
+    elif architecture_assessment != "architecture-not-required":
+        return "architecture-assessment"
+    if "plan" not in completed_set:
+        return "plan"
+    if "plan-review" not in completed_set:
+        return "plan-review"
+    return "test-spec"
+
+
+def evaluate_authoring_autoprogression_route(data: dict[str, object]) -> AuthoringAutoprogressionRoute:
+    """Evaluate the bounded authoring-through-plan-review route for fixture validation."""
+
+    profile = data.get("profile")
+    profile_state = data.get("profile_state")
+    durable_authorization = data.get("durable_authorization")
+    current_stage = data.get("current_stage")
+    latest_review_status = data.get("latest_review_status")
+    architecture_assessment = data.get("architecture_assessment")
+
+    if not isinstance(profile_state, str):
+        profile_state = "off"
+
+    if data.get("invocation_context") != "workflow-managed":
+        return _stop(profile_state, "isolated-invocation")
+
+    if profile == "off":
+        return _continue("off", "explicit-user-action")
+    if profile != AUTHORING_PROFILE:
+        return _stop(profile_state, "unknown-profile")
+
+    if isinstance(data.get("cancellation_record"), dict):
+        return _continue("off", "explicit-user-action")
+
+    if profile_state == "off":
+        return _continue("off", "explicit-user-action")
+    if profile_state == "completed":
+        if isinstance(data.get("resume_record"), dict):
+            return _stop("completed", "cannot-resume-completed")
+        return _stop("completed", "profile-completed")
+    if profile_state == "paused":
+        if isinstance(data.get("resume_record"), dict):
+            profile_state = "armed"
+        else:
+            return _stop("paused", "explicit-resume-required")
+    if profile_state not in AUTHORING_PROFILE_STATES:
+        return _stop("paused", "unhandled-profile-state")
+
+    if durable_authorization in AUTHORING_PROFILE_DURABLE_AUTHORIZATION_FAILURES:
+        return _stop(profile_state, "authorization-not-persisted")
+    if durable_authorization != "persisted":
+        return _stop(profile_state, "authorization-not-persisted")
+
+    if data.get("user_paused") is True:
+        return _stop(profile_state, "user-paused")
+    if data.get("user_cancelled") is True:
+        return _stop(profile_state, "user-cancelled")
+    if data.get("needs_decision") is True:
+        return _stop(profile_state, "needs-decision")
+    if data.get("contradictory_workflow_state") is True:
+        return _stop(profile_state, "contradictory-workflow-state")
+    if data.get("unreliable_partial_completion") is True:
+        return _stop(profile_state, "unreliable-partial-completion")
+    if data.get("transition_count") == 6:
+        return _stop(profile_state, "transition-budget-exhausted")
+
+    if not _is_clean_proposal_gate(data.get("proposal_gate")):
+        return _stop(profile_state, "proposal-gate-incomplete")
+
+    if latest_review_status in AUTHORING_PROFILE_NONCLEAN_REVIEW_STATUSES:
+        return _stop(profile_state, latest_review_status)
+    if data.get("material_findings") is True:
+        return _stop(profile_state, "material-finding")
+
+    if current_stage == "resume":
+        next_stage = _profile_route_from_completed_stages(
+            data.get("completed_stages"),
+            architecture_assessment,
+        )
+        if next_stage is None:
+            return _stop(profile_state, "ambiguous-resume")
+    elif isinstance(current_stage, str):
+        next_stage = _profile_route_from_current_stage(current_stage, architecture_assessment)
+        if current_stage == "architecture-assessment" and architecture_assessment == "architecture-ambiguous":
+            return _stop(profile_state, "architecture-ambiguous")
+        if next_stage is None:
+            return _stop(profile_state, "ambiguous-workflow-state")
+    else:
+        return _stop(profile_state, "ambiguous-workflow-state")
+
+    if next_stage in {"test-spec", "implement", "code-review", "explain-change", "verify", "pr"}:
+        if next_stage == "test-spec" and current_stage == "plan-review" and latest_review_status == "approved":
+            return _continue("completed", "test-spec")
+        return _stop(profile_state, "out-of-scope-stage")
+
+    return _continue("active", next_stage)
 
 
 def _field_values_in_status(text: str, label: str) -> tuple[list[str], list[str]]:
@@ -377,7 +601,14 @@ def resolve_owners_from_index(root: Path, plan_index_path: Path) -> IndexOwnerRe
                 )
             )
             continue
-        if not has_structured_workflow_state_marker(plan_path.read_text(encoding="utf-8")):
+        plan_text = plan_path.read_text(encoding="utf-8")
+        if not has_workflow_state_handoff_section(plan_text):
+            findings.append(
+                StateSyncFinding(
+                    plan_path,
+                    "active-document-missing-handoff: active or blocked plan must contain Current Handoff Summary",
+                )
+            )
             continue
         plan_paths.add(plan_path)
     return IndexOwnerResolution(plan_paths=tuple(sorted(plan_paths)), findings=tuple(findings))
@@ -549,7 +780,7 @@ def validate_workflow_state_sync(
             if row.state != state.lifecycle_state:
                 findings.append(StateSyncFinding(plan_index_path, f"docs/plan.md State must match Plan lifecycle state for {target}"))
             if state.handoff is not None and row.next_stage != _normalize_whitespace(state.handoff.next_stage):
-                findings.append(StateSyncFinding(plan_index_path, f"docs/plan.md Next stage must match Current Handoff Summary for {target}"))
+                findings.append(StateSyncFinding(plan_index_path, f"contradictory-workflow-state: docs/plan.md Next stage must match Current Handoff Summary for {target}"))
             if state.change_id is None:
                 findings.append(StateSyncFinding(plan_path, "Change ID field must appear exactly once and be non-empty in the plan Status block"))
             elif row.change_id != state.change_id:
@@ -580,10 +811,8 @@ def validate_workflow_state_sync(
         if artifact_plan:
             artifact_plan_path = (root / artifact_plan).resolve()
             artifact_state = plan_states.get(artifact_plan_path)
-            if (
-                artifact_state is None
-                and artifact_plan_path.exists()
-                and not has_structured_workflow_state_marker(artifact_plan_path.read_text(encoding="utf-8"))
+            if artifact_state is None and artifact_plan_path.exists() and not has_workflow_state_handoff_section(
+                artifact_plan_path.read_text(encoding="utf-8")
             ):
                 continue
             if artifact_state is not None:

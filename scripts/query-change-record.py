@@ -317,6 +317,29 @@ def open_blockers(data: dict[str, Any]) -> list[str]:
     return latest.get("blockers", []) if latest else []
 
 
+def profile_policy(
+    data: dict[str, Any],
+    metadata_path: Path,
+    repo_root: Path,
+) -> dict[str, Any] | None:
+    workflow = data.get("workflow")
+    if not isinstance(workflow, dict):
+        return None
+    autoprogression = workflow.get("autoprogression")
+    if not isinstance(autoprogression, dict):
+        return None
+
+    policy: dict[str, Any] = {
+        "policy_owner": "change-metadata",
+        "detail_pointer": f"{repo_relative(metadata_path, repo_root)}#workflow.autoprogression",
+    }
+    for field in ("profile", "authorized_by", "authorized_at", "change_id"):
+        value = autoprogression.get(field)
+        if isinstance(value, str):
+            policy[field] = value
+    return policy
+
+
 def detail_pointers(change_id: str, metadata_path: Path, repo_root: Path) -> dict[str, str]:
     return {
         "change_metadata": repo_relative(metadata_path, repo_root),
@@ -335,6 +358,7 @@ def query_summary(change_id: str, metadata_path: Path, data: dict[str, Any], rep
         "metadata_shape": metadata_shape(data),
         "artifact_paths": artifact_paths(data),
         "review_state": review_state(data, change_id),
+        "profile_policy": profile_policy(data, metadata_path, repo_root),
         "latest_validation": latest_validation_slice(data),
         "open_blockers": open_blockers(data),
         "detail_pointers": detail_pointers(change_id, metadata_path, repo_root),

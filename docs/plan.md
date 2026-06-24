@@ -17,6 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
+| [Proposal-Gated Authoring Autoprogression Through Plan Review](plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md) | active | pr | 2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review |
 
 ## Blocked
 

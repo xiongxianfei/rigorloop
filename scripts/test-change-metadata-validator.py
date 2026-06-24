@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 import re
 import shlex
@@ -19,6 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate-change-metadata.py"
+QUERY_HELPER = ROOT / "scripts" / "query-change-record.py"
 FIXTURES = ROOT / "tests" / "fixtures" / "change-metadata"
 SKILL_VALIDATOR_EXAMPLE = ROOT / "docs" / "changes" / "0001-skill-validator" / "change.yaml"
 CLEAN_RECEIPT_ROOT = (
@@ -53,6 +55,26 @@ def load_validator_module():
 def run_validator(*targets: Path) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(VALIDATOR), *(str(target) for target in targets)],
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+    )
+
+
+def run_query_change_record(
+    repo_root: Path,
+    change_id: str,
+    query: str,
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [
+            sys.executable,
+            str(QUERY_HELPER),
+            change_id,
+            query,
+            "--repo-root",
+            str(repo_root),
+        ],
         capture_output=True,
         text=True,
         cwd=ROOT,
@@ -222,6 +244,43 @@ def main(argv: list[str]) -> int:
 class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
     maxDiff = None
 
+    def write_policy_fixture(
+        self,
+        root: Path,
+        *,
+        change_id: str = "2026-06-24-policy-fixture",
+        workflow_block: str = """workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+""",
+    ) -> Path:
+        target = root / "change.yaml"
+        target.write_text(
+            f"""change_id: {change_id}
+title: Policy fixture
+classification: spec
+risk: low
+artifacts: {{}}
+requirements:
+  - fixture
+tests:
+  - fixture
+validation:
+  - command: fixture
+    result: pass
+changed_files:
+  - docs/example.md
+review:
+  status: pending
+  unresolved_items: 0
+{workflow_block}""",
+            encoding="utf-8",
+        )
+        return target
+
     def assertPathPasses(self, target: Path) -> None:
         result = run_validator(target)
         self.assertEqual(
@@ -245,6 +304,183 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
 
     def test_compact_valid_fixture_passes(self) -> None:
         self.assertPathPasses(FIXTURES / "compact-valid" / "change.yaml")
+
+    def test_autoprogression_policy_record_passes(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-valid-") as temp_dir:
+            target = self.write_policy_fixture(Path(temp_dir))
+            self.assertPathPasses(target)
+
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-off-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block="""workflow:
+  autoprogression:
+    profile: off
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+""",
+            )
+            self.assertPathPasses(target)
+
+    def test_autoprogression_policy_record_required_fields_fail(self) -> None:
+        cases = [
+            (
+                "unknown-profile",
+                """workflow:
+  autoprogression:
+    profile: auto
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+""",
+                "workflow.autoprogression.profile: expected one of",
+            ),
+            (
+                "missing-profile",
+                """workflow:
+  autoprogression:
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+""",
+                "workflow.autoprogression.profile: missing required field",
+            ),
+            (
+                "missing-authorized-by",
+                """workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+""",
+                "workflow.autoprogression.authorized_by: missing required field",
+            ),
+            (
+                "missing-authorized-at",
+                """workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    change_id: 2026-06-24-policy-fixture
+""",
+                "workflow.autoprogression.authorized_at: missing required field",
+            ),
+            (
+                "missing-change-id",
+                """workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+""",
+                "workflow.autoprogression.change_id: missing required field",
+            ),
+            (
+                "mismatched-change-id",
+                """workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-other-change
+""",
+                "workflow.autoprogression.change_id: must match top-level change_id",
+            ),
+            (
+                "invalid-timestamp",
+                """workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: June 24 2026
+    change_id: 2026-06-24-policy-fixture
+""",
+                "workflow.autoprogression.authorized_at: expected RFC3339 UTC timestamp",
+            ),
+            (
+                "malformed-workflow",
+                "workflow: true\n",
+                "workflow: expected object",
+            ),
+            (
+                "malformed-autoprogression",
+                """workflow:
+  autoprogression: true
+""",
+                "workflow.autoprogression: expected object",
+            ),
+        ]
+        for name, workflow_block, expected in cases:
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory(prefix=f"change-metadata-policy-{name}-") as temp_dir:
+                    target = self.write_policy_fixture(Path(temp_dir), workflow_block=workflow_block)
+                    self.assertPathFails(target, expected)
+
+    def test_autoprogression_policy_non_durable_records_fail(self) -> None:
+        cases = [
+            (
+                "pre-pack-session-intent",
+                """workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+    session_intent: true
+""",
+                "workflow.autoprogression.session_intent: session-only arming is not durable authorization",
+            ),
+            (
+                "failed-persistence",
+                """workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+    persistence_status: failed
+""",
+                "workflow.autoprogression.persistence_status: authorization-not-persisted",
+            ),
+            (
+                "fallback-without-contract-rejection",
+                """workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+    fallback_policy_path: docs/changes/2026-06-24-policy-fixture/workflow-policy.yaml
+""",
+                "workflow.autoprogression.fallback_policy_path: fallback is only valid when change metadata rejects policy data",
+            ),
+        ]
+        for name, workflow_block, expected in cases:
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory(prefix=f"change-metadata-policy-{name}-") as temp_dir:
+                    target = self.write_policy_fixture(Path(temp_dir), workflow_block=workflow_block)
+                    self.assertPathFails(target, expected)
+
+    def test_query_summary_exposes_autoprogression_policy_as_evidence_only(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-query-") as temp_dir:
+            repo_root = Path(temp_dir)
+            change_id = "2026-06-24-policy-fixture"
+            change_root = repo_root / "docs" / "changes" / change_id
+            change_root.mkdir(parents=True)
+            self.write_policy_fixture(change_root)
+
+            result = run_query_change_record(repo_root, change_id, "summary")
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["profile_policy"]["profile"], "authoring-through-plan-review")
+            self.assertEqual(payload["profile_policy"]["policy_owner"], "change-metadata")
+            self.assertEqual(
+                payload["profile_policy"]["detail_pointer"],
+                f"docs/changes/{change_id}/change.yaml#workflow.autoprogression",
+            )
+            self.assertNotIn("next_stage", payload["profile_policy"])
+            self.assertNotIn("current_stage", payload["profile_policy"])
 
     def test_compact_path_variable_helpers(self) -> None:
         validator = load_validator_module()

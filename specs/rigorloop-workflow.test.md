@@ -52,7 +52,8 @@
 | `R6a`-`R6i` | `T20`, `T21` | manual, integration | Standing artifact gates, bootstrap exceptions, project-map no-reliance, architecture-package routing |
 | `R7`-`R7b` | `T20`, `T22` | manual, integration | Stable obligation values, trigger behavior, and `Runs for every change` semantics |
 | `R7ba`-`R7bf` | `T23` | manual, integration | Periodic `learn`, default nonblocking behavior, session-record closeout, and final learn artifact model linkage |
-| `R7c`-`R7w` | `T24` | manual, integration | Autoprogression, immediate handoff language, stage-owned authority, tracked-branch review and verify claims |
+| `R7c`-`R7w` | `T24`, `T37` | manual, integration | Autoprogression, immediate handoff language, stage-owned authority, tracked-branch review and verify claims |
+| `R7ea`-`R7es` | `T37` | manual | `authoring-through-plan-review` activation, mandatory durable authorization persistence, isolation, architecture assessment, stop conditions, and completion boundary |
 | `R8`-`R8g`, `R8i`, `R8j` | `T2`, `T30` | manual, integration | Planned milestone lifecycle, plan/index coherence, and milestone commits |
 | `R8h`-`R8hc` | `T29`, `T30` | manual, integration | PR-self-contained plan lifecycle closeout and true downstream event handling |
 | `R8ja`-`R8jb` | `T30`, `T32` | manual, integration | Stale plan state and merge-dependent plan wording classification |
@@ -113,6 +114,7 @@
 - The `docs/changes/0001-skill-validator/` example remains richer than the universal minimum: `T15`
 - Approved legacy top-level explain artifacts remain valid until retired: `T3`, `T16`
 - `spec-review` and `plan-review` preserve immediate handoff versus downstream readiness: `T24`
+- `authoring-through-plan-review` requires durable authorization persistence before activation and pauses on missing, malformed, incomplete, or failed persistence: `T37`
 - `explore` and `research` are on-demand support and block only after trigger or dependency reliance: `T22`
 - Triggered `learn` closes through the final learn artifact model when a session reaches Frame, or through pre-session scheduled follow-up, deferral, or no-learn rationale when no session runs; it blocks only when a higher-priority artifact makes it blocking: `T23`
 - `ci-maintenance` may be skipped when hosted automation already covers the material risk: `T26`
@@ -920,6 +922,34 @@
 - Automation location:
   - `python scripts/test-skill-validator.py`
   - manual M2/M3 review
+
+### T37. Authoring-through-plan-review policy is durable and bounded
+
+- Covers: `R7ea`-`R7es`
+- Level: manual
+- Fixture/setup:
+  - `specs/rigorloop-workflow.md`
+  - `specs/workflow-stage-autoprogression.md`
+  - `specs/workflow-stage-autoprogression.test.md`
+  - `docs/changes/<change-id>/change.yaml`
+  - `docs/changes/<change-id>/workflow-policy.yaml`
+  - profile-managed output or activation audit trail for a candidate change
+- Steps:
+  - Confirm the workflow spec defines only `off` and `authoring-through-plan-review` as closed profile values and fails closed for unknown values.
+  - Confirm activation requires `armed && gate-ready` and keeps user authorization separate from proposal-gate evidence.
+  - Confirm durable authorization is recorded at `change.yaml`, or at `workflow-policy.yaml` only when change metadata rejects policy data.
+  - Confirm missing, malformed, incomplete, or failed authorization persistence pauses before any profile-driven transition.
+  - Confirm the profile cannot run `test-spec`, implementation, code-review, explain-change, verify, PR, release, deploy, merge, or review-fix loops.
+  - Confirm the profile records architecture assessment and pauses on ambiguity.
+  - Confirm review stages remain independent formal review stages and direct review requests remain isolated.
+  - Confirm clean `plan-review` completes the profile and reports `test-spec` without invoking it.
+  - Confirm profile policy metadata does not own current stage, next stage, review status, branch readiness, or PR readiness.
+- Expected result:
+  - Workflow-level guidance agrees with the autoprogression spec: durable authorization is mandatory, the profile is bounded, and all non-clean or ambiguous states pause.
+- Failure proves:
+  - Workflow-level guidance could permit unaudited activation, skip a required gate, or broaden the profile beyond the approved proposal.
+- Automation location:
+  - Manual contract review before implementation.
 
 ## Fixtures and data
 

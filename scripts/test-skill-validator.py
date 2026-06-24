@@ -4805,6 +4805,65 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
 
+    def test_authoring_profile_stage_skill_alignment(self) -> None:
+        """Affected stage skills describe the bounded authoring profile without widening direct reviews."""
+
+        required_by_skill = {
+            "proposal-review": [
+                "`authoring-through-plan-review` is the only approved review-to-next-authoring exception",
+                "`Immediate next stage: spec`",
+                "Direct or review-only `proposal-review` requests remain isolated by default.",
+            ],
+            "spec": [
+                "successful `spec` completion hands off to `spec-review`",
+                "Only the explicitly armed workflow-managed `authoring-through-plan-review` profile can continue after the matching `spec-review`",
+            ],
+            "spec-review": [
+                "recorded architecture assessment",
+                "`architecture-required`",
+                "`architecture-not-required`",
+                "`architecture-ambiguous`",
+                "Direct or review-only `spec-review` requests remain isolated by default.",
+            ],
+            "architecture": [
+                "successful `architecture` completion hands off to `architecture-review`",
+                "Only the explicitly armed workflow-managed `authoring-through-plan-review` profile can continue after the matching `architecture-review`",
+            ],
+            "architecture-review": [
+                "`authoring-through-plan-review` is the only approved review-to-next-authoring exception",
+                "Direct or review-only `architecture-review` requests remain isolated by default.",
+            ],
+            "plan": [
+                "successful `plan` completion hands off to `plan-review`",
+                "Only a clean `plan-review` can complete `authoring-through-plan-review`",
+            ],
+            "plan-review": [
+                "Clean `plan-review` under `authoring-through-plan-review` marks the profile `completed`",
+                "reports `test-spec` as next without invoking `test-spec`",
+                "Direct or review-only `plan-review` requests remain isolated by default.",
+            ],
+        }
+        for skill_name, terms in required_by_skill.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_authoring_profile_review_independence_guidance(self) -> None:
+        """Formal review skills preserve independent tracked-artifact review under automatic progression."""
+
+        required_terms = [
+            "For `authoring-through-plan-review`, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing.",
+            "Record the review result before any profile-driven downstream action.",
+            "Do not rely on hidden authoring reasoning from the preceding stage.",
+            "Do not edit the reviewed artifact during review.",
+        ]
+        for skill_name in ["proposal-review", "spec-review", "architecture-review", "plan-review"]:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
     def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
         """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""
 

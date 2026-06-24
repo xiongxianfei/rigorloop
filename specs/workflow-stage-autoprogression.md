@@ -8,6 +8,7 @@
 - [Workflow stage autoprogression](../docs/proposals/2026-04-21-workflow-stage-autoprogression.md)
 - [Milestone-aware review handoff](../docs/proposals/2026-05-07-milestone-aware-review-handoff.md)
 - [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md)
+- [Proposal-Gated Authoring Autoprogression Through Plan Review](../docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md)
 
 ## Goal and context
 
@@ -15,16 +16,20 @@ This spec defines when the repository workflow should continue automatically to 
 
 The existing workflow contract already defines stage order and stage classification, but it does not define a general continuation rule. That leaves agents pausing after already-complete stages even when the next stage is already known, required by the current workflow state, and does not need a new user decision. This spec closes that gap without broadening into merge, deploy, release, or destructive Git automation.
 
-In v1, this autoprogression contract applies only to:
+Before this amendment, the v1 autoprogression contract applied only to:
 
 - standard workflow execution-flow handoffs; and
 - authoring-to-review handoffs for `proposal`, `spec`, and `architecture` when those review stages are the next mandatory or triggered downstream step.
+
+This amendment adds the separately armed `authoring-through-plan-review` profile as the only bounded review-to-next-authoring continuation path.
 
 Manual skill invocations and bugfix skill invocations remain out of scope for this automation mechanism in v1 unless the user explicitly asks to continue through the standard workflow.
 
 This spec is amended by the milestone-aware review handoff contract for workflow-managed standard workflow changes that use a milestone-based plan. In that case, a clean review of one non-final implementation milestone is not proof that the whole implementation set is ready for final closeout.
 
 This spec is also amended by the single standard workflow contract. After implementation milestones and required review-resolution closeout are complete, the final workflow-managed sequence is `ci-maintenance` when triggered, then `explain-change`, then `verify`, then `pr`.
+
+This amendment adds a bounded, explicitly armed authoring autoprogression profile that starts only after the proposal gate is clean and stops after `plan-review`. It extends review-to-next-authoring continuation only for that profile and does not widen implementation, test-spec, PR, bugfix, fast-lane, direct review, or review-fix-loop behavior.
 
 ## Glossary
 
@@ -36,6 +41,15 @@ This spec is also amended by the single standard workflow contract. After implem
 - `current workflow state`: the active stage, triggered conditions, plan state, review state, and user invocation context that determine the next downstream stage.
 - `downstream stage`: the next stage or stages that follow from the current workflow state and current stage outcome.
 - `stop condition`: a documented reason the agent must not continue automatically.
+- `autoprogression profile`: a closed workflow policy value that defines which bounded downstream stage set may run automatically for one change.
+- `authoring-through-plan-review`: the change-local autoprogression profile that may run `spec`, `spec-review`, recorded architecture assessment, conditional `architecture`, conditional `architecture-review`, `plan`, and `plan-review`, then stop.
+- `proposal gate`: the artifact and review state proving that proposal direction is settled enough for downstream authoring.
+- `gate-ready proposal`: a proposal whose artifacts and review evidence satisfy the proposal gate, independent of whether the user has authorized automation.
+- `armed profile`: a profile value explicitly authorized by the user for a change but not yet active until its activation gate passes.
+- `active profile`: an armed profile whose activation gate has passed and whose transition budget has not completed or paused.
+- `paused profile`: a profile that encountered a stop condition and cannot continue without explicit user resume.
+- `completed profile`: a profile that reached its designed terminal boundary and does not restart automatically.
+- `architecture assessment`: the recorded workflow-managed micro-stage after approved `spec-review` that returns `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`.
 - `PR-opening prerequisites`: the minimum branch, worktree, and readiness conditions required before the `pr` stage opens a pull request.
 - `milestone-based plan`: a concrete execution plan with one or more in-scope implementation milestones that must be implemented, reviewed, and closed before final closeout readiness.
 - `in-scope implementation milestone`: a planned milestone whose current scope still includes implementation work for the change.
@@ -148,6 +162,35 @@ And hosted workflow automation, validation automation, or related platform confi
 When workflow-managed execution continues
 Then the next stage is `ci-maintenance`, followed by `explain-change`, `verify`, and `pr`.
 
+### Example E17: armed authoring profile starts after clean proposal gate
+
+Given a proposal is `accepted`
+And formal `proposal-review` is approved, recorded, and has no material findings or open blockers
+And the user has authorized `auto-through: plan-review`
+When workflow-managed execution resumes before `spec`
+Then the workflow activates `authoring-through-plan-review` and enters `spec` without requiring another stage-routing prompt.
+
+### Example E18: authoring profile stops after clean plan-review
+
+Given `authoring-through-plan-review` is active
+And `spec`, `spec-review`, required architecture stages, `plan`, and `plan-review` complete cleanly
+When `plan-review` is approved and recorded
+Then the profile is marked completed
+And the output reports `test-spec` as the next stage without invoking it.
+
+### Example E19: authoring profile does not start from a direct review
+
+Given `authoring-through-plan-review` is armed for a change
+When the user directly invokes `spec-review` without workflow-managed resume context
+Then the review remains isolated and does not continue into architecture, plan, or plan-review.
+
+### Example E20: authoring profile pauses on ambiguous architecture assessment
+
+Given `authoring-through-plan-review` is active
+And approved `spec-review` is recorded
+When architecture assessment records `architecture-ambiguous`
+Then the profile pauses and reports the ambiguity, last completed stage, required next action, and profile state.
+
 ## Requirements
 
 R1. The workflow MUST distinguish workflow-managed completion flows from isolated stage requests.
@@ -164,7 +207,7 @@ R2. In a workflow-managed completion flow, when a stage completes successfully, 
 
 R2a. Autoprogression MUST follow the current workflow state's next mandatory or triggered downstream stage, not a universal stage pair.
 
-R2b. In v1, this autoprogression contract applies only to standard workflow execution flow and authoring-to-review handoffs. It MUST NOT change manual skill invocation or bugfix skill invocation downstream behavior by implication.
+R2b. This autoprogression contract applies only to standard workflow execution flow, authoring-to-review handoffs, and the separately armed `authoring-through-plan-review` profile. It MUST NOT change manual skill invocation or bugfix skill invocation downstream behavior by implication.
 
 R2ba. In v1, standard workflow execution-flow autoprogression begins at `implement` and continues through `pr`.
 
@@ -174,12 +217,101 @@ R2d. When the current workflow state includes `spec-review` as the next mandator
 
 R2e. When the current workflow state includes `architecture-review` as the next mandatory or triggered downstream stage, successful `architecture` completion MUST continue into `architecture-review` unless a stop condition applies.
 
-R2f. Upstream of `implement`, v1 covers only these authoring-to-review handoffs:
+R2f. Upstream of `implement`, default continuation covers only these authoring-to-review handoffs:
 - `proposal -> proposal-review`
 - `spec -> spec-review`
 - `architecture -> architecture-review`
 
-R2g. Review-to-next-authoring-stage transitions such as `proposal-review -> spec`, `spec-review -> architecture`, or `architecture-review -> plan` remain out of scope unless a later approved change adds them.
+R2g. Review-to-next-authoring-stage transitions such as `proposal-review -> spec`, `spec-review -> architecture`, or `architecture-review -> plan` remain out of default scope except inside the explicitly armed `authoring-through-plan-review` profile.
+
+R2h. The workflow MUST support the closed autoprogression profile values `off` and `authoring-through-plan-review`.
+
+R2i. Unknown autoprogression profile values MUST fail closed and pause the profile before any downstream stage is invoked.
+
+R2j. The user-facing authorization `auto-through: plan-review` MUST map to the canonical profile `authoring-through-plan-review`.
+
+R2k. `authoring-through-plan-review` MUST be change-local and explicitly user-authorized. A repository-wide default for this profile is out of scope.
+
+R2l. `authoring-through-plan-review` MUST activate only when both the profile is armed and the proposal gate passes.
+
+R2m. The proposal gate MUST pass only when all of the following are true:
+- the proposal artifact exists;
+- the proposal status is `accepted`;
+- the latest formal `proposal-review` status is approved;
+- proposal-review recording status is recorded;
+- proposal-review has no material findings;
+- proposal-review has no open blockers;
+- proposal scope and non-goals are settled enough for spec;
+- proposal open questions do not block specification;
+- required vision and constitution gates are satisfied;
+- change ID and artifact placement are unambiguous.
+
+R2n. User authorization MUST NOT be part of proposal gate readiness. An unarmed but otherwise gate-ready proposal MUST be reported as gate-ready with profile `off`, not as a failed proposal gate.
+
+R2o. Once active, `authoring-through-plan-review` MUST use this bounded sequence:
+- `spec`;
+- `spec-review`;
+- recorded architecture assessment;
+- `architecture` and `architecture-review` when architecture assessment records `architecture-required`;
+- `plan`;
+- `plan-review`;
+- stop.
+
+R2p. `authoring-through-plan-review` MUST NOT invoke `test-spec`, `implement`, `code-review`, `explain-change`, `verify`, `pr`, release, deploy, merge, or review-fix loops.
+
+R2q. After clean `plan-review`, `authoring-through-plan-review` MUST mark the profile completed and report `test-spec` as the next stage without invoking it.
+
+R2r. Durable change-local persistence of profile authorization is mandatory for activation. When a change-local persistence surface exists, the orchestrator MUST persist the autoprogression profile authorization before activating the profile. The canonical persistence surface is `docs/changes/<change-id>/change.yaml`. The orchestrator MUST fall back to `docs/changes/<change-id>/workflow-policy.yaml` if, and only if, the change-metadata contract rejects policy data; the fallback path MUST be recorded in the same audit-trail entry as activation.
+
+The persisted record MUST include the profile name, the authorizing user identity through `authorized_by`, the authorization timestamp, and the change ID it applies to. Malformed, missing, or partially written records MUST be treated as absent.
+
+The orchestrator MUST NOT activate the profile when durable authorization cannot be recorded. In that case it MUST pause and report `authorization-not-persisted` as the stop reason. The orchestrator MUST NOT infer authorization from session state, prior runs, repository-level configuration, or the absence of an explicit `off` value.
+
+A profile armed before the change pack exists is session intent only. It MUST be re-asserted and durably persisted once the change pack is created; pre-pack arming alone MUST NOT permit activation.
+
+Cancellation MUST also be durably recorded before the orchestrator treats the profile as `off`.
+
+This requirement defines authorization-persistence policy only. The persisted record MUST NOT own current stage, next stage, review status, branch readiness, or PR readiness; those remain owned by the existing workflow-state surfaces.
+
+R2s. Profile policy metadata MUST NOT own current stage, next stage, review status, branch readiness, or PR readiness.
+
+R2t. Arming before the change-local persistence surface exists MUST be treated as non-durable session intent and MUST be re-asserted before durable profile execution can rely on it.
+
+R2u. Additional profiles, including `authoring-through-test-spec` or implementation profiles, MUST require a separate proposal and spec amendment. This profile MUST NOT be widened silently.
+
+R2v. A future `authoring-through-test-spec` profile MUST NOT be proposed until measured adoption evidence shows `authoring-through-plan-review` completed safely across multiple activations, contributors, and change types.
+
+R2w. After approved `spec-review`, the active authoring profile MUST run a recorded architecture assessment before routing to `architecture` or `plan`.
+
+R2x. Architecture assessment MUST record exactly one of `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`.
+
+R2y. Architecture assessment MUST record `architecture-required` when the change introduces or materially alters subsystem boundaries, data flow, trust boundaries, public interfaces, persistence, deployment, generated-output architecture, release or compatibility architecture, or a durable design tradeoff requiring an ADR.
+
+R2z. Architecture assessment MUST record `architecture-ambiguous` when the assessor cannot justify either `architecture-required` or `architecture-not-required` from tracked artifacts without owner judgment, missing system context, or disputed boundary classification. `architecture-ambiguous` MUST pause the profile.
+
+R2aa. When architecture assessment records `architecture-required`, the active profile MUST run `architecture` and then `architecture-review` without a separate user confirmation, unless a stop condition applies.
+
+R2ab. When architecture assessment records `architecture-not-required`, the active profile MUST continue to `plan`, unless a stop condition applies.
+
+R2ac. Review stages run by `authoring-through-plan-review` MUST be distinct stage invocations that review tracked artifacts, use formal review criteria, record results before downstream action, and avoid editing the reviewed artifact during review.
+
+R2ad. When fresh or independent review context is unavailable, each review stage in the profile MUST reset its review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings rather than relying on hidden authoring reasoning.
+
+R2ae. `authoring-through-plan-review` MUST pause on user pause or cancellation, incomplete proposal gate, missing required artifact, ambiguous artifact placement, review recording failure, non-approved review status, material finding, open `needs-decision`, proposal direction change, spec/proposal conflict, architecture ambiguity, owner-selection requirement, unresolved upstream ambiguity, contradictory workflow state, unreliable partial stage completion, exhausted transition budget, missing or malformed authorization persistence, or authorization persistence write failure.
+
+R2af. A profile pause result MUST report last completed stage, stopped stage, reason, required next action, and whether the profile remains armed or paused.
+
+R2ag. User cancellation MUST set the profile to `off` only after that cancellation is durably recorded. If the cancellation cannot be recorded, the workflow MUST pause, report the persistence failure, and keep the prior durable profile state rather than silently switching to `off`.
+
+R2ah. Manual fixes MUST NOT auto-resume a paused profile. Explicit user resume is required because fixes may change the proposal direction, spec, plan, or rereview scope.
+
+R2ai. The normal `authoring-through-plan-review` transition budget MUST be six stage slots per activation: `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, and `plan-review`. When architecture is not required, the unused architecture slots are skipped slots, not permission to run other stages.
+
+R2aj. If a rereview event is explicitly authorized after a pause, the resumed transition budget MUST be remaining uncompleted stages plus explicitly authorized rereview stages. Unexpected cycles MUST pause the profile.
+
+R2ak. Before invoking any stage in the active profile, the orchestrator MUST inspect current workflow state, artifact existence, artifact status, latest formal review result, open review findings, recording completion, and autoprogression profile.
+
+R2al. The orchestrator MUST NOT recreate a completed artifact, rerun a clean review without an explicit rereview trigger, skip an incomplete or conflicting artifact, or infer completion from file existence alone.
 
 R3. In the standard workflow execution flow, successful `implement` completion MUST continue into `code-review` unless a stop condition applies.
 
@@ -260,15 +392,22 @@ Inputs:
 - the current workflow state for the change
 - the current completed stage and its outcome
 - whether workflow-managed context is present
+- the active autoprogression profile, if any
+- user authorization for `auto-through: plan-review`, when supplied
+- durable authorization policy record and write outcome for the active change-local surface, when `authoring-through-plan-review` is armed or activating
 - explicit user stop or continue instructions
 - current validation and review results
+- proposal status, proposal-review result, review recording status, and open review findings for proposal-gate evaluation
+- architecture assessment result when the authoring profile reaches post-spec-review routing
 - branch and worktree state relevant to `pr`
 - governing spec, plan, and workflow artifacts when they define checkpoints or blockers
 
 Outputs:
 
 - the next downstream stage entered automatically, when continuation is allowed
+- profile state: `off`, armed, active, paused, or completed, when a profile is involved
 - a blocker or pause result when continuation stops
+- architecture assessment result when the authoring profile evaluates architecture need
 - for `pr`, either an opened PR URL or an explicit readiness blocker
 - updated readiness wording in the relevant tracked artifacts when workflow state changes
 
@@ -281,7 +420,14 @@ Outputs:
 - In a milestone-based plan, `implement` sets the current implementation milestone to `review-requested` when implementation and targeted validation are complete and review handoff occurs.
 - In a milestone-based plan, `code-review` sets the reviewed milestone to `closed` when review is clean and no review-resolution is required, or to `resolution-needed` when findings require review-resolution, fixes, owner decision, or re-review.
 - In a milestone-based plan, final closeout is available only after all in-scope implementation milestones are closed and no required review-resolution remains open.
-- In v1, review-to-next-authoring-stage transitions remain outside the autoprogression contract.
+- Review-to-next-authoring-stage transitions remain outside default autoprogression.
+- `authoring-through-plan-review` is the only review-to-next-authoring profile defined by this amendment.
+- `authoring-through-plan-review` starts only after `armed && gate-ready` and ends at clean `plan-review`.
+- Profile policy metadata records authorization only; live stage and readiness ownership remains with existing workflow artifacts.
+- Durable profile authorization is an activation precondition once a change-local persistence surface exists.
+- Review stages remain independent and recorded even when a profile runs them consecutively.
+- A paused profile never resumes from file changes alone.
+- A completed profile does not restart automatically.
 - Review-only and explicitly isolated stage requests remain isolated unless the user asks to continue.
 - Automatic continuation never expands into merge, release, deploy, or destructive Git behavior by default.
 - When a stop condition applies, the workflow stops before the next stage and reports why.
@@ -289,6 +435,13 @@ Outputs:
 ## Error and boundary behavior
 
 - If the current workflow state is ambiguous, the workflow MUST stop and ask for clarification or re-route through workflow classification rather than guessing.
+- If a profile value is unknown, missing required evidence, contradicted by workflow state, or unsupported by the active spec, the workflow MUST fail closed and pause before invoking another stage.
+- If durable authorization is missing, malformed, partially written, or cannot be written at activation time, the workflow MUST pause with stop reason `authorization-not-persisted`.
+- If the proposal gate is incomplete, the authoring profile MUST remain armed or off according to its current policy state and MUST NOT enter `spec`.
+- If architecture assessment records `architecture-ambiguous`, the authoring profile MUST pause rather than selecting `architecture` or `plan`.
+- If a profile pause is caused by non-clean review, material finding, or owner decision, manual correction MUST NOT auto-resume the profile.
+- If a cancellation request cannot be durably recorded, the workflow MUST pause and leave the prior durable profile state unchanged.
+- If a profile is already partially executed and reliable completion evidence is missing, the workflow MUST pause rather than duplicate or skip the stage.
 - If validation fails after `implement`, the workflow MUST stop before downstream review stages and report the failing proof surface.
 - If workflow-managed context is absent for a directly invoked stage, the workflow MUST treat the invocation as isolated rather than inferring automatic downstream continuation. Direct `pr` still performs the `pr` stage itself when readiness passes.
 - If `code-review` findings require a design choice, scope change, or spec change rather than a straightforward fix, the workflow MUST stop and surface that decision point.
@@ -302,6 +455,11 @@ Outputs:
 
 - This change is a workflow-behavior clarification, not a product-runtime compatibility change.
 - Existing stage order remains intact; the change affects default continuation behavior between stages, not which stages exist.
+- Default behavior remains unchanged when profile is `off`.
+- Existing workflow-managed `proposal -> proposal-review`, `spec -> spec-review`, `architecture -> architecture-review`, and implementation-to-PR behavior remains unchanged when `authoring-through-plan-review` is not armed.
+- Direct review requests remain isolated even when a change has an armed profile, unless invoked through workflow-managed resume context.
+- Existing change records without autoprogression profile policy are treated as `off`.
+- Existing change records without durable autoprogression profile policy cannot activate `authoring-through-plan-review`; they remain `off` unless the user re-asserts authorization and the workflow records it durably.
 - Review-only requests remain compatible because they stay isolated unless the user asks to continue.
 - Existing milestone-free plans remain compatible with the ordinary standard workflow continuation sequence. Touched milestone-based plans MUST use milestone-aware handoff wording and the `explain-change -> verify -> pr` final order when current review or readiness state changes.
 - Existing open PRs or feature branches are unaffected until the workflow guidance and skills are updated to use this contract.
@@ -311,6 +469,12 @@ Outputs:
 
 - The agent SHOULD announce when it is continuing automatically into the next stage.
 - When continuation stops, the agent SHOULD state whether the reason is user pause, blocker, missing prerequisite, or external-tool limitation.
+- Profile-managed output MUST state why each automatic stage ran and why the profile paused or completed.
+- Profile-managed output MUST report last completed stage, stopped stage, stop reason, required next action, and profile state when continuation pauses.
+- When activation pauses because authorization persistence is absent, malformed, partial, or failed to write, profile-managed output MUST report `authorization-not-persisted`.
+- When `workflow-policy.yaml` is used instead of `change.yaml`, the audit trail MUST state that the change-metadata contract rejected policy data and record the fallback path.
+- The recorded architecture assessment MUST be inspectable as audit evidence for why architecture was run or skipped.
+- Clean profile completion MUST visibly report `test-spec` as the next stage and that it was not invoked.
 - `pr` output MUST make clear whether a PR was actually opened or only deemed ready.
 - Workflow-managed readiness text in plans or related artifacts SHOULD identify the actual next stage rather than implying manual re-invocation is required.
 - When a directly invoked stage is treated as isolated, the output SHOULD make that classification explicit instead of implying that downstream continuation was forgotten.
@@ -318,6 +482,9 @@ Outputs:
 ## Security and privacy
 
 - Automatic continuation MUST NOT expand into destructive or externally publishing actions beyond PR creation by default.
+- `authoring-through-plan-review` MUST NOT start implementation, run code, open pull requests, publish packages, release, deploy, merge, or perform destructive Git actions.
+- Profile metadata MUST NOT include secrets or credentials and MUST NOT expose private user data beyond ordinary workflow attribution such as `authorized_by: user`.
+- Profile authorization metadata MUST be limited to workflow policy fields such as profile name, `authorized_by`, authorization timestamp, change ID, profile status, and fallback-path evidence.
 - PR creation output MUST NOT falsely claim hosted CI passed when only local checks were observed.
 - PR preparation and opening MUST continue to respect the repository rule against including secrets, credentials, or unrelated local files.
 
@@ -366,6 +533,30 @@ EC18. A milestone-based plan with ambiguous remaining implementation scope block
 
 EC19. A lifecycle-closeout milestone after closed implementation milestones does not block entry into final closeout; a mixed milestone containing implementation work remains an implementation milestone.
 
+EC20. An otherwise gate-ready proposal has no armed profile. The workflow reports the proposal as gate-ready with profile `off` and does not enter `spec` automatically.
+
+EC21. An armed profile sees proposal status `draft`. The workflow pauses before `spec` and reports that proposal status settlement to `accepted` is required.
+
+EC22. An active profile completes `spec` and records approved `spec-review` with `architecture-not-required`. The workflow continues to `plan`.
+
+EC23. An active profile completes `spec` and records approved `spec-review` with `architecture-required`. The workflow continues to `architecture`, then `architecture-review`.
+
+EC24. An active profile receives `changes-requested`, `blocked`, or `inconclusive` from `spec-review`, `architecture-review`, or `plan-review`. The workflow records the review result and pauses without revising the artifact automatically.
+
+EC25. A direct `spec-review` request occurs for a change whose profile is armed. The review remains isolated and does not continue to architecture or plan unless the user invokes workflow-managed resume.
+
+EC26. A paused profile has manual file edits that appear to address the blocker. The profile remains paused until the user explicitly resumes.
+
+EC27. A completed profile reaches clean `plan-review`. The workflow reports `test-spec` next, marks the profile completed, and does not invoke `test-spec`.
+
+EC28. A profile is armed in session before the change pack exists. The workflow treats that arming as non-durable session intent and does not activate until the user re-asserts authorization after the change pack exists and the authorization is durably recorded.
+
+EC29. A profile reaches activation with no durable authorization record, a malformed record, missing required fields, a partially written record, or a persistence write failure. The workflow pauses before `spec` and reports `authorization-not-persisted`.
+
+EC30. A user cancels an armed or active profile, but cancellation cannot be durably recorded. The workflow pauses, reports the persistence failure, and keeps the prior durable profile state instead of treating the profile as `off`.
+
+EC31. The change-metadata contract rejects policy data in `change.yaml`. The workflow writes `workflow-policy.yaml` only for that reason and records the fallback decision in the activation audit trail.
+
 ## Non-goals
 
 - Auto-merging pull requests.
@@ -374,6 +565,9 @@ EC19. A lifecycle-closeout milestone after closed implementation milestones does
 - Enabling v1 autoprogression for manual skill invocation or bugfix execution flow.
 - Turning manual review-only requests into implicit completion flows.
 - Introducing a mandatory structured checkpoint syntax in v1.
+- Widening `authoring-through-plan-review` to include `test-spec`, implementation, verification, PR, release, deploy, merge, or automatic review-fix loops.
+- Adding a repository-wide default for `authoring-through-plan-review`.
+- Adding future profiles without separate proposal and spec amendments.
 
 ## Acceptance criteria
 
@@ -389,18 +583,32 @@ EC19. A lifecycle-closeout milestone after closed implementation milestones does
 - The spec routes final closeout through `ci-maintenance` when triggered, then `explain-change`, then `verify`, then `pr`.
 - The spec keeps `ci-maintenance` scoped to automation or platform configuration changes rather than validation execution.
 - The spec keeps direct `verify` isolated by default and does not auto-continue to `pr` unless workflow-managed context or explicit continuation exists.
+- The spec defines `authoring-through-plan-review` as a closed, change-local, explicitly armed profile.
+- The spec makes durable authorization persistence mandatory before the profile can activate once a change-local surface exists.
+- The spec defines proposal-gate preconditions separately from user authorization.
+- The spec makes `armed && gate-ready` the activation condition.
+- The spec requires recorded architecture assessment before architecture or plan routing after `spec-review`.
+- The spec pauses on architecture ambiguity, non-clean review results, material findings, owner decisions, contradictory workflow state, unreliable partial completion, and transition-budget exhaustion.
+- The spec stops cleanly after `plan-review` and reports but does not invoke `test-spec`.
+- The spec preserves isolated direct review behavior even when a profile is armed.
+- The spec preserves current behavior when the profile is `off`.
+- The spec requires review independence and formal review recording for automatic review stages.
+- The spec defines transition-budget and resume behavior well enough for fixture-backed tests.
+- The spec pauses with `authorization-not-persisted` when authorization is absent, malformed, partially written, missing required fields, or cannot be written.
 
 ## Open questions
 
 - Should a future revision add a structured `pause-after` or `checkpoint` syntax, or remain chat-instruction-only?
 - If the repository later adds executable workflow orchestration, should that live in repo-owned scripts or in skill guidance only?
+- What exact schema validation should enforce `workflow.autoprogression.profile` in `change.yaml`, if the change-metadata spec accepts policy data there?
 
-These questions do not block the approved v1 contract.
+These questions do not block spec-review for this amendment.
 
 ## Next artifacts
 
-- `code-review M2` under [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md) after M2 implementation handoff.
-- Continue the approved milestone loop with M3 through M5 until all in-scope implementation milestones are closed.
+- Architecture and architecture-review for the profile, change-metadata policy field, and generated-skill impact.
+- Amend `workflow`, `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, and `plan-review` skill guidance when the spec is approved.
+- Add or update test-spec coverage for APGA checks.
 
 ## Follow-on artifacts
 
@@ -413,6 +621,6 @@ These questions do not block the approved v1 contract.
 
 ## Readiness
 
-- Approved amendment for the single standard workflow and `explain-change -> verify -> pr` final order.
+- Approved amendment for proposal-gated authoring autoprogression through plan-review after `spec-review-r2`.
 - Architecture design remains tracked in `docs/architecture/2026-04-21-workflow-stage-autoprogression.md`.
-- The active execution plan may rely on this approved spec for M2 implementation and review handoff.
+- Ready for architecture assessment and architecture-review before downstream planning or implementation relies on the new profile.

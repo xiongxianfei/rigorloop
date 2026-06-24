@@ -103,6 +103,43 @@
         }
       },
       "additionalProperties": true
+    },
+    "workflow": {
+      "type": "object",
+      "properties": {
+        "autoprogression": {
+          "type": "object",
+          "required": [
+            "profile",
+            "authorized_by",
+            "authorized_at",
+            "change_id"
+          ],
+          "properties": {
+            "profile": {
+              "type": "string",
+              "enum": [
+                "off",
+                "authoring-through-plan-review"
+              ]
+            },
+            "authorized_by": {
+              "type": "string",
+              "minLength": 1
+            },
+            "authorized_at": {
+              "type": "string",
+              "minLength": 1
+            },
+            "change_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
     }
   },
   "additionalProperties": true
