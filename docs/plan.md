@@ -25,6 +25,7 @@ No blocked plans.
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-06-24 Semantic Source-Line Contract](plans/2026-06-24-semantic-source-line-contract.md) - done; terminal state: done; PR #107 opened for review.
 - [2026-06-24 Proposal-Gated Authoring Autoprogression Through Plan Review](plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md) - done; terminal state: done; PR #106 opened for review.
 - [2026-06-23 Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) - done; terminal state: done; PR #101 merged.
 - [2026-06-23 Evidence-Bound and Incremental Project Map Skill](plans/2026-06-23-evidence-bound-incremental-project-map.md) - done; terminal state: done; PR #102 merged.
@@ -34,7 +35,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-05-26 CI-Maintenance Skill Rename and Workflow Authoring](plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md) - done; terminal state: done; PR #98 merged.
 - [2026-05-25 Spec-Review Testability Routing and Output Consolidation](plans/2026-05-25-spec-review-testability-routing-output-consolidation.md) - done; terminal state: done; PR #96 merged.
 - [2026-05-25 Adopter-Facing Vision and README Principle Rewrite](plans/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite.md) - done; terminal state: done; PR #94 merged through release PR #95.
-- [2026-05-25 Installed-Skill Artifact Placement Contract](plans/2026-05-25-installed-skill-artifact-placement-contract.md) - done; terminal state: done; PR #93 merged.
 
 ## Superseded
 - none yet
