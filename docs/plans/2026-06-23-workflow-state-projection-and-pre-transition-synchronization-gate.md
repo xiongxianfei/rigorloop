@@ -82,9 +82,9 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m5-r1.md
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted CI and human review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: pr-handoff-pending — Verify is complete and PR handoff remains.
+- Reason final closeout is or is not ready: external-completion-event-pending — PR handoff is being opened; hosted CI and human review remain.
 
 ## Milestones
 
@@ -330,6 +330,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: Code-review M5 R1 approved the behavior-preservation and closeout evidence with no material findings; all implementation milestones are closed and the next stage is explain-change.
 - 2026-06-23: Explain-change recorded durable rationale for the branch diff and routes the workflow to verify; branch readiness and PR readiness are not claimed.
 - 2026-06-24: Verify first found a selected-CI routing blocker for `scripts/lifecycle_state_sync.py`; CI-maintenance routed that path through artifact-lifecycle regression coverage, PR-mode selected CI and broad smoke passed, and the next stage is pr.
+- 2026-06-24: PR handoff started after verify; lifecycle state now routes to hosted CI and human review.
 
 ## Decision log
 

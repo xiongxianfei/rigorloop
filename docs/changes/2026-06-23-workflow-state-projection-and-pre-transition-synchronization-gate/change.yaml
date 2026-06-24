@@ -64,6 +64,7 @@ tests:
   - Explain-change is recorded before final verify and does not claim branch readiness or PR readiness.
   - Verify routes every changed path through selected CI, including workflow-state synchronization helpers.
   - Final verify passes PR-mode selected CI, broad smoke, review closeout validation, change metadata validation, focused lifecycle validation, and all-active lifecycle audit before PR handoff.
+  - PR handoff synchronizes the active plan and plan index to hosted CI and human review before opening the pull request.
 validation:
   - command: git diff --check -- docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs/single-source-of-workflow-state.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass
