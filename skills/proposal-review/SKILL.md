@@ -281,6 +281,10 @@ must state:
 - whether the record must be created before fixing or reconstructed
 - whether owner decision is needed
 
+## Authoring Profile Review Independence
+
+For `authoring-through-plan-review`, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any profile-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
+
 ## Rules
 
 - Skill-local rule: do not rubber-stamp a proposal because it is well formatted.
@@ -293,8 +297,9 @@ must state:
 ## Workflow handoff behavior
 
 - Direct or review-only `proposal-review` requests remain isolated by default.
-- In v1, `proposal-review` is a gate, not an automatic handoff into `spec`; report approval, revision needs, or blocker state without implying `spec` auto-starts.
-- If the user explicitly wants to continue into `spec`, that must come from a separate workflow or user request rather than this review stage auto-continuing on its own.
+- In v1, `proposal-review` is a gate, not a default automatic handoff into `spec`; report approval, revision needs, or blocker state without implying `spec` auto-starts.
+- `authoring-through-plan-review` is the only approved review-to-next-authoring exception. In workflow-managed execution, when the profile is durably armed and the proposal gate is ready, a clean recorded proposal-review may report `Immediate next stage: spec` for the workflow router.
+- Outside that explicitly armed workflow-managed profile, continuing into `spec` requires a separate workflow or user request rather than this review stage auto-continuing on its own.
 
 Closed enum: recording status
 

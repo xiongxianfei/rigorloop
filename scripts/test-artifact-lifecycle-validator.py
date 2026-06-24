@@ -12,6 +12,7 @@ import unittest
 from pathlib import Path
 
 from artifact_lifecycle_validation import validate_repository
+from lifecycle_state_sync import evaluate_authoring_autoprogression_route
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1082,7 +1083,78 @@ No blocked plans.
 
         result, messages = self.validate_workflow_state_index_only_fixture(fixture_root)
 
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("active-document-missing-handoff", messages)
+
+    def test_plan_with_prose_only_handoff_fails_validation(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-prose-handoff-"))
+        self.addCleanupTree(fixture_root)
+        plan_path, _, _ = self.write_workflow_state_fixture(fixture_root)
+        plan_path.write_text(
+            plan_path.read_text(encoding="utf-8").replace(
+                "- Latest review evidence: none",
+                "- Last reviewed milestone: M1. Historical Milestone",
+            ),
+            encoding="utf-8",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("structured-handoff-not-parseable", messages)
+
+    def test_plan_with_canonical_handoff_passes(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-canonical-handoff-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(fixture_root)
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
         self.assertFalse(result.blocking_findings, msg=messages)
+
+    def test_handoff_disagreeing_with_change_yaml_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-cross-surface-drift-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(fixture_root, plan_index_next_stage="implement M2")
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("contradictory-workflow-state", messages)
+
+    def test_missing_handoff_section_is_not_validated_unless_active(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-missing-handoff-"))
+        self.addCleanupTree(fixture_root)
+        plan_path, plan_index, _ = self.write_workflow_state_fixture(fixture_root)
+        text = plan_path.read_text(encoding="utf-8")
+        before, _, after = text.partition("## Current Handoff Summary")
+        _, _, after_milestones = after.partition("## Milestones")
+        plan_path.write_text(before + "## Milestones" + after_milestones, encoding="utf-8")
+
+        result, messages = self.validate_workflow_state_index_only_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("active-document-missing-handoff", messages)
+
+        plan_index.write_text(
+            """# Plan index
+
+## Active
+
+No active plans.
+
+## Blocked
+
+No blocked plans.
+""",
+            encoding="utf-8",
+        )
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/plans/2026-06-23-workflow-state-fixture.md"],
+        )
+        self.assertFalse(result.blocking_findings, msg="\n".join(f.message for f in result.blocking_findings))
 
     def test_workflow_state_index_and_body_deduplicates_projection_findings(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-dedupe-"))
@@ -1098,6 +1170,236 @@ No blocked plans.
 
         self.assertEqual(len(result.blocking_findings), 1, msg=messages)
         self.assertIn("Next stage", result.blocking_findings[0].message)
+
+    def authoring_profile_fixture(self, **overrides: object) -> dict[str, object]:
+        fixture: dict[str, object] = {
+            "invocation_context": "workflow-managed",
+            "profile": "authoring-through-plan-review",
+            "profile_state": "armed",
+            "durable_authorization": "persisted",
+            "current_stage": "proposal-review",
+            "latest_review_status": "approved",
+            "proposal_gate": {
+                "proposal_exists": True,
+                "proposal_status": "accepted",
+                "proposal_review_status": "approved",
+                "proposal_review_recording": "recorded",
+                "proposal_review_material_findings": 0,
+                "proposal_review_open_blockers": 0,
+                "scope_settled": True,
+                "open_questions_block_spec": False,
+                "standing_gates_satisfied": True,
+                "change_identity_unambiguous": True,
+                "artifact_placement_unambiguous": True,
+            },
+            "architecture_assessment": None,
+            "completed_stages": [],
+            "transition_count": 0,
+        }
+        fixture.update(overrides)
+        return fixture
+
+    def assertAuthoringRoute(
+        self,
+        fixture: dict[str, object],
+        *,
+        next_stage: str | None = None,
+        stop_reason: str | None = None,
+        profile_state: str | None = None,
+    ) -> None:
+        result = evaluate_authoring_autoprogression_route(fixture)
+        if next_stage is not None:
+            self.assertEqual(result.next_stage, next_stage, result)
+            self.assertIsNone(result.stop_reason, result)
+        if stop_reason is not None:
+            self.assertEqual(result.stop_reason, stop_reason, result)
+        if profile_state is not None:
+            self.assertEqual(result.profile_state, profile_state, result)
+
+    def test_authoring_profile_default_off_and_isolated_reviews_do_not_autoprogress(self) -> None:
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(profile="off", profile_state="off"),
+            next_stage="explicit-user-action",
+            profile_state="off",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(invocation_context="isolated"),
+            stop_reason="isolated-invocation",
+            profile_state="armed",
+        )
+
+    def test_authoring_profile_activation_requires_gate_ready_and_persistence(self) -> None:
+        self.assertAuthoringRoute(self.authoring_profile_fixture(), next_stage="spec", profile_state="active")
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(durable_authorization="missing"),
+            stop_reason="authorization-not-persisted",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                proposal_gate={
+                    "proposal_exists": True,
+                    "proposal_status": "draft",
+                    "proposal_review_status": "approved",
+                    "proposal_review_recording": "recorded",
+                    "proposal_review_material_findings": 0,
+                    "proposal_review_open_blockers": 0,
+                    "scope_settled": True,
+                    "open_questions_block_spec": False,
+                    "standing_gates_satisfied": True,
+                    "change_identity_unambiguous": True,
+                    "artifact_placement_unambiguous": True,
+                }
+            ),
+            stop_reason="proposal-gate-incomplete",
+        )
+
+    def test_authoring_profile_state_gates_fail_closed(self) -> None:
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(profile_state="paused", current_stage="spec"),
+            stop_reason="explicit-resume-required",
+            profile_state="paused",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(profile_state="completed", current_stage="proposal-review"),
+            stop_reason="profile-completed",
+            profile_state="completed",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(profile_state="bogus"),
+            stop_reason="unhandled-profile-state",
+            profile_state="paused",
+        )
+
+    def test_authoring_profile_resume_and_cancellation_state_transitions(self) -> None:
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                profile_state="paused",
+                resume_record={"resumed_by": "user", "resumed_at": "2026-06-24T12:00:00Z", "resume_reason": "fix recorded"},
+            ),
+            next_stage="spec",
+            profile_state="active",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                profile_state="paused",
+                resume_requested=True,
+            ),
+            stop_reason="explicit-resume-required",
+            profile_state="paused",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                profile_state="active",
+                resume_record={"resumed_by": "user", "resumed_at": "2026-06-24T12:00:00Z", "resume_reason": "already active"},
+            ),
+            next_stage="spec",
+            profile_state="active",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                profile_state="completed",
+                resume_record={"resumed_by": "user", "resumed_at": "2026-06-24T12:00:00Z", "resume_reason": "retry"},
+            ),
+            stop_reason="cannot-resume-completed",
+            profile_state="completed",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                profile_state="active",
+                cancellation_record={"cancelled_by": "user", "cancelled_at": "2026-06-24T12:00:00Z"},
+            ),
+            next_stage="explicit-user-action",
+            profile_state="off",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                proposal_gate={
+                    "proposal_exists": True,
+                    "proposal_status": "accepted",
+                    "proposal_review_status": "approved",
+                    "proposal_review_recording": "recorded",
+                    "proposal_review_material_findings": 1,
+                    "proposal_review_open_blockers": 0,
+                    "scope_settled": True,
+                    "open_questions_block_spec": False,
+                    "standing_gates_satisfied": True,
+                    "change_identity_unambiguous": True,
+                    "artifact_placement_unambiguous": True,
+                }
+            ),
+            stop_reason="proposal-gate-incomplete",
+        )
+
+    def test_authoring_profile_architecture_assessment_routes_or_pauses(self) -> None:
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                current_stage="architecture-assessment",
+                architecture_assessment="architecture-required",
+            ),
+            next_stage="architecture",
+            profile_state="active",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                current_stage="architecture-assessment",
+                architecture_assessment="architecture-not-required",
+            ),
+            next_stage="plan",
+            profile_state="active",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                current_stage="architecture-assessment",
+                architecture_assessment="architecture-ambiguous",
+            ),
+            stop_reason="architecture-ambiguous",
+        )
+
+    def test_authoring_profile_stops_on_nonclean_review_decision_and_budget(self) -> None:
+        for status in ("changes-requested", "blocked", "inconclusive"):
+            with self.subTest(status=status):
+                self.assertAuthoringRoute(
+                    self.authoring_profile_fixture(
+                        current_stage="spec-review",
+                        latest_review_status=status,
+                    ),
+                    stop_reason=status,
+                )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(needs_decision=True),
+            stop_reason="needs-decision",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(transition_count=6, current_stage="spec"),
+            stop_reason="transition-budget-exhausted",
+        )
+
+    def test_authoring_profile_resume_is_idempotent_and_stops_on_ambiguity(self) -> None:
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                current_stage="resume",
+                completed_stages=["spec", "spec-review"],
+                architecture_assessment="architecture-not-required",
+            ),
+            next_stage="plan",
+            profile_state="active",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                current_stage="resume",
+                completed_stages=["spec"],
+                unreliable_partial_completion=True,
+            ),
+            stop_reason="unreliable-partial-completion",
+        )
+        self.assertAuthoringRoute(
+            self.authoring_profile_fixture(
+                current_stage="plan-review",
+                latest_review_status="approved",
+            ),
+            next_stage="test-spec",
+            profile_state="completed",
+        )
 
     def write_plan_archive_contract_fixture(
         self,

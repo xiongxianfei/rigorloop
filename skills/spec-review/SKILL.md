@@ -143,6 +143,8 @@ Bind routing to review status:
 - `blocked` uses `review-resolution` or `none`.
 - `inconclusive` uses `none`.
 
+Under the explicitly armed workflow-managed `authoring-through-plan-review` profile, approved spec-review must be followed by recorded architecture assessment before any profile-driven downstream action. The assessment records exactly one of `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; `architecture-ambiguous` is a stop condition rather than permission to choose a path.
+
 `Eventual test-spec readiness` is the quality assessment. Use only:
 
 ```text
@@ -201,6 +203,9 @@ must state:
 - whether the record must be created before fixing or reconstructed
 - whether owner decision is needed
 
+## Authoring Profile Review Independence
+
+For `authoring-through-plan-review`, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any profile-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
 
 ## Rules
 
@@ -215,8 +220,9 @@ must state:
 ## Workflow handoff behavior
 
 - Direct or review-only `spec-review` requests remain isolated by default.
-- In v1, `spec-review` does not auto-continue into `architecture`, `plan`, or `test-spec`; it reports review outcome, `Immediate next stage`, eventual `test-spec` readiness, and any stop condition, then stops there unless the user explicitly requests a later stage.
-- Keep review-to-next-authoring transitions out of scope in this skill's wording.
+- In v1, `spec-review` does not auto-continue into `architecture`, `plan`, or `test-spec` by default; it reports review outcome, `Immediate next stage`, eventual `test-spec` readiness, and any stop condition, then stops there unless the user explicitly requests a later stage.
+- `authoring-through-plan-review` is the only approved review-to-next-authoring exception. In that workflow-managed profile, a clean recorded spec-review routes to recorded architecture assessment before `architecture` or `plan`.
+- Keep all other review-to-next-authoring transitions out of scope in this skill's wording.
 
 ## Evidence collection efficiency
 

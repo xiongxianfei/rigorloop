@@ -104,6 +104,9 @@ must state:
 - whether the record must be created before fixing or reconstructed
 - whether owner decision is needed
 
+## Authoring Profile Review Independence
+
+For `authoring-through-plan-review`, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any profile-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
 
 ## Rules
 
@@ -113,6 +116,13 @@ must state:
 - Do not accept missing validation commands for risky work.
 - Do not require implementation code before approving a plan.
 - Do not edit the plan unless the user explicitly asks.
+
+## Workflow handoff behavior
+
+- Direct or review-only `plan-review` requests remain isolated by default.
+- Clean `plan-review` under `authoring-through-plan-review` marks the profile `completed` and reports `test-spec` as next without invoking `test-spec`.
+- A non-clean review, material finding, open `needs-decision`, recording failure, user pause, or cancellation pauses the profile instead of revising the plan or starting downstream work.
+- Outside that explicitly armed workflow-managed profile, `plan-review` reports `Immediate next stage` and stops unless the user or workflow requests the next stage.
 
 ## Evidence collection efficiency
 

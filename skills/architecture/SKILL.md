@@ -226,7 +226,8 @@ Use summary and stable-ID first reasoning before broad reads or raw excerpts. Pr
 
 - In a workflow-managed flow, successful `architecture` completion hands off to `architecture-review` when that review is the next mandatory or triggered downstream stage.
 - If the design still has open questions that block safe review, stop and report the blocker instead of implying `architecture-review` can proceed.
-- This v1 contract does not imply `architecture-review -> plan`; review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
+- Only the explicitly armed workflow-managed `authoring-through-plan-review` profile can continue after the matching `architecture-review`, and that continuation depends on a clean recorded review and no stop condition.
+- This v1 contract does not otherwise imply `architecture-review -> plan`; other review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
 
 ## When full-file read is required
 
