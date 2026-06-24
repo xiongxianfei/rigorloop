@@ -126,6 +126,8 @@ Produce or update the plan body and, when starting or replanning, the `docs/plan
 
 - Normal next stage: `plan-review`.
 - Conditional next stages: return to `spec` or `architecture` when planning exposes a blocking gap; proceed to `test-spec` only after plan-review when the workflow allows it.
+- In a workflow-managed flow, successful `plan` completion hands off to `plan-review` when that review is next.
+- Only a clean `plan-review` can complete `authoring-through-plan-review`; this skill does not mark the profile completed and does not invoke `test-spec`.
 - For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
 ## Claims this skill must not make

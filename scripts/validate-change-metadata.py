@@ -136,6 +136,23 @@ COMPACT_SECRET_VALUE_RE = re.compile(
 )
 COMPACT_HOME_PATH_TOKEN_RE = re.compile(r"(?:^|\s)(?:~|\$HOME|\$\{HOME\})(?:[/\\]|$)")
 COMPACT_WINDOWS_ABSOLUTE_PATH_RE = re.compile(r"(?:^|\s)[A-Za-z]:[\\/]")
+AUTOPROGRESSION_PROFILES = {"off", "authoring-through-plan-review"}
+AUTOPROGRESSION_REQUIRED_FIELDS = {
+    "profile",
+    "authorized_by",
+    "authorized_at",
+    "change_id",
+}
+AUTOPROGRESSION_FORBIDDEN_LIVE_STATE_FIELDS = {
+    "current_stage",
+    "next_stage",
+    "review_status",
+    "branch_readiness",
+    "pr_readiness",
+}
+RFC3339_UTC_RE = re.compile(
+    r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+)
 
 
 class MetadataValidationError(Exception):
@@ -427,6 +444,7 @@ def validate_metadata_semantics(data: Any, metadata_path: Path | None = None) ->
         return []
 
     errors: list[str] = []
+    errors.extend(validate_autoprogression_policy(data))
     validation = data.get("validation")
     if isinstance(validation, list):
         for index, record in enumerate(validation):
@@ -462,6 +480,71 @@ def validate_metadata_semantics(data: Any, metadata_path: Path | None = None) ->
                 f"{path_label('$', 'artifacts')}.{key}: invalid artifact key; "
                 f"use one of: {allowed_keys}"
             )
+    return errors
+
+
+def validate_autoprogression_policy(data: dict[str, Any]) -> list[str]:
+    workflow = data.get("workflow")
+    if workflow is None:
+        return []
+    if not isinstance(workflow, dict):
+        return ["workflow: expected object"]
+
+    autoprogression = workflow.get("autoprogression")
+    if autoprogression is None:
+        return []
+    if not isinstance(autoprogression, dict):
+        return ["workflow.autoprogression: expected object"]
+
+    errors: list[str] = []
+    for field in sorted(AUTOPROGRESSION_REQUIRED_FIELDS):
+        if field not in autoprogression:
+            errors.append(f"workflow.autoprogression.{field}: missing required field")
+
+    profile = autoprogression.get("profile")
+    if "profile" in autoprogression and profile not in AUTOPROGRESSION_PROFILES:
+        allowed = ", ".join(sorted(AUTOPROGRESSION_PROFILES))
+        errors.append(f"workflow.autoprogression.profile: expected one of: {allowed}")
+
+    for field in ("authorized_by", "change_id"):
+        if field in autoprogression and not is_nonempty_string(autoprogression[field]):
+            errors.append(f"workflow.autoprogression.{field}: expected string")
+
+    authorized_at = autoprogression.get("authorized_at")
+    if "authorized_at" in autoprogression and (
+        not isinstance(authorized_at, str) or RFC3339_UTC_RE.fullmatch(authorized_at) is None
+    ):
+        errors.append("workflow.autoprogression.authorized_at: expected RFC3339 UTC timestamp")
+
+    top_level_change_id = data.get("change_id")
+    policy_change_id = autoprogression.get("change_id")
+    if (
+        isinstance(top_level_change_id, str)
+        and isinstance(policy_change_id, str)
+        and policy_change_id != top_level_change_id
+    ):
+        errors.append("workflow.autoprogression.change_id: must match top-level change_id")
+
+    if autoprogression.get("session_intent") is True:
+        errors.append(
+            "workflow.autoprogression.session_intent: session-only arming is not durable authorization"
+        )
+
+    persistence_status = autoprogression.get("persistence_status")
+    if persistence_status is not None and persistence_status != "persisted":
+        errors.append("workflow.autoprogression.persistence_status: authorization-not-persisted")
+
+    if "fallback_policy_path" in autoprogression:
+        errors.append(
+            "workflow.autoprogression.fallback_policy_path: fallback is only valid when change metadata rejects policy data"
+        )
+
+    for field in sorted(AUTOPROGRESSION_FORBIDDEN_LIVE_STATE_FIELDS):
+        if field in autoprogression:
+            errors.append(
+                f"workflow.autoprogression.{field}: profile policy must not own live workflow state"
+            )
+
     return errors
 
 

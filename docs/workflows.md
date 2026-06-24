@@ -424,8 +424,19 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 ## Autoprogression
 
 - Distinguish `workflow-managed` completion flows from isolated stage requests.
+- Change-local autoprogression profiles are off unless explicitly and durably authorized. The canonical policy record is `docs/changes/<change-id>/change.yaml` at `workflow.autoprogression`; `docs/changes/<change-id>/workflow-policy.yaml` is only a fallback when the change-metadata contract rejects policy data, and that fallback decision must be auditable.
+- Profile policy records are authorization evidence only. They do not own current stage, next stage, review status, branch readiness, PR readiness, or active plan state.
+- `authoring-through-plan-review` uses profile states `off`, `armed`, `active`, `paused`, and `completed`. Activation requires workflow-managed context, durable authorization, an armed profile, and a proposal gate ready from tracked artifacts.
+- Proposal gate readiness is artifact/review readiness only; user authorization is checked separately as the armed profile state.
+- When active, `authoring-through-plan-review` routes through `spec`, `spec-review`, recorded architecture assessment, conditional `architecture` and `architecture-review`, `plan`, and `plan-review`, then stops.
+- Architecture assessment records `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; ambiguity pauses instead of guessing.
+- Review stages inside `authoring-through-plan-review` remain independent formal reviews: reset to the tracked artifact, governing sources, formal criteria, and relevant recorded findings; record the result before downstream routing; do not rely on hidden authoring reasoning or edit the reviewed artifact during review.
+- Stop or pause `authoring-through-plan-review` on non-clean reviews, material findings, `needs-decision`, user pause or cancellation, missing or malformed authorization persistence, contradictory workflow state, unreliable partial completion, exhausted transition budget, direct review-only invocation, or an out-of-scope stage request.
+- Resume must use tracked artifact and review evidence. Do not recreate completed artifacts, rerun clean reviews without an explicit rereview event, or infer completion from file existence alone.
+- Clean `plan-review` completes this profile and reports `test-spec` next without invoking `test-spec`, implementation, review-fix loops, verification, or PR.
 - In v1, workflow-managed autoprogression applies only to:
   - `proposal -> proposal-review`
+  - `proposal-review -> spec -> spec-review -> architecture assessment -> architecture/architecture-review when required -> plan -> plan-review -> stop`, only under the explicitly armed `authoring-through-plan-review` profile
   - `spec -> spec-review`
   - `architecture -> architecture-review` when that review stage is the next mandatory or triggered downstream step
   - standard workflow execution from `implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`

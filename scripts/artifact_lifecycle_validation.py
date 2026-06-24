@@ -11,6 +11,7 @@ from pathlib import Path
 from artifact_lifecycle_contracts import ArtifactContract, classify_artifact
 from lifecycle_state_sync import (
     has_structured_workflow_state_marker,
+    has_workflow_state_handoff_section,
     resolve_owners_from_index,
     validate_workflow_state_sync,
 )
@@ -840,6 +841,16 @@ def _has_structured_workflow_state_marker(root: Path, path: Path, tracked_revisi
     return has_structured_workflow_state_marker(text)
 
 
+def _has_workflow_state_handoff_section(root: Path, path: Path, tracked_revision: str | None = None) -> bool:
+    text = _read_repo_text(root, path, tracked_revision)
+    return has_workflow_state_handoff_section(text)
+
+
+def _is_live_workflow_state_plan_body(root: Path, path: Path, tracked_revision: str | None = None) -> bool:
+    marker = _extract_plan_lifecycle_marker(_read_repo_text(root, path, tracked_revision))
+    return marker.explicit and marker.state in PLAN_NONTERMINAL_LIFECYCLE_STATES
+
+
 def _validate_plan_surface_shape(
     root: Path,
     scope: ValidationScope,
@@ -1647,7 +1658,8 @@ def validate_repository(
         path
         for path in (*scope.changed_paths, *scope.related_artifact_paths)
         if _is_plan_body_path(root_resolved, path) and _path_exists(root_resolved, path, scope.tracked_revision)
-        and _has_structured_workflow_state_marker(root_resolved, path, scope.tracked_revision)
+        and _is_live_workflow_state_plan_body(root_resolved, path, scope.tracked_revision)
+        and _has_workflow_state_handoff_section(root_resolved, path, scope.tracked_revision)
     }
     workflow_state_plan_index = root_resolved / "docs" / "plan.md"
     if _plan_index_surface_in_scope(root_resolved, scope) and _path_exists(root_resolved, workflow_state_plan_index, scope.tracked_revision):
