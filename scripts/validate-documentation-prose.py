@@ -56,6 +56,7 @@ class ProseLine:
     path: Path
     number: int
     text: str
+    hard_break: bool = False
     kind: str = "paragraph"
 
 
@@ -118,8 +119,11 @@ def validate_path(path: Path, mode: str = "audit") -> ValidationResult:
 def segment_prose_blocks(path: Path, lines: list[str]) -> list[list[ProseLine]]:
     blocks: list[list[ProseLine]] = []
     current: list[ProseLine] = []
+    current_list_item: list[ProseLine] = []
+    current_list_content_column = 0
     in_frontmatter = bool(lines and lines[0].strip() == "---")
     in_fence = False
+    in_list_fence = False
     in_html_block = False
     in_marker_block = False
 
@@ -129,8 +133,60 @@ def segment_prose_blocks(path: Path, lines: list[str]) -> list[list[ProseLine]]:
             blocks.append(current)
             current = []
 
+    def flush_list_item() -> None:
+        nonlocal current_list_item, current_list_content_column, in_list_fence
+        if current_list_item:
+            blocks.append(current_list_item)
+            current_list_item = []
+        current_list_content_column = 0
+        in_list_fence = False
+
     for index, line in enumerate(lines, start=1):
         stripped = line.strip()
+        hard_break = has_explicit_hard_break(line)
+
+        if current_list_item:
+            if not stripped:
+                flush_list_item()
+                continue
+
+            list_fence_match = FENCE_RE.match(line[current_list_content_column:])
+            if in_list_fence:
+                if list_fence_match:
+                    in_list_fence = False
+                continue
+            if indentation_width(line) >= current_list_content_column and list_fence_match:
+                in_list_fence = True
+                continue
+
+            nested = nested_list_item(line, current_list_content_column)
+            if nested:
+                flush_list_item()
+                item_text = nested.group(1).strip()
+                if item_text:
+                    blocks.append([ProseLine(path, index, item_text, hard_break=hard_break, kind="list-item")])
+                continue
+
+            next_list_match = LIST_ITEM_RE.match(line)
+            if next_list_match:
+                flush_list_item()
+                item_text = line[next_list_match.end() :].strip()
+                if item_text:
+                    current_list_item = [
+                        ProseLine(path, index, item_text, hard_break=hard_break, kind="list-item")
+                    ]
+                    current_list_content_column = next_list_match.end()
+                continue
+
+            if indentation_width(line) >= current_list_content_column:
+                item_text = line[current_list_content_column:].strip()
+                if item_text:
+                    current_list_item.append(
+                        ProseLine(path, index, item_text, hard_break=hard_break, kind="list-item")
+                    )
+                continue
+
+            flush_list_item()
 
         if in_frontmatter:
             if index > 1 and stripped == "---":
@@ -179,13 +235,31 @@ def segment_prose_blocks(path: Path, lines: list[str]) -> list[list[ProseLine]]:
             flush()
             item_text = line[list_match.end() :].strip()
             if item_text:
-                blocks.append([ProseLine(path, index, item_text, kind="list-item")])
+                current_list_item = [
+                    ProseLine(path, index, item_text, hard_break=hard_break, kind="list-item")
+                ]
+                current_list_content_column = list_match.end()
             continue
 
-        current.append(ProseLine(path, index, stripped))
+        current.append(ProseLine(path, index, stripped, hard_break=hard_break))
 
+    flush_list_item()
     flush()
     return blocks
+
+
+def has_explicit_hard_break(line: str) -> bool:
+    return line.endswith("\\") or len(line) - len(line.rstrip(" ")) >= 2
+
+
+def indentation_width(line: str) -> int:
+    return len(line) - len(line.lstrip(" "))
+
+
+def nested_list_item(line: str, parent_content_column: int) -> re.Match[str] | None:
+    if indentation_width(line) < parent_content_column:
+        return None
+    return re.match(r"^\s{0,3}(?:[-*+]|\d+[.)])\s+(.+)$", line[parent_content_column:])
 
 
 def is_structural_markdown(line: str) -> bool:
@@ -210,6 +284,8 @@ def classify_pair(previous: ProseLine, current: ProseLine) -> Finding | None:
     previous_text = visible_prose(previous.text)
     current_text = visible_prose(current.text)
     if not previous_text or not current_text:
+        return None
+    if previous.hard_break:
         return None
 
     suspected = f"{previous.text} / {current.text}"
@@ -239,6 +315,15 @@ def classify_pair(previous: ProseLine, current: ProseLine) -> Finding | None:
 
     if sentence_complete(previous_text):
         return None
+
+    if previous.kind == "list-item" and current.kind == "list-item":
+        return make_finding(
+            previous,
+            current,
+            "error",
+            suspected,
+            "mechanically continued list item",
+        )
 
     if clause_boundary(previous_text):
         return make_finding(
