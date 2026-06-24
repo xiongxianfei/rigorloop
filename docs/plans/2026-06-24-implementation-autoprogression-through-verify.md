@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Change ID: 2026-06-24-separately-armed-implementation-autoprogression-through-verify
 - Owner: maintainer
 - Start date: 2026-06-24
 - Last updated: 2026-06-24
-- Related issue or PR: none yet
+- Related issue or PR: https://github.com/xiongxianfei/rigorloop/pull/108
 - Supersedes: none
 
 ## Goal
@@ -68,15 +68,15 @@ The proposal, spec amendments, architecture package update, and ADR are accepted
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Behavior preservation and rollout evidence
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/code-review-m5-r2.md
 - Last reviewed milestone: M5. Behavior preservation and rollout evidence
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: ready
-- Reason final closeout is or is not ready: ready — verify passed from tracked branch state; PR handoff is next.
+- Next stage: human PR review
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #108 is open for review; implementation milestones, review-resolution, explain-change, verify, and PR handoff are complete.
 
 ## Milestones
 
