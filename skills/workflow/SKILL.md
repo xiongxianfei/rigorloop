@@ -134,7 +134,7 @@ For planned work:
 - final lifecycle closeout updates the plan body and index before the PR opens for review when lifecycle state changes;
 - if completion depends on a true downstream completion event, keep the plan active and name that event instead of treating merge as routine closeout.
 
-State-sync checks update affected owners before downstream readiness is claimed. Do not infer final closeout when the active plan does not identify reviewed and remaining milestones. The merge itself is not a routine downstream completion event.
+State-sync checks update affected owners before downstream readiness is claimed. Run the state-sync gate after stage-owned evidence is updated and before claiming `code-review`, `verify`, or PR handoff readiness. A failed state-sync gate blocks downstream handoff language. Do not infer final closeout when the active plan does not identify reviewed and remaining milestones. The merge itself is not a routine downstream completion event.
 
 ## Project workflow guide
 
