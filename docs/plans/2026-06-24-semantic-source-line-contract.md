@@ -65,14 +65,14 @@ This work should compose with those surfaces instead of duplicating marker, voca
 ## Current Handoff Summary
 
 - Current milestone: M3. Selected Validation Integration and Behavior Preservation Evidence
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m2-r1.md
 - Last reviewed milestone: M2
-- Review status: approved; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,explain-change-pending,verify-pending,pr-handoff-pending — M1 and M2 are closed, M3 remains open, and later lifecycle gates remain before final closeout.
+- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,milestone-review-pending,explain-change-pending,verify-pending,pr-handoff-pending — M1 and M2 are closed, M3 is ready for code-review, and later lifecycle gates remain before final closeout.
 
 ## Milestones
 
@@ -172,7 +172,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 
 ### M3. Selected Validation Integration and Behavior Preservation Evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Integrate prose validation into selected validation for covered paths and record behavior-preservation evidence for first-slice enforcement.
 - Requirements: R8-R19, AC6-AC15
 - Files/components likely touched:
@@ -258,6 +258,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: Code-review M1 R2 confirmed both findings resolved and closed M1; next stage is M2 implementation.
 - 2026-06-24: M2 implementation added concise contributor guidance, workflow pointer text, formatter guardrail config, and focused README/VISION Tier A cleanup; handed to code-review R1.
 - 2026-06-24: Code-review M2 R1 found no material findings and closed M2; next stage is M3 implementation.
+- 2026-06-24: M3 implementation added documentation prose selected-validation routing for Tier A enforcement and Tier B audit, added a `--changed-file` alias for the plan's selector command, recorded behavior-preservation evidence, and handed the milestone to code-review R1.
 
 ## Decision log
 
@@ -265,6 +266,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 | --- | --- | --- | --- |
 | 2026-06-24 | Split implementation into validator, guidance, and selected-validation milestones. | The risk profiles differ and each slice can be reviewed independently. | One large implementation milestone. |
 | 2026-06-24 | Treat architecture as not required for the first slice. | The plan uses existing repo-owned validation patterns and does not introduce a shared parser subsystem or generated-content ownership change. | Create an ADR for a leaf validator addition. |
+| 2026-06-24 | Keep the selector CLI's existing `--path` flag and add `--changed-file` as a compatibility alias. | The active M3 validation command used `--changed-file`, while the existing selector CLI used `--path`; supporting both keeps current callers working and lets the planned command run. | Rewrite the plan command without preserving the named validation surface. |
 
 ## Surprises and discoveries
 
@@ -273,6 +275,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - Review-resolution changed the Tier A audit baseline from 0 errors and 10 warnings to 6 errors and 10 warnings by detecting existing README mechanically continued list items.
 - No root Prettier or markdownlint configuration existed before M2; M2 added minimal root guardrail configs for `proseWrap: preserve` and disabled `MD013`.
 - README generated vision marker content was not edited directly during Tier A cleanup.
+- M3 found that the selector CLI already used `--path`; the plan's `--changed-file` wording is now supported as a compatibility alias.
 
 ## Validation notes
 
@@ -297,6 +300,9 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/documentation-source-formatting.md --path docs/workflows.md --path docs/plans/2026-06-24-semantic-source-line-contract.md --path docs/plan.md --path docs/changes/2026-06-24-semantic-source-line-contract/change.yaml` passed.
 - 2026-06-24: `git diff --check -- CONTRIBUTING.md docs/workflows.md README.md VISION.md .prettierrc.json .markdownlint.json scripts/test-documentation-prose-validator.py docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md docs/changes/2026-06-24-semantic-source-line-contract` passed.
 - 2026-06-24: Code-review M2 R1 passed with no material findings and closed M2.
+- 2026-06-24: `python scripts/test-select-validation.py` passed with 103 tests after M3 selected-validation routing and `--changed-file` alias coverage.
+- 2026-06-24: `python scripts/test-documentation-prose-validator.py` passed with 14 tests after M3.
+- 2026-06-24: `python scripts/select-validation.py --mode explicit --changed-file README.md --changed-file VISION.md` passed and selected `documentation_prose.enforce`, `readme.validate`, `readme.vision_markers`, and `guide_system.validate`.
 
 ## Outcome and retrospective
 

@@ -66,6 +66,8 @@ EXPECTED_CATALOG = {
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
     "guide_system.regression": "python scripts/test-guide-system-validator.py",
     "guide_system.validate": "python scripts/validate-guide-system.py",
+    "documentation_prose.enforce": "python scripts/validate-documentation-prose.py --mode enforce --path <path>...",
+    "documentation_prose.audit": "python scripts/validate-documentation-prose.py --mode audit --path <path>...",
     "selector.regression": "python scripts/test-select-validation.py",
     "token_cost.regression": "python scripts/test-token-cost-measurement.py",
     "token_cost.report_regression": "python scripts/test-token-cost-report-validation.py",
@@ -1158,6 +1160,73 @@ raise SystemExit({exit_code})
                 self.assertEqual(CHECK_CATALOG[check_id].command_template, command)
                 self.assertTrue(CHECK_CATALOG[check_id].category)
 
+    def test_documentation_prose_tier_a_routes_to_enforcement_without_displacing_existing_checks(self) -> None:
+        result = self.select(["README.md", "VISION.md"])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertIn({"path": "README.md", "category": "readme"}, payload["classified_paths"])
+        self.assertIn({"path": "VISION.md", "category": "vision"}, payload["classified_paths"])
+        self.assertTrue(
+            {
+                "documentation_prose.enforce",
+                "readme.validate",
+                "readme.vision_markers",
+                "guide_system.validate",
+            }.issubset(selected_ids(payload))
+        )
+        prose_check = next(
+            check for check in payload["selected_checks"] if check["id"] == "documentation_prose.enforce"
+        )
+        self.assertEqual(
+            prose_check["command"],
+            "python scripts/validate-documentation-prose.py --mode enforce --path README.md --path VISION.md",
+        )
+        self.assertEqual(prose_check["paths"], ["README.md", "VISION.md"])
+
+    def test_documentation_prose_tier_b_routes_to_audit_without_repository_failure(self) -> None:
+        result = self.select(
+            [
+                "skills/code-review/SKILL.md",
+                "docs/changes/2026-04-25-example/explain-change.md",
+            ]
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertIn("documentation_prose.audit", selected_ids(payload))
+        self.assertIn("skills.validate", selected_ids(payload))
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        audit_check = next(
+            check for check in payload["selected_checks"] if check["id"] == "documentation_prose.audit"
+        )
+        self.assertEqual(
+            audit_check["command"],
+            "python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-04-25-example/explain-change.md --path skills/code-review/SKILL.md",
+        )
+        self.assertEqual(
+            audit_check["paths"],
+            ["docs/changes/2026-04-25-example/explain-change.md", "skills/code-review/SKILL.md"],
+        )
+
+    def test_documentation_prose_tier_c_paths_do_not_select_first_slice_prose_validation(self) -> None:
+        result = self.select(
+            [
+                "specs/documentation-source-formatting.md",
+                "docs/plans/2026-06-24-semantic-source-line-contract.md",
+                "docs/changes/2026-04-25-example/reviews/code-review-r1.md",
+                "docs/learn/topics/documentation-prose.md",
+            ]
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertNotIn("documentation_prose.enforce", selected_ids(payload))
+        self.assertNotIn("documentation_prose.audit", selected_ids(payload))
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("review_artifacts.validate", selected_ids(payload))
+        self.assertIn("guide_system.validate", selected_ids(payload))
+
     def test_catalog_records_initial_parallel_safe_allowlist(self) -> None:
         from validation_selection import is_parallel_safe_check
 
@@ -1217,6 +1286,15 @@ raise SystemExit({exit_code})
             }.issubset(selected_ids(payload))
         )
         self.assertIn("adapters.drift", selected_ids(payload))
+
+    def test_cli_accepts_changed_file_alias_for_plan_validation_commands(self) -> None:
+        result = run_selector("--mode", "explicit", "--changed-file", "README.md", "--changed-file", "VISION.md")
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        payload = parse_stdout(result)
+
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["changed_paths"], ["README.md", "VISION.md"])
+        self.assertIn("documentation_prose.enforce", selected_ids(payload))
 
     def test_missing_mode_specific_inputs_return_json_error(self) -> None:
         result = run_selector("--mode", "pr", "--base", "HEAD~1")
