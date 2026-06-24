@@ -65,14 +65,14 @@ This work should compose with those surfaces instead of duplicating marker, voca
 ## Current Handoff Summary
 
 - Current milestone: M2. Contributor Guidance, Formatter Guardrails, and Tier A Cleanup
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r2.md
 - Last reviewed milestone: M1
-- Review status: approved; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,explain-change-pending,verify-pending,pr-handoff-pending — M1 is closed, M2 and M3 remain open, and later lifecycle gates remain before final closeout.
+- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,milestone-review-pending,explain-change-pending,verify-pending,pr-handoff-pending — M2 is ready for code-review, M3 remains open, and later lifecycle gates remain before final closeout.
 
 ## Milestones
 
@@ -125,7 +125,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 
 ### M2. Contributor Guidance, Formatter Guardrails, and Tier A Cleanup
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add concise authoring guidance, prevent formatter reflow, and clean only current Tier A source-line violations needed for enforcement.
 - Requirements: R1-R7, R15-R18, AC2-AC5, AC11-AC13
 - Files/components likely touched:
@@ -256,6 +256,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: Code-review M1 R1 requested changes for `PROSE-M1-CR1` and `PROSE-M1-CR2`; M1 moved to `resolution-needed`.
 - 2026-06-24: Review-resolution implemented fixes for `PROSE-M1-CR1` and `PROSE-M1-CR2`; M1 returned to `review-requested` for code-review R2.
 - 2026-06-24: Code-review M1 R2 confirmed both findings resolved and closed M1; next stage is M2 implementation.
+- 2026-06-24: M2 implementation added concise contributor guidance, workflow pointer text, formatter guardrail config, and focused README/VISION Tier A cleanup; handed to code-review R1.
 
 ## Decision log
 
@@ -269,6 +270,8 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - M1 baseline audit found 10 warning-only source-line findings in current `README.md` and `VISION.md`; Tier A cleanup remains deferred to M2 as planned.
 - Code-review M1 R1 found that explicit Markdown hard breaks are misclassified as mechanical wraps and mechanically continued list items are missed.
 - Review-resolution changed the Tier A audit baseline from 0 errors and 10 warnings to 6 errors and 10 warnings by detecting existing README mechanically continued list items.
+- No root Prettier or markdownlint configuration existed before M2; M2 added minimal root guardrail configs for `proseWrap: preserve` and disabled `MD013`.
+- README generated vision marker content was not edited directly during Tier A cleanup.
 
 ## Validation notes
 
@@ -285,6 +288,13 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: `python scripts/validate-documentation-prose.py --mode enforce --path tests/fixtures/documentation-prose/fail/list-item-mechanical-continuation.md` returned the expected enforcement failure with 1 error.
 - 2026-06-24: `python scripts/validate-documentation-prose.py --mode audit --path README.md --path VISION.md` passed in audit mode with 6 errors and 10 warnings.
 - 2026-06-24: Code-review M1 R2 passed with no material findings and closed M1.
+- 2026-06-24: `python scripts/test-documentation-prose-validator.py` passed with 14 tests after M2 formatter-guardrail coverage.
+- 2026-06-24: `python scripts/validate-documentation-prose.py --mode enforce --path README.md --path VISION.md` passed with 0 errors and 0 warnings.
+- 2026-06-24: `python scripts/validate-readme.py` passed.
+- 2026-06-24: `python scripts/validate-readme.py README.md --vision-markers` passed with one standalone marker block present.
+- 2026-06-24: `python scripts/validate-guide-system.py` passed.
+- 2026-06-24: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/documentation-source-formatting.md --path docs/workflows.md --path docs/plans/2026-06-24-semantic-source-line-contract.md --path docs/plan.md --path docs/changes/2026-06-24-semantic-source-line-contract/change.yaml` passed.
+- 2026-06-24: `git diff --check -- CONTRIBUTING.md docs/workflows.md README.md VISION.md .prettierrc.json .markdownlint.json scripts/test-documentation-prose-validator.py docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md docs/changes/2026-06-24-semantic-source-line-contract` passed.
 
 ## Outcome and retrospective
 

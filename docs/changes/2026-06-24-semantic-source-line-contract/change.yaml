@@ -37,6 +37,7 @@ tests:
   - Code-review M1 R1 records material findings for explicit hard-break handling and mechanically continued list-item handling.
   - Review-resolution fixes explicit hard-break handling and mechanically continued list-item handling before rerun code-review.
   - Code-review M1 R2 confirms review-resolution and closes M1.
+  - M2 adds concise contributor guidance, formatter guardrails, and Tier A source-line cleanup.
 workflow:
   autoprogression:
     profile: authoring-through-plan-review
@@ -100,6 +101,20 @@ validation:
     result: pass_after_code_review_m1_r2
   - command: git diff --check -- docs/changes/2026-06-24-semantic-source-line-contract docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md
     result: pass_after_code_review_m1_r2
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_14_tests_after_m2_guardrail_coverage
+  - command: python scripts/validate-documentation-prose.py --mode enforce --path README.md --path VISION.md
+    result: pass_0_errors_0_warnings_after_tier_a_cleanup
+  - command: python scripts/validate-readme.py
+    result: pass
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_one_standalone_marker_block_present
+  - command: python scripts/validate-guide-system.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/documentation-source-formatting.md --path docs/workflows.md --path docs/plans/2026-06-24-semantic-source-line-contract.md --path docs/plan.md --path docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
+    result: pass_after_m2
+  - command: git diff --check -- CONTRIBUTING.md docs/workflows.md README.md VISION.md .prettierrc.json .markdownlint.json scripts/test-documentation-prose-validator.py docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md docs/changes/2026-06-24-semantic-source-line-contract
+    result: pass_after_m2
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
     result: pass_structure_reviews_4_findings_2_log_entries_4_resolution_entries_2
   - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
@@ -136,6 +151,12 @@ changed_files:
   - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r1.md
   - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r2.md
   - docs/changes/2026-06-24-semantic-source-line-contract/review-resolution.md
+  - .prettierrc.json
+  - .markdownlint.json
+  - CONTRIBUTING.md
+  - docs/workflows.md
+  - README.md
+  - VISION.md
   - scripts/validate-documentation-prose.py
   - scripts/test-documentation-prose-validator.py
   - tests/fixtures/documentation-prose/pass/semantic-lines.md
