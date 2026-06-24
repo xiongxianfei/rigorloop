@@ -76,7 +76,7 @@ The proposal, spec amendments, architecture package update, and ADR are accepted
 - Remaining in-scope implementation milestones: none
 - Next stage: human PR review
 - Final closeout readiness: complete
-- Reason final closeout is or is not ready: PR #108 is open for review; implementation milestones, review-resolution, explain-change, verify, and PR handoff are complete.
+- Reason final closeout is or is not ready: PR #108 merged; implementation milestones, review-resolution, explain-change, verify, PR handoff, hosted CI, and human review are complete.
 
 ## Milestones
 

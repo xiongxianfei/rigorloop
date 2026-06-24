@@ -26,7 +26,7 @@ No blocked plans.
 
 Full completed history: see [Plan archive](plan-archive.md).
 
-- [2026-06-24 Implementation Autoprogression Through Verify](plans/2026-06-24-implementation-autoprogression-through-verify.md) - done; terminal state: done; PR #108 opened for review.
+- [2026-06-24 Implementation Autoprogression Through Verify](plans/2026-06-24-implementation-autoprogression-through-verify.md) - done; terminal state: done; PR #108 merged.
 - [2026-06-24 Proposal-Gated Authoring Autoprogression Through Plan Review](plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md) - done; terminal state: done; PR #106 opened for review.
 - [2026-06-23 Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) - done; terminal state: done; PR #101 merged.
 - [2026-06-23 Evidence-Bound and Incremental Project Map Skill](plans/2026-06-23-evidence-bound-incremental-project-map.md) - done; terminal state: done; PR #102 merged.
