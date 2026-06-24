@@ -109,19 +109,117 @@
       "properties": {
         "autoprogression": {
           "type": "object",
-          "required": [
-            "profile",
-            "authorized_by",
-            "authorized_at",
-            "change_id"
-          ],
           "properties": {
             "profile": {
               "type": "string",
               "enum": [
                 "off",
-                "authoring-through-plan-review"
+                "authoring-through-plan-review",
+                "implementation-through-verify"
               ]
+            },
+            "authoring_through_plan_review": {
+              "type": "object",
+              "required": [
+                "profile",
+                "authorized_by",
+                "authorized_at",
+                "change_id"
+              ],
+              "properties": {
+                "profile": {
+                  "type": "string",
+                  "enum": [
+                    "authoring-through-plan-review"
+                  ]
+                },
+                "authorized_by": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "authorized_at": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "change_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": true
+            },
+            "implementation_through_verify": {
+              "type": "object",
+              "required": [
+                "profile",
+                "phase",
+                "state",
+                "authorized_by",
+                "authorized_at",
+                "change_id"
+              ],
+              "properties": {
+                "profile": {
+                  "type": "string",
+                  "enum": [
+                    "implementation-through-verify"
+                  ]
+                },
+                "phase": {
+                  "type": "string",
+                  "enum": [
+                    "A",
+                    "B",
+                    "C"
+                  ]
+                },
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "off",
+                    "armed",
+                    "active",
+                    "paused",
+                    "completed",
+                    "cancelled"
+                  ]
+                },
+                "authorized_by": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "authorized_at": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "change_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "activation_baseline": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "cancellation": {
+                  "type": "object",
+                  "properties": {
+                    "cancelled_by": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "cancelled_at": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "reason": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
             },
             "authorized_by": {
               "type": "string",
@@ -134,9 +232,40 @@
             "change_id": {
               "type": "string",
               "minLength": 1
+            },
+            "state": {
+              "type": "string",
+              "minLength": 1
+            },
+            "phase": {
+              "type": "string",
+              "minLength": 1
+            },
+            "request": {
+              "type": "string",
+              "minLength": 1
+            },
+            "activation_baseline": {
+              "type": "string",
+              "minLength": 1
+            },
+            "persistence_status": {
+              "type": "string",
+              "minLength": 1
+            },
+            "session_intent": {
+              "type": "boolean"
+            },
+            "fallback_policy_path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cancellation": {
+              "type": "object",
+              "additionalProperties": true
             }
           },
-          "additionalProperties": true
+          "additionalProperties": false
         }
       },
       "additionalProperties": true

@@ -15,7 +15,9 @@ Index policy:
 
 ## Active
 
-No active plans.
+| Plan | State | Next stage | Change ID |
+| --- | --- | --- | --- |
+| [Implementation Autoprogression Through Verify](plans/2026-06-24-implementation-autoprogression-through-verify.md) | active | pr | `2026-06-24-separately-armed-implementation-autoprogression-through-verify` |
 
 ## Blocked
 
