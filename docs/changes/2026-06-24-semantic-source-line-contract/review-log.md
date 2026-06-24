@@ -25,3 +25,17 @@ Resolution: review-resolution.md#code-review-m1-r1
 Material findings: PROSE-M1-CR1, PROSE-M1-CR2
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: review-resolution commit `e9630413`
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r2.md
+Record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: none
+Open findings: none
+Recording status: recorded

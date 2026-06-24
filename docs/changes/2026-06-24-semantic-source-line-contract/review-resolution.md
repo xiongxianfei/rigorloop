@@ -43,3 +43,8 @@ Status: resolved; pending code-review rerun
 Before the M1 review-resolution fix, `python scripts/validate-documentation-prose.py --mode audit --path README.md --path VISION.md` reported 0 errors and 10 warnings.
 After the fix, the same command reports 6 errors and 10 warnings.
 The warning count did not change; the 6 new audit-mode errors are existing README mechanically continued list items now detected by the accepted `PROSE-M1-CR2` fix.
+
+### code-review-m1-r2
+
+No material findings.
+Code-review-m1-r2 confirmed PROSE-M1-CR1 and PROSE-M1-CR2 are resolved and closed this review-resolution record.
