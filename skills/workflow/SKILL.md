@@ -269,7 +269,15 @@ Classify the request into one of these contexts before deciding whether to conti
 
 Rules:
 
-- Workflow-managed autoprogression applies only where the workflow contract allows it, especially the standard execution chain from `implement` through `pr`.
+- Workflow-managed autoprogression applies only where the workflow contract allows it, especially the bounded `authoring-through-plan-review` profile and the standard execution chain from `implement` through `pr`.
+- The `authoring-through-plan-review` profile is off by default. Treat profile states as `off`, `armed`, `active`, `paused`, or `completed`; unknown profile values fail closed.
+- Do not activate `authoring-through-plan-review` unless the invocation is workflow-managed, durable change-local authorization is persisted, the profile is armed, and the proposal gate is ready from tracked artifacts.
+- Proposal gate readiness is separate from user authorization. A proposal can be gate-ready while the profile remains `off`.
+- When active, route only through `spec -> spec-review -> recorded architecture assessment -> architecture/architecture-review when required -> plan -> plan-review -> stop`.
+- Architecture assessment records exactly one of `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; ambiguity pauses the profile.
+- Stop `authoring-through-plan-review` on non-clean review status, material finding, open `needs-decision`, user pause or cancellation, missing or malformed authorization persistence, contradictory workflow state, unreliable partial completion, exhausted transition budget, or any out-of-scope stage request.
+- Resume uses tracked artifact and review evidence. Do not rerun completed artifacts or clean reviews, do not infer completion from file existence alone, and pause when completion evidence is ambiguous.
+- A clean `plan-review` completes the profile, reports `test-spec` as next, and does not invoke `test-spec`, implementation, review-fix loops, verification, or PR.
 - Autoprogressed `code-review` emits a first-pass review before any review-driven fix begins.
 - First-pass `blocked` and `inconclusive` stop instead of entering review-resolution.
 - A clean non-final milestone review continues to the next in-scope implementation milestone.

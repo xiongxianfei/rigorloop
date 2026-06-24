@@ -1,0 +1,367 @@
+change_id: 2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
+title: Proposal-gated authoring autoprogression through plan review
+classification: spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md
+  spec: specs/workflow-stage-autoprogression.md
+  test_spec: specs/workflow-stage-autoprogression.test.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md
+  plan: docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md
+  review_resolution: docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md
+  explain_change: docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/explain-change.md
+  verify_report: docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/verify-report.md
+requirements:
+  - Review the proposal-gated authoring autoprogression proposal before spec.
+  - Preserve the proposal as the human decision checkpoint.
+  - Keep the profile bounded to authoring through plan-review and stop before test-spec or implementation.
+  - Confirm that direct review invocations remain isolated.
+  - Record proposal-review R1 as durable formal review evidence.
+  - Settle the accepted proposal status before downstream spec reliance.
+  - Amend the workflow-stage autoprogression spec with the closed authoring-through-plan-review profile contract.
+  - Amend the RigorLoop workflow spec with stage-order, isolation, state, and metadata ownership rules for the profile.
+  - Keep both spec amendments in draft until spec-review approves them.
+  - Resolve spec-review finding SR-APGA-001 by making durable profile authorization persistence mandatory before activation.
+  - Add test-spec coverage for APGA-031 through APGA-036 and behavior-preservation evidence for the persistence tightening.
+  - Settle the approved spec statuses before architecture reliance after spec-review R2.
+  - Record canonical architecture impact for workflow orchestration, profile policy persistence, review independence, architecture assessment routing, and generated guidance alignment.
+  - Record the durable profile architecture decision in an ADR before planning.
+  - Create a reviewed execution plan that sequences policy persistence, workflow routing, stage skill alignment, generated guidance validation, and integration closeout.
+tests:
+  - Proposal-review R1 approves or records material findings for the proposal.
+  - Review-log indexes proposal-review R1 with zero material findings when clean.
+  - Proposal status is normalized from draft to accepted before downstream spec reliance.
+  - Workflow-stage autoprogression spec defines profile values, gate activation, architecture assessment, stop conditions, transition budget, completion boundary, and off-by-default behavior.
+  - RigorLoop workflow spec keeps direct review requests isolated and prevents profile metadata from owning live state.
+  - APGA-031 through APGA-036 cover missing, malformed, failed, pre-pack, cancellation, and fallback authorization-persistence behavior.
+  - Behavior-preservation evidence records mandatory authorization persistence as an intentional tightening.
+  - Spec-review R2 approves the spec amendments with no material findings.
+  - Canonical architecture records the authoring-through-plan-review runtime flow, no-service deployment boundary, policy metadata ownership, audit trail, stop conditions, and architecture-review handoff.
+  - ADR records the durable decision for the bounded profile, persistence surface, architecture assessment, review independence, and stop-before-test-spec boundary.
+  - Plan maps approved requirements and APGA checks to reviewable implementation milestones with validation commands and recovery paths.
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_1_findings_0_log_entries_1_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/proposal-review-r1.md
+    result: pass_validated_3_artifact_files_with_existing_rigorloop_workflow_merge_dependent_language_warning
+  - command: git diff --check -- docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md specs/workflow-stage-autoprogression.md specs/rigorloop-workflow.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
+    result: pass
+  - command: spec-review r1
+    result: changes_requested_SR-APGA-001_recorded
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_2_findings_1_log_entries_2_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/proposal-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r1.md
+    result: pass_validated_3_artifact_files_with_existing_rigorloop_workflow_merge_dependent_language_warning
+  - command: git diff --check -- docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md specs/workflow-stage-autoprogression.md specs/rigorloop-workflow.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
+    result: pass_after_spec_review_r1_recording
+  - command: review-resolution SR-APGA-001
+    result: accepted_resolved_pending_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_sr_apga_001_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_sr_apga_001_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_sr_apga_001_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/behavior-preservation.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/proposal-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r1.md
+    result: pass_validated_5_artifact_files_with_existing_rigorloop_workflow_and_workflow_test_merge_dependent_language_warnings
+  - command: git diff --check -- docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
+    result: pass_after_sr_apga_001_resolution
+  - command: spec-review r2
+    result: approved_no_material_findings_recorded
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_closeout_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/behavior-preservation.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/proposal-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r2.md
+    result: pass_validated_5_artifact_files_with_existing_rigorloop_workflow_and_workflow_test_merge_dependent_language_warnings_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_spec_review_r2
+  - command: git diff --check -- docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
+    result: pass_after_spec_review_r2
+  - command: upstream status settlement
+    result: workflow_stage_autoprogression_and_rigorloop_workflow_specs_status_approved_after_spec_review_r2
+  - command: architecture assessment
+    result: architecture-required_for_workflow_orchestration_policy_persistence_review_independence_architecture_assessment_and_generated_guidance_impact
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_architecture_update
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_architecture_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_closeout_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_architecture_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/behavior-preservation.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/proposal-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r2.md
+    result: pass_validated_7_artifact_files_with_existing_rigorloop_workflow_and_workflow_test_merge_dependent_language_warnings_after_architecture_update
+  - command: git diff --check -- docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
+    result: pass_after_architecture_update
+  - command: architecture-review r1
+    result: approved_no_material_findings_recorded
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_architecture_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_closeout_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_architecture_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/behavior-preservation.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/proposal-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r2.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/architecture-review-r1.md
+    result: pass_validated_7_artifact_files_with_existing_rigorloop_workflow_and_workflow_test_merge_dependent_language_warnings_after_architecture_review_r1
+  - command: git diff --check -- docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
+    result: pass_after_architecture_review_r1
+  - command: plan
+    result: active_plan_created_ready_for_plan_review
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_closeout_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_plan
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/behavior-preservation.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/proposal-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r2.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/architecture-review-r1.md
+    result: pass_validated_7_artifact_files_with_existing_rigorloop_workflow_and_workflow_test_merge_dependent_language_warnings_after_plan
+  - command: git diff --check -- docs/plan.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_plan
+  - command: plan-review r1
+    result: approved_no_material_findings_recorded
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_plan_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/behavior-preservation.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/proposal-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r2.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/architecture-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/plan-review-r1.md
+    result: pass_validated_7_artifact_files_with_existing_rigorloop_workflow_and_workflow_test_merge_dependent_language_warnings_after_plan_review_r1
+  - command: git diff --check -- docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review docs/plan.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md
+    result: pass_after_plan_review_r1
+  - command: test-spec
+    result: active_test_spec_updated_ready_for_implement_m1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_test_spec
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_test_spec
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/behavior-preservation.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/proposal-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r2.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/architecture-review-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/plan-review-r1.md
+    result: pass_validated_7_artifact_files_with_existing_rigorloop_workflow_and_workflow_test_merge_dependent_language_warnings_after_test_spec
+  - command: git diff --check -- specs/workflow-stage-autoprogression.test.md docs/plan.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_test_spec
+  - command: user approval
+    result: active_test_spec_approved_for_implement_m1
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_26_tests_after_m1_policy_persistence
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_m1_policy_persistence
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path schemas/change.schema.json --path docs/workflows.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_validated_5_artifact_files_after_m1_policy_persistence
+  - command: git diff --check -- schemas/change.schema.json scripts/validate-change-metadata.py scripts/change_metadata_semantics.py scripts/query-change-record.py scripts/test-change-metadata-validator.py tests/fixtures/change-metadata docs/workflows.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/plan.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
+    result: pass_after_m1_policy_persistence
+  - command: code-review m1 r1
+    result: clean_with_notes_recorded_m1_closed_next_implement_m2
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_6_findings_1_log_entries_6_resolution_entries_1_after_code_review_m1_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_closeout_reviews_6_findings_1_log_entries_6_resolution_entries_1_after_code_review_m1_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m1-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_validated_5_artifact_files_after_code_review_m1_r1
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_102_tests_after_m2_authoring_profile_routing
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path docs/workflows.md --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_validated_6_artifact_files_with_existing_rigorloop_workflow_lifecycle_language_warning_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_m2_authoring_profile_routing
+  - command: git diff --check -- skills/workflow/SKILL.md docs/workflows.md scripts/lifecycle_state_sync.py scripts/artifact_lifecycle_validation.py scripts/validate-artifact-lifecycle.py scripts/test-artifact-lifecycle-validator.py tests/fixtures/artifact-lifecycle docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/plan.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
+    result: pass_after_m2_authoring_profile_routing
+  - command: code-review m2 r1
+    result: changes_requested_CR-M2-001_CR-M2-002_recorded
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_reviews_7_findings_3_log_entries_7_resolution_entries_3_after_code_review_m2_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m2-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_validated_5_artifact_files_after_code_review_m2_r1
+  - command: git diff --check -- docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m2-r1.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/plan.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m2_r1
+  - command: review-resolution CR-M2-001 CR-M2-002
+    result: accepted_resolved_ready_for_code_review_m2_r2
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_108_tests_after_cr_m2_001_cr_m2_002_resolution
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/ && python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_and_closeout_reviews_7_findings_3_log_entries_7_resolution_entries_3_after_cr_m2_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_cr_m2_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path skills/workflow/SKILL.md --path docs/workflows.md --path scripts/lifecycle_state_sync.py --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py
+    result: pass_validated_5_artifact_files_after_cr_m2_resolution
+  - command: code-review m2 r2
+    result: clean_with_notes_recorded_m2_closed_next_implement_m3
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/ && python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_and_closeout_reviews_8_findings_3_log_entries_8_resolution_entries_3_after_code_review_m2_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m2_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m2-r2.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_validated_5_artifact_files_after_code_review_m2_r2
+  - command: git diff --check -- docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m2-r2.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/plan.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m2_r2
+  - command: python scripts/test-skill-validator.py
+    result: pass_231_tests_after_m3_stage_skill_alignment
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3_stage_skill_alignment
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_m3_stage_skill_alignment
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/proposal-review/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path docs/workflows.md --path scripts/test-skill-validator.py --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_validated_5_artifact_files_after_m3_stage_skill_alignment
+  - command: git diff --check -- skills/proposal-review/SKILL.md skills/spec/SKILL.md skills/spec-review/SKILL.md skills/architecture/SKILL.md skills/architecture-review/SKILL.md skills/plan/SKILL.md skills/plan-review/SKILL.md scripts/test-skill-validator.py docs/workflows.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/plan.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
+    result: pass_after_m3_stage_skill_alignment
+  - command: code-review m3 r1
+    result: clean_with_notes_recorded_m3_closed_next_implement_m4
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/ && python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_and_closeout_reviews_9_findings_3_log_entries_9_resolution_entries_3_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m3-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_validated_5_artifact_files_after_code_review_m3_r1
+  - command: git diff --check -- docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m3-r1.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/plan.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m4_generated_skill_check
+  - command: python scripts/test-build-skills.py
+    result: pass_7_tests_after_m4_generated_skill_check
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_129_tests_after_m4_adapter_distribution_check
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m4_adapter_distribution_check
+  - command: git diff --check -- scripts/build-skills.py scripts/test-build-skills.py scripts/test-adapter-distribution.py scripts/adapter_templates dist/adapters docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/plan.md
+    result: pass_after_m4_adapter_distribution_check
+  - command: code-review m4 r1
+    result: clean_with_notes_recorded_m4_closed_next_implement_m5
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/ && python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_and_closeout_reviews_10_findings_3_log_entries_10_resolution_entries_3_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m4-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_validated_5_artifact_files_after_code_review_m4_r1
+  - command: git diff --check -- docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m4-r1.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/plan.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_26_tests_after_m5_integrated_behavior_proof
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_108_tests_after_m5_integrated_behavior_proof
+  - command: python scripts/test-skill-validator.py
+    result: pass_231_tests_after_m5_integrated_behavior_proof
+  - command: python scripts/test-build-skills.py
+    result: pass_7_tests_after_m5_integrated_behavior_proof
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_129_tests_after_m5_integrated_behavior_proof
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m5_integrated_behavior_proof
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m5_integrated_behavior_proof
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/ && python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_and_closeout_reviews_10_findings_3_log_entries_10_resolution_entries_3_after_m5_integrated_behavior_proof
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_m5_integrated_behavior_proof
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/behavior-preservation.md
+    result: pass_validated_7_artifact_files_with_existing_rigorloop_workflow_and_workflow_test_merge_dependent_language_warnings_after_m5_integrated_behavior_proof
+  - command: bash scripts/ci.sh --mode explicit --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path skills/workflow/SKILL.md --path docs/workflows.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_selected_checks_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate_selector_regression_after_m5_integrated_behavior_proof
+  - command: code-review m5 r1
+    result: clean_with_notes_recorded_m5_closed_next_explain_change
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/ && python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_and_closeout_reviews_11_findings_3_log_entries_11_resolution_entries_3_after_code_review_m5_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m5_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m5-r1.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_validated_5_artifact_files_after_code_review_m5_r1
+  - command: git diff --check -- docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m5-r1.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/plan.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_code_review_m5_r1
+  - command: explain-change
+    result: explain_change_recorded_next_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/explain-change.md --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md
+    result: pass_validated_5_artifact_files_after_explain_change
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/ && python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_and_closeout_reviews_11_findings_3_log_entries_11_resolution_entries_3_after_explain_change
+  - command: git diff --check -- docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/explain-change.md docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md docs/plan.md docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_26_tests_after_verify
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_108_tests_after_verify
+  - command: python scripts/test-skill-validator.py
+    result: pass_231_tests_after_verify
+  - command: python scripts/test-build-skills.py
+    result: pass_7_tests_after_verify
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_129_tests_after_verify
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_verify
+  - command: python scripts/build-skills.py --check
+    result: pass_after_verify
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/ && python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/
+    result: pass_structure_and_closeout_reviews_11_findings_3_log_entries_11_resolution_entries_3_after_verify
+  - command: bash scripts/ci.sh --mode explicit with concrete changed file list
+    result: pass_selected_checks_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_review_artifacts_validate_artifact_lifecycle_regression_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_change_record_query_regression_guide_system_validate_selector_regression_after_verify
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: pass_11_checks_290s_after_verify
+  - command: verify
+    result: branch_ready_next_pr
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/verify-report.md --path docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml --path docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md --path docs/plan.md
+    result: pass_post_verify_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate
+review:
+  status: approved
+  unresolved_items: 0
+  material_findings: 3
+  closed_findings: 3
+  open_findings: 0
+  review_log: docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md
+  review_resolution: docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md
+changed_files:
+  - docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md
+  - specs/workflow-stage-autoprogression.md
+  - specs/workflow-stage-autoprogression.test.md
+  - specs/rigorloop-workflow.md
+  - specs/rigorloop-workflow.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md
+  - docs/plan.md
+  - docs/plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md
+  - docs/workflows.md
+  - schemas/change.schema.json
+  - scripts/query-change-record.py
+  - scripts/lifecycle_state_sync.py
+  - scripts/artifact_lifecycle_validation.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - scripts/test-change-metadata-validator.py
+  - scripts/validate-change-metadata.py
+  - scripts/test-skill-validator.py
+  - skills/proposal-review/SKILL.md
+  - skills/spec/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/architecture/SKILL.md
+  - skills/architecture-review/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/workflow/SKILL.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/behavior-preservation.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/explain-change.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/verify-report.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-log.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/review-resolution.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r1.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r2.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/architecture-review-r1.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/plan-review-r1.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m1-r1.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m2-r1.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m2-r2.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m3-r1.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m4-r1.md
+  - docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/code-review-m5-r1.md
