@@ -528,6 +528,7 @@ class ValidationSelectionTests(unittest.TestCase):
             "broad_smoke_required": False,
             "broad_smoke": {"required": False, "sources": []},
             "blocking_results": blocking_results or [],
+            "preflight_results": [],
             "rationale": [],
         }
 
@@ -1200,6 +1201,7 @@ raise SystemExit({exit_code})
             "affected_roots",
             "broad_smoke_required",
             "blocking_results",
+            "preflight_results",
             "rationale",
         ):
             self.assertIn(field, payload)
@@ -1217,6 +1219,86 @@ raise SystemExit({exit_code})
             }.issubset(selected_ids(payload))
         )
         self.assertIn("adapters.drift", selected_ids(payload))
+        for check in payload["selected_checks"]:
+            self.assertIn(check["phase"], {"focused", "boundary"})
+            self.assertEqual(check["cache_status"], "not-applicable")
+
+    def test_selector_marks_broad_smoke_as_boundary_phase(self) -> None:
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("skills/code-review/SKILL.md",),
+                broad_smoke=True,
+                repo_root=ROOT,
+            )
+        )
+        payload = result.to_json_dict()
+        phases = {check["id"]: check["phase"] for check in payload["selected_checks"]}
+        self.assertEqual(phases["broad_smoke.repo"], "boundary")
+        self.assertEqual(phases["skills.validate"], "focused")
+
+    def test_preflight_blocks_untracked_authoritative_artifact_with_action(self) -> None:
+        repo = self.make_git_repo()
+        proposal = repo / "docs" / "proposals" / "new-proposal.md"
+        proposal.parent.mkdir(parents=True)
+        proposal.write_text("# New proposal\n", encoding="utf-8")
+
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("docs/proposals/new-proposal.md",),
+                repo_root=repo,
+            )
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(payload["status"], "blocked")
+        blockers = payload["blocking_results"]
+        self.assertTrue(
+            any(
+                blocker.get("code") == "untracked-authoritative-artifacts"
+                and blocker.get("corrective_action") == "git add -- docs/proposals/new-proposal.md"
+                for blocker in blockers
+            ),
+            blockers,
+        )
+        self.assertTrue(
+            any(
+                result.get("check") == "tracked_authoritative_artifacts"
+                and result.get("result") == "blocked"
+                for result in payload["preflight_results"]
+            ),
+            payload["preflight_results"],
+        )
+
+    def test_preflight_passes_tracked_authoritative_artifact(self) -> None:
+        repo = self.make_git_repo()
+        proposal = repo / "docs" / "proposals" / "tracked-proposal.md"
+        proposal.parent.mkdir(parents=True)
+        proposal.write_text("# Tracked proposal\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
+
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("docs/proposals/tracked-proposal.md",),
+                repo_root=repo,
+            )
+        )
+        payload = result.to_json_dict()
+
+        self.assertNotIn(
+            "untracked-authoritative-artifacts",
+            {blocker.get("code") for blocker in payload["blocking_results"]},
+        )
+        self.assertTrue(
+            any(
+                item.get("check") == "tracked_authoritative_artifacts"
+                and item.get("result") == "pass"
+                for item in payload["preflight_results"]
+            ),
+            payload["preflight_results"],
+        )
 
     def test_missing_mode_specific_inputs_return_json_error(self) -> None:
         result = run_selector("--mode", "pr", "--base", "HEAD~1")
@@ -2623,8 +2705,11 @@ raise SystemExit({exit_code})
 
         self.assertEqual(result.returncode, 0, msg=output)
         self.assertIn("Selector mode: explicit", output)
+        self.assertIn("Preflight results:", output)
         self.assertIn("Run selected check: review_artifacts.validate", output)
         self.assertIn("Run selected check: artifact_lifecycle.validate", output)
+        self.assertIn("Phase: focused", output)
+        self.assertIn("Selected CI phase timing summary:", output)
         self.assertIn(
             "python scripts/validate-review-artifacts.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/",
             output,

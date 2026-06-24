@@ -447,6 +447,7 @@ class CheckPlan:
     command: str
     args: list[str]
     reason: str | None
+    phase: str
     parallel_safe: bool
 
 
@@ -731,6 +732,17 @@ def print_summary(results: list[CheckResult]) -> None:
             f"{result.plan.check_id} | {result.status} | {result.exit_reason} | "
             f"{result.elapsed_seconds:.2f}s"
         )
+    print("Selected CI check phases:")
+    print("check ID | phase")
+    for result in results:
+        print(f"{result.plan.check_id} | {result.plan.phase}")
+    phase_totals: dict[str, float] = {}
+    for result in results:
+        phase_totals[result.plan.phase] = phase_totals.get(result.plan.phase, 0.0) + result.elapsed_seconds
+    if phase_totals:
+        print("Selected CI phase timing summary:")
+        for phase in sorted(phase_totals):
+            print(f"{phase} | {phase_totals[phase]:.2f}s")
 
 
 def print_stream(label: str, text: str, *, decode_error: bool) -> None:
@@ -784,6 +796,7 @@ required_fields = {
     "affected_roots",
     "broad_smoke_required",
     "blocking_results",
+    "preflight_results",
     "rationale",
 }
 missing = sorted(required_fields - set(payload))
@@ -802,6 +815,15 @@ if payload.get("broad_smoke_required"):
     print("Broad smoke required: true")
     for source in payload.get("broad_smoke", {}).get("sources", []):
         print(f"Broad smoke source: {source}")
+if payload.get("preflight_results"):
+    print("Preflight results:")
+    for result in payload["preflight_results"]:
+        line = f"- {result.get('check')}: {result.get('result')}"
+        if result.get("path"):
+            line += f" ({result.get('path')})"
+        if result.get("corrective_action"):
+            line += f"; action: {result.get('corrective_action')}"
+        print(line)
 
 if status == "blocked":
     for result in payload["blocking_results"]:
@@ -852,18 +874,23 @@ for check in selected_checks:
 
     args = shlex.split(expected_command)
     reason = check.get("reason")
+    phase = check.get("phase", "focused")
+    if phase not in {"preflight", "focused", "boundary"}:
+        fail(f"Selected check {check_id} has unsupported phase: {phase!r}")
     plans.append(
         CheckPlan(
             check_id=check_id,
             command=expected_command,
             args=args,
             reason=reason if isinstance(reason, str) else None,
+            phase=phase,
             parallel_safe=is_parallel_safe_check(check_id),
         )
     )
 
 for plan in plans:
     print(f"==> Run selected check: {plan.check_id}")
+    print(f"Phase: {plan.phase}")
     if plan.reason:
         print(f"Reason: {plan.reason}")
     print("+ " + command_display(plan.args))
