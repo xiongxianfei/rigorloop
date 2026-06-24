@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Owner: maintainer
 - Change ID: 2026-06-23-evidence-bound-incremental-project-map
 - Start date: 2026-06-23
-- Last updated: 2026-06-23
-- Related issue or PR: none yet
+- Last updated: 2026-06-24
+- Related issue or PR: PR #102, https://github.com/xiongxianfei/rigorloop/pull/102
 - Supersedes: none
 
 ## Purpose / big picture
@@ -67,13 +67,13 @@ Existing implementation anchors:
 ## Current Handoff Summary
 
 - Current milestone: final closeout sequence
-- Current milestone state: PR open
+- Current milestone state: closed
 - Last reviewed milestone: code-review-m4-r1
-- Review status: clean-with-notes
+- Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review
-- Final closeout readiness: PR open
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, final local verify passed, and PR #102 is open; hosted CI and human review have not completed.
+- Next stage: none
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — PR #102 merged after hosted CI success on 2026-06-23. No downstream lifecycle stage remains for this initiative.
 
 ## Milestones
 
@@ -345,6 +345,7 @@ Hard rule: no milestone may require a validation failure to remain unresolved un
 - 2026-06-23: Recorded explain-change rationale in `docs/changes/2026-06-23-evidence-bound-incremental-project-map/explain-change.md`; next stage is verify.
 - 2026-06-23: Final local verify passed, recorded `docs/changes/2026-06-23-evidence-bound-incremental-project-map/verify-report.md`, and established branch-ready evidence for PR handoff. Hosted CI was not observed.
 - 2026-06-23: Opened PR #102 for human review; next stage is hosted CI and human review.
+- 2026-06-24: PR #102 merge was confirmed; terminal closeout moved the plan from Active to Done.
 
 ## Decision log
 
@@ -394,9 +395,11 @@ Hard rule: no milestone may require a validation failure to remain unresolved un
 
 ## Outcome and retrospective
 
-- Final local verify passed, branch-ready evidence is recorded, and PR #102 is open. Hosted CI and human review remain.
+- PR #102 merged on 2026-06-23.
+- The project-map skill now carries the approved evidence-bound orientation contract, packaged skeleton asset, representative output proof, generated adapter inclusion proof, and no-migration boundary evidence.
+- PMAP-AR1-F1, PMAP-PLAN1-F1, PMAP-PLAN2-F1, and PMAP-PLAN3-F1 were accepted, resolved, and confirmed by later reviews.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for hosted CI and human review per `Current Handoff Summary`. Readiness is not Done; hosted CI and human review remain.
+- Terminal done. No downstream lifecycle stage remains for this initiative.
