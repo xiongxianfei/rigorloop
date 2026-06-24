@@ -53,3 +53,8 @@ Code-review-m1-r2 confirmed PROSE-M1-CR1 and PROSE-M1-CR2 are resolved and close
 
 No material findings.
 Code-review-m2-r1 reviewed and closed M2 for contributor guidance, formatter guardrails, and Tier A cleanup, with next stage `implement M3`.
+
+### code-review-m3-r1
+
+No material findings.
+Code-review-m3-r1 reviewed and closed M3 for selected-validation routing and behavior-preservation evidence, with next stage `explain-change`.
