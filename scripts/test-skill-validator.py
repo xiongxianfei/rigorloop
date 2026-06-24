@@ -99,6 +99,12 @@ SKILL_CONTRACT_WORKFLOW_SPEC = ROOT / "specs" / "rigorloop-workflow.md"
 SKILL_CONTRACT_WORKFLOWS_DOC = ROOT / "docs" / "workflows.md"
 SKILL_CONTRACT_AGENTS = ROOT / "AGENTS.md"
 SKILL_VALIDATOR_FIXTURE_README = ROOT / "docs" / "changes" / "0001-skill-validator" / "README.md"
+IMPLEMENTATION_AUTOPROGRESSION_CHANGE_ROOT = (
+    ROOT
+    / "docs"
+    / "changes"
+    / "2026-06-24-separately-armed-implementation-autoprogression-through-verify"
+)
 SKILL_CONTRACT_EVIDENCE_BLOCK = ROOT / "templates" / "shared" / "evidence-collection-efficiency.md"
 SKILL_CONTRACT_FIRST_SLICE_SKILLS = [
     "workflow",
@@ -4569,6 +4575,119 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in stale_terms:
                 with self.subTest(path=relative_path, stale=term):
                     self.assertNotIn(term, body)
+
+    def test_implementation_through_verify_public_skill_surfaces_expose_phase_boundaries(self) -> None:
+        required_by_skill = {
+            "workflow": [
+                "verify-bounded implementation autoprogression",
+                "`auto-through: verify`",
+                "`implementation-through-verify`",
+                "Phase `B`",
+                "Phase `C`",
+                "promotion evidence",
+                "stops before invoking `pr`",
+            ],
+            "test-spec": [
+                "test-spec settlement",
+                "input artifact identities",
+                "first milestone's code-review",
+            ],
+            "implement": [
+                "`implementation-through-verify`",
+                "reviewer-declared auto-fix",
+                "Phase B",
+            ],
+            "code-review": [
+                "`auto_fix_class`",
+                "`mechanical`",
+                "`declared-safe`",
+                "context-reset evidence",
+                "final full code-review",
+            ],
+            "explain-change": [
+                "Phase C",
+                "final reviewed diff",
+                "does not open `pr`",
+            ],
+            "verify": [
+                "fresh actual-run evidence",
+                "cache hits",
+                "verify failure",
+                "does not trigger automatic repair",
+                "human authorization for `pr`",
+            ],
+            "plan": [
+                "`auto-through: verify`",
+                "separate authorization",
+                "phase",
+                "promotion evidence",
+            ],
+            "plan-review": [
+                "`implementation-through-verify`",
+                "separate authorization",
+                "phase",
+            ],
+        }
+        for skill_name, required_terms in required_by_skill.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_implementation_through_verify_behavior_preservation_covers_acceptance_and_itv_checks(self) -> None:
+        preservation = (
+            IMPLEMENTATION_AUTOPROGRESSION_CHANGE_ROOT / "behavior-preservation.md"
+        ).read_text(encoding="utf-8")
+
+        for check_number in range(1, 40):
+            with self.subTest(check=f"ITV-{check_number:03d}"):
+                self.assertIn(f"`ITV-{check_number:03d}`", preservation)
+        for criterion_number in range(1, 26):
+            with self.subTest(criterion=f"AC-ITV-{criterion_number:03d}"):
+                self.assertIn(f"`AC-ITV-{criterion_number:03d}`", preservation)
+
+        required_terms = [
+            "Profile off",
+            "Authoring autoprogression",
+            "No test-spec-review stage",
+            "Owner decisions",
+            "Review independence",
+            "PR boundary",
+            "Bugfix and manual skill invocations",
+            "Audit reconstruction",
+            "Phase C promotion",
+            "Not enabled in first slice",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, preservation)
+
+    def test_implementation_through_verify_does_not_introduce_test_spec_review_skill_or_stage(self) -> None:
+        forbidden_paths = [
+            ROOT / "skills" / "test-spec-review" / "SKILL.md",
+            ROOT / ".agents" / "skills" / "test-spec-review" / "SKILL.md",
+        ]
+        for path in forbidden_paths:
+            with self.subTest(path=path):
+                self.assertFalse(path.exists())
+
+        stage_owner_files = [
+            ROOT / "scripts" / "lifecycle_state_sync.py",
+            ROOT / "scripts" / "review_artifact_validation.py",
+            ROOT / "docs" / "workflows.md",
+        ]
+        forbidden_stage_markers = [
+            '"test-spec-review"',
+            "'test-spec-review'",
+            "| `test-spec-review` |",
+            "-> test-spec-review",
+            "test-spec-review ->",
+        ]
+        for path in stage_owner_files:
+            body = path.read_text(encoding="utf-8")
+            for marker in forbidden_stage_markers:
+                with self.subTest(path=path, marker=marker):
+                    self.assertNotIn(marker, body)
 
     def test_single_source_workflow_state_test_spec_maps_static_proof(self) -> None:
         body = SINGLE_SOURCE_WORKFLOW_STATE_TEST_SPEC.read_text(encoding="utf-8")

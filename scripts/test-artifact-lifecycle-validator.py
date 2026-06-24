@@ -13,6 +13,8 @@ from pathlib import Path
 
 from artifact_lifecycle_validation import validate_repository
 from lifecycle_state_sync import evaluate_authoring_autoprogression_route
+from lifecycle_state_sync import evaluate_implementation_autoprogression_route
+from lifecycle_state_sync import evaluate_implementation_correction_guardrails
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1399,6 +1401,517 @@ No blocked plans.
             ),
             next_stage="test-spec",
             profile_state="completed",
+        )
+
+    def implementation_profile_fixture(self, **overrides: object) -> dict[str, object]:
+        identities = {
+            "spec": "spec@abc123",
+            "architecture": "architecture@abc123",
+            "plan": "plan@abc123",
+            "test_spec": "test-spec@abc123",
+        }
+        fixture: dict[str, object] = {
+            "profile": "implementation-through-verify",
+            "profile_state": "armed",
+            "phase": "B",
+            "durable_authorization": "persisted",
+            "invocation_context": "workflow-managed",
+            "current_stage": "test-spec-settlement",
+            "authoring_gates": "completed",
+            "plan_review_status": "approved",
+            "plan_review_recording": "recorded",
+            "plan_synchronized": True,
+            "milestones_ordered": True,
+            "test_spec_inputs_complete": True,
+            "working_tree_baseline": "recorded",
+            "unrelated_dirty_state": "absent",
+            "required_commands_approved": True,
+            "governing_findings_open": False,
+            "artifact_placement_unambiguous": True,
+            "workflow_state_synchronized": True,
+            "promotion_evidence": None,
+            "test_spec_settlement": {
+                "status": "active",
+                "requirements_covered": True,
+                "acceptance_covered": True,
+                "negative_boundary_cases": True,
+                "uncovered_gaps": "none",
+                "needs_decision": False,
+                "validation_commands_named": True,
+                "contradicts_governing": False,
+                "structural_validation": "pass",
+                "workflow_state_synchronized": True,
+                "input_identities": identities,
+            },
+            "current_input_identities": identities,
+            "milestones": [
+                {"id": "M1", "state": "closed"},
+                {"id": "M2", "state": "planned"},
+                {"id": "M3", "state": "planned"},
+            ],
+        }
+        fixture.update(overrides)
+        return fixture
+
+    def assertImplementationRoute(
+        self,
+        fixture: dict[str, object],
+        *,
+        next_stage: str | None = None,
+        stop_reason: str | None = None,
+        profile_state: str | None = None,
+    ) -> None:
+        result = evaluate_implementation_autoprogression_route(fixture)
+        if next_stage is not None:
+            self.assertEqual(result.next_stage, next_stage, result)
+            self.assertIsNone(result.stop_reason, result)
+        if stop_reason is not None:
+            self.assertEqual(result.stop_reason, stop_reason, result)
+        if profile_state is not None:
+            self.assertEqual(result.profile_state, profile_state, result)
+
+    def correction_guardrail_fixture(self, **overrides: object) -> dict[str, object]:
+        fixture: dict[str, object] = {
+            "profile": "implementation-through-verify",
+            "profile_state": "active",
+            "milestone": "M3",
+            "correction_rounds_completed": 0,
+            "per_milestone_round_cap": 3,
+            "activation_round_count": 0,
+            "activation_round_ceiling": 3,
+            "findings": [
+                {
+                    "id": "CR1-F1",
+                    "class": "path-locality",
+                    "auto_fix_class": "mechanical",
+                    "auto_fix_kind": "formatter-output",
+                    "affected_paths": ["scripts/example.py"],
+                    "deterministic_authority": "ruff format",
+                    "required_validation": ["python -m pytest tests/example.py"],
+                }
+            ],
+            "previous_unresolved_findings": [
+                {"id": "CR1-F1", "class": "path-locality"},
+                {"id": "CR1-F2", "class": "validation"},
+            ],
+            "current_unresolved_findings": [
+                {"id": "CR1-F2", "class": "validation"},
+            ],
+            "changed_paths": ["scripts/example.py"],
+            "affected_paths": ["scripts/example.py"],
+            "approved_generated_paths": [],
+            "workflow_projection_paths": ["docs/plan.md"],
+            "evidence_record_paths": [
+                "docs/changes/example/review-resolution.md",
+                "docs/changes/example/review-log.md",
+            ],
+            "substantive_governing_artifact_edit": False,
+            "scope_expansions": [],
+            "commands": ["python -m pytest tests/example.py"],
+            "approved_commands": ["python -m pytest tests/example.py"],
+            "ci_maintenance": False,
+            "ci_files_enumerated": False,
+            "ci_deny_list_hits": [],
+            "audit_recorded": True,
+        }
+        fixture.update(overrides)
+        return fixture
+
+    def assertCorrectionRoute(
+        self,
+        fixture: dict[str, object],
+        *,
+        next_stage: str | None = None,
+        stop_reason: str | None = None,
+    ) -> None:
+        result = evaluate_implementation_correction_guardrails(fixture)
+        if next_stage is not None:
+            self.assertEqual(result.next_stage, next_stage, result)
+            self.assertIsNone(result.stop_reason, result)
+        if stop_reason is not None:
+            self.assertEqual(result.stop_reason, stop_reason, result)
+
+    def test_implementation_profile_activation_requires_clean_planning_and_phase(self) -> None:
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(),
+            next_stage="implement M2",
+            profile_state="active",
+        )
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(phase="A"),
+            next_stage="audit-only",
+            profile_state="active",
+        )
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(phase="D"),
+            stop_reason="unsupported-phase",
+            profile_state="paused",
+        )
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(plan_review_status="changes-requested"),
+            stop_reason="plan-review-not-approved",
+        )
+        activation_stop_cases: list[tuple[str, dict[str, object], str]] = [
+            ("unsynchronized-plan", {"plan_synchronized": False}, "plan-not-synchronized"),
+            ("unordered-milestones", {"milestones_ordered": False}, "milestones-not-ordered"),
+            ("incomplete-test-spec-inputs", {"test_spec_inputs_complete": False}, "test-spec-inputs-incomplete"),
+            ("missing-commands", {"required_commands_approved": False}, "commands-not-approved"),
+            ("open-governing-findings", {"governing_findings_open": True}, "governing-findings-open"),
+            ("ambiguous-placement", {"artifact_placement_unambiguous": False}, "artifact-placement-ambiguous"),
+            ("unsynchronized-workflow", {"workflow_state_synchronized": False}, "workflow-state-unsynchronized"),
+        ]
+        for name, fixture_overrides, expected_reason in activation_stop_cases:
+            with self.subTest(name=name):
+                self.assertImplementationRoute(
+                    self.implementation_profile_fixture(**fixture_overrides),
+                    stop_reason=expected_reason,
+                )
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(unrelated_dirty_state="present"),
+            stop_reason="unrelated-dirty-state",
+        )
+
+    def test_implementation_profile_phase_boundaries_refuse_closeout_until_promoted(self) -> None:
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(
+                current_stage="final-clean-code-review",
+                phase="B",
+                milestones=[
+                    {"id": "M1", "state": "closed"},
+                    {"id": "M2", "state": "closed"},
+                ],
+            ),
+            stop_reason="phase-boundary-explain-change",
+            profile_state="active",
+        )
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(
+                current_stage="final-clean-code-review",
+                phase="C",
+                milestones=[
+                    {"id": "M1", "state": "closed"},
+                    {"id": "M2", "state": "closed"},
+                ],
+            ),
+            stop_reason="promotion-evidence-missing",
+            profile_state="active",
+        )
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(
+                current_stage="final-clean-code-review",
+                phase="C",
+                promotion_evidence={"phase_b_dogfood": "recorded", "synthetic_fixtures": "pass"},
+                milestones=[
+                    {"id": "M1", "state": "closed"},
+                    {"id": "M2", "state": "closed"},
+                ],
+            ),
+            next_stage="explain-change",
+            profile_state="active",
+        )
+
+    def test_implementation_profile_test_spec_settlement_blocks_incomplete_contracts(self) -> None:
+        cases: list[tuple[str, str, object]] = [
+            ("draft-status", "status", "draft"),
+            ("missing-requirement-coverage", "requirements_covered", False),
+            ("missing-acceptance-coverage", "acceptance_covered", False),
+            ("missing-negative-boundary-cases", "negative_boundary_cases", False),
+            ("uncovered-gaps", "uncovered_gaps", "R1"),
+            ("needs-decision", "needs_decision", True),
+            ("missing-validation-commands", "validation_commands_named", False),
+            ("upstream-contradiction", "contradicts_governing", True),
+            ("structural-validation-fail", "structural_validation", "fail"),
+            ("state-sync-fail", "workflow_state_synchronized", False),
+            ("missing-identities", "input_identities", None),
+        ]
+        for name, field, value in cases:
+            with self.subTest(name=name):
+                settlement = dict(self.implementation_profile_fixture()["test_spec_settlement"])  # type: ignore[arg-type]
+                settlement[field] = value
+                self.assertImplementationRoute(
+                    self.implementation_profile_fixture(test_spec_settlement=settlement),
+                    stop_reason="test-spec-settlement-incomplete",
+                )
+
+    def test_implementation_profile_first_review_rechecks_settlement_identities(self) -> None:
+        changed_identities = {
+            "spec": "spec@abc123",
+            "architecture": "architecture@abc123",
+            "plan": "plan@changed",
+            "test_spec": "test-spec@abc123",
+        }
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(
+                current_stage="first-code-review-precheck",
+                current_input_identities=changed_identities,
+                milestones=[
+                    {"id": "M1", "state": "closed"},
+                    {"id": "M2", "state": "review-requested"},
+                ],
+            ),
+            stop_reason="settlement-identity-mismatch",
+        )
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(
+                current_stage="first-code-review-precheck",
+                milestones=[
+                    {"id": "M1", "state": "closed"},
+                    {"id": "M2", "state": "review-requested"},
+                ],
+            ),
+            next_stage="code-review M2",
+            profile_state="active",
+        )
+
+    def test_implementation_profile_milestones_run_in_order_and_resume_idempotently(self) -> None:
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(
+                milestones=[
+                    {"id": "M1", "state": "planned"},
+                    {"id": "M2", "state": "planned"},
+                ],
+            ),
+            next_stage="implement M1",
+            profile_state="active",
+        )
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(
+                milestones=[
+                    {"id": "M1", "state": "closed"},
+                    {"id": "M2", "state": "closed"},
+                    {"id": "M3", "state": "planned"},
+                ],
+            ),
+            next_stage="implement M3",
+            profile_state="active",
+        )
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(
+                milestones=[
+                    {"id": "M1", "state": "closed"},
+                    {"id": "M2", "state": "review-requested"},
+                    {"id": "M3", "state": "planned"},
+                ],
+            ),
+            next_stage="code-review M2",
+            profile_state="active",
+        )
+
+    def test_implementation_correction_guardrails_pause_on_unclassified_or_invalid_findings(self) -> None:
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(findings=[{"id": "CR1-F1", "class": "owner-decision"}]),
+            stop_reason="correction-finding-unclassified",
+        )
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(
+                findings=[{"id": "CR1-F1", "class": "style", "auto_fix_class": "obvious"}],
+            ),
+            stop_reason="correction-finding-unknown-class",
+        )
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(),
+            next_stage="code-review M3",
+        )
+
+    def test_implementation_correction_guardrails_mechanical_pauses_without_deterministic_authority(self) -> None:
+        finding = dict(self.correction_guardrail_fixture()["findings"][0])  # type: ignore[index]
+        finding.pop("deterministic_authority")
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(findings=[finding]),
+            stop_reason="correction-finding-missing-deterministic-authority",
+        )
+
+    def test_implementation_correction_guardrails_mechanical_pauses_on_empty_deterministic_authority(self) -> None:
+        for value in ("", []):
+            with self.subTest(value=value):
+                finding = dict(self.correction_guardrail_fixture()["findings"][0])  # type: ignore[index]
+                finding["deterministic_authority"] = value
+                self.assertCorrectionRoute(
+                    self.correction_guardrail_fixture(findings=[finding]),
+                    stop_reason="correction-finding-missing-deterministic-authority",
+                )
+
+    def test_implementation_correction_guardrails_mechanical_required_fields_are_enumerated(self) -> None:
+        for field in ("auto_fix_kind", "affected_paths", "deterministic_authority", "required_validation"):
+            with self.subTest(field=field):
+                finding = dict(self.correction_guardrail_fixture()["findings"][0])  # type: ignore[index]
+                finding.pop(field)
+                self.assertCorrectionRoute(
+                    self.correction_guardrail_fixture(findings=[finding]),
+                    stop_reason=f"correction-finding-missing-{field.replace('_', '-')}",
+                )
+
+    def test_implementation_correction_guardrails_declared_safe_required_fields_are_enumerated(self) -> None:
+        finding = {
+            "id": "CR1-F1",
+            "class": "declared-safe",
+            "auto_fix_class": "declared-safe",
+            "affected_paths": ["scripts/example.py"],
+            "resolution_recipe": "Apply the declared parser fix.",
+            "named_inputs": ["spec R1"],
+            "named_outputs": ["route result"],
+            "forbidden_paths": ["specs/"],
+            "acceptance_criteria": ["focused test passes"],
+            "required_validation_commands": ["python -m pytest tests/example.py"],
+            "scope_preservation_rule": "no new dependency",
+            "production_code_change": "yes",
+            "behavior_test": "tests/example.py::test_route",
+        }
+        for field in (
+            "affected_paths",
+            "resolution_recipe",
+            "named_inputs",
+            "named_outputs",
+            "forbidden_paths",
+            "acceptance_criteria",
+            "required_validation_commands",
+            "scope_preservation_rule",
+            "production_code_change",
+            "behavior_test",
+        ):
+            with self.subTest(field=field):
+                incomplete = dict(finding)
+                incomplete.pop(field)
+                self.assertCorrectionRoute(
+                    self.correction_guardrail_fixture(findings=[incomplete]),
+                    stop_reason=f"correction-finding-missing-{field.replace('_', '-')}",
+                )
+
+    def test_implementation_correction_guardrails_unknown_auto_fix_class_pauses(self) -> None:
+        finding = dict(self.correction_guardrail_fixture()["findings"][0])  # type: ignore[index]
+        finding["auto_fix_class"] = "bogus"
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(findings=[finding]),
+            stop_reason="correction-finding-unknown-class",
+        )
+
+    def test_implementation_correction_guardrails_enforce_round_cap_and_shrinking_sets(self) -> None:
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(correction_rounds_completed=3),
+            stop_reason="correction-round-cap-exceeded",
+        )
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(
+                current_unresolved_findings=[
+                    {"id": "CR1-F1", "class": "path-locality"},
+                    {"id": "CR1-F2", "class": "validation"},
+                ],
+            ),
+            stop_reason="findings-not-shrinking",
+        )
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(
+                current_unresolved_findings=[
+                    {"id": "CR1-F2", "class": "validation"},
+                    {"id": "CR1-F3", "class": "new-class"},
+                ],
+            ),
+            stop_reason="new-finding-introduced",
+        )
+
+    def test_implementation_correction_guardrails_enforce_path_scope_and_commands(self) -> None:
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(changed_paths=["scripts/other.py"]),
+            stop_reason="correction-path-out-of-scope",
+        )
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(substantive_governing_artifact_edit=True),
+            stop_reason="governing-artifact-edit",
+        )
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(scope_expansions=["new-dependency"]),
+            stop_reason="scope-budget-expanded",
+        )
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(commands=["curl https://example.invalid/script.sh"]),
+            stop_reason="unapproved-command",
+        )
+
+    def test_implementation_correction_guardrails_pauses_when_top_level_disagrees_with_findings(self) -> None:
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(
+                affected_paths=["scripts/other.py"],
+                changed_paths=["scripts/other.py"],
+            ),
+            stop_reason="correction-affected-paths-disagree-with-findings",
+        )
+
+    def test_implementation_correction_guardrails_pauses_when_changed_outside_reviewer_union(self) -> None:
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(
+                affected_paths=None,
+                changed_paths=["scripts/other.py"],
+            ),
+            stop_reason="correction-path-out-of-scope",
+        )
+
+    def test_implementation_correction_guardrails_pauses_when_finding_has_no_affected_paths(self) -> None:
+        finding = dict(self.correction_guardrail_fixture()["findings"][0])  # type: ignore[index]
+        finding.pop("affected_paths")
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(findings=[finding]),
+            stop_reason="correction-finding-missing-affected-paths",
+        )
+
+    def test_implementation_correction_guardrails_allows_approved_generated_outputs_outside_finding_union(self) -> None:
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(
+                affected_paths=None,
+                changed_paths=["generated/example.json"],
+                approved_generated_paths=["generated/example.json"],
+            ),
+            next_stage="code-review M3",
+        )
+
+    def test_implementation_correction_guardrails_allows_approved_projections_and_evidence_outside_finding_union(self) -> None:
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(
+                affected_paths=None,
+                changed_paths=[
+                    "docs/plan.md",
+                    "docs/changes/example/review-resolution.md",
+                ],
+            ),
+            next_stage="code-review M3",
+        )
+
+    def test_implementation_correction_guardrails_resolved_finding_does_not_contribute_to_allowed_paths(self) -> None:
+        resolved = {
+            "id": "CR1-F0",
+            "class": "old-path",
+            "status": "resolved",
+            "auto_fix_class": "mechanical",
+            "auto_fix_kind": "formatter-output",
+            "affected_paths": ["scripts/old.py"],
+            "deterministic_authority": "ruff format",
+            "required_validation": ["python -m pytest tests/old.py"],
+        }
+        active = dict(self.correction_guardrail_fixture()["findings"][0])  # type: ignore[index]
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(
+                findings=[resolved, active],
+                affected_paths=None,
+                changed_paths=["scripts/old.py"],
+            ),
+            stop_reason="correction-path-out-of-scope",
+        )
+
+    def test_implementation_correction_guardrails_enforce_ci_scope_and_audit(self) -> None:
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(ci_maintenance=True),
+            stop_reason="ci-files-not-enumerated",
+        )
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(
+                ci_maintenance=True,
+                ci_files_enumerated=True,
+                ci_deny_list_hits=["secrets-reference"],
+            ),
+            stop_reason="ci-deny-list-hit",
+        )
+        self.assertCorrectionRoute(
+            self.correction_guardrail_fixture(audit_recorded=False),
+            stop_reason="audit-record-missing",
         )
 
     def write_plan_archive_contract_fixture(

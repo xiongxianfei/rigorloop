@@ -65,6 +65,13 @@ class AuthoringAutoprogressionRoute:
 
 
 @dataclass(frozen=True)
+class ImplementationAutoprogressionRoute:
+    profile_state: str
+    next_stage: str | None
+    stop_reason: str | None
+
+
+@dataclass(frozen=True)
 class HandoffSummary:
     fields: dict[str, str]
 
@@ -324,6 +331,52 @@ AUTHORING_PROFILE_STATES = {
     "paused",
     "completed",
 }
+IMPLEMENTATION_PROFILE = "implementation-through-verify"
+IMPLEMENTATION_PROFILE_STATES = {
+    "off",
+    "armed",
+    "active",
+    "paused",
+    "completed",
+    "cancelled",
+}
+IMPLEMENTATION_PROFILE_PHASES = {"A", "B", "C"}
+IMPLEMENTATION_DURABLE_AUTHORIZATION_FAILURES = {
+    "missing",
+    "malformed",
+    "partial",
+    "failed",
+}
+IMPLEMENTATION_MILESTONE_STATES = {"planned", "implementing", "review-requested", "resolution-needed", "closed"}
+AUTO_FIX_CLASSES = {"none", "mechanical", "declared-safe"}
+MECHANICAL_AUTO_FIX_KINDS = {
+    "formatter-output",
+    "lint-autofix",
+    "generated-output-refresh",
+    "exact-approved-rename",
+    "unique-required-field-value",
+    "mechanical-state-projection-sync",
+    "deterministic-manifest-regeneration",
+}
+MECHANICAL_REQUIRED_FIELDS = (
+    "auto_fix_kind",
+    "affected_paths",
+    "deterministic_authority",
+    "required_validation",
+)
+DECLARED_SAFE_REQUIRED_FIELDS = (
+    "affected_paths",
+    "resolution_recipe",
+    "named_inputs",
+    "named_outputs",
+    "forbidden_paths",
+    "acceptance_criteria",
+    "required_validation_commands",
+    "scope_preservation_rule",
+    "production_code_change",
+    "behavior_test",
+)
+IMPLEMENTATION_CORRECTION_ROUND_CAP = 3
 
 
 def _stop(profile_state: str, reason: str) -> AuthoringAutoprogressionRoute:
@@ -336,6 +389,22 @@ def _stop(profile_state: str, reason: str) -> AuthoringAutoprogressionRoute:
 
 def _continue(profile_state: str, next_stage: str) -> AuthoringAutoprogressionRoute:
     return AuthoringAutoprogressionRoute(
+        profile_state=profile_state,
+        next_stage=next_stage,
+        stop_reason=None,
+    )
+
+
+def _implementation_stop(profile_state: str, reason: str) -> ImplementationAutoprogressionRoute:
+    return ImplementationAutoprogressionRoute(
+        profile_state=profile_state,
+        next_stage=None,
+        stop_reason=reason,
+    )
+
+
+def _implementation_continue(profile_state: str, next_stage: str) -> ImplementationAutoprogressionRoute:
+    return ImplementationAutoprogressionRoute(
         profile_state=profile_state,
         next_stage=next_stage,
         stop_reason=None,
@@ -498,6 +567,350 @@ def evaluate_authoring_autoprogression_route(data: dict[str, object]) -> Authori
         return _stop(profile_state, "out-of-scope-stage")
 
     return _continue("active", next_stage)
+
+
+def _is_settled_test_spec(settlement: object) -> bool:
+    if not isinstance(settlement, dict):
+        return False
+    return (
+        settlement.get("status") in {"active", "settled"}
+        and settlement.get("requirements_covered") is True
+        and settlement.get("acceptance_covered") is True
+        and settlement.get("negative_boundary_cases") is True
+        and settlement.get("uncovered_gaps") == "none"
+        and settlement.get("needs_decision") is False
+        and settlement.get("validation_commands_named") is True
+        and settlement.get("contradicts_governing") is False
+        and settlement.get("structural_validation") == "pass"
+        and settlement.get("workflow_state_synchronized") is True
+        and isinstance(settlement.get("input_identities"), dict)
+    )
+
+
+def _settlement_identities(settlement: object) -> dict[str, object] | None:
+    if not isinstance(settlement, dict):
+        return None
+    identities = settlement.get("input_identities")
+    if not isinstance(identities, dict):
+        return None
+    return identities
+
+
+def _promotion_evidence_complete(value: object) -> bool:
+    if not isinstance(value, dict):
+        return False
+    return value.get("phase_b_dogfood") == "recorded" and value.get("synthetic_fixtures") == "pass"
+
+
+def _next_milestone_route(milestones: object) -> str | None:
+    if not isinstance(milestones, list):
+        return None
+    for milestone in milestones:
+        if not isinstance(milestone, dict):
+            return None
+        milestone_id = milestone.get("id")
+        state = milestone.get("state")
+        if not isinstance(milestone_id, str) or not isinstance(state, str):
+            return None
+        if state not in IMPLEMENTATION_MILESTONE_STATES:
+            return None
+        if state in {"planned", "implementing"}:
+            return f"implement {milestone_id}"
+        if state == "review-requested":
+            return f"code-review {milestone_id}"
+        if state == "resolution-needed":
+            return f"review-resolution {milestone_id}"
+    return None
+
+
+def _all_milestones_closed(milestones: object) -> bool:
+    if not isinstance(milestones, list) or not milestones:
+        return False
+    for milestone in milestones:
+        if not isinstance(milestone, dict) or milestone.get("state") != "closed":
+            return False
+    return True
+
+
+def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> ImplementationAutoprogressionRoute:
+    """Evaluate the implementation-through-verify route for fixture validation."""
+
+    profile = data.get("profile")
+    profile_state = data.get("profile_state")
+    phase = data.get("phase")
+    durable_authorization = data.get("durable_authorization")
+
+    if not isinstance(profile_state, str):
+        profile_state = "off"
+
+    if data.get("invocation_context") != "workflow-managed":
+        return _implementation_stop(profile_state, "isolated-invocation")
+
+    if profile == "off":
+        return _implementation_continue("off", "explicit-user-action")
+    if profile != IMPLEMENTATION_PROFILE:
+        return _implementation_stop(profile_state, "unknown-profile")
+
+    if isinstance(data.get("cancellation_record"), dict):
+        return _implementation_continue("cancelled", "explicit-user-action")
+
+    if profile_state == "off":
+        return _implementation_continue("off", "explicit-user-action")
+    if profile_state == "completed":
+        return _implementation_stop("completed", "profile-completed")
+    if profile_state == "cancelled":
+        return _implementation_stop("cancelled", "profile-cancelled")
+    if profile_state == "paused":
+        if isinstance(data.get("resume_record"), dict):
+            profile_state = "armed"
+        else:
+            return _implementation_stop("paused", "explicit-resume-required")
+    if profile_state not in IMPLEMENTATION_PROFILE_STATES:
+        return _implementation_stop("paused", "unhandled-profile-state")
+
+    if durable_authorization in IMPLEMENTATION_DURABLE_AUTHORIZATION_FAILURES:
+        return _implementation_stop(profile_state, "authorization-not-persisted")
+    if durable_authorization != "persisted":
+        return _implementation_stop(profile_state, "authorization-not-persisted")
+
+    if phase not in IMPLEMENTATION_PROFILE_PHASES:
+        return _implementation_stop("paused", "unsupported-phase")
+
+    if data.get("authoring_gates") not in {"completed", "manual-plan-review-approved"}:
+        return _implementation_stop(profile_state, "authoring-gates-incomplete")
+    if data.get("plan_review_status") != "approved":
+        return _implementation_stop(profile_state, "plan-review-not-approved")
+    if data.get("plan_review_recording") != "recorded":
+        return _implementation_stop(profile_state, "plan-review-not-recorded")
+    if data.get("plan_synchronized") is not True:
+        return _implementation_stop(profile_state, "plan-not-synchronized")
+    if data.get("milestones_ordered") is not True:
+        return _implementation_stop(profile_state, "milestones-not-ordered")
+    if data.get("test_spec_inputs_complete") is not True:
+        return _implementation_stop(profile_state, "test-spec-inputs-incomplete")
+    if data.get("working_tree_baseline") != "recorded":
+        return _implementation_stop(profile_state, "working-tree-baseline-missing")
+    if data.get("unrelated_dirty_state") not in {"absent", "excluded"}:
+        return _implementation_stop(profile_state, "unrelated-dirty-state")
+    if data.get("required_commands_approved") is not True:
+        return _implementation_stop(profile_state, "commands-not-approved")
+    if data.get("governing_findings_open") is True:
+        return _implementation_stop(profile_state, "governing-findings-open")
+    if data.get("artifact_placement_unambiguous") is not True:
+        return _implementation_stop(profile_state, "artifact-placement-ambiguous")
+    if data.get("workflow_state_synchronized") is not True:
+        return _implementation_stop(profile_state, "workflow-state-unsynchronized")
+
+    if phase == "A":
+        return _implementation_continue("active", "audit-only")
+
+    settlement = data.get("test_spec_settlement")
+    if not _is_settled_test_spec(settlement):
+        return _implementation_stop(profile_state, "test-spec-settlement-incomplete")
+
+    current_stage = data.get("current_stage")
+    if current_stage == "first-code-review-precheck":
+        settled_identities = _settlement_identities(settlement)
+        current_identities = data.get("current_input_identities")
+        if not isinstance(current_identities, dict) or current_identities != settled_identities:
+            return _implementation_stop(profile_state, "settlement-identity-mismatch")
+        route = _next_milestone_route(data.get("milestones"))
+        if route is None:
+            return _implementation_stop(profile_state, "milestone-state-ambiguous")
+        if route.startswith("code-review "):
+            return _implementation_continue("active", route)
+        return _implementation_stop(profile_state, "first-review-not-current-milestone")
+
+    if current_stage == "final-clean-code-review" or _all_milestones_closed(data.get("milestones")):
+        if phase == "B":
+            return _implementation_stop("active", "phase-boundary-explain-change")
+        if not _promotion_evidence_complete(data.get("promotion_evidence")):
+            return _implementation_stop("active", "promotion-evidence-missing")
+        return _implementation_continue("active", "explain-change")
+
+    route = _next_milestone_route(data.get("milestones"))
+    if route is None:
+        return _implementation_stop(profile_state, "milestone-state-ambiguous")
+    return _implementation_continue("active", route)
+
+
+def evaluate_implementation_correction_guardrails(data: dict[str, object]) -> ImplementationAutoprogressionRoute:
+    """Evaluate implementation-profile automatic correction guardrails for fixtures."""
+
+    profile_state = data.get("profile_state")
+    if not isinstance(profile_state, str):
+        profile_state = "active"
+    if data.get("profile") != IMPLEMENTATION_PROFILE:
+        return _implementation_stop(profile_state, "unknown-profile")
+    if profile_state not in {"armed", "active"}:
+        return _implementation_stop(profile_state, "profile-not-active")
+
+    milestone = data.get("milestone")
+    if not isinstance(milestone, str) or not milestone:
+        return _implementation_stop(profile_state, "milestone-missing")
+
+    finding_stop = _correction_findings_stop_reason(data.get("findings"))
+    if finding_stop is not None:
+        return _implementation_stop(profile_state, finding_stop)
+
+    cap = data.get("per_milestone_round_cap", IMPLEMENTATION_CORRECTION_ROUND_CAP)
+    if not isinstance(cap, int) or cap < 0 or cap > IMPLEMENTATION_CORRECTION_ROUND_CAP:
+        return _implementation_stop(profile_state, "round-cap-policy-invalid")
+    rounds_completed = data.get("correction_rounds_completed", 0)
+    if not isinstance(rounds_completed, int) or rounds_completed >= cap:
+        return _implementation_stop(profile_state, "correction-round-cap-exceeded")
+    activation_count = data.get("activation_round_count")
+    activation_ceiling = data.get("activation_round_ceiling")
+    if isinstance(activation_count, int) and isinstance(activation_ceiling, int) and activation_count >= activation_ceiling:
+        return _implementation_stop(profile_state, "activation-round-ceiling-exceeded")
+
+    previous = _finding_identity_set(data.get("previous_unresolved_findings"))
+    current = _finding_identity_set(data.get("current_unresolved_findings"))
+    if previous is None or current is None:
+        return _implementation_stop(profile_state, "finding-set-invalid")
+    if not current.issubset(previous):
+        return _implementation_stop(profile_state, "new-finding-introduced")
+    if len(current) >= len(previous):
+        return _implementation_stop(profile_state, "findings-not-shrinking")
+
+    declared_paths, declared_path_stop = _reviewer_declared_affected_paths(data.get("findings"))
+    if declared_path_stop is not None:
+        return _implementation_stop(profile_state, declared_path_stop)
+    if declared_paths is None:
+        return _implementation_stop(profile_state, "affected-paths-invalid")
+    top_level_paths = data.get("affected_paths")
+    if top_level_paths is not None:
+        top_level_path_set = _string_set(top_level_paths)
+        if top_level_path_set is None:
+            return _implementation_stop(profile_state, "affected-paths-invalid")
+        if top_level_path_set != declared_paths:
+            return _implementation_stop(profile_state, "correction-affected-paths-disagree-with-findings")
+
+    allowed_paths = set(declared_paths)
+    for key in ("approved_generated_paths", "workflow_projection_paths", "evidence_record_paths"):
+        extra_paths = _string_set(data.get(key))
+        if extra_paths is None:
+            return _implementation_stop(profile_state, "affected-paths-invalid")
+        allowed_paths.update(extra_paths)
+    changed_paths = _string_set(data.get("changed_paths"))
+    if changed_paths is None or not changed_paths.issubset(allowed_paths):
+        return _implementation_stop(profile_state, "correction-path-out-of-scope")
+
+    if data.get("substantive_governing_artifact_edit") is True:
+        return _implementation_stop(profile_state, "governing-artifact-edit")
+    scope_expansions = data.get("scope_expansions")
+    if isinstance(scope_expansions, list) and scope_expansions:
+        return _implementation_stop(profile_state, "scope-budget-expanded")
+    if not isinstance(scope_expansions, list):
+        return _implementation_stop(profile_state, "scope-budget-invalid")
+
+    commands = _string_set(data.get("commands"))
+    approved_commands = _string_set(data.get("approved_commands"))
+    if commands is None or approved_commands is None or not commands.issubset(approved_commands):
+        return _implementation_stop(profile_state, "unapproved-command")
+
+    if data.get("ci_maintenance") is True:
+        if data.get("ci_files_enumerated") is not True:
+            return _implementation_stop(profile_state, "ci-files-not-enumerated")
+        deny_hits = data.get("ci_deny_list_hits")
+        if not isinstance(deny_hits, list) or deny_hits:
+            return _implementation_stop(profile_state, "ci-deny-list-hit")
+
+    if data.get("audit_recorded") is not True:
+        return _implementation_stop(profile_state, "audit-record-missing")
+
+    return _implementation_continue(profile_state, f"code-review {milestone}")
+
+
+def _correction_findings_stop_reason(findings: object) -> str | None:
+    if not isinstance(findings, list) or not findings:
+        return "finding-set-invalid"
+    for finding in findings:
+        if not isinstance(finding, dict):
+            return "finding-set-invalid"
+        if _is_resolved_finding(finding):
+            continue
+        auto_fix_class = finding.get("auto_fix_class")
+        if _is_empty_required_value(auto_fix_class) or auto_fix_class == "none":
+            return "correction-finding-unclassified"
+        if auto_fix_class not in AUTO_FIX_CLASSES:
+            return "correction-finding-unknown-class"
+        if auto_fix_class == "mechanical":
+            for field in MECHANICAL_REQUIRED_FIELDS:
+                if _is_empty_required_value(finding.get(field)):
+                    return f"correction-finding-missing-{field.replace('_', '-')}"
+            if finding.get("auto_fix_kind") not in MECHANICAL_AUTO_FIX_KINDS:
+                return "correction-finding-unsupported-auto-fix-kind"
+        if auto_fix_class == "declared-safe":
+            for field in DECLARED_SAFE_REQUIRED_FIELDS:
+                if _is_empty_required_value(finding.get(field)):
+                    return f"correction-finding-missing-{field.replace('_', '-')}"
+    return None
+
+
+def _reviewer_declared_affected_paths(findings: object) -> tuple[set[str] | None, str | None]:
+    if not isinstance(findings, list) or not findings:
+        return None, "finding-set-invalid"
+    declared_paths: set[str] = set()
+    for finding in findings:
+        if not isinstance(finding, dict):
+            return None, "finding-set-invalid"
+        if _is_resolved_finding(finding):
+            continue
+        affected_paths = _string_set(finding.get("affected_paths"))
+        if not affected_paths:
+            return None, "correction-finding-missing-affected-paths"
+        declared_paths.update(affected_paths)
+    if not declared_paths:
+        return None, "correction-finding-missing-affected-paths"
+    return declared_paths, None
+
+
+def _is_resolved_finding(finding: dict[str, object]) -> bool:
+    return finding.get("status") in {"resolved", "closed"}
+
+
+def _is_empty_required_value(value: object) -> bool:
+    if value is None:
+        return True
+    if isinstance(value, str):
+        return not value.strip()
+    if isinstance(value, (list, dict, set, tuple)):
+        return not value or any(
+            isinstance(item, str) and not item.strip()
+            for item in value
+        )
+    return False
+
+
+def _finding_identity_set(value: object) -> set[tuple[str, str]] | None:
+    if not isinstance(value, list):
+        return None
+    identities: set[tuple[str, str]] = set()
+    for item in value:
+        if not isinstance(item, dict):
+            return None
+        finding_id = item.get("id")
+        finding_class = item.get("class")
+        if not isinstance(finding_id, str) or not isinstance(finding_class, str):
+            return None
+        identities.add((finding_id, finding_class))
+    return identities
+
+
+def _string_set(value: object) -> set[str] | None:
+    if not isinstance(value, list):
+        return None
+    result: set[str] = set()
+    for item in value:
+        if not isinstance(item, str) or not item:
+            return None
+        result.add(item)
+    return result
+
+
+def _nonempty_string_list(value: object) -> bool:
+    return isinstance(value, list) and bool(value) and all(isinstance(item, str) and item for item in value)
 
 
 def _field_values_in_status(text: str, label: str) -> tuple[list[str], list[str]]:

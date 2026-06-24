@@ -26,6 +26,10 @@ COMPACT_ARTIFACT_PATH_VAR_KEYS = {
     "verify",
     "pr",
 }
+AUTOPROGRESSION_NAMED_RECORDS = (
+    "authoring_through_plan_review",
+    "implementation_through_verify",
+)
 
 
 class QueryShapeError(Exception):
@@ -333,10 +337,31 @@ def profile_policy(
         "policy_owner": "change-metadata",
         "detail_pointer": f"{repo_relative(metadata_path, repo_root)}#workflow.autoprogression",
     }
-    for field in ("profile", "authorized_by", "authorized_at", "change_id"):
-        value = autoprogression.get(field)
-        if isinstance(value, str):
-            policy[field] = value
+    if isinstance(autoprogression.get("profile"), str):
+        for field in ("profile", "authorized_by", "authorized_at", "change_id"):
+            value = autoprogression.get(field)
+            if isinstance(value, str):
+                policy[field] = value
+        return policy
+
+    records: dict[str, dict[str, Any]] = {}
+    for record_key in AUTOPROGRESSION_NAMED_RECORDS:
+        record = autoprogression.get(record_key)
+        if not isinstance(record, dict):
+            continue
+        record_policy: dict[str, Any] = {
+            "detail_pointer": (
+                f"{repo_relative(metadata_path, repo_root)}"
+                f"#workflow.autoprogression.{record_key}"
+            )
+        }
+        for field in ("profile", "phase", "state", "authorized_by", "authorized_at", "change_id"):
+            value = record.get(field)
+            if isinstance(value, str):
+                record_policy[field] = value
+        records[record_key] = record_policy
+    if records:
+        policy["records"] = records
     return policy
 
 

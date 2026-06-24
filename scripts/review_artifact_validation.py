@@ -58,8 +58,20 @@ RECONSTRUCTED_REQUIRED_FIELDS = (
     "Loss of fidelity",
 )
 ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
-FIELD_PATTERN = re.compile(r"^\s*(?P<label>[A-Za-z][A-Za-z0-9 /-]*):\s*(?P<value>.*)$")
+FIELD_PATTERN = re.compile(r"^\s*(?P<label>[A-Za-z][A-Za-z0-9 _/-]*):\s*(?P<value>.*)$")
 REVIEW_RESOLUTION_HEADING_PATTERN = re.compile(r"^\s{0,3}###\s+(?P<review_id>[A-Za-z0-9][A-Za-z0-9._-]*)\s*$")
+AUTO_FIX_CLASSES = frozenset({"none", "mechanical", "declared-safe"})
+MECHANICAL_AUTO_FIX_KINDS = frozenset(
+    {
+        "formatter-output",
+        "lint-autofix",
+        "generated-output-refresh",
+        "exact-approved-rename",
+        "unique-required-field-value",
+        "mechanical-state-projection-sync",
+        "deterministic-manifest-regeneration",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -87,6 +99,7 @@ class FindingRecord:
     line: int
     review_id: str
     finding_id: str
+    fields: dict[str, tuple[FieldValue, ...]]
 
 
 @dataclass(frozen=True)
@@ -392,8 +405,9 @@ def _parse_review_file(
 
     record_mode_field = _first_nonempty(fields, "Record mode")
     record_mode = record_mode_field.value if record_mode_field else None
-    finding_records = _parse_finding_records(path, review_id, fields, mode, findings)
+    finding_records = _parse_finding_records(path, review_id, lines, mode, findings)
     _validate_clean_receipt_review_fields(path, review_id, fields, mode, findings)
+    _validate_implementation_profile_finding_fields(path, review_id, fields, finding_records, mode, findings)
 
     if record_mode == "reconstructed":
         _validate_reconstructed_record(path, review_id, fields, finding_records, mode, findings)
@@ -431,12 +445,32 @@ def _parse_review_file(
 def _parse_finding_records(
     path: Path,
     review_id: str,
-    fields: dict[str, list[FieldValue]],
+    lines: list[str],
     mode: str,
     findings: list[ValidationFinding],
 ) -> list[FindingRecord]:
     records: list[FindingRecord] = []
-    for finding_id_field in fields.get("Finding ID", []):
+    entry_starts = [
+        index
+        for index, line in enumerate(lines)
+        if _label_from_line(line) == "Finding ID"
+    ]
+    for position, start in enumerate(entry_starts):
+        end = entry_starts[position + 1] if position + 1 < len(entry_starts) else len(lines)
+        block_fields = _collect_fields(lines[start:end], start_line=start + 1)
+        finding_id_values = block_fields.get("Finding ID", [])
+        if len(finding_id_values) != 1:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=start + 1,
+                    mode=mode,
+                    message="finding block must contain exactly one Finding ID",
+                    review_id=review_id,
+                )
+            )
+            continue
+        finding_id_field = finding_id_values[0]
         finding_id = finding_id_field.value
         if not _is_stable_identifier(finding_id):
             findings.append(
@@ -456,9 +490,135 @@ def _parse_finding_records(
                 line=finding_id_field.line,
                 review_id=review_id,
                 finding_id=finding_id,
+                fields={label: tuple(values) for label, values in block_fields.items()},
             )
         )
     return records
+
+
+def _validate_implementation_profile_finding_fields(
+    path: Path,
+    review_id: str,
+    file_fields: dict[str, list[FieldValue]],
+    finding_records: list[FindingRecord],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    stage = _first_nonempty(file_fields, "Stage")
+    if stage is None or stage.value != "code-review":
+        return
+    profile = _first_nonempty(file_fields, "Autoprogression profile")
+    if profile is None:
+        profile = _first_nonempty(file_fields, "Implementation profile")
+    if profile is None or profile.value != "implementation-through-verify":
+        return
+
+    for record in finding_records:
+        auto_fix_class = _finding_field(record, "auto_fix_class")
+        if auto_fix_class is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=record.line,
+                    mode=mode,
+                    message="implementation-profile code-review finding missing auto_fix_class",
+                    review_id=review_id,
+                    finding_id=record.finding_id,
+                )
+            )
+            continue
+        if auto_fix_class.value not in AUTO_FIX_CLASSES:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=auto_fix_class.line,
+                    mode=mode,
+                    message=f"unsupported auto_fix_class '{auto_fix_class.value}'",
+                    review_id=review_id,
+                    finding_id=record.finding_id,
+                )
+            )
+            continue
+        if auto_fix_class.value == "mechanical":
+            _validate_mechanical_auto_fix(path, review_id, record, mode, findings)
+        if auto_fix_class.value == "declared-safe":
+            _validate_declared_safe_auto_fix(path, review_id, record, mode, findings)
+
+
+def _validate_mechanical_auto_fix(
+    path: Path,
+    review_id: str,
+    record: FindingRecord,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    for label in ("auto_fix_kind", "affected_paths", "deterministic_authority", "required_validation"):
+        if _finding_field(record, label) is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=record.line,
+                    mode=mode,
+                    message=f"mechanical auto-fix missing {label}",
+                    review_id=review_id,
+                    finding_id=record.finding_id,
+                )
+            )
+    kind = _finding_field(record, "auto_fix_kind")
+    if kind is not None and kind.value not in MECHANICAL_AUTO_FIX_KINDS:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=kind.line,
+                mode=mode,
+                message=f"unsupported auto_fix_kind '{kind.value}'",
+                review_id=review_id,
+                finding_id=record.finding_id,
+            )
+        )
+
+
+def _validate_declared_safe_auto_fix(
+    path: Path,
+    review_id: str,
+    record: FindingRecord,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    for label in (
+        "affected_paths",
+        "resolution_recipe",
+        "named_inputs",
+        "named_outputs",
+        "forbidden_paths",
+        "acceptance_criteria",
+        "required_validation_commands",
+        "scope_preservation_rule",
+    ):
+        if _finding_field(record, label) is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=record.line,
+                    mode=mode,
+                    message=f"declared-safe auto-fix missing {label}",
+                    review_id=review_id,
+                    finding_id=record.finding_id,
+                )
+            )
+    production_change = _finding_field(record, "production_code_change")
+    if production_change is not None and production_change.value.lower() == "yes":
+        if _finding_field(record, "behavior_test") is None and _finding_field(record, "test_spec_mapping") is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=production_change.line,
+                    mode=mode,
+                    message="declared-safe production-code change missing behavior proof",
+                    review_id=review_id,
+                    finding_id=record.finding_id,
+                )
+            )
 
 
 def _validate_clean_receipt_review_fields(
@@ -1649,6 +1809,13 @@ def _label_from_line(line: str) -> str | None:
 
 def _first_nonempty(fields: dict[str, list[FieldValue]], label: str) -> FieldValue | None:
     for value in fields.get(label, []):
+        if value.value:
+            return value
+    return None
+
+
+def _finding_field(record: FindingRecord, label: str) -> FieldValue | None:
+    for value in record.fields.get(label, ()):
         if value.value:
             return value
     return None

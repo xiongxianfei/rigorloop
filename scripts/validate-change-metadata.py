@@ -136,13 +136,23 @@ COMPACT_SECRET_VALUE_RE = re.compile(
 )
 COMPACT_HOME_PATH_TOKEN_RE = re.compile(r"(?:^|\s)(?:~|\$HOME|\$\{HOME\})(?:[/\\]|$)")
 COMPACT_WINDOWS_ABSOLUTE_PATH_RE = re.compile(r"(?:^|\s)[A-Za-z]:[\\/]")
-AUTOPROGRESSION_PROFILES = {"off", "authoring-through-plan-review"}
+AUTOPROGRESSION_PROFILES = {"off", "authoring-through-plan-review", "implementation-through-verify"}
+AUTOPROGRESSION_NAMED_RECORDS = {
+    "authoring_through_plan_review": "authoring-through-plan-review",
+    "implementation_through_verify": "implementation-through-verify",
+}
 AUTOPROGRESSION_REQUIRED_FIELDS = {
     "profile",
     "authorized_by",
     "authorized_at",
     "change_id",
 }
+AUTOPROGRESSION_IMPLEMENTATION_REQUIRED_FIELDS = AUTOPROGRESSION_REQUIRED_FIELDS | {
+    "phase",
+    "state",
+}
+AUTOPROGRESSION_PHASES = {"A", "B", "C"}
+AUTOPROGRESSION_STATES = {"off", "armed", "active", "paused", "completed", "cancelled"}
 AUTOPROGRESSION_FORBIDDEN_LIVE_STATE_FIELDS = {
     "current_stage",
     "next_stage",
@@ -496,54 +506,138 @@ def validate_autoprogression_policy(data: dict[str, Any]) -> list[str]:
     if not isinstance(autoprogression, dict):
         return ["workflow.autoprogression: expected object"]
 
+    if "profile" not in autoprogression and any(
+        key in autoprogression for key in AUTOPROGRESSION_NAMED_RECORDS
+    ):
+        errors: list[str] = reject_autoprogression_live_state_fields(
+            autoprogression,
+            "workflow.autoprogression",
+        )
+        for key, expected_profile in sorted(AUTOPROGRESSION_NAMED_RECORDS.items()):
+            record = autoprogression.get(key)
+            if record is None:
+                continue
+            path = f"workflow.autoprogression.{key}"
+            if not isinstance(record, dict):
+                errors.append(f"{path}: expected object")
+                continue
+            errors.extend(
+                validate_autoprogression_record(
+                    record,
+                    path=path,
+                    top_level_change_id=data.get("change_id"),
+                    expected_profile=expected_profile,
+                    require_implementation_fields=expected_profile == "implementation-through-verify",
+                )
+            )
+        return errors
+
+    return validate_autoprogression_record(
+        autoprogression,
+        path="workflow.autoprogression",
+        top_level_change_id=data.get("change_id"),
+        expected_profile=None,
+        require_implementation_fields=False,
+    )
+
+
+def reject_autoprogression_live_state_fields(
+    container: dict[str, Any],
+    path: str,
+) -> list[str]:
     errors: list[str] = []
-    for field in sorted(AUTOPROGRESSION_REQUIRED_FIELDS):
+    for field in sorted(AUTOPROGRESSION_FORBIDDEN_LIVE_STATE_FIELDS):
+        if field in container:
+            errors.append(
+                f"{path}.{field}: profile policy must not own live workflow state"
+            )
+    return errors
+
+
+def validate_autoprogression_record(
+    autoprogression: dict[str, Any],
+    *,
+    path: str,
+    top_level_change_id: Any,
+    expected_profile: str | None,
+    require_implementation_fields: bool,
+) -> list[str]:
+    errors: list[str] = []
+    required_fields = (
+        AUTOPROGRESSION_IMPLEMENTATION_REQUIRED_FIELDS
+        if require_implementation_fields
+        else AUTOPROGRESSION_REQUIRED_FIELDS
+    )
+    for field in sorted(required_fields):
         if field not in autoprogression:
-            errors.append(f"workflow.autoprogression.{field}: missing required field")
+            errors.append(f"{path}.{field}: missing required field")
 
     profile = autoprogression.get("profile")
+    if expected_profile is not None and "profile" in autoprogression and profile != expected_profile:
+        errors.append(f"{path}.profile: expected {expected_profile}")
     if "profile" in autoprogression and profile not in AUTOPROGRESSION_PROFILES:
         allowed = ", ".join(sorted(AUTOPROGRESSION_PROFILES))
-        errors.append(f"workflow.autoprogression.profile: expected one of: {allowed}")
+        errors.append(f"{path}.profile: expected one of: {allowed}")
 
-    for field in ("authorized_by", "change_id"):
+    for field in ("authorized_by", "change_id", "activation_baseline"):
         if field in autoprogression and not is_nonempty_string(autoprogression[field]):
-            errors.append(f"workflow.autoprogression.{field}: expected string")
+            errors.append(f"{path}.{field}: expected string")
 
     authorized_at = autoprogression.get("authorized_at")
     if "authorized_at" in autoprogression and (
         not isinstance(authorized_at, str) or RFC3339_UTC_RE.fullmatch(authorized_at) is None
     ):
-        errors.append("workflow.autoprogression.authorized_at: expected RFC3339 UTC timestamp")
+        errors.append(f"{path}.authorized_at: expected RFC3339 UTC timestamp")
 
-    top_level_change_id = data.get("change_id")
+    state = autoprogression.get("state")
+    if "state" in autoprogression and state not in AUTOPROGRESSION_STATES:
+        allowed = ", ".join(sorted(AUTOPROGRESSION_STATES))
+        errors.append(f"{path}.state: expected one of: {allowed}")
+
+    phase = autoprogression.get("phase")
+    if "phase" in autoprogression and phase not in AUTOPROGRESSION_PHASES:
+        allowed = ", ".join(sorted(AUTOPROGRESSION_PHASES))
+        errors.append(f"{path}.phase: expected one of: {allowed}")
+
     policy_change_id = autoprogression.get("change_id")
     if (
         isinstance(top_level_change_id, str)
         and isinstance(policy_change_id, str)
         and policy_change_id != top_level_change_id
     ):
-        errors.append("workflow.autoprogression.change_id: must match top-level change_id")
+        errors.append(f"{path}.change_id: must match top-level change_id")
 
     if autoprogression.get("session_intent") is True:
         errors.append(
-            "workflow.autoprogression.session_intent: session-only arming is not durable authorization"
+            f"{path}.session_intent: session-only arming is not durable authorization"
         )
 
     persistence_status = autoprogression.get("persistence_status")
     if persistence_status is not None and persistence_status != "persisted":
-        errors.append("workflow.autoprogression.persistence_status: authorization-not-persisted")
+        errors.append(f"{path}.persistence_status: authorization-not-persisted")
 
     if "fallback_policy_path" in autoprogression:
         errors.append(
-            "workflow.autoprogression.fallback_policy_path: fallback is only valid when change metadata rejects policy data"
+            f"{path}.fallback_policy_path: fallback is only valid when change metadata rejects policy data"
         )
 
-    for field in sorted(AUTOPROGRESSION_FORBIDDEN_LIVE_STATE_FIELDS):
-        if field in autoprogression:
-            errors.append(
-                f"workflow.autoprogression.{field}: profile policy must not own live workflow state"
-            )
+    errors.extend(reject_autoprogression_live_state_fields(autoprogression, path))
+
+    cancellation = autoprogression.get("cancellation")
+    if state == "cancelled" and not isinstance(cancellation, dict):
+        errors.append(f"{path}.cancellation: required when state is cancelled")
+    if cancellation is not None:
+        if not isinstance(cancellation, dict):
+            errors.append(f"{path}.cancellation: expected object")
+        else:
+            cancelled_by = cancellation.get("cancelled_by")
+            if "cancelled_by" in cancellation and not is_nonempty_string(cancelled_by):
+                errors.append(f"{path}.cancellation.cancelled_by: expected string")
+            cancelled_at = cancellation.get("cancelled_at")
+            if "cancelled_at" in cancellation and (
+                not isinstance(cancelled_at, str) or RFC3339_UTC_RE.fullmatch(cancelled_at) is None
+            ):
+                errors.append(f"{path}.cancellation.cancelled_at: expected RFC3339 UTC timestamp")
 
     return errors
 
@@ -1823,9 +1917,8 @@ def validate_file(path: Path) -> list[str]:
         return validate_compact_metadata_semantics(data)
     schema = load_schema()
     schema_errors = validate_against_schema(schema, data)
-    if schema_errors:
-        return schema_errors
-    return validate_metadata_semantics(data, path)
+    semantic_errors = validate_metadata_semantics(data, path)
+    return [*schema_errors, *semantic_errors]
 
 
 def main(argv: list[str]) -> int:
