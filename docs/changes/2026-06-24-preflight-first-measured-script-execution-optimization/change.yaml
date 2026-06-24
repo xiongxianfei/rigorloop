@@ -88,6 +88,14 @@ validation:
     result: pass_selected_checks_focused_phase_total_130_47s
   - command: bash scripts/ci.sh --mode explicit --timeout 180 --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/verify-report.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml --path docs/plans/2026-06-24-preflight-first-measured-script-execution-optimization.md --path docs/plan.md
     result: pass_post_verify_selected_checks
+  - command: python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/ci.sh --path scripts/test-select-validation.py --json
+    result: baseline_selector_explicit_cold_1_10s_warm_0_68s
+  - command: python -X importtime scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/ci.sh --path scripts/test-select-validation.py --json
+    result: baseline_importtime_validation_selection_cumulative_23914us
+  - command: python scripts/test-select-validation.py -k preflight
+    result: baseline_preflight_regression_slice_pass_2_tests_0_17s
+  - command: bash scripts/ci.sh --mode explicit --timeout 180 --path current-pr-diff-paths
+    result: baseline_selected_ci_current_pr_diff_pass_wall_130_51s_focused_129_36s
 review:
   status: approved
   unresolved_items: 0
@@ -114,6 +122,7 @@ changed_files:
   - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/code-review-m5-r1.md
   - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/explain-change.md
   - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/verify-report.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/script-performance-baseline.yaml
   - scripts/validation_selection.py
   - scripts/select-validation.py
   - scripts/ci.sh

@@ -1,0 +1,176 @@
+change_id: 2026-06-24-preflight-first-measured-script-execution-optimization
+report: script-performance-baseline
+status: baseline-recorded
+measured_at: "2026-06-24T14:11:02-07:00"
+measured_by: Codex
+measurement_context:
+  branch: proposal/preflight-first-script-execution-optimization
+  repository_state: current branch state before adding this baseline report
+  operating_system: "Linux 6.6.87.2-microsoft-standard-WSL2 x86_64"
+  python: "Python 3.12.3"
+  timing_tool: "/usr/bin/time"
+  import_timing_tool: "python -X importtime"
+  subprocess_count_tool: unavailable
+  subprocess_count_tool_reason: "strace is not installed in this environment"
+  hosted_ci_observed: false
+  notes:
+    - "This is a local baseline, not a performance budget."
+    - "Timings are single-run measurements unless a cold/warm pair is explicitly recorded."
+    - "Detailed sidecar retention and cross-machine performance budgets remain follow-up work."
+
+scenarios:
+  selector_explicit_pr_surface:
+    purpose: "Measure selector startup, preflight, and selected-check calculation for the script surface changed by this proposal."
+    command: "python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/ci.sh --path scripts/test-select-validation.py --json"
+    cold:
+      result: pass
+      elapsed_seconds: 1.10
+      user_seconds: 0.05
+      sys_seconds: 0.18
+      max_rss_kb: 15744
+    warm:
+      result: pass
+      elapsed_seconds: 0.68
+      user_seconds: 0.04
+      sys_seconds: 0.14
+      max_rss_kb: 15936
+    selector_result:
+      status: ok
+      preflight_results:
+        - check: unmerged_paths
+          result: pass
+        - check: tracked_authoritative_artifacts
+          result: pass
+      selected_checks:
+        - selector.regression
+      phases:
+        - focused
+      cache_statuses:
+        - not-applicable
+
+  selector_import_time:
+    purpose: "Separate Python import/startup overhead from selected-check execution."
+    command: "python -X importtime scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/ci.sh --path scripts/test-select-validation.py --json"
+    result: pass
+    importtime_lines: 111
+    notable_imports:
+      - module: validation_selection
+        self_us: 8094
+        cumulative_us: 23914
+      - module: subprocess
+        self_us: 767
+        cumulative_us: 4220
+      - module: dataclasses
+        self_us: 879
+        cumulative_us: 7308
+      - module: typing
+        self_us: 2352
+        cumulative_us: 2382
+      - module: shutil
+        self_us: 832
+        cumulative_us: 3607
+    raw_output_location: "/tmp/rigorloop-selector-importtime.txt"
+    retention: "temporary local file; not committed"
+
+  preflight_regression_slice:
+    purpose: "Measure focused preflight tests that exercise tracked and untracked authoritative artifact behavior."
+    command: "python scripts/test-select-validation.py -k preflight"
+    result: pass
+    tests: 2
+    elapsed_seconds: 0.17
+    user_seconds: 0.08
+    sys_seconds: 0.03
+    max_rss_kb: 23424
+
+  selected_ci_current_pr_diff:
+    purpose: "Measure the representative selected-CI bundle for this PR's changed surface."
+    command: "bash scripts/ci.sh --mode explicit --timeout 180 --path <current-pr-diff-paths>"
+    result: pass
+    wall_elapsed_seconds: 130.51
+    user_seconds: 9.48
+    sys_seconds: 20.94
+    max_rss_kb: 25584
+    selector_status: ok
+    preflight_results:
+      - check: unmerged_paths
+        result: pass
+      - check: tracked_authoritative_artifacts
+        result: pass
+    selected_checks:
+      - check_id: review_artifacts.validate
+        phase: focused
+        result: pass
+        elapsed_seconds: 0.08
+      - check_id: artifact_lifecycle.validate
+        phase: focused
+        result: pass
+        elapsed_seconds: 1.10
+      - check_id: change_metadata.regression
+        phase: focused
+        result: pass
+        elapsed_seconds: 8.46
+      - check_id: change_metadata.validate
+        phase: focused
+        result: pass
+        elapsed_seconds: 0.10
+      - check_id: guide_system.validate
+        phase: focused
+        result: pass
+        elapsed_seconds: 0.13
+      - check_id: selector.regression
+        phase: focused
+        result: pass
+        elapsed_seconds: 119.50
+    phase_timing_summary:
+      focused_seconds: 129.36
+    slowest_checks:
+      - check_id: selector.regression
+        elapsed_seconds: 119.50
+      - check_id: change_metadata.regression
+        elapsed_seconds: 8.46
+      - check_id: artifact_lifecycle.validate
+        elapsed_seconds: 1.10
+
+counter_observations:
+  git_inspection_calls:
+    status: unavailable
+    reason: "No syscall/subprocess tracing tool is available in this environment; counts would be guessed."
+  subprocess_launches:
+    status: unavailable
+    reason: "No syscall/subprocess tracing tool is available in this environment; counts would be guessed."
+  filesystem_files_or_bytes_inspected:
+    status: unavailable
+    reason: "The current scripts do not emit this telemetry."
+  peak_memory:
+    status: partially-measured
+    source: "/usr/bin/time max_rss_kb per measured command"
+
+baseline_findings:
+  - id: PERF-BASE-001
+    finding: "The representative selected-CI bundle is dominated by selector.regression."
+    evidence: "selector.regression took 119.50s of 129.36s focused selected-check time."
+    implication: "Future optimization should inspect selector regression runtime before adding concurrency or caching."
+  - id: PERF-BASE-002
+    finding: "Selector selection itself is sub-second warm and 1.10s cold for the measured script surface."
+    evidence: "selector_explicit_pr_surface cold elapsed 1.10s; warm elapsed 0.68s."
+    implication: "The expensive path in the measured PR-diff run is validation execution, not selector calculation."
+  - id: PERF-BASE-003
+    finding: "Import overhead for validation_selection is visible but small relative to selected-CI execution."
+    evidence: "validation_selection cumulative import time was 23914us in the importtime run."
+    implication: "Interpreter/import optimization is unlikely to dominate this representative selected-CI scenario."
+  - id: PERF-BASE-004
+    finding: "Preflight regression tests are cheap in isolation."
+    evidence: "python scripts/test-select-validation.py -k preflight passed 2 tests in 0.17s wall time."
+    implication: "Cheap preflight behavior is suitable as an early gate, but broader selected-CI runtime remains dominated by regression checks."
+
+deferred_measurements:
+  - "Repeated-run medians across at least three cold and warm runs."
+  - "Subprocess and Git-inspection counts using an available tracing mechanism."
+  - "Filesystem files/bytes inspected."
+  - "Detailed timing sidecar retention policy and long-term storage format."
+  - "Comparison against a pre-optimization revision."
+  - "Hosted CI timing and cross-machine variance."
+
+budget_policy:
+  hard_thresholds_enabled: false
+  rationale: "The accepted proposal and spec require baselines and warnings before hard performance gates."
