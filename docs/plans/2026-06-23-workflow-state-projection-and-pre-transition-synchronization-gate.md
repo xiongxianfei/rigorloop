@@ -8,7 +8,7 @@ Terminal disposition: none
 - Change ID: 2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
 - Owner: agent
 - Start date: 2026-06-23
-- Last updated: 2026-06-23
+- Last updated: 2026-06-24
 - Related issue or PR: none yet
 - Supersedes: none
 
@@ -82,9 +82,9 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m5-r1.md
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — Explain-change is complete; verify and PR handoff remain.
+- Reason final closeout is or is not ready: pr-handoff-pending — Verify is complete and PR handoff remains.
 
 ## Milestones
 
@@ -329,6 +329,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: M5 recorded behavior-preservation evidence, confirmed the whole-slice transition proof through the full lifecycle/review/metadata validation set, and is ready for code-review.
 - 2026-06-23: Code-review M5 R1 approved the behavior-preservation and closeout evidence with no material findings; all implementation milestones are closed and the next stage is explain-change.
 - 2026-06-23: Explain-change recorded durable rationale for the branch diff and routes the workflow to verify; branch readiness and PR readiness are not claimed.
+- 2026-06-24: Verify first found a selected-CI routing blocker for `scripts/lifecycle_state_sync.py`; CI-maintenance routed that path through artifact-lifecycle regression coverage, PR-mode selected CI and broad smoke passed, and the next stage is pr.
 
 ## Decision log
 
@@ -383,6 +384,10 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md` passed after M5 handoff state-sync.
 - 2026-06-23: `git diff --check HEAD^ HEAD`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/test-change-metadata-validator.py`, focused explicit-path lifecycle validation, review artifact validation, change metadata validation, and the all-active audit passed during code-review M5 R1.
 - 2026-06-23: `git diff --check -- docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/plan.md`, change metadata validation, review artifact structure and closeout validation, focused explicit-path lifecycle validation, and the all-active audit passed after explain-change.
+- 2026-06-24: `python scripts/test-select-validation.py -k first_slice_representative_categories_route_or_block_safely`, `python scripts/test-select-validation.py`, and `python scripts/select-validation.py --mode explicit --path scripts/lifecycle_state_sync.py` passed after routing `scripts/lifecycle_state_sync.py` through artifact-lifecycle regression coverage.
+- 2026-06-24: `bash scripts/ci.sh --mode pr --base 550d47e7088e593fa2fc09e6788c26dfa9c0c50a --head HEAD` passed after the selected-CI routing fix.
+- 2026-06-24: `bash scripts/ci.sh --mode broad-smoke` passed with 12 checks on final HEAD.
+- 2026-06-24: Review closeout validation, change metadata validation, focused explicit-path lifecycle validation, all-active lifecycle audit, and `git diff --check` passed during verify.
 - 2026-06-23: Code-review M2 R1 found no material findings in commit `8e786154`; review evidence and lifecycle handoff now route to implement M3.
 - 2026-06-23: `python scripts/test-artifact-lifecycle-validator.py -k open_review` failed before M3 implementation for open review findings with `review-requested` owner state, then passed after implementation.
 - 2026-06-23: `python scripts/test-change-metadata-validator.py -k review_summary` failed before M3 implementation for review count drift and next-stage-like metadata, then passed after implementation.

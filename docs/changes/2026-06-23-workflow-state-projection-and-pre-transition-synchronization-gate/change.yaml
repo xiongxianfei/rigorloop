@@ -62,6 +62,8 @@ tests:
   - M5 records behavior-preservation evidence and proves the whole workflow-state synchronization slice with the full lifecycle, review-artifact, and change-metadata validation set before code-review M5.
   - Code-review M5 R1 approves the behavior-preservation and closeout evidence with no material findings and closes the implementation milestone set.
   - Explain-change is recorded before final verify and does not claim branch readiness or PR readiness.
+  - Verify routes every changed path through selected CI, including workflow-state synchronization helpers.
+  - Final verify passes PR-mode selected CI, broad smoke, review closeout validation, change metadata validation, focused lifecycle validation, and all-active lifecycle audit before PR handoff.
 validation:
   - command: git diff --check -- docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md specs/single-source-of-workflow-state.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
     result: pass
@@ -387,6 +389,26 @@ validation:
     result: pass_after_explain_change
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
     result: pass_after_explain_change
+  - command: python scripts/test-select-validation.py -k first_slice_representative_categories_route_or_block_safely
+    result: pass_after_verify_selector_routing_fix
+  - command: python scripts/test-select-validation.py
+    result: pass_after_verify_selector_routing_fix
+  - command: python scripts/select-validation.py --mode explicit --path scripts/lifecycle_state_sync.py
+    result: pass_after_verify_selector_routing_fix
+  - command: bash scripts/ci.sh --mode pr --base 550d47e7088e593fa2fc09e6788c26dfa9c0c50a --head HEAD
+    result: pass_during_verify
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_during_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/
+    result: pass_during_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_during_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md --path docs/architecture/system/architecture.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-log.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/review-resolution.md --path docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/explain-change.md
+    result: pass_during_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md --path docs/plans/2026-06-23-evidence-bound-incremental-project-map.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+    result: pass_during_verify
+  - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/plan.md docs/plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/change.yaml
+    result: pass_during_verify
 changed_files:
   - docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md
   - specs/single-source-of-workflow-state.md
@@ -396,7 +418,9 @@ changed_files:
   - scripts/test-artifact-lifecycle-validator.py
   - scripts/review_artifact_validation.py
   - scripts/validate-change-metadata.py
+  - scripts/validation_selection.py
   - scripts/test-change-metadata-validator.py
+  - scripts/test-select-validation.py
   - scripts/test-skill-validator.py
   - docs/architecture/system/architecture.md
   - docs/workflows.md
