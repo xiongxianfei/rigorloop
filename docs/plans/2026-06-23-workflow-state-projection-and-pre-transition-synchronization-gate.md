@@ -2,8 +2,8 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Change ID: 2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate
 - Owner: agent
@@ -82,9 +82,9 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - Latest review evidence: docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/code-review-m5-r1.md
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: external-completion-event-pending — PR #103 is open; hosted CI and human review remain.
+- Next stage: none
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — PR #103 merged after hosted CI success on 2026-06-24. No downstream lifecycle stage remains for this initiative.
 
 ## Milestones
 
@@ -332,6 +332,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-24: Verify first found a selected-CI routing blocker for `scripts/lifecycle_state_sync.py`; CI-maintenance routed that path through artifact-lifecycle regression coverage, PR-mode selected CI and broad smoke passed, and the next stage is pr.
 - 2026-06-24: PR handoff started after verify; lifecycle state now routes to hosted CI and human review.
 - 2026-06-24: PR #103 opened for hosted CI and human review.
+- 2026-06-24: PR #103 merged after hosted CI success; terminal closeout moved the plan from Active to Done.
 
 ## Decision log
 
@@ -429,12 +430,14 @@ The Single Source of Workflow State work settled ownership, but current workflow
 
 ## Outcome and retrospective
 
-- Pending. This section stays historical while the plan is active and does not own the current next stage.
+- PR #103 merged on 2026-06-24.
+- The workflow-state projection contract now has deterministic owner parsing, mechanical active/blocked plan-index projections, milestone-state projection validation, readiness pointer enforcement, review-evidence consistency checks, change metadata consistency checks, binding handoff guidance, and final behavior-preservation evidence.
+- WSS-SR1, WSS-SR2, WSS-PLAN1, WSS-CR1, WSS-CR2, WSS-CR3, and WSS-CR4 were accepted, resolved, and confirmed by later reviews.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Readiness is not Done.
+- Terminal done. No downstream lifecycle stage remains for this initiative.
 
 ## Risks and follow-ups
 
