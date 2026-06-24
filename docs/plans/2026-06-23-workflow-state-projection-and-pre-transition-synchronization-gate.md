@@ -9,7 +9,7 @@ Terminal disposition: none
 - Owner: agent
 - Start date: 2026-06-23
 - Last updated: 2026-06-24
-- Related issue or PR: none yet
+- Related issue or PR: PR #103, https://github.com/xiongxianfei/rigorloop/pull/103
 - Supersedes: none
 
 ## Goal
@@ -84,7 +84,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - Remaining in-scope implementation milestones: none
 - Next stage: hosted CI and human review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: external-completion-event-pending — PR handoff is being opened; hosted CI and human review remain.
+- Reason final closeout is or is not ready: external-completion-event-pending — PR #103 is open; hosted CI and human review remain.
 
 ## Milestones
 
@@ -331,6 +331,7 @@ The Single Source of Workflow State work settled ownership, but current workflow
 - 2026-06-23: Explain-change recorded durable rationale for the branch diff and routes the workflow to verify; branch readiness and PR readiness are not claimed.
 - 2026-06-24: Verify first found a selected-CI routing blocker for `scripts/lifecycle_state_sync.py`; CI-maintenance routed that path through artifact-lifecycle regression coverage, PR-mode selected CI and broad smoke passed, and the next stage is pr.
 - 2026-06-24: PR handoff started after verify; lifecycle state now routes to hosted CI and human review.
+- 2026-06-24: PR #103 opened for hosted CI and human review.
 
 ## Decision log
 
