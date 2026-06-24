@@ -65,20 +65,20 @@ This work should compose with those surfaces instead of duplicating marker, voca
 ## Current Handoff Summary
 
 - Current milestone: M1. Markdown Block Segmentation, Validator Modes, and Regression Fixtures
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-24-semantic-source-line-contract/reviews/plan-review-r1.md
-- Last reviewed milestone: plan-review
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r1.md
+- Last reviewed milestone: M1
+- Review status: changes-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M1, M2, M3
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,milestone-review-pending,explain-change-pending,verify-pending,pr-handoff-pending — lifecycle gates remain before final closeout.
+- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,review-findings-open,explain-change-pending,verify-pending,pr-handoff-pending — M1 code-review findings remain open and later lifecycle gates remain before final closeout.
 
 ## Milestones
 
 ### M1. Markdown Block Segmentation, Validator Modes, and Regression Fixtures
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add the non-mutating prose validator with Markdown block segmentation, deterministic Tier A errors, audit warnings, and regression fixtures.
 - Requirements: R1-R15, AC1-AC10, AC12, AC15
 - Files/components likely touched:
@@ -253,6 +253,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: Test spec created and activated; ready for M1 implementation.
 - 2026-06-24: Owner approved the active test spec for M1 implementation.
 - 2026-06-24: M1 implementation added the non-mutating documentation prose validator, regression fixtures, and validator tests; handed to code-review R1.
+- 2026-06-24: Code-review M1 R1 requested changes for `PROSE-M1-CR1` and `PROSE-M1-CR2`; M1 moved to `resolution-needed`.
 
 ## Decision log
 
@@ -264,6 +265,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 ## Surprises and discoveries
 
 - M1 baseline audit found 10 warning-only source-line findings in current `README.md` and `VISION.md`; Tier A cleanup remains deferred to M2 as planned.
+- Code-review M1 R1 found that explicit Markdown hard breaks are misclassified as mechanical wraps and mechanically continued list items are missed.
 
 ## Validation notes
 
@@ -274,6 +276,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: `python scripts/validate-documentation-prose.py --mode audit --path README.md --path VISION.md` passed in audit mode with 0 errors and 10 warnings.
 - 2026-06-24: `python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml` passed.
 - 2026-06-24: `git diff --check -- scripts/validate-documentation-prose.py scripts/test-documentation-prose-validator.py tests/fixtures/documentation-prose docs/changes/2026-06-24-semantic-source-line-contract` passed.
+- 2026-06-24: Code-review M1 R1 recorded material findings `PROSE-M1-CR1` and `PROSE-M1-CR2`; review-resolution is open.
 
 ## Outcome and retrospective
 
