@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Change ID: 2026-06-24-semantic-source-line-contract
 - Owner: agent
 - Start date: 2026-06-24
 - Last updated: 2026-06-24
-- Related issue or PR: none yet
+- Related issue or PR: https://github.com/xiongxianfei/rigorloop/pull/107
 - Supersedes: none
 
 ## Purpose / big picture
@@ -65,14 +65,14 @@ This work should compose with those surfaces instead of duplicating marker, voca
 ## Current Handoff Summary
 
 - Current milestone: final closeout sequence
-- Current milestone state: planned
+- Current milestone state: closed
 - Latest review evidence: docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m3-r1.md
 - Last reviewed milestone: M3
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open,pr-handoff-pending — all implementation milestones are closed, explain-change is recorded, local verify passed for the semantic change slice, and PR handoff remains before final closeout.
+- Next stage: none
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: PR #107 is open for review; implementation milestones, review-resolution, explain-change, verify, and PR handoff are complete.
 
 ## Milestones
 
@@ -294,6 +294,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: Code-review M3 R1 found no material findings and closed M3; all implementation milestones are closed and the next stage is explain-change.
 - 2026-06-24: Explain-change recorded durable rationale for the semantic source-line contract and handed the change to verify.
 - 2026-06-24: Verify passed local validation for the semantic change slice against stacked base `f51ec5ab`; next stage is PR handoff targeting the predecessor branch/base, not a direct-to-`main` PR while the stack remains unmerged.
+- 2026-06-24: PR #107 opened against `feature/proposal-gated-authoring-autoprogression`; lifecycle state moved to done.
 
 ## Decision log
 
@@ -353,9 +354,9 @@ This work should compose with those surfaces instead of duplicating marker, voca
 
 ## Outcome and retrospective
 
-- Pending.
+- PR #107 opened for review: https://github.com/xiongxianfei/rigorloop/pull/107
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Downstream routing is owned by `Current Handoff Summary`.
+- Lifecycle closeout is recorded; PR #107 is open for review.
