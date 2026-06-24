@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import json
 import shutil
 import subprocess
 import sys
@@ -81,6 +82,13 @@ class DocumentationProseValidatorTests(unittest.TestCase):
 
         self.assertEqual([], result.errors)
         self.assertEqual([], result.warnings)
+
+    def test_formatter_guardrails_preserve_markdown_prose_wrapping(self) -> None:
+        prettier_config = json.loads((ROOT / ".prettierrc.json").read_text(encoding="utf-8"))
+        markdownlint_config = json.loads((ROOT / ".markdownlint.json").read_text(encoding="utf-8"))
+
+        self.assertEqual("preserve", prettier_config.get("proseWrap"))
+        self.assertIs(False, markdownlint_config.get("MD013"))
 
     def test_mechanical_mid_sentence_wrap_fails(self) -> None:
         result = self.validate(FIXTURES / "fail" / "mechanical-wrap.md")
