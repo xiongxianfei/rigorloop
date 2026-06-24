@@ -65,20 +65,20 @@ This work should compose with those surfaces instead of duplicating marker, voca
 ## Current Handoff Summary
 
 - Current milestone: M1. Markdown Block Segmentation, Validator Modes, and Regression Fixtures
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r1.md
 - Last reviewed milestone: M1
-- Review status: changes-requested; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: review-resolution
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,review-findings-open,explain-change-pending,verify-pending,pr-handoff-pending — M1 code-review findings remain open and later lifecycle gates remain before final closeout.
+- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,milestone-review-pending,explain-change-pending,verify-pending,pr-handoff-pending — M1 is ready for rerun code-review and later lifecycle gates remain before final closeout.
 
 ## Milestones
 
 ### M1. Markdown Block Segmentation, Validator Modes, and Regression Fixtures
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Add the non-mutating prose validator with Markdown block segmentation, deterministic Tier A errors, audit warnings, and regression fixtures.
 - Requirements: R1-R15, AC1-AC10, AC12, AC15
 - Files/components likely touched:
@@ -254,6 +254,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: Owner approved the active test spec for M1 implementation.
 - 2026-06-24: M1 implementation added the non-mutating documentation prose validator, regression fixtures, and validator tests; handed to code-review R1.
 - 2026-06-24: Code-review M1 R1 requested changes for `PROSE-M1-CR1` and `PROSE-M1-CR2`; M1 moved to `resolution-needed`.
+- 2026-06-24: Review-resolution implemented fixes for `PROSE-M1-CR1` and `PROSE-M1-CR2`; M1 returned to `review-requested` for code-review R2.
 
 ## Decision log
 
@@ -266,6 +267,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 
 - M1 baseline audit found 10 warning-only source-line findings in current `README.md` and `VISION.md`; Tier A cleanup remains deferred to M2 as planned.
 - Code-review M1 R1 found that explicit Markdown hard breaks are misclassified as mechanical wraps and mechanically continued list items are missed.
+- Review-resolution changed the Tier A audit baseline from 0 errors and 10 warnings to 6 errors and 10 warnings by detecting existing README mechanically continued list items.
 
 ## Validation notes
 
@@ -277,6 +279,10 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: `python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml` passed.
 - 2026-06-24: `git diff --check -- scripts/validate-documentation-prose.py scripts/test-documentation-prose-validator.py tests/fixtures/documentation-prose docs/changes/2026-06-24-semantic-source-line-contract` passed.
 - 2026-06-24: Code-review M1 R1 recorded material findings `PROSE-M1-CR1` and `PROSE-M1-CR2`; review-resolution is open.
+- 2026-06-24: `python scripts/test-documentation-prose-validator.py` passed with 13 tests after review-resolution fixes.
+- 2026-06-24: `python scripts/validate-documentation-prose.py --mode enforce --path tests/fixtures/documentation-prose/pass/explicit-hard-break.md` passed with 0 errors and 0 warnings.
+- 2026-06-24: `python scripts/validate-documentation-prose.py --mode enforce --path tests/fixtures/documentation-prose/fail/list-item-mechanical-continuation.md` returned the expected enforcement failure with 1 error.
+- 2026-06-24: `python scripts/validate-documentation-prose.py --mode audit --path README.md --path VISION.md` passed in audit mode with 6 errors and 10 warnings.
 
 ## Outcome and retrospective
 

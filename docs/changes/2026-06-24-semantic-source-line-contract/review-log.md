@@ -23,12 +23,5 @@ Detailed record: reviews/code-review-m1-r1.md
 Record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: PROSE-M1-CR1, PROSE-M1-CR2
-Open findings: PROSE-M1-CR1, PROSE-M1-CR2
+Open findings: none
 Recording status: recorded
-
-## Open Findings
-
-| Finding ID | Review ID | Severity | Status | Required next stage |
-| --- | --- | --- | --- | --- |
-| PROSE-M1-CR1 | code-review-m1-r1 | major | open | review-resolution |
-| PROSE-M1-CR2 | code-review-m1-r1 | major | open | review-resolution |

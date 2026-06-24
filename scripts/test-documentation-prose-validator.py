@@ -48,6 +48,40 @@ class DocumentationProseValidatorTests(unittest.TestCase):
         self.assertEqual([], result.errors)
         self.assertEqual([], result.warnings)
 
+    def test_explicit_hard_break_two_space_passes_enforce(self) -> None:
+        result = self.validate(FIXTURES / "pass" / "explicit-hard-break.md")
+
+        self.assertEqual([], result.errors)
+        self.assertEqual([], result.warnings)
+
+    def test_explicit_hard_break_backslash_passes_enforce(self) -> None:
+        result = self.validate(FIXTURES / "pass" / "explicit-hard-break-backslash.md")
+
+        self.assertEqual([], result.errors)
+        self.assertEqual([], result.warnings)
+
+    def test_mechanical_wrap_without_hard_break_still_fails_enforce(self) -> None:
+        result = self.validate(FIXTURES / "fail" / "no-hard-break-mechanical-wrap.md")
+
+        self.assertTrue(result.errors)
+        self.assertTrue(any("mechanical mid-sentence wrap" in finding.reason for finding in result.errors))
+
+    def test_mechanically_continued_list_item_fails_enforce(self) -> None:
+        result = self.validate(FIXTURES / "fail" / "list-item-mechanical-continuation.md")
+
+        self.assertTrue(result.errors)
+        self.assertTrue(any("mechanically continued list item" in finding.reason for finding in result.errors))
+
+    def test_nested_list_structure_passes_enforce(self) -> None:
+        result = self.validate(
+            FIXTURES / "pass" / "list-item-nested-structure.md",
+            FIXTURES / "pass" / "list-item-single-line.md",
+            FIXTURES / "pass" / "list-item-with-fenced-code.md",
+        )
+
+        self.assertEqual([], result.errors)
+        self.assertEqual([], result.warnings)
+
     def test_mechanical_mid_sentence_wrap_fails(self) -> None:
         result = self.validate(FIXTURES / "fail" / "mechanical-wrap.md")
 
