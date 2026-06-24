@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Change ID: 2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review
 - Owner: agent
 - Start date: 2026-06-24
 - Last updated: 2026-06-24
-- Related issue or PR: none yet
+- Related issue or PR: https://github.com/xiongxianfei/rigorloop/pull/106
 - Supersedes: none
 
 ## Purpose / big picture
@@ -69,15 +69,15 @@ The approved architecture defines `authoring-through-plan-review` as a change-lo
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Integration, Behavior Preservation, and Lifecycle Closeout Evidence
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: code-review-m5-r1
 - Last reviewed milestone: M5. Integration, Behavior Preservation, and Lifecycle Closeout Evidence
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: pr-handoff-pending — implementation milestones, explain-change, and verify are complete, but PR handoff remains.
+- Next stage: human PR review
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #106 is open for review; implementation milestones, review-resolution, explain-change, verify, and PR handoff are complete.
 
 ## Milestones
 
