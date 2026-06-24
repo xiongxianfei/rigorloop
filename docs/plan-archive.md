@@ -4,6 +4,7 @@ Completed plan history moved out of the common-read plan index.
 
 ## Done (archive)
 
+- [2026-05-24 Target-Native Init Commands](plans/2026-05-24-target-native-init-commands.md) - done; terminal state: done; PR #92 merged.
 - [2026-05-24 Cache-Aware Inner-Loop Lifecycle Validation Helper](plans/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md) - done; terminal state: done; PR #91 merged.
 - [2026-05-23 Public Discovery and Developer Adoption Surface](plans/2026-05-23-public-discovery-and-developer-adoption-surface.md) - done; terminal state: done; PR #90 merged.
 - [2026-05-22 Bounded Plan Index and Completed-Plan Archive](plans/2026-05-22-bounded-plan-index-and-completed-plan-archive.md) - done; terminal state: done; PR #86 merged.
