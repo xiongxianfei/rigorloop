@@ -132,26 +132,65 @@ This is the recommended full chain for complete AI-assisted delivery. Individual
 skills can also be used in isolation when the project does not need the full
 lifecycle.
 
-## Proposal-Gated Automatic Workflow
+## Automatic Workflow
 
-For substantive workflow-managed work, the recommended automation boundary is the proposal gate. Review and improve the proposal manually first; then let the workflow continue through deterministic authoring and review stages only after the formal proposal review is clean.
+Use automatic workflow only after the human-owned decision point is clean.
+RigorLoop treats automation as change-local authorization, not a project-wide default.
 
-Use this sequence:
+### Authoring through plan review
+
+Use this when the proposal is accepted and you want the workflow to continue through deterministic authoring and review stages:
+
+```text
+workflow auto-through: plan-review
+```
+
+Recommended sequence:
 
 1. Draft the proposal with `proposal`.
-2. Human-review the proposal for problem fit, scope, tradeoffs, risks, and intended outcome.
+2. Review the proposal manually for problem fit, scope, tradeoffs, risks, and intended outcome.
 3. Revise the proposal until it is the version you want judged.
 4. Run `proposal-review`.
 5. If proposal review records findings, pause and resolve them manually.
-6. After an accepted proposal and clean recorded proposal review, resume the workflow:
+6. After an accepted proposal and clean recorded proposal review, run `workflow auto-through: plan-review`.
 
-   ```text
-   workflow auto-through: plan-review
-   ```
+`auto-through: plan-review` maps to the bounded `authoring-through-plan-review` profile.
+In workflow-managed context it may run `spec`, `spec-review`, architecture assessment, conditional `architecture` and `architecture-review`, `plan`, and `plan-review`.
+It then stops and reports `test-spec` as the next stage.
 
-`auto-through: plan-review` maps to the bounded `authoring-through-plan-review` profile. In workflow-managed context it may run `spec`, `spec-review`, architecture assessment, conditional `architecture` and `architecture-review`, `plan`, and `plan-review`; then it stops. It reports `test-spec` as the next stage but does not start test-spec, implementation, verification, PR, release, deploy, merge, or automatic review-fix loops.
+It does not start `test-spec`, implementation, verification, PR, release, deploy, merge, or automatic review-fix loops.
 
-The profile is off by default. Direct review requests such as `spec-review` or `plan-review` remain isolated unless you explicitly resume the workflow-managed change with the profile armed.
+### Implementation through verify
+
+Use this only after clean planning, an approved test-spec path, and explicit implementation authorization:
+
+```text
+workflow auto-through: verify
+```
+
+`auto-through: verify` maps to the separately armed `implementation-through-verify` profile.
+It is not authorized by `auto-through: plan-review`.
+
+This profile is phase-gated:
+
+| Phase | What can run automatically | Stop point |
+| --- | --- | --- |
+| A | Audit-only evaluation | before executing stages |
+| B | test-spec settlement, ordered implementation milestones, independent code reviews, bounded reviewer-declared correction loops | after final clean code review |
+| C | `explain-change` and fresh `verify` after Phase B promotion evidence exists | before `pr` |
+
+The implementation profile pauses instead of guessing when reviewer findings need owner judgment, a new finding appears after an auto-fix, correction rounds stop shrinking, validation fails, unrelated dirty state exists, or a requested action would cross the PR boundary.
+
+### Safety rules
+
+- Profiles are off by default.
+- Authorization is recorded per change.
+- Direct skill requests such as `spec-review`, `plan-review`, `code-review`, or `verify` remain isolated unless you explicitly resume the workflow-managed change.
+- Automatic review-driven fixes require reviewer-declared eligibility and bounded affected paths.
+- Automatic workflow never merges, releases, deploys, publishes, or performs destructive Git actions by default.
+- `pr` is still the human-visible external boundary; open it only when readiness checks pass.
+
+For the complete contract, read [docs/workflows.md](docs/workflows.md) and [specs/workflow-stage-autoprogression.md](specs/workflow-stage-autoprogression.md).
 
 ## Worked Example
 
