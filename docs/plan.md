@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [2026-06-24 Semantic Source-Line Contract](plans/2026-06-24-semantic-source-line-contract.md) | active | verify | `2026-06-24-semantic-source-line-contract` |
+| [2026-06-24 Semantic Source-Line Contract](plans/2026-06-24-semantic-source-line-contract.md) | active | pr | `2026-06-24-semantic-source-line-contract` |
 
 ## Blocked
 

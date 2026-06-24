@@ -70,9 +70,9 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - Last reviewed milestone: M3
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open,verify-pending,pr-handoff-pending — all implementation milestones are closed, explain-change is recorded, and later lifecycle gates remain before final closeout.
+- Reason final closeout is or is not ready: lifecycle-gates-open,pr-handoff-pending — all implementation milestones are closed, explain-change is recorded, local verify passed for the semantic change slice, and PR handoff remains before final closeout.
 
 ## Milestones
 
@@ -293,6 +293,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: M3 implementation added documentation prose selected-validation routing for Tier A enforcement and Tier B audit, added a `--changed-file` alias for the plan's selector command, recorded behavior-preservation evidence, and handed the milestone to code-review R1.
 - 2026-06-24: Code-review M3 R1 found no material findings and closed M3; all implementation milestones are closed and the next stage is explain-change.
 - 2026-06-24: Explain-change recorded durable rationale for the semantic source-line contract and handed the change to verify.
+- 2026-06-24: Verify passed local validation for the semantic change slice against stacked base `f51ec5ab`; next stage is PR handoff targeting the predecessor branch/base, not a direct-to-`main` PR while the stack remains unmerged.
 
 ## Decision log
 
@@ -339,6 +340,16 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: `python scripts/select-validation.py --mode explicit --changed-file README.md --changed-file VISION.md` passed and selected `documentation_prose.enforce`, `readme.validate`, `readme.vision_markers`, and `guide_system.validate`.
 - 2026-06-24: Code-review M3 R1 passed with no material findings and closed M3.
 - 2026-06-24: `python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md` passed for explain-change prose.
+- 2026-06-24: Verify reran `python scripts/test-documentation-prose-validator.py`; passed with 14 tests.
+- 2026-06-24: Verify reran `python scripts/test-select-validation.py`; passed with 103 tests.
+- 2026-06-24: Verify reran `python scripts/validate-documentation-prose.py --mode enforce --path README.md --path VISION.md`; passed with 0 errors and 0 warnings.
+- 2026-06-24: Verify reran `python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md`; passed with 0 errors and 0 warnings.
+- 2026-06-24: Verify ran `python scripts/select-validation.py --mode explicit` for the semantic change path set; selected required lifecycle, README, guide-system, prose, and selector checks, reported `broad_smoke_required: false`, and reported manual routing for new validator scripts, root contributor guidance, and formatter config files.
+- 2026-06-24: Verify dispositioned selector manual routing through direct plan/test-spec validation evidence: `python scripts/test-documentation-prose-validator.py`, `python scripts/test-select-validation.py`, `python scripts/validate-readme.py`, `python scripts/validate-readme.py README.md --vision-markers`, `python scripts/validate-guide-system.py`, lifecycle validation, and `git diff --check -- .` all passed.
+- 2026-06-24: Verify ran selected skill/adapter checks because the full stacked branch includes a predecessor skill change: `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `python scripts/test-build-skills.py`, `python scripts/build-skills.py --check`, and `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives` all passed.
+- 2026-06-24: Verify ran `python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/`; passed with 7 reviews, 2 findings, 7 log entries, and 2 resolution entries.
+- 2026-06-24: Verify ran lifecycle and metadata checks for the touched authoritative surfaces; `python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml` passed and `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed.
+- 2026-06-24: Verify ran `git diff --check -- .`; passed.
 
 ## Outcome and retrospective
 

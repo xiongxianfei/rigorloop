@@ -42,6 +42,7 @@ tests:
   - M3 routes documentation prose validation through selected validation and records behavior preservation.
   - Code-review M3 R1 confirms selected-validation routing and behavior-preservation evidence before final closeout.
   - Explain-change records durable rationale before final verify.
+  - Verify confirms local branch-ready evidence for the semantic change slice and records stacked-base PR targeting constraints.
 workflow:
   autoprogression:
     profile: authoring-through-plan-review
@@ -109,6 +110,36 @@ validation:
     result: clean_with_notes_no_material_findings_m3_closed
   - command: explain-change
     result: durable_rationale_recorded
+  - command: verify
+    result: local_verify_passed_for_semantic_change_slice_next_stage_pr_target_predecessor_base_f51ec5ab
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_14_tests_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_103_tests_verify
+  - command: python scripts/validate-documentation-prose.py --mode enforce --path README.md --path VISION.md
+    result: pass_0_errors_0_warnings_verify
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md
+    result: pass_0_errors_0_warnings_verify
+  - command: python scripts/select-validation.py --mode explicit --path <semantic-change-paths>
+    result: manual_routing_required_for_validator_scripts_contributor_guidance_and_formatter_configs_resolved_by_direct_plan_test_spec_validation_broad_smoke_not_required
+  - command: python scripts/validate-readme.py && python scripts/validate-readme.py README.md --vision-markers && python scripts/validate-guide-system.py
+    result: pass_verify
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_verify_stacked_branch_predecessor_check
+  - command: python scripts/test-skill-validator.py
+    result: pass_231_tests_verify_stacked_branch_predecessor_check
+  - command: python scripts/test-build-skills.py
+    result: pass_7_tests_verify_stacked_branch_predecessor_check
+  - command: python scripts/build-skills.py --check
+    result: pass_verify_stacked_branch_predecessor_check
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: pass_1_test_verify_stacked_branch_predecessor_check
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
+    result: pass_structure_reviews_7_findings_2_log_entries_7_resolution_entries_2_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <semantic-authoritative-surfaces>
+    result: pass_verify
+  - command: git diff --check -- .
+    result: pass_verify
   - command: python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md
     result: pass_explain_change_audit
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
