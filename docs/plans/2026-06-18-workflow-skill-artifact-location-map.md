@@ -2,13 +2,13 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Change ID: 2026-06-17-workflow-skill-artifact-location-map
 - Current owner: agent
-- Current stage: pr
-- Next stage: hosted CI and human review
+- Current stage: done
+- Next stage: none
 - Blockers: none
 
 ## Purpose / big picture
@@ -65,11 +65,11 @@ Relevant surfaces:
 - Current milestone: M3. Adapter proof, cold-read evidence, and lifecycle closeout
 - Current milestone state: closed
 - Last reviewed milestone: M3
-- Review status: code-review-m3-r1 clean-with-notes; no material findings
+- Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review
-- Final closeout readiness: PR opened
-- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, explain-change is current, local selected verification passed, and PR #99 is open; hosted CI and human review remain before final lifecycle Done.
+- Next stage: none
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — PR #99 merged after hosted CI success on 2026-06-18. No downstream lifecycle stage remains for this initiative.
 
 ## Milestones
 
@@ -345,11 +345,11 @@ Relevant surfaces:
 
 ## Outcome and retrospective
 
-- Final local verify passed and established branch-ready for PR handoff; PR #99 is open.
+- PR #99 merged on 2026-06-18.
+- The workflow skill artifact-location map is implemented with deterministic workflow registry validation, plan/review placement validation, generated adapter proof, and cold-read evidence.
 - No lifecycle order, artifact content schema, historical plan migration, or generated public adapter hand-edit was introduced.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #99 is open.
-- Hosted CI success, merge readiness, and final lifecycle Done are not claimed by this plan.
+- Terminal done. No downstream lifecycle stage remains for this initiative.
