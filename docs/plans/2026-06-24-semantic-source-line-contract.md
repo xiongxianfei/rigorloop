@@ -64,15 +64,15 @@ This work should compose with those surfaces instead of duplicating marker, voca
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Contributor Guidance, Formatter Guardrails, and Tier A Cleanup
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r2.md
-- Last reviewed milestone: M1
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review
+- Current milestone: M3. Selected Validation Integration and Behavior Preservation Evidence
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m2-r1.md
+- Last reviewed milestone: M2
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,milestone-review-pending,explain-change-pending,verify-pending,pr-handoff-pending — M2 is ready for code-review, M3 remains open, and later lifecycle gates remain before final closeout.
+- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,explain-change-pending,verify-pending,pr-handoff-pending — M1 and M2 are closed, M3 remains open, and later lifecycle gates remain before final closeout.
 
 ## Milestones
 
@@ -125,7 +125,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 
 ### M2. Contributor Guidance, Formatter Guardrails, and Tier A Cleanup
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add concise authoring guidance, prevent formatter reflow, and clean only current Tier A source-line violations needed for enforcement.
 - Requirements: R1-R7, R15-R18, AC2-AC5, AC11-AC13
 - Files/components likely touched:
@@ -257,6 +257,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: Review-resolution implemented fixes for `PROSE-M1-CR1` and `PROSE-M1-CR2`; M1 returned to `review-requested` for code-review R2.
 - 2026-06-24: Code-review M1 R2 confirmed both findings resolved and closed M1; next stage is M2 implementation.
 - 2026-06-24: M2 implementation added concise contributor guidance, workflow pointer text, formatter guardrail config, and focused README/VISION Tier A cleanup; handed to code-review R1.
+- 2026-06-24: Code-review M2 R1 found no material findings and closed M2; next stage is M3 implementation.
 
 ## Decision log
 
@@ -295,6 +296,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: `python scripts/validate-guide-system.py` passed.
 - 2026-06-24: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/documentation-source-formatting.md --path docs/workflows.md --path docs/plans/2026-06-24-semantic-source-line-contract.md --path docs/plan.md --path docs/changes/2026-06-24-semantic-source-line-contract/change.yaml` passed.
 - 2026-06-24: `git diff --check -- CONTRIBUTING.md docs/workflows.md README.md VISION.md .prettierrc.json .markdownlint.json scripts/test-documentation-prose-validator.py docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md docs/changes/2026-06-24-semantic-source-line-contract` passed.
+- 2026-06-24: Code-review M2 R1 passed with no material findings and closed M2.
 
 ## Outcome and retrospective
 

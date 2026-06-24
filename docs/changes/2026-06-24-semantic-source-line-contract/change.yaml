@@ -38,6 +38,7 @@ tests:
   - Review-resolution fixes explicit hard-break handling and mechanically continued list-item handling before rerun code-review.
   - Code-review M1 R2 confirms review-resolution and closes M1.
   - M2 adds concise contributor guidance, formatter guardrails, and Tier A source-line cleanup.
+  - Code-review M2 R1 confirms contributor guidance, formatter guardrails, and Tier A cleanup before M3.
 workflow:
   autoprogression:
     profile: authoring-through-plan-review
@@ -93,6 +94,8 @@ validation:
     result: pass_after_review_resolution
   - command: code-review-m1-r2
     result: clean_with_notes_no_material_findings_m1_closed
+  - command: code-review-m2-r1
+    result: clean_with_notes_no_material_findings_m2_closed
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
     result: pass_structure_reviews_5_findings_2_log_entries_5_resolution_entries_2_after_code_review_m1_r2
   - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
@@ -132,7 +135,7 @@ validation:
   - command: git diff --check -- docs/proposals/2026-06-24-semantic-source-line-contract.md specs/documentation-source-formatting.md specs/documentation-source-formatting.test.md docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md docs/changes/2026-06-24-semantic-source-line-contract
     result: pass
 review:
-  status: clean_after_code_review_m1_r2
+  status: clean_after_code_review_m2_r1
   unresolved_items: 0
   material_findings: 2
   closed_findings: 2
@@ -150,6 +153,7 @@ changed_files:
   - docs/changes/2026-06-24-semantic-source-line-contract/reviews/plan-review-r1.md
   - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r1.md
   - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r2.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m2-r1.md
   - docs/changes/2026-06-24-semantic-source-line-contract/review-resolution.md
   - .prettierrc.json
   - .markdownlint.json

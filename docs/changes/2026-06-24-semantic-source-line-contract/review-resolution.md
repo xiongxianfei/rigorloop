@@ -48,3 +48,8 @@ The warning count did not change; the 6 new audit-mode errors are existing READM
 
 No material findings.
 Code-review-m1-r2 confirmed PROSE-M1-CR1 and PROSE-M1-CR2 are resolved and closed this review-resolution record.
+
+### code-review-m2-r1
+
+No material findings.
+Code-review-m2-r1 reviewed and closed M2 for contributor guidance, formatter guardrails, and Tier A cleanup, with next stage `implement M3`.
