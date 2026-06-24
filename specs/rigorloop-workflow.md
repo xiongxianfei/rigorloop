@@ -15,6 +15,7 @@
 - [Skill Contract Optimization](../docs/proposals/2026-05-08-skill-contract-optimization.md)
 - [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md)
 - [Proposal-Gated Authoring Autoprogression Through Plan Review](../docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md)
+- [Separately Armed Implementation Autoprogression Through Verify](../docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md)
 
 ## Goal and context
 
@@ -25,6 +26,8 @@ This amendment updates the workflow contract around explicit artifact categories
 This amendment also clarifies that isolated formal review requests stop downstream handoff but do not suppress durable recording. Every material finding is recorded, and all material findings require change-local review files.
 
 This amendment also defines the bounded `authoring-through-plan-review` autoprogression profile. The profile is change-local, explicitly armed, starts only after a clean accepted proposal gate, runs deterministic authoring and review stages through clean `plan-review`, and stops before `test-spec` or implementation.
+
+This amendment also defines the separately armed `implementation-through-verify` autoprogression profile. The profile is change-local, requires clean planning and its own authorization, uses deterministic test-spec settlement, runs implementation and independent code-review loops only within persisted phase authority, may run fresh `verify` in Phase C, and stops before `pr`.
 
 `specs/skill-contract.md` owns skill-contract behavior. It owns standard skill shape, claim boundaries, result output expectations, shared-block rules, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules. `specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.
 
@@ -85,6 +88,10 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `resolution-needed`: the milestone state after `code-review` produces findings that require review-resolution, fixes, owner decision, or re-review before the milestone can close.
 - `autoprogression profile`: a closed workflow policy value that defines a bounded set of downstream stages a workflow-managed change may run without redundant confirmation.
 - `authoring-through-plan-review`: the profile that may run `spec`, `spec-review`, recorded architecture assessment, conditional `architecture`, conditional `architecture-review`, `plan`, and `plan-review`, then stop.
+- `implementation-through-verify`: the profile that may run settled `test-spec`, implementation milestones, independent `code-review`, bounded reviewer-declared correction loops, `explain-change`, and fresh `verify` according to phase authority, then stop before `pr`.
+- `auto-fix classification`: reviewer-owned material-finding metadata that says whether a finding is not auto-fixable, mechanical, or declared safe for a deterministic recipe.
+- `test-spec settlement`: deterministic evidence that the test spec is active, complete, synchronized with its inputs, and ready to authorize implementation.
+- `profile phase`: the persisted rollout phase for `implementation-through-verify`, selected from `A`, `B`, or `C`.
 - `proposal gate`: the artifact and review state proving that proposal direction is settled enough for downstream authoring.
 - `gate-ready proposal`: a proposal whose artifacts and review evidence satisfy the proposal gate, independent of user authorization.
 - `armed profile`: a user-authorized profile that is waiting for its activation gate.
@@ -220,6 +227,14 @@ Given `authoring-through-plan-review` is armed for a change
 When the user directly invokes a review stage without workflow-managed resume context
 Then the review result is recorded when required and downstream handoff remains isolated.
 
+### Example E21: implementation profile stops before PR
+
+Given clean planning completed
+And the user separately authorized `auto-through: verify`
+And `implementation-through-verify` phase `C` is active
+When implementation milestones, independent review, `explain-change`, and fresh `verify` complete
+Then the workflow reports `pr` as next and stops without opening a PR.
+
 ## Requirements
 
 R1. The starter kit MUST support one recommended standard workflow. Public workflow guidance MUST NOT classify work as fast-lane, full-lane, tiny, low-risk, high-risk, small-change, or mini-spec routes.
@@ -348,9 +363,10 @@ R7d. When an approved continuation contract applies, a workflow-managed completi
 R7e. Unless a later approved change broadens scope, continuation applies only to:
 - authoring-to-review handoffs for `proposal`, `spec`, and `architecture` when the matching review stage is the next mandatory or triggered downstream step;
 - standard workflow execution flow from `implement` through `pr`;
-- the separately armed `authoring-through-plan-review` profile.
+- the separately armed `authoring-through-plan-review` profile;
+- the separately armed `implementation-through-verify` profile.
 
-R7ea. The closed autoprogression profile values are `off` and `authoring-through-plan-review`.
+R7ea. The closed autoprogression profile values are `off`, `authoring-through-plan-review`, and `implementation-through-verify`.
 
 R7eb. Unknown autoprogression profile values MUST fail closed before downstream execution.
 
@@ -390,7 +406,29 @@ The workflow MUST pause and report a stop condition when, at activation time, no
 
 The workflow MUST NOT use profile policy metadata as the live owner of current stage, next stage, review status, branch readiness, or PR readiness. Existing workflow-state surfaces continue to own those fields.
 
-R7es. Additional profiles, including `authoring-through-test-spec` and implementation profiles, require separate proposal and spec amendments. `authoring-through-plan-review` MUST NOT be widened silently.
+R7es. Additional profiles, including `authoring-through-test-spec` and future implementation profiles beyond `implementation-through-verify`, require separate proposal and spec amendments. Existing profiles MUST NOT be widened silently.
+
+R7et. `implementation-through-verify` MUST be authorized separately from `authoring-through-plan-review`; authoring-profile authorization MUST NOT imply implementation-profile authorization.
+
+R7eu. `implementation-through-verify` MUST activate only after clean planning, explicit ordered implementation milestones, complete test-spec inputs, durable authorization persistence, clean governing artifacts, recorded working-tree baseline, approved commands, absent or excluded unrelated dirty changes, and workflow-state synchronization.
+
+R7ev. `implementation-through-verify` MUST persist phase `A`, `B`, or `C` and MUST refuse transitions outside the persisted phase.
+
+R7ew. Phase `A` is audit-only, Phase `B` may run through final clean code-review but not `explain-change` or `verify`, and Phase `C` may run `explain-change` and fresh `verify` only after promotion evidence is linked.
+
+R7ex. Before implementation, `implementation-through-verify` MUST run deterministic test-spec settlement and record input artifact identities. The first milestone's code-review MUST recheck those identities and pause on mismatch.
+
+R7ey. Every implementation milestone under `implementation-through-verify` MUST run in approved order and receive independent code-review before closing.
+
+R7ez. Under `implementation-through-verify`, material code-review findings MUST include reviewer-owned `auto_fix_class`; missing classification is `none` and pauses the profile.
+
+R7faa. Automatic correction under `implementation-through-verify` MUST be limited to reviewer-classified `mechanical` or `declared-safe` findings that include the fields required by the focused autoprogression and review-finding contracts.
+
+R7fab. Automatic correction rounds under `implementation-through-verify` MUST be limited to three per milestone, strictly shrink unresolved findings, pause on new finding IDs or classes, remain path-local, avoid new scope, avoid substantive governing-artifact edits, and use only approved commands.
+
+R7fac. `implementation-through-verify` MUST require final full code-review before `explain-change`, fresh actual-run verify evidence in Phase C, and a pause without repair on verify failure.
+
+R7fad. Successful `implementation-through-verify` completion MUST compute branch readiness from recorded verify evidence through workflow-state synchronization, report `pr` next, require human authorization for `pr`, and MUST NOT invoke `pr`.
 
 R7f. In v1, manual skill invocations and bugfix skill invocations remain isolated or explicit-step by default, and on-demand or periodic actions such as `explore`, `research`, and `learn` MUST NOT auto-run unless the user explicitly requests them or a later approved rule elevates them.
 
@@ -1177,8 +1215,10 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 ## Next artifacts
 
-- Architecture assessment for profile policy, change metadata, workflow orchestration, and generated adapter impact.
-- Test-spec amendments for `authoring-through-plan-review`.
+- Architecture assessment for implementation-profile policy, phase gating, workflow orchestration, review classification, correction loops, verify-boundary behavior, and generated adapter impact.
+- Architecture and architecture-review when the assessment requires architecture.
+- Plan and plan-review before implementation.
+- Test-spec amendments for `implementation-through-verify`.
 
 ## Follow-on artifacts
 
@@ -1212,9 +1252,11 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - `plan`: [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md)
 - `plan-review`: approved in [plan-review-r2](../docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r2.md)
 - `test-spec`: [RigorLoop workflow test spec](rigorloop-workflow.test.md), [Workflow stage autoprogression test spec](workflow-stage-autoprogression.test.md), [Milestone-aware review handoff test spec](milestone-aware-review-handoff.test.md), and [Skill contract test spec](skill-contract.test.md) confirm the active implementation proof map.
+- `proposal`: [Separately Armed Implementation Autoprogression Through Verify](../docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md)
+- `proposal-review`: approved in [proposal-review-r1](../docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/proposal-review-r1.md)
+- `spec-review`: approved in [spec-review-r1](../docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/spec-review-r1.md)
 
 ## Readiness
 
-Approved workflow amendment for proposal-gated authoring autoprogression through plan-review after `spec-review-r2`.
-
-Ready for architecture assessment and architecture-review before downstream planning or implementation relies on the new profile.
+- Approved amendment for separately armed implementation autoprogression through verify.
+- Ready for architecture assessment before downstream planning or implementation relies on the new profile.

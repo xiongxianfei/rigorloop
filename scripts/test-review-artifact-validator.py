@@ -136,6 +136,28 @@ def review_text(
     """
 
 
+def implementation_profile_review_text(finding_fields: str) -> str:
+    return f"""
+    # Code Review R1
+
+    Review ID: code-review-r1
+    Stage: code-review
+    Round: 1
+    Reviewer: Codex code-review skill
+    Target: implementation-through-verify correction surface
+    Status: changes-requested
+    Autoprogression profile: implementation-through-verify
+
+    ## Findings
+
+    Finding ID: CR1-F1
+    Evidence: The implementation-profile correction loop needs structured reviewer authority.
+    Required outcome: The finding must be structurally bounded before automatic correction.
+    Safe resolution: Follow the reviewer-declared auto-fix classification.
+    {finding_fields}
+    """
+
+
 def review_log_text(
     *,
     review_id: str,
@@ -882,6 +904,125 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         self.assertEqual(result.finding_count, 0)
         self.assertEqual(result.review_log_entry_count, 1)
         self.assertEqual(result.resolution_entry_count, 0)
+
+    def test_implementation_profile_missing_auto_fix_class_is_rejected(self) -> None:
+        root = self.fixture()
+        write_text(root / "reviews" / "code-review-r1.md", implementation_profile_review_text(""))
+        self.assertFails(root, "implementation-profile code-review finding missing auto_fix_class")
+
+    def test_implementation_profile_auto_fix_class_values_are_closed(self) -> None:
+        root = self.fixture()
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            implementation_profile_review_text("auto_fix_class: obvious"),
+        )
+        self.assertFails(root, "unsupported auto_fix_class")
+
+    def test_mechanical_auto_fix_requires_closed_kind_and_authority_fields(self) -> None:
+        root = self.fixture()
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            implementation_profile_review_text(
+                """
+                auto_fix_class: mechanical
+                auto_fix_kind: simple-cleanup
+                affected_paths: scripts/example.py
+                deterministic_authority: ruff --fix
+                required_validation: python -m pytest tests/example.py
+                """
+            ),
+        )
+        self.assertFails(root, "unsupported auto_fix_kind")
+
+        root = self.fixture()
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            implementation_profile_review_text(
+                """
+                auto_fix_class: mechanical
+                auto_fix_kind: formatter-output
+                affected_paths: scripts/example.py
+                deterministic_authority: ruff --fix
+                """
+            ),
+        )
+        self.assertFails(root, "mechanical auto-fix missing required_validation")
+
+        root = self.fixture()
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            implementation_profile_review_text(
+                """
+                auto_fix_class: mechanical
+                auto_fix_kind: formatter-output
+                affected_paths: scripts/example.py
+                deterministic_authority: ruff --fix
+                required_validation: python -m pytest tests/example.py
+                """
+            ),
+        )
+        self.assertPasses(root)
+
+    def test_declared_safe_auto_fix_requires_complete_recipe_and_behavior_proof(self) -> None:
+        root = self.fixture()
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            implementation_profile_review_text(
+                """
+                auto_fix_class: declared-safe
+                affected_paths: scripts/example.py
+                resolution_recipe: Apply the named parser branch change.
+                named_inputs: approved spec R1
+                named_outputs: parser result
+                forbidden_paths: specs/
+                acceptance_criteria: focused regression passes
+                required_validation_commands: python -m pytest tests/example.py
+                production_code_change: yes
+                """
+            ),
+        )
+        self.assertFails(root, "declared-safe auto-fix missing scope_preservation_rule")
+
+        root = self.fixture()
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            implementation_profile_review_text(
+                """
+                auto_fix_class: declared-safe
+                affected_paths: scripts/example.py
+                resolution_recipe: Apply the named parser branch change.
+                named_inputs: approved spec R1
+                named_outputs: parser result
+                forbidden_paths: specs/
+                acceptance_criteria: focused regression passes
+                required_validation_commands: python -m pytest tests/example.py
+                scope_preservation_rule: no new public interface or dependency
+                production_code_change: yes
+                """
+            ),
+        )
+        self.assertFails(root, "declared-safe production-code change missing behavior proof")
+
+        root = self.fixture()
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            implementation_profile_review_text(
+                """
+                auto_fix_class: declared-safe
+                affected_paths: scripts/example.py
+                resolution_recipe: Apply the named parser branch change.
+                named_inputs: approved spec R1
+                named_outputs: parser result
+                forbidden_paths: specs/
+                acceptance_criteria: focused regression passes
+                required_validation_commands: python -m pytest tests/example.py
+                scope_preservation_rule: no new public interface or dependency
+                production_code_change: yes
+                behavior_test: tests/example.py::test_parser_branch
+                """
+            ),
+        )
+        self.assertPasses(root)
 
     def test_stage_owned_non_approval_closeout_includes_rethink_and_inconclusive(self) -> None:
         for status in ["rethink", "inconclusive"]:

@@ -8,6 +8,7 @@
 
 - [Review Finding Resolution Contract](../docs/proposals/2026-04-24-review-finding-resolution-contract.md)
 - [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
+- [Separately Armed Implementation Autoprogression Through Verify](../docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md)
 
 ## Goal and context
 
@@ -18,6 +19,8 @@ The goal is to make review feedback actionable and auditable without turning eve
 This spec intentionally expands the current workflow disposition vocabulary from `accepted`, `rejected`, and `deferred` to include `partially-accepted` and `needs-decision`. `needs-decision` is an unresolved stop state, not a final closeout state.
 
 This amendment also requires new `review-resolution.md` records to be scan-first for humans while preserving validator-readable field labels for structural and closeout validation.
+
+This amendment also defines reviewer-owned auto-fix classification fields for material code-review findings when the separately armed implementation profile is active. The classification determines whether the workflow may automatically apply a correction recipe or must pause for human judgment.
 
 ## Glossary
 
@@ -45,6 +48,10 @@ This amendment also requires new `review-resolution.md` records to be scan-first
 - `artifact-local settlement`: final status, decision log, readiness, follow-on, or closeout text in the reviewed proposal, spec, architecture artifact, ADR, or plan.
 - `semantic review-quality automation`: automation that judges whether a finding's evidence is persuasive, a suggested solution is best, or a disposition is substantively correct.
 - `generated public adapter`: generated installable adapter output under `dist/adapters/`.
+- `auto_fix_class`: a reviewer-owned material-finding field whose closed values are `none`, `mechanical`, and `declared-safe`.
+- `auto_fix_kind`: the closed mechanical finding kind used when `auto_fix_class` is `mechanical`.
+- `declared-safe recipe`: a reviewer-declared deterministic correction recipe for a finding that is not purely mechanical but contains no owner decision.
+- `affected paths`: the bounded paths a reviewer authorizes an automatic correction to touch.
 
 ## Examples first
 
@@ -145,6 +152,25 @@ When `review-resolution.md` closes those findings
 Then the file starts with closeout status, covered reviews, resolved and unresolved counts, and a resolution overview table
 And each finding detail still contains parseable `Finding ID:`, `Disposition:`, `Owner:`, `Owning stage:`, `Chosen action:`, `Rationale:`, `Validation target:`, and `Validation evidence:` labels.
 
+### Example E15: unclassified finding pauses implementation autoprogression
+
+Given `code-review` records material finding `CR-1`
+And `CR-1` lacks `auto_fix_class`
+When the implementation profile evaluates automatic correction eligibility
+Then `CR-1` is treated as `auto_fix_class=none` and the profile pauses.
+
+### Example E16: mechanical finding includes deterministic authority
+
+Given `code-review` records a formatter-output finding
+When the reviewer classifies it as `auto_fix_class=mechanical`
+Then the finding names `auto_fix_kind`, affected paths, deterministic authority, and required validation before any automatic correction may run.
+
+### Example E17: declared-safe production-code fix includes proof
+
+Given `code-review` records a production-code finding with `auto_fix_class=declared-safe`
+When the reviewer provides a deterministic recipe
+Then the recipe includes changed-behavior test proof or cites existing test-spec mappings that already cover the changed behavior.
+
 ## Requirements
 
 R1. A material review finding MUST include evidence supporting the finding.
@@ -156,6 +182,32 @@ R1b. A material review finding MUST state the outcome required to satisfy the re
 R1c. A material review finding MUST state at least one safe resolution path or state that an authorized owner decision is required before a safe resolution can be chosen.
 
 R1d. A finding that lacks evidence, required outcome, or either a safe resolution path or decision-needed rationale MUST be treated as incomplete.
+
+R1e. A material code-review finding created while `implementation-through-verify` is active MUST include `auto_fix_class`; if the field is absent, the workflow MUST treat it as `none`.
+
+R1f. `auto_fix_class` values MUST be closed to:
+- `none`;
+- `mechanical`;
+- `declared-safe`.
+
+R1g. `auto_fix_class=none` MUST be used when owner intent is required, alternatives remain, behavior or compatibility could change, a governing artifact may need revision, affected paths are unbounded, validation is not deterministic, or classification is omitted.
+
+R1h. `auto_fix_class=mechanical` MUST identify `auto_fix_kind`, affected paths, deterministic authority, and required validation.
+
+R1i. Mechanical `auto_fix_kind` values MUST be closed to:
+- `formatter-output`;
+- `lint-autofix`;
+- `generated-output-refresh`;
+- `exact-approved-rename`;
+- `unique-required-field-value`;
+- `mechanical-state-projection-sync`;
+- `deterministic-manifest-regeneration`.
+
+R1j. `auto_fix_class=declared-safe` MUST identify affected paths, resolution recipe, named inputs, named outputs, forbidden paths, acceptance criteria, required validation commands, and scope-preservation rule.
+
+R1k. A `declared-safe` recipe that changes production code MUST include a test that exercises the changed behavior or cite existing test-spec mappings that already prove the changed behavior.
+
+R1l. Reviewers MUST NOT use `mechanical` or `declared-safe` when the safe resolution path contains an owner decision, compatibility choice, governing-artifact revision, new dependency, new component, new public interface, new external integration, new security boundary, migration, or unplanned generated artifact class.
 
 R2. Detailed review files under `docs/changes/<change-id>/reviews/` MUST include a Review ID, stage, round, reviewer, target, and status.
 
@@ -397,6 +449,9 @@ R11. Repository-owned structural validation MUST detect the following conditions
 - `review-resolution.md` uses an unsupported disposition value;
 - `review-resolution.md` lacks top-level closeout status or uses a closeout status other than `open` or `closed`;
 - a closeout-gated validation mode sees `Closeout status: open`, unresolved `needs-decision`, or a finding counted toward `closed` without its disposition-specific closeout requirements.
+- an implementation-profile code-review finding with `auto_fix_class=mechanical` lacks `auto_fix_kind`, affected paths, deterministic authority, or required validation;
+- an implementation-profile code-review finding with `auto_fix_class=declared-safe` lacks affected paths, resolution recipe, named inputs, named outputs, forbidden paths, acceptance criteria, required validation commands, or scope-preservation rule;
+- an implementation-profile code-review finding uses an unsupported `auto_fix_class` or `auto_fix_kind`.
 
 R11a. Structural validation MUST NOT attempt semantic review-quality automation in this version.
 
@@ -455,6 +510,7 @@ Inputs:
 Outputs:
 
 - complete review findings with evidence, required outcome, and safe resolution or decision-needed rationale;
+- implementation-profile material finding fields for `auto_fix_class`, `auto_fix_kind`, affected paths, deterministic authority, resolution recipe, forbidden paths, acceptance criteria, and required validation when applicable;
 - initial review-record roots for triggered formal reviews before a change-local root exists;
 - review-log index entries for detailed review files;
 - initial and final review-resolution state with top-level closeout status plus finding-level disposition, owner, action, rationale, validation target, and evidence;
@@ -624,15 +680,14 @@ Outputs:
 
 ## Open questions
 
-- None.
+- What exact dogfood sample threshold should trigger a follow-on proposal for `test-spec-review` if implementation-profile settlement evidence proves insufficient?
 
 ## Next artifacts
 
-- Implementation M1 under the active review skill material-finding recording plan.
-- `code-review` after implementation milestones complete.
-- `verify`.
-- `explain-change`.
-- `pr`.
+- Architecture assessment for review-record schema, material-finding fields, automatic correction evidence, and generated adapter impact.
+- Architecture and architecture-review when the assessment requires architecture.
+- Test-spec amendments for review-finding auto-fix classification and loop guardrails.
+- Plan and plan-review before implementation.
 
 ## Follow-on artifacts
 
@@ -650,7 +705,11 @@ Outputs:
 - Execution plan: [Review Skill Material Finding Recording plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md)
 - Plan-review: approved on 2026-05-07 with no material findings.
 - Test spec: [Review Finding Resolution Contract test spec](review-finding-resolution-contract.test.md) updated for the review skill material-finding recording amendment.
+- `proposal`: [Separately Armed Implementation Autoprogression Through Verify](../docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md)
+- `proposal-review`: approved in [proposal-review-r1](../docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/proposal-review-r1.md)
+- `spec-review`: approved in [spec-review-r1](../docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/spec-review-r1.md)
 
 ## Readiness
 
-- Approved amendment for scan-first `review-resolution.md` readability and review skill material-finding recording. Matching test spec is updated; the active plan now governs M1 proof-map work.
+- Approved amendment for implementation-profile reviewer-owned auto-fix classification and correction evidence.
+- Ready for architecture assessment before downstream planning or implementation relies on the new profile.

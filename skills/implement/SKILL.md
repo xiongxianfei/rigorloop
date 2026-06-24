@@ -240,6 +240,12 @@ For milestone-based plans, `implement` works on one in-scope implementation mile
 
 `implement` must not set plan readiness to `Ready for final closeout` while any in-scope implementation milestone remains unreviewed, unresolved, or open. `Ready for final closeout` is valid only after all in-scope implementation milestones are closed or explicitly deferred by plan revision, final milestone code-review has completed, and required review-resolution is closed.
 
+## Implementation autoprogression
+
+When `implementation-through-verify` is active in a workflow-managed context, implement only the current approved milestone in order. Phase B can run implementation and reviewer-declared auto-fix loops, but it cannot run `explain-change`, `verify`, or `pr`.
+
+Automatic review-driven fixes are allowed only for reviewer-declared auto-fix findings that stay within the declared paths, approved generated outputs, workflow projections, and evidence records. Do not infer safety from a finding that merely looks small or obvious.
+
 ## TDD rules
 
 - Tests first for new behavior.

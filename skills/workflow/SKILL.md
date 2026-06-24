@@ -278,6 +278,9 @@ Rules:
 - Stop `authoring-through-plan-review` on non-clean review status, material finding, open `needs-decision`, user pause or cancellation, missing or malformed authorization persistence, contradictory workflow state, unreliable partial completion, exhausted transition budget, or any out-of-scope stage request.
 - Resume uses tracked artifact and review evidence. Do not rerun completed artifacts or clean reviews, do not infer completion from file existence alone, and pause when completion evidence is ambiguous.
 - A clean `plan-review` completes the profile, reports `test-spec` as next, and does not invoke `test-spec`, implementation, review-fix loops, verification, or PR.
+- The implementation profile is verify-bounded implementation autoprogression. User-facing `auto-through: verify` maps to canonical `implementation-through-verify` and requires separate change-local authorization from authoring autoprogression.
+- `implementation-through-verify` uses persisted phases. Phase `A` is audit-only. Phase `B` may run test-spec settlement, implementation milestones, independent code-review rounds, reviewer-declared correction loops, and final clean code-review; it must stop before `explain-change` or `verify`. Phase `C` may run `explain-change` and fresh `verify` only when promotion evidence is recorded, then stops before invoking `pr`.
+- Missing promotion evidence, unsupported phase values, unpersisted authorization, unrelated dirty state, owner decisions, new findings, non-shrinking correction loops, verify failure, or any attempt to cross the PR boundary pauses `implementation-through-verify`.
 - Autoprogressed `code-review` emits a first-pass review before any review-driven fix begins.
 - First-pass `blocked` and `inconclusive` stop instead of entering review-resolution.
 - A clean non-final milestone review continues to the next in-scope implementation milestone.

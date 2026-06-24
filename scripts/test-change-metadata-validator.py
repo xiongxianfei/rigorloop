@@ -299,6 +299,19 @@ review:
         )
         self.assertIn(expected_text, combined_output)
 
+    def valid_implementation_named_record_workflow(self, *, extra_container: str = "") -> str:
+        extra = f"{extra_container}\n" if extra_container else ""
+        return f"""workflow:
+  autoprogression:
+{extra}    implementation_through_verify:
+      profile: implementation-through-verify
+      state: armed
+      phase: B
+      authorized_by: user
+      authorized_at: 2026-06-24T12:05:00Z
+      change_id: 2026-06-24-policy-fixture
+"""
+
     def test_valid_basic_fixture_passes(self) -> None:
         self.assertPathPasses(FIXTURES / "valid-basic" / "change.yaml")
 
@@ -319,6 +332,32 @@ review:
     authorized_by: user
     authorized_at: 2026-06-24T12:00:00Z
     change_id: 2026-06-24-policy-fixture
+""",
+            )
+            self.assertPathPasses(target)
+
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-implementation-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block="""workflow:
+  autoprogression:
+    authoring_through_plan_review:
+      profile: authoring-through-plan-review
+      authorized_by: user
+      authorized_at: 2026-06-24T12:00:00Z
+      change_id: 2026-06-24-policy-fixture
+    implementation_through_verify:
+      profile: implementation-through-verify
+      state: armed
+      phase: B
+      authorized_by: user
+      authorized_at: 2026-06-24T12:05:00Z
+      change_id: 2026-06-24-policy-fixture
+      activation_baseline: abc123
+      cancellation:
+        cancelled_by: user
+        cancelled_at: 2026-06-24T12:10:00Z
+        reason: user-request
 """,
             )
             self.assertPathPasses(target)
@@ -462,6 +501,247 @@ review:
                     target = self.write_policy_fixture(Path(temp_dir), workflow_block=workflow_block)
                     self.assertPathFails(target, expected)
 
+    def test_implementation_autoprogression_policy_record_required_fields_fail(self) -> None:
+        cases = [
+            (
+                "missing-phase",
+                """workflow:
+  autoprogression:
+    implementation_through_verify:
+      profile: implementation-through-verify
+      state: armed
+      authorized_by: user
+      authorized_at: 2026-06-24T12:05:00Z
+      change_id: 2026-06-24-policy-fixture
+""",
+                "workflow.autoprogression.implementation_through_verify.phase: missing required field",
+            ),
+            (
+                "unsupported-phase",
+                """workflow:
+  autoprogression:
+    implementation_through_verify:
+      profile: implementation-through-verify
+      state: armed
+      phase: D
+      authorized_by: user
+      authorized_at: 2026-06-24T12:05:00Z
+      change_id: 2026-06-24-policy-fixture
+""",
+                "workflow.autoprogression.implementation_through_verify.phase: expected one of: A, B, C",
+            ),
+            (
+                "unsupported-state",
+                """workflow:
+  autoprogression:
+    implementation_through_verify:
+      profile: implementation-through-verify
+      state: running
+      phase: B
+      authorized_by: user
+      authorized_at: 2026-06-24T12:05:00Z
+      change_id: 2026-06-24-policy-fixture
+""",
+                "workflow.autoprogression.implementation_through_verify.state: expected one of",
+            ),
+            (
+                "wrong-record-profile",
+                """workflow:
+  autoprogression:
+    implementation_through_verify:
+      profile: authoring-through-plan-review
+      state: armed
+      phase: B
+      authorized_by: user
+      authorized_at: 2026-06-24T12:05:00Z
+      change_id: 2026-06-24-policy-fixture
+""",
+                "workflow.autoprogression.implementation_through_verify.profile: expected implementation-through-verify",
+            ),
+            (
+                "live-state-field",
+                """workflow:
+  autoprogression:
+    implementation_through_verify:
+      profile: implementation-through-verify
+      state: armed
+      phase: B
+      authorized_by: user
+      authorized_at: 2026-06-24T12:05:00Z
+      change_id: 2026-06-24-policy-fixture
+      next_stage: implement M1
+""",
+                "workflow.autoprogression.implementation_through_verify.next_stage: profile policy must not own live workflow state",
+            ),
+        ]
+        for name, workflow_block, expected in cases:
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory(prefix=f"change-metadata-implementation-policy-{name}-") as temp_dir:
+                    target = self.write_policy_fixture(Path(temp_dir), workflow_block=workflow_block)
+                    self.assertPathFails(target, expected)
+
+    def test_named_records_reject_container_next_stage(self) -> None:
+        self.assertPathFails(
+            FIXTURES / "2026-06-24-separately-armed-implementation-autoprogression-through-verify" / "change.yaml",
+            "workflow.autoprogression.next_stage: profile policy must not own live workflow state",
+        )
+
+    def test_forbidden_live_state_container_fixture_fails(self) -> None:
+        self.assertPathFails(
+            FIXTURES / "2026-06-24-separately-armed-implementation-autoprogression-through-verify" / "change.yaml",
+            "workflow.autoprogression.next_stage: profile policy must not own live workflow state",
+        )
+
+    def test_named_records_reject_container_current_stage(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-current-stage-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=self.valid_implementation_named_record_workflow(
+                    extra_container="    current_stage: implement"
+                ),
+            )
+            self.assertPathFails(
+                target,
+                "workflow.autoprogression.current_stage: profile policy must not own live workflow state",
+            )
+
+    def test_named_records_reject_container_review_status(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-review-status-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=self.valid_implementation_named_record_workflow(
+                    extra_container="    review_status: approved"
+                ),
+            )
+            self.assertPathFails(
+                target,
+                "workflow.autoprogression.review_status: profile policy must not own live workflow state",
+            )
+
+    def test_named_records_reject_container_branch_readiness(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-branch-readiness-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=self.valid_implementation_named_record_workflow(
+                    extra_container="    branch_readiness: ready"
+                ),
+            )
+            self.assertPathFails(
+                target,
+                "workflow.autoprogression.branch_readiness: profile policy must not own live workflow state",
+            )
+
+    def test_named_records_reject_container_pr_readiness(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-pr-readiness-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=self.valid_implementation_named_record_workflow(
+                    extra_container="    pr_readiness: ready"
+                ),
+            )
+            self.assertPathFails(
+                target,
+                "workflow.autoprogression.pr_readiness: profile policy must not own live workflow state",
+            )
+
+    def test_named_records_reject_all_forbidden_fields_at_once(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-all-live-fields-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=self.valid_implementation_named_record_workflow(
+                    extra_container="""    current_stage: implement
+    next_stage: code-review
+    review_status: approved
+    branch_readiness: ready
+    pr_readiness: ready"""
+                ),
+            )
+            result = run_validator(target)
+            combined_output = f"{result.stdout}\n{result.stderr}"
+            self.assertNotEqual(result.returncode, 0)
+            for field in (
+                "current_stage",
+                "next_stage",
+                "review_status",
+                "branch_readiness",
+                "pr_readiness",
+            ):
+                self.assertIn(
+                    f"workflow.autoprogression.{field}: profile policy must not own live workflow state",
+                    combined_output,
+                )
+
+    def test_legacy_record_still_rejects_container_forbidden_fields(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-legacy-live-field-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block="""workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+    next_stage: implement M1
+""",
+            )
+            self.assertPathFails(
+                target,
+                "workflow.autoprogression.next_stage: profile policy must not own live workflow state",
+            )
+
+    def test_forbidden_field_inside_authoring_record_still_rejects(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-authoring-live-field-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block="""workflow:
+  autoprogression:
+    authoring_through_plan_review:
+      profile: authoring-through-plan-review
+      authorized_by: user
+      authorized_at: 2026-06-24T12:00:00Z
+      change_id: 2026-06-24-policy-fixture
+      next_stage: implement M1
+""",
+            )
+            self.assertPathFails(
+                target,
+                "workflow.autoprogression.authoring_through_plan_review.next_stage: profile policy must not own live workflow state",
+            )
+
+    def test_forbidden_field_inside_implementation_record_still_rejects(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-implementation-live-field-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=self.valid_implementation_named_record_workflow(
+                    extra_container=""
+                ).replace(
+                    "      change_id: 2026-06-24-policy-fixture\n",
+                    "      change_id: 2026-06-24-policy-fixture\n      next_stage: implement M1\n",
+                ),
+            )
+            self.assertPathFails(
+                target,
+                "workflow.autoprogression.implementation_through_verify.next_stage: profile policy must not own live workflow state",
+            )
+
+    def test_unrelated_workflow_top_level_field_is_not_rejected(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-unrelated-workflow-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block="""workflow:
+  some_unrelated_field: allowed
+  autoprogression:
+    implementation_through_verify:
+      profile: implementation-through-verify
+      state: armed
+      phase: B
+      authorized_by: user
+      authorized_at: 2026-06-24T12:05:00Z
+      change_id: 2026-06-24-policy-fixture
+""",
+            )
+            self.assertPathPasses(target)
+
     def test_query_summary_exposes_autoprogression_policy_as_evidence_only(self) -> None:
         with tempfile.TemporaryDirectory(prefix="change-metadata-policy-query-") as temp_dir:
             repo_root = Path(temp_dir)
@@ -481,6 +761,48 @@ review:
             )
             self.assertNotIn("next_stage", payload["profile_policy"])
             self.assertNotIn("current_stage", payload["profile_policy"])
+
+    def test_query_summary_exposes_named_autoprogression_policy_records(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-policy-query-named-") as temp_dir:
+            repo_root = Path(temp_dir)
+            change_id = "2026-06-24-policy-fixture"
+            change_root = repo_root / "docs" / "changes" / change_id
+            change_root.mkdir(parents=True)
+            self.write_policy_fixture(
+                change_root,
+                workflow_block="""workflow:
+  autoprogression:
+    authoring_through_plan_review:
+      profile: authoring-through-plan-review
+      authorized_by: user
+      authorized_at: 2026-06-24T12:00:00Z
+      change_id: 2026-06-24-policy-fixture
+    implementation_through_verify:
+      profile: implementation-through-verify
+      state: armed
+      phase: B
+      authorized_by: user
+      authorized_at: 2026-06-24T12:05:00Z
+      change_id: 2026-06-24-policy-fixture
+""",
+            )
+
+            result = run_query_change_record(repo_root, change_id, "summary")
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            payload = json.loads(result.stdout)
+            records = payload["profile_policy"]["records"]
+            self.assertEqual(
+                records["authoring_through_plan_review"]["profile"],
+                "authoring-through-plan-review",
+            )
+            self.assertEqual(
+                records["implementation_through_verify"]["profile"],
+                "implementation-through-verify",
+            )
+            self.assertEqual(records["implementation_through_verify"]["phase"], "B")
+            self.assertEqual(records["implementation_through_verify"]["state"], "armed")
+            self.assertNotIn("next_stage", records["implementation_through_verify"])
+            self.assertNotIn("current_stage", records["implementation_through_verify"])
 
     def test_compact_path_variable_helpers(self) -> None:
         validator = load_validator_module()
