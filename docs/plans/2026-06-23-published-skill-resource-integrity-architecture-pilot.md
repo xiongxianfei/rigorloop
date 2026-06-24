@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Change ID: 2026-06-22-published-skill-resource-integrity-architecture-pilot
 - Owner: maintainer
 - Start date: 2026-06-23
-- Last updated: 2026-06-23
-- Related issue or PR: none yet
+- Last updated: 2026-06-24
+- Related issue or PR: PR #101, https://github.com/xiongxianfei/rigorloop/pull/101
 - Supersedes: none
 
 ## Purpose / big picture
@@ -83,11 +83,11 @@ Existing implementation anchors:
 - Current milestone: M7. Lifecycle Closeout and Release-Gate Alignment
 - Current milestone state: closed
 - Last reviewed milestone: M7. Lifecycle Closeout and Release-Gate Alignment
-- Review status: code-review-m7-r1 clean-with-notes; M7 closed
+- Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: hosted CI and human review have not completed.
+- Next stage: none
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — PR #101 merged after hosted CI success on 2026-06-23. No downstream lifecycle stage remains for this initiative.
 
 ## Milestones
 
@@ -523,6 +523,7 @@ M5 relationship to M1:
 - 2026-06-23: code-review-m7-r1 returned clean-with-notes, closed M7, and handed off to verify.
 - 2026-06-23: final verify passed local branch-readiness checks, closed the stale review-resolution status drift discovered during verification, and handed off to `pr` without claiming PR body readiness, PR open readiness, hosted CI, or live-registry proof.
 - 2026-06-23: prepared PR handoff after branch-ready verification. Active lifecycle state now points to hosted CI and human review as the next downstream event.
+- 2026-06-24: PR #101 merge was confirmed; terminal closeout moved the plan from Active to Done.
 
 ## Decision log
 
@@ -785,9 +786,11 @@ M5 relationship to M1:
 
 ## Outcome and retrospective
 
-- Not started. This section is final-only while the plan is active.
+- PR #101 merged on 2026-06-23.
+- The published-skill resource integrity pilot now has packaged architecture resources, resource-map validation, adapter/archive/install parity proof, and repository-wide audit evidence.
+- SRI-PLAN1, SRI-CR1, SRI-CR2, SRI-CR3, SRI-CR4, and related review findings were accepted, resolved, and confirmed by later reviews.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR handoff prepared; awaiting hosted CI and human review.
+- Terminal done. No downstream lifecycle stage remains for this initiative.

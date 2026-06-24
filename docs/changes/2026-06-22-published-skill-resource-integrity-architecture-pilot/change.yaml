@@ -52,6 +52,7 @@ requirements:
   - R55c
   - R55d
   - R55e
+  - PR #101 merged after hosted CI success, and terminal closeout moves the plan from Active to Done.
 tests:
   - specs/skill-contract.test.md
 validation:
@@ -463,6 +464,14 @@ validation:
     result: pass
   - command: git diff --check --
     result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass_after_pr_101_merge_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass_after_pr_101_merge_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plan-archive.md --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plans/2026-06-18-workflow-skill-artifact-location-map.md
+    result: pass_after_pr_101_merge_closeout
+  - command: git diff --check -- docs/plan.md docs/plan-archive.md docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
+    result: pass_after_pr_101_merge_closeout
 changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/change.yaml
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/architecture-resource-chain-audit.md
@@ -491,6 +500,7 @@ changed_files:
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/repository-wide-resource-audit.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md
   - docs/plan.md
+  - docs/plan-archive.md
   - docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md
   - docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md
   - docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/validator-fixtures.md
