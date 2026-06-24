@@ -64,15 +64,15 @@ This work should compose with those surfaces instead of duplicating marker, voca
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Selected Validation Integration and Behavior Preservation Evidence
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m2-r1.md
-- Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review
+- Current milestone: final closeout sequence
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m3-r1.md
+- Last reviewed milestone: M3
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open,implementation-milestones-open,milestone-review-pending,explain-change-pending,verify-pending,pr-handoff-pending — M1 and M2 are closed, M3 is ready for code-review, and later lifecycle gates remain before final closeout.
+- Reason final closeout is or is not ready: lifecycle-gates-open,explain-change-pending,verify-pending,pr-handoff-pending — all implementation milestones are closed, and later lifecycle gates remain before final closeout.
 
 ## Milestones
 
@@ -172,7 +172,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 
 ### M3. Selected Validation Integration and Behavior Preservation Evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Integrate prose validation into selected validation for covered paths and record behavior-preservation evidence for first-slice enforcement.
 - Requirements: R8-R19, AC6-AC15
 - Files/components likely touched:
@@ -220,6 +220,38 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - Rollback/recovery:
   - Disable selected-validation routing before reverting behavior evidence and validator integration.
 
+### final closeout sequence
+
+- Milestone state: planned
+- Goal: Complete the post-implementation lifecycle after all implementation milestones are closed.
+- Requirements: AC1-AC15 closeout evidence, final rationale, verification, and PR handoff.
+- Files/components likely touched:
+  - `docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md`
+  - `docs/changes/2026-06-24-semantic-source-line-contract/change.yaml`
+  - `docs/plans/2026-06-24-semantic-source-line-contract.md`
+  - `docs/plan.md`
+- Dependencies:
+  - Clean code-review M3 R1.
+- Next stages:
+  - `explain-change`
+  - `verify`
+  - `pr`
+  - lifecycle closeout
+  - plan index synchronization
+  - terminal plan disposition
+  - plan archive or recent-done update according to `docs/plan.md` policy
+  - final validation evidence recording
+  - PR handoff evidence
+  - no additional implementation milestone unless a downstream gate records findings or blockers
+  - no branch readiness claim before `verify`
+  - no PR readiness claim before `pr`
+  - no CI claim without observed CI evidence
+- Validation commands:
+  - Follow `explain-change`, `verify`, and `pr` stage-owned validation requirements.
+- Expected observable result: The change has durable rationale, final verification evidence, and PR handoff evidence before completion claims.
+- Rollback/recovery:
+  - If a downstream gate records findings, route to the required owning stage before PR handoff.
+
 ## Validation plan
 
 - `python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/`: validate formal review recording.
@@ -259,6 +291,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: M2 implementation added concise contributor guidance, workflow pointer text, formatter guardrail config, and focused README/VISION Tier A cleanup; handed to code-review R1.
 - 2026-06-24: Code-review M2 R1 found no material findings and closed M2; next stage is M3 implementation.
 - 2026-06-24: M3 implementation added documentation prose selected-validation routing for Tier A enforcement and Tier B audit, added a `--changed-file` alias for the plan's selector command, recorded behavior-preservation evidence, and handed the milestone to code-review R1.
+- 2026-06-24: Code-review M3 R1 found no material findings and closed M3; all implementation milestones are closed and the next stage is explain-change.
 
 ## Decision log
 
@@ -303,6 +336,7 @@ This work should compose with those surfaces instead of duplicating marker, voca
 - 2026-06-24: `python scripts/test-select-validation.py` passed with 103 tests after M3 selected-validation routing and `--changed-file` alias coverage.
 - 2026-06-24: `python scripts/test-documentation-prose-validator.py` passed with 14 tests after M3.
 - 2026-06-24: `python scripts/select-validation.py --mode explicit --changed-file README.md --changed-file VISION.md` passed and selected `documentation_prose.enforce`, `readme.validate`, `readme.vision_markers`, and `guide_system.validate`.
+- 2026-06-24: Code-review M3 R1 passed with no material findings and closed M3.
 
 ## Outcome and retrospective
 
