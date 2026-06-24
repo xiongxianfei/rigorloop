@@ -1458,6 +1458,12 @@ raise SystemExit({exit_code})
                 "checks": {"guide_system.regression", "guide_system.validate"},
             },
             {
+                "path": "scripts/lifecycle_state_sync.py",
+                "category": "validator-artifact-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.regression"},
+            },
+            {
                 "path": "scripts/change_metadata_semantics.py",
                 "category": "validator-change-metadata",
                 "status": "ok",

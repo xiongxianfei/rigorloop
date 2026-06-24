@@ -1606,6 +1606,7 @@ def _path_category(path: str) -> str | None:
         "scripts/validate-artifact-lifecycle.py",
         "scripts/artifact_lifecycle_validation.py",
         "scripts/artifact_lifecycle_contracts.py",
+        "scripts/lifecycle_state_sync.py",
         "scripts/test-artifact-lifecycle-validator.py",
     }:
         return "validator-artifact-lifecycle"
