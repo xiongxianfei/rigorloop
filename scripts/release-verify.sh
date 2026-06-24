@@ -22,7 +22,7 @@ if [[ -z "$release_version" ]]; then
 fi
 
 case "$release_version" in
-  v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2)
+  v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3)
     ;;
   *)
     echo "Unsupported release target: ${release_version}" >&2
@@ -36,19 +36,19 @@ if [[ "$release_version" == "v0.1.2" ]]; then
 fi
 uses_release_output="false"
 case "$release_version" in
-  v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2)
+  v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3)
     uses_release_output="true"
     ;;
 esac
 untracked_public_adapters="false"
 case "$release_version" in
-  v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2)
+  v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3)
     untracked_public_adapters="true"
     ;;
 esac
 npm_package_release="false"
 case "$release_version" in
-  v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2)
+  v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3)
     npm_package_release="true"
     ;;
 esac

@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "release": {
+    "version": "v0.3.3",
+    "source_repository": "xiongxianfei/rigorloop",
+    "source_commit": "6f895a03",
+    "release_tag": "v0.3.3",
+    "published_at": "pending-publication"
+  },
+  "metadata": {
+    "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.3/adapter-artifacts-v0.3.3.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "artifacts": [
+    {
+      "adapter": "codex",
+      "archive": "rigorloop-adapter-codex-v0.3.3.zip",
+      "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.3/rigorloop-adapter-codex-v0.3.3.zip",
+      "sha256": "66316c3130cb5472cd27d7d4a8c989b6d2df29a23290e39656040db1b242100c",
+      "size_bytes": 118498,
+      "install_root": ".agents/skills",
+      "tree_hash_algorithm": "rigorloop-tree-hash-v1",
+      "tree_sha256": "9cdfba0fe8ff8c13b782f729199081ed9342104334bac5712c4402dcd3a65122",
+      "file_count": 44
+    },
+    {
+      "adapter": "claude",
+      "archive": "rigorloop-adapter-claude-v0.3.3.zip",
+      "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.3/rigorloop-adapter-claude-v0.3.3.zip",
+      "sha256": "bfa1814eb5386d01624ce7acc706bf766a3b55f681c7e83f8e3f4ebdf5597a25",
+      "size_bytes": 117776,
+      "install_root": ".claude/skills",
+      "tree_hash_algorithm": "rigorloop-tree-hash-v1",
+      "tree_sha256": "dcd94ba382633c1e64e0dcdde7b31fa1e24047066afb5d4bbe9868b4f6392a7f",
+      "file_count": 44
+    },
+    {
+      "adapter": "opencode",
+      "archive": "rigorloop-adapter-opencode-v0.3.3.zip",
+      "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.3/rigorloop-adapter-opencode-v0.3.3.zip",
+      "sha256": "a92b0bf91142be3a911a6d3e76bcd9e2a99a06f89ee6716b59bec640c71436cd",
+      "size_bytes": 118044,
+      "install_root": ".opencode/skills",
+      "tree_hash_algorithm": "rigorloop-tree-hash-v1",
+      "tree_sha256": "dcd94ba382633c1e64e0dcdde7b31fa1e24047066afb5d4bbe9868b4f6392a7f",
+      "file_count": 44,
+      "skills_only_compatibility": {
+        "releases": [
+          "v0.3.3"
+        ]
+      }
+    }
+  ],
+  "compatibility": {
+    "opencode_skills_only": {
+      "releases": [
+        "v0.3.3"
+      ]
+    }
+  },
+  "validation": {
+    "command": "python scripts/validate-adapters.py --root <release-output-dir> --version v0.3.3",
+    "result": "pass"
+  }
+}

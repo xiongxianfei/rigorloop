@@ -24,7 +24,7 @@ from npm_package_validation import (  # noqa: E402
 )
 
 PACKAGE_ROOT = ROOT / "packages" / "rigorloop"
-PACKAGE_VERSION = "0.3.2"
+PACKAGE_VERSION = "0.3.3"
 RELEASE_TAG = f"v{PACKAGE_VERSION}"
 METADATA_FILE = f"adapter-artifacts-{RELEASE_TAG}.json"
 TARGET_SKILL_ROOTS = {
