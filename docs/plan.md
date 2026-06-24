@@ -14,12 +14,17 @@ Index policy:
 -->
 
 ## Active
-- [2026-06-23 Evidence-Bound and Incremental Project Map Skill](plans/2026-06-23-evidence-bound-incremental-project-map.md) - active; PR #102 open; next stage: hosted CI and human review; change: `2026-06-23-evidence-bound-incremental-project-map`.
-- [2026-06-23 Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) - active; next stage: hosted CI and human review; change: `2026-06-22-published-skill-resource-integrity-architecture-pilot`.
-- [2026-06-18 Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) - active; PR #99 open; next stage: hosted CI and human review; change: `2026-06-17-workflow-skill-artifact-location-map`.
+
+| Plan | State | Next stage | Change ID |
+| --- | --- | --- | --- |
+| [Workflow-State Projection and Pre-Transition Synchronization Gate](plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md) | active | hosted CI and human review | `2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate` |
+| [Evidence-Bound and Incremental Project Map Skill](plans/2026-06-23-evidence-bound-incremental-project-map.md) | active | hosted CI and human review | `2026-06-23-evidence-bound-incremental-project-map` |
+| [Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) | active | hosted CI and human review | `2026-06-22-published-skill-resource-integrity-architecture-pilot` |
+| [Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) | active | hosted CI and human review | `2026-06-17-workflow-skill-artifact-location-map` |
 
 ## Blocked
-- none yet
+
+No blocked plans.
 
 ## Done (recent)
 

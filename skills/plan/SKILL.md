@@ -197,6 +197,8 @@ Update a current handoff summary whenever implementation or review changes miles
 
 Keep it consistent with the active plan, `docs/plan.md`, and change metadata. It must not claim branch readiness, PR readiness, final verification, final closeout readiness, or Done while downstream gates remain.
 
+Plan validation sections for planned initiatives should name the project artifact-lifecycle state-sync check before downstream handoff.
+
 ## Stop conditions
 
 Stop when source artifacts are missing or contradictory, lifecycle status is not approved enough, architecture/security/release boundaries are unclear, validation commands cannot be identified, a milestone would rely on chat-only context, or the plan would hide open work behind `Ready for final closeout`, Done, or PR readiness wording.

@@ -4754,6 +4754,57 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(skill=skill_name, stale="in the active plan or review handoff"):
                 self.assertNotIn("in the active plan or review handoff", body)
 
+    def test_workflow_state_sync_gate_is_binding_guidance(self) -> None:
+        """Docs and skills must bind state-sync validation before downstream handoff claims."""
+
+        workflow_docs = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        skill_bodies = {
+            skill_name: (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for skill_name in [
+                "workflow",
+                "plan",
+                "implement",
+                "code-review",
+                "verify",
+                "pr",
+            ]
+        }
+
+        workflow_terms = [
+            "Run `python scripts/validate-artifact-lifecycle.py --mode explicit-paths` after stage-owned evidence is updated and before claiming `code-review`, `verify`, or PR handoff readiness.",
+            "A failed state-sync gate blocks the next-stage handoff sentence until the agent either reverts its own in-progress owner/projection edits or records the failure as the current blocker with the rerun command.",
+        ]
+        for term in workflow_terms:
+            with self.subTest(surface="docs/workflows.md", term=term):
+                self.assertIn(term, workflow_docs)
+
+        required_by_skill = {
+            "workflow": [
+                "Run the state-sync gate after stage-owned evidence is updated and before claiming `code-review`, `verify`, or PR handoff readiness.",
+                "A failed state-sync gate blocks downstream handoff language.",
+            ],
+            "plan": [
+                "Plan validation sections for planned initiatives should name the project artifact-lifecycle state-sync check before downstream handoff.",
+            ],
+            "implement": [
+                "Run the project artifact-lifecycle state-sync check before claiming readiness for `code-review`.",
+            ],
+            "code-review": [
+                "Run the state-sync gate before emitting downstream handoff language for review-resolution, the next milestone, or final closeout.",
+            ],
+            "verify": [
+                "Run the project artifact-lifecycle state-sync check for touched, referenced, active, and blocked workflow-state artifacts before `branch-ready`.",
+            ],
+            "pr": [
+                "PR handoff is blocked when the latest verify evidence does not include a passing state-sync gate for touched, referenced, active, and blocked workflow-state artifacts.",
+            ],
+        }
+        for skill_name, terms in required_by_skill.items():
+            body = skill_bodies[skill_name]
+            for term in terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
     def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
         """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""
 

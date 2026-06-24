@@ -112,6 +112,7 @@ class ResolutionRecord:
     line: int
     finding_id: str
     disposition: str | None
+    disposition_count: int
     fields: dict[str, FieldValue]
 
 
@@ -145,6 +146,42 @@ class ReviewArtifactValidationResult:
     review_log_entry_count: int
     resolution_entry_count: int
     closeout_status: str | None
+
+
+@dataclass(frozen=True)
+class ReviewEvidenceSummary:
+    material_finding_ids: tuple[str, ...]
+    open_finding_ids: tuple[str, ...]
+
+    @property
+    def material_count(self) -> int:
+        return len(self.material_finding_ids)
+
+    @property
+    def open_count(self) -> int:
+        return len(self.open_finding_ids)
+
+    @property
+    def closed_count(self) -> int:
+        return self.material_count - self.open_count
+
+
+def finding_closure_state(
+    finding_id: str,
+    review_log: list[ReviewLogEntry] | tuple[ReviewLogEntry, ...],
+    review_resolution: ReviewResolution | None,
+    review_records: list[FindingRecord] | tuple[FindingRecord, ...],
+) -> str:
+    """Return closed only when the review-finding closeout predicate is satisfied."""
+    if _finding_closure_findings(
+        finding_id,
+        review_log,
+        review_resolution,
+        review_records,
+        "closeout",
+    ):
+        return "open"
+    return "closed"
 
 
 def validate_change_root(change_root: Path, *, mode: str = "structure") -> ReviewArtifactValidationResult:
@@ -218,6 +255,44 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
         findings.extend(_validate_closeout(finding_records, log_entries, resolution, mode))
 
     return _result(change_root, mode, findings, review_records, finding_records, log_entries, resolution)
+
+
+def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:
+    """Return derived material/open finding IDs from review evidence."""
+    change_root = change_root.resolve()
+    material_ids: set[str] = set()
+    finding_records: list[FindingRecord] = []
+    log_entries: list[ReviewLogEntry] = []
+    resolution: ReviewResolution | None = None
+
+    reviews_dir = change_root / "reviews"
+    if reviews_dir.is_dir():
+        for review_path in sorted(reviews_dir.glob("*.md")):
+            _, review_findings, _ = _parse_review_file(review_path, "structure")
+            finding_records.extend(review_findings)
+            for finding in review_findings:
+                material_ids.add(finding.finding_id)
+
+    review_log_path = change_root / "review-log.md"
+    if review_log_path.exists():
+        log_entries, _ = _parse_review_log(review_log_path, "structure")
+        for entry in log_entries:
+            material_ids.update(entry.material_finding_ids)
+
+    resolution_path = change_root / "review-resolution.md"
+    if resolution_path.exists():
+        resolution, _ = _parse_review_resolution(resolution_path, "structure")
+
+    open_ids = {
+        finding_id
+        for finding_id in material_ids
+        if finding_closure_state(finding_id, log_entries, resolution, finding_records) == "open"
+    }
+
+    return ReviewEvidenceSummary(
+        material_finding_ids=tuple(sorted(material_ids)),
+        open_finding_ids=tuple(sorted(open_ids)),
+    )
 
 
 def format_finding(finding: ValidationFinding, *, root: Path | None = None) -> str:
@@ -758,8 +833,19 @@ def _parse_resolution_entries(
                 )
             )
 
+        disposition_values = block_fields.get("Disposition", [])
         disposition_value = _first_nonempty(block_fields, "Disposition")
         disposition = disposition_value.value if disposition_value else None
+        if len(disposition_values) > 1:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=disposition_values[1].line,
+                    mode=mode,
+                    message="resolution entry must contain exactly one Disposition",
+                    finding_id=finding_id,
+                )
+            )
         if disposition is None:
             findings.append(
                 ValidationFinding(
@@ -786,6 +872,7 @@ def _parse_resolution_entries(
             line=finding_id_field.line,
             finding_id=finding_id,
             disposition=disposition,
+            disposition_count=len(disposition_values),
             fields={label: values[0] for label, values in block_fields.items() if values},
         )
         _validate_resolution_entry_structure(entry, mode, findings)
@@ -1218,22 +1305,46 @@ def _validate_closeout(
             )
         )
 
-    if resolution is not None:
-        for entry in resolution.entries:
-            findings.extend(_validate_resolution_entry_closeout(entry, mode))
-
-    findings.extend(_validate_closeout_log_open_findings(log_entries, mode))
+    material_ids = _material_finding_ids(finding_records, log_entries)
+    for finding_id in sorted(material_ids):
+        findings.extend(_finding_closure_findings(finding_id, log_entries, resolution, finding_records, mode))
     findings.extend(_validate_blocking_review_closeout(log_entries, resolution, mode))
     return findings
 
 
-def _validate_closeout_log_open_findings(
-    log_entries: list[ReviewLogEntry],
+def _material_finding_ids(
+    finding_records: list[FindingRecord] | tuple[FindingRecord, ...],
+    log_entries: list[ReviewLogEntry] | tuple[ReviewLogEntry, ...],
+) -> set[str]:
+    material_ids = {finding.finding_id for finding in finding_records}
+    for entry in log_entries:
+        material_ids.update(entry.material_finding_ids)
+    return material_ids
+
+
+def _finding_closure_findings(
+    finding_id: str,
+    log_entries: list[ReviewLogEntry] | tuple[ReviewLogEntry, ...],
+    resolution: ReviewResolution | None,
+    finding_records: list[FindingRecord] | tuple[FindingRecord, ...],
     mode: str,
 ) -> list[ValidationFinding]:
     findings: list[ValidationFinding] = []
+    indexed = any(finding_id in entry.material_finding_ids for entry in log_entries)
+    if not indexed:
+        finding_record = next((record for record in finding_records if record.finding_id == finding_id), None)
+        findings.append(
+            ValidationFinding(
+                path=finding_record.path if finding_record is not None else Path("review-log.md"),
+                line=finding_record.line if finding_record is not None else None,
+                mode=mode,
+                message="material Finding ID missing from review-log.md",
+                review_id=finding_record.review_id if finding_record is not None else None,
+                finding_id=finding_id,
+            )
+        )
     for entry in log_entries:
-        if not entry.open_finding_ids:
+        if finding_id not in entry.open_finding_ids:
             continue
         findings.append(
             ValidationFinding(
@@ -1242,8 +1353,45 @@ def _validate_closeout_log_open_findings(
                 mode=mode,
                 message="review-log Open findings must be empty for closed closeout",
                 review_id=entry.review_id,
+                finding_id=finding_id,
             )
         )
+    if resolution is None:
+        findings.append(
+            ValidationFinding(
+                path=Path("review-resolution.md"),
+                line=None,
+                mode=mode,
+                message="material Finding ID missing from review-resolution.md",
+                finding_id=finding_id,
+            )
+        )
+        return findings
+
+    if resolution.closeout_status is None:
+        findings.append(
+            ValidationFinding(
+                path=resolution.path,
+                line=resolution.closeout_line,
+                mode=mode,
+                message="review-resolution.md closeout status is missing or invalid",
+                finding_id=finding_id,
+            )
+        )
+
+    matches = [entry for entry in resolution.entries if entry.finding_id == finding_id]
+    if len(matches) != 1:
+        findings.append(
+            ValidationFinding(
+                path=resolution.path,
+                line=matches[0].line if matches else None,
+                mode=mode,
+                message="material Finding ID must appear exactly once in review-resolution.md",
+                finding_id=finding_id,
+            )
+        )
+        return findings
+    findings.extend(_validate_resolution_entry_closeout(matches[0], mode))
     return findings
 
 
@@ -1252,8 +1400,46 @@ def _validate_resolution_entry_closeout(
     mode: str,
 ) -> list[ValidationFinding]:
     findings: list[ValidationFinding] = []
-    if entry.disposition is None or entry.disposition not in APPROVED_DISPOSITIONS:
-        return findings
+    if entry.disposition_count != 1:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="resolution entry disposition must appear exactly once",
+                finding_id=entry.finding_id,
+            )
+        )
+    if entry.disposition is None:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="resolution entry missing disposition",
+                finding_id=entry.finding_id,
+            )
+        )
+    elif entry.disposition not in APPROVED_DISPOSITIONS:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message=f"unsupported disposition '{entry.disposition}'",
+                finding_id=entry.finding_id,
+            )
+        )
+    if not _entry_has(entry, "Validation evidence"):
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="finding closeout missing validation evidence",
+                finding_id=entry.finding_id,
+            )
+        )
 
     if entry.disposition == "needs-decision":
         findings.append(
@@ -1265,7 +1451,6 @@ def _validate_resolution_entry_closeout(
                 finding_id=entry.finding_id,
             )
         )
-        return findings
 
     if entry.disposition == "accepted":
         if not _entry_has_any(entry, ("Chosen action", "Final action")):
@@ -1288,7 +1473,6 @@ def _validate_resolution_entry_closeout(
                     finding_id=entry.finding_id,
                 )
             )
-        return findings
 
     if entry.disposition == "rejected":
         if not _entry_has(entry, "Rationale"):
@@ -1301,7 +1485,6 @@ def _validate_resolution_entry_closeout(
                     finding_id=entry.finding_id,
                 )
             )
-        return findings
 
     if entry.disposition == "deferred":
         if not _entry_has(entry, "Rationale"):
@@ -1324,7 +1507,6 @@ def _validate_resolution_entry_closeout(
                     finding_id=entry.finding_id,
                 )
             )
-        return findings
 
     if entry.disposition == "partially-accepted":
         if not _entry_has(entry, "Accepted portion"):

@@ -772,6 +772,152 @@ review:
                     target.write_text(fixture_text.replace(old, new), encoding="utf-8")
                     self.assertPathFails(target, expected)
 
+    def write_review_summary_change_fixture(
+        self,
+        root: Path,
+        *,
+        unresolved_items: int = 1,
+        material_findings: int = 1,
+        closed_findings: int = 0,
+        open_findings: int = 1,
+        extra_review_field: str = "",
+        close_resolution: bool = False,
+        log_open_findings: str = "WSS-F1",
+        include_validation_evidence: bool = True,
+        disposition: str | None = "accepted",
+        include_closeout_status: bool = True,
+    ) -> Path:
+        change_yaml = root / "change.yaml"
+        change_yaml.write_text(
+            f"""change_id: 2026-06-23-review-summary-fixture
+title: Review summary fixture
+classification: implementation
+risk: low
+artifacts: {{}}
+requirements:
+  - fixture
+tests:
+  - fixture
+validation:
+  - command: fixture
+    result: pass
+changed_files:
+  - docs/example.md
+review:
+  status: changes-requested
+  unresolved_items: {unresolved_items}
+  material_findings: {material_findings}
+  closed_findings: {closed_findings}
+  open_findings: {open_findings}
+{extra_review_field}""",
+            encoding="utf-8",
+        )
+        (root / "review-log.md").write_text(
+            f"""# Review Log
+
+### Review entry
+Review ID: code-review-r1
+Stage: code-review
+Round: 1
+Status: changes-requested
+Detailed record: reviews/code-review-r1.md
+Resolution: review-resolution.md#code-review-r1
+Material findings: WSS-F1
+Open findings: {log_open_findings}
+""",
+            encoding="utf-8",
+        )
+        if close_resolution:
+            validation_evidence = "Validation evidence: Fixture validation passed.\n" if include_validation_evidence else ""
+            closeout_status = "Closeout status: closed\n\n" if include_closeout_status else ""
+            disposition_line = "" if disposition is None else f"Disposition: {disposition}\n"
+            (root / "review-resolution.md").write_text(
+                f"""# Review Resolution
+
+{closeout_status}### code-review-r1
+
+Finding ID: WSS-F1
+{disposition_line}Owner: implementation author
+Owning stage: review-resolution
+Chosen action: Resolve the finding.
+Rationale: Fixture models a historical open log entry closed by resolution evidence.
+Validation target: Metadata summary counts derive zero open findings.
+{validation_evidence}""",
+                encoding="utf-8",
+            )
+        return change_yaml
+
+    def test_review_summary_counts_match_review_log(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-review-summary-") as temp_dir:
+            target = self.write_review_summary_change_fixture(Path(temp_dir))
+            self.assertPathPasses(target)
+
+        cases = [
+            {"unresolved_items": 0, "expected": "review.unresolved_items must match review-log open finding count"},
+            {"material_findings": 2, "expected": "review.material_findings must match review evidence"},
+            {"closed_findings": 1, "expected": "review.closed_findings must match review evidence"},
+            {"open_findings": 0, "expected": "review.open_findings must match review evidence"},
+        ]
+        for kwargs in cases:
+            expected = kwargs.pop("expected")
+            with self.subTest(expected=expected):
+                with tempfile.TemporaryDirectory(prefix="change-metadata-review-summary-") as temp_dir:
+                    target = self.write_review_summary_change_fixture(Path(temp_dir), **kwargs)
+                    self.assertPathFails(target, expected)
+
+        with tempfile.TemporaryDirectory(prefix="change-metadata-review-summary-closed-") as temp_dir:
+            target = self.write_review_summary_change_fixture(
+                Path(temp_dir),
+                unresolved_items=0,
+                material_findings=1,
+                closed_findings=1,
+                open_findings=0,
+                close_resolution=True,
+                log_open_findings="None",
+            )
+            self.assertPathPasses(target)
+
+        with tempfile.TemporaryDirectory(prefix="change-metadata-review-summary-missing-evidence-") as temp_dir:
+            target = self.write_review_summary_change_fixture(
+                Path(temp_dir),
+                unresolved_items=0,
+                material_findings=1,
+                closed_findings=1,
+                open_findings=0,
+                close_resolution=True,
+                include_validation_evidence=False,
+            )
+            self.assertPathFails(target, "review.unresolved_items must match review-log open finding count")
+
+        invalid_resolution_cases = [
+            {"name": "missing-disposition", "disposition": None},
+            {"name": "unsupported-disposition", "disposition": "deferred-to-next-quarter"},
+            {"name": "missing-closeout-status", "include_closeout_status": False},
+        ]
+        for case in invalid_resolution_cases:
+            name = case.pop("name")
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory(prefix=f"change-metadata-review-summary-{name}-") as temp_dir:
+                    target = self.write_review_summary_change_fixture(
+                        Path(temp_dir),
+                        unresolved_items=0,
+                        material_findings=1,
+                        closed_findings=1,
+                        open_findings=0,
+                        close_resolution=True,
+                        log_open_findings="None",
+                        **case,
+                    )
+                    self.assertPathFails(target, "review.unresolved_items must match review-log open finding count")
+
+    def test_review_summary_rejects_next_stage_like_metadata(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-review-next-stage-") as temp_dir:
+            target = self.write_review_summary_change_fixture(
+                Path(temp_dir),
+                extra_review_field="  next_stage: code-review M2\n",
+            )
+            self.assertPathFails(target, "review.next_stage must not author live planned-initiative next stage")
+
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))

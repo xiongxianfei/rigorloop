@@ -74,6 +74,7 @@ Apply the same readiness checks for workflow-managed and direct-`pr` invocation.
 `verify` owns `branch-ready`. This stage owns `pr-body-ready` and `pr-open-ready`.
 
 PR handoff is scoped evidence and must not own the active plan's current next stage. Summarize planned-initiative state from the active plan `Current Handoff Summary`.
+PR handoff is blocked when the latest verify evidence does not include a passing state-sync gate for touched, referenced, active, and blocked workflow-state artifacts.
 
 ## Artifact placement
 
