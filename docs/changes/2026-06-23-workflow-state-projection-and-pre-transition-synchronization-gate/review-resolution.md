@@ -5,10 +5,13 @@
 This record tracks formal lifecycle review findings for the workflow-state
 projection and pre-transition synchronization gate change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m3-r3
+Review closeout: code-review-m4-r1
+Review closeout: code-review-m4-r2
+Review closeout: code-review-m5-r1
 
 ## Resolution Entries
 
