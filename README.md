@@ -110,10 +110,10 @@ lifecycle.
 
 ## Proposal-Gated Automatic Workflow
 
-For full-feature work, the recommended automation boundary is the proposal
-gate. Review and improve the proposal manually first; then let the workflow
-continue through deterministic authoring and review stages only after the formal
-proposal review is clean.
+For substantive workflow-managed work, the recommended automation boundary is
+the proposal gate. Review and improve the proposal manually first; then let the
+workflow continue through deterministic authoring and review stages only after
+the formal proposal review is clean.
 
 Use this sequence:
 
