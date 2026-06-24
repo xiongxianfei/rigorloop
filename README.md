@@ -20,45 +20,71 @@ change safe to continue.
 
 ## Quick Start
 
-Install and run the public CLI from npm:
+Try the CLI without installing anything:
 
 ```bash
 npx @xiongxianfei/rigorloop@latest --help
-npx @xiongxianfei/rigorloop@latest init codex
-npx @xiongxianfei/rigorloop@latest init claude
-npx @xiongxianfei/rigorloop@latest init opencode
 ```
 
-For reproducible setup, pin the published version:
+Install support for the agent you actually use:
+
+```bash
+npx @xiongxianfei/rigorloop@latest init codex
+```
+
+Use `init claude` for Claude Code or `init opencode` for opencode.
+
+Pin the package version anywhere reproducibility matters:
 
 ```bash
 npx @xiongxianfei/rigorloop@0.3.3 init codex
 ```
 
-For a project-local dev dependency:
+For a project-local dev dependency, install once and run through `npx`:
 
 ```bash
 npm install --save-dev @xiongxianfei/rigorloop
 npx rigorloop --help
 ```
 
-Then use the repository workflow docs when you want to understand or customize the lifecycle:
+Recommended first pass:
 
-1. Read the [short workflow summary](docs/workflows.md).
-2. Read the [normative workflow contract](specs/rigorloop-workflow.md).
+1. Run `init` for one agent adapter.
+2. Read the [short workflow summary](docs/workflows.md).
 3. Inspect the [shipped proof-of-value example](docs/changes/0001-skill-validator/).
-4. If the approach fits, start from the lifecycle artifacts under [docs/](docs/), [specs/](specs/), and [skills/](skills/).
+4. Start your first real change with `proposal`.
+5. Move through review gates only when the durable artifacts are current.
+
+Read the [normative workflow contract](specs/rigorloop-workflow.md) when you need to customize the lifecycle or resolve a process question.
 
 Key paths: [workflow](docs/workflows.md) · [proof example](docs/changes/0001-skill-validator/) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
 
+## Recommended Use
+
+Use RigorLoop as a repository-local workflow, not as a chat convention. The useful path is:
+
+```text
+proposal -> proposal-review -> spec -> spec-review -> plan -> plan-review -> test-spec -> implement -> code-review -> explain-change -> verify -> pr
+```
+
+Add `architecture` / `architecture-review` when the change affects system design, data flow, persistence, security, performance, deployment, or other hard-to-reverse decisions.
+
+Add `review-resolution` when review records material findings. Add `ci-maintenance` only when CI workflows or related automation must change.
+
+Best practices:
+
+1. Start with `proposal` for substantive work. Use it to settle the problem, goals, non-goals, scope, options, risks, and recommended direction before implementation pressure starts.
+2. Keep each lifecycle stage grounded in tracked artifacts. Do not rely on chat-only approval when a later stage needs reviewable evidence.
+3. Let `test-spec` map requirements and edge cases to proof before writing implementation code.
+4. Implement one approved milestone at a time, then run `code-review` against the actual diff and governing artifacts.
+5. Use `explain-change` after implementation and review closeout so reviewers can see why each meaningful change exists.
+6. Run `verify` before `pr`. `verify` owns branch readiness; `pr` owns the pull request body and opening the PR.
+
+For smaller focused tasks, you can invoke an individual skill directly. Treat that as isolated output unless you intentionally route the work through the full workflow.
+
 ## Starting a new repository
 
-Use `init` to install agent support. It does not replace the standing guide
-artifacts that make a repository understandable.
-
-```bash
-npx @xiongxianfei/rigorloop@latest init codex
-```
+Use `init` to install agent support. It does not replace the standing guide artifacts that make a repository understandable.
 
 For a new repository, use this order:
 
@@ -69,11 +95,9 @@ For a new repository, use this order:
    - `project-map` creates or updates `docs/project-map.md` when repository orientation is needed.
    - `workflow` creates or refreshes `docs/workflows.md` for the project-local workflow and artifact-location map.
    - `docs/plan.md` starts as the small active/blocked/recent-work index.
-3. Start the first real change with the per-change lifecycle:
-   `proposal -> proposal-review -> spec -> spec-review -> architecture when needed -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`.
+3. Start the first real change with the per-change lifecycle described above.
 
-For an existing repository, do the same bootstrap only for missing or stale
-standing guidance. Do not rewrite durable guides just for symmetry.
+For an existing repository, do the same bootstrap only for missing or stale standing guidance. Do not rewrite durable guides just for symmetry.
 
 ## Where to go next
 
