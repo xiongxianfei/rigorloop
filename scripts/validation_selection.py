@@ -140,6 +140,22 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-guide-system.py",
         "guide-system",
     ),
+    "documentation_prose.enforce": CheckCatalogEntry(
+        "documentation_prose.enforce",
+        "python scripts/validate-documentation-prose.py --mode enforce --path <path>...",
+        "documentation-prose",
+    ),
+    "documentation_prose.audit": CheckCatalogEntry(
+        "documentation_prose.audit",
+        "python scripts/validate-documentation-prose.py --mode audit --path <path>...",
+        "documentation-prose",
+    ),
+    "documentation_prose.regression": CheckCatalogEntry(
+        "documentation_prose.regression",
+        "python scripts/test-documentation-prose-validator.py",
+        "documentation-prose",
+        parallel_safe=True,
+    ),
     "selector.regression": CheckCatalogEntry(
         "selector.regression",
         "python scripts/test-select-validation.py",
@@ -633,6 +649,20 @@ def catalog_command(
         if not paths:
             raise ValueError("token_cost.report_validate requires at least one report YAML path")
         return _join("python", "scripts/validate-token-cost-report.py", *paths)
+    if check_id == "documentation_prose.enforce":
+        if not paths:
+            raise ValueError("documentation_prose.enforce requires at least one path")
+        args = ["python", "scripts/validate-documentation-prose.py", "--mode", "enforce"]
+        for path in paths:
+            args.extend(["--path", path])
+        return _join(*args)
+    if check_id == "documentation_prose.audit":
+        if not paths:
+            raise ValueError("documentation_prose.audit requires at least one path")
+        args = ["python", "scripts/validate-documentation-prose.py", "--mode", "audit"]
+        for path in paths:
+            args.extend(["--path", path])
+        return _join(*args)
 
     return CHECK_CATALOG[check_id].command_template
 
@@ -801,6 +831,14 @@ def _apply_path_selection(
     release_versions: set[str],
     repo_root: Path,
 ) -> None:
+    if _is_tier_b_documentation_prose_path(path):
+        _add_check(
+            selected,
+            "documentation_prose.audit",
+            "Changed Tier B Markdown prose requires documentation prose audit validation.",
+            path=path,
+        )
+
     if category == "skills":
         root = _skill_root(path)
         if root:
@@ -1061,6 +1099,12 @@ def _apply_path_selection(
         return
 
     if category == "readme":
+        _add_check(
+            selected,
+            "documentation_prose.enforce",
+            "Changed Tier A README prose requires documentation prose enforcement validation.",
+            path=path,
+        )
         _add_check(selected, "readme.validate", "Changed README requires lightweight README validation.")
         _add_check(
             selected,
@@ -1097,6 +1141,12 @@ def _apply_path_selection(
         return
 
     if category == "vision":
+        _add_check(
+            selected,
+            "documentation_prose.enforce",
+            "Changed Tier A VISION prose requires documentation prose enforcement validation.",
+            path=path,
+        )
         _add_check(
             selected,
             "readme.vision_markers",
@@ -1249,6 +1299,14 @@ def _apply_path_selection(
         )
         return
 
+    if category == "validator-documentation-prose":
+        _add_check(
+            selected,
+            "documentation_prose.regression",
+            "Changed documentation prose validator, fixtures, or formatter guardrails require prose validator regression fixtures.",
+        )
+        return
+
     if category == "validator-skills":
         _add_check(selected, "skills.regression", "Changed skill generation or validation requires skill regression fixtures.")
         _add_check(
@@ -1281,6 +1339,24 @@ def _apply_path_selection(
             selected,
             path,
             f"Changed {category} path can carry lifecycle policy and requires lifecycle-language warning validation.",
+        )
+        return
+
+    if category == "contributor-guidance":
+        _add_check(
+            selected,
+            "selector.regression",
+            "Changed contributor guidance requires selector and workflow routing regression fixtures.",
+        )
+        _add_check(
+            selected,
+            "guide_system.validate",
+            "Changed contributor guidance requires cross-guide validation.",
+        )
+        _add_lifecycle_warning_check(
+            selected,
+            path,
+            "Changed contributor guidance can carry lifecycle policy and requires lifecycle-language warning validation.",
         )
         return
 
@@ -1566,6 +1642,8 @@ def _path_category(path: str) -> str | None:
         return "review-artifact-fixtures"
     if path == "tests/fixtures/change-metadata" or path.startswith("tests/fixtures/change-metadata/"):
         return "change-metadata-fixtures"
+    if path.startswith("tests/fixtures/documentation-prose/"):
+        return "validator-documentation-prose"
     if path.startswith("tests/fixtures/adapters/"):
         return "adapters"
     if path == "tests/fixtures/skills" or path.startswith("tests/fixtures/skills/"):
@@ -1618,6 +1696,11 @@ def _path_category(path: str) -> str | None:
         "scripts/test-change-metadata-validator.py",
     }:
         return "validator-change-metadata"
+    if path in {
+        "scripts/validate-documentation-prose.py",
+        "scripts/test-documentation-prose-validator.py",
+    }:
+        return "validator-documentation-prose"
     if path in {
         "scripts/query-change-record.py",
         "scripts/test-query-change-record.py",
@@ -1721,6 +1804,10 @@ def _path_category(path: str) -> str | None:
         return "release"
     if path == "docs/workflows.md":
         return "workflow-guidance"
+    if path == "CONTRIBUTING.md":
+        return "contributor-guidance"
+    if path in {".prettierrc.json", ".markdownlint.json"}:
+        return "validator-documentation-prose"
     if path in {"AGENTS.md", "CONSTITUTION.md"}:
         return "governance"
     if path.startswith("templates/"):
@@ -1770,6 +1857,14 @@ def _is_lifecycle_path(path: str) -> bool:
     if path.startswith("docs/vision/") and path.endswith(".md"):
         return True
     if path.startswith("docs/explain/") and path.endswith(".md"):
+        return True
+    return False
+
+
+def _is_tier_b_documentation_prose_path(path: str) -> bool:
+    if path.startswith("skills/") and path.endswith("/SKILL.md"):
+        return True
+    if path.startswith("docs/changes/") and path.endswith("/explain-change.md"):
         return True
     return False
 

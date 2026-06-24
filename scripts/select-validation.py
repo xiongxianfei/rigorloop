@@ -25,6 +25,7 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser = JsonArgumentParser(description=__doc__, add_help=True)
     parser.add_argument("--mode", choices=["local", "explicit", "pr", "main", "release"])
     parser.add_argument("--path", action="append", default=[])
+    parser.add_argument("--changed-file", action="append", default=[], help=argparse.SUPPRESS)
     parser.add_argument("--base")
     parser.add_argument("--head")
     parser.add_argument("--release-version")
@@ -45,7 +46,7 @@ def main(argv: list[str] | None = None) -> int:
 
     request = SelectionRequest(
         mode=args.mode or "",
-        paths=tuple(args.path),
+        paths=tuple([*args.path, *args.changed_file]),
         base=args.base,
         head=args.head,
         release_version=args.release_version,

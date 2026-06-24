@@ -16,8 +16,7 @@ The goal is AI work that humans can inspect, trust, continue, and improve.
 
 Most AI coding tools optimize for faster output.
 RigorLoop optimizes for trustworthy change delivery after the output exists.
-It treats agent work as a reviewable software engineering artifact rather than a chat transcript:
-decisions are written down, tests trace to the contract, design intent is visible, validation evidence is captured, and review concerns stay attached to the change.
+It treats agent work as a reviewable software engineering artifact rather than a chat transcript: decisions are written down, tests trace to the contract, design intent is visible, validation evidence is captured, and review concerns stay attached to the change.
 
 The differentiator is the traceability chain.
 A meaningful change can be traced from idea to proposal, spec, plan, test spec, implementation, review, verification, and PR handoff.
