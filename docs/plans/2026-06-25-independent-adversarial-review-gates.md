@@ -75,14 +75,14 @@ Important implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M3. Code-review pilot and review-family guidance
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m2-r2.md
-- Last reviewed milestone: M2. Orchestration semantics and workflow-state gates
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review M3
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m3-r1.md
+- Last reviewed milestone: M3. Code-review pilot and review-family guidance
+- Review status: changes-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M3 resolution, M4, M5
+- Next stage: review-resolution M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 implementation is complete and awaiting code-review; M4-M5 remain incomplete.
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 has material code-review findings requiring review-resolution; M4-M5 remain incomplete.
 
 ## Milestones
 
@@ -174,7 +174,7 @@ Important implementation surfaces:
 
 ### M3. Code-review pilot and review-family guidance
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Update canonical review and workflow skills so automated `code-review` uses the full blind-first independent gate, while automated `spec-review` and `plan-review` record minimal manifest evidence during the pilot.
 - Requirements: `R6`, `R8`, `R9`, `R18`-`R20`, `AC12`, `AC13`, `AC15`
 - Files/components likely touched:
@@ -360,6 +360,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: M2 review-resolution addressed `CR3-F1`; split determinate native outcome mapping from clean native gate-derived outcome logic, added `CLEAN_ADVANCE_GATES`, added conditional mismatch handling, and returned M2 to `code-review-m2-r2`.
 - 2026-06-25: Code-review M2 R2 approved the CR3-F1 resolution with no material findings; M2 is closed and the next implementation milestone is M3.
 - 2026-06-25: M3 implemented code-review pilot guidance for workflow-managed independent adversarial review, workflow and implement routing guidance, and Phase 1 manifest-only guidance for automated spec-review and plan-review while preserving direct isolated review behavior.
+- 2026-06-25: Code-review M3 R1 requested changes: `CR4-F1` requires operational `failed-remediation` guidance and test coverage, and `CR4-F2` requires `auto-fix eligibility` to be excluded from implement handoff packets and tested.
 
 ## Decision log
 

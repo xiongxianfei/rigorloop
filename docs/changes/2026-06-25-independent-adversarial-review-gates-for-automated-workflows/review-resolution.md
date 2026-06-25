@@ -4,7 +4,7 @@
 
 This record closes formal proposal-review, spec-review, architecture-review, and plan-review evidence for the independent adversarial review gates change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -16,11 +16,13 @@ Review closeout: plan-review-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
+Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`
-- Findings resolved: 5
-- Unresolved findings: 0
-- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`; it is resolved. Code-review M1 R3 approved the M1 resolution with no material findings.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
+- Findings resolved: 6
+- Unresolved findings: 2
+- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`; it is resolved. Code-review M1 R3 approved the M1 resolution with no material findings. Code-review M2 R1 requested `CR3-F1`; it is resolved. Code-review M2 R2 approved the M2 resolution with no material findings. Code-review M3 R1 requested `CR4-F1` and `CR4-F2`; both require review-resolution.
 
 ## Resolution Overview
 
@@ -31,6 +33,9 @@ Review closeout: code-review-m1-r3
 | CR1-F1 | accepted | resolved | Added native review status as required manifest evidence, mapping validation, valid fixture updates, and missing/empty/mismatched regression tests. |
 | CR1-F2 | accepted | resolved | Added T1 valid L1/L2/L3 fixture enumeration and invalid direct proof for missing context separation, unsupported independence level, and missing reviewer context ID on an unverifiable platform. |
 | CR2-F1 | accepted | resolved | Converted native review status validation from guard-style to fail-closed gate-style; added unknown-value regression tests, T1 fixture coverage, allowed-values error proof, and closed-vocabulary discipline guidance. |
+| CR3-F1 | accepted | resolved | Split determinate native outcome mapping from clean native gate-derived outcome logic and added clean-gate routing coverage. |
+| CR4-F1 | accepted | open | Code-review guidance must define the required `failed-remediation` rediscovery condition and test it. |
+| CR4-F2 | accepted | open | Implement handoff guidance must exclude `auto-fix eligibility` from the initial review packet and test it. |
 
 ## Finding Details
 
@@ -152,3 +157,27 @@ Audit note: This finding expands the validator audit pattern beyond guard-style 
 ### code-review-m2-r2
 
 No material findings; no resolution entry required. This same-stage rereview approved the `CR3-F1` resolution and closed the M2 review-resolution loop.
+
+### code-review-m3-r1
+
+#### CR4-F1 - `failed-remediation` is named but not operationally defined in code-review guidance
+
+Finding ID: CR4-F1
+Disposition: accepted
+Status: open
+Owner: implement
+Owning stage: implement M3 review-resolution
+Chosen action: Add the required `failed-remediation` condition to `skills/code-review/SKILL.md` and add a matching assertion to `test_review_independence_m3_code_review_pilot_guidance`.
+Rationale: The spec requires `failed-remediation` when a prior finding was claimed or expected to be fixed but is independently rediscovered during the blind-first pass. Naming the category without the condition leaves reviewer behavior under-specified.
+Expected proof: `python scripts/test-skill-validator.py -k review_independence_m3`; full `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; generated skill and adapter proof commands.
+
+#### CR4-F2 - Implement handoff guidance still permits `auto-fix eligibility` in the initial packet
+
+Finding ID: CR4-F2
+Disposition: accepted
+Status: open
+Owner: implement
+Owning stage: implement M3 review-resolution
+Chosen action: Add `auto-fix eligibility` to the forbidden initial packet list in `skills/implement/SKILL.md` and update `test_review_independence_m3_workflow_and_implement_route_automated_gate` to require it.
+Rationale: The initial review packet must not include fixability signals before independent review discovery. `code-review` excludes `auto-fix eligibility`, but `implement` owns the handoff and currently omits that prohibited item.
+Expected proof: `python scripts/test-skill-validator.py -k review_independence_m3`; full `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; generated skill and adapter proof commands.
