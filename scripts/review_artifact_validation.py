@@ -61,6 +61,158 @@ ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 FIELD_PATTERN = re.compile(r"^\s*(?P<label>[A-Za-z][A-Za-z0-9 _/-]*):\s*(?P<value>.*)$")
 REVIEW_RESOLUTION_HEADING_PATTERN = re.compile(r"^\s{0,3}###\s+(?P<review_id>[A-Za-z0-9][A-Za-z0-9._-]*)\s*$")
 AUTO_FIX_CLASSES = frozenset({"none", "mechanical", "declared-safe"})
+INDEPENDENCE_LEVELS = frozenset({"L0", "L1", "L2", "L3"})
+REVIEW_GATE_OUTCOMES = frozenset({"advance", "stop", "blocked", "inconclusive"})
+REVIEW_GATE_RISK_TIERS = frozenset({"standard", "elevated", "critical-internal", "irreversible-external-action"})
+ROLLOUT_MIN_STANDARD_SAMPLE_RATE = 20
+ROLLOUT_MIN_STANDARD_SECOND_REVIEWS = 10
+# Source: specs/review-independence-and-criticality.md R1-R7, R13, AC1-AC5.
+REVIEW_GATE_REQUIRED_FIELDS = (
+    "Review gate outcome",
+    "Native review status",
+    "Independence level",
+    "Reviewer context ID",
+    "Context separation mechanism",
+    "Risk tier",
+    "Risk-tier triggers",
+    "Risk-tier classifier",
+    "Governing artifacts",
+    "Formal criteria",
+    "Initial packet inventory",
+    "Prompt template version",
+    "Initial packet hash",
+    "Manifest owner",
+    "Phase receipts",
+)
+NATIVE_STATUS_GATE_OUTCOMES = {
+    "approved": "advance",
+    "clean-with-notes": "advance",
+    "changes-requested": "stop",
+    "blocked": "blocked",
+    "inconclusive": "inconclusive",
+}
+RISK_MAP_REQUIRED_FIELDS = (
+    "Affected behavior",
+    "Highest-impact failure modes",
+    "Changed boundaries",
+    "Evidence expected",
+    "Areas requiring direct inspection",
+    "Areas intentionally out of scope",
+    "Risk classes considered",
+    "Falsifiable review questions",
+)
+CLEAN_REVIEW_SUFFICIENCY_FIELDS = (
+    "Review target identity",
+    "Independence level",
+    "Governing artifacts inspected",
+    "Risk classes considered",
+    "Adversarial hypotheses tested",
+    "Direct proofs performed",
+    "Validation evidence challenged",
+    "Unreviewed surfaces",
+    "Confidence",
+    "No-finding rationale",
+)
+REQUIRED_PHASE_RECEIPTS = (
+    "risk-map-recorded",
+    "evidence-menu-released",
+    "evidence-results-released",
+    "verdict-recorded",
+)
+ORDERED_PHASE_RECEIPTS = (
+    "risk-map-recorded",
+    "evidence-menu-released",
+    "evidence-results-released",
+    "prior-findings-released",
+    "verdict-recorded",
+)
+FORBIDDEN_AUTOMATED_REVIEW_FIELDS = frozenset(
+    {
+        "Author hidden reasoning",
+        "Author chain-of-thought",
+        "Author self-assessment",
+        "Author claim",
+        "Desired review outcome",
+        "Autoprogression round budget",
+        "Approval needed to continue",
+        "Auto-fix eligibility",
+        "Implementation safety narrative",
+        "Prior reviewer conclusion",
+        "Prior finding content",
+        "Validation-result summaries",
+        "Evidence menu",
+        "Private chain-of-thought",
+        "Hidden reasoning",
+    }
+)
+PROHIBITED_INITIAL_PACKET_TOKENS = (
+    "author hidden reasoning",
+    "author chain-of-thought",
+    "author self-assessment",
+    "desired review outcome",
+    "validation-result summaries",
+    "evidence menu",
+    "prior finding content",
+    "auto-fix budget",
+    "implementation safety narrative",
+)
+BOUNDED_AUTOMATED_FREEFORM_FIELDS = ("Manifest notes", "Process rationale")
+CALIBRATION_RECORD_REQUIRED_FIELDS = (
+    "Calibration record ID",
+    "Review skill",
+    "Risk tier",
+    "Fixture mode",
+    "Sampling phase",
+    "Sample rate",
+    "Standard clean outcomes independently reviewed",
+    "Sample-rate reduction requested",
+    "Second reviewer type",
+    "Second review required",
+    "Second-review disagreement",
+    "Critical authority kind",
+    "Critical authority satisfied",
+    "Independence level",
+    "Recurrence detection",
+    "Novel defect detection",
+    "Material disagreements",
+    "Severity disagreements",
+    "Evidence gaps",
+    "Downstream escape",
+    "False-positive rate",
+    "Inconclusive rate",
+    "Receipt quality",
+    "Review duration",
+)
+CALIBRATION_RECORD_TRIGGER_FIELDS = tuple(
+    label for label in CALIBRATION_RECORD_REQUIRED_FIELDS if label not in {"Risk tier", "Independence level"}
+)
+CALIBRATION_FIXTURE_MODES = frozenset(
+    {"public-defect-class", "private-rotating-instance", "access-controlled-rotating-instance", "not-applicable"}
+)
+CALIBRATION_DETECTION_VALUES = frozenset({"detected", "missed", "not-applicable"})
+CALIBRATION_SECOND_REVIEW_VALUES = frozenset({"none", "material-finding", "blocked", "inconclusive"})
+CALIBRATION_SECOND_REVIEW_DISAGREEMENTS = frozenset({"material-finding", "blocked", "inconclusive"})
+CALIBRATION_YES_NO_VALUES = frozenset({"yes", "no"})
+CALIBRATION_BOOLEAN_FIELDS = (
+    "Sample-rate reduction requested",
+    "Second review required",
+    "Automatic continuation",
+    "Critical authority satisfied",
+)
+CALIBRATION_AUTHORITY_KINDS = frozenset({"L3", "human", "n/a"})
+CALIBRATION_AUTHORITY_TIERS = {
+    "critical-internal": frozenset({"L3", "human"}),
+    "irreversible-external-action": frozenset({"human"}),
+}
+CALIBRATION_BOUNDED_FREEFORM_FIELDS = ("Evidence gaps",)
+FORBIDDEN_CALIBRATION_FIELDS = frozenset(
+    {
+        "Calibration private reasoning",
+        "Calibration chain-of-thought",
+        "Reviewer private reasoning",
+        "Reviewer chain-of-thought",
+    }
+)
 MECHANICAL_AUTO_FIX_KINDS = frozenset(
     {
         "formatter-output",
@@ -407,6 +559,8 @@ def _parse_review_file(
     record_mode = record_mode_field.value if record_mode_field else None
     finding_records = _parse_finding_records(path, review_id, lines, mode, findings)
     _validate_clean_receipt_review_fields(path, review_id, fields, mode, findings)
+    _validate_automated_review_gate_fields(path, review_id, fields, mode, findings)
+    _validate_calibration_record_fields(path, review_id, fields, mode, findings)
     _validate_implementation_profile_finding_fields(path, review_id, fields, finding_records, mode, findings)
 
     if record_mode == "reconstructed":
@@ -652,6 +806,699 @@ def _validate_clean_receipt_review_fields(
                 review_id=review_id,
             )
         )
+
+
+def _validate_automated_review_gate_fields(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    if not _is_automated_review_gate_record(fields):
+        return
+
+    for label in REVIEW_GATE_REQUIRED_FIELDS:
+        if _first_nonempty(fields, label) is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=None,
+                    mode=mode,
+                    message=f"automated review gate missing required field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    for label in RISK_MAP_REQUIRED_FIELDS:
+        if _first_nonempty(fields, label) is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=None,
+                    mode=mode,
+                    message=f"risk map missing required field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    for label in FORBIDDEN_AUTOMATED_REVIEW_FIELDS:
+        value = _first_nonempty(fields, label)
+        if value is not None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"forbidden automated-review context field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    for label in BOUNDED_AUTOMATED_FREEFORM_FIELDS:
+        value = _first_nonempty(fields, label)
+        if value is not None and len(value.value) > 240:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"automated review gate field {label} is too long",
+                    review_id=review_id,
+                )
+            )
+
+    outcome = _first_nonempty(fields, "Review gate outcome")
+    if outcome is not None and outcome.value not in REVIEW_GATE_OUTCOMES:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=outcome.line,
+                mode=mode,
+                message=f"unsupported review_gate_outcome '{outcome.value}'",
+                review_id=review_id,
+            )
+        )
+
+    native_status = _first_nonempty(fields, "Native review status")
+    if native_status is not None:
+        if native_status.value not in NATIVE_STATUS_GATE_OUTCOMES:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=native_status.line,
+                    mode=mode,
+                    message=(
+                        f"unsupported native review status '{native_status.value}'; allowed values are "
+                        f"{', '.join(sorted(NATIVE_STATUS_GATE_OUTCOMES))} per "
+                        "specs/review-independence-and-criticality.md R12"
+                    ),
+                    review_id=review_id,
+                )
+            )
+        elif outcome is not None:
+            expected_outcome = NATIVE_STATUS_GATE_OUTCOMES[native_status.value]
+            if outcome.value != expected_outcome:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=outcome.line,
+                        mode=mode,
+                        message=(
+                            "R12-mismatch: Native review status "
+                            f"{native_status.value} maps to review_gate_outcome {expected_outcome}, not {outcome.value}"
+                        ),
+                        review_id=review_id,
+                    )
+                )
+
+    independence = _first_nonempty(fields, "Independence level")
+    if independence is not None:
+        if independence.value not in INDEPENDENCE_LEVELS:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=independence.line,
+                    mode=mode,
+                    message=f"unsupported independence level '{independence.value}'",
+                    review_id=review_id,
+                )
+            )
+        elif independence.value == "L0" and outcome is not None and outcome.value == "advance":
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=independence.line,
+                    mode=mode,
+                    message="automated review gate cannot advance with L0",
+                    review_id=review_id,
+                )
+            )
+
+    author_context = _first_nonempty(fields, "Author context ID")
+    reviewer_context = _first_nonempty(fields, "Reviewer context ID")
+    platform_verifiability = _first_nonempty(fields, "Platform verifiability")
+    if (
+        platform_verifiability is not None
+        and platform_verifiability.value == "unverifiable"
+        and reviewer_context is None
+    ):
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=platform_verifiability.line,
+                mode=mode,
+                message="reviewer-context-id-required-on-unverifiable-platform",
+                review_id=review_id,
+            )
+        )
+    if author_context is not None and reviewer_context is not None and author_context.value == reviewer_context.value:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=reviewer_context.line,
+                mode=mode,
+                message="reviewer_context_id must differ from author_context_id",
+                review_id=review_id,
+            )
+        )
+
+    author_context_excluded = _first_nonempty(fields, "Author context excluded")
+    if author_context_excluded is not None and _first_nonempty(fields, "Initial packet inventory") is None:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=author_context_excluded.line,
+                mode=mode,
+                message="author_context_excluded is not sufficient initial-packet proof",
+                review_id=review_id,
+            )
+        )
+
+    packet_inventory = _first_nonempty(fields, "Initial packet inventory")
+    if packet_inventory is not None:
+        _validate_initial_packet_inventory(path, review_id, packet_inventory, mode, findings)
+
+    packet_hash = _first_nonempty(fields, "Initial packet hash")
+    if packet_hash is not None and not _is_sha256_reference(packet_hash.value):
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=packet_hash.line,
+                mode=mode,
+                message="Initial packet hash must use sha256:<64 hex>",
+                review_id=review_id,
+            )
+        )
+
+    initial_packet_contains = _first_nonempty(fields, "Initial packet contains")
+    if initial_packet_contains is not None:
+        lower_value = initial_packet_contains.value.lower()
+        for token in PROHIBITED_INITIAL_PACKET_TOKENS:
+            if token in lower_value:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=initial_packet_contains.line,
+                        mode=mode,
+                        message=f"initial packet contains prohibited context {token}",
+                        review_id=review_id,
+                    )
+                )
+
+    phase_receipts = _first_nonempty(fields, "Phase receipts")
+    if phase_receipts is not None:
+        _validate_phase_receipts(path, review_id, phase_receipts, mode, findings)
+
+    if _is_clean_automated_review(fields):
+        for label in CLEAN_REVIEW_SUFFICIENCY_FIELDS:
+            if _first_nonempty(fields, label) is None:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=None,
+                        mode=mode,
+                        message=f"clean sufficiency receipt missing required field {label}",
+                        review_id=review_id,
+                    )
+                )
+
+
+def _is_automated_review_gate_record(fields: dict[str, list[FieldValue]]) -> bool:
+    automated = _first_nonempty(fields, "Automated review")
+    if automated is not None and automated.value.lower() in {"yes", "true"}:
+        return True
+    return any(
+        _first_nonempty(fields, label) is not None
+        for label in ("Review gate outcome", "Independence level", "Initial packet hash", "Phase receipts")
+    )
+
+
+def _is_clean_automated_review(fields: dict[str, list[FieldValue]]) -> bool:
+    clean_receipt = _first_nonempty(fields, "Clean-review sufficiency receipt")
+    if clean_receipt is not None and clean_receipt.value.lower() in {"yes", "true"}:
+        return True
+    status = _first_nonempty(fields, "Status")
+    outcome = _first_nonempty(fields, "Review gate outcome")
+    return (
+        status is not None
+        and status.value in {"approved", "clean-with-notes"}
+        and outcome is not None
+        and outcome.value == "advance"
+    )
+
+
+def _validate_calibration_record_fields(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    if not _is_calibration_record(fields):
+        return
+
+    for label in CALIBRATION_RECORD_REQUIRED_FIELDS:
+        if _first_nonempty(fields, label) is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=None,
+                    mode=mode,
+                    message=f"calibration record missing required field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    for label in FORBIDDEN_CALIBRATION_FIELDS:
+        value = _first_nonempty(fields, label)
+        if value is not None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"forbidden calibration field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    for label in CALIBRATION_BOUNDED_FREEFORM_FIELDS:
+        value = _first_nonempty(fields, label)
+        if value is not None and len(value.value) > 240:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"calibration field {label} is too long",
+                    review_id=review_id,
+                )
+            )
+
+    review_skill = _first_nonempty(fields, "Review skill")
+    if review_skill is not None and review_skill.value not in FORMAL_REVIEW_STAGES:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=review_skill.line,
+                mode=mode,
+                message=f"unsupported calibration review skill '{review_skill.value}'",
+                review_id=review_id,
+            )
+        )
+
+    risk_tier = _first_nonempty(fields, "Risk tier")
+    if risk_tier is not None and risk_tier.value not in REVIEW_GATE_RISK_TIERS:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=risk_tier.line,
+                mode=mode,
+                message=f"unsupported calibration risk tier '{risk_tier.value}'",
+                review_id=review_id,
+            )
+        )
+
+    fixture_mode = _first_nonempty(fields, "Fixture mode")
+    if fixture_mode is not None:
+        if fixture_mode.value not in CALIBRATION_FIXTURE_MODES:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=fixture_mode.line,
+                    mode=mode,
+                    message=f"unsupported calibration fixture mode '{fixture_mode.value}'",
+                    review_id=review_id,
+                )
+            )
+        elif fixture_mode.value == "public-defect-class":
+            corpus_scope = _first_nonempty(fields, "Fixture corpus scope")
+            if corpus_scope is None or corpus_scope.value != "defect-class-example-not-measured-corpus":
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=fixture_mode.line,
+                        mode=mode,
+                        message="public calibration fixture must declare defect-class-example-not-measured-corpus",
+                        review_id=review_id,
+                    )
+                )
+
+    for label in ("Recurrence detection", "Novel defect detection"):
+        value = _first_nonempty(fields, label)
+        if value is not None and value.value not in CALIBRATION_DETECTION_VALUES:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"unsupported calibration {label} '{value.value}'",
+                    review_id=review_id,
+                )
+            )
+
+    disagreement = _first_nonempty(fields, "Second-review disagreement")
+    if disagreement is not None and disagreement.value not in CALIBRATION_SECOND_REVIEW_VALUES:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=disagreement.line,
+                mode=mode,
+                message=f"unsupported second-review disagreement '{disagreement.value}'",
+                review_id=review_id,
+            )
+        )
+
+    downstream_escape = _first_nonempty(fields, "Downstream escape")
+    if downstream_escape is not None and downstream_escape.value not in CALIBRATION_YES_NO_VALUES:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=downstream_escape.line,
+                mode=mode,
+                message=f"unsupported downstream escape value '{downstream_escape.value}'",
+                review_id=review_id,
+            )
+        )
+    if downstream_escape is not None and downstream_escape.value == "yes":
+        for label in ("Downstream escape stage", "Downstream escape analysis"):
+            if _first_nonempty(fields, label) is None:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=downstream_escape.line,
+                        mode=mode,
+                        message=f"downstream escape record missing required field {label}",
+                        review_id=review_id,
+                    )
+                )
+
+    calibration_booleans = _parse_calibration_booleans(path, review_id, fields, mode, findings)
+    _validate_calibration_critical_authority(path, review_id, fields, calibration_booleans, mode, findings)
+    _validate_calibration_sampling_gates(path, review_id, fields, calibration_booleans, mode, findings)
+
+
+def _is_calibration_record(fields: dict[str, list[FieldValue]]) -> bool:
+    calibration_record = _first_nonempty(fields, "Calibration record")
+    if calibration_record is not None and calibration_record.value.lower() in {"yes", "true"}:
+        return True
+    return any(_first_nonempty(fields, label) is not None for label in CALIBRATION_RECORD_TRIGGER_FIELDS)
+
+
+def _parse_calibration_boolean(
+    path: Path,
+    review_id: str,
+    field_name: str,
+    field_value: FieldValue | None,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> bool | None:
+    if field_value is None:
+        return None
+    value = field_value.value.strip().lower()
+    if value not in CALIBRATION_YES_NO_VALUES:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=field_value.line,
+                mode=mode,
+                message=f"calibration-control-value-invalid: {field_name} must be one of no, yes",
+                review_id=review_id,
+            )
+        )
+        return None
+    return value == "yes"
+
+
+def _parse_calibration_booleans(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> dict[str, bool | None]:
+    return {
+        label: _parse_calibration_boolean(path, review_id, label, _first_nonempty(fields, label), mode, findings)
+        for label in CALIBRATION_BOOLEAN_FIELDS
+    }
+
+
+def _validate_calibration_critical_authority(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    booleans: dict[str, bool | None],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    risk_tier = _first_nonempty(fields, "Risk tier")
+    kind = _first_nonempty(fields, "Critical authority kind")
+    kind_value = kind.value if kind is not None else None
+    if kind_value is not None and kind_value not in CALIBRATION_AUTHORITY_KINDS:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=kind.line if kind is not None else None,
+                mode=mode,
+                message=(
+                    "calibration-authority-kind-invalid: Critical authority kind "
+                    f"'{kind_value}' must be one of L3, human, n/a"
+                ),
+                review_id=review_id,
+            )
+        )
+        return
+
+    if risk_tier is None or risk_tier.value not in CALIBRATION_AUTHORITY_TIERS:
+        if kind_value not in {None, "n/a"}:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=kind.line if kind is not None else None,
+                    mode=mode,
+                    message="calibration-authority-kind-not-applicable: Critical authority kind applies only to critical tiers",
+                    review_id=review_id,
+                )
+            )
+        return
+
+    allowed_kinds = CALIBRATION_AUTHORITY_TIERS[risk_tier.value]
+    if kind_value in {None, "n/a"} or booleans.get("Critical authority satisfied") is not True:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=kind.line if kind is not None else risk_tier.line,
+                mode=mode,
+                message=(
+                    f"calibration-authority-missing: {risk_tier.value} requires Critical authority kind "
+                    f"{', '.join(sorted(allowed_kinds))} with Critical authority satisfied: yes"
+                ),
+                review_id=review_id,
+            )
+        )
+        return
+
+    if kind_value not in allowed_kinds:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=kind.line if kind is not None else risk_tier.line,
+                mode=mode,
+                message=(
+                    f"calibration-authority-kind-insufficient: {risk_tier.value} does not accept "
+                    f"Critical authority kind {kind_value}"
+                ),
+                review_id=review_id,
+            )
+        )
+
+
+def _validate_calibration_sampling_gates(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    booleans: dict[str, bool | None],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    risk_tier = _first_nonempty(fields, "Risk tier")
+    sampling_phase = _first_nonempty(fields, "Sampling phase")
+    sample_rate = _first_nonempty(fields, "Sample rate")
+    if (
+        risk_tier is not None
+        and risk_tier.value == "standard"
+        and sampling_phase is not None
+        and sampling_phase.value == "rollout"
+    ):
+        parsed_rate = _parse_percent(sample_rate.value) if sample_rate is not None else None
+        if parsed_rate is None or parsed_rate < ROLLOUT_MIN_STANDARD_SAMPLE_RATE:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=sample_rate.line if sample_rate is not None else None,
+                    mode=mode,
+                    message="standard-risk rollout sample rate must be at least 20%",
+                    review_id=review_id,
+                )
+            )
+        if booleans.get("Sample-rate reduction requested") is True:
+            reviewed_outcomes = _first_nonempty(fields, "Standard clean outcomes independently reviewed")
+            reviewed_count = _parse_int(reviewed_outcomes.value) if reviewed_outcomes is not None else None
+            if reviewed_count is None or reviewed_count < ROLLOUT_MIN_STANDARD_SECOND_REVIEWS:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=reviewed_outcomes.line if reviewed_outcomes is not None else None,
+                        mode=mode,
+                        message="standard-risk sampling reduction requires at least 10 independently reviewed clean outcomes",
+                        review_id=review_id,
+                    )
+                )
+
+    second_review_required = _first_nonempty(fields, "Second review required")
+    if (
+        risk_tier is not None
+        and risk_tier.value == "elevated"
+        and booleans.get("Second review required") is not True
+    ):
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=second_review_required.line if second_review_required is not None else risk_tier.line,
+                mode=mode,
+                message="elevated-risk clean review requires second review at 100%",
+                review_id=review_id,
+            )
+        )
+
+    disagreement = _first_nonempty(fields, "Second-review disagreement")
+    continuation = _first_nonempty(fields, "Automatic continuation")
+    if (
+        disagreement is not None
+        and disagreement.value in CALIBRATION_SECOND_REVIEW_DISAGREEMENTS
+        and booleans.get("Automatic continuation") is True
+    ):
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=continuation.line,
+                mode=mode,
+                message="second-review disagreement prevents automatic continuation",
+                review_id=review_id,
+            )
+        )
+
+
+def _validate_initial_packet_inventory(
+    path: Path,
+    review_id: str,
+    value: FieldValue,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    entries = [entry.strip() for entry in value.value.split(";") if entry.strip()]
+    if not entries:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=value.line,
+                mode=mode,
+                message="Initial packet inventory must list tracked artifact entries",
+                review_id=review_id,
+            )
+        )
+        return
+    for entry in entries:
+        if "@" not in entry or "#sha256:" not in entry:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message="Initial packet inventory entries must include path@revision#sha256:<64 hex>",
+                    review_id=review_id,
+                )
+            )
+            continue
+        _, hash_part = entry.rsplit("#", 1)
+        if not _is_sha256_reference(hash_part):
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message="Initial packet inventory entries must include path@revision#sha256:<64 hex>",
+                    review_id=review_id,
+                )
+            )
+
+
+def _validate_phase_receipts(
+    path: Path,
+    review_id: str,
+    value: FieldValue,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    receipts = _split_list_field(value.value)
+    seen: set[str] = set()
+    for receipt in receipts:
+        if receipt in seen:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"duplicate phase receipt {receipt}",
+                    review_id=review_id,
+                )
+            )
+        seen.add(receipt)
+    for receipt in REQUIRED_PHASE_RECEIPTS:
+        if receipt not in seen:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"missing phase receipt {receipt}",
+                    review_id=review_id,
+                )
+            )
+    for earlier, later in zip(ORDERED_PHASE_RECEIPTS, ORDERED_PHASE_RECEIPTS[1:]):
+        if earlier in receipts and later in receipts and receipts.index(later) < receipts.index(earlier):
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"phase receipt {later} appears before required predecessor {earlier}",
+                    review_id=review_id,
+                )
+            )
+
+
+def _split_list_field(value: str) -> list[str]:
+    return [part.strip() for part in re.split(r"\s*(?:>|,|;)\s*", value) if part.strip()]
+
+
+def _parse_percent(value: str) -> int | None:
+    match = re.fullmatch(r"\s*(?P<number>[0-9]+)\s*%?\s*", value)
+    if match is None:
+        return None
+    return int(match.group("number"))
+
+
+def _parse_int(value: str) -> int | None:
+    match = re.fullmatch(r"\s*(?P<number>[0-9]+)\s*", value)
+    if match is None:
+        return None
+    return int(match.group("number"))
+
+
+def _is_sha256_reference(value: str) -> bool:
+    return re.fullmatch(r"sha256:[0-9a-fA-F]{64}", value.strip()) is not None
 
 
 def _validate_reconstructed_record(

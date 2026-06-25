@@ -14,6 +14,11 @@ import textwrap
 from collections.abc import Callable
 from pathlib import Path
 
+from review_independence_skill_phrases import (
+    R5_FORBIDDEN_INITIAL_PACKET_ITEMS,
+    R8D_FAILED_REMEDIATION_REQUIRED_PHRASES,
+    R8D_RECONCILIATION_CATEGORIES,
+)
 import skill_validation
 
 
@@ -4980,6 +4985,96 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         for skill_name in ["proposal-review", "spec-review", "architecture-review", "plan-review"]:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_review_independence_m3_code_review_pilot_guidance(self) -> None:
+        """Automated code-review guidance includes the blind-first independent gate pilot."""
+
+        body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(encoding="utf-8")
+        required_terms = [
+            "## Automated Independent Review Gate",
+            "orchestrator-owned review invocation manifest",
+            "neutral initial packet",
+            "record an independent risk map before validation-result summaries, evidence menus, implementation notes, or prior finding content are released",
+            "risk-map-recorded",
+            "Evidence challenge happens only after the risk map",
+            "Prior finding reconciliation happens only after the blind-first pass",
+            "Clean automated reviews require a clean-review sufficiency receipt",
+            "A clean automated review may advance only when the manifest, phase receipts, clean receipt, risk-tier escalation, unresolved-finding, and second-review gates are satisfied",
+            "A final holistic code review is required before `explain-change` or `verify`",
+            "Do not introduce a minimum-finding quota",
+            "The reviewer must not edit the reviewed target during review.",
+            "Direct or profile-off review behavior remains isolated and does not require automated-review manifests unless the result is used as a workflow-managed automated handoff gate.",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+        for item in R5_FORBIDDEN_INITIAL_PACKET_ITEMS:
+            with self.subTest(forbidden_initial_packet_item=item):
+                self.assertIn(item, body)
+        for category in R8D_RECONCILIATION_CATEGORIES:
+            with self.subTest(reconciliation_category=category):
+                self.assertIn(category, body)
+        for phrase in R8D_FAILED_REMEDIATION_REQUIRED_PHRASES:
+            with self.subTest(failed_remediation_phrase=phrase):
+                self.assertIn(phrase, body)
+
+    def test_review_independence_m3_workflow_and_implement_route_automated_gate(self) -> None:
+        """Workflow and implement skills route automated code review through the independent gate."""
+
+        required_by_skill = {
+            "workflow": [
+                "Workflow-managed automated `code-review` uses the independent adversarial review gate",
+                "The orchestrator creates the neutral review invocation manifest and initial packet",
+                "It must withhold validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.",
+                "A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.",
+                "Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions.",
+            ],
+            "implement": [
+                "When handing workflow-managed implementation work to automated `code-review`, hand off to the independent adversarial review gate.",
+                "Provide tracked artifacts, the actual diff, governing contracts, and neutral routing metadata.",
+                "Do not expose auto-fix classification to review discovery; findings and verdict are recorded before fixability is classified.",
+                "Before Phase C can enter `explain-change` or `verify`, require final holistic code-review evidence for the complete cross-milestone diff.",
+            ],
+        }
+        for skill_name, terms in required_by_skill.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+        workflow_docs = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        workflow_doc_terms = [
+            "Workflow-managed automated `code-review` uses the independent adversarial review gate",
+            "A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.",
+            "Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions.",
+        ]
+        for term in workflow_doc_terms:
+            with self.subTest(surface="docs/workflows.md", term=term):
+                self.assertIn(term, workflow_docs)
+        implement_body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
+        for item in R5_FORBIDDEN_INITIAL_PACKET_ITEMS:
+            with self.subTest(skill="implement", forbidden_initial_packet_item=item):
+                self.assertIn(item, implement_body)
+
+    def test_review_independence_m3_manifest_only_authoring_review_guidance(self) -> None:
+        """Phase 1 spec-review and plan-review collect manifest evidence without full protocol migration."""
+
+        required_by_skill = {
+            "spec-review": [
+                "During Phase 1 of independent automated review rollout, workflow-managed automated `spec-review` should at least record a review invocation manifest before automated handoff.",
+                "This is manifest-only evidence for `spec-review`; it does not yet require the full blind-first automated review protocol unless a later approved slice adopts it.",
+                "Direct or review-only `spec-review` requests remain isolated by default.",
+            ],
+            "plan-review": [
+                "During Phase 1 of independent automated review rollout, workflow-managed automated `plan-review` should at least record a review invocation manifest before automated handoff.",
+                "This is manifest-only evidence for `plan-review`; it does not yet require the full blind-first automated review protocol unless a later approved slice adopts it.",
+                "Direct or review-only `plan-review` requests remain isolated by default.",
+            ],
+        }
+        for skill_name, terms in required_by_skill.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
 

@@ -12,7 +12,9 @@ import unittest
 from pathlib import Path
 
 from artifact_lifecycle_validation import validate_repository
+from lifecycle_state_sync import CLEAN_ADVANCE_GATES
 from lifecycle_state_sync import evaluate_authoring_autoprogression_route
+from lifecycle_state_sync import evaluate_automated_review_gate_route
 from lifecycle_state_sync import evaluate_implementation_autoprogression_route
 from lifecycle_state_sync import evaluate_implementation_correction_guardrails
 
@@ -1453,6 +1455,33 @@ No blocked plans.
         fixture.update(overrides)
         return fixture
 
+    def review_gate_fixture(self, **overrides: object) -> dict[str, object]:
+        fixture: dict[str, object] = {
+            "invocation_context": "workflow-managed",
+            "review_stage": "code-review",
+            "native_review_status": "clean-with-notes",
+            "review_gate_outcome": "advance",
+            "independence_manifest_valid": True,
+            "phase_receipts_recorded": True,
+            "recording_valid": True,
+            "clean_review_receipt_valid": True,
+            "risk_tier": "standard",
+            "risk_tier_classifier_valid": True,
+            "risk_tier_satisfied": True,
+            "unresolved_findings": 0,
+            "second_review_required": False,
+            "second_review_status": "not-required",
+            "active_profile": "implementation-through-verify",
+            "active_profile_authorizes_review_resolution": True,
+            "correction_loop_rounds_remaining": 1,
+            "findings_auto_fix_classified": True,
+            "authorizing_profile": "implementation-through-verify",
+            "round_number": 2,
+            "satisfied_independence_evidence": ["manifest", "phase-receipts"],
+        }
+        fixture.update(overrides)
+        return fixture
+
     def assertImplementationRoute(
         self,
         fixture: dict[str, object],
@@ -1469,6 +1498,41 @@ No blocked plans.
             self.assertEqual(result.stop_reason, stop_reason, result)
         if profile_state is not None:
             self.assertEqual(result.profile_state, profile_state, result)
+
+    def assertReviewGateRoute(
+        self,
+        fixture: dict[str, object],
+        *,
+        next_stage: str | None = None,
+        stop_reason: str | None = None,
+        profile_state: str | None = None,
+    ) -> None:
+        result = evaluate_automated_review_gate_route(fixture)
+        if next_stage is not None:
+            self.assertEqual(result.next_stage, next_stage, result)
+            self.assertIsNone(result.stop_reason, result)
+        if stop_reason is not None:
+            self.assertEqual(result.stop_reason, stop_reason, result)
+        if profile_state is not None:
+            self.assertEqual(result.profile_state, profile_state, result)
+
+    def clean_gate_state(self, failing_gate: str | None = None) -> dict[str, object]:
+        gate_state = {
+            "independence_valid": True,
+            "evidence_valid": True,
+            "recording_valid": True,
+            "clean_review_receipt_valid": True,
+            "escalation_satisfied": True,
+        }
+        if failing_gate is not None:
+            gate_state[failing_gate] = False
+        return {
+            "independence_manifest_valid": gate_state["independence_valid"],
+            "phase_receipts_recorded": gate_state["evidence_valid"],
+            "recording_valid": gate_state["recording_valid"],
+            "clean_review_receipt_valid": gate_state["clean_review_receipt_valid"],
+            "risk_tier_satisfied": gate_state["escalation_satisfied"],
+        }
 
     def correction_guardrail_fixture(self, **overrides: object) -> dict[str, object]:
         fixture: dict[str, object] = {
@@ -1571,6 +1635,374 @@ No blocked plans.
             stop_reason="unrelated-dirty-state",
         )
 
+    def test_review_gate_normalized_clean_outcomes_advance_only_with_valid_evidence(self) -> None:
+        for native_status in ("approved", "clean-with-notes"):
+            with self.subTest(native_status=native_status):
+                self.assertReviewGateRoute(
+                    self.review_gate_fixture(native_review_status=native_status),
+                    next_stage="advance",
+                    profile_state="active",
+                )
+        for name, fixture_overrides, expected_reason in (
+            ("bad-derived-outcome", {"review_gate_outcome": "stop"}, "review-gate-outcome-mismatch-given-gate-state"),
+            (
+                "missing-manifest",
+                {"independence_manifest_valid": False, "review_gate_outcome": "inconclusive"},
+                "invalid-review-manifest",
+            ),
+            (
+                "missing-phase-receipts",
+                {"phase_receipts_recorded": False, "review_gate_outcome": "inconclusive"},
+                "missing-phase-receipts",
+            ),
+            (
+                "missing-clean-receipt",
+                {"clean_review_receipt_valid": False, "review_gate_outcome": "inconclusive"},
+                "insufficient-clean-receipt",
+            ),
+            (
+                "unknown-risk-tier",
+                {"risk_tier": "ambiguous", "review_gate_outcome": "inconclusive"},
+                "risk-tier-classification-invalid",
+            ),
+            (
+                "incomplete-risk-tier-classifier",
+                {"risk_tier_classifier_valid": False, "review_gate_outcome": "inconclusive"},
+                "risk-tier-classification-incomplete",
+            ),
+            (
+                "risk-tier-unsatisfied",
+                {"risk_tier_satisfied": False, "review_gate_outcome": "inconclusive"},
+                "risk-tier-escalation-failed",
+            ),
+            (
+                "open-findings",
+                {"unresolved_findings": 1, "review_gate_outcome": "inconclusive"},
+                "review-findings-open",
+            ),
+        ):
+            with self.subTest(name=name):
+                self.assertReviewGateRoute(
+                    self.review_gate_fixture(**fixture_overrides),
+                    stop_reason=expected_reason,
+                    profile_state="paused",
+                )
+
+    def test_review_gate_outcome_derives_from_native_status_and_gate_state(self) -> None:
+        routing_cases: tuple[tuple[str, str, dict[str, object], str, str], ...] = (
+            ("changes-requested-consistent", "changes-requested", {}, "stop", "review-resolution"),
+            ("changes-requested-mismatched", "changes-requested", {}, "advance", "review-gate-outcome-mismatch"),
+            ("blocked-consistent", "blocked", {}, "blocked", "blocked"),
+            ("inconclusive-consistent", "inconclusive", {}, "inconclusive", "inconclusive"),
+            ("approved-all-gates-pass", "approved", self.clean_gate_state(), "advance", "advance"),
+            ("clean-with-notes-all-gates-pass", "clean-with-notes", self.clean_gate_state(), "advance", "advance"),
+            (
+                "clean-with-notes-invalid-receipt-inconclusive",
+                "clean-with-notes",
+                self.clean_gate_state("clean_review_receipt_valid"),
+                "inconclusive",
+                "insufficient-clean-receipt",
+            ),
+            (
+                "approved-missing-independence-inconclusive",
+                "approved",
+                self.clean_gate_state("independence_valid"),
+                "inconclusive",
+                "invalid-review-manifest",
+            ),
+            (
+                "approved-missing-evidence-advance-rejected",
+                "approved",
+                self.clean_gate_state("evidence_valid"),
+                "advance",
+                "review-gate-outcome-mismatch-given-gate-state",
+            ),
+            (
+                "clean-with-notes-missing-escalation-advance-rejected",
+                "clean-with-notes",
+                self.clean_gate_state("escalation_satisfied"),
+                "advance",
+                "review-gate-outcome-mismatch-given-gate-state",
+            ),
+            ("unknown-native-status-rejected", "rubber-stamp", {}, "advance", "unsupported-native-review-status"),
+        )
+        for name, native_status, gate_state, supplied_outcome, expected in routing_cases:
+            with self.subTest(name=name):
+                route = evaluate_automated_review_gate_route(
+                    self.review_gate_fixture(
+                        native_review_status=native_status,
+                        review_gate_outcome=supplied_outcome,
+                        **gate_state,
+                    )
+                )
+                if expected == "advance":
+                    self.assertEqual(route.next_stage, "advance", route)
+                    self.assertIsNone(route.stop_reason, route)
+                elif expected == "review-resolution":
+                    self.assertEqual(route.next_stage, "review-resolution", route)
+                    self.assertIsNone(route.stop_reason, route)
+                else:
+                    self.assertEqual(route.stop_reason, expected, route)
+
+    def test_review_gate_clean_status_derivation_covers_every_clean_advance_gate(self) -> None:
+        expected_gates = {
+            "independence_valid",
+            "evidence_valid",
+            "recording_valid",
+            "clean_review_receipt_valid",
+            "escalation_satisfied",
+        }
+        self.assertEqual(set(CLEAN_ADVANCE_GATES), expected_gates)
+        for failing_gate in CLEAN_ADVANCE_GATES:
+            with self.subTest(failing_gate=failing_gate):
+                route = evaluate_automated_review_gate_route(
+                    self.review_gate_fixture(
+                        native_review_status="clean-with-notes",
+                        review_gate_outcome="inconclusive",
+                        **self.clean_gate_state(failing_gate),
+                    )
+                )
+                self.assertIsNotNone(route.stop_reason, route)
+                self.assertNotEqual(route.stop_reason, "review-gate-outcome-mismatch", route)
+                self.assertNotEqual(route.stop_reason, "review-gate-outcome-mismatch-given-gate-state", route)
+
+    def test_review_gate_changes_requested_routes_only_when_profile_and_evidence_permit(self) -> None:
+        self.assertReviewGateRoute(
+            self.review_gate_fixture(
+                native_review_status="changes-requested",
+                review_gate_outcome="stop",
+            ),
+            next_stage="review-resolution",
+            profile_state="active",
+        )
+        for name, fixture_overrides, expected_reason in (
+            (
+                "no-profile-authorization",
+                {"active_profile_authorizes_review_resolution": False},
+                "changes-requested-not-routable",
+            ),
+            ("missing-manifest", {"independence_manifest_valid": False}, "invalid-review-manifest"),
+            ("missing-phase-receipts", {"phase_receipts_recorded": False}, "missing-phase-receipts"),
+            ("rounds-exhausted", {"correction_loop_rounds_remaining": 0}, "changes-requested-not-routable"),
+            ("unclassified-finding", {"findings_auto_fix_classified": False}, "correction-finding-unclassified"),
+            ("missing-route-record", {"round_number": None}, "review-resolution-route-record-incomplete"),
+        ):
+            with self.subTest(name=name):
+                self.assertReviewGateRoute(
+                    self.review_gate_fixture(
+                        native_review_status="changes-requested",
+                        review_gate_outcome="stop",
+                        **fixture_overrides,
+                    ),
+                    stop_reason=expected_reason,
+                    profile_state="paused",
+                )
+
+    def test_review_gate_blocked_and_inconclusive_pause_without_resolution_routing(self) -> None:
+        for native_status, derived_outcome in (("blocked", "blocked"), ("inconclusive", "inconclusive")):
+            with self.subTest(native_status=native_status):
+                self.assertReviewGateRoute(
+                    self.review_gate_fixture(
+                        native_review_status=native_status,
+                        review_gate_outcome=derived_outcome,
+                    ),
+                    stop_reason=derived_outcome,
+                    profile_state="paused",
+                )
+
+    def test_review_gate_second_review_disagreement_prevents_automatic_continuation(self) -> None:
+        for second_status in ("changes-requested", "blocked", "inconclusive"):
+            with self.subTest(second_status=second_status):
+                self.assertReviewGateRoute(
+                    self.review_gate_fixture(
+                        review_gate_outcome="inconclusive",
+                        second_review_required=True,
+                        second_review_status=second_status,
+                    ),
+                    stop_reason="second-review-disagreement",
+                    profile_state="paused",
+                )
+        self.assertReviewGateRoute(
+            self.review_gate_fixture(
+                risk_tier="elevated",
+                second_review_required=True,
+                second_review_status="clean-with-notes",
+            ),
+            next_stage="advance",
+            profile_state="active",
+        )
+
+    def test_review_gate_sampling_floors_affect_clean_handoff(self) -> None:
+        self.assertReviewGateRoute(
+            self.review_gate_fixture(
+                sampling_phase="rollout",
+                standard_clean_review_sample_rate=20,
+                standard_clean_reviews_independently_reviewed=10,
+                standard_sampling_rate_reduction_requested=False,
+            ),
+            next_stage="advance",
+            profile_state="active",
+        )
+        for name, fixture_overrides, expected_reason in (
+            (
+                "standard-rollout-sample-rate-too-low",
+                {
+                    "sampling_phase": "rollout",
+                    "standard_clean_review_sample_rate": 19,
+                    "review_gate_outcome": "inconclusive",
+                },
+                "standard-clean-review-sampling-floor-unmet",
+            ),
+            (
+                "standard-rate-reduction-before-evidence-floor",
+                {
+                    "sampling_phase": "rollout",
+                    "standard_clean_review_sample_rate": 20,
+                    "standard_clean_reviews_independently_reviewed": 9,
+                    "standard_sampling_rate_reduction_requested": True,
+                    "review_gate_outcome": "inconclusive",
+                },
+                "standard-clean-review-sampling-evidence-floor-unmet",
+            ),
+            (
+                "elevated-clean-review-without-second-review",
+                {
+                    "risk_tier": "elevated",
+                    "second_review_required": False,
+                    "second_review_status": "not-required",
+                    "review_gate_outcome": "inconclusive",
+                },
+                "elevated-second-review-required",
+            ),
+        ):
+            with self.subTest(name=name):
+                self.assertReviewGateRoute(
+                    self.review_gate_fixture(**fixture_overrides),
+                    stop_reason=expected_reason,
+                    profile_state="paused",
+                )
+
+    def test_review_gate_critical_authority_gates_clean_handoff(self) -> None:
+        cases = (
+            (
+                "critical-internal-no-authority-held",
+                {
+                    "risk_tier": "critical-internal",
+                    "risk_tier_satisfied": True,
+                    "review_gate_outcome": "inconclusive",
+                },
+                "critical-authority-missing:critical-internal",
+                None,
+            ),
+            (
+                "critical-internal-l3-advances",
+                {
+                    "risk_tier": "critical-internal",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "L3",
+                    "critical_authority_satisfied": True,
+                },
+                None,
+                "advance",
+            ),
+            (
+                "irreversible-external-l3-only-rejected",
+                {
+                    "risk_tier": "irreversible-external-action",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "L3",
+                    "critical_authority_satisfied": True,
+                    "review_gate_outcome": "inconclusive",
+                },
+                "critical-authority-kind-insufficient:irreversible-external-action",
+                None,
+            ),
+            (
+                "irreversible-external-human-advances",
+                {
+                    "risk_tier": "irreversible-external-action",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "human",
+                    "critical_authority_satisfied": True,
+                },
+                None,
+                "advance",
+            ),
+            (
+                "authority-kind-invalid-with-advance-rejected",
+                {
+                    "risk_tier": "critical-internal",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "banana",
+                    "critical_authority_satisfied": True,
+                },
+                "critical-authority-kind-invalid",
+                None,
+            ),
+            (
+                "authority-kind-invalid-irreversible-with-advance-rejected",
+                {
+                    "risk_tier": "irreversible-external-action",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "banana",
+                    "critical_authority_satisfied": True,
+                },
+                "critical-authority-kind-invalid",
+                None,
+            ),
+            (
+                "authority-kind-invalid-survives-risk-tier-unsatisfied",
+                {
+                    "risk_tier": "critical-internal",
+                    "risk_tier_satisfied": False,
+                    "critical_authority_kind": "banana",
+                    "critical_authority_satisfied": False,
+                },
+                "critical-authority-kind-invalid",
+                None,
+            ),
+            (
+                "authority-satisfied-not-bool-rejected",
+                {
+                    "risk_tier": "critical-internal",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "L3",
+                    "critical_authority_satisfied": "banana",
+                },
+                "critical-authority-satisfied-invalid",
+                None,
+            ),
+            (
+                "standard-authority-kind-not-applicable",
+                {
+                    "critical_authority_kind": "L3",
+                    "critical_authority_satisfied": True,
+                },
+                "critical-authority-kind-not-applicable",
+                None,
+            ),
+        )
+        for name, fixture_overrides, expected_reason, expected_next_stage in cases:
+            with self.subTest(name=name):
+                self.assertReviewGateRoute(
+                    self.review_gate_fixture(**fixture_overrides),
+                    stop_reason=expected_reason,
+                    next_stage=expected_next_stage,
+                    profile_state="active" if expected_next_stage else "paused",
+                )
+
+    def test_review_gate_authority_kind_invalid_parser_order(self) -> None:
+        self.assertReviewGateRoute(
+            self.review_gate_fixture(
+                risk_tier="critical-internal",
+                risk_tier_satisfied=True,
+                critical_authority_kind="banana",
+                critical_authority_satisfied=True,
+            ),
+            stop_reason="critical-authority-kind-invalid",
+            profile_state="paused",
+        )
+
     def test_implementation_profile_phase_boundaries_refuse_closeout_until_promoted(self) -> None:
         self.assertImplementationRoute(
             self.implementation_profile_fixture(
@@ -1601,6 +2033,29 @@ No blocked plans.
                 current_stage="final-clean-code-review",
                 phase="C",
                 promotion_evidence={"phase_b_dogfood": "recorded", "synthetic_fixtures": "pass"},
+                milestones=[
+                    {"id": "M1", "state": "closed"},
+                    {"id": "M2", "state": "closed"},
+                ],
+            ),
+            stop_reason="final-holistic-review-missing",
+            profile_state="active",
+        )
+        self.assertImplementationRoute(
+            self.implementation_profile_fixture(
+                current_stage="final-clean-code-review",
+                phase="C",
+                promotion_evidence={"phase_b_dogfood": "recorded", "synthetic_fixtures": "pass"},
+                final_holistic_review={
+                    "complete_final_diff": True,
+                    "cross_milestone_interactions": True,
+                    "governing_artifacts": True,
+                    "review_resolutions": True,
+                    "final_validation_selection": True,
+                    "generated_and_derived_artifacts": True,
+                    "cross_milestone_scope": True,
+                    "milestone_local_only": False,
+                },
                 milestones=[
                     {"id": "M1", "state": "closed"},
                     {"id": "M2", "state": "closed"},

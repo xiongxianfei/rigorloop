@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from change_metadata_semantics import validate_clean_receipt_root_review_metadata
+from change_metadata_semantics import validate_review_gate_metadata
 from review_artifact_validation import summarize_review_evidence
 from review_artifact_validation import validate_change_root as validate_review_artifact_root
 
@@ -478,6 +479,7 @@ def validate_metadata_semantics(data: Any, metadata_path: Path | None = None) ->
         if metadata_path is not None:
             errors.extend(validate_review_summary_counts(review, metadata_path.parent))
     errors.extend(validate_clean_receipt_root_review_metadata(data))
+    errors.extend(validate_review_gate_metadata(data))
 
     artifacts = data.get("artifacts")
     if not isinstance(artifacts, dict):

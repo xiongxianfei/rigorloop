@@ -362,6 +362,77 @@ review:
             )
             self.assertPathPasses(target)
 
+    def test_review_gate_metadata_passes_with_packet_hash_and_phase_receipts(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-review-gate-valid-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block="""  review_gate:
+    manifest: docs/changes/example/reviews/code-review-r1.md
+    independence_level: L1
+    initial_packet_sha256: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    phase_receipts:
+      - risk-map-recorded
+      - evidence-menu-released
+      - evidence-results-released
+      - prior-findings-released
+      - verdict-recorded
+""",
+            )
+            self.assertPathPasses(target)
+
+    def test_review_gate_metadata_rejects_l0_missing_hash_and_bad_phase_order(self) -> None:
+        cases = [
+            (
+                "l0",
+                """  review_gate:
+    manifest: docs/changes/example/reviews/code-review-r1.md
+    independence_level: L0
+    initial_packet_sha256: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    phase_receipts:
+      - risk-map-recorded
+      - evidence-menu-released
+      - evidence-results-released
+      - prior-findings-released
+      - verdict-recorded
+""",
+                "review.review_gate.independence_level: L0 is not valid for automated handoff",
+            ),
+            (
+                "missing-hash",
+                """  review_gate:
+    manifest: docs/changes/example/reviews/code-review-r1.md
+    independence_level: L1
+    phase_receipts:
+      - risk-map-recorded
+      - evidence-menu-released
+      - evidence-results-released
+      - prior-findings-released
+      - verdict-recorded
+""",
+                "review.review_gate.initial_packet_sha256: missing required field",
+            ),
+            (
+                "bad-order",
+                """  review_gate:
+    manifest: docs/changes/example/reviews/code-review-r1.md
+    independence_level: L1
+    initial_packet_sha256: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    phase_receipts:
+      - evidence-menu-released
+      - risk-map-recorded
+      - evidence-results-released
+      - prior-findings-released
+      - verdict-recorded
+""",
+                "review.review_gate.phase_receipts: evidence-menu-released appears before risk-map-recorded",
+            ),
+        ]
+        for name, review_gate_block, expected in cases:
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory(prefix=f"change-metadata-review-gate-{name}-") as temp_dir:
+                    target = self.write_policy_fixture(Path(temp_dir), workflow_block=review_gate_block)
+                    self.assertPathFails(target, expected)
+
     def test_autoprogression_policy_record_required_fields_fail(self) -> None:
         cases = [
             (
