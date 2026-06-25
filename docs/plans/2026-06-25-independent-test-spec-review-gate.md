@@ -62,15 +62,15 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Canonical skill and review assets
-- Current milestone state: review-requested
-- Latest review evidence: code-review-r1
-- Last reviewed milestone: M1. Workflow and contract baseline
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2
+- Current milestone: M3. Validators, fixtures, generated package proof, and representative evidence
+- Current milestone state: planned
+- Latest review evidence: code-review-r2
+- Last reviewed milestone: M2. Canonical skill and review assets
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 is awaiting code-review and M3 remains open.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 remains open.
 
 ## Milestones
 
@@ -94,7 +94,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ### M2. Canonical skill and review assets
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Requirements: R13-R18, R22-R26
 - Deliverable: add `skills/test-spec-review/SKILL.md`, result and material-finding assets, update `test-spec`, `implement`, and workflow-facing skill wording.
 - Likely files: `skills/test-spec-review/SKILL.md`, `skills/test-spec-review/assets/review-result-skeleton.md`, `skills/test-spec-review/assets/material-finding.md`, `skills/test-spec/SKILL.md`, `skills/implement/SKILL.md`, `skills/workflow/SKILL.md`.
@@ -105,9 +105,9 @@ Generated public adapter skill bodies are not authored source and must not be ha
   - [x] targeted validation passed
   - [x] hand off to code-review for M2
 - Review closeout:
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] lifecycle handoff updated before starting the next implementation milestone
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] lifecycle handoff updated before starting the next implementation milestone
 - Milestone commit message: `M2: add test-spec-review skill`
 
 ### M3. Validators, fixtures, generated package proof, and representative evidence
@@ -164,6 +164,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - 2026-06-25: M1 implemented workflow/spec contract baseline, review-artifact validator recognition for `test-spec-review`, result-field closed-vocabulary checks, workflow summary/root guidance updates, and behavior-preservation evidence; next stage is `code-review M1`.
 - 2026-06-25: M1 code-review completed clean with no material findings; M1 is closed and next stage is `implement M2`.
 - 2026-06-25: M2 added canonical `test-spec-review` skill/assets, updated adjacent `test-spec`, `implement`, and `workflow` routing, and extended review-family skill validation; next stage is `code-review M2`.
+- 2026-06-25: M2 code-review completed clean with no material findings; M2 is closed and next stage is `implement M3`.
 
 ## Decision log
 
