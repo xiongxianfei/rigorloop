@@ -44,10 +44,11 @@ changed_files:
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/proposal-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/architecture-review-r1.md
+  - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md
 review:
-  status: approved
+  status: clean-with-notes
   unresolved_items: 0
   material_findings: 0
   open_findings: 0
@@ -56,6 +57,7 @@ review:
   spec_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md
   architecture_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/architecture-review-r1.md
   plan_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md
+  code_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r1.md
   review_log: docs/changes/2026-06-25-independent-test-spec-review-gate/review-log.md
 validation:
   - command: proposal-review r1
@@ -84,6 +86,8 @@ validation:
     result: pass
   - command: python scripts/test-skill-validator.py -k test_test_spec_review_gate_workflow_baseline_surfaces_are_declared
     result: pass
+  - command: code-review r1
+    result: clean-with-notes_no_material_findings_m1_closed_next_implement_m2
   - command: python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml
     result: pass
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate

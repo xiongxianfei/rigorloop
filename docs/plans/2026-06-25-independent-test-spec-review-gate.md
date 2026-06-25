@@ -62,21 +62,21 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Workflow and contract baseline
-- Current milestone state: review-requested
-- Latest review evidence: plan-review-r2
-- Last reviewed milestone: none
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review M1
+- Current milestone: M2. Canonical skill and review assets
+- Current milestone state: planned
+- Latest review evidence: code-review-r1
+- Last reviewed milestone: M1. Workflow and contract baseline
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 is awaiting code-review and M2/M3 remain open.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2/M3 remain open.
 
 ## Milestones
 
 ### M1. Workflow and contract baseline
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Requirements: R1-R12, R19-R21
 - Deliverable: workflow/spec amendments define stage order, test-spec `active` preservation, result enums, handoff mapping, staleness, upstream revision routing, and implementation eligibility.
 - Likely files: `specs/rigorloop-workflow.md`, `specs/rigorloop-workflow.test.md`, `docs/workflows.md`, `AGENTS.md` if affected, change-local behavior-preservation evidence.
@@ -87,9 +87,9 @@ Generated public adapter skill bodies are not authored source and must not be ha
   - [x] targeted validation passed
   - [x] hand off to code-review for M1
 - Review closeout:
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] lifecycle handoff updated before starting the next implementation milestone
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] lifecycle handoff updated before starting the next implementation milestone
 - Milestone commit message: `M1: add test-spec-review workflow contract`
 
 ### M2. Canonical skill and review assets
@@ -162,6 +162,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - 2026-06-25: Proposal authored, proposal-review approved, spec authored and approved, architecture assessment recorded as required, architecture and ADR authored and approved, plan authored and plan-review approved.
 - 2026-06-25: Test spec authored as the active proof-planning surface; next stage is `implement M1`.
 - 2026-06-25: M1 implemented workflow/spec contract baseline, review-artifact validator recognition for `test-spec-review`, result-field closed-vocabulary checks, workflow summary/root guidance updates, and behavior-preservation evidence; next stage is `code-review M1`.
+- 2026-06-25: M1 code-review completed clean with no material findings; M1 is closed and next stage is `implement M2`.
 
 ## Decision log
 
