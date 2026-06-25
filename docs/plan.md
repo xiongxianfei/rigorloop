@@ -17,6 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
+| [Independent Adversarial Review Gates](plans/2026-06-25-independent-adversarial-review-gates.md) | active | code-review M1 | 2026-06-25-independent-adversarial-review-gates-for-automated-workflows |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked

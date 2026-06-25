@@ -1,0 +1,390 @@
+# Independent Adversarial Review Gates Execution Plan
+
+## Status
+
+Plan lifecycle state: active
+Terminal disposition: none
+
+- Change ID: 2026-06-25-independent-adversarial-review-gates-for-automated-workflows
+- Owner: maintainer
+- Start date: 2026-06-25
+- Last updated: 2026-06-25
+- Related issue or PR: none yet
+- Supersedes: none
+
+## Purpose / big picture
+
+Implement the first slice of independent adversarial review gates for workflow-managed automated reviews. The work should make automated review handoff depend on verifiable fresh context, neutral initial packets, blind-first phase receipts, risk-tier gates, clean-review sufficiency receipts, second-review disagreement handling, final holistic code review evidence, and calibration signals.
+
+The first implementation slice pilots the full contract in automated `code-review`, records manifest-only evidence for earlier review stages during rollout, preserves manual and profile-off behavior, and keeps clean reviews valid when the independent evidence supports them.
+
+## Source artifacts
+
+- Proposal: [Independent Adversarial Review Gates for Automated Workflows](../proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md)
+- Proposal-review: [proposal-review-r2](../changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/proposal-review-r2.md)
+- Spec: [Review Independence and Criticality](../../specs/review-independence-and-criticality.md)
+- Spec-review: [spec-review-r2](../changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/spec-review-r2.md)
+- Architecture: [canonical system architecture](../architecture/system/architecture.md)
+- ADR: [ADR-20260625-independent-adversarial-review-gates](../adr/ADR-20260625-independent-adversarial-review-gates.md)
+- Architecture-review: [architecture-review-r1](../changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/architecture-review-r1.md)
+- Test spec: [Review Independence and Criticality Test Spec](../../specs/review-independence-and-criticality.test.md)
+- Change metadata: [change.yaml](../changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml)
+
+## Context and orientation
+
+This change is workflow-governance and validation work inside the repository-local RigorLoop system. There is no hosted service, persistent database, or deployment target to add.
+
+Important implementation surfaces:
+
+- `scripts/review_artifact_validation.py` and `scripts/test-review-artifact-validator.py` own review-record and closeout shape checks.
+- `scripts/change_metadata_semantics.py`, `scripts/validate-change-metadata.py`, `schemas/change.schema.json`, and `scripts/test-change-metadata-validator.py` own change metadata shape and semantic checks.
+- `scripts/lifecycle_state_sync.py`, `scripts/artifact_lifecycle_validation.py`, `scripts/validate-artifact-lifecycle.py`, and `scripts/test-artifact-lifecycle-validator.py` own workflow-state and profile-routing assertions.
+- `scripts/validation_selection.py`, `scripts/select-validation.py`, `scripts/ci.sh`, and `scripts/test-select-validation.py` own changed-path routing and selected validation.
+- Canonical stage guidance lives under `skills/`; generated adapter output must be refreshed from canonical sources when skill text changes.
+- Existing formal review recording and implementation autoprogression behavior must remain compatible, especially `changes-requested -> review-resolution` routing when an active profile authorizes it.
+
+## Non-goals
+
+- Do not require every review to produce a finding.
+- Do not implement a hosted review service, database, external control plane, or network dependency.
+- Do not make heterogeneous models mandatory for standard-risk automated review.
+- Do not expose private chain-of-thought or hidden model reasoning in records.
+- Do not make this first slice a full review-family migration; `code-review` is the full pilot, while `spec-review` and `plan-review` collect manifest evidence first.
+- Do not change PR opening, publishing, deployment, or external-boundary authority.
+- Do not proceed to implementation until `plan-review` and the matching test spec are complete.
+
+## Requirements covered
+
+- `R1`-`R2`: M1, M2, M3
+- `R3`-`R7`: M1
+- `R8`-`R9`: M3
+- `R10`: M2
+- `R11`: M2, M3
+- `R12`: M2
+- `R13`: M1, M3
+- `R14`-`R16`: M4
+- `R17`: M1, M4
+- `R18`: M2, M3, M5
+- `R19`: M3, M5
+- `R20`: M2, M3, M5
+- `AC1`-`AC5`: M1
+- `AC6`-`AC9`, `AC-RAI-018`, `RAI-021`-`RAI-023`: M2
+- `AC10`-`AC14`: M4
+- `AC15`: M5
+
+## Current Handoff Summary
+
+- Current milestone: M1. Review gate evidence model and validators
+- Current milestone state: review-requested
+- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/plan-review-r2.md
+- Last reviewed milestone: none
+- Review status: review-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M2, M3, M4, M5
+- Next stage: code-review M1
+- Final closeout readiness: not ready
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 implementation is complete and awaiting code-review; M2-M5 and downstream gates remain incomplete.
+
+## Milestones
+
+### M1. Review gate evidence model and validators
+
+- Milestone state: review-requested
+- Goal: Add structured review-gate evidence records for manifests, initial packets, phase receipts, clean-review sufficiency receipts, and private-reasoning-safe record fields.
+- Requirements: `R1`-`R7`, `R13`, `R17`, `AC1`-`AC5`, `AC12`
+- Files/components likely touched:
+  - `schemas/change.schema.json`
+  - `scripts/review_artifact_validation.py`
+  - `scripts/change_metadata_semantics.py`
+  - `scripts/validate-review-artifacts.py`
+  - `scripts/validate-change-metadata.py`
+  - `scripts/test-review-artifact-validator.py`
+  - `scripts/test-change-metadata-validator.py`
+  - `tests/fixtures/review-artifacts/`
+  - `tests/fixtures/change-metadata/`
+- Dependencies:
+  - Approved matching test spec must define concrete fixture expectations before implementation.
+- Tests to add/update:
+  - Valid manifest with L1/L2/L3, packet inventory, packet hash, reviewer context identity, phase receipts, and native verdict.
+  - Invalid L0 handoff, missing packet inventory, missing packet hash, mutable manifest after later evidence release, early evidence release, unbounded free-form manifest field, and private-reasoning field rejection.
+  - Clean-review sufficiency receipt valid and invalid fixtures.
+- Implementation steps:
+  - Define the smallest structured record shape that satisfies the spec without turning clean receipts into broad prose.
+  - Add parser and semantic checks for manifest, initial packet, phase receipts, and clean-review receipt.
+  - Add fixtures covering valid and fail-closed outcomes.
+  - Keep existing clean review receipt and material finding validation compatible for manual/profile-off reviews.
+- Validation commands:
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml`
+- Expected observable result: Automated review gate evidence can be validated structurally, and incomplete or contaminated evidence fails closed without changing manual/profile-off review behavior.
+- Commit message: `M1: add independent review gate evidence validation`
+- Milestone closeout:
+  - validation passed: yes
+  - progress updated: yes
+  - decision log updated if needed: yes
+  - validation notes updated: yes
+  - milestone committed: yes
+- Risks:
+  - Record formats could become too prose-heavy for validators to enforce.
+- Rollback/recovery:
+  - Revert the new evidence validation paths and fixtures while leaving existing review artifact validation untouched.
+
+### M2. Orchestration semantics and workflow-state gates
+
+- Milestone state: planned
+- Goal: Enforce normalized `review_gate_outcome`, fail-closed risk-tier classification, `changes-requested` routing semantics, second-review disagreement stops, and final holistic code-review preconditions in workflow-state evaluation.
+- Requirements: `R10`-`R12`, `R14`, `R18`, `R20`, `AC6`-`AC11`, `AC13`, `AC15`, `AC-RAI-018`, `RAI-021`-`RAI-023`
+- Files/components likely touched:
+  - `scripts/lifecycle_state_sync.py`
+  - `scripts/artifact_lifecycle_validation.py`
+  - `scripts/validate-artifact-lifecycle.py`
+  - `scripts/test-artifact-lifecycle-validator.py`
+  - `tests/fixtures/artifact-lifecycle/`
+  - `specs/workflow-stage-autoprogression.md` only if implementation exposes a true approved-spec gap
+- Dependencies:
+  - M1 evidence parsing should exist before routing gates rely on manifest and receipt state.
+- Tests to add/update:
+  - Native `approved` and `clean-with-notes` advance only with valid independence and evidence gates.
+  - Native `changes-requested` routes to `review-resolution` only when an active profile authorizes it and policy gates allow another round.
+  - Native `blocked` and `inconclusive` pause regardless of profile authorization.
+  - Ambiguous risk tier escalates or becomes inconclusive.
+  - Second-review disagreement blocks automatic continuation.
+  - Missing final holistic code review blocks `explain-change` and `verify` under implementation autoprogression.
+- Implementation steps:
+  - Add derived gate-outcome evaluation helpers.
+  - Connect manifest, phase receipt, risk tier, clean receipt, unresolved finding, and second-review state into workflow-state checks.
+  - Preserve existing implementation-profile correction-loop behavior when `changes-requested` is routable.
+  - Add fixture coverage for Examples E8-E10 and RAI-021 through RAI-023.
+- Validation commands:
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml`
+- Expected observable result: Workflow-state validation distinguishes clean advance, routable `changes-requested`, blocked, and inconclusive states without string-only review status comparisons.
+- Commit message: `M2: enforce automated review gate routing`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone committed
+- Risks:
+  - Routing checks could accidentally pause existing authorized correction loops.
+- Rollback/recovery:
+  - Revert the new gate-outcome evaluator and fixtures while preserving prior implementation-profile guards.
+
+### M3. Code-review pilot and review-family guidance
+
+- Milestone state: planned
+- Goal: Update canonical review and workflow skills so automated `code-review` uses the full blind-first independent gate, while automated `spec-review` and `plan-review` record minimal manifest evidence during the pilot.
+- Requirements: `R6`, `R8`, `R9`, `R18`-`R20`, `AC12`, `AC13`, `AC15`
+- Files/components likely touched:
+  - `skills/code-review/SKILL.md`
+  - `skills/workflow/SKILL.md`
+  - `skills/implement/SKILL.md`
+  - `skills/review-resolution/SKILL.md`
+  - `skills/spec-review/SKILL.md`
+  - `skills/plan-review/SKILL.md`
+  - `skills/architecture-review/SKILL.md` if final review-family wording needs manifest compatibility
+  - `scripts/test-skill-validator.py`
+  - `scripts/test-build-skills.py`
+- Dependencies:
+  - M1 and M2 should define the evidence and routing vocabulary before skill text relies on it.
+- Tests to add/update:
+  - Skill validation for required guidance, no generated-output source edits, no reviewer edit authority, no finding quota, and deferred prior-finding/evidence-menu language.
+  - Generated local skill build checks after canonical skill updates.
+- Implementation steps:
+  - Add code-review pilot guidance for initial packet, risk map, evidence challenge, prior-finding reconciliation, clean sufficiency receipt, and final holistic review.
+  - Add workflow/implement routing guidance so profile-managed automated reviews invoke the independent gate.
+  - Add minimal manifest collection language for automated spec-review and plan-review during Phase 1.
+  - Keep direct isolated review behavior unchanged.
+- Validation commands:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5`
+- Expected observable result: Canonical skill guidance matches the approved review-independence contract and remains valid for generated adapters.
+- Commit message: `M3: pilot independent gates in review skills`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone committed
+- Risks:
+  - Skill text could become too long or expose maintainer-only implementation details.
+- Rollback/recovery:
+  - Revert skill text changes for the affected skills and regenerate from the last valid canonical skill state.
+
+### M4. Calibration fixtures and measurement evidence
+
+- Milestone state: planned
+- Goal: Add public defect-class fixtures, calibration record validation, sampling-floor evidence, downstream escape recording, and metric separation by review skill and risk tier.
+- Requirements: `R14`-`R17`, `AC10`-`AC14`
+- Files/components likely touched:
+  - `tests/fixtures/review-artifacts/`
+  - `tests/fixtures/artifact-lifecycle/`
+  - `scripts/review_artifact_validation.py`
+  - `scripts/artifact_lifecycle_validation.py`
+  - `scripts/test-review-artifact-validator.py`
+  - `scripts/test-artifact-lifecycle-validator.py`
+  - `docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/behavior-preservation.md`
+- Dependencies:
+  - M1 and M2 must define the calibration record inputs that validators can inspect.
+- Tests to add/update:
+  - Standard-risk rollout sampling below 20% fails.
+  - Standard-risk sample-rate reduction before 10 independently reviewed clean outcomes fails.
+  - Elevated-risk clean review without second review fails.
+  - Second-review material finding, blocked result, or inconclusive result blocks continuation.
+  - Calibration records distinguish recurrence detection, novel-defect detection, disagreement, escapes, false positives, inconclusive rate, receipt quality, and review duration by skill and tier.
+- Implementation steps:
+  - Add representative public seeded-defect class fixtures without implying the whole calibration corpus is public.
+  - Add validation for calibration record shape and sampling floors.
+  - Add downstream escape record examples and validation.
+  - Record behavior-preservation evidence for manual/profile-off review compatibility and no finding quota.
+- Validation commands:
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows`
+- Expected observable result: Calibration and second-review evidence can be tested without treating public fixtures as the only measured defect corpus.
+- Commit message: `M4: add review gate calibration evidence`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone committed
+- Risks:
+  - Public fixtures could be mistaken for the complete private calibration corpus.
+- Rollback/recovery:
+  - Revert fixture and calibration validation changes while keeping the core gate fail-closed behavior.
+
+### M5. Generated guidance, docs alignment, and final proof
+
+- Milestone state: planned
+- Goal: Align contributor-facing workflow guidance, generated skill/adapters checks, behavior-preservation evidence, and final validation selection for the first slice.
+- Requirements: `R19`, `R20`, all acceptance criteria
+- Files/components likely touched:
+  - `docs/workflows.md`
+  - `AGENTS.md` or `CONSTITUTION.md` only if implementation changes their summarized guidance
+  - `skills/`
+  - generated adapter validation surfaces
+  - `docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/behavior-preservation.md`
+  - `docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml`
+- Dependencies:
+  - M1-M4 must be complete.
+  - Matching test spec must name final validation expectations before implementation begins.
+- Tests to add/update:
+  - Build and validation checks for canonical skill source and generated adapter output.
+  - Changed-path selection confirms new deterministic evidence paths route to the intended checks or record explicit routing debt.
+  - Behavior-preservation evidence covers manual/profile-off compatibility, no finding quota, and existing authorized `changes-requested -> review-resolution` routing.
+- Implementation steps:
+  - Update workflow docs or record them unaffected with rationale.
+  - Refresh generated skill/adapters evidence using repository-owned scripts.
+  - Add behavior-preservation matrix.
+  - Run selected validation for all touched source, test, skill, schema, and evidence files.
+- Validation commands:
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-build-skills.py`
+  - `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5`
+  - `python scripts/select-validation.py --mode explicit --path <changed-path>`
+  - `bash scripts/ci.sh --mode explicit --path <changed-path>`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path specs/review-independence-and-criticality.md --path specs/review-independence-and-criticality.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260625-independent-adversarial-review-gates.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml`
+- Expected observable result: All first-slice artifacts, guidance, fixtures, validators, and generated checks are coherent and ready for final explain-change and verify after implementation review closes.
+- Commit message: `M5: align review gate guidance and proof`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone committed
+- Risks:
+  - Validation selection may expose unregistered deterministic evidence paths late in the slice.
+- Rollback/recovery:
+  - Resolve selector routing debt before verify, or remove unsupported deterministic evidence and record an explicit deferral if authorized.
+
+## Validation plan
+
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml`
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows`
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows`
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md --path specs/review-independence-and-criticality.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260625-independent-adversarial-review-gates.md --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/architecture-review-r1.md`
+- `git diff --check -- docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows`
+- When any change touches files under `skills/`, the validation plan MUST include public adapter archive proof in addition to local skill validation: `python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir"` followed by `python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5`. If `v0.1.5` is not the current adapter manifest version at implementation time, use the version from `dist/adapters/manifest.yaml` in both commands. Local-skill checks alone do not prove the public adapter archive boundary required by the architecture.
+- Milestone-specific test commands listed under M1-M5 after the matching test spec is active.
+
+## Generated skill and adapter proof boundary
+
+`scripts/build-skills.py --check` proves local-skill output: canonical skill files are well formed and generated local skill output is current.
+
+`scripts/build-adapters.py --output-dir <tmpdir>` followed by `scripts/validate-adapters.py --root <tmpdir>` proves public adapter archive output: the `v0.1.3` and later release-archive form built from current canonical skill content remains generable and valid.
+
+Both proofs are required for canonical-skill changes. Neither proof subsumes the other.
+
+## Risks and recovery
+
+- Risk: The gate could become an attestation-only layer.
+  - Recovery: Keep validator-owned closed fields and phase-order checks in M1/M2, then use second-review and calibration fixtures in M4 for evidence quality.
+- Risk: Existing implementation-profile correction loops could regress.
+  - Recovery: Preserve `changes-requested` routing only under active profile authority and include regression fixtures for `correction-finding-unclassified`.
+- Risk: Skill guidance could leak repository-maintainer implementation detail into published skills.
+  - Recovery: Keep maintainer detail in specs, validators, and docs; published skill text should describe user-facing review behavior and evidence requirements.
+- Risk: Public seeded fixtures could be overfit.
+  - Recovery: Keep public fixtures at the defect-class level and record that measured private rotating fixtures remain a separate calibration responsibility.
+- Risk: Plan could imply implementation readiness before test-spec.
+  - Recovery: Current Handoff Summary and Readiness keep next stage as `plan-review`; implementation milestones remain planned until plan-review and test-spec are complete.
+
+## Dependencies
+
+- Approved proposal, spec, architecture package, and ADR listed in Source artifacts.
+- Approved architecture-review evidence with no material findings.
+- Matching active test spec before implementation.
+- Existing review artifact, change metadata, lifecycle, skill, build, and selector validation scripts.
+- No new runtime dependency is planned.
+
+## Progress
+
+- 2026-06-25: Proposal accepted; spec approved after resolving `SR1-F1`; architecture package and ADR approved by architecture-review; execution plan created.
+- 2026-06-25: Plan-review R1 requested `PR1-F1`; accepted and revised M3, M5, and the top-level validation plan to require adapter archive proof for canonical skill changes. This was discovered under isolated formal plan-review; manual review discipline continues for this change pending independence-gates landing.
+- 2026-06-25: Plan-review R2 approved the revised plan; matching active test spec authored.
+- 2026-06-25: M1 implemented structured automated review-gate evidence validation for review records and change metadata, including manifest fields, initial-packet inventory and hash checks, blind-first phase receipts, clean-review sufficiency receipt fields, forbidden context indicators, bounded prose fields, and durable valid/fail-closed fixtures.
+
+## Decision log
+
+| Date | Decision | Reason | Alternatives rejected |
+| --- | --- | --- | --- |
+| 2026-06-25 | Split implementation into five milestones | Separates evidence schema, routing semantics, skill pilot guidance, calibration, and final generated/doc proof so each can receive focused test-spec coverage and code-review. | One broad implementation slice; review-family migration before the code-review pilot proves the contract. |
+| 2026-06-25 | Require test-spec before implementation M1 | The spec has many normative gates and RAI checks; implementation without a traceable test spec would hide coverage gaps. | Start coding directly from the architecture and retroactively document tests. |
+| 2026-06-25 | Require adapter archive proof in M3 and M5 when canonical skills change | M3 changes canonical stage-skill guidance and M5 performs final generated proof; public adapter archive validation must be proven at the milestone-local boundary and again at final closeout. | Defer all adapter proof to M5; treat local skill validation as sufficient for public adapter archives. |
+| 2026-06-25 | Keep M1 review-gate evidence validation in semantic validators instead of changing `schemas/change.schema.json` | Existing schema structure already permits optional nested review metadata; semantic validators can enforce closed independence levels, phase order, hashes, and fail-closed review evidence without broad schema churn. | Add schema-only fields that would not enforce the M1 behavioral gates. |
+
+## Surprises and discoveries
+
+- Existing review-artifact validation expects review-log entries to use `review-resolution.md#<Review ID>` in this change root, so the architecture-review clean receipt is indexed through the existing resolution ledger.
+- Plan-review R1 showed that local skill validation can be mentally substituted for adapter validation unless the plan names both boundaries explicitly.
+- M1 fixture-backed review-log entries needed the existing block-style `Resolution` field even for no-material automated review examples; this preserves compatibility with the current review-log parser.
+
+## Validation notes
+
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md --path specs/review-independence-and-criticality.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260625-independent-adversarial-review-gates.md --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/architecture-review-r1.md` passed.
+- 2026-06-25: `git diff --check -- docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed.
+- 2026-06-25: Plan revised for `PR1-F1`; rerun target is `plan-review-r2`.
+- 2026-06-25: Test spec authored at `specs/review-independence-and-criticality.test.md`; implementation can begin with M1 after validation passes.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py` passed after M1.
+- 2026-06-25: `python scripts/test-change-metadata-validator.py` passed after M1.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M1.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M1.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md --path specs/review-independence-and-criticality.md --path specs/review-independence-and-criticality.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260625-independent-adversarial-review-gates.md --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/plan-review-r2.md` passed after M1 handoff sync.
+- 2026-06-25: `git diff --check -- scripts/review_artifact_validation.py scripts/change_metadata_semantics.py scripts/validate-change-metadata.py scripts/test-review-artifact-validator.py scripts/test-change-metadata-validator.py tests/fixtures/review-artifacts docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M1.
+- 2026-06-25: `rg -n '[[:blank:]]$|\t' scripts/review_artifact_validation.py scripts/change_metadata_semantics.py scripts/validate-change-metadata.py scripts/test-review-artifact-validator.py scripts/test-change-metadata-validator.py tests/fixtures/review-artifacts docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` returned no matches after M1.
+
+## Outcome and retrospective
+
+- Not started. Fill after implementation, review-resolution if any, explain-change, verify, and PR handoff complete.
+
+## Readiness
+
+- See `Current Handoff Summary`.
