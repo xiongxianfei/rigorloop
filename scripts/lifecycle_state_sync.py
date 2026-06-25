@@ -351,13 +351,23 @@ IMPLEMENTATION_MILESTONE_STATES = {"planned", "implementing", "review-requested"
 AUTO_FIX_CLASSES = {"none", "mechanical", "declared-safe"}
 REVIEW_GATE_OUTCOMES = {"advance", "stop", "blocked", "inconclusive"}
 REVIEW_GATE_RISK_TIERS = {"standard", "elevated", "critical-internal", "irreversible-external-action"}
-NATIVE_REVIEW_GATE_OUTCOMES = {
-    "approved": "advance",
-    "clean-with-notes": "advance",
+DETERMINATE_NATIVE_OUTCOMES = {
     "changes-requested": "stop",
     "blocked": "blocked",
     "inconclusive": "inconclusive",
 }
+CLEAN_NATIVE_STATUSES = ("approved", "clean-with-notes")
+NATIVE_REVIEW_GATE_OUTCOMES = DETERMINATE_NATIVE_OUTCOMES | {
+    status: "advance" for status in CLEAN_NATIVE_STATUSES
+}
+# Source: specs/review-independence-and-criticality.md R12c, R12d, R13c.
+CLEAN_ADVANCE_GATES = (
+    "independence_valid",
+    "evidence_valid",
+    "recording_valid",
+    "clean_review_receipt_valid",
+    "escalation_satisfied",
+)
 MECHANICAL_AUTO_FIX_KINDS = {
     "formatter-output",
     "lint-autofix",
@@ -433,6 +443,32 @@ def _review_gate_stop(reason: str) -> ImplementationAutoprogressionRoute:
     return _implementation_stop("paused", reason)
 
 
+def _clean_review_gate_failure_reason(data: dict[str, object]) -> str | None:
+    if data.get("independence_manifest_valid") is not True:
+        return "invalid-review-manifest"
+    if data.get("phase_receipts_recorded") is not True:
+        return "missing-phase-receipts"
+    if data.get("recording_valid") is not True:
+        return "review-recording-invalid"
+    if data.get("clean_review_receipt_valid") is not True:
+        return "insufficient-clean-receipt"
+    if data.get("unresolved_findings") not in {0, None}:
+        return "review-findings-open"
+    if data.get("risk_tier") not in REVIEW_GATE_RISK_TIERS:
+        return "risk-tier-classification-invalid"
+    if data.get("risk_tier_classifier_valid") is not True:
+        return "risk-tier-classification-incomplete"
+    if data.get("risk_tier_satisfied") is not True:
+        return "risk-tier-escalation-failed"
+    if data.get("risk_tier") == "elevated" and data.get("second_review_required") is not True:
+        return "elevated-second-review-required"
+    if data.get("second_review_required") is True:
+        second_status = data.get("second_review_status")
+        if second_status not in {"approved", "clean-with-notes"}:
+            return "second-review-disagreement"
+    return None
+
+
 def evaluate_automated_review_gate_route(data: dict[str, object]) -> ImplementationAutoprogressionRoute:
     """Evaluate normalized automated review-gate routing for workflow-managed reviews."""
 
@@ -445,9 +481,21 @@ def evaluate_automated_review_gate_route(data: dict[str, object]) -> Implementat
         return _review_gate_stop("unsupported-native-review-status")
     if gate_outcome not in REVIEW_GATE_OUTCOMES:
         return _review_gate_stop("unsupported-review-gate-outcome")
-    expected_outcome = NATIVE_REVIEW_GATE_OUTCOMES[native_status]  # type: ignore[index]
-    if gate_outcome != expected_outcome:
-        return _review_gate_stop("review-gate-outcome-mismatch")
+
+    if native_status in DETERMINATE_NATIVE_OUTCOMES:
+        expected_outcome = DETERMINATE_NATIVE_OUTCOMES[native_status]  # type: ignore[index]
+        if gate_outcome != expected_outcome:
+            return _review_gate_stop("review-gate-outcome-mismatch")
+    elif native_status in CLEAN_NATIVE_STATUSES:
+        failure_reason = _clean_review_gate_failure_reason(data)
+        expected_outcome = "inconclusive" if failure_reason is not None else "advance"
+        if gate_outcome != expected_outcome:
+            return _review_gate_stop("review-gate-outcome-mismatch-given-gate-state")
+        if failure_reason is not None:
+            return _review_gate_stop(failure_reason)
+        return _implementation_continue("active", "advance")
+    else:
+        return _review_gate_stop("unsupported-native-review-status")
 
     if native_status in {"blocked", "inconclusive"}:
         return _review_gate_stop(str(gate_outcome))
@@ -462,19 +510,6 @@ def evaluate_automated_review_gate_route(data: dict[str, object]) -> Implementat
         return _review_gate_stop("risk-tier-classification-incomplete")
     if data.get("risk_tier_satisfied") is not True:
         return _review_gate_stop("risk-tier-escalation-failed")
-
-    if native_status in {"approved", "clean-with-notes"}:
-        if data.get("clean_review_receipt_valid") is not True:
-            return _review_gate_stop("insufficient-clean-receipt")
-        if data.get("unresolved_findings") not in {0, None}:
-            return _review_gate_stop("review-findings-open")
-        if data.get("risk_tier") == "elevated" and data.get("second_review_required") is not True:
-            return _review_gate_stop("elevated-second-review-required")
-        if data.get("second_review_required") is True:
-            second_status = data.get("second_review_status")
-            if second_status not in {"approved", "clean-with-notes"}:
-                return _review_gate_stop("second-review-disagreement")
-        return _implementation_continue("active", "advance")
 
     if native_status == "changes-requested":
         if data.get("findings_auto_fix_classified") is not True:

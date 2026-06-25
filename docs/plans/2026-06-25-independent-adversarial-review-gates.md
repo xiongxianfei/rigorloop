@@ -76,13 +76,13 @@ Important implementation surfaces:
 
 - Current milestone: M2. Orchestration semantics and workflow-state gates
 - Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m1-r3.md
-- Last reviewed milestone: M1. Review gate evidence model and validators
-- Review status: review-requested; stage=code-review; round=r1
+- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m2-r1.md
+- Last reviewed milestone: M2. Orchestration semantics and workflow-state gates
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3, M4, M5
 - Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 implementation is complete and awaiting code-review; M3-M5 remain incomplete.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 review-resolution is complete and awaiting code-review rerun; M3-M5 remain incomplete.
 
 ## Milestones
 
@@ -356,6 +356,8 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: M1 review-resolution addressed `CR2-F1`; converted native review status validation to fail-closed closed-vocabulary gating, added unknown native status regression tests and fixture coverage, added closed-vocabulary guidance to `AGENTS.md`, and returned M1 to `code-review-m1-r3`.
 - 2026-06-25: Code-review M1 R3 approved the M1 review-resolution with no material findings; M1 is closed and the next implementation milestone is M2.
 - 2026-06-25: M2 implemented normalized automated review-gate routing in lifecycle state helpers, including clean advance gates, routable `changes-requested`, blocked/inconclusive pauses, second-review disagreement stops, and final holistic review preconditions before `explain-change`.
+- 2026-06-25: Code-review M2 R1 requested changes: `CR3-F1` requires clean native statuses to derive `review_gate_outcome: inconclusive` when clean/evidence gates fail instead of treating that outcome as a native/derived mismatch.
+- 2026-06-25: M2 review-resolution addressed `CR3-F1`; split determinate native outcome mapping from clean native gate-derived outcome logic, added `CLEAN_ADVANCE_GATES`, added conditional mismatch handling, and returned M2 to `code-review-m2-r2`.
 
 ## Decision log
 
@@ -368,6 +370,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 | 2026-06-25 | Treat repository-wide required-field enumeration drift as a process follow-up before M2 | `CR1-F1` and `CR1-F2` repeat a cross-initiative pattern where hand-listed validator or fixture subsets drift from spec enumerations; resolving the M1 findings is necessary but not sufficient to prevent recurrence. | Hide the broader audit inside the M1 fix; defer it silently. |
 | 2026-06-25 | Add closed-vocabulary validator discipline before M2 | `CR2-F1` confirmed that guard-style membership checks can silently pass unknown values in the same resolution path that fixed a required-field omission. | Rely on future code review to catch each instance manually. |
 | 2026-06-25 | Implement M2 review-gate routing as a lifecycle-state helper | The current lifecycle validator already owns implementation-profile route projection, so adding a focused `evaluate_automated_review_gate_route` keeps orchestration semantics testable without adding schema churn. | Encode M2 routing only in prose or in review artifact validation. |
+| 2026-06-25 | Split determinate and conditional review status constants | `CR3-F1` showed that clean native statuses derive outcomes from gate state, while `changes-requested`, `blocked`, and `inconclusive` have determinate mappings. | Reuse one native-status mapping constant for both unconditional consistency checks and conditional derivation. |
 
 ## Surprises and discoveries
 
@@ -378,6 +381,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - Code-review M1 R2 confirmed the fail-open unknown-value variant exists for native review status; include unknown-value handling in the pre-M2 validator audit, not only required-field coverage.
 - The M1 guard-style audit found `scripts/review_artifact_validation.py:824` as the native-status fail-open defect. Other inspected uppercase-vocabulary occurrences in `scripts/review_artifact_validation.py`, `scripts/change_metadata_semantics.py`, `scripts/validate-change-metadata.py`, and `scripts/lifecycle_state_sync.py` were already fail-closed gates or routing/forbidden-key membership checks; no additional M1-surface findings were opened.
 - M2 reuses `ImplementationAutoprogressionRoute` for normalized review-gate routing results so lifecycle tests can assert the same `profile_state`, `next_stage`, and `stop_reason` shape already used by implementation autoprogression.
+- CR3-F1 is an evaluation-order defect rather than the earlier unknown-value fall-through family. Future validator audits should also flag constants that mix unconditional mapping and conditional gate-derived outcome roles.
 
 ## Validation notes
 
@@ -424,6 +428,14 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k phase_boundaries` passed after M2 with 1 test covering the final holistic review precondition.
 - 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py` passed after M2 with 132 tests.
 - 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M2 before handoff.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k review_gate` failed before the `CR3-F1` fix because `CLEAN_ADVANCE_GATES` was missing, then passed after the fix with 6 tests, including 11 routing subcases and every clean-advance gate covered.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k phase_boundaries` passed after `CR3-F1` with 1 test.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py` passed after `CR3-F1` with 134 tests.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m2-r1.md` passed after `CR3-F1`.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after `CR3-F1`.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after `CR3-F1`.
+- 2026-06-25: `git diff --check -- scripts/lifecycle_state_sync.py scripts/test-artifact-lifecycle-validator.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m2-r1.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after `CR3-F1`.
+- 2026-06-25: `rg -n '[[:blank:]]$|\t' scripts/lifecycle_state_sync.py scripts/test-artifact-lifecycle-validator.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m2-r1.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` returned no matches after `CR3-F1`.
 
 ## Outcome and retrospective
 

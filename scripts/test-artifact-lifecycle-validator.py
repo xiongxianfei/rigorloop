@@ -12,6 +12,7 @@ import unittest
 from pathlib import Path
 
 from artifact_lifecycle_validation import validate_repository
+from lifecycle_state_sync import CLEAN_ADVANCE_GATES
 from lifecycle_state_sync import evaluate_authoring_autoprogression_route
 from lifecycle_state_sync import evaluate_automated_review_gate_route
 from lifecycle_state_sync import evaluate_implementation_autoprogression_route
@@ -1462,6 +1463,7 @@ No blocked plans.
             "review_gate_outcome": "advance",
             "independence_manifest_valid": True,
             "phase_receipts_recorded": True,
+            "recording_valid": True,
             "clean_review_receipt_valid": True,
             "risk_tier": "standard",
             "risk_tier_classifier_valid": True,
@@ -1513,6 +1515,24 @@ No blocked plans.
             self.assertEqual(result.stop_reason, stop_reason, result)
         if profile_state is not None:
             self.assertEqual(result.profile_state, profile_state, result)
+
+    def clean_gate_state(self, failing_gate: str | None = None) -> dict[str, object]:
+        gate_state = {
+            "independence_valid": True,
+            "evidence_valid": True,
+            "recording_valid": True,
+            "clean_review_receipt_valid": True,
+            "escalation_satisfied": True,
+        }
+        if failing_gate is not None:
+            gate_state[failing_gate] = False
+        return {
+            "independence_manifest_valid": gate_state["independence_valid"],
+            "phase_receipts_recorded": gate_state["evidence_valid"],
+            "recording_valid": gate_state["recording_valid"],
+            "clean_review_receipt_valid": gate_state["clean_review_receipt_valid"],
+            "risk_tier_satisfied": gate_state["escalation_satisfied"],
+        }
 
     def correction_guardrail_fixture(self, **overrides: object) -> dict[str, object]:
         fixture: dict[str, object] = {
@@ -1624,14 +1644,42 @@ No blocked plans.
                     profile_state="active",
                 )
         for name, fixture_overrides, expected_reason in (
-            ("bad-derived-outcome", {"review_gate_outcome": "stop"}, "review-gate-outcome-mismatch"),
-            ("missing-manifest", {"independence_manifest_valid": False}, "invalid-review-manifest"),
-            ("missing-phase-receipts", {"phase_receipts_recorded": False}, "missing-phase-receipts"),
-            ("missing-clean-receipt", {"clean_review_receipt_valid": False}, "insufficient-clean-receipt"),
-            ("unknown-risk-tier", {"risk_tier": "ambiguous"}, "risk-tier-classification-invalid"),
-            ("incomplete-risk-tier-classifier", {"risk_tier_classifier_valid": False}, "risk-tier-classification-incomplete"),
-            ("risk-tier-unsatisfied", {"risk_tier_satisfied": False}, "risk-tier-escalation-failed"),
-            ("open-findings", {"unresolved_findings": 1}, "review-findings-open"),
+            ("bad-derived-outcome", {"review_gate_outcome": "stop"}, "review-gate-outcome-mismatch-given-gate-state"),
+            (
+                "missing-manifest",
+                {"independence_manifest_valid": False, "review_gate_outcome": "inconclusive"},
+                "invalid-review-manifest",
+            ),
+            (
+                "missing-phase-receipts",
+                {"phase_receipts_recorded": False, "review_gate_outcome": "inconclusive"},
+                "missing-phase-receipts",
+            ),
+            (
+                "missing-clean-receipt",
+                {"clean_review_receipt_valid": False, "review_gate_outcome": "inconclusive"},
+                "insufficient-clean-receipt",
+            ),
+            (
+                "unknown-risk-tier",
+                {"risk_tier": "ambiguous", "review_gate_outcome": "inconclusive"},
+                "risk-tier-classification-invalid",
+            ),
+            (
+                "incomplete-risk-tier-classifier",
+                {"risk_tier_classifier_valid": False, "review_gate_outcome": "inconclusive"},
+                "risk-tier-classification-incomplete",
+            ),
+            (
+                "risk-tier-unsatisfied",
+                {"risk_tier_satisfied": False, "review_gate_outcome": "inconclusive"},
+                "risk-tier-escalation-failed",
+            ),
+            (
+                "open-findings",
+                {"unresolved_findings": 1, "review_gate_outcome": "inconclusive"},
+                "review-findings-open",
+            ),
         ):
             with self.subTest(name=name):
                 self.assertReviewGateRoute(
@@ -1639,6 +1687,84 @@ No blocked plans.
                     stop_reason=expected_reason,
                     profile_state="paused",
                 )
+
+    def test_review_gate_outcome_derives_from_native_status_and_gate_state(self) -> None:
+        routing_cases: tuple[tuple[str, str, dict[str, object], str, str], ...] = (
+            ("changes-requested-consistent", "changes-requested", {}, "stop", "review-resolution"),
+            ("changes-requested-mismatched", "changes-requested", {}, "advance", "review-gate-outcome-mismatch"),
+            ("blocked-consistent", "blocked", {}, "blocked", "blocked"),
+            ("inconclusive-consistent", "inconclusive", {}, "inconclusive", "inconclusive"),
+            ("approved-all-gates-pass", "approved", self.clean_gate_state(), "advance", "advance"),
+            ("clean-with-notes-all-gates-pass", "clean-with-notes", self.clean_gate_state(), "advance", "advance"),
+            (
+                "clean-with-notes-invalid-receipt-inconclusive",
+                "clean-with-notes",
+                self.clean_gate_state("clean_review_receipt_valid"),
+                "inconclusive",
+                "insufficient-clean-receipt",
+            ),
+            (
+                "approved-missing-independence-inconclusive",
+                "approved",
+                self.clean_gate_state("independence_valid"),
+                "inconclusive",
+                "invalid-review-manifest",
+            ),
+            (
+                "approved-missing-evidence-advance-rejected",
+                "approved",
+                self.clean_gate_state("evidence_valid"),
+                "advance",
+                "review-gate-outcome-mismatch-given-gate-state",
+            ),
+            (
+                "clean-with-notes-missing-escalation-advance-rejected",
+                "clean-with-notes",
+                self.clean_gate_state("escalation_satisfied"),
+                "advance",
+                "review-gate-outcome-mismatch-given-gate-state",
+            ),
+            ("unknown-native-status-rejected", "rubber-stamp", {}, "advance", "unsupported-native-review-status"),
+        )
+        for name, native_status, gate_state, supplied_outcome, expected in routing_cases:
+            with self.subTest(name=name):
+                route = evaluate_automated_review_gate_route(
+                    self.review_gate_fixture(
+                        native_review_status=native_status,
+                        review_gate_outcome=supplied_outcome,
+                        **gate_state,
+                    )
+                )
+                if expected == "advance":
+                    self.assertEqual(route.next_stage, "advance", route)
+                    self.assertIsNone(route.stop_reason, route)
+                elif expected == "review-resolution":
+                    self.assertEqual(route.next_stage, "review-resolution", route)
+                    self.assertIsNone(route.stop_reason, route)
+                else:
+                    self.assertEqual(route.stop_reason, expected, route)
+
+    def test_review_gate_clean_status_derivation_covers_every_clean_advance_gate(self) -> None:
+        expected_gates = {
+            "independence_valid",
+            "evidence_valid",
+            "recording_valid",
+            "clean_review_receipt_valid",
+            "escalation_satisfied",
+        }
+        self.assertEqual(set(CLEAN_ADVANCE_GATES), expected_gates)
+        for failing_gate in CLEAN_ADVANCE_GATES:
+            with self.subTest(failing_gate=failing_gate):
+                route = evaluate_automated_review_gate_route(
+                    self.review_gate_fixture(
+                        native_review_status="clean-with-notes",
+                        review_gate_outcome="inconclusive",
+                        **self.clean_gate_state(failing_gate),
+                    )
+                )
+                self.assertIsNotNone(route.stop_reason, route)
+                self.assertNotEqual(route.stop_reason, "review-gate-outcome-mismatch", route)
+                self.assertNotEqual(route.stop_reason, "review-gate-outcome-mismatch-given-gate-state", route)
 
     def test_review_gate_changes_requested_routes_only_when_profile_and_evidence_permit(self) -> None:
         self.assertReviewGateRoute(
@@ -1689,6 +1815,7 @@ No blocked plans.
             with self.subTest(second_status=second_status):
                 self.assertReviewGateRoute(
                     self.review_gate_fixture(
+                        review_gate_outcome="inconclusive",
                         second_review_required=True,
                         second_review_status=second_status,
                     ),
