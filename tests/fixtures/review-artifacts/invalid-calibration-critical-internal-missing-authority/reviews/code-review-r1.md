@@ -1,0 +1,73 @@
+# Code Review R1
+
+Review ID: code-review-r1
+Stage: code-review
+Round: 1
+Reviewer: Codex code-review skill
+Target: tests/fixtures/review-artifacts/invalid-calibration-critical-internal-missing-authority
+Status: clean-with-notes
+Material findings: none
+Automated review: yes
+Native review status: clean-with-notes
+Review gate outcome: advance
+Independence level: L1
+Author context ID: author-context-001
+Reviewer context ID: reviewer-context-001
+Context separation mechanism: fresh-context-same-model
+Author context excluded: true
+Risk tier: critical-internal
+Risk-tier triggers: privilege boundary
+Risk-tier classifier: deterministic-path-surface-check
+Governing artifacts: specs/review-independence-and-criticality.md@HEAD#sha256:1111111111111111111111111111111111111111111111111111111111111111
+Formal criteria: R14, R15, R16, R17, AC10, AC14
+Initial packet inventory: specs/review-independence-and-criticality.md@HEAD#sha256:1111111111111111111111111111111111111111111111111111111111111111; scripts/review_artifact_validation.py@HEAD#sha256:2222222222222222222222222222222222222222222222222222222222222222
+Prompt template version: review-gate/v1
+Initial packet hash: sha256:3333333333333333333333333333333333333333333333333333333333333333
+Manifest owner: orchestrator
+Phase receipts: risk-map-recorded > evidence-menu-released > evidence-results-released > prior-findings-released > verdict-recorded
+Clean-review sufficiency receipt: yes
+Review target identity: tests/fixtures/review-artifacts/invalid-calibration-critical-internal-missing-authority@HEAD
+Governing artifacts inspected: specs/review-independence-and-criticality.md
+Risk classes considered: calibration overfit, critical authority, evidence adequacy
+Adversarial hypotheses tested: critical internal calibration records require positive authority evidence
+Direct proofs performed: negative fixture should fail validation
+Validation evidence challenged: passing fixture only proves shape, not private corpus recall
+Unreviewed surfaces: private rotating fixture custody
+Confidence: medium
+No-finding rationale: This negative fixture intentionally omits critical authority evidence.
+Affected behavior: calibration evidence validation
+Highest-impact failure modes: critical-risk review advances without authority evidence
+Changed boundaries: review artifact calibration fields
+Evidence expected: calibration record fixture and validator result
+Areas requiring direct inspection: critical authority kind and satisfaction fields
+Areas intentionally out of scope: private corpus contents
+Falsifiable review questions: Does a critical-internal record without authority fail closed?
+Calibration record: yes
+Calibration record ID: calibration-code-review-critical-internal-invalid-r1
+Review skill: code-review
+Fixture mode: public-defect-class
+Fixture corpus scope: defect-class-example-not-measured-corpus
+Sampling phase: rollout
+Sample rate: 20%
+Standard clean outcomes independently reviewed: 10
+Sample-rate reduction requested: no
+Second reviewer type: separate-agent
+Second review required: no
+Second-review disagreement: none
+Automatic continuation: no
+Critical authority kind: n/a
+Critical authority satisfied: no
+Recurrence detection: detected
+Novel defect detection: not-applicable
+Material disagreements: 0
+Severity disagreements: 0
+Evidence gaps: none
+Downstream escape: no
+False-positive rate: 0%
+Inconclusive rate: 0%
+Receipt quality: complete
+Review duration: PT12M
+
+## Findings
+
+No material findings.

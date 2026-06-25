@@ -158,6 +158,121 @@ def implementation_profile_review_text(finding_fields: str) -> str:
     """
 
 
+def valid_automated_review_text(extra_fields: str = "") -> str:
+    extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
+    return f"""
+    # Code Review R1
+
+    Review ID: code-review-r1
+    Stage: code-review
+    Round: 1
+    Reviewer: Codex code-review skill
+    Target: git diff main...HEAD
+    Status: clean-with-notes
+    Automated review: yes
+    Native review status: clean-with-notes
+    Review gate outcome: advance
+    Independence level: L1
+    Author context ID: author-ctx-1
+    Reviewer context ID: reviewer-ctx-1
+    Context separation mechanism: fresh-context-same-model
+    Risk tier: standard
+    Risk-tier triggers: none
+    Risk-tier classifier: deterministic-paths
+    Governing artifacts: specs/review-independence-and-criticality.md; docs/plans/example.md
+    Formal criteria: R1; R3; R13
+    Initial packet inventory: specs/review-independence-and-criticality.md@abc123#sha256:1111111111111111111111111111111111111111111111111111111111111111; docs/plans/example.md@abc123#sha256:2222222222222222222222222222222222222222222222222222222222222222
+    Prompt template version: code-review-template-v1
+    Initial packet hash: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    Manifest owner: orchestrator
+    Phase receipts: risk-map-recorded > evidence-menu-released > evidence-results-released > prior-findings-released > verdict-recorded
+    Affected behavior: automated review handoff
+    Highest-impact failure modes: author-context continuation; validation anchoring
+    Changed boundaries: review invocation manifest and clean handoff
+    Evidence expected: manifest fixture and validator result
+    Areas requiring direct inspection: review record fields
+    Areas intentionally out of scope: hosted review service
+    Risk classes considered: contract mismatch=applicable; security/privacy boundary=not-applicable:no secret surface
+    Falsifiable review questions: Does L0 fail closed? Does missing packet hash fail closed?
+    Clean-review sufficiency receipt: yes
+    Review target identity: git diff main...HEAD
+    Governing artifacts inspected: specs/review-independence-and-criticality.md; docs/plans/example.md
+    Adversarial hypotheses tested: same-context review fails closed; tests-only clean receipt fails closed
+    Direct proofs performed: review artifact validator fixture
+    Validation evidence challenged: validator only proves selected checks; receipt records evidence adequacy
+    Unreviewed surfaces: hosted publication path
+    Confidence: high
+    No-finding rationale: Independent review gate fixture covers manifest, packet, phase, and sufficiency receipt fields.
+    {extra}
+
+    ## Findings
+
+    No material findings.
+    """
+
+
+def valid_calibration_record_fields(extra_fields: str = "") -> str:
+    extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
+    return f"""
+    Calibration record: yes
+    Calibration record ID: calibration-code-review-standard-r1
+    Review skill: code-review
+    Fixture mode: public-defect-class
+    Fixture corpus scope: defect-class-example-not-measured-corpus
+    Sampling phase: rollout
+    Sample rate: 20%
+    Standard clean outcomes independently reviewed: 10
+    Sample-rate reduction requested: no
+    Second reviewer type: separate-agent
+    Second review required: no
+    Second-review disagreement: none
+    Automatic continuation: no
+    Critical authority kind: n/a
+    Critical authority satisfied: no
+    Recurrence detection: detected
+    Novel defect detection: not-applicable
+    Material disagreements: 0
+    Severity disagreements: 0
+    Evidence gaps: none
+    Downstream escape: no
+    False-positive rate: 0%
+    Inconclusive rate: 0%
+    Receipt quality: complete
+    Review duration: PT12M
+    {extra}
+    """
+
+
+T1_VALID_CASES = (
+    ("l1-standard", "valid-automated-review-gate-l1"),
+    ("l2-elevated", "valid-automated-review-gate"),
+    ("l3-critical-internal", "valid-automated-review-gate-l3"),
+)
+
+T1_INVALID_CASES = (
+    (
+        "missing-context-separation",
+        "invalid-missing-context-separation",
+        "automated review gate missing required field Context separation mechanism",
+    ),
+    (
+        "unsupported-independence-level",
+        "invalid-unsupported-independence-level",
+        "unsupported independence level 'L4'",
+    ),
+    (
+        "unknown-native-review-status",
+        "invalid-unknown-native-review-status",
+        "unsupported native review status 'rubber-stamp'",
+    ),
+    (
+        "missing-reviewer-context-id-unverifiable",
+        "invalid-missing-reviewer-context-id-unverifiable-platform",
+        "reviewer-context-id-required-on-unverifiable-platform",
+    ),
+)
+
+
 def review_log_text(
     *,
     review_id: str,
@@ -711,6 +826,532 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         root = self.clean_receipt_fixture()
         replace_field(root / "reviews" / "spec-review-r1.md", "Recording status", "blocked")
         self.assertFails(root, "clean receipt Recording status must be recorded")
+
+    def test_automated_review_gate_manifest_and_clean_receipt_passes(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-gate-valid-"))
+        self.addCleanupTree(root)
+        write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text())
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+
+        self.assertPasses(root)
+
+    def test_review_gate_rejects_missing_native_review_status(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-missing-native-status-"))
+        self.addCleanupTree(root)
+        review = "\n".join(
+            line
+            for line in valid_automated_review_text().splitlines()
+            if not line.strip().startswith("Native review status:")
+        )
+        write_text(root / "reviews" / "code-review-r1.md", review)
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "automated review gate missing required field Native review status")
+
+    def test_review_gate_rejects_empty_native_review_status(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-empty-native-status-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text().replace("Native review status: clean-with-notes", "Native review status:"),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "automated review gate missing required field Native review status")
+
+    def test_review_gate_rejects_mismatched_native_and_derived_status(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-native-derived-mismatch-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text().replace("Review gate outcome: advance", "Review gate outcome: stop"),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "R12-mismatch")
+
+    def test_review_gate_rejects_unknown_native_review_status(self) -> None:
+        for native_status in ("rubber-stamp", "lgtm", "bogus"):
+            with self.subTest(native_status=native_status):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-unknown-native-status-"))
+                self.addCleanupTree(root)
+                write_text(
+                    root / "reviews" / "code-review-r1.md",
+                    valid_automated_review_text().replace(
+                        "Native review status: clean-with-notes",
+                        f"Native review status: {native_status}",
+                    ),
+                )
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, f"unsupported native review status '{native_status}'")
+
+    def test_review_gate_unknown_native_status_error_lists_allowed_values(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-unknown-native-status-allowed-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text().replace(
+                "Native review status: clean-with-notes",
+                "Native review status: rubber-stamp",
+            ),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        for allowed in ("approved", "blocked", "changes-requested", "clean-with-notes", "inconclusive"):
+            self.assertFails(root, allowed)
+
+    def test_automated_review_gate_fixtures_cover_valid_and_fail_closed_paths(self) -> None:
+        valid_root = copy_fixture("valid-automated-review-gate")
+        self.addCleanupTree(valid_root)
+        self.assertPasses(valid_root)
+
+        invalid_root = copy_fixture("invalid-automated-review-gate-l0")
+        self.addCleanupTree(invalid_root)
+        self.assertFails(invalid_root, "automated review gate cannot advance with L0")
+        self.assertFails(invalid_root, "reviewer_context_id must differ from author_context_id")
+        self.assertFails(invalid_root, "phase receipt evidence-menu-released appears before required predecessor risk-map-recorded")
+
+    def test_t1_valid_independence_levels_pass(self) -> None:
+        for name, fixture in T1_VALID_CASES:
+            with self.subTest(name=name):
+                root = copy_fixture(fixture)
+                self.addCleanupTree(root)
+                self.assertPasses(root)
+
+    def test_t1_invalid_independence_cases_fail_closed(self) -> None:
+        for name, fixture, expected in T1_INVALID_CASES:
+            with self.subTest(name=name):
+                root = copy_fixture(fixture)
+                self.addCleanupTree(root)
+                self.assertFails(root, expected)
+
+    def test_automated_review_gate_rejects_invalid_independence_and_packet_evidence(self) -> None:
+        cases = [
+            (
+                "l0-advance",
+                "Independence level: L1",
+                "Independence level: L0",
+                "automated review gate cannot advance with L0",
+            ),
+            (
+                "same-context",
+                "Reviewer context ID: reviewer-ctx-1",
+                "Reviewer context ID: author-ctx-1",
+                "reviewer_context_id must differ from author_context_id",
+            ),
+            (
+                "missing-inventory",
+                "Initial packet inventory: specs/review-independence-and-criticality.md@abc123#sha256:1111111111111111111111111111111111111111111111111111111111111111; docs/plans/example.md@abc123#sha256:2222222222222222222222222222222222222222222222222222222222222222\n",
+                "",
+                "automated review gate missing required field Initial packet inventory",
+            ),
+            (
+                "missing-packet-hash",
+                "Initial packet hash: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+                "",
+                "automated review gate missing required field Initial packet hash",
+            ),
+            (
+                "attestation-only",
+                "Initial packet inventory: specs/review-independence-and-criticality.md@abc123#sha256:1111111111111111111111111111111111111111111111111111111111111111; docs/plans/example.md@abc123#sha256:2222222222222222222222222222222222222222222222222222222222222222",
+                "Author context excluded: true",
+                "author_context_excluded is not sufficient initial-packet proof",
+            ),
+        ]
+        for name, old, new, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-gate-{name}-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text().replace(old, new))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_automated_review_gate_rejects_forbidden_context_and_bad_phase_order(self) -> None:
+        cases = [
+            (
+                "forbidden-label",
+                None,
+                "Author self-assessment: looks correct",
+                "forbidden automated-review context field Author self-assessment",
+            ),
+            (
+                "forbidden-initial-packet-token",
+                None,
+                "Initial packet contains: validation-result summaries",
+                "initial packet contains prohibited context validation-result summaries",
+            ),
+            (
+                "bad-phase-order",
+                "Phase receipts: risk-map-recorded > evidence-menu-released > evidence-results-released > prior-findings-released > verdict-recorded",
+                "Phase receipts: evidence-menu-released > risk-map-recorded > evidence-results-released > prior-findings-released > verdict-recorded",
+                "phase receipt evidence-menu-released appears before required predecessor risk-map-recorded",
+            ),
+            (
+                "unbounded-manifest-notes",
+                None,
+                "Manifest notes: " + ("x" * 300),
+                "automated review gate field Manifest notes is too long",
+            ),
+        ]
+        for name, old, extra, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-gate-{name}-"))
+                self.addCleanupTree(root)
+                review_text_value = valid_automated_review_text(extra if old is None else "")
+                if old is not None:
+                    review_text_value = review_text_value.replace(old, extra)
+                write_text(root / "reviews" / "code-review-r1.md", review_text_value)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_automated_clean_review_requires_sufficiency_receipt_fields(self) -> None:
+        cases = [
+            ("Risk classes considered", "clean sufficiency receipt missing required field Risk classes considered"),
+            ("Adversarial hypotheses tested", "clean sufficiency receipt missing required field Adversarial hypotheses tested"),
+            ("Direct proofs performed", "clean sufficiency receipt missing required field Direct proofs performed"),
+            ("Validation evidence challenged", "clean sufficiency receipt missing required field Validation evidence challenged"),
+            ("Unreviewed surfaces", "clean sufficiency receipt missing required field Unreviewed surfaces"),
+            ("No-finding rationale", "clean sufficiency receipt missing required field No-finding rationale"),
+        ]
+        for field, expected in cases:
+            with self.subTest(field=field):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-clean-receipt-"))
+                self.addCleanupTree(root)
+                review = "\n".join(
+                    line
+                    for line in valid_automated_review_text().splitlines()
+                    if not line.strip().startswith(f"{field}:")
+                )
+                write_text(root / "reviews" / "code-review-r1.md", review)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_calibration_record_shape_and_sampling_fields_pass(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-valid-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text(valid_calibration_record_fields()),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertPasses(root)
+
+    def test_calibration_public_defect_class_fixture_passes(self) -> None:
+        root = copy_fixture("valid-calibration-public-defect-class")
+        self.addCleanupTree(root)
+        self.assertPasses(root)
+
+    def test_calibration_record_requires_metric_fields_by_skill_and_tier(self) -> None:
+        cases = (
+            ("Review skill", "calibration record missing required field Review skill"),
+            ("Recurrence detection", "calibration record missing required field Recurrence detection"),
+            ("Novel defect detection", "calibration record missing required field Novel defect detection"),
+            ("Second-review disagreement", "calibration record missing required field Second-review disagreement"),
+            ("Downstream escape", "calibration record missing required field Downstream escape"),
+            ("False-positive rate", "calibration record missing required field False-positive rate"),
+            ("Inconclusive rate", "calibration record missing required field Inconclusive rate"),
+            ("Receipt quality", "calibration record missing required field Receipt quality"),
+            ("Review duration", "calibration record missing required field Review duration"),
+        )
+        for field, expected in cases:
+            with self.subTest(field=field):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-missing-"))
+                self.addCleanupTree(root)
+                calibration = "\n".join(
+                    line
+                    for line in valid_calibration_record_fields().splitlines()
+                    if not line.strip().startswith(f"{field}:")
+                )
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_calibration_record_rejects_unknown_skill_and_risk_tier(self) -> None:
+        cases = (
+            (
+                "unknown-review-skill",
+                "Review skill: code-review",
+                "Review skill: rubber-stamp-review",
+                "unsupported calibration review skill 'rubber-stamp-review'",
+            ),
+            (
+                "unknown-risk-tier",
+                "Risk tier: standard",
+                "Risk tier: ambiguous",
+                "unsupported calibration risk tier 'ambiguous'",
+            ),
+        )
+        for name, old, new, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-calibration-{name}-"))
+                self.addCleanupTree(root)
+                review = valid_automated_review_text(valid_calibration_record_fields()).replace(old, new)
+                write_text(root / "reviews" / "code-review-r1.md", review)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_calibration_record_rejects_sampling_floor_and_early_reduction(self) -> None:
+        cases = (
+            (
+                "below-standard-rollout-rate",
+                valid_calibration_record_fields().replace("Sample rate: 20%", "Sample rate: 19%"),
+                "standard-risk rollout sample rate must be at least 20%",
+            ),
+            (
+                "early-sample-rate-reduction",
+                valid_calibration_record_fields()
+                .replace("Standard clean outcomes independently reviewed: 10", "Standard clean outcomes independently reviewed: 9")
+                .replace("Sample-rate reduction requested: no", "Sample-rate reduction requested: yes"),
+                "standard-risk sampling reduction requires at least 10 independently reviewed clean outcomes",
+            ),
+        )
+        for name, calibration, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-calibration-{name}-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_calibration_record_rejects_elevated_clean_without_second_review(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-elevated-no-second-"))
+        self.addCleanupTree(root)
+        calibration = valid_calibration_record_fields().replace("Second review required: no", "Second review required: no")
+        review = valid_automated_review_text(calibration).replace("Risk tier: standard", "Risk tier: elevated")
+        write_text(root / "reviews" / "code-review-r1.md", review)
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "elevated-risk clean review requires second review at 100%")
+
+    def test_calibration_record_rejects_critical_authority_gaps(self) -> None:
+        cases = (
+            (
+                "critical-internal-without-authority",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Risk tier: standard", "Risk tier: critical-internal")
+                .replace("Independence level: L2", "Independence level: L1"),
+                "calibration-authority-missing",
+            ),
+            (
+                "irreversible-external-with-l3-only",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Risk tier: standard", "Risk tier: irreversible-external-action")
+                .replace("Critical authority kind: n/a", "Critical authority kind: L3")
+                .replace("Critical authority satisfied: no", "Critical authority satisfied: yes"),
+                "calibration-authority-kind-insufficient",
+            ),
+            (
+                "invalid-authority-kind",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Risk tier: standard", "Risk tier: critical-internal")
+                .replace("Critical authority kind: n/a", "Critical authority kind: banana")
+                .replace("Critical authority satisfied: no", "Critical authority satisfied: yes"),
+                "calibration-authority-kind-invalid",
+            ),
+            (
+                "standard-authority-kind-not-applicable",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Critical authority kind: n/a", "Critical authority kind: L3")
+                .replace("Critical authority satisfied: no", "Critical authority satisfied: yes"),
+                "calibration-authority-kind-not-applicable",
+            ),
+        )
+        for name, calibration, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-calibration-{name}-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "code-review-r1.md", calibration)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+        for name, calibration in (
+            (
+                "critical-internal-with-l3",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Risk tier: standard", "Risk tier: critical-internal")
+                .replace("Independence level: L2", "Independence level: L3")
+                .replace("Critical authority kind: n/a", "Critical authority kind: L3")
+                .replace("Critical authority satisfied: no", "Critical authority satisfied: yes"),
+            ),
+            (
+                "irreversible-external-with-human",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Risk tier: standard", "Risk tier: irreversible-external-action")
+                .replace("Critical authority kind: n/a", "Critical authority kind: human")
+                .replace("Critical authority satisfied: no", "Critical authority satisfied: yes"),
+            ),
+        ):
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-calibration-{name}-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "code-review-r1.md", calibration)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertPasses(root)
+
+    def test_calibration_boolean_fields_reject_unsupported_values(self) -> None:
+        for field in (
+            "Sample-rate reduction requested",
+            "Second review required",
+            "Automatic continuation",
+            "Critical authority satisfied",
+        ):
+            with self.subTest(field=field):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-boolean-"))
+                self.addCleanupTree(root)
+                calibration = valid_calibration_record_fields().replace(f"{field}: no", f"{field}: banana")
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, f"calibration-control-value-invalid: {field}")
+
+    def test_calibration_boolean_fields_report_each_invalid_value(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-booleans-"))
+        self.addCleanupTree(root)
+        calibration = (
+            valid_calibration_record_fields()
+            .replace("Sample-rate reduction requested: no", "Sample-rate reduction requested: banana")
+            .replace("Second review required: no", "Second review required: maybe")
+            .replace("Automatic continuation: no", "Automatic continuation: 1")
+            .replace("Critical authority satisfied: no", "Critical authority satisfied: later")
+        )
+        write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        result = self.validate(root)
+        combined = "\n".join(f.message for f in result.blocking_findings)
+        for field in (
+            "Sample-rate reduction requested",
+            "Second review required",
+            "Automatic continuation",
+            "Critical authority satisfied",
+        ):
+            self.assertIn(f"calibration-control-value-invalid: {field}", combined)
+
+    def test_calibration_authority_fixtures_cover_valid_and_fail_closed_paths(self) -> None:
+        for fixture in (
+            "valid-calibration-critical-internal-l3",
+            "valid-calibration-irreversible-external-human",
+        ):
+            with self.subTest(fixture=fixture):
+                self.assertPasses(FIXTURES / fixture)
+        for fixture, expected in (
+            ("invalid-calibration-critical-internal-missing-authority", "calibration-authority-missing"),
+            ("invalid-calibration-irreversible-external-l3-only", "calibration-authority-kind-insufficient"),
+            ("invalid-calibration-critical-internal-authority-kind-banana", "calibration-authority-kind-invalid"),
+        ):
+            with self.subTest(fixture=fixture):
+                self.assertFails(FIXTURES / fixture, expected)
+
+    def test_calibration_authority_kind_invalid_does_not_emit_missing(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-authority-kind-invalid-"))
+        self.addCleanupTree(root)
+        review = (
+            valid_automated_review_text(valid_calibration_record_fields())
+            .replace("Risk tier: standard", "Risk tier: critical-internal")
+            .replace("Critical authority kind: n/a", "Critical authority kind: banana")
+            .replace("Critical authority satisfied: no", "Critical authority satisfied: yes")
+        )
+        write_text(root / "reviews" / "code-review-r1.md", review)
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        result = self.validate(root)
+        combined = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("calibration-authority-kind-invalid", combined)
+        self.assertNotIn("calibration-authority-missing", combined)
+        self.assertNotIn("calibration-authority-kind-insufficient", combined)
+
+    def test_calibration_record_rejects_second_review_disagreement_continuation(self) -> None:
+        for disagreement in ("material-finding", "blocked", "inconclusive"):
+            with self.subTest(disagreement=disagreement):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-disagreement-"))
+                self.addCleanupTree(root)
+                calibration = (
+                    valid_calibration_record_fields()
+                    .replace("Second-review disagreement: none", f"Second-review disagreement: {disagreement}")
+                    .replace("Automatic continuation: no", "Automatic continuation: yes")
+                )
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, "second-review disagreement prevents automatic continuation")
+
+    def test_calibration_record_requires_downstream_escape_details(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-escape-"))
+        self.addCleanupTree(root)
+        calibration = valid_calibration_record_fields().replace("Downstream escape: no", "Downstream escape: yes")
+        write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "downstream escape record missing required field Downstream escape stage")
+        self.assertFails(root, "downstream escape record missing required field Downstream escape analysis")
+
+    def test_calibration_public_fixture_declares_not_measured_corpus(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-public-scope-"))
+        self.addCleanupTree(root)
+        calibration = "\n".join(
+            line
+            for line in valid_calibration_record_fields().splitlines()
+            if not line.strip().startswith("Fixture corpus scope:")
+        )
+        write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "public calibration fixture must declare defect-class-example-not-measured-corpus")
 
     def test_clean_receipt_root_requires_change_metadata_contract(self) -> None:
         cases = [

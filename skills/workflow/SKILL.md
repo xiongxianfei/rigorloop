@@ -222,6 +222,14 @@ For standard workflow completion on non-trivial work, carry the required change-
 
 Use targeted proof and targeted validation before broad smoke unless an authoritative trigger requires broad smoke. Required manual proof belongs in `verify-report.md`, and broad-smoke source attribution belongs in `broad_smoke.sources`. Preserve stable check IDs and validation source attribution when available.
 
+## Automated Review Gate Routing
+
+Workflow-managed automated `code-review` uses the independent adversarial review gate. The orchestrator creates the neutral review invocation manifest and initial packet before invoking review. It must withhold validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.
+
+A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass. A non-clean result routes according to the active profile and stop reason without changing the reviewer's native verdict.
+
+Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions. Do not treat the latest milestone-local review as sufficient final holistic review evidence.
+
 ### Bugfix skill invocation
 
 Use `bugfix` when the task starts from a failure, regression, incident, or unexpected behavior.

@@ -1529,6 +1529,12 @@ raise SystemExit({exit_code})
                 "checks": {"skills.regression", "skills.generation_regression"},
             },
             {
+                "path": "scripts/review_independence_skill_phrases.py",
+                "category": "validator-skills",
+                "status": "ok",
+                "checks": {"skills.regression", "skills.generation_regression"},
+            },
+            {
                 "path": "scripts/validate-guide-system.py",
                 "category": "guide-system-validator",
                 "status": "ok",
@@ -3645,7 +3651,7 @@ raise SystemExit(3)
         workspace = self.make_ci_workspace()
         self.assertRegex(
             (workspace / "scripts" / "ci.sh").read_text(encoding="utf-8"),
-            r"(?m)^DEFAULT_TIMEOUT_SECONDS=60$",
+            r"(?m)^DEFAULT_TIMEOUT_SECONDS=300$",
         )
         self.write_fake_script(
             workspace,

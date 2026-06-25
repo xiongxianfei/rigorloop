@@ -1,0 +1,10 @@
+change_id: valid-calibration-public-defect-class
+title: Valid Calibration Public Defect Class Fixture
+review:
+  status: clean-with-notes
+  unresolved_items: 0
+  material_findings: 0
+  open_findings: 0
+  closed_findings: 0
+  code_review: reviews/code-review-r1.md
+  review_log: review-log.md

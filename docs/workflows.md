@@ -441,8 +441,11 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
   - `architecture -> architecture-review` when that review stage is the next mandatory or triggered downstream step
   - standard workflow execution from `implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
 - In workflow-managed standard workflow runs, `code-review` first emits a first-pass review record grounded in the actual diff, upstream artifacts, checklist coverage, and validation evidence before any review-driven fixes begin.
+- Workflow-managed automated `code-review` uses the independent adversarial review gate. The orchestrator creates the neutral review invocation manifest and initial packet before invoking review, and it withholds validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.
+- A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.
 - In workflow-managed standard workflow milestone-based plans, first-pass `clean-with-notes` on a non-final implementation milestone closes the reviewed milestone and continues to the next in-scope implementation milestone.
 - In workflow-managed standard workflow milestone-based plans, first-pass `clean-with-notes` on the final implementation milestone reaches final closeout only when no in-scope implementation milestone remains open or unresolved.
+- Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions.
 - In workflow-managed standard workflow runs, first-pass `changes-requested` continues to `review-resolution`, and first-pass `blocked` or `inconclusive` stops.
 - If the active plan does not clearly identify the reviewed milestone or remaining in-scope implementation milestones, stop for a plan update or inconclusive review instead of inferring final-closeout readiness.
 - Clean reviews require checklist coverage plus no-finding rationale. Positive notes are optional and only useful when they add specific evidence-backed context.

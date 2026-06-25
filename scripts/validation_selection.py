@@ -1769,6 +1769,7 @@ def _path_category(path: str) -> str | None:
         "scripts/build-skills.py",
         "scripts/validate-skills.py",
         "scripts/skill_validation.py",
+        "scripts/review_independence_skill_phrases.py",
         "scripts/test-build-skills.py",
         "scripts/test-skill-validator.py",
     }:
