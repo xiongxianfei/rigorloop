@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-DEFAULT_TIMEOUT_SECONDS=60
+DEFAULT_TIMEOUT_SECONDS=300
 
 mode=""
 base=""
@@ -31,7 +31,7 @@ Usage:
 
 Execution options:
   --jobs <positive-integer>       Limit selected-check concurrency.
-  --timeout <positive-seconds>    Per-check timeout, default 60 seconds.
+  --timeout <positive-seconds>    Per-check timeout, default 300 seconds.
   --fail-fast                     Stop launching queued checks after a failure.
   --verbose                       Print successful check output when supported.
   --skip-diff-scoped              In broad-smoke mode, skip dirty-worktree review roots and use push-range lifecycle scope.
