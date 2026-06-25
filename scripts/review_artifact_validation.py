@@ -37,9 +37,23 @@ FORMAL_REVIEW_STAGES = frozenset(
         "spec-review",
         "architecture-review",
         "plan-review",
+        "test-spec-review",
         "code-review",
     }
 )
+TEST_SPEC_REVIEW_STATUSES = frozenset({"approved", "changes-requested", "blocked", "inconclusive"})
+TEST_SPEC_REVIEW_IMMEDIATE_NEXT_STAGES = frozenset(
+    {
+        "test-spec revision",
+        "spec revision",
+        "architecture revision",
+        "plan revision",
+        "review-resolution",
+        "implement",
+        "none",
+    }
+)
+TEST_SPEC_REVIEW_IMPLEMENTATION_HANDOFFS = frozenset({"allowed", "not-allowed"})
 VALIDATION_MODES = frozenset({"structure", "closeout"})
 REVIEW_LOG_REQUIRED_FIELDS = (
     "Review ID",
@@ -561,6 +575,8 @@ def _parse_review_file(
     _validate_clean_receipt_review_fields(path, review_id, fields, mode, findings)
     _validate_automated_review_gate_fields(path, review_id, fields, mode, findings)
     _validate_calibration_record_fields(path, review_id, fields, mode, findings)
+    if stage is not None and stage.value == "test-spec-review":
+        _validate_test_spec_review_result_fields(path, review_id, fields, mode, findings)
     _validate_implementation_profile_finding_fields(path, review_id, fields, finding_records, mode, findings)
 
     if record_mode == "reconstructed":
@@ -1197,6 +1213,122 @@ def _validate_calibration_record_fields(
     calibration_booleans = _parse_calibration_booleans(path, review_id, fields, mode, findings)
     _validate_calibration_critical_authority(path, review_id, fields, calibration_booleans, mode, findings)
     _validate_calibration_sampling_gates(path, review_id, fields, calibration_booleans, mode, findings)
+
+
+def _validate_test_spec_review_result_fields(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    review_status = _first_nonempty(fields, "Review status")
+    immediate_next_stage = _first_nonempty(fields, "Immediate next stage")
+    implementation_handoff = _first_nonempty(fields, "Implementation handoff")
+
+    for label, value in (
+        ("Review status", review_status),
+        ("Immediate next stage", immediate_next_stage),
+        ("Implementation handoff", implementation_handoff),
+    ):
+        if value is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=None,
+                    mode=mode,
+                    message=f"test-spec-review missing required result field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    vocabulary_errors = False
+    if review_status is not None and review_status.value not in TEST_SPEC_REVIEW_STATUSES:
+        vocabulary_errors = True
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=review_status.line,
+                mode=mode,
+                message=(
+                    f"unsupported test-spec-review Review status '{review_status.value}'; "
+                    f"allowed values are {', '.join(sorted(TEST_SPEC_REVIEW_STATUSES))}"
+                ),
+                review_id=review_id,
+            )
+        )
+    if immediate_next_stage is not None and immediate_next_stage.value not in TEST_SPEC_REVIEW_IMMEDIATE_NEXT_STAGES:
+        vocabulary_errors = True
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=immediate_next_stage.line,
+                mode=mode,
+                message=(
+                    f"unsupported test-spec-review Immediate next stage '{immediate_next_stage.value}'; "
+                    f"allowed values are {', '.join(sorted(TEST_SPEC_REVIEW_IMMEDIATE_NEXT_STAGES))}"
+                ),
+                review_id=review_id,
+            )
+        )
+    if implementation_handoff is not None and implementation_handoff.value not in TEST_SPEC_REVIEW_IMPLEMENTATION_HANDOFFS:
+        vocabulary_errors = True
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=implementation_handoff.line,
+                mode=mode,
+                message=(
+                    f"unsupported test-spec-review Implementation handoff '{implementation_handoff.value}'; "
+                    f"allowed values are {', '.join(sorted(TEST_SPEC_REVIEW_IMPLEMENTATION_HANDOFFS))}"
+                ),
+                review_id=review_id,
+            )
+        )
+
+    if (
+        vocabulary_errors
+        or review_status is None
+        or immediate_next_stage is None
+        or implementation_handoff is None
+    ):
+        return
+
+    expected_handoff = "allowed" if review_status.value == "approved" else "not-allowed"
+    if implementation_handoff.value != expected_handoff:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=implementation_handoff.line,
+                mode=mode,
+                message=(
+                    f"test-spec-review Review status {review_status.value} requires "
+                    f"Implementation handoff: {expected_handoff}"
+                ),
+                review_id=review_id,
+            )
+        )
+
+    allowed_next_stages_by_status = {
+        "approved": {"implement"},
+        "changes-requested": {"test-spec revision", "review-resolution"},
+        "blocked": {"spec revision", "architecture revision", "plan revision", "none"},
+        "inconclusive": {"none"},
+    }
+    allowed_next_stages = allowed_next_stages_by_status[review_status.value]
+    if immediate_next_stage.value not in allowed_next_stages:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=immediate_next_stage.line,
+                mode=mode,
+                message=(
+                    f"test-spec-review Review status {review_status.value} does not allow "
+                    f"Immediate next stage: {immediate_next_stage.value}"
+                ),
+                review_id=review_id,
+            )
+        )
 
 
 def _is_calibration_record(fields: dict[str, list[FieldValue]]) -> bool:
