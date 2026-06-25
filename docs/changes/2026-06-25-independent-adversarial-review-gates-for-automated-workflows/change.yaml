@@ -48,6 +48,7 @@ tests:
   - Skill validator covers automated code-review blind-first pilot guidance, workflow/implement routing guidance, manifest-only authoring review guidance, no reviewer edit authority, no finding quota, and direct isolated review compatibility.
   - Canonical skill validation, generated local skill checks, and public adapter archive proof pass after M3 canonical skill changes.
   - Code-review M3 R1 records material findings for incomplete `failed-remediation` guidance and missing `auto-fix eligibility` exclusion in implement handoff guidance.
+  - CR4-F1 and CR4-F2 are resolved by adding R8d/R5 skill guidance and enumeration-driven phrase assertions.
 changed_files:
   - docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md
   - specs/review-independence-and-criticality.md
@@ -110,12 +111,13 @@ changed_files:
   - skills/spec-review/SKILL.md
   - skills/plan-review/SKILL.md
   - scripts/test-skill-validator.py
+  - scripts/review_independence_skill_phrases.py
 review:
-  status: changes-requested
-  unresolved_items: 2
+  status: review-requested
+  unresolved_items: 0
   material_findings: 8
-  open_findings: 2
-  closed_findings: 6
+  open_findings: 0
+  closed_findings: 8
   proposal_review: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/proposal-review-r1.md
   spec_review: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/spec-review-r2.md
   architecture_review: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/architecture-review-r1.md

@@ -134,4 +134,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r1.md
 Resolution: review-resolution.md#code-review-m3-r1
 Material findings: CR4-F1, CR4-F2
-Open findings: CR4-F1, CR4-F2
+Open findings: None
