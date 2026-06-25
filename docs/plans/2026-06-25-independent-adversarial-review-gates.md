@@ -2,8 +2,8 @@
 
 ## Status
 
-Plan lifecycle state: done
-Terminal disposition: closed
+Plan lifecycle state: active
+Terminal disposition: none
 
 - Change ID: 2026-06-25-independent-adversarial-review-gates-for-automated-workflows
 - Owner: maintainer

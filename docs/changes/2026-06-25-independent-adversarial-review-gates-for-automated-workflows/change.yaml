@@ -104,6 +104,8 @@ changed_files:
   - scripts/lifecycle_state_sync.py
   - scripts/test-artifact-lifecycle-validator.py
   - scripts/review_artifact_validation.py
+  - scripts/validation_selection.py
+  - scripts/ci.sh
   - scripts/change_metadata_semantics.py
   - scripts/validate-change-metadata.py
   - scripts/test-review-artifact-validator.py
@@ -517,3 +519,13 @@ validation:
     result: pass_final_verify
   - command: rg -n '[[:blank:]]$|\t' <final changed paths excluding unrelated learn note>
     result: no_matches_final_verify
+  - command: gh run view 28200449764 --log-failed
+    result: ci_failure_identified_selector_blocked_on_scripts_review_independence_skill_phrases_and_pr_timeout_too_low_for_selector_regression
+  - command: bash scripts/ci.sh --mode pr --base fe11bbbb7cd07a43b2095fe369f8a82aeae2f54e --head c5eada94d054c98e7e0ff4732a7e37156b84df30
+    result: reproduced_ci_failure_before_fix_manual_routing_required_for_scripts_review_independence_skill_phrases
+  - command: python scripts/test-select-validation.py -k first_slice_representative_categories_route_or_block_safely
+    result: pass_after_ci_fix_selector_route_for_review_independence_skill_phrases
+  - command: python scripts/test-select-validation.py -k timeout_and_signal_failures_have_distinct_statuses
+    result: pass_after_ci_fix_default_timeout_300_seconds
+  - command: bash scripts/ci.sh --mode pr --base fe11bbbb7cd07a43b2095fe369f8a82aeae2f54e --head c5eada94d054c98e7e0ff4732a7e37156b84df30 --timeout 300
+    result: pass_after_ci_fix_pr_mode_all_selected_checks
