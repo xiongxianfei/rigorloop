@@ -349,6 +349,15 @@ IMPLEMENTATION_DURABLE_AUTHORIZATION_FAILURES = {
 }
 IMPLEMENTATION_MILESTONE_STATES = {"planned", "implementing", "review-requested", "resolution-needed", "closed"}
 AUTO_FIX_CLASSES = {"none", "mechanical", "declared-safe"}
+REVIEW_GATE_OUTCOMES = {"advance", "stop", "blocked", "inconclusive"}
+REVIEW_GATE_RISK_TIERS = {"standard", "elevated", "critical-internal", "irreversible-external-action"}
+NATIVE_REVIEW_GATE_OUTCOMES = {
+    "approved": "advance",
+    "clean-with-notes": "advance",
+    "changes-requested": "stop",
+    "blocked": "blocked",
+    "inconclusive": "inconclusive",
+}
 MECHANICAL_AUTO_FIX_KINDS = {
     "formatter-output",
     "lint-autofix",
@@ -377,6 +386,15 @@ DECLARED_SAFE_REQUIRED_FIELDS = (
     "behavior_test",
 )
 IMPLEMENTATION_CORRECTION_ROUND_CAP = 3
+FINAL_HOLISTIC_REVIEW_REQUIRED_FIELDS = (
+    "complete_final_diff",
+    "cross_milestone_interactions",
+    "governing_artifacts",
+    "review_resolutions",
+    "final_validation_selection",
+    "generated_and_derived_artifacts",
+    "cross_milestone_scope",
+)
 
 
 def _stop(profile_state: str, reason: str) -> AuthoringAutoprogressionRoute:
@@ -409,6 +427,72 @@ def _implementation_continue(profile_state: str, next_stage: str) -> Implementat
         next_stage=next_stage,
         stop_reason=None,
     )
+
+
+def _review_gate_stop(reason: str) -> ImplementationAutoprogressionRoute:
+    return _implementation_stop("paused", reason)
+
+
+def evaluate_automated_review_gate_route(data: dict[str, object]) -> ImplementationAutoprogressionRoute:
+    """Evaluate normalized automated review-gate routing for workflow-managed reviews."""
+
+    if data.get("invocation_context") != "workflow-managed":
+        return _review_gate_stop("isolated-invocation")
+
+    native_status = data.get("native_review_status")
+    gate_outcome = data.get("review_gate_outcome")
+    if native_status not in NATIVE_REVIEW_GATE_OUTCOMES:
+        return _review_gate_stop("unsupported-native-review-status")
+    if gate_outcome not in REVIEW_GATE_OUTCOMES:
+        return _review_gate_stop("unsupported-review-gate-outcome")
+    expected_outcome = NATIVE_REVIEW_GATE_OUTCOMES[native_status]  # type: ignore[index]
+    if gate_outcome != expected_outcome:
+        return _review_gate_stop("review-gate-outcome-mismatch")
+
+    if native_status in {"blocked", "inconclusive"}:
+        return _review_gate_stop(str(gate_outcome))
+
+    if data.get("independence_manifest_valid") is not True:
+        return _review_gate_stop("invalid-review-manifest")
+    if data.get("phase_receipts_recorded") is not True:
+        return _review_gate_stop("missing-phase-receipts")
+    if data.get("risk_tier") not in REVIEW_GATE_RISK_TIERS:
+        return _review_gate_stop("risk-tier-classification-invalid")
+    if data.get("risk_tier_classifier_valid") is not True:
+        return _review_gate_stop("risk-tier-classification-incomplete")
+    if data.get("risk_tier_satisfied") is not True:
+        return _review_gate_stop("risk-tier-escalation-failed")
+
+    if native_status in {"approved", "clean-with-notes"}:
+        if data.get("clean_review_receipt_valid") is not True:
+            return _review_gate_stop("insufficient-clean-receipt")
+        if data.get("unresolved_findings") not in {0, None}:
+            return _review_gate_stop("review-findings-open")
+        if data.get("risk_tier") == "elevated" and data.get("second_review_required") is not True:
+            return _review_gate_stop("elevated-second-review-required")
+        if data.get("second_review_required") is True:
+            second_status = data.get("second_review_status")
+            if second_status not in {"approved", "clean-with-notes"}:
+                return _review_gate_stop("second-review-disagreement")
+        return _implementation_continue("active", "advance")
+
+    if native_status == "changes-requested":
+        if data.get("findings_auto_fix_classified") is not True:
+            return _review_gate_stop("correction-finding-unclassified")
+        if data.get("active_profile_authorizes_review_resolution") is not True:
+            return _review_gate_stop("changes-requested-not-routable")
+        rounds_remaining = data.get("correction_loop_rounds_remaining")
+        if not isinstance(rounds_remaining, int) or rounds_remaining <= 0:
+            return _review_gate_stop("changes-requested-not-routable")
+        if (
+            not isinstance(data.get("authorizing_profile"), str)
+            or not isinstance(data.get("round_number"), int)
+            or not data.get("satisfied_independence_evidence")
+        ):
+            return _review_gate_stop("review-resolution-route-record-incomplete")
+        return _implementation_continue("active", "review-resolution")
+
+    return _review_gate_stop("unsupported-native-review-status")
 
 
 def _is_clean_proposal_gate(gate: object) -> bool:
@@ -602,6 +686,14 @@ def _promotion_evidence_complete(value: object) -> bool:
     return value.get("phase_b_dogfood") == "recorded" and value.get("synthetic_fixtures") == "pass"
 
 
+def _final_holistic_review_complete(value: object) -> bool:
+    if not isinstance(value, dict):
+        return False
+    if value.get("milestone_local_only") is True:
+        return False
+    return all(value.get(field) is True for field in FINAL_HOLISTIC_REVIEW_REQUIRED_FIELDS)
+
+
 def _next_milestone_route(milestones: object) -> str | None:
     if not isinstance(milestones, list):
         return None
@@ -726,6 +818,8 @@ def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> Im
             return _implementation_stop("active", "phase-boundary-explain-change")
         if not _promotion_evidence_complete(data.get("promotion_evidence")):
             return _implementation_stop("active", "promotion-evidence-missing")
+        if not _final_holistic_review_complete(data.get("final_holistic_review")):
+            return _implementation_stop("active", "final-holistic-review-missing")
         return _implementation_continue("active", "explain-change")
 
     route = _next_milestone_route(data.get("milestones"))

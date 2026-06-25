@@ -74,15 +74,15 @@ Important implementation surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Review gate evidence model and validators
-- Current milestone state: closed
+- Current milestone: M2. Orchestration semantics and workflow-state gates
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m1-r3.md
 - Last reviewed milestone: M1. Review gate evidence model and validators
-- Review status: approved; stage=code-review; round=r3
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: implement M2
+- Review status: review-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed after clean code-review R3; M2-M5 remain incomplete.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 implementation is complete and awaiting code-review; M3-M5 remain incomplete.
 
 ## Milestones
 
@@ -132,7 +132,7 @@ Important implementation surfaces:
 
 ### M2. Orchestration semantics and workflow-state gates
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Enforce normalized `review_gate_outcome`, fail-closed risk-tier classification, `changes-requested` routing semantics, second-review disagreement stops, and final holistic code-review preconditions in workflow-state evaluation.
 - Requirements: `R10`-`R12`, `R14`, `R18`, `R20`, `AC6`-`AC11`, `AC13`, `AC15`, `AC-RAI-018`, `RAI-021`-`RAI-023`
 - Files/components likely touched:
@@ -162,11 +162,11 @@ Important implementation surfaces:
 - Expected observable result: Workflow-state validation distinguishes clean advance, routable `changes-requested`, blocked, and inconclusive states without string-only review status comparisons.
 - Commit message: `M2: enforce automated review gate routing`
 - Milestone closeout:
-  - validation passed
-  - progress updated
-  - decision log updated if needed
-  - validation notes updated
-  - milestone committed
+  - validation passed: yes
+  - progress updated: yes
+  - decision log updated if needed: yes
+  - validation notes updated: yes
+  - milestone committed: yes
 - Risks:
   - Routing checks could accidentally pause existing authorized correction loops.
 - Rollback/recovery:
@@ -355,6 +355,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: Code-review M1 R2 requested changes: `CR2-F1` requires unsupported native review status values to fail closed instead of silently advancing with `review_gate_outcome: advance`.
 - 2026-06-25: M1 review-resolution addressed `CR2-F1`; converted native review status validation to fail-closed closed-vocabulary gating, added unknown native status regression tests and fixture coverage, added closed-vocabulary guidance to `AGENTS.md`, and returned M1 to `code-review-m1-r3`.
 - 2026-06-25: Code-review M1 R3 approved the M1 review-resolution with no material findings; M1 is closed and the next implementation milestone is M2.
+- 2026-06-25: M2 implemented normalized automated review-gate routing in lifecycle state helpers, including clean advance gates, routable `changes-requested`, blocked/inconclusive pauses, second-review disagreement stops, and final holistic review preconditions before `explain-change`.
 
 ## Decision log
 
@@ -366,6 +367,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 | 2026-06-25 | Keep M1 review-gate evidence validation in semantic validators instead of changing `schemas/change.schema.json` | Existing schema structure already permits optional nested review metadata; semantic validators can enforce closed independence levels, phase order, hashes, and fail-closed review evidence without broad schema churn. | Add schema-only fields that would not enforce the M1 behavioral gates. |
 | 2026-06-25 | Treat repository-wide required-field enumeration drift as a process follow-up before M2 | `CR1-F1` and `CR1-F2` repeat a cross-initiative pattern where hand-listed validator or fixture subsets drift from spec enumerations; resolving the M1 findings is necessary but not sufficient to prevent recurrence. | Hide the broader audit inside the M1 fix; defer it silently. |
 | 2026-06-25 | Add closed-vocabulary validator discipline before M2 | `CR2-F1` confirmed that guard-style membership checks can silently pass unknown values in the same resolution path that fixed a required-field omission. | Rely on future code review to catch each instance manually. |
+| 2026-06-25 | Implement M2 review-gate routing as a lifecycle-state helper | The current lifecycle validator already owns implementation-profile route projection, so adding a focused `evaluate_automated_review_gate_route` keeps orchestration semantics testable without adding schema churn. | Encode M2 routing only in prose or in review artifact validation. |
 
 ## Surprises and discoveries
 
@@ -375,6 +377,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - Code-review M1 R1 found the same structural required-field drift pattern seen in the implementation-autoprogression initiative. Before M2 starts, perform a focused audit of review artifact, change metadata, and lifecycle/state validators for spec-required field lists, T-ID coverage enumerations, and fail-open unknown-value handling.
 - Code-review M1 R2 confirmed the fail-open unknown-value variant exists for native review status; include unknown-value handling in the pre-M2 validator audit, not only required-field coverage.
 - The M1 guard-style audit found `scripts/review_artifact_validation.py:824` as the native-status fail-open defect. Other inspected uppercase-vocabulary occurrences in `scripts/review_artifact_validation.py`, `scripts/change_metadata_semantics.py`, `scripts/validate-change-metadata.py`, and `scripts/lifecycle_state_sync.py` were already fail-closed gates or routing/forbidden-key membership checks; no additional M1-surface findings were opened.
+- M2 reuses `ImplementationAutoprogressionRoute` for normalized review-gate routing results so lifecycle tests can assert the same `profile_state`, `next_stage`, and `stop_reason` shape already used by implementation autoprogression.
 
 ## Validation notes
 
@@ -417,6 +420,10 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: `python scripts/test-review-artifact-validator.py` passed during code-review M1 R3 with 64 tests.
 - 2026-06-25: `python scripts/test-change-metadata-validator.py` passed during code-review M1 R3 with 41 tests.
 - 2026-06-25: Temporary adversarial fixture changed `Native review status: clean-with-notes` to `Native review status: rubber-stamp` while keeping `Review gate outcome: advance`; `python scripts/validate-review-artifacts.py --mode structure <tmpdir>/fixture` failed with `unsupported native review status 'rubber-stamp'`.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k review_gate` passed after M2 with 4 tests.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k phase_boundaries` passed after M2 with 1 test covering the final holistic review precondition.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py` passed after M2 with 132 tests.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M2 before handoff.
 
 ## Outcome and retrospective
 
