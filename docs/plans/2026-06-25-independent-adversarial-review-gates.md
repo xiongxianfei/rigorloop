@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Change ID: 2026-06-25-independent-adversarial-review-gates-for-automated-workflows
 - Owner: maintainer
 - Start date: 2026-06-25
 - Last updated: 2026-06-25
-- Related issue or PR: none yet
+- Related issue or PR: PR #110
 - Supersedes: none
 
 ## Purpose / big picture
@@ -80,9 +80,9 @@ Important implementation surfaces:
 - Last reviewed milestone: M5. Generated guidance, docs alignment, and final proof
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: pr-handoff-pending — final verify passed branch-ready local validation evidence; PR handoff has not run.
+- Next stage: human PR review
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — PR #110 is open for review; implementation milestones, review-resolution, explain-change, verify, and PR handoff are complete.
 
 ## Milestones
 
@@ -561,10 +561,11 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: Whitespace scan over changed files returned no matches after explain-change.
 - 2026-06-25: Explain-change recorded durable rationale for the full review-independence implementation and routed next stage to `verify`.
 - 2026-06-25: Verify recorded branch-ready local validation evidence in `docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/verify-report.md` and routed next stage to `pr`.
+- 2026-06-25: PR handoff opened PR #110 for human review.
 
 ## Outcome and retrospective
 
-- Implementation, review-resolution, explain-change, and verify are complete. PR handoff remains the next downstream stage.
+- Implementation, review-resolution, explain-change, verify, and PR handoff are complete. PR #110 is open for human review.
 
 ## Readiness
 
