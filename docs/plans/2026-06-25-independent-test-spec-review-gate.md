@@ -68,9 +68,9 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - Last reviewed milestone: M3. Validators, fixtures, generated package proof, and representative evidence
 - Review status: approved; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
-- Final closeout readiness: ready
-- Reason final closeout is or is not ready: ready — all implementation milestones are closed and no review-resolution is required; final closeout can start with explain-change.
+- Next stage: verify
+- Final closeout readiness: not ready
+- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — explain-change is recorded; verify and PR handoff remain open.
 
 ## Milestones
 
@@ -167,6 +167,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - 2026-06-25: M2 code-review completed clean with no material findings; M2 is closed and next stage is `implement M3`.
 - 2026-06-25: M3 added lifecycle review-stage recognition for `test-spec-review`, adapter manifest inclusion for the new skill, generated-adapter validation proof, `v`-prefixed adapter version alias handling, and v0.1.5 release-metadata alignment for alias smoke evidence; next stage is `code-review M3`.
 - 2026-06-25: M3 code-review completed clean with no material findings; all implementation milestones are closed and next stage is `explain-change`.
+- 2026-06-25: Explain-change recorded durable change rationale; next stage is `verify`.
 
 ## Decision log
 
