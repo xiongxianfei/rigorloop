@@ -131,3 +131,20 @@ Structural prevention note: `AGENTS.md` now requires validator closed-vocabulary
 ### code-review-m1-r3
 
 No material findings; no resolution entry required. This same-stage rereview approved the revised M1 review-gate evidence validator and closed the M1 review-resolution loop.
+
+### code-review-m2-r1
+
+#### CR3-F1 - Clean-status evidence failures cannot produce the required inconclusive gate outcome
+
+Finding ID: CR3-F1
+Disposition: accepted
+Status: resolved
+Owner: implement
+Owning stage: implement M2 review-resolution
+Chosen action: Split native verdict handling into `DETERMINATE_NATIVE_OUTCOMES` for unconditional `changes-requested`, `blocked`, and `inconclusive` mappings and `CLEAN_NATIVE_STATUSES` for gate-derived clean verdicts. Added `CLEAN_ADVANCE_GATES` with an explicit R12c/R12d/R13c source comment, reordered evaluation so clean verdicts derive the expected outcome from independence/evidence/recording/clean-receipt/escalation gates before consistency checking, and added `review-gate-outcome-mismatch-given-gate-state` for supplied `advance` when gate state requires `inconclusive`.
+Rationale: Code-review M2 R1 found that `evaluate_automated_review_gate_route` rejects `clean-with-notes` plus `review_gate_outcome: inconclusive` as a native/derived mismatch before evaluating clean/evidence gates, even though the spec requires materially insufficient clean evidence to produce `review_gate_outcome: inconclusive`.
+Validation target: Rerun `code-review-m2-r2`.
+Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k review_gate` passed with 6 tests, including 11 routing subcases and a property-style check covering every `CLEAN_ADVANCE_GATES` entry; `python scripts/test-artifact-lifecycle-validator.py -k phase_boundaries` passed with 1 test; `python scripts/test-artifact-lifecycle-validator.py` passed with 134 tests, up from 132 in the M2 handoff commit; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m2-r1.md` passed; `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed.
+Required outcome: Adjust the routing helper and tests so clean native statuses advance only when required gates pass and missing or insufficient clean/evidence gates can produce the required inconclusive gate outcome instead of a mismatch stop.
+
+Audit note: This finding expands the validator audit pattern beyond guard-style unknown-value fall-through. Constants that are used both for unconditional supplied-value consistency checking and conditional gate-derived outcome computation should be split so each constant has one role.
