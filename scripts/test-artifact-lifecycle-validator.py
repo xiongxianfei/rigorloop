@@ -1832,6 +1832,56 @@ No blocked plans.
             profile_state="active",
         )
 
+    def test_review_gate_sampling_floors_affect_clean_handoff(self) -> None:
+        self.assertReviewGateRoute(
+            self.review_gate_fixture(
+                sampling_phase="rollout",
+                standard_clean_review_sample_rate=20,
+                standard_clean_reviews_independently_reviewed=10,
+                standard_sampling_rate_reduction_requested=False,
+            ),
+            next_stage="advance",
+            profile_state="active",
+        )
+        for name, fixture_overrides, expected_reason in (
+            (
+                "standard-rollout-sample-rate-too-low",
+                {
+                    "sampling_phase": "rollout",
+                    "standard_clean_review_sample_rate": 19,
+                    "review_gate_outcome": "inconclusive",
+                },
+                "standard-clean-review-sampling-floor-unmet",
+            ),
+            (
+                "standard-rate-reduction-before-evidence-floor",
+                {
+                    "sampling_phase": "rollout",
+                    "standard_clean_review_sample_rate": 20,
+                    "standard_clean_reviews_independently_reviewed": 9,
+                    "standard_sampling_rate_reduction_requested": True,
+                    "review_gate_outcome": "inconclusive",
+                },
+                "standard-clean-review-sampling-evidence-floor-unmet",
+            ),
+            (
+                "elevated-clean-review-without-second-review",
+                {
+                    "risk_tier": "elevated",
+                    "second_review_required": False,
+                    "second_review_status": "not-required",
+                    "review_gate_outcome": "inconclusive",
+                },
+                "elevated-second-review-required",
+            ),
+        ):
+            with self.subTest(name=name):
+                self.assertReviewGateRoute(
+                    self.review_gate_fixture(**fixture_overrides),
+                    stop_reason=expected_reason,
+                    profile_state="paused",
+                )
+
     def test_implementation_profile_phase_boundaries_refuse_closeout_until_promoted(self) -> None:
         self.assertImplementationRoute(
             self.implementation_profile_fixture(

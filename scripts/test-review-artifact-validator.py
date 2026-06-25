@@ -211,6 +211,36 @@ def valid_automated_review_text(extra_fields: str = "") -> str:
     """
 
 
+def valid_calibration_record_fields(extra_fields: str = "") -> str:
+    extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
+    return f"""
+    Calibration record: yes
+    Calibration record ID: calibration-code-review-standard-r1
+    Review skill: code-review
+    Fixture mode: public-defect-class
+    Fixture corpus scope: defect-class-example-not-measured-corpus
+    Sampling phase: rollout
+    Sample rate: 20%
+    Standard clean outcomes independently reviewed: 10
+    Sample-rate reduction requested: no
+    Second reviewer type: separate-agent
+    Second review required: no
+    Second-review disagreement: none
+    Automatic continuation: no
+    Recurrence detection: detected
+    Novel defect detection: not-applicable
+    Material disagreements: 0
+    Severity disagreements: 0
+    Evidence gaps: none
+    Downstream escape: no
+    False-positive rate: 0%
+    Inconclusive rate: 0%
+    Receipt quality: complete
+    Review duration: PT12M
+    {extra}
+    """
+
+
 T1_VALID_CASES = (
     ("l1-standard", "valid-automated-review-gate-l1"),
     ("l2-elevated", "valid-automated-review-gate"),
@@ -1016,6 +1046,161 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                     valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
                 )
                 self.assertFails(root, expected)
+
+    def test_calibration_record_shape_and_sampling_fields_pass(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-valid-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text(valid_calibration_record_fields()),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertPasses(root)
+
+    def test_calibration_public_defect_class_fixture_passes(self) -> None:
+        root = copy_fixture("valid-calibration-public-defect-class")
+        self.addCleanupTree(root)
+        self.assertPasses(root)
+
+    def test_calibration_record_requires_metric_fields_by_skill_and_tier(self) -> None:
+        cases = (
+            ("Review skill", "calibration record missing required field Review skill"),
+            ("Recurrence detection", "calibration record missing required field Recurrence detection"),
+            ("Novel defect detection", "calibration record missing required field Novel defect detection"),
+            ("Second-review disagreement", "calibration record missing required field Second-review disagreement"),
+            ("Downstream escape", "calibration record missing required field Downstream escape"),
+            ("False-positive rate", "calibration record missing required field False-positive rate"),
+            ("Inconclusive rate", "calibration record missing required field Inconclusive rate"),
+            ("Receipt quality", "calibration record missing required field Receipt quality"),
+            ("Review duration", "calibration record missing required field Review duration"),
+        )
+        for field, expected in cases:
+            with self.subTest(field=field):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-missing-"))
+                self.addCleanupTree(root)
+                calibration = "\n".join(
+                    line
+                    for line in valid_calibration_record_fields().splitlines()
+                    if not line.strip().startswith(f"{field}:")
+                )
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_calibration_record_rejects_unknown_skill_and_risk_tier(self) -> None:
+        cases = (
+            (
+                "unknown-review-skill",
+                "Review skill: code-review",
+                "Review skill: rubber-stamp-review",
+                "unsupported calibration review skill 'rubber-stamp-review'",
+            ),
+            (
+                "unknown-risk-tier",
+                "Risk tier: standard",
+                "Risk tier: ambiguous",
+                "unsupported calibration risk tier 'ambiguous'",
+            ),
+        )
+        for name, old, new, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-calibration-{name}-"))
+                self.addCleanupTree(root)
+                review = valid_automated_review_text(valid_calibration_record_fields()).replace(old, new)
+                write_text(root / "reviews" / "code-review-r1.md", review)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_calibration_record_rejects_sampling_floor_and_early_reduction(self) -> None:
+        cases = (
+            (
+                "below-standard-rollout-rate",
+                valid_calibration_record_fields().replace("Sample rate: 20%", "Sample rate: 19%"),
+                "standard-risk rollout sample rate must be at least 20%",
+            ),
+            (
+                "early-sample-rate-reduction",
+                valid_calibration_record_fields()
+                .replace("Standard clean outcomes independently reviewed: 10", "Standard clean outcomes independently reviewed: 9")
+                .replace("Sample-rate reduction requested: no", "Sample-rate reduction requested: yes"),
+                "standard-risk sampling reduction requires at least 10 independently reviewed clean outcomes",
+            ),
+        )
+        for name, calibration, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-calibration-{name}-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_calibration_record_rejects_elevated_clean_without_second_review(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-elevated-no-second-"))
+        self.addCleanupTree(root)
+        calibration = valid_calibration_record_fields().replace("Second review required: no", "Second review required: no")
+        review = valid_automated_review_text(calibration).replace("Risk tier: standard", "Risk tier: elevated")
+        write_text(root / "reviews" / "code-review-r1.md", review)
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "elevated-risk clean review requires second review at 100%")
+
+    def test_calibration_record_rejects_second_review_disagreement_continuation(self) -> None:
+        for disagreement in ("material-finding", "blocked", "inconclusive"):
+            with self.subTest(disagreement=disagreement):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-disagreement-"))
+                self.addCleanupTree(root)
+                calibration = (
+                    valid_calibration_record_fields()
+                    .replace("Second-review disagreement: none", f"Second-review disagreement: {disagreement}")
+                    .replace("Automatic continuation: no", "Automatic continuation: yes")
+                )
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, "second-review disagreement prevents automatic continuation")
+
+    def test_calibration_record_requires_downstream_escape_details(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-escape-"))
+        self.addCleanupTree(root)
+        calibration = valid_calibration_record_fields().replace("Downstream escape: no", "Downstream escape: yes")
+        write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "downstream escape record missing required field Downstream escape stage")
+        self.assertFails(root, "downstream escape record missing required field Downstream escape analysis")
+
+    def test_calibration_public_fixture_declares_not_measured_corpus(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-public-scope-"))
+        self.addCleanupTree(root)
+        calibration = "\n".join(
+            line
+            for line in valid_calibration_record_fields().splitlines()
+            if not line.strip().startswith("Fixture corpus scope:")
+        )
+        write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "public calibration fixture must declare defect-class-example-not-measured-corpus")
 
     def test_clean_receipt_root_requires_change_metadata_contract(self) -> None:
         cases = [

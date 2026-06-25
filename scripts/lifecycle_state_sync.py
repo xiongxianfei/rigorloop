@@ -351,6 +351,8 @@ IMPLEMENTATION_MILESTONE_STATES = {"planned", "implementing", "review-requested"
 AUTO_FIX_CLASSES = {"none", "mechanical", "declared-safe"}
 REVIEW_GATE_OUTCOMES = {"advance", "stop", "blocked", "inconclusive"}
 REVIEW_GATE_RISK_TIERS = {"standard", "elevated", "critical-internal", "irreversible-external-action"}
+REVIEW_GATE_ROLLOUT_MIN_STANDARD_SAMPLE_RATE = 20
+REVIEW_GATE_ROLLOUT_MIN_STANDARD_SECOND_REVIEWS = 10
 DETERMINATE_NATIVE_OUTCOMES = {
     "changes-requested": "stop",
     "blocked": "blocked",
@@ -460,6 +462,17 @@ def _clean_review_gate_failure_reason(data: dict[str, object]) -> str | None:
         return "risk-tier-classification-incomplete"
     if data.get("risk_tier_satisfied") is not True:
         return "risk-tier-escalation-failed"
+    if data.get("risk_tier") == "standard" and data.get("sampling_phase") == "rollout":
+        sample_rate = data.get("standard_clean_review_sample_rate")
+        if not isinstance(sample_rate, int) or sample_rate < REVIEW_GATE_ROLLOUT_MIN_STANDARD_SAMPLE_RATE:
+            return "standard-clean-review-sampling-floor-unmet"
+        if data.get("standard_sampling_rate_reduction_requested") is True:
+            reviewed_outcomes = data.get("standard_clean_reviews_independently_reviewed")
+            if (
+                not isinstance(reviewed_outcomes, int)
+                or reviewed_outcomes < REVIEW_GATE_ROLLOUT_MIN_STANDARD_SECOND_REVIEWS
+            ):
+                return "standard-clean-review-sampling-evidence-floor-unmet"
     if data.get("risk_tier") == "elevated" and data.get("second_review_required") is not True:
         return "elevated-second-review-required"
     if data.get("second_review_required") is True:
