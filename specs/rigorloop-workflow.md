@@ -16,6 +16,7 @@
 - [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md)
 - [Proposal-Gated Authoring Autoprogression Through Plan Review](../docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md)
 - [Separately Armed Implementation Autoprogression Through Verify](../docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md)
+- [Independent Test-Spec-Review Gate](../docs/proposals/2026-06-25-independent-test-spec-review-gate.md)
 
 ## Goal and context
 
@@ -28,6 +29,8 @@ This amendment also clarifies that isolated formal review requests stop downstre
 This amendment also defines the bounded `authoring-through-plan-review` autoprogression profile. The profile is change-local, explicitly armed, starts only after a clean accepted proposal gate, runs deterministic authoring and review stages through clean `plan-review`, and stops before `test-spec` or implementation.
 
 This amendment also defines the separately armed `implementation-through-verify` autoprogression profile. The profile is change-local, requires clean planning and its own authorization, uses deterministic test-spec settlement, runs implementation and independent code-review loops only within persisted phase authority, may run fresh `verify` in Phase C, and stops before `pr`.
+
+This amendment also defines the independent `test-spec-review` gate. The gate runs after an active test spec and before implementation for formal workflow-managed test specs. It reviews proof-map adequacy without changing the test-spec settlement state from `active`.
 
 `specs/skill-contract.md` owns skill-contract behavior. It owns standard skill shape, claim boundaries, result output expectations, shared-block rules, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules. `specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.
 
@@ -90,7 +93,8 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `authoring-through-plan-review`: the profile that may run `spec`, `spec-review`, recorded architecture assessment, conditional `architecture`, conditional `architecture-review`, `plan`, and `plan-review`, then stop.
 - `implementation-through-verify`: the profile that may run settled `test-spec`, implementation milestones, independent `code-review`, bounded reviewer-declared correction loops, `explain-change`, and fresh `verify` according to phase authority, then stop before `pr`.
 - `auto-fix classification`: reviewer-owned material-finding metadata that says whether a finding is not auto-fixable, mechanical, or declared safe for a deterministic recipe.
-- `test-spec settlement`: deterministic evidence that the test spec is active, complete, synchronized with its inputs, and ready to authorize implementation.
+- `test-spec-review`: the independent review gate that decides whether an active test spec is an adequate, executable, and traceable proof map for the approved spec, architecture when required, and plan.
+- `test-spec settlement`: deterministic evidence that the test spec is active, complete, synchronized with its inputs, has a current approved `test-spec-review` when required, and is ready to authorize implementation.
 - `profile phase`: the persisted rollout phase for `implementation-through-verify`, selected from `A`, `B`, or `C`.
 - `proposal gate`: the artifact and review state proving that proposal direction is settled enough for downstream authoring.
 - `gate-ready proposal`: a proposal whose artifacts and review evidence satisfy the proposal gate, independent of user authorization.
@@ -235,6 +239,12 @@ And `implementation-through-verify` phase `C` is active
 When implementation milestones, independent review, `explain-change`, and fresh `verify` complete
 Then the workflow reports `pr` as next and stops without opening a PR.
 
+### Example E22: test-spec-review gates implementation
+
+Given a formal workflow-managed change has an active test spec
+When no current approved `test-spec-review` exists, or a substantive test-spec edit makes the review stale
+Then `implement` does not begin until the review is approved, current, recorded when required, and has no open material findings.
+
 ## Requirements
 
 R1. The starter kit MUST support one recommended standard workflow. Public workflow guidance MUST NOT classify work as fast-lane, full-lane, tiny, low-risk, high-risk, small-change, or mini-spec routes.
@@ -255,7 +265,7 @@ R6. The workflow contract MUST document workflow categories using the following 
 | Living references | `docs/project-map.md` | Created when repository structure is not obvious enough for safe architecture or planning. | Refreshed or bypassed with a no-map rationale before reliance when absent, known-stale, contradicted, or missing the relied-on area. | Detailed freshness markers, calendar thresholds, and revision workflow are deferred to a focused project-map lifecycle change. | Architecture, plan, code-review, and onboarding-heavy work. |
 | Workflow infrastructure | `specs/rigorloop-workflow.md`, `docs/workflows.md`, affected root operating guidance, affected stage skills, and generated skill or adapter outputs when canonical skills change. | Created and maintained as workflow governance. | Revised when stage order, routing, handoff, obligation, or category policy changes. | Unresolved drift across affected operating and governance surfaces blocks workflow-change readiness. | Every lifecycle stage. |
 | On-demand artifacts | `explore`, `research`. | Created only when the problem warrants durable option expansion or external evidence. | Revised when their assumptions or findings are materially outdated. | Absence is not a blocker unless the current work depends on unresolved options or uncertain facts. | Proposal, spec, architecture, and plan when their decisions depend on the artifact. |
-| Per-change chain | `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution -> ci-maintenance -> explain-change -> verify -> pr`, with conditional stages governed by obligation metadata. | Created or run according to stage-obligation metadata. | Updated as the change moves through the lifecycle. | Missing required or triggered actions block downstream readiness. | The current change and PR package. |
+| Per-change chain | `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution -> ci-maintenance -> explain-change -> verify -> pr`, with conditional stages governed by obligation metadata. | Created or run according to stage-obligation metadata. | Updated as the change moves through the lifecycle. | Missing required or triggered actions block downstream readiness. | The current change and PR package. |
 | Periodic artifacts | `learn`. | Run on cadence, after incidents, contributor observations, repeated findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request. When a session reaches Frame, create or update `docs/learn/sessions/YYYY-MM-DD-<slug>.md`. | Revised by adding or updating session records, curated topic guidance, or affected action-owning artifacts, not by changing lifecycle state. | Absence does not block ordinary PRs. Triggered `learn` blocks only when a higher-priority artifact makes it blocking; if a trigger is closed before a session runs, the scheduled follow-up, deferral, or no-learn rationale must be recorded in a tracked or review-visible surface. | Future proposals, specs, workflow updates, skill refinements, ADRs, and action-owning artifacts. |
 
 R6a. Standing artifacts include `VISION.md` and `CONSTITUTION.md`, but their absence has different gates. Their absence effects MUST be documented using the following table:
@@ -333,6 +343,7 @@ R7a. The standard workflow MUST be documented using the following stage-obligati
 | `plan` | Sequence implementation. | `conditional` | Multi-file, risky, ambiguous, migration-heavy, sequencing-sensitive, or milestone-based work. | `false` | `true` |
 | `plan-review` | Validate execution plan. | `conditional` | Multi-milestone, sequencing-sensitive, recovery-sensitive, or maintainer-requested work. | `false` | `true` |
 | `test-spec` | Define proof. | `mandatory` | Behavior or workflow-contract proof is required. | `true` | `true` |
+| `test-spec-review` | Validate proof-map adequacy before implementation. | `mandatory` | A formal workflow-managed test spec is required. | `true` | `true` |
 | `implement` | Make the change. | `mandatory` | The accepted contract is ready to change tracked artifacts. | `true` | `true` |
 | `code-review` | Inspect the diff. | `mandatory` | Non-trivial changes. | `true` | `true` |
 | `review-resolution` | Close review findings. | `conditional` | Material review findings, non-final dispositions, or review outcomes require explicit closeout. | `false` | `true` |
@@ -468,6 +479,43 @@ R7p. `plan-review` remains the normal immediate handoff into `test-spec`. If it 
 
 R7q. `test-spec` authoring MUST continue to require an approved feature spec, spec-review findings, a concrete execution plan, and approved architecture or ADR inputs when relevant to the changed boundaries.
 
+R7qa. Formal workflow-managed test specs MUST be reviewed by `test-spec-review` after `test-spec` and before `implement`. Isolated or manual test-spec review MAY be advisory, but it MUST NOT establish formal implementation eligibility unless recorded under the workflow contract.
+
+R7qb. `test-spec-review` MUST review proof-map adequacy, traceability, executable validation design, fixture and manual-proof boundaries, determinism, observability, and implementation handoff. It MUST NOT reapprove product requirements, redesign architecture, rewrite the plan, implement tests, execute final verification, claim validation success, claim branch readiness, or change the test-spec settlement state.
+
+R7qc. Test-spec artifacts MUST retain settlement state `active`. `test-spec-review` approval MUST be recorded in the separate review record and MUST NOT be represented by changing the test spec to `approved`.
+
+R7qd. Implementation eligibility for a formal workflow-managed test spec MUST require an active test spec, the latest applicable `test-spec-review` status `approved`, no later substantive test-spec change that makes the review stale, and no open material `test-spec-review` findings.
+
+R7qe. A substantive test-spec change MUST require re-review before implementation relies on the changed proof map. Substantive changes include requirement or acceptance-criterion mappings, test-case additions, removals, or meaning changes, example or edge-case coverage, validation commands, fixtures or test data, manual proof procedures, milestone mapping, automation levels, pass/fail criteria, and non-goal treatment. Formatting, typo, heading, reordering, or link-only edits MAY avoid re-review only when the reviewer or workflow check confirms proof obligations are unchanged.
+
+R7qf. `test-spec-review` review status MUST use exactly one of:
+- `approved`;
+- `changes-requested`;
+- `blocked`;
+- `inconclusive`.
+
+R7qg. `test-spec-review` immediate next stage MUST use exactly one of:
+- `test-spec revision`;
+- `spec revision`;
+- `architecture revision`;
+- `plan revision`;
+- `review-resolution`;
+- `implement`;
+- `none`.
+
+R7qh. `test-spec-review` implementation handoff MUST use exactly one of:
+- `allowed`;
+- `not-allowed`.
+
+R7qi. `test-spec-review` status-to-handoff mapping MUST be deterministic:
+- `approved` maps to `Implementation handoff: allowed`;
+- `changes-requested`, `blocked`, and `inconclusive` map to `Implementation handoff: not-allowed`.
+
+R7qj. `test-spec-review` MUST use `Immediate next stage: implement` only with `Review status: approved`. Proof-map defects inside a reviewable test spec MUST use `changes-requested` and route to `test-spec revision` or `review-resolution`. Missing or contradictory upstream contract defects MUST use `blocked` and route to `spec revision`, `architecture revision`, `plan revision`, or `none`. Insufficient evidence to judge adequacy MUST use `inconclusive` and `Immediate next stage: none`.
+
+R7qk. When an upstream revision follows `test-spec-review`, the active test spec remains active only as the current proof-map artifact until revised or superseded. Implementation eligibility remains blocked until the upstream artifact, test spec, and `test-spec-review` are synchronized and current.
+
 R7r. Workflow-facing execution and review stages MUST keep stage-owned language and branch-scoped authority claims distinct.
 
 R7ra. `implement` MAY report implementation completion, milestone validation, blockers, readiness for `code-review`, or the next milestone, but it MUST NOT claim completed review findings or `branch-ready`.
@@ -590,7 +638,7 @@ R8ka. The starter kit MUST document the repository-wide artifact lifecycle summa
 | Proposal | non-trivial direction choice | `proposal` | `proposal-review` | `accepted` | `rejected`, `abandoned`, `superseded`, `archived` |
 | Spec | behavior changes | `spec` | `spec-review` | `approved` | `abandoned`, `superseded`, `archived` |
 | Architecture | boundary or system-shape changes | `architecture` | `architecture-review` | `approved` | `abandoned`, `superseded`, `archived` |
-| Test spec | behavior proof | `test-spec` | repository-defined review surface | `active` | `abandoned`, `superseded`, `archived` |
+| Test spec | behavior proof | `test-spec` | `test-spec-review` for formal workflow-managed specs; repository-defined for isolated use | `active` | `abandoned`, `superseded`, `archived` |
 | ADR | long-lived design decision | `architecture` | `architecture-review` when relevant | `accepted`, `active` | `deprecated`, `superseded`, `archived`, `abandoned` |
 
 R8kb. Detailed per-artifact lifecycle rules MUST be delegated to the canonical template, example, and skill surfaces for each artifact class instead of being duplicated in full inside this workflow spec.
@@ -713,7 +761,7 @@ R12ana. Material findings MUST always be recorded.
 
 R12anb. All material findings MUST require change-local review files.
 
-R12ao. Formal lifecycle review stages for detailed review files are `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`. A dedicated `pr-review` detailed file MUST NOT be used unless a later approved spec extends the allowed stage set and validator.
+R12ao. Formal lifecycle review stages for detailed review files are `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, `test-spec-review`, and `code-review`. A dedicated `pr-review` detailed file MUST NOT be used unless a later approved spec extends the allowed stage set and validator.
 
 R12ap. Stage-owned non-approval outcomes MUST include `revise`, `changes-requested`, `blocked`, `rethink`, `inconclusive`, and equivalent stage-specific outcomes that prevent downstream progress.
 

@@ -4667,32 +4667,31 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, preservation)
 
-    def test_implementation_through_verify_does_not_introduce_test_spec_review_skill_or_stage(self) -> None:
-        forbidden_paths = [
-            ROOT / "skills" / "test-spec-review" / "SKILL.md",
-            ROOT / ".agents" / "skills" / "test-spec-review" / "SKILL.md",
-        ]
-        for path in forbidden_paths:
-            with self.subTest(path=path):
-                self.assertFalse(path.exists())
+    def test_test_spec_review_gate_workflow_baseline_surfaces_are_declared(self) -> None:
+        workflow_spec = (ROOT / "specs" / "rigorloop-workflow.md").read_text(
+            encoding="utf-8"
+        )
+        workflow_summary = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        root_guidance = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        review_validator = (ROOT / "scripts" / "review_artifact_validation.py").read_text(
+            encoding="utf-8"
+        )
 
-        stage_owner_files = [
-            ROOT / "scripts" / "lifecycle_state_sync.py",
-            ROOT / "scripts" / "review_artifact_validation.py",
-            ROOT / "docs" / "workflows.md",
-        ]
-        forbidden_stage_markers = [
-            '"test-spec-review"',
-            "'test-spec-review'",
-            "| `test-spec-review` |",
-            "-> test-spec-review",
-            "test-spec-review ->",
-        ]
-        for path in stage_owner_files:
-            body = path.read_text(encoding="utf-8")
-            for marker in forbidden_stage_markers:
-                with self.subTest(path=path, marker=marker):
-                    self.assertNotIn(marker, body)
+        for path, body in [
+            ("specs/rigorloop-workflow.md", workflow_spec),
+            ("docs/workflows.md", workflow_summary),
+            ("AGENTS.md", root_guidance),
+        ]:
+            with self.subTest(path=path):
+                self.assertIn(
+                    "plan-review -> test-spec -> test-spec-review -> implement",
+                    body,
+                )
+
+        self.assertIn('"test-spec-review"', review_validator)
+        self.assertIn("TEST_SPEC_REVIEW_STATUSES", review_validator)
+        self.assertIn("TEST_SPEC_REVIEW_IMMEDIATE_NEXT_STAGES", review_validator)
+        self.assertIn("TEST_SPEC_REVIEW_IMPLEMENTATION_HANDOFFS", review_validator)
 
     def test_single_source_workflow_state_test_spec_maps_static_proof(self) -> None:
         body = SINGLE_SOURCE_WORKFLOW_STATE_TEST_SPEC.read_text(encoding="utf-8")

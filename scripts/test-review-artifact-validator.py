@@ -158,6 +158,32 @@ def implementation_profile_review_text(finding_fields: str) -> str:
     """
 
 
+def test_spec_review_text(
+    *,
+    review_status: str = "approved",
+    immediate_next_stage: str = "implement",
+    implementation_handoff: str = "allowed",
+    status: str = "approved",
+) -> str:
+    return f"""
+    # Test Spec Review R1
+
+    Review ID: test-spec-review-r1
+    Stage: test-spec-review
+    Round: 1
+    Reviewer: Codex test-spec-review skill
+    Target: specs/example.test.md
+    Status: {status}
+    Review status: {review_status}
+    Immediate next stage: {immediate_next_stage}
+    Implementation handoff: {implementation_handoff}
+
+    ## Findings
+
+    No material findings.
+    """
+
+
 def valid_automated_review_text(extra_fields: str = "") -> str:
     extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
     return f"""
@@ -1419,6 +1445,7 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             "spec-review",
             "architecture-review",
             "plan-review",
+            "test-spec-review",
             "code-review",
         ]:
             with self.subTest(stage=stage):
@@ -1428,7 +1455,9 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                 review_path = f"reviews/{review_id}.md"
                 write_text(
                     root / review_path,
-                    review_text(review_id=review_id, stage=stage, status="approved"),
+                    test_spec_review_text()
+                    if stage == "test-spec-review"
+                    else review_text(review_id=review_id, stage=stage, status="approved"),
                 )
                 write_text(
                     root / "review-log.md",
@@ -1457,6 +1486,116 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             ),
         )
         self.assertFails(root, "unknown review stage 'pr-review'")
+
+    def test_test_spec_review_result_fields_validate_status_handoff_and_next_stage(self) -> None:
+        valid_cases = [
+            ("approved", "implement", "allowed"),
+            ("changes-requested", "test-spec revision", "not-allowed"),
+            ("changes-requested", "review-resolution", "not-allowed"),
+            ("blocked", "spec revision", "not-allowed"),
+            ("blocked", "architecture revision", "not-allowed"),
+            ("blocked", "plan revision", "not-allowed"),
+            ("blocked", "none", "not-allowed"),
+            ("inconclusive", "none", "not-allowed"),
+        ]
+        for review_status, immediate_next_stage, implementation_handoff in valid_cases:
+            with self.subTest(
+                review_status=review_status,
+                immediate_next_stage=immediate_next_stage,
+                implementation_handoff=implementation_handoff,
+            ):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-test-spec-review-valid-"))
+                self.addCleanupTree(root)
+                write_text(
+                    root / "reviews" / "test-spec-review-r1.md",
+                    test_spec_review_text(
+                        review_status=review_status,
+                        immediate_next_stage=immediate_next_stage,
+                        implementation_handoff=implementation_handoff,
+                        status=review_status,
+                    ),
+                )
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id="test-spec-review-r1",
+                        stage="test-spec-review",
+                        status=review_status,
+                        detailed_record="reviews/test-spec-review-r1.md",
+                    ),
+                )
+                self.assertPasses(root)
+
+    def test_test_spec_review_result_fields_reject_unknown_values_before_consistency(self) -> None:
+        cases = [
+            ("unknown_value_review_status", {"review_status": "rubber-stamp"}, "unsupported test-spec-review Review status"),
+            ("unknown_value_next_stage", {"immediate_next_stage": "ship-it"}, "unsupported test-spec-review Immediate next stage"),
+            ("unknown_value_handoff", {"implementation_handoff": "maybe"}, "unsupported test-spec-review Implementation handoff"),
+        ]
+        for name, kwargs, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-test-spec-review-{name}-"))
+                self.addCleanupTree(root)
+                write_text(
+                    root / "reviews" / "test-spec-review-r1.md",
+                    test_spec_review_text(**kwargs),
+                )
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id="test-spec-review-r1",
+                        stage="test-spec-review",
+                        status="approved",
+                        detailed_record="reviews/test-spec-review-r1.md",
+                    ),
+                )
+                self.assertFails(root, expected)
+
+    def test_test_spec_review_result_fields_reject_inconsistent_combinations(self) -> None:
+        cases = [
+            (
+                "changes_requested_allowed",
+                {"review_status": "changes-requested", "implementation_handoff": "allowed"},
+                "requires Implementation handoff: not-allowed",
+            ),
+            (
+                "approved_not_allowed",
+                {"implementation_handoff": "not-allowed"},
+                "requires Implementation handoff: allowed",
+            ),
+            (
+                "approved_revision_stage",
+                {"immediate_next_stage": "test-spec revision"},
+                "does not allow Immediate next stage: test-spec revision",
+            ),
+            (
+                "inconclusive_implement",
+                {
+                    "review_status": "inconclusive",
+                    "immediate_next_stage": "implement",
+                    "implementation_handoff": "not-allowed",
+                },
+                "does not allow Immediate next stage: implement",
+            ),
+        ]
+        for name, kwargs, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-test-spec-review-{name}-"))
+                self.addCleanupTree(root)
+                write_text(
+                    root / "reviews" / "test-spec-review-r1.md",
+                    test_spec_review_text(**kwargs),
+                )
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id="test-spec-review-r1",
+                        stage="test-spec-review",
+                        status=kwargs.get("review_status", "approved"),
+                        detailed_record="reviews/test-spec-review-r1.md",
+                    ),
+                )
+                self.assertFails(root, expected)
 
     def test_formal_review_examples_are_not_selected_as_active_review_roots(self) -> None:
         result = subprocess.run(
