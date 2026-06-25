@@ -2,8 +2,8 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Change ID: 2026-06-25-independent-adversarial-review-gates-for-automated-workflows
 - Owner: maintainer
@@ -81,8 +81,8 @@ Important implementation surfaces:
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
 - Next stage: human PR review
-- Final closeout readiness: ready
-- Reason final closeout is or is not ready: ready — PR #110 is open for review; implementation milestones, review-resolution, explain-change, verify, and PR handoff are complete.
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #110 merged; implementation milestones, review-resolution, explain-change, verify, PR handoff, hosted CI, and human review are complete.
 
 ## Milestones
 
