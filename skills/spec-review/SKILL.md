@@ -207,6 +207,12 @@ must state:
 
 For `authoring-through-plan-review`, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any profile-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
 
+## Automated Manifest Pilot
+
+During Phase 1 of independent automated review rollout, workflow-managed automated `spec-review` should at least record a review invocation manifest before automated handoff. This is manifest-only evidence for `spec-review`; it does not yet require the full blind-first automated review protocol unless a later approved slice adopts it.
+
+Direct or review-only `spec-review` requests remain isolated by default.
+
 ## Rules
 
 - Do not approve vague or untestable `MUST` requirements.
