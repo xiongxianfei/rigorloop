@@ -1,0 +1,129 @@
+change_id: 2026-06-24-preflight-first-measured-script-execution-optimization
+title: Preflight-first and measured script execution optimization
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-24-preflight-first-measured-script-execution-optimization.md
+  spec: specs/validation-execution-performance-and-preflight.md
+  test_spec: specs/validation-execution-performance-and-preflight.test.md
+  plan: docs/plans/2026-06-24-preflight-first-measured-script-execution-optimization.md
+  explain_change: docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/explain-change.md
+  verify_report: docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/verify-report.md
+requirements:
+  - Record the preflight-first and measured script execution optimization proposal before proposal-review.
+  - Review the proposal for problem clarity, option quality, scope control, risk honesty, vision fit, and readiness for spec.
+  - Record proposal-review R1 as durable formal review evidence.
+  - Settle proposal status before downstream spec reliance.
+  - If accepted, create a spec for validation execution performance and preflight behavior before implementation changes.
+  - Review the spec before architecture assessment or planning relies on it.
+  - Record architecture assessment before plan routing.
+  - Create a milestone-based execution plan before plan-review.
+  - Review the execution plan before test-spec authoring.
+tests:
+  - Proposal-review R1 approves the proposal or records material findings before downstream spec reliance.
+  - Review-log indexes proposal-review R1 with zero material findings when clean.
+  - Proposal status is normalized from draft to accepted before spec reliance.
+  - Spec-review R1 approves the spec or records material findings before plan reliance.
+  - Architecture assessment records architecture-not-required, architecture-required, or architecture-ambiguous before plan routing.
+  - Plan-review R1 approves the plan or records material findings before test-spec.
+  - Test spec maps approved requirements, examples, edge cases, and milestones to concrete tests before implementation.
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted
+  - command: spec authoring
+    result: validation_execution_performance_and_preflight_spec_approved_ready_for_plan_reliance_after_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: architecture assessment
+    result: architecture-not-required_no_persistent_service_remote_cache_shared_worker_cross_process_protocol_or_new_system_boundary
+  - command: plan
+    result: active_plan_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings_profile_completed_next_test_spec
+  - command: test-spec
+    result: active_test_spec_ready_for_implementation
+  - command: python scripts/test-select-validation.py
+    result: pass_102_tests_after_selector_ci_preflight_timing_implementation
+  - command: code-review m1 r1
+    result: clean_with_notes_no_material_findings
+  - command: code-review m2 r1
+    result: clean_with_notes_no_material_findings
+  - command: code-review m3 r1
+    result: clean_with_notes_no_material_findings
+  - command: code-review m4 r1
+    result: clean_with_notes_no_material_findings
+  - command: code-review m5 r1
+    result: clean_with_notes_no_material_findings_next_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-preflight-first-measured-script-execution-optimization.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/review-log.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/proposal-review-r1.md
+    result: pass
+  - command: git diff --check -- docs/proposals/2026-06-24-preflight-first-measured-script-execution-optimization.md docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization
+    result: pass_reviews_3_findings_0_log_entries_3_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-preflight-first-measured-script-execution-optimization.md --path specs/validation-execution-performance-and-preflight.md --path docs/plans/2026-06-24-preflight-first-measured-script-execution-optimization.md --path docs/plan.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/review-log.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/spec-review-r1.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/plan-review-r1.md
+    result: pass_validated_2_artifact_files_after_plan_review_r1
+  - command: git diff --check -- docs/proposals/2026-06-24-preflight-first-measured-script-execution-optimization.md specs/validation-execution-performance-and-preflight.md docs/plans/2026-06-24-preflight-first-measured-script-execution-optimization.md docs/plan.md docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization
+    result: pass_after_plan_review_r1
+  - command: python scripts/test-select-validation.py
+    result: pass_102_tests_in_122_32s_at_verify
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization
+    result: pass_reviews_8_findings_0_log_entries_8_resolution_entries_0_at_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml
+    result: pass_at_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-preflight-first-measured-script-execution-optimization.md --path specs/validation-execution-performance-and-preflight.md --path specs/validation-execution-performance-and-preflight.test.md --path docs/plans/2026-06-24-preflight-first-measured-script-execution-optimization.md --path docs/plan.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/review-log.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/explain-change.md
+    result: pass_at_verify
+  - command: git diff --cached --check
+    result: pass_at_verify
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/ci.sh --path scripts/test-select-validation.py --path specs/validation-execution-performance-and-preflight.md --path specs/validation-execution-performance-and-preflight.test.md --path docs/proposals/2026-06-24-preflight-first-measured-script-execution-optimization.md --path docs/plans/2026-06-24-preflight-first-measured-script-execution-optimization.md --path docs/plan.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/review-log.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/explain-change.md
+    result: timed_out_selector_regression_after_default_60s_then_rerun_with_documented_timeout_override
+  - command: bash scripts/ci.sh --mode explicit --timeout 180 --path scripts/validation_selection.py --path scripts/ci.sh --path scripts/test-select-validation.py --path specs/validation-execution-performance-and-preflight.md --path specs/validation-execution-performance-and-preflight.test.md --path docs/proposals/2026-06-24-preflight-first-measured-script-execution-optimization.md --path docs/plans/2026-06-24-preflight-first-measured-script-execution-optimization.md --path docs/plan.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/review-log.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/explain-change.md
+    result: pass_selected_checks_focused_phase_total_130_47s
+  - command: bash scripts/ci.sh --mode explicit --timeout 180 --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/verify-report.md --path docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml --path docs/plans/2026-06-24-preflight-first-measured-script-execution-optimization.md --path docs/plan.md
+    result: pass_post_verify_selected_checks
+  - command: python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/ci.sh --path scripts/test-select-validation.py --json
+    result: baseline_selector_explicit_cold_1_10s_warm_0_68s
+  - command: python -X importtime scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/ci.sh --path scripts/test-select-validation.py --json
+    result: baseline_importtime_validation_selection_cumulative_23914us
+  - command: python scripts/test-select-validation.py -k preflight
+    result: baseline_preflight_regression_slice_pass_2_tests_0_17s
+  - command: bash scripts/ci.sh --mode explicit --timeout 180 --path current-pr-diff-paths
+    result: baseline_selected_ci_current_pr_diff_pass_wall_130_51s_focused_129_36s
+review:
+  status: approved
+  unresolved_items: 0
+  location: docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/review-log.md
+  material_findings: 0
+  closed_findings: 0
+  open_findings: 0
+  review_log: docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/review-log.md
+changed_files:
+  - docs/proposals/2026-06-24-preflight-first-measured-script-execution-optimization.md
+  - specs/validation-execution-performance-and-preflight.md
+  - specs/validation-execution-performance-and-preflight.test.md
+  - docs/plan.md
+  - docs/plans/2026-06-24-preflight-first-measured-script-execution-optimization.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/review-log.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/spec-review-r1.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/plan-review-r1.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/code-review-m1-r1.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/code-review-m2-r1.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/code-review-m3-r1.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/code-review-m4-r1.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/reviews/code-review-m5-r1.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/explain-change.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/verify-report.md
+  - docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/script-performance-baseline.yaml
+  - scripts/validation_selection.py
+  - scripts/select-validation.py
+  - scripts/ci.sh
+  - scripts/test-select-validation.py
