@@ -13,11 +13,12 @@ Review closeout: spec-review-r2
 Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`
-- Findings resolved: 2
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`
+- Findings resolved: 4
 - Unresolved findings: 0
-- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings.
+- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved and M1 is ready for `code-review-m1-r2`.
 
 ## Resolution Overview
 
@@ -25,6 +26,8 @@ Review closeout: plan-review-r2
 | --- | --- | --- | --- |
 | SR1-F1 | accepted | resolved | Added `R12f` stop semantics, examples, acceptance criterion, and test IDs; `spec-review-r2` approved the revised contract. |
 | PR1-F1 | accepted | resolved | Added adapter archive generation and validation commands to M3 and M5; added a top-level validation invariant for `skills/` changes; added a boundary statement distinguishing local skill proof from public adapter archive proof. |
+| CR1-F1 | accepted | resolved | Added native review status as required manifest evidence, mapping validation, valid fixture updates, and missing/empty/mismatched regression tests. |
+| CR1-F2 | accepted | resolved | Added T1 valid L1/L2/L3 fixture enumeration and invalid direct proof for missing context separation, unsupported independence level, and missing reviewer context ID on an unverifiable platform. |
 
 ## Finding Details
 
@@ -75,3 +78,33 @@ Validation evidence: `docs/plans/2026-06-25-independent-adversarial-review-gates
 ### plan-review-r2
 
 No material findings; no resolution entry required. This same-stage rereview approved the revised execution plan and closed `PR1-F1`.
+
+### code-review-m1-r1
+
+#### CR1-F1 - Automated review gates can advance without recording the native review result
+
+Finding ID: CR1-F1
+Disposition: accepted
+Status: resolved
+Owner: implement
+Owning stage: implement M1 review-resolution
+Chosen action: Added `Native review status` to the spec-cited `REVIEW_GATE_REQUIRED_FIELDS` constant; added R12 native-status to `review_gate_outcome` consistency validation; updated valid automated review gate fixtures to include native status; added regression tests for missing, empty, and mismatched native review status.
+Rationale: The validator's automated review gate required-field set omits native review result evidence even though the spec and observability contract require it.
+Validation target: Rerun `code-review-m1-r2`.
+Validation evidence: `python scripts/test-review-artifact-validator.py -k native_review_status` ran 2 tests and passed; `python scripts/test-review-artifact-validator.py -k mismatched_native` ran 1 test and passed; `python scripts/test-review-artifact-validator.py` passed with 62 tests, up from 57 in the M1 handoff commit.
+
+#### CR1-F2 - Independence-level matrix proof is incomplete for named T1 cases
+
+Finding ID: CR1-F2
+Disposition: accepted
+Status: resolved
+Owner: implement
+Owning stage: implement M1 review-resolution
+Chosen action: Added durable T1 fixtures for valid L1, existing valid L2, valid L3 critical-internal heterogeneous review, missing context separation, unsupported independence level, and missing reviewer context ID on an unverifiable platform; converted T1 validation to `T1_VALID_CASES` and `T1_INVALID_CASES` enumeration-driven tests.
+Rationale: T1 names valid L1/L2/L3 proof and invalid manifest proof for missing context separation, unsupported independence level, and missing reviewer context identity; the M1 tests do not directly cover several of those named cases.
+Validation target: Rerun `code-review-m1-r2`.
+Validation evidence: `python scripts/test-review-artifact-validator.py -k t1_` ran 2 parameterized tests covering 3 valid cases and 3 invalid cases and passed; `python scripts/test-review-artifact-validator.py` passed with 62 tests, up from 57 in the M1 handoff commit.
+
+Platform-verifiability note: M1 now recognizes `Platform verifiability: unverifiable` as review-gate process evidence and emits `reviewer-context-id-required-on-unverifiable-platform` when reviewer context identity is missing. No separate finding is needed for the M1 surface.
+
+Meta-resolution note: `CR1-F1` is the M1 meta-self-check for the manifest contract M1 defines. The fix keeps the required-field enumeration in a named constant with an explicit spec-source comment. The broader repository-wide required-field and T-ID enumeration audit remains a process follow-up before M2 rather than a hidden M1 expansion.

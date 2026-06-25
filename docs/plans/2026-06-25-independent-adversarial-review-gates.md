@@ -76,13 +76,13 @@ Important implementation surfaces:
 
 - Current milestone: M1. Review gate evidence model and validators
 - Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/plan-review-r2.md
-- Last reviewed milestone: none
-- Review status: review-requested; stage=code-review; round=r1
+- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m1-r1.md
+- Last reviewed milestone: M1. Review gate evidence model and validators
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M1
+- Next stage: code-review M1 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 implementation is complete and awaiting code-review; M2-M5 and downstream gates remain incomplete.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 review-resolution for `CR1-F1` and `CR1-F2` is complete and awaiting code-review R2; M2-M5 remain incomplete.
 
 ## Milestones
 
@@ -350,6 +350,8 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: Plan-review R1 requested `PR1-F1`; accepted and revised M3, M5, and the top-level validation plan to require adapter archive proof for canonical skill changes. This was discovered under isolated formal plan-review; manual review discipline continues for this change pending independence-gates landing.
 - 2026-06-25: Plan-review R2 approved the revised plan; matching active test spec authored.
 - 2026-06-25: M1 implemented structured automated review-gate evidence validation for review records and change metadata, including manifest fields, initial-packet inventory and hash checks, blind-first phase receipts, clean-review sufficiency receipt fields, forbidden context indicators, bounded prose fields, and durable valid/fail-closed fixtures.
+- 2026-06-25: Code-review M1 R1 requested changes: `CR1-F1` requires native review result evidence in automated review gate manifests, and `CR1-F2` requires direct T1 proof for valid L3 and missing/unsupported context identity cases.
+- 2026-06-25: M1 review-resolution addressed `CR1-F1` and `CR1-F2`; added native review status required-field and R12 mapping validation; added T1 L1/L2/L3 and invalid independence fixtures; returned M1 to `code-review-m1-r2`.
 
 ## Decision log
 
@@ -359,12 +361,14 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 | 2026-06-25 | Require test-spec before implementation M1 | The spec has many normative gates and RAI checks; implementation without a traceable test spec would hide coverage gaps. | Start coding directly from the architecture and retroactively document tests. |
 | 2026-06-25 | Require adapter archive proof in M3 and M5 when canonical skills change | M3 changes canonical stage-skill guidance and M5 performs final generated proof; public adapter archive validation must be proven at the milestone-local boundary and again at final closeout. | Defer all adapter proof to M5; treat local skill validation as sufficient for public adapter archives. |
 | 2026-06-25 | Keep M1 review-gate evidence validation in semantic validators instead of changing `schemas/change.schema.json` | Existing schema structure already permits optional nested review metadata; semantic validators can enforce closed independence levels, phase order, hashes, and fail-closed review evidence without broad schema churn. | Add schema-only fields that would not enforce the M1 behavioral gates. |
+| 2026-06-25 | Treat repository-wide required-field enumeration drift as a process follow-up before M2 | `CR1-F1` and `CR1-F2` repeat a cross-initiative pattern where hand-listed validator or fixture subsets drift from spec enumerations; resolving the M1 findings is necessary but not sufficient to prevent recurrence. | Hide the broader audit inside the M1 fix; defer it silently. |
 
 ## Surprises and discoveries
 
 - Existing review-artifact validation expects review-log entries to use `review-resolution.md#<Review ID>` in this change root, so the architecture-review clean receipt is indexed through the existing resolution ledger.
 - Plan-review R1 showed that local skill validation can be mentally substituted for adapter validation unless the plan names both boundaries explicitly.
 - M1 fixture-backed review-log entries needed the existing block-style `Resolution` field even for no-material automated review examples; this preserves compatibility with the current review-log parser.
+- Code-review M1 R1 found the same structural required-field drift pattern seen in the implementation-autoprogression initiative. Before M2 starts, perform a focused audit of review artifact, change metadata, and lifecycle/state validators for spec-required field lists, T-ID coverage enumerations, and fail-open unknown-value handling.
 
 ## Validation notes
 
@@ -380,6 +384,16 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md --path specs/review-independence-and-criticality.md --path specs/review-independence-and-criticality.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260625-independent-adversarial-review-gates.md --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/plan-review-r2.md` passed after M1 handoff sync.
 - 2026-06-25: `git diff --check -- scripts/review_artifact_validation.py scripts/change_metadata_semantics.py scripts/validate-change-metadata.py scripts/test-review-artifact-validator.py scripts/test-change-metadata-validator.py tests/fixtures/review-artifacts docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M1.
 - 2026-06-25: `rg -n '[[:blank:]]$|\t' scripts/review_artifact_validation.py scripts/change_metadata_semantics.py scripts/validate-change-metadata.py scripts/test-review-artifact-validator.py scripts/test-change-metadata-validator.py tests/fixtures/review-artifacts docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` returned no matches after M1.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k native_review_status` passed after `CR1-F1` with 2 tests.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k mismatched_native` passed after `CR1-F1` with 1 test.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k t1_` passed after `CR1-F2` with 2 parameterized tests covering 3 valid cases and 3 invalid cases.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py` passed after M1 review-resolution with 62 tests, up from 57 in the M1 handoff commit.
+- 2026-06-25: `python scripts/test-change-metadata-validator.py` passed after M1 review-resolution with 41 tests.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M1 review-resolution.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M1 review-resolution.
+- 2026-06-25: Direct T1 fixture validation passed for valid L1/L2/L3 fixtures and expected-failed for missing context separation, unsupported independence level, and missing reviewer context ID on an unverifiable platform.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M1 review-resolution.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md --path specs/review-independence-and-criticality.md --path specs/review-independence-and-criticality.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260625-independent-adversarial-review-gates.md --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m1-r1.md` passed after M1 review-resolution.
 
 ## Outcome and retrospective
 
