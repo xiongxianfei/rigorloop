@@ -75,14 +75,14 @@ Important implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M4. Calibration fixtures and measurement evidence
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m3-r2.md
 - Last reviewed milestone: M3. Code-review pilot and review-family guidance
-- Review status: approved; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 is closed; M4-M5 remain incomplete.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M4 is awaiting code-review; M5 remains incomplete.
 
 ## Milestones
 
@@ -218,7 +218,7 @@ Important implementation surfaces:
 
 ### M4. Calibration fixtures and measurement evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add public defect-class fixtures, calibration record validation, sampling-floor evidence, downstream escape recording, and metric separation by review skill and risk tier.
 - Requirements: `R14`-`R17`, `AC10`-`AC14`
 - Files/components likely touched:
@@ -249,11 +249,11 @@ Important implementation surfaces:
 - Expected observable result: Calibration and second-review evidence can be tested without treating public fixtures as the only measured defect corpus.
 - Commit message: `M4: add review gate calibration evidence`
 - Milestone closeout:
-  - validation passed
-  - progress updated
-  - decision log updated if needed
-  - validation notes updated
-  - milestone committed
+  - validation passed: yes
+  - progress updated: yes
+  - decision log updated if needed: yes
+  - validation notes updated: yes
+  - milestone committed: yes
 - Risks:
   - Public fixtures could be mistaken for the complete private calibration corpus.
 - Rollback/recovery:
@@ -363,6 +363,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: Code-review M3 R1 requested changes: `CR4-F1` requires operational `failed-remediation` guidance and test coverage, and `CR4-F2` requires `auto-fix eligibility` to be excluded from implement handoff packets and tested.
 - 2026-06-25: M3 review-resolution addressed `CR4-F1` and `CR4-F2`; added R8d/R5 phrase constants for skill guidance assertions, updated code-review and implement guidance, reran local skill and adapter archive proof, and returned M3 to `code-review-m3-r2`.
 - 2026-06-25: Code-review M3 R2 approved the M3 review-resolution with no material findings; M3 is closed and the next implementation milestone is M4.
+- 2026-06-25: M4 implemented review-gate calibration evidence validation, rollout sampling-floor routing checks, a public defect-class calibration fixture, downstream escape record validation, and M4 behavior-preservation evidence; M4 is ready for code-review.
 
 ## Decision log
 
@@ -378,6 +379,8 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 | 2026-06-25 | Split determinate and conditional review status constants | `CR3-F1` showed that clean native statuses derive outcomes from gate state, while `changes-requested`, `blocked`, and `inconclusive` have determinate mappings. | Reuse one native-status mapping constant for both unconditional consistency checks and conditional derivation. |
 | 2026-06-25 | Keep M3 scoped to existing canonical skills | The plan listed `skills/review-resolution/SKILL.md`, but no such canonical skill exists in this repository; creating a new skill would exceed the approved M3 scope and conflict with the repository rule against one-off skills. | Create a new review-resolution skill during M3. |
 | 2026-06-25 | Drive M3 review-independence skill assertions from R-cited phrase constants | `CR4-F1` and `CR4-F2` showed that hand-listed skill assertions can mirror missing spec-required guidance. | Keep the M3 assertions as independent hand-written phrase subsets. |
+| 2026-06-25 | Keep M4 public seeded fixtures at defect-class scope | The spec allows private or access-controlled rotating fixtures for measured calibration; public fixtures should prove record shape and defect classes without becoming the measured corpus. | Treat committed fixtures as the full calibration corpus. |
+| 2026-06-25 | Add rollout sampling gates to lifecycle routing and calibration records | Sampling floors affect automated handoff eligibility, while calibration records make the evidence inspectable by skill and risk tier. | Validate sampling only in prose or only in review artifact records. |
 
 ## Surprises and discoveries
 
@@ -388,6 +391,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - Code-review M1 R2 confirmed the fail-open unknown-value variant exists for native review status; include unknown-value handling in the pre-M2 validator audit, not only required-field coverage.
 - The M1 guard-style audit found `scripts/review_artifact_validation.py:824` as the native-status fail-open defect. Other inspected uppercase-vocabulary occurrences in `scripts/review_artifact_validation.py`, `scripts/change_metadata_semantics.py`, `scripts/validate-change-metadata.py`, and `scripts/lifecycle_state_sync.py` were already fail-closed gates or routing/forbidden-key membership checks; no additional M1-surface findings were opened.
 - M2 reuses `ImplementationAutoprogressionRoute` for normalized review-gate routing results so lifecycle tests can assert the same `profile_state`, `next_stage`, and `stop_reason` shape already used by implementation autoprogression.
+- M4 calibration detection initially treated shared manifest fields such as `Risk tier` and `Independence level` as calibration-record triggers, which broke existing valid automated review fixtures. The validator now triggers calibration validation only from calibration-owned fields or `Calibration record: yes`.
 - CR3-F1 is an evaluation-order defect rather than the earlier unknown-value fall-through family. Future validator audits should also flag constants that mix unconditional mapping and conditional gate-derived outcome roles.
 - The plan listed `skills/review-resolution/SKILL.md`, but the repository has no canonical review-resolution skill. M3 therefore updated the existing canonical skills that own automated review invocation, review execution, and authoring review guidance without creating a new skill.
 - Code-review M3 R1 showed the same hand-listed-subset drift pattern in skill guidance assertions. M3 now uses `scripts/review_independence_skill_phrases.py` for R5 and R8d phrase checks so future spec additions have one test-side update point.
@@ -453,6 +457,15 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` passed after M3, building and validating Codex, Claude, and OpenCode adapter archives.
 - 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M3 handoff sync.
 - 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M3 handoff sync.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k calibration` passed after M4 with 9 tests.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k sampling_floors` passed after M4 with 1 test.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py` passed after M4 with 73 tests.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py` passed after M4 with 135 tests.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M4 with 14 reviews, 8 findings, 14 log entries, and 8 resolution entries.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M4 handoff sync.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M4 handoff sync.
+- 2026-06-25: `git diff --check -- scripts/lifecycle_state_sync.py scripts/review_artifact_validation.py scripts/test-artifact-lifecycle-validator.py scripts/test-review-artifact-validator.py tests/fixtures/review-artifacts/valid-calibration-public-defect-class docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/behavior-preservation.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md` passed after M4.
+- 2026-06-25: `rg -n '[[:blank:]]$|\t' scripts/lifecycle_state_sync.py scripts/review_artifact_validation.py scripts/test-artifact-lifecycle-validator.py scripts/test-review-artifact-validator.py tests/fixtures/review-artifacts/valid-calibration-public-defect-class docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/behavior-preservation.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md` returned no matches after M4.
 - 2026-06-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M3 handoff sync.
 - 2026-06-25: `git diff --check -- scripts/test-skill-validator.py skills/code-review/SKILL.md skills/workflow/SKILL.md skills/implement/SKILL.md skills/spec-review/SKILL.md skills/plan-review/SKILL.md docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M3.
 - 2026-06-25: `rg -n '[[:blank:]]$|\t' scripts/test-skill-validator.py skills/code-review/SKILL.md skills/workflow/SKILL.md skills/implement/SKILL.md skills/spec-review/SKILL.md skills/plan-review/SKILL.md docs/plans/2026-06-25-independent-adversarial-review-gates.md docs/plan.md docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` returned no matches after M3.
