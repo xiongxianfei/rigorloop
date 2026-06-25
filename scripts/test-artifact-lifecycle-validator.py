@@ -743,6 +743,18 @@ No blocked plans.
         result, messages = self.validate_workflow_state_fixture(valid_root)
         self.assertFalse(result.blocking_findings, msg=messages)
 
+        test_spec_review_root = Path(tempfile.mkdtemp(prefix="workflow-state-owner-test-spec-review-"))
+        self.addCleanupTree(test_spec_review_root)
+        self.write_workflow_state_fixture(
+            test_spec_review_root,
+            current_milestone_state="review-requested",
+            review_status="review-requested; stage=test-spec-review; round=r1",
+            next_stage="test-spec-review",
+            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — test-spec-review is pending before implementation.",
+        )
+        result, messages = self.validate_workflow_state_fixture(test_spec_review_root)
+        self.assertFalse(result.blocking_findings, msg=messages)
+
         invalid_cases = {
             "unknown": "later; stage=code-review; round=r1",
             "cross-field": "not-started; stage=code-review; round=r1",

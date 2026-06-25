@@ -36,7 +36,11 @@ changed_files:
   - specs/test-spec-review-gate.test.md
   - scripts/review_artifact_validation.py
   - scripts/skill_validation.py
+  - scripts/adapter_distribution.py
+  - scripts/lifecycle_state_sync.py
   - scripts/test-review-artifact-validator.py
+  - scripts/test-adapter-distribution.py
+  - scripts/test-artifact-lifecycle-validator.py
   - scripts/test-skill-validator.py
   - skills/test-spec-review/SKILL.md
   - skills/test-spec-review/assets/material-finding.md
@@ -44,6 +48,8 @@ changed_files:
   - skills/test-spec/SKILL.md
   - skills/implement/SKILL.md
   - skills/workflow/SKILL.md
+  - dist/adapters/manifest.yaml
+  - docs/releases/v0.1.5/release.yaml
   - docs/plan.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml
   - docs/changes/2026-06-25-independent-test-spec-review-gate/behavior-preservation.md
@@ -106,6 +112,22 @@ validation:
     result: pass
   - command: code-review r2
     result: clean-with-notes_no_material_findings_m2_closed_next_implement_m3
+  - command: python scripts/test-artifact-lifecycle-validator.py -k workflow_state_owner_review_status_cases
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_manifest_records_opencode_command_aliases_for_v_prefixed_releases AdapterDistributionTests.test_adapter_manifest_remains_metadata_only AdapterDistributionTests.test_generated_adapter_archives_are_not_committed
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.1.5 --check
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.1.5
+    result: pass
+  - command: python scripts/validate-release-ci.py --version v0.1.5
+    result: pass
   - command: python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml
     result: pass
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate

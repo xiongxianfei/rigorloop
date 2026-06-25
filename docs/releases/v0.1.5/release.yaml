@@ -33,7 +33,7 @@ smoke:
   opencode:
     result: pass
     tool_version: "pending-publication"
-    evidence: "Adapter archive validation passes for v0.1.5 release artifacts. Manual adapter runtime smoke is deferred to release execution evidence."
+    evidence: "Adapter archive validation passes for v0.1.5 release artifacts. Command alias compatibility inherits the v0.1.1 smoke where opencode run --command proposal loaded the proposal skill and repeated ARGUMENT_MARKER_M3_SMOKE."
     reason: ""
     owner: maintainer
 

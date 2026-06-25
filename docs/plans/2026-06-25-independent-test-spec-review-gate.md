@@ -63,14 +63,14 @@ Generated public adapter skill bodies are not authored source and must not be ha
 ## Current Handoff Summary
 
 - Current milestone: M3. Validators, fixtures, generated package proof, and representative evidence
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: code-review-r2
 - Last reviewed milestone: M2. Canonical skill and review assets
-- Review status: approved; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 remains open.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 is ready for code-review.
 
 ## Milestones
 
@@ -112,7 +112,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ### M3. Validators, fixtures, generated package proof, and representative evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Requirements: R5-R12, R19-R23, R27-R28
 - Deliverable: validator recognition for the new stage and result fields, unknown-value regression tests, formal review placement checks, stale-review fixture coverage where feasible, generated adapter inclusion proof, and representative review fixtures.
 - Likely files: `scripts/`, `tests/fixtures/`, `dist/adapters/README.md` or manifest support surface if needed, change-local behavior-preservation evidence, generated package proof reports.
@@ -122,8 +122,8 @@ Generated public adapter skill bodies are not authored source and must not be ha
   - targeted validator unit tests
   - adapter generation/package validation command named by the test spec
 - Implementation handoff:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M3
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M3
 - Review closeout:
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
@@ -165,6 +165,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - 2026-06-25: M1 code-review completed clean with no material findings; M1 is closed and next stage is `implement M2`.
 - 2026-06-25: M2 added canonical `test-spec-review` skill/assets, updated adjacent `test-spec`, `implement`, and `workflow` routing, and extended review-family skill validation; next stage is `code-review M2`.
 - 2026-06-25: M2 code-review completed clean with no material findings; M2 is closed and next stage is `implement M3`.
+- 2026-06-25: M3 added lifecycle review-stage recognition for `test-spec-review`, adapter manifest inclusion for the new skill, generated-adapter validation proof, `v`-prefixed adapter version alias handling, and v0.1.5 release-metadata alignment for alias smoke evidence; next stage is `code-review M3`.
 
 ## Decision log
 
@@ -175,7 +176,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ## Surprises and discoveries
 
-- None yet.
+- 2026-06-25: Regenerating adapter metadata for `v0.1.5` exposed that adapter version parsing did not treat `v`-prefixed release tags as semver for OpenCode command aliases. M3 fixed the parser and added a regression before recording generated package proof.
 
 ## Validation notes
 
@@ -197,6 +198,17 @@ Generated public adapter skill bodies are not authored source and must not be ha
   - `python scripts/test-skill-validator.py -k test_test_spec_review`
   - `python scripts/test-skill-validator.py`
   - `git diff --check -- skills/test-spec-review skills/test-spec/SKILL.md skills/implement/SKILL.md skills/workflow/SKILL.md scripts/skill_validation.py scripts/test-skill-validator.py`
+- 2026-06-25: M3 implementation validation passed:
+  - `python scripts/test-artifact-lifecycle-validator.py -k workflow_state_owner_review_status_cases`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_manifest_records_opencode_command_aliases_for_v_prefixed_releases AdapterDistributionTests.test_adapter_manifest_remains_metadata_only AdapterDistributionTests.test_generated_adapter_archives_are_not_committed`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-adapters.py --version v0.1.5 --check`
+  - `python scripts/validate-adapters.py --version v0.1.5`
+  - `python scripts/validate-release-ci.py --version v0.1.5`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml`
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate`
 
 ## Outcome and retrospective
 
