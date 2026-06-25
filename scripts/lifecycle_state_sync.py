@@ -25,7 +25,15 @@ REVIEW_STATUSES = frozenset(
     {"not-started", "not-required", "review-requested", "approved", "changes-requested", "blocked", "inconclusive"}
 )
 REVIEW_STAGES = frozenset(
-    {"proposal-review", "spec-review", "architecture-review", "plan-review", "code-review", "none"}
+    {
+        "proposal-review",
+        "spec-review",
+        "architecture-review",
+        "plan-review",
+        "test-spec-review",
+        "code-review",
+        "none",
+    }
 )
 FORMAL_REVIEW_STAGES = REVIEW_STAGES - {"none"}
 REASON_CODES = (

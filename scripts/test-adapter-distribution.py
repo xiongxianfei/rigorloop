@@ -1757,6 +1757,22 @@ release_gate:
                     f"dist/adapters/opencode/.opencode/commands/{alias}.md",
                 )
 
+    def test_manifest_records_opencode_command_aliases_for_v_prefixed_releases(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_root = Path(tmp) / "dist" / "adapters"
+
+            sync_adapter_output("v0.1.5", output_root=output_root)
+            manifest = parse_manifest_yaml(
+                (output_root / "manifest.yaml").read_text(encoding="utf-8"),
+                output_root / "manifest.yaml",
+            )
+
+            self.assertIn("opencode", manifest.command_aliases)
+            self.assertEqual(
+                tuple(manifest.command_aliases["opencode"].aliases),
+                OPENCODE_COMMAND_ALIASES,
+            )
+
     def test_adapter_generation_drift_check_detects_stale_and_unexpected_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

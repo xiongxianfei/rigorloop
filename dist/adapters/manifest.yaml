@@ -60,6 +60,9 @@ skills:
   test-spec:
     portable: true
     adapters: [codex, claude, opencode]
+  test-spec-review:
+    portable: true
+    adapters: [codex, claude, opencode]
   verify:
     portable: true
     adapters: [codex, claude, opencode]
