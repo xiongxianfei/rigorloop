@@ -49,6 +49,7 @@ tests:
   - Canonical skill validation, generated local skill checks, and public adapter archive proof pass after M3 canonical skill changes.
   - Code-review M3 R1 records material findings for incomplete `failed-remediation` guidance and missing `auto-fix eligibility` exclusion in implement handoff guidance.
   - CR4-F1 and CR4-F2 are resolved by adding R8d/R5 skill guidance and enumeration-driven phrase assertions.
+  - Code-review M3 R2 approves the M3 review-resolution with no material findings.
 changed_files:
   - docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md
   - specs/review-independence-and-criticality.md
@@ -68,6 +69,7 @@ changed_files:
   - docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m2-r1.md
   - docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m2-r2.md
   - docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m3-r1.md
+  - docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m3-r2.md
   - docs/architecture/system/architecture.md
   - docs/adr/ADR-20260625-independent-adversarial-review-gates.md
   - docs/plans/2026-06-25-independent-adversarial-review-gates.md
@@ -113,7 +115,7 @@ changed_files:
   - scripts/test-skill-validator.py
   - scripts/review_independence_skill_phrases.py
 review:
-  status: review-requested
+  status: clean-with-notes
   unresolved_items: 0
   material_findings: 8
   open_findings: 0
@@ -122,7 +124,7 @@ review:
   spec_review: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/spec-review-r2.md
   architecture_review: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/architecture-review-r1.md
   plan_review: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/plan-review-r2.md
-  code_review: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m3-r1.md
+  code_review: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m3-r2.md
   review_log: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md
   review_resolution: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md
 validation:

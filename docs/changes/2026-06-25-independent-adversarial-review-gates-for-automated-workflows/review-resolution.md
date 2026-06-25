@@ -19,11 +19,12 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
+Review closeout: code-review-m3-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`; it is resolved. Code-review M1 R3 approved the M1 resolution with no material findings. Code-review M2 R1 requested `CR3-F1`; it is resolved. Code-review M2 R2 approved the M2 resolution with no material findings. Code-review M3 R1 requested `CR4-F1` and `CR4-F2`; both findings are resolved and awaiting `code-review-m3-r2`.
+- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`; it is resolved. Code-review M1 R3 approved the M1 resolution with no material findings. Code-review M2 R1 requested `CR3-F1`; it is resolved. Code-review M2 R2 approved the M2 resolution with no material findings. Code-review M3 R1 requested `CR4-F1` and `CR4-F2`; both findings are resolved. Code-review M3 R2 approved the M3 resolution with no material findings.
 
 ## Resolution Overview
 
@@ -172,6 +173,10 @@ Chosen action: Added the required `failed-remediation` condition to `skills/code
 Rationale: The spec requires `failed-remediation` when a prior finding was claimed or expected to be fixed but is independently rediscovered during the blind-first pass. Naming the category without the condition leaves reviewer behavior under-specified.
 Validation target: Rerun `code-review-m3-r2`.
 Validation evidence: `python scripts/test-skill-validator.py -k review_independence_m3` passed with 3 tests; `python scripts/test-skill-validator.py` passed with 237 tests; `python scripts/validate-skills.py` validated 23 skill files; `python scripts/test-build-skills.py` passed with 7 tests; `python scripts/build-skills.py --check` passed; `python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir"` built Codex, Claude, and OpenCode adapter archives; `python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` validated the generated adapter archives.
+
+### code-review-m3-r2
+
+No material findings; no resolution entry required. This same-stage rereview approved the `CR4-F1` and `CR4-F2` resolution and closed the M3 review-resolution loop.
 
 #### CR4-F2 - Implement handoff guidance still permits `auto-fix eligibility` in the initial packet
 
