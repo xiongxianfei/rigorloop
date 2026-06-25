@@ -821,21 +821,36 @@ def _validate_automated_review_gate_fields(
         )
 
     native_status = _first_nonempty(fields, "Native review status")
-    if native_status is not None and native_status.value in NATIVE_STATUS_GATE_OUTCOMES and outcome is not None:
-        expected_outcome = NATIVE_STATUS_GATE_OUTCOMES[native_status.value]
-        if outcome.value != expected_outcome:
+    if native_status is not None:
+        if native_status.value not in NATIVE_STATUS_GATE_OUTCOMES:
             findings.append(
                 ValidationFinding(
                     path=path,
-                    line=outcome.line,
+                    line=native_status.line,
                     mode=mode,
                     message=(
-                        "R12-mismatch: Native review status "
-                        f"{native_status.value} maps to review_gate_outcome {expected_outcome}, not {outcome.value}"
+                        f"unsupported native review status '{native_status.value}'; allowed values are "
+                        f"{', '.join(sorted(NATIVE_STATUS_GATE_OUTCOMES))} per "
+                        "specs/review-independence-and-criticality.md R12"
                     ),
                     review_id=review_id,
                 )
             )
+        elif outcome is not None:
+            expected_outcome = NATIVE_STATUS_GATE_OUTCOMES[native_status.value]
+            if outcome.value != expected_outcome:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=outcome.line,
+                        mode=mode,
+                        message=(
+                            "R12-mismatch: Native review status "
+                            f"{native_status.value} maps to review_gate_outcome {expected_outcome}, not {outcome.value}"
+                        ),
+                        review_id=review_id,
+                    )
+                )
 
     independence = _first_nonempty(fields, "Independence level")
     if independence is not None:

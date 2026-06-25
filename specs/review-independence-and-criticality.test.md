@@ -106,7 +106,7 @@
 - Steps:
   - Create valid automated review fixtures for standard `L1`, elevated `L2`, and critical internal `L3`.
   - Assert each valid manifest records required fields from `R3b`, uses orchestrator-owned schema-bounded process evidence, and validates when the tier requirement is satisfied.
-  - Create invalid fixtures with `L0`, identical `author_context_id` and `reviewer_context_id`, missing context separation mechanism, unsupported independence level, and missing reviewer context identity on an unverifiable platform.
+  - Create invalid fixtures with `L0`, identical `author_context_id` and `reviewer_context_id`, missing context separation mechanism, unsupported independence level, unsupported native review status, and missing reviewer context identity on an unverifiable platform.
   - Assert invalid fixtures cannot produce `review_gate_outcome: advance`.
 - Expected result:
   - Valid L1/L2/L3 manifests pass, and L0 or unverifiable author-continuation fixtures fail closed.

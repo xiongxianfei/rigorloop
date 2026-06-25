@@ -75,20 +75,20 @@ Important implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M1. Review gate evidence model and validators
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m1-r2.md
 - Last reviewed milestone: M1. Review gate evidence model and validators
-- Review status: changes-requested; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: review-resolution M1
+- Next stage: code-review M1 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 review-resolution for `CR1-F1` and `CR1-F2` is complete, but code-review R2 found `CR2-F1`; M2-M5 remain incomplete.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 review-resolution for `CR1-F1`, `CR1-F2`, and `CR2-F1` is complete and awaiting code-review R3; M2-M5 remain incomplete.
 
 ## Milestones
 
 ### M1. Review gate evidence model and validators
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Add structured review-gate evidence records for manifests, initial packets, phase receipts, clean-review sufficiency receipts, and private-reasoning-safe record fields.
 - Requirements: `R1`-`R7`, `R13`, `R17`, `AC1`-`AC5`, `AC12`
 - Files/components likely touched:
@@ -353,6 +353,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: Code-review M1 R1 requested changes: `CR1-F1` requires native review result evidence in automated review gate manifests, and `CR1-F2` requires direct T1 proof for valid L3 and missing/unsupported context identity cases.
 - 2026-06-25: M1 review-resolution addressed `CR1-F1` and `CR1-F2`; added native review status required-field and R12 mapping validation; added T1 L1/L2/L3 and invalid independence fixtures; returned M1 to `code-review-m1-r2`.
 - 2026-06-25: Code-review M1 R2 requested changes: `CR2-F1` requires unsupported native review status values to fail closed instead of silently advancing with `review_gate_outcome: advance`.
+- 2026-06-25: M1 review-resolution addressed `CR2-F1`; converted native review status validation to fail-closed closed-vocabulary gating, added unknown native status regression tests and fixture coverage, added closed-vocabulary guidance to `AGENTS.md`, and returned M1 to `code-review-m1-r3`.
 
 ## Decision log
 
@@ -363,6 +364,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 | 2026-06-25 | Require adapter archive proof in M3 and M5 when canonical skills change | M3 changes canonical stage-skill guidance and M5 performs final generated proof; public adapter archive validation must be proven at the milestone-local boundary and again at final closeout. | Defer all adapter proof to M5; treat local skill validation as sufficient for public adapter archives. |
 | 2026-06-25 | Keep M1 review-gate evidence validation in semantic validators instead of changing `schemas/change.schema.json` | Existing schema structure already permits optional nested review metadata; semantic validators can enforce closed independence levels, phase order, hashes, and fail-closed review evidence without broad schema churn. | Add schema-only fields that would not enforce the M1 behavioral gates. |
 | 2026-06-25 | Treat repository-wide required-field enumeration drift as a process follow-up before M2 | `CR1-F1` and `CR1-F2` repeat a cross-initiative pattern where hand-listed validator or fixture subsets drift from spec enumerations; resolving the M1 findings is necessary but not sufficient to prevent recurrence. | Hide the broader audit inside the M1 fix; defer it silently. |
+| 2026-06-25 | Add closed-vocabulary validator discipline before M2 | `CR2-F1` confirmed that guard-style membership checks can silently pass unknown values in the same resolution path that fixed a required-field omission. | Rely on future code review to catch each instance manually. |
 
 ## Surprises and discoveries
 
@@ -371,6 +373,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - M1 fixture-backed review-log entries needed the existing block-style `Resolution` field even for no-material automated review examples; this preserves compatibility with the current review-log parser.
 - Code-review M1 R1 found the same structural required-field drift pattern seen in the implementation-autoprogression initiative. Before M2 starts, perform a focused audit of review artifact, change metadata, and lifecycle/state validators for spec-required field lists, T-ID coverage enumerations, and fail-open unknown-value handling.
 - Code-review M1 R2 confirmed the fail-open unknown-value variant exists for native review status; include unknown-value handling in the pre-M2 validator audit, not only required-field coverage.
+- The M1 guard-style audit found `scripts/review_artifact_validation.py:824` as the native-status fail-open defect. Other inspected uppercase-vocabulary occurrences in `scripts/review_artifact_validation.py`, `scripts/change_metadata_semantics.py`, `scripts/validate-change-metadata.py`, and `scripts/lifecycle_state_sync.py` were already fail-closed gates or routing/forbidden-key membership checks; no additional M1-surface findings were opened.
 
 ## Validation notes
 
@@ -401,6 +404,13 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: `python scripts/test-review-artifact-validator.py -k t1_` passed during code-review M1 R2 with 2 parameterized tests covering 3 valid and 3 invalid cases.
 - 2026-06-25: `python scripts/test-review-artifact-validator.py` passed during code-review M1 R2 with 62 tests.
 - 2026-06-25: Temporary adversarial fixture changed `Native review status: clean-with-notes` to `Native review status: rubber-stamp` while keeping `Review gate outcome: advance`; `python scripts/validate-review-artifacts.py --mode structure <tmpdir>/fixture` passed with zero findings, producing `CR2-F1`.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k unknown_native` failed before the `CR2-F1` fix and passed afterward with 2 tests covering three unknown values plus allowed-value error text.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k t1_` failed before the `CR2-F1` fix on `unknown-native-review-status` and passed afterward with 2 parameterized tests covering 3 valid cases and 4 invalid cases.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k native_review_status` passed after `CR2-F1` with 3 tests.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k mismatched_native` passed after `CR2-F1` with 1 test.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py` passed after `CR2-F1` with 64 tests.
+- 2026-06-25: Direct validation of `tests/fixtures/review-artifacts/invalid-unknown-native-review-status` failed with `unsupported native review status 'rubber-stamp'` and listed the allowed native statuses.
+- 2026-06-25: `rg -n "if .* in [A-Z][A-Z0-9_]+| if .* not in [A-Z][A-Z0-9_]+|\\.value in [A-Z][A-Z0-9_]+" scripts/review_artifact_validation.py scripts/change_metadata_semantics.py scripts/validate-change-metadata.py scripts/lifecycle_state_sync.py` completed the M1 closed-vocabulary audit; no additional fail-open validator findings were opened.
 
 ## Outcome and retrospective
 

@@ -229,6 +229,11 @@ T1_INVALID_CASES = (
         "unsupported independence level 'L4'",
     ),
     (
+        "unknown-native-review-status",
+        "invalid-unknown-native-review-status",
+        "unsupported native review status 'rubber-stamp'",
+    ),
+    (
         "missing-reviewer-context-id-unverifiable",
         "invalid-missing-reviewer-context-id-unverifiable-platform",
         "reviewer-context-id-required-on-unverifiable-platform",
@@ -841,6 +846,41 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
         )
         self.assertFails(root, "R12-mismatch")
+
+    def test_review_gate_rejects_unknown_native_review_status(self) -> None:
+        for native_status in ("rubber-stamp", "lgtm", "bogus"):
+            with self.subTest(native_status=native_status):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-unknown-native-status-"))
+                self.addCleanupTree(root)
+                write_text(
+                    root / "reviews" / "code-review-r1.md",
+                    valid_automated_review_text().replace(
+                        "Native review status: clean-with-notes",
+                        f"Native review status: {native_status}",
+                    ),
+                )
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, f"unsupported native review status '{native_status}'")
+
+    def test_review_gate_unknown_native_status_error_lists_allowed_values(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-unknown-native-status-allowed-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text().replace(
+                "Native review status: clean-with-notes",
+                "Native review status: rubber-stamp",
+            ),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        for allowed in ("approved", "blocked", "changes-requested", "clean-with-notes", "inconclusive"):
+            self.assertFails(root, allowed)
 
     def test_automated_review_gate_fixtures_cover_valid_and_fail_closed_paths(self) -> None:
         valid_root = copy_fixture("valid-automated-review-gate")
