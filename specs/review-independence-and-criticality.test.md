@@ -289,6 +289,14 @@
   - Assert standard-risk sampling rate cannot reduce before at least 10 independently reviewed clean outcomes.
   - Assert elevated-risk clean reviews require second review at 100%.
   - Assert critical-risk reviews satisfy L3 or human authority gate.
+  - `T10c`: Assert `critical-internal` without positive authority evidence fails closed.
+  - `T10d`: Assert `critical-internal` with `Critical authority kind: L3` and satisfied authority may advance when other gates pass.
+  - `T10e`: Assert `irreversible-external-action` with L3-only authority fails closed.
+  - `T10f`: Assert `irreversible-external-action` with human authority may advance when other gates pass.
+  - `T10g`: Assert unsupported critical-authority kinds produce `critical-authority-kind-invalid` regardless of supplied `review_gate_outcome`, `risk_tier_satisfied`, or other downstream gate input.
+  - `T10g-bis`: Assert unsupported critical-authority kinds fail the same way for `irreversible-external-action`.
+  - `T10g-ter`: Assert unsupported critical-authority kinds are reported before `risk_tier_satisfied` failures.
+  - `T10g-quater`: Assert non-boolean `Critical authority satisfied` produces `critical-authority-satisfied-invalid`.
   - Assert second-review material finding, `blocked`, or `inconclusive` prevents automatic continuation.
   - Assert first review cannot overrule disagreement and majority-vote approval is not used.
   - Manually review steady-state sampling controls for disagreement confidence interval and rate-increase triggers.
@@ -311,6 +319,10 @@
   - Assert public fixtures document defect classes without claiming to be the full private corpus.
   - Assert calibration records distinguish recurrence-detection from novel-defect detection.
   - Assert records include second-review disagreement, downstream escape, false-positive rate, inconclusive rate, receipt quality, review duration, review skill, and risk tier.
+  - `T11d`: Assert unsupported calibration control values fail closed against the `{yes, no}` vocabulary.
+  - `T11e`: Assert multiple unsupported calibration control values each produce a validation finding.
+  - `T11f`: Assert critical-risk calibration fixtures require tier-appropriate authority evidence.
+  - `T11g`: Assert unsupported `Critical authority kind` in a calibration record produces `calibration-authority-kind-invalid` without also producing `calibration-authority-missing` or `calibration-authority-kind-insufficient`.
   - Manually verify private or access-controlled rotating fixture guidance is preserved when practical.
 - Expected result:
   - Calibration evidence is measurable without overfitting public fixtures or aggregating away skill/tier differences.

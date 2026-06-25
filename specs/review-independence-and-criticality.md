@@ -309,7 +309,7 @@ R14b. During rollout, the system MUST collect at least 10 independently reviewed
 
 R14c. Elevated-risk clean automated reviews MUST receive second review at 100% during rollout and steady state unless a later accepted proposal revises the policy.
 
-R14d. Critical-risk reviews MUST satisfy their configured `L3` or human authority gate.
+R14d. Critical-risk reviews MUST satisfy their configured `L3` or human authority gate. `critical-internal` review-gate and calibration records MUST record `Critical authority kind` as `L3` or `human` and `Critical authority satisfied` as `yes`. `irreversible-external-action` review-gate and calibration records MUST record `Critical authority kind` as `human` and `Critical authority satisfied` as `yes`; `L3` alone is insufficient for irreversible external action. Closed-vocabulary parse failures on critical-authority fields, including unsupported `Critical authority kind` and non-boolean `Critical authority satisfied`, MUST be returned by the route evaluator before gate-state derivation or supplied-outcome consistency checks. The diagnostic stop reason MUST identify the invalid field, not the downstream symptom.
 
 R14e. A second reviewer's material finding, `blocked` result, or `inconclusive` result MUST prevent automatic continuation.
 
@@ -335,7 +335,7 @@ R16d. Calibration metrics MUST be tracked by review skill and risk tier.
 
 R17. Review records and manifests MUST avoid private reasoning leakage.
 
-R17a. Record formats MUST prefer closed vocabulary fields, stable identifiers, paths, hashes, check IDs, and evidence references.
+R17a. Record formats MUST prefer closed vocabulary fields, stable identifiers, paths, hashes, check IDs, and evidence references. Calibration control fields such as `Sample-rate reduction requested`, `Second review required`, `Automatic continuation`, and `Critical authority satisfied` MUST be validated against `{yes, no}` before being read; unknown values fail closed.
 
 R17b. Validators SHOULD reject forbidden private-reasoning fields and unbounded free-form manifest fields.
 

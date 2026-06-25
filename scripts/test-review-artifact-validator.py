@@ -227,6 +227,8 @@ def valid_calibration_record_fields(extra_fields: str = "") -> str:
     Second review required: no
     Second-review disagreement: none
     Automatic continuation: no
+    Critical authority kind: n/a
+    Critical authority satisfied: no
     Recurrence detection: detected
     Novel defect detection: not-applicable
     Material disagreements: 0
@@ -1157,6 +1159,155 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
         )
         self.assertFails(root, "elevated-risk clean review requires second review at 100%")
+
+    def test_calibration_record_rejects_critical_authority_gaps(self) -> None:
+        cases = (
+            (
+                "critical-internal-without-authority",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Risk tier: standard", "Risk tier: critical-internal")
+                .replace("Independence level: L2", "Independence level: L1"),
+                "calibration-authority-missing",
+            ),
+            (
+                "irreversible-external-with-l3-only",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Risk tier: standard", "Risk tier: irreversible-external-action")
+                .replace("Critical authority kind: n/a", "Critical authority kind: L3")
+                .replace("Critical authority satisfied: no", "Critical authority satisfied: yes"),
+                "calibration-authority-kind-insufficient",
+            ),
+            (
+                "invalid-authority-kind",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Risk tier: standard", "Risk tier: critical-internal")
+                .replace("Critical authority kind: n/a", "Critical authority kind: banana")
+                .replace("Critical authority satisfied: no", "Critical authority satisfied: yes"),
+                "calibration-authority-kind-invalid",
+            ),
+            (
+                "standard-authority-kind-not-applicable",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Critical authority kind: n/a", "Critical authority kind: L3")
+                .replace("Critical authority satisfied: no", "Critical authority satisfied: yes"),
+                "calibration-authority-kind-not-applicable",
+            ),
+        )
+        for name, calibration, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-calibration-{name}-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "code-review-r1.md", calibration)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+        for name, calibration in (
+            (
+                "critical-internal-with-l3",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Risk tier: standard", "Risk tier: critical-internal")
+                .replace("Independence level: L2", "Independence level: L3")
+                .replace("Critical authority kind: n/a", "Critical authority kind: L3")
+                .replace("Critical authority satisfied: no", "Critical authority satisfied: yes"),
+            ),
+            (
+                "irreversible-external-with-human",
+                valid_automated_review_text(valid_calibration_record_fields())
+                .replace("Risk tier: standard", "Risk tier: irreversible-external-action")
+                .replace("Critical authority kind: n/a", "Critical authority kind: human")
+                .replace("Critical authority satisfied: no", "Critical authority satisfied: yes"),
+            ),
+        ):
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-calibration-{name}-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "code-review-r1.md", calibration)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertPasses(root)
+
+    def test_calibration_boolean_fields_reject_unsupported_values(self) -> None:
+        for field in (
+            "Sample-rate reduction requested",
+            "Second review required",
+            "Automatic continuation",
+            "Critical authority satisfied",
+        ):
+            with self.subTest(field=field):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-boolean-"))
+                self.addCleanupTree(root)
+                calibration = valid_calibration_record_fields().replace(f"{field}: no", f"{field}: banana")
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, f"calibration-control-value-invalid: {field}")
+
+    def test_calibration_boolean_fields_report_each_invalid_value(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-booleans-"))
+        self.addCleanupTree(root)
+        calibration = (
+            valid_calibration_record_fields()
+            .replace("Sample-rate reduction requested: no", "Sample-rate reduction requested: banana")
+            .replace("Second review required: no", "Second review required: maybe")
+            .replace("Automatic continuation: no", "Automatic continuation: 1")
+            .replace("Critical authority satisfied: no", "Critical authority satisfied: later")
+        )
+        write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        result = self.validate(root)
+        combined = "\n".join(f.message for f in result.blocking_findings)
+        for field in (
+            "Sample-rate reduction requested",
+            "Second review required",
+            "Automatic continuation",
+            "Critical authority satisfied",
+        ):
+            self.assertIn(f"calibration-control-value-invalid: {field}", combined)
+
+    def test_calibration_authority_fixtures_cover_valid_and_fail_closed_paths(self) -> None:
+        for fixture in (
+            "valid-calibration-critical-internal-l3",
+            "valid-calibration-irreversible-external-human",
+        ):
+            with self.subTest(fixture=fixture):
+                self.assertPasses(FIXTURES / fixture)
+        for fixture, expected in (
+            ("invalid-calibration-critical-internal-missing-authority", "calibration-authority-missing"),
+            ("invalid-calibration-irreversible-external-l3-only", "calibration-authority-kind-insufficient"),
+            ("invalid-calibration-critical-internal-authority-kind-banana", "calibration-authority-kind-invalid"),
+        ):
+            with self.subTest(fixture=fixture):
+                self.assertFails(FIXTURES / fixture, expected)
+
+    def test_calibration_authority_kind_invalid_does_not_emit_missing(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-authority-kind-invalid-"))
+        self.addCleanupTree(root)
+        review = (
+            valid_automated_review_text(valid_calibration_record_fields())
+            .replace("Risk tier: standard", "Risk tier: critical-internal")
+            .replace("Critical authority kind: n/a", "Critical authority kind: banana")
+            .replace("Critical authority satisfied: no", "Critical authority satisfied: yes")
+        )
+        write_text(root / "reviews" / "code-review-r1.md", review)
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        result = self.validate(root)
+        combined = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("calibration-authority-kind-invalid", combined)
+        self.assertNotIn("calibration-authority-missing", combined)
+        self.assertNotIn("calibration-authority-kind-insufficient", combined)
 
     def test_calibration_record_rejects_second_review_disagreement_continuation(self) -> None:
         for disagreement in ("material-finding", "blocked", "inconclusive"):

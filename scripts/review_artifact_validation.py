@@ -169,6 +169,8 @@ CALIBRATION_RECORD_REQUIRED_FIELDS = (
     "Second reviewer type",
     "Second review required",
     "Second-review disagreement",
+    "Critical authority kind",
+    "Critical authority satisfied",
     "Independence level",
     "Recurrence detection",
     "Novel defect detection",
@@ -191,6 +193,17 @@ CALIBRATION_DETECTION_VALUES = frozenset({"detected", "missed", "not-applicable"
 CALIBRATION_SECOND_REVIEW_VALUES = frozenset({"none", "material-finding", "blocked", "inconclusive"})
 CALIBRATION_SECOND_REVIEW_DISAGREEMENTS = frozenset({"material-finding", "blocked", "inconclusive"})
 CALIBRATION_YES_NO_VALUES = frozenset({"yes", "no"})
+CALIBRATION_BOOLEAN_FIELDS = (
+    "Sample-rate reduction requested",
+    "Second review required",
+    "Automatic continuation",
+    "Critical authority satisfied",
+)
+CALIBRATION_AUTHORITY_KINDS = frozenset({"L3", "human", "n/a"})
+CALIBRATION_AUTHORITY_TIERS = {
+    "critical-internal": frozenset({"L3", "human"}),
+    "irreversible-external-action": frozenset({"human"}),
+}
 CALIBRATION_BOUNDED_FREEFORM_FIELDS = ("Evidence gaps",)
 FORBIDDEN_CALIBRATION_FIELDS = frozenset(
     {
@@ -1181,7 +1194,9 @@ def _validate_calibration_record_fields(
                     )
                 )
 
-    _validate_calibration_sampling_gates(path, review_id, fields, mode, findings)
+    calibration_booleans = _parse_calibration_booleans(path, review_id, fields, mode, findings)
+    _validate_calibration_critical_authority(path, review_id, fields, calibration_booleans, mode, findings)
+    _validate_calibration_sampling_gates(path, review_id, fields, calibration_booleans, mode, findings)
 
 
 def _is_calibration_record(fields: dict[str, list[FieldValue]]) -> bool:
@@ -1191,10 +1206,119 @@ def _is_calibration_record(fields: dict[str, list[FieldValue]]) -> bool:
     return any(_first_nonempty(fields, label) is not None for label in CALIBRATION_RECORD_TRIGGER_FIELDS)
 
 
+def _parse_calibration_boolean(
+    path: Path,
+    review_id: str,
+    field_name: str,
+    field_value: FieldValue | None,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> bool | None:
+    if field_value is None:
+        return None
+    value = field_value.value.strip().lower()
+    if value not in CALIBRATION_YES_NO_VALUES:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=field_value.line,
+                mode=mode,
+                message=f"calibration-control-value-invalid: {field_name} must be one of no, yes",
+                review_id=review_id,
+            )
+        )
+        return None
+    return value == "yes"
+
+
+def _parse_calibration_booleans(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> dict[str, bool | None]:
+    return {
+        label: _parse_calibration_boolean(path, review_id, label, _first_nonempty(fields, label), mode, findings)
+        for label in CALIBRATION_BOOLEAN_FIELDS
+    }
+
+
+def _validate_calibration_critical_authority(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    booleans: dict[str, bool | None],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    risk_tier = _first_nonempty(fields, "Risk tier")
+    kind = _first_nonempty(fields, "Critical authority kind")
+    kind_value = kind.value if kind is not None else None
+    if kind_value is not None and kind_value not in CALIBRATION_AUTHORITY_KINDS:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=kind.line if kind is not None else None,
+                mode=mode,
+                message=(
+                    "calibration-authority-kind-invalid: Critical authority kind "
+                    f"'{kind_value}' must be one of L3, human, n/a"
+                ),
+                review_id=review_id,
+            )
+        )
+        return
+
+    if risk_tier is None or risk_tier.value not in CALIBRATION_AUTHORITY_TIERS:
+        if kind_value not in {None, "n/a"}:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=kind.line if kind is not None else None,
+                    mode=mode,
+                    message="calibration-authority-kind-not-applicable: Critical authority kind applies only to critical tiers",
+                    review_id=review_id,
+                )
+            )
+        return
+
+    allowed_kinds = CALIBRATION_AUTHORITY_TIERS[risk_tier.value]
+    if kind_value in {None, "n/a"} or booleans.get("Critical authority satisfied") is not True:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=kind.line if kind is not None else risk_tier.line,
+                mode=mode,
+                message=(
+                    f"calibration-authority-missing: {risk_tier.value} requires Critical authority kind "
+                    f"{', '.join(sorted(allowed_kinds))} with Critical authority satisfied: yes"
+                ),
+                review_id=review_id,
+            )
+        )
+        return
+
+    if kind_value not in allowed_kinds:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=kind.line if kind is not None else risk_tier.line,
+                mode=mode,
+                message=(
+                    f"calibration-authority-kind-insufficient: {risk_tier.value} does not accept "
+                    f"Critical authority kind {kind_value}"
+                ),
+                review_id=review_id,
+            )
+        )
+
+
 def _validate_calibration_sampling_gates(
     path: Path,
     review_id: str,
     fields: dict[str, list[FieldValue]],
+    booleans: dict[str, bool | None],
     mode: str,
     findings: list[ValidationFinding],
 ) -> None:
@@ -1218,8 +1342,7 @@ def _validate_calibration_sampling_gates(
                     review_id=review_id,
                 )
             )
-        reduction_requested = _first_nonempty(fields, "Sample-rate reduction requested")
-        if reduction_requested is not None and reduction_requested.value == "yes":
+        if booleans.get("Sample-rate reduction requested") is True:
             reviewed_outcomes = _first_nonempty(fields, "Standard clean outcomes independently reviewed")
             reviewed_count = _parse_int(reviewed_outcomes.value) if reviewed_outcomes is not None else None
             if reviewed_count is None or reviewed_count < ROLLOUT_MIN_STANDARD_SECOND_REVIEWS:
@@ -1237,13 +1360,12 @@ def _validate_calibration_sampling_gates(
     if (
         risk_tier is not None
         and risk_tier.value == "elevated"
-        and second_review_required is not None
-        and second_review_required.value != "yes"
+        and booleans.get("Second review required") is not True
     ):
         findings.append(
             ValidationFinding(
                 path=path,
-                line=second_review_required.line,
+                line=second_review_required.line if second_review_required is not None else risk_tier.line,
                 mode=mode,
                 message="elevated-risk clean review requires second review at 100%",
                 review_id=review_id,
@@ -1255,8 +1377,7 @@ def _validate_calibration_sampling_gates(
     if (
         disagreement is not None
         and disagreement.value in CALIBRATION_SECOND_REVIEW_DISAGREEMENTS
-        and continuation is not None
-        and continuation.value == "yes"
+        and booleans.get("Automatic continuation") is True
     ):
         findings.append(
             ValidationFinding(
