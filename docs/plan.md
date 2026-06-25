@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Independent Test-Spec-Review Gate](plans/2026-06-25-independent-test-spec-review-gate.md) | active | code-review M3 | 2026-06-25-independent-test-spec-review-gate |
+| [Independent Test-Spec-Review Gate](plans/2026-06-25-independent-test-spec-review-gate.md) | active | explain-change | 2026-06-25-independent-test-spec-review-gate |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked

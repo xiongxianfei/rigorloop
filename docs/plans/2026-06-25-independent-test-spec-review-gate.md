@@ -63,14 +63,14 @@ Generated public adapter skill bodies are not authored source and must not be ha
 ## Current Handoff Summary
 
 - Current milestone: M3. Validators, fixtures, generated package proof, and representative evidence
-- Current milestone state: review-requested
-- Latest review evidence: code-review-r2
-- Last reviewed milestone: M2. Canonical skill and review assets
-- Review status: review-requested; stage=code-review; round=r3
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review M3
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 is ready for code-review.
+- Current milestone state: closed
+- Latest review evidence: code-review-r3
+- Last reviewed milestone: M3. Validators, fixtures, generated package proof, and representative evidence
+- Review status: approved; stage=code-review; round=r3
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — all implementation milestones are closed and no review-resolution is required; final closeout can start with explain-change.
 
 ## Milestones
 
@@ -112,7 +112,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ### M3. Validators, fixtures, generated package proof, and representative evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Requirements: R5-R12, R19-R23, R27-R28
 - Deliverable: validator recognition for the new stage and result fields, unknown-value regression tests, formal review placement checks, stale-review fixture coverage where feasible, generated adapter inclusion proof, and representative review fixtures.
 - Likely files: `scripts/`, `tests/fixtures/`, `dist/adapters/README.md` or manifest support surface if needed, change-local behavior-preservation evidence, generated package proof reports.
@@ -125,9 +125,9 @@ Generated public adapter skill bodies are not authored source and must not be ha
   - [x] targeted validation passed
   - [x] hand off to code-review for M3
 - Review closeout:
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] lifecycle handoff updated before final lifecycle closeout
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] lifecycle handoff updated before final lifecycle closeout
 - Milestone commit message: `M3: validate test-spec-review lifecycle evidence`
 
 ## Validation plan
@@ -166,6 +166,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - 2026-06-25: M2 added canonical `test-spec-review` skill/assets, updated adjacent `test-spec`, `implement`, and `workflow` routing, and extended review-family skill validation; next stage is `code-review M2`.
 - 2026-06-25: M2 code-review completed clean with no material findings; M2 is closed and next stage is `implement M3`.
 - 2026-06-25: M3 added lifecycle review-stage recognition for `test-spec-review`, adapter manifest inclusion for the new skill, generated-adapter validation proof, `v`-prefixed adapter version alias handling, and v0.1.5 release-metadata alignment for alias smoke evidence; next stage is `code-review M3`.
+- 2026-06-25: M3 code-review completed clean with no material findings; all implementation milestones are closed and next stage is `explain-change`.
 
 ## Decision log
 
