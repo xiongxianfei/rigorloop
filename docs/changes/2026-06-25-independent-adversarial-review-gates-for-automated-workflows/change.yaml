@@ -40,6 +40,7 @@ tests:
   - Code-review M1 R2 records a material finding for unsupported native review status values advancing cleanly.
   - CR2-F1 is resolved by failing closed on unsupported native review status values and adding unknown-value proof.
   - Code-review M1 R3 approves the M1 review-resolution with no material findings.
+  - Add workflow-state evaluation for normalized automated review gate routing, routable changes-requested, second-review disagreement, and final holistic review preconditions.
 changed_files:
   - docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md
   - specs/review-independence-and-criticality.md
@@ -61,6 +62,8 @@ changed_files:
   - docs/plans/2026-06-25-independent-adversarial-review-gates.md
   - specs/review-independence-and-criticality.test.md
   - docs/plan.md
+  - scripts/lifecycle_state_sync.py
+  - scripts/test-artifact-lifecycle-validator.py
   - scripts/review_artifact_validation.py
   - scripts/change_metadata_semantics.py
   - scripts/validate-change-metadata.py
@@ -92,7 +95,7 @@ changed_files:
   - tests/fixtures/review-artifacts/invalid-missing-reviewer-context-id-unverifiable-platform/reviews/code-review-r1.md
   - AGENTS.md
 review:
-  status: clean-with-notes
+  status: review-requested
   unresolved_items: 0
   material_findings: 5
   open_findings: 0
