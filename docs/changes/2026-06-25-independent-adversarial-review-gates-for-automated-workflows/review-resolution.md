@@ -4,7 +4,7 @@
 
 This record closes formal proposal-review, spec-review, architecture-review, and plan-review evidence for the independent adversarial review gates change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -15,10 +15,10 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: code-review-m1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`
 - Findings resolved: 4
-- Unresolved findings: 0
-- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved and M1 is ready for `code-review-m1-r2`.
+- Unresolved findings: 1
+- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`, which remains open and routes M1 back to review-resolution.
 
 ## Resolution Overview
 
@@ -28,6 +28,7 @@ Review closeout: code-review-m1-r1
 | PR1-F1 | accepted | resolved | Added adapter archive generation and validation commands to M3 and M5; added a top-level validation invariant for `skills/` changes; added a boundary statement distinguishing local skill proof from public adapter archive proof. |
 | CR1-F1 | accepted | resolved | Added native review status as required manifest evidence, mapping validation, valid fixture updates, and missing/empty/mismatched regression tests. |
 | CR1-F2 | accepted | resolved | Added T1 valid L1/L2/L3 fixture enumeration and invalid direct proof for missing context separation, unsupported independence level, and missing reviewer context ID on an unverifiable platform. |
+| CR2-F1 | needs-decision | open | Code-review M1 R2 found that unsupported native review status values can still advance as clean automated review gates; review-resolution is required. |
 
 ## Finding Details
 
@@ -108,3 +109,19 @@ Validation evidence: `python scripts/test-review-artifact-validator.py -k t1_` r
 Platform-verifiability note: M1 now recognizes `Platform verifiability: unverifiable` as review-gate process evidence and emits `reviewer-context-id-required-on-unverifiable-platform` when reviewer context identity is missing. No separate finding is needed for the M1 surface.
 
 Meta-resolution note: `CR1-F1` is the M1 meta-self-check for the manifest contract M1 defines. The fix keeps the required-field enumeration in a named constant with an explicit spec-source comment. The broader repository-wide required-field and T-ID enumeration audit remains a process follow-up before M2 rather than a hidden M1 expansion.
+
+### code-review-m1-r2
+
+#### CR2-F1 - Unknown native review statuses can still advance as clean automated review gates
+
+Finding ID: CR2-F1
+Disposition: needs-decision
+Status: open
+Owner: implement
+Owning stage: implement M1 review-resolution
+Decision owner: implementation owner
+Decision needed: Choose the exact unsupported native review status validation message and fixture or test shape, then implement the accepted resolution.
+Chosen action: pending
+Rationale: Code-review M1 R2 found that `Native review status` values outside the supported stage-native vocabulary are not rejected. A temporary fixture with `Native review status: rubber-stamp` and `Review gate outcome: advance` validated with zero findings.
+Validation target: Resolve the validator and test gap, then rerun `code-review-m1-r3`.
+needs-decision rationale: The implementation owner must choose the exact validation message and fixture/test shape before closing the finding.
