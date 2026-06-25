@@ -4,19 +4,19 @@ Review ID: code-review-r1
 Stage: code-review
 Round: 1
 Reviewer: Codex code-review skill
-Target: tests/fixtures/review-artifacts/valid-calibration-public-defect-class
+Target: tests/fixtures/review-artifacts/invalid-calibration-critical-internal-authority-kind-banana
 Status: clean-with-notes
 Material findings: none
 Automated review: yes
 Native review status: clean-with-notes
 Review gate outcome: advance
-Independence level: L2
+Independence level: L3
 Author context ID: author-context-001
 Reviewer context ID: reviewer-context-001
-Context separation mechanism: separate-agent
+Context separation mechanism: human-review
 Author context excluded: true
-Risk tier: standard
-Risk-tier triggers: localized validator behavior
+Risk tier: critical-internal
+Risk-tier triggers: privilege boundary
 Risk-tier classifier: deterministic-path-surface-check
 Governing artifacts: specs/review-independence-and-criticality.md@HEAD#sha256:1111111111111111111111111111111111111111111111111111111111111111
 Formal criteria: R14, R15, R16, R17, AC10, AC14
@@ -26,24 +26,24 @@ Initial packet hash: sha256:3333333333333333333333333333333333333333333333333333
 Manifest owner: orchestrator
 Phase receipts: risk-map-recorded > evidence-menu-released > evidence-results-released > prior-findings-released > verdict-recorded
 Clean-review sufficiency receipt: yes
-Review target identity: tests/fixtures/review-artifacts/valid-calibration-public-defect-class@HEAD
+Review target identity: tests/fixtures/review-artifacts/invalid-calibration-critical-internal-authority-kind-banana@HEAD
 Governing artifacts inspected: specs/review-independence-and-criticality.md
-Risk classes considered: calibration overfit, evidence adequacy, downstream escape
-Adversarial hypotheses tested: public fixture is not the measured private corpus; sampled clean review records remain tiered
-Direct proofs performed: fixture validates through review artifact validator
-Validation evidence challenged: passing fixture only proves shape, not seeded-defect recall
+Risk classes considered: calibration overfit, critical authority, evidence adequacy
+Adversarial hypotheses tested: unsupported critical authority kinds fail at parse time
+Direct proofs performed: negative fixture should fail validation
+Validation evidence challenged: passing fixture only proves shape, not private corpus recall
 Unreviewed surfaces: private rotating fixture custody
 Confidence: medium
-No-finding rationale: The public fixture records defect-class shape and sampling evidence without claiming to be the full measured corpus.
+No-finding rationale: This negative fixture intentionally uses an unsupported critical authority kind.
 Affected behavior: calibration evidence validation
-Highest-impact failure modes: public fixtures mistaken for private corpus; metrics aggregated across risk tiers
+Highest-impact failure modes: malformed authority kind hidden behind missing-authority diagnostics
 Changed boundaries: review artifact calibration fields
 Evidence expected: calibration record fixture and validator result
-Areas requiring direct inspection: fixture mode, sampling fields, metric fields
+Areas requiring direct inspection: critical authority kind parse ordering
 Areas intentionally out of scope: private corpus contents
-Falsifiable review questions: Does the record separate recurrence and novel detection? Does the public fixture declare it is not the measured corpus?
+Falsifiable review questions: Does a critical-internal record with unsupported authority kind fail with only the parse-time finding?
 Calibration record: yes
-Calibration record ID: calibration-code-review-standard-r1
+Calibration record ID: calibration-code-review-critical-internal-invalid-kind-r1
 Review skill: code-review
 Fixture mode: public-defect-class
 Fixture corpus scope: defect-class-example-not-measured-corpus
@@ -51,12 +51,12 @@ Sampling phase: rollout
 Sample rate: 20%
 Standard clean outcomes independently reviewed: 10
 Sample-rate reduction requested: no
-Second reviewer type: separate-agent
+Second reviewer type: human
 Second review required: no
 Second-review disagreement: none
 Automatic continuation: no
-Critical authority kind: n/a
-Critical authority satisfied: no
+Critical authority kind: banana
+Critical authority satisfied: yes
 Recurrence detection: detected
 Novel defect detection: not-applicable
 Material disagreements: 0

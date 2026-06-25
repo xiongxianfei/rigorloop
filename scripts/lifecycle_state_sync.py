@@ -351,6 +351,12 @@ IMPLEMENTATION_MILESTONE_STATES = {"planned", "implementing", "review-requested"
 AUTO_FIX_CLASSES = {"none", "mechanical", "declared-safe"}
 REVIEW_GATE_OUTCOMES = {"advance", "stop", "blocked", "inconclusive"}
 REVIEW_GATE_RISK_TIERS = {"standard", "elevated", "critical-internal", "irreversible-external-action"}
+REVIEW_GATE_CRITICAL_TIERS = {"critical-internal", "irreversible-external-action"}
+REVIEW_GATE_AUTHORITY_KINDS = {"L3", "human", "n/a"}
+REVIEW_GATE_TIER_AUTHORITY_KINDS = {
+    "critical-internal": {"L3", "human"},
+    "irreversible-external-action": {"human"},
+}
 REVIEW_GATE_ROLLOUT_MIN_STANDARD_SAMPLE_RATE = 20
 REVIEW_GATE_ROLLOUT_MIN_STANDARD_SECOND_REVIEWS = 10
 DETERMINATE_NATIVE_OUTCOMES = {
@@ -445,6 +451,39 @@ def _review_gate_stop(reason: str) -> ImplementationAutoprogressionRoute:
     return _implementation_stop("paused", reason)
 
 
+def _critical_authority_parse_failure_reason(data: dict[str, object]) -> str | None:
+    kind = data.get("critical_authority_kind")
+    if kind is not None and kind not in REVIEW_GATE_AUTHORITY_KINDS:
+        return "critical-authority-kind-invalid"
+
+    satisfied = data.get("critical_authority_satisfied")
+    if satisfied is not None and not isinstance(satisfied, bool):
+        return "critical-authority-satisfied-invalid"
+
+    return None
+
+
+def _critical_authority_requirement_failure_reason(data: dict[str, object]) -> str | None:
+    tier = data.get("risk_tier")
+    kind = data.get("critical_authority_kind")
+    satisfied = data.get("critical_authority_satisfied") is True
+
+    if tier not in REVIEW_GATE_RISK_TIERS:
+        return None
+
+    if tier not in REVIEW_GATE_CRITICAL_TIERS:
+        if kind not in {None, "n/a"}:
+            return "critical-authority-kind-not-applicable"
+        return None
+
+    allowed_kinds = REVIEW_GATE_TIER_AUTHORITY_KINDS[str(tier)]
+    if kind in {None, "n/a"} or not satisfied:
+        return f"critical-authority-missing:{tier}"
+    if kind not in allowed_kinds:
+        return f"critical-authority-kind-insufficient:{tier}"
+    return None
+
+
 def _clean_review_gate_failure_reason(data: dict[str, object]) -> str | None:
     if data.get("independence_manifest_valid") is not True:
         return "invalid-review-manifest"
@@ -462,6 +501,9 @@ def _clean_review_gate_failure_reason(data: dict[str, object]) -> str | None:
         return "risk-tier-classification-incomplete"
     if data.get("risk_tier_satisfied") is not True:
         return "risk-tier-escalation-failed"
+    critical_authority_failure = _critical_authority_requirement_failure_reason(data)
+    if critical_authority_failure is not None:
+        return critical_authority_failure
     if data.get("risk_tier") == "standard" and data.get("sampling_phase") == "rollout":
         sample_rate = data.get("standard_clean_review_sample_rate")
         if not isinstance(sample_rate, int) or sample_rate < REVIEW_GATE_ROLLOUT_MIN_STANDARD_SAMPLE_RATE:
@@ -487,6 +529,14 @@ def evaluate_automated_review_gate_route(data: dict[str, object]) -> Implementat
 
     if data.get("invocation_context") != "workflow-managed":
         return _review_gate_stop("isolated-invocation")
+
+    critical_authority_parse_failure = _critical_authority_parse_failure_reason(data)
+    if critical_authority_parse_failure is not None:
+        return _review_gate_stop(critical_authority_parse_failure)
+
+    critical_authority_requirement_failure = _critical_authority_requirement_failure_reason(data)
+    if critical_authority_requirement_failure is not None:
+        return _review_gate_stop(critical_authority_requirement_failure)
 
     native_status = data.get("native_review_status")
     gate_outcome = data.get("review_gate_outcome")

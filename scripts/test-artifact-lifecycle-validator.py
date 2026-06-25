@@ -1882,6 +1882,127 @@ No blocked plans.
                     profile_state="paused",
                 )
 
+    def test_review_gate_critical_authority_gates_clean_handoff(self) -> None:
+        cases = (
+            (
+                "critical-internal-no-authority-held",
+                {
+                    "risk_tier": "critical-internal",
+                    "risk_tier_satisfied": True,
+                    "review_gate_outcome": "inconclusive",
+                },
+                "critical-authority-missing:critical-internal",
+                None,
+            ),
+            (
+                "critical-internal-l3-advances",
+                {
+                    "risk_tier": "critical-internal",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "L3",
+                    "critical_authority_satisfied": True,
+                },
+                None,
+                "advance",
+            ),
+            (
+                "irreversible-external-l3-only-rejected",
+                {
+                    "risk_tier": "irreversible-external-action",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "L3",
+                    "critical_authority_satisfied": True,
+                    "review_gate_outcome": "inconclusive",
+                },
+                "critical-authority-kind-insufficient:irreversible-external-action",
+                None,
+            ),
+            (
+                "irreversible-external-human-advances",
+                {
+                    "risk_tier": "irreversible-external-action",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "human",
+                    "critical_authority_satisfied": True,
+                },
+                None,
+                "advance",
+            ),
+            (
+                "authority-kind-invalid-with-advance-rejected",
+                {
+                    "risk_tier": "critical-internal",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "banana",
+                    "critical_authority_satisfied": True,
+                },
+                "critical-authority-kind-invalid",
+                None,
+            ),
+            (
+                "authority-kind-invalid-irreversible-with-advance-rejected",
+                {
+                    "risk_tier": "irreversible-external-action",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "banana",
+                    "critical_authority_satisfied": True,
+                },
+                "critical-authority-kind-invalid",
+                None,
+            ),
+            (
+                "authority-kind-invalid-survives-risk-tier-unsatisfied",
+                {
+                    "risk_tier": "critical-internal",
+                    "risk_tier_satisfied": False,
+                    "critical_authority_kind": "banana",
+                    "critical_authority_satisfied": False,
+                },
+                "critical-authority-kind-invalid",
+                None,
+            ),
+            (
+                "authority-satisfied-not-bool-rejected",
+                {
+                    "risk_tier": "critical-internal",
+                    "risk_tier_satisfied": True,
+                    "critical_authority_kind": "L3",
+                    "critical_authority_satisfied": "banana",
+                },
+                "critical-authority-satisfied-invalid",
+                None,
+            ),
+            (
+                "standard-authority-kind-not-applicable",
+                {
+                    "critical_authority_kind": "L3",
+                    "critical_authority_satisfied": True,
+                },
+                "critical-authority-kind-not-applicable",
+                None,
+            ),
+        )
+        for name, fixture_overrides, expected_reason, expected_next_stage in cases:
+            with self.subTest(name=name):
+                self.assertReviewGateRoute(
+                    self.review_gate_fixture(**fixture_overrides),
+                    stop_reason=expected_reason,
+                    next_stage=expected_next_stage,
+                    profile_state="active" if expected_next_stage else "paused",
+                )
+
+    def test_review_gate_authority_kind_invalid_parser_order(self) -> None:
+        self.assertReviewGateRoute(
+            self.review_gate_fixture(
+                risk_tier="critical-internal",
+                risk_tier_satisfied=True,
+                critical_authority_kind="banana",
+                critical_authority_satisfied=True,
+            ),
+            stop_reason="critical-authority-kind-invalid",
+            profile_state="paused",
+        )
+
     def test_implementation_profile_phase_boundaries_refuse_closeout_until_promoted(self) -> None:
         self.assertImplementationRoute(
             self.implementation_profile_fixture(

@@ -5043,6 +5043,15 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
+        workflow_docs = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        workflow_doc_terms = [
+            "Workflow-managed automated `code-review` uses the independent adversarial review gate",
+            "A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.",
+            "Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions.",
+        ]
+        for term in workflow_doc_terms:
+            with self.subTest(surface="docs/workflows.md", term=term):
+                self.assertIn(term, workflow_docs)
         implement_body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
         for item in R5_FORBIDDEN_INITIAL_PACKET_ITEMS:
             with self.subTest(skill="implement", forbidden_initial_packet_item=item):

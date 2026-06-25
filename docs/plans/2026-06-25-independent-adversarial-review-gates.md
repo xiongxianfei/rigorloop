@@ -74,15 +74,15 @@ Important implementation surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Calibration fixtures and measurement evidence
-- Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m4-r1.md
-- Last reviewed milestone: M4. Calibration fixtures and measurement evidence
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M4, M5
-- Next stage: review-resolution M4
+- Current milestone: M5. Generated guidance, docs alignment, and final proof
+- Current milestone state: closed
+- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m5-r2.md
+- Last reviewed milestone: M5. Generated guidance, docs alignment, and final proof
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: none
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M4 has open code-review findings; M5 remains incomplete.
+- Reason final closeout is or is not ready: pr-handoff-pending — final verify passed branch-ready local validation evidence; PR handoff has not run.
 
 ## Milestones
 
@@ -218,7 +218,7 @@ Important implementation surfaces:
 
 ### M4. Calibration fixtures and measurement evidence
 
-- Milestone state: resolution-needed
+- Milestone state: closed
 - Goal: Add public defect-class fixtures, calibration record validation, sampling-floor evidence, downstream escape recording, and metric separation by review skill and risk tier.
 - Requirements: `R14`-`R17`, `AC10`-`AC14`
 - Files/components likely touched:
@@ -235,6 +235,9 @@ Important implementation surfaces:
   - Standard-risk rollout sampling below 20% fails.
   - Standard-risk sample-rate reduction before 10 independently reviewed clean outcomes fails.
   - Elevated-risk clean review without second review fails.
+  - Critical-internal clean review without L3 or human authority fails.
+  - Irreversible external action clean review without human authority fails.
+  - Unsupported calibration yes/no control values fail closed.
   - Second-review material finding, blocked result, or inconclusive result blocks continuation.
   - Calibration records distinguish recurrence detection, novel-defect detection, disagreement, escapes, false positives, inconclusive rate, receipt quality, and review duration by skill and tier.
 - Implementation steps:
@@ -261,7 +264,7 @@ Important implementation surfaces:
 
 ### M5. Generated guidance, docs alignment, and final proof
 
-- Milestone state: planned
+- Milestone state: closed
 - Goal: Align contributor-facing workflow guidance, generated skill/adapters checks, behavior-preservation evidence, and final validation selection for the first slice.
 - Requirements: `R19`, `R20`, all acceptance criteria
 - Files/components likely touched:
@@ -365,6 +368,15 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: Code-review M3 R2 approved the M3 review-resolution with no material findings; M3 is closed and the next implementation milestone is M4.
 - 2026-06-25: M4 implemented review-gate calibration evidence validation, rollout sampling-floor routing checks, a public defect-class calibration fixture, downstream escape record validation, and M4 behavior-preservation evidence; M4 is ready for code-review.
 - 2026-06-25: Code-review M4 R1 requested changes: `CR5-F1` requires explicit critical-risk L3 or human authority evidence, and `CR5-F2` requires fail-closed validation for calibration yes/no control fields.
+- 2026-06-25: M4 review-resolution addressed `CR5-F1` and `CR5-F2`; added critical-authority gates, closed yes/no calibration parsing, positive and negative authority fixtures, and returned M4 to `code-review-m4-r2`.
+- 2026-06-25: Code-review M4 R2 requested changes: `CR6-F1` requires unsupported critical authority kinds to surface as explicit closed-vocabulary failures even when `review_gate_outcome: advance` is supplied.
+- 2026-06-25: M4 review-resolution addressed `CR6-F1`; moved critical-authority parse failures before outcome consistency, added parser-order lifecycle and calibration fixture coverage, and returned M4 to `code-review-m4-r3`.
+- 2026-06-25: Code-review M4 R3 approved the M4 review-resolution with no material findings; M4 is closed and the next implementation milestone is M5.
+- 2026-06-25: M5 aligned `docs/workflows.md` with the independent adversarial code-review gate, added regression coverage for that contributor guidance, recorded M5 behavior-preservation evidence, and completed generated skill plus adapter archive proof. M5 is ready for code-review.
+- 2026-06-25: Code-review M5 R1 requested changes: `CR7-F1` requires behavior-preservation metadata to cover M5 evidence instead of scoping the record under an M4-only header.
+- 2026-06-25: M5 review-resolution addressed `CR7-F1`; updated behavior-preservation metadata to cover M4 and M5 evidence and returned M5 to `code-review-m5-r2`.
+- 2026-06-25: Code-review M5 R2 approved the final holistic implementation diff with no material findings. All implementation milestones and required review-resolution loops are closed; next stage is `explain-change`.
+- 2026-06-25: Explain-change recorded the final diff rationale at `docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/explain-change.md`; next stage is `verify`.
 
 ## Decision log
 
@@ -481,10 +493,78 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: `python scripts/test-build-skills.py` passed after M3 review-resolution with 7 tests.
 - 2026-06-25: `python scripts/build-skills.py --check` passed after M3 review-resolution.
 - 2026-06-25: `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` passed after M3 review-resolution, building and validating Codex, Claude, and OpenCode adapter archives.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k calibration` passed after M4 review-resolution with 13 tests.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k sampling_floors` passed after M4 review-resolution with 1 test.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k critical_authority` passed after M4 review-resolution with 1 test.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k authority` passed after M4 review-resolution with 3 tests.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k boolean` passed after M4 review-resolution with 2 tests.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py` passed after M4 review-resolution with 77 tests.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py` passed after M4 review-resolution with 136 tests.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M4 review-resolution with 15 reviews, 10 findings, 15 log entries, and 10 resolution entries.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M4 review-resolution with 15 reviews, 10 findings, 15 log entries, and 10 resolution entries.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M4 review-resolution.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m4-r1.md` passed after M4 review-resolution.
+- 2026-06-25: Direct invalid fixture probes for `invalid-calibration-critical-internal-missing-authority` and `invalid-calibration-irreversible-external-l3-only` failed as expected with `calibration-authority-missing` and `calibration-authority-kind-insufficient`.
+- 2026-06-25: Direct unsupported-value probe replacing all four calibration yes/no fields with invalid values failed as expected with four `calibration-control-value-invalid` findings.
+- 2026-06-25: `git diff --check` passed after M4 review-resolution.
+- 2026-06-25: `rg -n '[[:blank:]]$|\t' $(git diff --name-only)` returned no matches after M4 review-resolution.
+- 2026-06-25: Direct CR6 probe returned `ImplementationAutoprogressionRoute(profile_state='paused', next_stage=None, stop_reason='critical-authority-kind-invalid')` after M4 R2 review-resolution.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k critical_authority` passed after M4 R2 review-resolution with 1 test.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k authority_kind_invalid` passed after M4 R2 review-resolution with 1 test.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k authority` passed after M4 R2 review-resolution with 4 tests.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k boolean` passed after M4 R2 review-resolution with 2 tests.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k calibration` passed after M4 R2 review-resolution with 14 tests.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py` passed after M4 R2 review-resolution with 78 tests.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py` passed after M4 R2 review-resolution with 137 tests.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M4 R2 review-resolution with 16 reviews, 11 findings, 16 log entries, and 11 resolution entries.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M4 R2 review-resolution with 16 reviews, 11 findings, 16 log entries, and 11 resolution entries.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M4 R2 review-resolution.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m4-r2.md` passed after M4 R2 review-resolution.
+- 2026-06-25: Direct negative fixture probe for `invalid-calibration-critical-internal-authority-kind-banana` failed as expected with exactly one `calibration-authority-kind-invalid` finding.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after code-review M4 R3 with 17 reviews, 11 findings, 17 log entries, and 11 resolution entries.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after code-review M4 R3 with 17 reviews, 11 findings, 17 log entries, and 11 resolution entries.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after code-review M4 R3 handoff sync.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m4-r3.md` passed after code-review M4 R3 handoff sync.
+- 2026-06-25: `git diff --check` passed after code-review M4 R3.
+- 2026-06-25: `rg -n '[[:blank:]]$|\t' $(git diff --name-only)` returned no matches after code-review M4 R3.
+- 2026-06-25: `python scripts/test-skill-validator.py -k review_independence_m3_workflow_and_implement_route_automated_gate` failed before the M5 workflow-doc update on three missing `docs/workflows.md` independent-gate terms, then passed after the update.
+- 2026-06-25: `python scripts/test-skill-validator.py -k review_independence_m3` passed after M5 with 3 tests.
+- 2026-06-25: `python scripts/test-artifact-lifecycle-validator.py -k phase_boundaries` passed after M5 with 1 test.
+- 2026-06-25: `python scripts/validate-skills.py` passed after M5, validating 23 skill files.
+- 2026-06-25: `python scripts/test-build-skills.py` passed after M5 with 7 tests.
+- 2026-06-25: `python scripts/test-skill-validator.py` passed after M5 with 237 tests.
+- 2026-06-25: `python scripts/build-skills.py --check` passed after M5.
+- 2026-06-25: `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` passed after M5, building and validating Codex, Claude, and OpenCode adapter archives.
+- 2026-06-25: `python scripts/select-validation.py --mode explicit --path <M5 changed paths>` passed after M5 with no unclassified paths, no registration debt, and no broad smoke requirement. Selected checks were `skills.regression`, `skills.generation_regression`, `review_artifacts.regression`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `guide_system.validate`, and `selector.regression`.
+- 2026-06-25: `bash scripts/ci.sh --mode explicit --jobs 1 --timeout 120 --path <M5 changed paths>` timed out only on `selector.regression` after 120 seconds; preceding selected checks passed. Direct `python scripts/test-select-validation.py` then passed with 102 tests in 136.35s.
+- 2026-06-25: `bash scripts/ci.sh --mode explicit --jobs 1 --timeout 300 --path <M5 changed paths>` passed all selected checks after M5.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M5 with 17 reviews, 11 findings, 17 log entries, and 11 resolution entries.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M5 with 17 reviews, 11 findings, 17 log entries, and 11 resolution entries.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M5.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md --path specs/review-independence-and-criticality.md --path specs/review-independence-and-criticality.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260625-independent-adversarial-review-gates.md --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M5.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M5 handoff sync.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/workflows.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/behavior-preservation.md` passed after M5 handoff sync.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M5 handoff sync with 17 reviews, 11 findings, 17 log entries, and 11 resolution entries.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after M5 handoff sync with 17 reviews, 11 findings, 17 log entries, and 11 resolution entries.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md --path specs/review-independence-and-criticality.md --path specs/review-independence-and-criticality.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260625-independent-adversarial-review-gates.md --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after M5 final handoff sync.
+- 2026-06-25: `git diff --check` passed after M5 final handoff sync.
+- 2026-06-25: `rg -n '[[:blank:]]$|\t' $(git diff --name-only)` returned no matches after M5 final handoff sync.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after CR7-F1 resolution with 18 reviews, 12 findings, 18 log entries, and 12 resolution entries.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after CR7-F1 resolution.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/behavior-preservation.md` passed after CR7-F1 resolution with 5 artifact files.
+- 2026-06-25: `git diff --check` passed after CR7-F1 resolution.
+- 2026-06-25: Whitespace scan over changed files returned no matches after CR7-F1 resolution.
+- 2026-06-25: `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed after explain-change.
+- 2026-06-25: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/explain-change.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m5-r2.md` passed after explain-change with 5 artifact files.
+- 2026-06-25: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed after explain-change with 19 reviews, 12 findings, 19 log entries, and 12 resolution entries.
+- 2026-06-25: `git diff --check` passed after explain-change.
+- 2026-06-25: Whitespace scan over changed files returned no matches after explain-change.
+- 2026-06-25: Explain-change recorded durable rationale for the full review-independence implementation and routed next stage to `verify`.
+- 2026-06-25: Verify recorded branch-ready local validation evidence in `docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/verify-report.md` and routed next stage to `pr`.
 
 ## Outcome and retrospective
 
-- Not started. Fill after implementation, review-resolution if any, explain-change, verify, and PR handoff complete.
+- Implementation, review-resolution, explain-change, and verify are complete. PR handoff remains the next downstream stage.
 
 ## Readiness
 

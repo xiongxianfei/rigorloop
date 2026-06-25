@@ -4,7 +4,7 @@
 
 This record closes formal proposal-review, spec-review, architecture-review, and plan-review evidence for the independent adversarial review gates change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -21,11 +21,15 @@ Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m4-r1
+Review closeout: code-review-m4-r2
+Review closeout: code-review-m4-r3
+Review closeout: code-review-m5-r1
+Review closeout: code-review-m5-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m4-r1`
-- Findings resolved: 6
-- Unresolved findings: 2
-- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`; it is resolved. Code-review M1 R3 approved the M1 resolution with no material findings. Code-review M2 R1 requested `CR3-F1`; it is resolved. Code-review M2 R2 approved the M2 resolution with no material findings. Code-review M3 R1 requested `CR4-F1` and `CR4-F2`; both findings are resolved. Code-review M3 R2 approved the M3 resolution with no material findings. Code-review M4 R1 requested `CR5-F1` and `CR5-F2`; both remain open pending review-resolution.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m5-r1`, `code-review-m5-r2`
+- Findings resolved: 12
+- Unresolved findings: 0
+- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`; it is resolved. Code-review M1 R3 approved the M1 resolution with no material findings. Code-review M2 R1 requested `CR3-F1`; it is resolved. Code-review M2 R2 approved the M2 resolution with no material findings. Code-review M3 R1 requested `CR4-F1` and `CR4-F2`; both findings are resolved. Code-review M3 R2 approved the M3 resolution with no material findings. Code-review M4 R1 requested `CR5-F1` and `CR5-F2`; both are resolved. Code-review M4 R2 requested `CR6-F1`; it is resolved. Code-review M4 R3 approved the M4 resolution with no material findings. Code-review M5 R1 requested `CR7-F1`; it is resolved. Code-review M5 R2 approved the final holistic implementation diff with no material findings.
 
 ## Resolution Overview
 
@@ -39,6 +43,10 @@ Review closeout: code-review-m4-r1
 | CR3-F1 | accepted | resolved | Split determinate native outcome mapping from clean native gate-derived outcome logic and added clean-gate routing coverage. |
 | CR4-F1 | accepted | resolved | Added R8d operational `failed-remediation` rediscovery guidance and enumeration-driven skill assertion coverage. |
 | CR4-F2 | accepted | resolved | Added `auto-fix eligibility` to the implement handoff forbidden initial-packet list and enumeration-driven assertion coverage. |
+| CR5-F1 | accepted | resolved | Added tier-specific critical-authority gates to lifecycle routing and calibration validation, with L3/human and irreversible-human-only proof fixtures. |
+| CR5-F2 | accepted | resolved | Added closed yes/no parsing for calibration control fields before branch consumers read them, with unsupported-value regression coverage. |
+| CR6-F1 | accepted | resolved | Moved critical-authority closed-vocabulary parsing ahead of outcome consistency and added parser-order route and calibration regressions. |
+| CR7-F1 | accepted | resolved | Updated behavior-preservation metadata to name M4 and M5 milestone coverage instead of scoping the record under M4 only. |
 
 ## Finding Details
 
@@ -197,22 +205,68 @@ Validation evidence: `python scripts/test-skill-validator.py -k review_independe
 
 Finding ID: CR5-F1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: implement M4 review-resolution
-Chosen action: pending
+Chosen action: Added critical-authority kind and satisfaction checks to clean review-gate routing and calibration-record validation. `critical-internal` requires satisfied `L3` or `human` authority; `irreversible-external-action` requires satisfied `human` authority and rejects L3-only evidence. Added positive and negative calibration fixtures and targeted lifecycle/review-artifact tests.
 Rationale: Code-review M4 R1 found that critical internal and irreversible external action clean reviews can advance when `risk_tier_satisfied` is asserted without explicit L3 or human authority evidence, and a critical-internal L1 calibration fixture passes review-artifact validation.
 Validation target: Rerun `code-review-m4-r2`.
-Validation evidence: pending.
+Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k critical_authority` passed with 1 test; `python scripts/test-review-artifact-validator.py -k authority` passed with 3 tests; `python scripts/test-review-artifact-validator.py -k calibration` passed with 13 tests. Full-suite validation is recorded in the M4 resolution closeout evidence below.
 
 #### CR5-F2 - Calibration yes/no fields accept unsupported values and can hide ambiguous evidence
 
 Finding ID: CR5-F2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: implement M4 review-resolution
-Chosen action: pending
+Chosen action: Added shared closed yes/no parsing for calibration control fields before branch consumers read them. Unsupported values for `Sample-rate reduction requested`, `Second review required`, `Automatic continuation`, and `Critical authority satisfied` now produce `calibration-control-value-invalid` findings instead of being silently coerced to false.
 Rationale: Code-review M4 R1 found that `Sample-rate reduction requested`, `Second review required`, and `Automatic continuation` accept unsupported values such as `banana`, allowing ambiguous calibration evidence to pass structure validation.
 Validation target: Rerun `code-review-m4-r2`.
-Validation evidence: pending.
+Validation evidence: `python scripts/test-review-artifact-validator.py -k boolean` passed with 2 tests; `python scripts/test-review-artifact-validator.py -k calibration` passed with 13 tests. Full-suite validation is recorded in the M4 resolution closeout evidence below.
+
+### M4 resolution closeout evidence
+
+Validation evidence: `python scripts/test-review-artifact-validator.py` passed with 77 tests; `python scripts/test-artifact-lifecycle-validator.py` passed with 136 tests; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed with 15 reviews, 10 findings, 15 log entries, and 10 resolution entries; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed with 15 reviews, 10 findings, 15 log entries, and 10 resolution entries; `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m4-r1.md` passed; direct negative fixture probes failed as expected with `calibration-authority-missing` and `calibration-authority-kind-insufficient`; the direct unsupported-value probe failed as expected with four `calibration-control-value-invalid` findings; `git diff --check` passed; `rg -n '[[:blank:]]$|\t' $(git diff --name-only)` returned no matches.
+
+### code-review-m4-r2
+
+#### CR6-F1 - Unsupported critical authority kinds are masked by outcome mismatch when `advance` is supplied
+
+Finding ID: CR6-F1
+Disposition: accepted
+Status: resolved
+Owner: implement
+Owning stage: implement M4 review-resolution
+Chosen action: Split critical-authority route checks into parse and requirement phases. The parse phase now runs before native-status gate derivation and supplied-outcome consistency, so unsupported authority kinds and non-boolean authority satisfaction values return field-specific stop reasons. Added corrected T10g coverage, T10g-bis/T10g-ter/T10g-quater cases, a focused `authority_kind_invalid` lifecycle test, calibration validator parse-order coverage, and a negative `invalid-calibration-critical-internal-authority-kind-banana` fixture.
+Rationale: Code-review M4 R2 found that unsupported `critical_authority_kind` values pause routing but are reported as `review-gate-outcome-mismatch-given-gate-state` when `review_gate_outcome: advance` is supplied, contrary to the parser-first closed-vocabulary contract and T10g.
+Validation target: Rerun `code-review-m4-r3`.
+Validation evidence: Direct CR6 probe returned `ImplementationAutoprogressionRoute(profile_state='paused', next_stage=None, stop_reason='critical-authority-kind-invalid')`; `python scripts/test-artifact-lifecycle-validator.py -k critical_authority` passed with 1 test; `python scripts/test-artifact-lifecycle-validator.py -k authority_kind_invalid` passed with 1 test; `python scripts/test-review-artifact-validator.py -k authority` passed with 4 tests; `python scripts/test-review-artifact-validator.py -k boolean` passed with 2 tests; `python scripts/test-review-artifact-validator.py -k calibration` passed with 14 tests. Full-suite validation is recorded in the M4 R2 resolution closeout evidence below.
+
+### M4 R2 resolution closeout evidence
+
+Validation evidence: `python scripts/test-review-artifact-validator.py` passed with 78 tests; `python scripts/test-artifact-lifecycle-validator.py` passed with 137 tests; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed with 16 reviews, 11 findings, 16 log entries, and 11 resolution entries; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed with 16 reviews, 11 findings, 16 log entries, and 11 resolution entries; `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-log.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/review-resolution.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m4-r2.md` passed; direct validation of `tests/fixtures/review-artifacts/invalid-calibration-critical-internal-authority-kind-banana` failed as expected with one `calibration-authority-kind-invalid` finding.
+
+### code-review-m4-r3
+
+No material findings; no resolution entry required. This same-stage rereview approved the `CR5-F1`, `CR5-F2`, and `CR6-F1` resolution and closed the M4 review-resolution loop.
+
+### code-review-m5-r1
+
+#### CR7-F1 - M5 behavior-preservation evidence is recorded under an M4-only header
+
+Finding ID: CR7-F1
+Disposition: accepted
+Status: resolved
+Owner: implement
+Owning stage: implement M5 review-resolution
+Chosen action: Updated `docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/behavior-preservation.md` metadata from an M4-only `Milestone` line to `Milestone coverage: M4. Calibration fixtures and measurement evidence; M5. Generated guidance, docs alignment, and final proof`.
+Rationale: M5 adds behavior-preservation evidence, but the evidence file still identifies itself as M4-only. Final closeout should not treat the M5 evidence as coherent until the metadata matches the evidence scope.
+Required outcome: Update `docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/behavior-preservation.md` metadata so the record explicitly covers M5 evidence, either by changing the header to change-level coverage or by naming both M4 and M5 milestone coverage.
+Safe resolution path: Change the stale `Milestone: M4. Calibration fixtures and measurement evidence` line to a non-stale scope such as `Milestone coverage: M4. Calibration fixtures and measurement evidence; M5. Generated guidance, docs alignment, and final proof`. Rerun review artifact structure validation, change metadata validation, lifecycle explicit-path validation for the plan/index/change/evidence files, and whitespace checks.
+Validation target: Rerun `code-review-m5-r2`.
+Validation evidence: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows` passed with 18 reviews, 12 findings, 18 log entries, and 12 resolution entries; `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml` passed; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-25-independent-adversarial-review-gates.md --path docs/plan.md --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/change.yaml --path docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/behavior-preservation.md` passed with 5 artifact files; `git diff --check` passed; whitespace scan over changed files returned no matches.
+
+### code-review-m5-r2
+
+No material findings; no resolution entry required. This final holistic code-review approved the complete implementation diff after `CR7-F1` resolution.
