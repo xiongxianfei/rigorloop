@@ -10,6 +10,7 @@ artifacts:
   plan: docs/plans/2026-06-25-independent-test-spec-review-gate.md
   test_spec: specs/test-spec-review-gate.test.md
   explain_change: docs/changes/2026-06-25-independent-test-spec-review-gate/explain-change.md
+  verify_report: docs/changes/2026-06-25-independent-test-spec-review-gate/verify-report.md
 requirements:
   - Normalize the proposal to accepted after approved proposal-review with no material findings before downstream spec reliance.
   - Author the test-spec-review workflow and skill contract spec from the accepted proposal.
@@ -55,6 +56,7 @@ changed_files:
   - docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml
   - docs/changes/2026-06-25-independent-test-spec-review-gate/behavior-preservation.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/explain-change.md
+  - docs/changes/2026-06-25-independent-test-spec-review-gate/verify-report.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/review-log.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/proposal-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md
@@ -143,6 +145,36 @@ validation:
     result: clean-with-notes_no_material_findings_m3_closed_next_explain-change
   - command: explain-change
     result: recorded_next_verify
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.1.5
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.1.5 --check
+    result: pass
+  - command: python scripts/validate-adapters.py --version v0.1.5
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/validate-release-ci.py --version v0.1.5
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-25-independent-test-spec-review-gate.md --path specs/test-spec-review-gate.md --path specs/test-spec-review-gate.test.md --path docs/architecture/2026-06-25-independent-test-spec-review-gate.md --path docs/adr/ADR-20260625-independent-test-spec-review-gate.md --path docs/plans/2026-06-25-independent-test-spec-review-gate.md --path docs/plan.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml --path docs/changes/2026-06-25-independent-test-spec-review-gate/explain-change.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/review-log.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/proposal-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/architecture-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r2.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r3.md
+    result: pass
+  - command: git diff --check main...HEAD
+    result: pass
+  - command: verify
+    result: branch-ready_next_pr
 workflow:
   autoprogression:
     authoring_through_plan_review:
@@ -153,7 +185,7 @@ workflow:
       change_id: 2026-06-25-independent-test-spec-review-gate
     implementation_through_verify:
       profile: implementation-through-verify
-      state: armed
+      state: completed
       phase: C
       authorized_by: user
       authorized_at: 2026-06-25T21:51:14Z
