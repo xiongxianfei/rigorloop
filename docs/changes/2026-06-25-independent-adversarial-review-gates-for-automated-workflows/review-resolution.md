@@ -148,3 +148,7 @@ Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k rev
 Required outcome: Adjust the routing helper and tests so clean native statuses advance only when required gates pass and missing or insufficient clean/evidence gates can produce the required inconclusive gate outcome instead of a mismatch stop.
 
 Audit note: This finding expands the validator audit pattern beyond guard-style unknown-value fall-through. Constants that are used both for unconditional supplied-value consistency checking and conditional gate-derived outcome computation should be split so each constant has one role.
+
+### code-review-m2-r2
+
+No material findings; no resolution entry required. This same-stage rereview approved the `CR3-F1` resolution and closed the M2 review-resolution loop.

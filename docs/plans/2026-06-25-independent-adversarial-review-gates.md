@@ -74,15 +74,15 @@ Important implementation surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Orchestration semantics and workflow-state gates
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m2-r1.md
+- Current milestone: M3. Code-review pilot and review-family guidance
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m2-r2.md
 - Last reviewed milestone: M2. Orchestration semantics and workflow-state gates
-- Review status: review-requested; stage=code-review; round=r2
+- Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: code-review M2
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 review-resolution is complete and awaiting code-review rerun; M3-M5 remain incomplete.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 is closed; M3-M5 remain incomplete.
 
 ## Milestones
 
@@ -132,7 +132,7 @@ Important implementation surfaces:
 
 ### M2. Orchestration semantics and workflow-state gates
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Enforce normalized `review_gate_outcome`, fail-closed risk-tier classification, `changes-requested` routing semantics, second-review disagreement stops, and final holistic code-review preconditions in workflow-state evaluation.
 - Requirements: `R10`-`R12`, `R14`, `R18`, `R20`, `AC6`-`AC11`, `AC13`, `AC15`, `AC-RAI-018`, `RAI-021`-`RAI-023`
 - Files/components likely touched:
@@ -358,6 +358,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: M2 implemented normalized automated review-gate routing in lifecycle state helpers, including clean advance gates, routable `changes-requested`, blocked/inconclusive pauses, second-review disagreement stops, and final holistic review preconditions before `explain-change`.
 - 2026-06-25: Code-review M2 R1 requested changes: `CR3-F1` requires clean native statuses to derive `review_gate_outcome: inconclusive` when clean/evidence gates fail instead of treating that outcome as a native/derived mismatch.
 - 2026-06-25: M2 review-resolution addressed `CR3-F1`; split determinate native outcome mapping from clean native gate-derived outcome logic, added `CLEAN_ADVANCE_GATES`, added conditional mismatch handling, and returned M2 to `code-review-m2-r2`.
+- 2026-06-25: Code-review M2 R2 approved the CR3-F1 resolution with no material findings; M2 is closed and the next implementation milestone is M3.
 
 ## Decision log
 
