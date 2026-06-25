@@ -63,8 +63,10 @@ REVIEW_RESOLUTION_HEADING_PATTERN = re.compile(r"^\s{0,3}###\s+(?P<review_id>[A-
 AUTO_FIX_CLASSES = frozenset({"none", "mechanical", "declared-safe"})
 INDEPENDENCE_LEVELS = frozenset({"L0", "L1", "L2", "L3"})
 REVIEW_GATE_OUTCOMES = frozenset({"advance", "stop", "blocked", "inconclusive"})
+# Source: specs/review-independence-and-criticality.md R1-R7, R13, AC1-AC5.
 REVIEW_GATE_REQUIRED_FIELDS = (
     "Review gate outcome",
+    "Native review status",
     "Independence level",
     "Reviewer context ID",
     "Context separation mechanism",
@@ -79,6 +81,13 @@ REVIEW_GATE_REQUIRED_FIELDS = (
     "Manifest owner",
     "Phase receipts",
 )
+NATIVE_STATUS_GATE_OUTCOMES = {
+    "approved": "advance",
+    "clean-with-notes": "advance",
+    "changes-requested": "stop",
+    "blocked": "blocked",
+    "inconclusive": "inconclusive",
+}
 RISK_MAP_REQUIRED_FIELDS = (
     "Affected behavior",
     "Highest-impact failure modes",
@@ -811,6 +820,23 @@ def _validate_automated_review_gate_fields(
             )
         )
 
+    native_status = _first_nonempty(fields, "Native review status")
+    if native_status is not None and native_status.value in NATIVE_STATUS_GATE_OUTCOMES and outcome is not None:
+        expected_outcome = NATIVE_STATUS_GATE_OUTCOMES[native_status.value]
+        if outcome.value != expected_outcome:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=outcome.line,
+                    mode=mode,
+                    message=(
+                        "R12-mismatch: Native review status "
+                        f"{native_status.value} maps to review_gate_outcome {expected_outcome}, not {outcome.value}"
+                    ),
+                    review_id=review_id,
+                )
+            )
+
     independence = _first_nonempty(fields, "Independence level")
     if independence is not None:
         if independence.value not in INDEPENDENCE_LEVELS:
@@ -836,6 +862,21 @@ def _validate_automated_review_gate_fields(
 
     author_context = _first_nonempty(fields, "Author context ID")
     reviewer_context = _first_nonempty(fields, "Reviewer context ID")
+    platform_verifiability = _first_nonempty(fields, "Platform verifiability")
+    if (
+        platform_verifiability is not None
+        and platform_verifiability.value == "unverifiable"
+        and reviewer_context is None
+    ):
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=platform_verifiability.line,
+                mode=mode,
+                message="reviewer-context-id-required-on-unverifiable-platform",
+                review_id=review_id,
+            )
+        )
     if author_context is not None and reviewer_context is not None and author_context.value == reviewer_context.value:
         findings.append(
             ValidationFinding(

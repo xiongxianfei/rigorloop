@@ -10,13 +10,13 @@ Material findings: none
 Automated review: yes
 Native review status: clean-with-notes
 Review gate outcome: advance
-Independence level: L2
+Independence level: L3
 Author context ID: author-context-001
-Reviewer context ID: reviewer-context-001
-Context separation mechanism: separate-agent
+Reviewer context ID: reviewer-context-003
+Context separation mechanism: heterogeneous-model
 Author context excluded: true
-Risk tier: standard
-Risk-tier triggers: localized validator behavior
+Risk tier: critical
+Risk-tier triggers: critical internal privilege-boundary behavior
 Risk-tier classifier: deterministic-path-surface-check
 Governing artifacts: specs/review-independence-and-criticality.md@HEAD#sha256:1111111111111111111111111111111111111111111111111111111111111111
 Formal criteria: AC1, AC2, AC3, AC4, AC5, AC12
@@ -32,14 +32,15 @@ Risk classes considered: contract mismatch, evidence adequacy, private reasoning
 Adversarial hypotheses tested: invalid independence levels fail closed; missing phase receipts fail closed
 Direct proofs performed: focused validator fixture run
 Validation evidence challenged: passing validator output checked against negative fixture coverage
-Unreviewed surfaces: workflow routing, covered by M2
+Unreviewed surfaces: irreversible external actions, outside this critical-internal fixture
 Confidence: high
-No-finding rationale: Independent review gate evidence fields were inspected against the governing spec and paired negative cases.
+No-finding rationale: L3 heterogeneous review gate evidence records all required manifest and clean receipt fields.
 Affected behavior: automated review gate evidence validation
-Highest-impact failure modes: same-context review could advance; contaminated packet could pass
+Highest-impact failure modes: critical internal change could advance without L3 evidence
 Changed boundaries: review artifact parser and clean review receipt validation
 Evidence expected: positive and negative validator fixtures
 Areas requiring direct inspection: manifest fields, packet hash, phase receipt order, clean receipt fields
-Areas intentionally out of scope: workflow routing and calibration records
+Areas intentionally out of scope: irreversible external actions and human authority gates
 Risk classes considered: contract mismatch; evidence adequacy; private reasoning leakage
-Falsifiable review questions: Does L0 fail; does missing clean receipt evidence fail; does early evidence release fail
+Falsifiable review questions: Does L3 critical-internal review pass with heterogeneous reviewer evidence
+

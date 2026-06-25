@@ -211,6 +211,31 @@ def valid_automated_review_text(extra_fields: str = "") -> str:
     """
 
 
+T1_VALID_CASES = (
+    ("l1-standard", "valid-automated-review-gate-l1"),
+    ("l2-elevated", "valid-automated-review-gate"),
+    ("l3-critical-internal", "valid-automated-review-gate-l3"),
+)
+
+T1_INVALID_CASES = (
+    (
+        "missing-context-separation",
+        "invalid-missing-context-separation",
+        "automated review gate missing required field Context separation mechanism",
+    ),
+    (
+        "unsupported-independence-level",
+        "invalid-unsupported-independence-level",
+        "unsupported independence level 'L4'",
+    ),
+    (
+        "missing-reviewer-context-id-unverifiable",
+        "invalid-missing-reviewer-context-id-unverifiable-platform",
+        "reviewer-context-id-required-on-unverifiable-platform",
+    ),
+)
+
+
 def review_log_text(
     *,
     review_id: str,
@@ -776,6 +801,47 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
 
         self.assertPasses(root)
 
+    def test_review_gate_rejects_missing_native_review_status(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-missing-native-status-"))
+        self.addCleanupTree(root)
+        review = "\n".join(
+            line
+            for line in valid_automated_review_text().splitlines()
+            if not line.strip().startswith("Native review status:")
+        )
+        write_text(root / "reviews" / "code-review-r1.md", review)
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "automated review gate missing required field Native review status")
+
+    def test_review_gate_rejects_empty_native_review_status(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-empty-native-status-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text().replace("Native review status: clean-with-notes", "Native review status:"),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "automated review gate missing required field Native review status")
+
+    def test_review_gate_rejects_mismatched_native_and_derived_status(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-native-derived-mismatch-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text().replace("Review gate outcome: advance", "Review gate outcome: stop"),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+        self.assertFails(root, "R12-mismatch")
+
     def test_automated_review_gate_fixtures_cover_valid_and_fail_closed_paths(self) -> None:
         valid_root = copy_fixture("valid-automated-review-gate")
         self.addCleanupTree(valid_root)
@@ -786,6 +852,20 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         self.assertFails(invalid_root, "automated review gate cannot advance with L0")
         self.assertFails(invalid_root, "reviewer_context_id must differ from author_context_id")
         self.assertFails(invalid_root, "phase receipt evidence-menu-released appears before required predecessor risk-map-recorded")
+
+    def test_t1_valid_independence_levels_pass(self) -> None:
+        for name, fixture in T1_VALID_CASES:
+            with self.subTest(name=name):
+                root = copy_fixture(fixture)
+                self.addCleanupTree(root)
+                self.assertPasses(root)
+
+    def test_t1_invalid_independence_cases_fail_closed(self) -> None:
+        for name, fixture, expected in T1_INVALID_CASES:
+            with self.subTest(name=name):
+                root = copy_fixture(fixture)
+                self.addCleanupTree(root)
+                self.assertFails(root, expected)
 
     def test_automated_review_gate_rejects_invalid_independence_and_packet_evidence(self) -> None:
         cases = [

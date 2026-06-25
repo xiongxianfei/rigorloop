@@ -10,10 +10,10 @@ Material findings: none
 Automated review: yes
 Native review status: clean-with-notes
 Review gate outcome: advance
-Independence level: L2
+Independence level: L1
 Author context ID: author-context-001
 Reviewer context ID: reviewer-context-001
-Context separation mechanism: separate-agent
+Context separation mechanism: fresh-context-same-model
 Author context excluded: true
 Risk tier: standard
 Risk-tier triggers: localized validator behavior
@@ -43,3 +43,4 @@ Areas requiring direct inspection: manifest fields, packet hash, phase receipt o
 Areas intentionally out of scope: workflow routing and calibration records
 Risk classes considered: contract mismatch; evidence adequacy; private reasoning leakage
 Falsifiable review questions: Does L0 fail; does missing clean receipt evidence fail; does early evidence release fail
+
