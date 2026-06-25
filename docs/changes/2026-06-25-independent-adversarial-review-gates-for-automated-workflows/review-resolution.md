@@ -15,11 +15,12 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m1-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`
 - Findings resolved: 5
 - Unresolved findings: 0
-- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`; it is resolved and M1 is ready for `code-review-m1-r3`.
+- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`; it is resolved. Code-review M1 R3 approved the M1 resolution with no material findings.
 
 ## Resolution Overview
 
@@ -126,3 +127,7 @@ Validation target: Rerun `code-review-m1-r3`.
 Validation evidence: `python scripts/test-review-artifact-validator.py -k unknown_native` failed before the implementation change and passed afterward with 2 tests; `python scripts/test-review-artifact-validator.py -k t1_` failed before the implementation change on `unknown-native-review-status` and passed afterward with 2 parameterized tests covering 3 valid cases and 4 invalid cases; `python scripts/test-review-artifact-validator.py` passed with 64 tests; direct validation of `tests/fixtures/review-artifacts/invalid-unknown-native-review-status` failed with `unsupported native review status 'rubber-stamp'` and listed the allowed values. The scoped audit command `rg -n "if .* in [A-Z][A-Z0-9_]+| if .* not in [A-Z][A-Z0-9_]+|\\.value in [A-Z][A-Z0-9_]+" scripts/review_artifact_validation.py scripts/change_metadata_semantics.py scripts/validate-change-metadata.py scripts/lifecycle_state_sync.py` identified `scripts/review_artifact_validation.py:824` as the M1 guard-style defect; other reviewed uppercase-vocabulary validation occurrences were already fail-closed gates or documented routing/forbidden-key membership checks.
 
 Structural prevention note: `AGENTS.md` now requires validator closed-vocabulary checks against constants such as `*_OUTCOMES`, `*_FIELDS`, and `*_KINDS` to fail closed on unknown values before consistency checks, and says new closed-vocabulary validator constants should include unknown-value regression tests.
+
+### code-review-m1-r3
+
+No material findings; no resolution entry required. This same-stage rereview approved the revised M1 review-gate evidence validator and closed the M1 review-resolution loop.

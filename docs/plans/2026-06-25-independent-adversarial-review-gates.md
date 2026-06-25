@@ -75,20 +75,20 @@ Important implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M1. Review gate evidence model and validators
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m1-r2.md
+- Current milestone state: closed
+- Latest review evidence: docs/changes/2026-06-25-independent-adversarial-review-gates-for-automated-workflows/reviews/code-review-m1-r3.md
 - Last reviewed milestone: M1. Review gate evidence model and validators
-- Review status: review-requested; stage=code-review; round=r3
+- Review status: approved; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M1 rerun
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 review-resolution for `CR1-F1`, `CR1-F2`, and `CR2-F1` is complete and awaiting code-review R3; M2-M5 remain incomplete.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed after clean code-review R3; M2-M5 remain incomplete.
 
 ## Milestones
 
 ### M1. Review gate evidence model and validators
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add structured review-gate evidence records for manifests, initial packets, phase receipts, clean-review sufficiency receipts, and private-reasoning-safe record fields.
 - Requirements: `R1`-`R7`, `R13`, `R17`, `AC1`-`AC5`, `AC12`
 - Files/components likely touched:
@@ -354,6 +354,7 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: M1 review-resolution addressed `CR1-F1` and `CR1-F2`; added native review status required-field and R12 mapping validation; added T1 L1/L2/L3 and invalid independence fixtures; returned M1 to `code-review-m1-r2`.
 - 2026-06-25: Code-review M1 R2 requested changes: `CR2-F1` requires unsupported native review status values to fail closed instead of silently advancing with `review_gate_outcome: advance`.
 - 2026-06-25: M1 review-resolution addressed `CR2-F1`; converted native review status validation to fail-closed closed-vocabulary gating, added unknown native status regression tests and fixture coverage, added closed-vocabulary guidance to `AGENTS.md`, and returned M1 to `code-review-m1-r3`.
+- 2026-06-25: Code-review M1 R3 approved the M1 review-resolution with no material findings; M1 is closed and the next implementation milestone is M2.
 
 ## Decision log
 
@@ -411,6 +412,11 @@ Both proofs are required for canonical-skill changes. Neither proof subsumes the
 - 2026-06-25: `python scripts/test-review-artifact-validator.py` passed after `CR2-F1` with 64 tests.
 - 2026-06-25: Direct validation of `tests/fixtures/review-artifacts/invalid-unknown-native-review-status` failed with `unsupported native review status 'rubber-stamp'` and listed the allowed native statuses.
 - 2026-06-25: `rg -n "if .* in [A-Z][A-Z0-9_]+| if .* not in [A-Z][A-Z0-9_]+|\\.value in [A-Z][A-Z0-9_]+" scripts/review_artifact_validation.py scripts/change_metadata_semantics.py scripts/validate-change-metadata.py scripts/lifecycle_state_sync.py` completed the M1 closed-vocabulary audit; no additional fail-open validator findings were opened.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k unknown_native` passed during code-review M1 R3 with 2 tests.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py -k t1_` passed during code-review M1 R3 with 2 parameterized tests covering 3 valid and 4 invalid cases.
+- 2026-06-25: `python scripts/test-review-artifact-validator.py` passed during code-review M1 R3 with 64 tests.
+- 2026-06-25: `python scripts/test-change-metadata-validator.py` passed during code-review M1 R3 with 41 tests.
+- 2026-06-25: Temporary adversarial fixture changed `Native review status: clean-with-notes` to `Native review status: rubber-stamp` while keeping `Review gate outcome: advance`; `python scripts/validate-review-artifacts.py --mode structure <tmpdir>/fixture` failed with `unsupported native review status 'rubber-stamp'`.
 
 ## Outcome and retrospective
 
