@@ -9,6 +9,7 @@ artifacts:
   adr: docs/adr/ADR-20260625-independent-test-spec-review-gate.md
   plan: docs/plans/2026-06-25-independent-test-spec-review-gate.md
   test_spec: specs/test-spec-review-gate.test.md
+  explain_change: docs/changes/2026-06-25-independent-test-spec-review-gate/explain-change.md
 requirements:
   - Normalize the proposal to accepted after approved proposal-review with no material findings before downstream spec reliance.
   - Author the test-spec-review workflow and skill contract spec from the accepted proposal.
@@ -53,6 +54,7 @@ changed_files:
   - docs/plan.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml
   - docs/changes/2026-06-25-independent-test-spec-review-gate/behavior-preservation.md
+  - docs/changes/2026-06-25-independent-test-spec-review-gate/explain-change.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/review-log.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/proposal-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md
@@ -139,6 +141,8 @@ validation:
     result: pass
   - command: code-review r3
     result: clean-with-notes_no_material_findings_m3_closed_next_explain-change
+  - command: explain-change
+    result: recorded_next_verify
 workflow:
   autoprogression:
     authoring_through_plan_review:
