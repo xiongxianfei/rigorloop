@@ -52,6 +52,7 @@ changed_files:
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/architecture-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r1.md
+  - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r2.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md
 review:
@@ -64,7 +65,7 @@ review:
   spec_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md
   architecture_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/architecture-review-r1.md
   plan_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md
-  code_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r1.md
+  code_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r2.md
   review_log: docs/changes/2026-06-25-independent-test-spec-review-gate/review-log.md
 validation:
   - command: proposal-review r1
@@ -103,6 +104,8 @@ validation:
     result: pass
   - command: git diff --check -- skills/test-spec-review skills/test-spec/SKILL.md skills/implement/SKILL.md skills/workflow/SKILL.md scripts/skill_validation.py scripts/test-skill-validator.py
     result: pass
+  - command: code-review r2
+    result: clean-with-notes_no_material_findings_m2_closed_next_implement_m3
   - command: python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml
     result: pass
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate
