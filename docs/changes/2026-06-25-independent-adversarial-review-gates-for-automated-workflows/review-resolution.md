@@ -4,7 +4,7 @@
 
 This record closes formal proposal-review, spec-review, architecture-review, and plan-review evidence for the independent adversarial review gates change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -14,11 +14,12 @@ Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`
-- Findings resolved: 4
-- Unresolved findings: 1
-- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`, which remains open and routes M1 back to review-resolution.
+- Findings resolved: 5
+- Unresolved findings: 0
+- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings. Code-review M1 R1 requested `CR1-F1` and `CR1-F2`; both findings are resolved. Code-review M1 R2 requested `CR2-F1`; it is resolved and M1 is ready for `code-review-m1-r3`.
 
 ## Resolution Overview
 
@@ -28,7 +29,7 @@ Review closeout: code-review-m1-r1
 | PR1-F1 | accepted | resolved | Added adapter archive generation and validation commands to M3 and M5; added a top-level validation invariant for `skills/` changes; added a boundary statement distinguishing local skill proof from public adapter archive proof. |
 | CR1-F1 | accepted | resolved | Added native review status as required manifest evidence, mapping validation, valid fixture updates, and missing/empty/mismatched regression tests. |
 | CR1-F2 | accepted | resolved | Added T1 valid L1/L2/L3 fixture enumeration and invalid direct proof for missing context separation, unsupported independence level, and missing reviewer context ID on an unverifiable platform. |
-| CR2-F1 | needs-decision | open | Code-review M1 R2 found that unsupported native review status values can still advance as clean automated review gates; review-resolution is required. |
+| CR2-F1 | accepted | resolved | Converted native review status validation from guard-style to fail-closed gate-style; added unknown-value regression tests, T1 fixture coverage, allowed-values error proof, and closed-vocabulary discipline guidance. |
 
 ## Finding Details
 
@@ -115,13 +116,13 @@ Meta-resolution note: `CR1-F1` is the M1 meta-self-check for the manifest contra
 #### CR2-F1 - Unknown native review statuses can still advance as clean automated review gates
 
 Finding ID: CR2-F1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implement
 Owning stage: implement M1 review-resolution
-Decision owner: implementation owner
-Decision needed: Choose the exact unsupported native review status validation message and fixture or test shape, then implement the accepted resolution.
-Chosen action: pending
+Chosen action: Converted native review status validation from `if value in NATIVE_STATUS_GATE_OUTCOMES` guard-style checking to fail-closed gate-style checking. Unsupported values now emit `unsupported native review status '<value>'; allowed values are ... per specs/review-independence-and-criticality.md R12` before known-value mismatch validation runs. Added regression tests parameterized across `rubber-stamp`, `lgtm`, and `bogus`; added an allowed-values error test; added `tests/fixtures/review-artifacts/invalid-unknown-native-review-status/`; added the case to the T1 invalid fixture enumeration and to `specs/review-independence-and-criticality.test.md`; added closed-vocabulary validator discipline to `AGENTS.md`.
 Rationale: Code-review M1 R2 found that `Native review status` values outside the supported stage-native vocabulary are not rejected. A temporary fixture with `Native review status: rubber-stamp` and `Review gate outcome: advance` validated with zero findings.
-Validation target: Resolve the validator and test gap, then rerun `code-review-m1-r3`.
-needs-decision rationale: The implementation owner must choose the exact validation message and fixture/test shape before closing the finding.
+Validation target: Rerun `code-review-m1-r3`.
+Validation evidence: `python scripts/test-review-artifact-validator.py -k unknown_native` failed before the implementation change and passed afterward with 2 tests; `python scripts/test-review-artifact-validator.py -k t1_` failed before the implementation change on `unknown-native-review-status` and passed afterward with 2 parameterized tests covering 3 valid cases and 4 invalid cases; `python scripts/test-review-artifact-validator.py` passed with 64 tests; direct validation of `tests/fixtures/review-artifacts/invalid-unknown-native-review-status` failed with `unsupported native review status 'rubber-stamp'` and listed the allowed values. The scoped audit command `rg -n "if .* in [A-Z][A-Z0-9_]+| if .* not in [A-Z][A-Z0-9_]+|\\.value in [A-Z][A-Z0-9_]+" scripts/review_artifact_validation.py scripts/change_metadata_semantics.py scripts/validate-change-metadata.py scripts/lifecycle_state_sync.py` identified `scripts/review_artifact_validation.py:824` as the M1 guard-style defect; other reviewed uppercase-vocabulary validation occurrences were already fail-closed gates or documented routing/forbidden-key membership checks.
+
+Structural prevention note: `AGENTS.md` now requires validator closed-vocabulary checks against constants such as `*_OUTCOMES`, `*_FIELDS`, and `*_KINDS` to fail closed on unknown values before consistency checks, and says new closed-vocabulary validator constants should include unknown-value regression tests.
