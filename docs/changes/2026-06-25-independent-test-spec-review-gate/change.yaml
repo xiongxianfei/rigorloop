@@ -35,8 +35,15 @@ changed_files:
   - docs/plans/2026-06-25-independent-test-spec-review-gate.md
   - specs/test-spec-review-gate.test.md
   - scripts/review_artifact_validation.py
+  - scripts/skill_validation.py
   - scripts/test-review-artifact-validator.py
   - scripts/test-skill-validator.py
+  - skills/test-spec-review/SKILL.md
+  - skills/test-spec-review/assets/material-finding.md
+  - skills/test-spec-review/assets/review-result-skeleton.md
+  - skills/test-spec/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/workflow/SKILL.md
   - docs/plan.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml
   - docs/changes/2026-06-25-independent-test-spec-review-gate/behavior-preservation.md
@@ -88,6 +95,14 @@ validation:
     result: pass
   - command: code-review r1
     result: clean-with-notes_no_material_findings_m1_closed_next_implement_m2
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-skill-validator.py -k test_test_spec_review
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: git diff --check -- skills/test-spec-review skills/test-spec/SKILL.md skills/implement/SKILL.md skills/workflow/SKILL.md scripts/skill_validation.py scripts/test-skill-validator.py
+    result: pass
   - command: python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml
     result: pass
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate

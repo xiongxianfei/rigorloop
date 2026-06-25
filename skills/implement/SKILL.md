@@ -19,7 +19,7 @@ For planned initiatives, `implement` owns keeping the active plan body current d
 
 - role_name: implement
 - stage: execution
-- upstream: approved spec, active plan, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
+- upstream: approved spec, active plan, active test spec with approved current test-spec-review when required, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
 - downstream: code-review
 - summary: Implement the smallest scope-complete slice with tests or proof first, record validation, update plan state, and hand the milestone to code-review.
 - must_not_claim: review passed, clean review, branch readiness, PR readiness, final verification, final closeout readiness, or derived artifact currency without owning proof.
@@ -65,7 +65,7 @@ Do not require RigorLoop repository-internal specs, docs, reports, follow-up fil
 
 ## When to use
 
-Use this skill after the relevant spec, architecture, plan, plan-review, and test-spec are ready, or when the user explicitly requests isolated implementation output with clear scope and validation evidence.
+Use this skill after the relevant spec, architecture, plan, plan-review, test-spec, and required test-spec-review are ready, or when the user explicitly requests isolated implementation output with clear scope and validation evidence.
 
 This skill is for implementation, tests, proof, and handoff. Use `bugfix` for defect repair, `code-review` for review, `verify` for final readiness, and `pr` for pull request handoff.
 
@@ -82,6 +82,7 @@ Read before editing:
 - concrete execution plan
 - feature spec
 - test spec
+- approved current test-spec-review when a formal workflow-managed test spec is required
 - architecture doc and ADRs when relevant
 - code and tests listed in the milestone
 - existing patterns in neighboring files
@@ -97,6 +98,7 @@ Default evidence:
 - current milestone section
 - approved spec
 - test spec
+- approved current test-spec-review when required
 - code and tests named by the milestone
 - validation commands for the milestone
 
@@ -186,6 +188,7 @@ Before editing:
 - required edge cases come from approved spec and test-spec items, named regression cases from the motivating incident, changed branch conditions or touched failure paths, existing governing tests or fixtures, and required aligned workflow or skill wording distinctions for the slice.
 - a later finding that should have been caught by the same-slice completeness set, required edge cases, or targeted validation is a `preventable first-pass miss`.
 - if missing inputs, contradictory instructions, or unresolved scope ambiguity prevent a scope-complete first pass, stop and report the blocker instead of handing off to `code-review`.
+- if a formal workflow-managed test spec lacks an approved current `test-spec-review`, or if a substantive test-spec edit made that review stale, stop before implementation and route back to `test-spec-review` or the owning upstream revision stage.
 
 ## Implementation loop
 

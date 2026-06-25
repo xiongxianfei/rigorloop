@@ -63,14 +63,14 @@ Generated public adapter skill bodies are not authored source and must not be ha
 ## Current Handoff Summary
 
 - Current milestone: M2. Canonical skill and review assets
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: code-review-r1
 - Last reviewed milestone: M1. Workflow and contract baseline
-- Review status: approved; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2/M3 remain open.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 is awaiting code-review and M3 remains open.
 
 ## Milestones
 
@@ -94,7 +94,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ### M2. Canonical skill and review assets
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Requirements: R13-R18, R22-R26
 - Deliverable: add `skills/test-spec-review/SKILL.md`, result and material-finding assets, update `test-spec`, `implement`, and workflow-facing skill wording.
 - Likely files: `skills/test-spec-review/SKILL.md`, `skills/test-spec-review/assets/review-result-skeleton.md`, `skills/test-spec-review/assets/material-finding.md`, `skills/test-spec/SKILL.md`, `skills/implement/SKILL.md`, `skills/workflow/SKILL.md`.
@@ -102,8 +102,8 @@ Generated public adapter skill bodies are not authored source and must not be ha
   - `python scripts/test-skill-validator.py`
   - targeted skill phrase/resource-map checks
 - Implementation handoff:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M2
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M2
 - Review closeout:
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
@@ -163,6 +163,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - 2026-06-25: Test spec authored as the active proof-planning surface; next stage is `implement M1`.
 - 2026-06-25: M1 implemented workflow/spec contract baseline, review-artifact validator recognition for `test-spec-review`, result-field closed-vocabulary checks, workflow summary/root guidance updates, and behavior-preservation evidence; next stage is `code-review M1`.
 - 2026-06-25: M1 code-review completed clean with no material findings; M1 is closed and next stage is `implement M2`.
+- 2026-06-25: M2 added canonical `test-spec-review` skill/assets, updated adjacent `test-spec`, `implement`, and `workflow` routing, and extended review-family skill validation; next stage is `code-review M2`.
 
 ## Decision log
 
@@ -190,6 +191,11 @@ Generated public adapter skill bodies are not authored source and must not be ha
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-25-independent-test-spec-review-gate.md --path specs/test-spec-review-gate.md --path specs/test-spec-review-gate.test.md --path docs/architecture/2026-06-25-independent-test-spec-review-gate.md --path docs/adr/ADR-20260625-independent-test-spec-review-gate.md --path docs/plans/2026-06-25-independent-test-spec-review-gate.md --path docs/plan.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml --path docs/changes/2026-06-25-independent-test-spec-review-gate/review-log.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/proposal-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/architecture-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md`
   - `git diff --check -- AGENTS.md docs/workflows.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md scripts/review_artifact_validation.py scripts/test-review-artifact-validator.py scripts/test-skill-validator.py docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml`
+- 2026-06-25: M2 implementation validation passed:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py -k test_test_spec_review`
+  - `python scripts/test-skill-validator.py`
+  - `git diff --check -- skills/test-spec-review skills/test-spec/SKILL.md skills/implement/SKILL.md skills/workflow/SKILL.md scripts/skill_validation.py scripts/test-skill-validator.py`
 
 ## Outcome and retrospective
 

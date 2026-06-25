@@ -399,6 +399,7 @@ REVIEW_FAMILY_FIRST_SLICE_SKILLS = {
     "code-review",
     "proposal-review",
     "spec-review",
+    "test-spec-review",
 }
 REVIEW_FAMILY_ASSET_APPROVED_ASSETS = {
     skill_name: {
@@ -458,10 +459,12 @@ REVIEW_FAMILY_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
 ASSET_ROLLOUT_APPROVED_ASSETS = {
     **SPEC_FAMILY_ASSET_APPROVED_ASSETS,
     **PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS,
+    **REVIEW_FAMILY_ASSET_APPROVED_ASSETS,
 }
 INSTALLED_SKILL_PLACEMENT_REVIEW_PATHS = {
     "proposal-review": "docs/changes/<change-id>/reviews/proposal-review-r<n>.md",
     "spec-review": "docs/changes/<change-id>/reviews/spec-review-r<n>.md",
+    "test-spec-review": "docs/changes/<change-id>/reviews/test-spec-review-r<n>.md",
 }
 INSTALLED_SKILL_PLACEMENT_REVIEW_RECORD_TYPES = {
     "proposal-review": {
@@ -478,6 +481,16 @@ INSTALLED_SKILL_PLACEMENT_REVIEW_RECORD_TYPES = {
         "record_type_terms": (
             "spec-review record",
             "spec-review records",
+        ),
+        "forbidden_record_type_terms": (
+            "proposal-review record",
+            "proposal-review records",
+        ),
+    },
+    "test-spec-review": {
+        "record_type_terms": (
+            "test-spec-review record",
+            "test-spec-review records",
         ),
         "forbidden_record_type_terms": (
             "proposal-review record",
