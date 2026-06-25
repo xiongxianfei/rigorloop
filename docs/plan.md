@@ -17,7 +17,6 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Independent Adversarial Review Gates](plans/2026-06-25-independent-adversarial-review-gates.md) | active | pr | 2026-06-25-independent-adversarial-review-gates-for-automated-workflows |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
@@ -28,6 +27,7 @@ No blocked plans.
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-06-25 Independent Adversarial Review Gates](plans/2026-06-25-independent-adversarial-review-gates.md) - done; terminal state: done; PR #110 opened for review.
 - [2026-06-24 Implementation Autoprogression Through Verify](plans/2026-06-24-implementation-autoprogression-through-verify.md) - done; terminal state: done; PR #108 merged.
 - [2026-06-24 Proposal-Gated Authoring Autoprogression Through Plan Review](plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md) - done; terminal state: done; PR #106 opened for review.
 - [2026-06-23 Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) - done; terminal state: done; PR #101 merged.
@@ -37,7 +37,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-06-18 Guide System Source-of-Truth Alignment](plans/2026-06-18-guide-system-source-of-truth-alignment.md) - done; terminal state: done; PR #100 merged.
 - [2026-05-26 CI-Maintenance Skill Rename and Workflow Authoring](plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md) - done; terminal state: done; PR #98 merged.
 - [2026-05-25 Spec-Review Testability Routing and Output Consolidation](plans/2026-05-25-spec-review-testability-routing-output-consolidation.md) - done; terminal state: done; PR #96 merged.
-- [2026-05-25 Adopter-Facing Vision and README Principle Rewrite](plans/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite.md) - done; terminal state: done; PR #94 merged through release PR #95.
 
 ## Superseded
 - none yet
