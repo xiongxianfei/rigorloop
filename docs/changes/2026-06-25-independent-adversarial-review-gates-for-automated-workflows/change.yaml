@@ -20,6 +20,7 @@ requirements:
   - Create a milestone execution plan for the first implementation slice.
   - Author the matching test spec before implementation.
   - Add structured automated review gate evidence validators for manifests, initial packets, phase receipts, clean-review sufficiency receipts, and bounded private-reasoning-safe fields.
+  - Update canonical review and workflow skills for the code-review independent adversarial review pilot and Phase 1 manifest-only spec-review/plan-review guidance.
 tests:
   - Proposal-review R1 is recorded with approved status and no material findings.
   - Proposal status is normalized from draft to accepted before downstream spec reliance.
@@ -44,6 +45,8 @@ tests:
   - Code-review M2 R1 records a material finding for clean-status evidence failures rejecting the required inconclusive gate outcome.
   - CR3-F1 is resolved by splitting determinate native mappings from clean native gate-derived outcome logic.
   - Code-review M2 R2 approves the CR3-F1 resolution with no material findings.
+  - Skill validator covers automated code-review blind-first pilot guidance, workflow/implement routing guidance, manifest-only authoring review guidance, no reviewer edit authority, no finding quota, and direct isolated review compatibility.
+  - Canonical skill validation, generated local skill checks, and public adapter archive proof pass after M3 canonical skill changes.
 changed_files:
   - docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md
   - specs/review-independence-and-criticality.md
@@ -99,8 +102,14 @@ changed_files:
   - tests/fixtures/review-artifacts/invalid-missing-reviewer-context-id-unverifiable-platform/review-log.md
   - tests/fixtures/review-artifacts/invalid-missing-reviewer-context-id-unverifiable-platform/reviews/code-review-r1.md
   - AGENTS.md
+  - skills/code-review/SKILL.md
+  - skills/workflow/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/plan-review/SKILL.md
+  - scripts/test-skill-validator.py
 review:
-  status: clean-with-notes
+  status: review-requested
   unresolved_items: 0
   material_findings: 6
   open_findings: 0

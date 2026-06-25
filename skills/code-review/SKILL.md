@@ -336,6 +336,24 @@ Use `mechanical` only for closed deterministic fix kinds with affected paths, de
 
 Before `explain-change` in Phase C, require a final full code-review against the governing contract even if the latest review was a targeted rereview.
 
+## Automated Independent Review Gate
+
+For workflow-managed automated `code-review`, review through the independent adversarial review gate before the result may advance the profile.
+
+The orchestrator owns an orchestrator-owned review invocation manifest and a neutral initial packet. The initial packet may include the review target, actual diff, governing artifacts, formal criteria, and neutral workflow facts. It must exclude author hidden reasoning, author self-assessment, desired review outcome, validation-result summaries, evidence menus, prior finding content, implementation safety narrative, auto-fix budget, and auto-fix eligibility.
+
+Begin blind-first. Before later evidence is released, record an independent risk map before validation-result summaries, evidence menus, implementation notes, or prior finding content are released. The risk map covers affected behavior, highest-impact failure modes, changed boundaries, evidence expected, direct-inspection areas, intentionally out-of-scope areas, applicable and non-applicable risk classes, and falsifiable review questions. Record the `risk-map-recorded` phase receipt before the evidence menu is released.
+
+Evidence challenge happens only after the risk map. Passing validation proves selected checks passed; it does not prove the selected checks were sufficient. Challenge validation adequacy, negative and boundary coverage, generated or derived artifact evidence, and scope coverage before recording a verdict.
+
+Prior finding reconciliation happens only after the blind-first pass. Rereview may report new findings in any round. Reconcile prior findings as `resolved`, `still-present`, `failed-remediation`, `reopened`, `superseded`, or `new-finding`.
+
+Clean automated reviews require a clean-review sufficiency receipt. The receipt records the target identity, independence level, governing artifacts inspected, risk classes considered, adversarial hypotheses tested, direct proofs or reproductions, validation evidence challenged, unreviewed or uncertain surfaces, confidence, and no-finding rationale. A clean automated review may advance only when the manifest, phase receipts, clean receipt, risk-tier escalation, unresolved-finding, and second-review gates are satisfied.
+
+A final holistic code review is required before `explain-change` or `verify`. It covers the complete final diff, cross-milestone interactions, governing proposal/spec/test-spec/architecture/plan, review resolutions, final validation selection, generated and derived artifacts, and cross-milestone scope. The final holistic review must not be only the last milestone-local review.
+
+Do not introduce a minimum-finding quota. Finding count is not a review-quality target. The reviewer must not edit the reviewed target during review. Direct or profile-off review behavior remains isolated and does not require automated-review manifests unless the result is used as a workflow-managed automated handoff gate.
+
 ## Plan closeout check
 
 For milestone-based plans, the review output must include or require a current handoff summary with:

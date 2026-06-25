@@ -108,6 +108,12 @@ must state:
 
 For `authoring-through-plan-review`, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any profile-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
 
+## Automated Manifest Pilot
+
+During Phase 1 of independent automated review rollout, workflow-managed automated `plan-review` should at least record a review invocation manifest before automated handoff. This is manifest-only evidence for `plan-review`; it does not yet require the full blind-first automated review protocol unless a later approved slice adopts it.
+
+Direct or review-only `plan-review` requests remain isolated by default.
+
 ## Implementation Profile Readiness
 
 When a plan is intended to support `implementation-through-verify`, review that implementation automation has separate authorization from authoring automation, explicit ordered milestones, approved commands, phase-aware boundaries, promotion evidence expectations, and a stop before PR. A clean plan-review does not authorize the implementation profile by itself.
