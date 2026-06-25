@@ -158,6 +158,59 @@ def implementation_profile_review_text(finding_fields: str) -> str:
     """
 
 
+def valid_automated_review_text(extra_fields: str = "") -> str:
+    extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
+    return f"""
+    # Code Review R1
+
+    Review ID: code-review-r1
+    Stage: code-review
+    Round: 1
+    Reviewer: Codex code-review skill
+    Target: git diff main...HEAD
+    Status: clean-with-notes
+    Automated review: yes
+    Native review status: clean-with-notes
+    Review gate outcome: advance
+    Independence level: L1
+    Author context ID: author-ctx-1
+    Reviewer context ID: reviewer-ctx-1
+    Context separation mechanism: fresh-context-same-model
+    Risk tier: standard
+    Risk-tier triggers: none
+    Risk-tier classifier: deterministic-paths
+    Governing artifacts: specs/review-independence-and-criticality.md; docs/plans/example.md
+    Formal criteria: R1; R3; R13
+    Initial packet inventory: specs/review-independence-and-criticality.md@abc123#sha256:1111111111111111111111111111111111111111111111111111111111111111; docs/plans/example.md@abc123#sha256:2222222222222222222222222222222222222222222222222222222222222222
+    Prompt template version: code-review-template-v1
+    Initial packet hash: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    Manifest owner: orchestrator
+    Phase receipts: risk-map-recorded > evidence-menu-released > evidence-results-released > prior-findings-released > verdict-recorded
+    Affected behavior: automated review handoff
+    Highest-impact failure modes: author-context continuation; validation anchoring
+    Changed boundaries: review invocation manifest and clean handoff
+    Evidence expected: manifest fixture and validator result
+    Areas requiring direct inspection: review record fields
+    Areas intentionally out of scope: hosted review service
+    Risk classes considered: contract mismatch=applicable; security/privacy boundary=not-applicable:no secret surface
+    Falsifiable review questions: Does L0 fail closed? Does missing packet hash fail closed?
+    Clean-review sufficiency receipt: yes
+    Review target identity: git diff main...HEAD
+    Governing artifacts inspected: specs/review-independence-and-criticality.md; docs/plans/example.md
+    Adversarial hypotheses tested: same-context review fails closed; tests-only clean receipt fails closed
+    Direct proofs performed: review artifact validator fixture
+    Validation evidence challenged: validator only proves selected checks; receipt records evidence adequacy
+    Unreviewed surfaces: hosted publication path
+    Confidence: high
+    No-finding rationale: Independent review gate fixture covers manifest, packet, phase, and sufficiency receipt fields.
+    {extra}
+
+    ## Findings
+
+    No material findings.
+    """
+
+
 def review_log_text(
     *,
     review_id: str,
@@ -711,6 +764,138 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         root = self.clean_receipt_fixture()
         replace_field(root / "reviews" / "spec-review-r1.md", "Recording status", "blocked")
         self.assertFails(root, "clean receipt Recording status must be recorded")
+
+    def test_automated_review_gate_manifest_and_clean_receipt_passes(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-gate-valid-"))
+        self.addCleanupTree(root)
+        write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text())
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+
+        self.assertPasses(root)
+
+    def test_automated_review_gate_fixtures_cover_valid_and_fail_closed_paths(self) -> None:
+        valid_root = copy_fixture("valid-automated-review-gate")
+        self.addCleanupTree(valid_root)
+        self.assertPasses(valid_root)
+
+        invalid_root = copy_fixture("invalid-automated-review-gate-l0")
+        self.addCleanupTree(invalid_root)
+        self.assertFails(invalid_root, "automated review gate cannot advance with L0")
+        self.assertFails(invalid_root, "reviewer_context_id must differ from author_context_id")
+        self.assertFails(invalid_root, "phase receipt evidence-menu-released appears before required predecessor risk-map-recorded")
+
+    def test_automated_review_gate_rejects_invalid_independence_and_packet_evidence(self) -> None:
+        cases = [
+            (
+                "l0-advance",
+                "Independence level: L1",
+                "Independence level: L0",
+                "automated review gate cannot advance with L0",
+            ),
+            (
+                "same-context",
+                "Reviewer context ID: reviewer-ctx-1",
+                "Reviewer context ID: author-ctx-1",
+                "reviewer_context_id must differ from author_context_id",
+            ),
+            (
+                "missing-inventory",
+                "Initial packet inventory: specs/review-independence-and-criticality.md@abc123#sha256:1111111111111111111111111111111111111111111111111111111111111111; docs/plans/example.md@abc123#sha256:2222222222222222222222222222222222222222222222222222222222222222\n",
+                "",
+                "automated review gate missing required field Initial packet inventory",
+            ),
+            (
+                "missing-packet-hash",
+                "Initial packet hash: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+                "",
+                "automated review gate missing required field Initial packet hash",
+            ),
+            (
+                "attestation-only",
+                "Initial packet inventory: specs/review-independence-and-criticality.md@abc123#sha256:1111111111111111111111111111111111111111111111111111111111111111; docs/plans/example.md@abc123#sha256:2222222222222222222222222222222222222222222222222222222222222222",
+                "Author context excluded: true",
+                "author_context_excluded is not sufficient initial-packet proof",
+            ),
+        ]
+        for name, old, new, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-gate-{name}-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text().replace(old, new))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_automated_review_gate_rejects_forbidden_context_and_bad_phase_order(self) -> None:
+        cases = [
+            (
+                "forbidden-label",
+                None,
+                "Author self-assessment: looks correct",
+                "forbidden automated-review context field Author self-assessment",
+            ),
+            (
+                "forbidden-initial-packet-token",
+                None,
+                "Initial packet contains: validation-result summaries",
+                "initial packet contains prohibited context validation-result summaries",
+            ),
+            (
+                "bad-phase-order",
+                "Phase receipts: risk-map-recorded > evidence-menu-released > evidence-results-released > prior-findings-released > verdict-recorded",
+                "Phase receipts: evidence-menu-released > risk-map-recorded > evidence-results-released > prior-findings-released > verdict-recorded",
+                "phase receipt evidence-menu-released appears before required predecessor risk-map-recorded",
+            ),
+            (
+                "unbounded-manifest-notes",
+                None,
+                "Manifest notes: " + ("x" * 300),
+                "automated review gate field Manifest notes is too long",
+            ),
+        ]
+        for name, old, extra, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-gate-{name}-"))
+                self.addCleanupTree(root)
+                review_text_value = valid_automated_review_text(extra if old is None else "")
+                if old is not None:
+                    review_text_value = review_text_value.replace(old, extra)
+                write_text(root / "reviews" / "code-review-r1.md", review_text_value)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_automated_clean_review_requires_sufficiency_receipt_fields(self) -> None:
+        cases = [
+            ("Risk classes considered", "clean sufficiency receipt missing required field Risk classes considered"),
+            ("Adversarial hypotheses tested", "clean sufficiency receipt missing required field Adversarial hypotheses tested"),
+            ("Direct proofs performed", "clean sufficiency receipt missing required field Direct proofs performed"),
+            ("Validation evidence challenged", "clean sufficiency receipt missing required field Validation evidence challenged"),
+            ("Unreviewed surfaces", "clean sufficiency receipt missing required field Unreviewed surfaces"),
+            ("No-finding rationale", "clean sufficiency receipt missing required field No-finding rationale"),
+        ]
+        for field, expected in cases:
+            with self.subTest(field=field):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-clean-receipt-"))
+                self.addCleanupTree(root)
+                review = "\n".join(
+                    line
+                    for line in valid_automated_review_text().splitlines()
+                    if not line.strip().startswith(f"{field}:")
+                )
+                write_text(root / "reviews" / "code-review-r1.md", review)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
 
     def test_clean_receipt_root_requires_change_metadata_contract(self) -> None:
         cases = [

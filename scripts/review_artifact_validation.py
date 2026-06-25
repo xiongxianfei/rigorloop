@@ -61,6 +61,90 @@ ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 FIELD_PATTERN = re.compile(r"^\s*(?P<label>[A-Za-z][A-Za-z0-9 _/-]*):\s*(?P<value>.*)$")
 REVIEW_RESOLUTION_HEADING_PATTERN = re.compile(r"^\s{0,3}###\s+(?P<review_id>[A-Za-z0-9][A-Za-z0-9._-]*)\s*$")
 AUTO_FIX_CLASSES = frozenset({"none", "mechanical", "declared-safe"})
+INDEPENDENCE_LEVELS = frozenset({"L0", "L1", "L2", "L3"})
+REVIEW_GATE_OUTCOMES = frozenset({"advance", "stop", "blocked", "inconclusive"})
+REVIEW_GATE_REQUIRED_FIELDS = (
+    "Review gate outcome",
+    "Independence level",
+    "Reviewer context ID",
+    "Context separation mechanism",
+    "Risk tier",
+    "Risk-tier triggers",
+    "Risk-tier classifier",
+    "Governing artifacts",
+    "Formal criteria",
+    "Initial packet inventory",
+    "Prompt template version",
+    "Initial packet hash",
+    "Manifest owner",
+    "Phase receipts",
+)
+RISK_MAP_REQUIRED_FIELDS = (
+    "Affected behavior",
+    "Highest-impact failure modes",
+    "Changed boundaries",
+    "Evidence expected",
+    "Areas requiring direct inspection",
+    "Areas intentionally out of scope",
+    "Risk classes considered",
+    "Falsifiable review questions",
+)
+CLEAN_REVIEW_SUFFICIENCY_FIELDS = (
+    "Review target identity",
+    "Independence level",
+    "Governing artifacts inspected",
+    "Risk classes considered",
+    "Adversarial hypotheses tested",
+    "Direct proofs performed",
+    "Validation evidence challenged",
+    "Unreviewed surfaces",
+    "Confidence",
+    "No-finding rationale",
+)
+REQUIRED_PHASE_RECEIPTS = (
+    "risk-map-recorded",
+    "evidence-menu-released",
+    "evidence-results-released",
+    "verdict-recorded",
+)
+ORDERED_PHASE_RECEIPTS = (
+    "risk-map-recorded",
+    "evidence-menu-released",
+    "evidence-results-released",
+    "prior-findings-released",
+    "verdict-recorded",
+)
+FORBIDDEN_AUTOMATED_REVIEW_FIELDS = frozenset(
+    {
+        "Author hidden reasoning",
+        "Author chain-of-thought",
+        "Author self-assessment",
+        "Author claim",
+        "Desired review outcome",
+        "Autoprogression round budget",
+        "Approval needed to continue",
+        "Auto-fix eligibility",
+        "Implementation safety narrative",
+        "Prior reviewer conclusion",
+        "Prior finding content",
+        "Validation-result summaries",
+        "Evidence menu",
+        "Private chain-of-thought",
+        "Hidden reasoning",
+    }
+)
+PROHIBITED_INITIAL_PACKET_TOKENS = (
+    "author hidden reasoning",
+    "author chain-of-thought",
+    "author self-assessment",
+    "desired review outcome",
+    "validation-result summaries",
+    "evidence menu",
+    "prior finding content",
+    "auto-fix budget",
+    "implementation safety narrative",
+)
+BOUNDED_AUTOMATED_FREEFORM_FIELDS = ("Manifest notes", "Process rationale")
 MECHANICAL_AUTO_FIX_KINDS = frozenset(
     {
         "formatter-output",
@@ -407,6 +491,7 @@ def _parse_review_file(
     record_mode = record_mode_field.value if record_mode_field else None
     finding_records = _parse_finding_records(path, review_id, lines, mode, findings)
     _validate_clean_receipt_review_fields(path, review_id, fields, mode, findings)
+    _validate_automated_review_gate_fields(path, review_id, fields, mode, findings)
     _validate_implementation_profile_finding_fields(path, review_id, fields, finding_records, mode, findings)
 
     if record_mode == "reconstructed":
@@ -652,6 +737,296 @@ def _validate_clean_receipt_review_fields(
                 review_id=review_id,
             )
         )
+
+
+def _validate_automated_review_gate_fields(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    if not _is_automated_review_gate_record(fields):
+        return
+
+    for label in REVIEW_GATE_REQUIRED_FIELDS:
+        if _first_nonempty(fields, label) is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=None,
+                    mode=mode,
+                    message=f"automated review gate missing required field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    for label in RISK_MAP_REQUIRED_FIELDS:
+        if _first_nonempty(fields, label) is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=None,
+                    mode=mode,
+                    message=f"risk map missing required field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    for label in FORBIDDEN_AUTOMATED_REVIEW_FIELDS:
+        value = _first_nonempty(fields, label)
+        if value is not None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"forbidden automated-review context field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    for label in BOUNDED_AUTOMATED_FREEFORM_FIELDS:
+        value = _first_nonempty(fields, label)
+        if value is not None and len(value.value) > 240:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"automated review gate field {label} is too long",
+                    review_id=review_id,
+                )
+            )
+
+    outcome = _first_nonempty(fields, "Review gate outcome")
+    if outcome is not None and outcome.value not in REVIEW_GATE_OUTCOMES:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=outcome.line,
+                mode=mode,
+                message=f"unsupported review_gate_outcome '{outcome.value}'",
+                review_id=review_id,
+            )
+        )
+
+    independence = _first_nonempty(fields, "Independence level")
+    if independence is not None:
+        if independence.value not in INDEPENDENCE_LEVELS:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=independence.line,
+                    mode=mode,
+                    message=f"unsupported independence level '{independence.value}'",
+                    review_id=review_id,
+                )
+            )
+        elif independence.value == "L0" and outcome is not None and outcome.value == "advance":
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=independence.line,
+                    mode=mode,
+                    message="automated review gate cannot advance with L0",
+                    review_id=review_id,
+                )
+            )
+
+    author_context = _first_nonempty(fields, "Author context ID")
+    reviewer_context = _first_nonempty(fields, "Reviewer context ID")
+    if author_context is not None and reviewer_context is not None and author_context.value == reviewer_context.value:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=reviewer_context.line,
+                mode=mode,
+                message="reviewer_context_id must differ from author_context_id",
+                review_id=review_id,
+            )
+        )
+
+    author_context_excluded = _first_nonempty(fields, "Author context excluded")
+    if author_context_excluded is not None and _first_nonempty(fields, "Initial packet inventory") is None:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=author_context_excluded.line,
+                mode=mode,
+                message="author_context_excluded is not sufficient initial-packet proof",
+                review_id=review_id,
+            )
+        )
+
+    packet_inventory = _first_nonempty(fields, "Initial packet inventory")
+    if packet_inventory is not None:
+        _validate_initial_packet_inventory(path, review_id, packet_inventory, mode, findings)
+
+    packet_hash = _first_nonempty(fields, "Initial packet hash")
+    if packet_hash is not None and not _is_sha256_reference(packet_hash.value):
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=packet_hash.line,
+                mode=mode,
+                message="Initial packet hash must use sha256:<64 hex>",
+                review_id=review_id,
+            )
+        )
+
+    initial_packet_contains = _first_nonempty(fields, "Initial packet contains")
+    if initial_packet_contains is not None:
+        lower_value = initial_packet_contains.value.lower()
+        for token in PROHIBITED_INITIAL_PACKET_TOKENS:
+            if token in lower_value:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=initial_packet_contains.line,
+                        mode=mode,
+                        message=f"initial packet contains prohibited context {token}",
+                        review_id=review_id,
+                    )
+                )
+
+    phase_receipts = _first_nonempty(fields, "Phase receipts")
+    if phase_receipts is not None:
+        _validate_phase_receipts(path, review_id, phase_receipts, mode, findings)
+
+    if _is_clean_automated_review(fields):
+        for label in CLEAN_REVIEW_SUFFICIENCY_FIELDS:
+            if _first_nonempty(fields, label) is None:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=None,
+                        mode=mode,
+                        message=f"clean sufficiency receipt missing required field {label}",
+                        review_id=review_id,
+                    )
+                )
+
+
+def _is_automated_review_gate_record(fields: dict[str, list[FieldValue]]) -> bool:
+    automated = _first_nonempty(fields, "Automated review")
+    if automated is not None and automated.value.lower() in {"yes", "true"}:
+        return True
+    return any(
+        _first_nonempty(fields, label) is not None
+        for label in ("Review gate outcome", "Independence level", "Initial packet hash", "Phase receipts")
+    )
+
+
+def _is_clean_automated_review(fields: dict[str, list[FieldValue]]) -> bool:
+    clean_receipt = _first_nonempty(fields, "Clean-review sufficiency receipt")
+    if clean_receipt is not None and clean_receipt.value.lower() in {"yes", "true"}:
+        return True
+    status = _first_nonempty(fields, "Status")
+    outcome = _first_nonempty(fields, "Review gate outcome")
+    return (
+        status is not None
+        and status.value in {"approved", "clean-with-notes"}
+        and outcome is not None
+        and outcome.value == "advance"
+    )
+
+
+def _validate_initial_packet_inventory(
+    path: Path,
+    review_id: str,
+    value: FieldValue,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    entries = [entry.strip() for entry in value.value.split(";") if entry.strip()]
+    if not entries:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=value.line,
+                mode=mode,
+                message="Initial packet inventory must list tracked artifact entries",
+                review_id=review_id,
+            )
+        )
+        return
+    for entry in entries:
+        if "@" not in entry or "#sha256:" not in entry:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message="Initial packet inventory entries must include path@revision#sha256:<64 hex>",
+                    review_id=review_id,
+                )
+            )
+            continue
+        _, hash_part = entry.rsplit("#", 1)
+        if not _is_sha256_reference(hash_part):
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message="Initial packet inventory entries must include path@revision#sha256:<64 hex>",
+                    review_id=review_id,
+                )
+            )
+
+
+def _validate_phase_receipts(
+    path: Path,
+    review_id: str,
+    value: FieldValue,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    receipts = _split_list_field(value.value)
+    seen: set[str] = set()
+    for receipt in receipts:
+        if receipt in seen:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"duplicate phase receipt {receipt}",
+                    review_id=review_id,
+                )
+            )
+        seen.add(receipt)
+    for receipt in REQUIRED_PHASE_RECEIPTS:
+        if receipt not in seen:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"missing phase receipt {receipt}",
+                    review_id=review_id,
+                )
+            )
+    for earlier, later in zip(ORDERED_PHASE_RECEIPTS, ORDERED_PHASE_RECEIPTS[1:]):
+        if earlier in receipts and later in receipts and receipts.index(later) < receipts.index(earlier):
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message=f"phase receipt {later} appears before required predecessor {earlier}",
+                    review_id=review_id,
+                )
+            )
+
+
+def _split_list_field(value: str) -> list[str]:
+    return [part.strip() for part in re.split(r"\s*(?:>|,|;)\s*", value) if part.strip()]
+
+
+def _is_sha256_reference(value: str) -> bool:
+    return re.fullmatch(r"sha256:[0-9a-fA-F]{64}", value.strip()) is not None
 
 
 def _validate_reconstructed_record(

@@ -1,0 +1,77 @@
+# Independent Adversarial Review Gates Review Resolution
+
+## Scope
+
+This record closes formal proposal-review, spec-review, architecture-review, and plan-review evidence for the independent adversarial review gates change.
+
+Closeout status: closed
+
+Review closeout: proposal-review-r1
+Review closeout: proposal-review-r2
+Review closeout: spec-review-r1
+Review closeout: spec-review-r2
+Review closeout: architecture-review-r1
+Review closeout: plan-review-r1
+Review closeout: plan-review-r2
+
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`
+- Findings resolved: 2
+- Unresolved findings: 0
+- Current result: proposal-review rounds approved the proposal with no material findings. Spec-review R1 requested `SR1-F1`; the spec was revised, and spec-review R2 approved the revised contract. Architecture-review R1 approved the canonical architecture update and ADR with no material findings. Plan-review R1 requested `PR1-F1`; the plan was revised, and plan-review R2 approved it with no material findings.
+
+## Resolution Overview
+
+| Finding ID | Disposition | Status | Resolution summary |
+| --- | --- | --- | --- |
+| SR1-F1 | accepted | resolved | Added `R12f` stop semantics, examples, acceptance criterion, and test IDs; `spec-review-r2` approved the revised contract. |
+| PR1-F1 | accepted | resolved | Added adapter archive generation and validation commands to M3 and M5; added a top-level validation invariant for `skills/` changes; added a boundary statement distinguishing local skill proof from public adapter archive proof. |
+
+## Finding Details
+
+### proposal-review-r1
+
+No material findings; no resolution entry required. The review approved the proposal and directed downstream specification details.
+
+### proposal-review-r2
+
+No material findings; no resolution entry required. The isolated formal proposal-review confirmed the accepted proposal remains ready for downstream specification work.
+
+### spec-review-r1
+
+#### SR1-F1 - Normalized `stop` outcome is ambiguous for changes-requested reviews
+
+Finding ID: SR1-F1
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec
+Chosen action: Added `R12f` and sub-requirements defining `review_gate_outcome: stop` semantics for native `changes-requested`; clarified `R14g` as second-review disagreement only; added Examples E8-E10; added `AC-RAI-018`; added test IDs `RAI-021`, `RAI-022`, and `RAI-023`.
+Rationale: Without this clarification, architecture, tests, and implementation could reasonably choose incompatible behaviors: pausing all automation on `changes-requested` or routing into review-resolution under existing approved authority.
+Validation target: Rerun `spec-review-r2`.
+Validation evidence: `specs/review-independence-and-criticality.md` now preserves `code-review changes-requested -> review-resolution` routing when the active profile's existing gates pass, and supersedes implicit-route behavior for other review stages by requiring explicit active-profile authorization. `spec-review-r2` approved the revised contract with no material findings.
+
+### spec-review-r2
+
+No material findings; no resolution entry required. This same-stage rereview approved the revised spec and closed `SR1-F1`.
+
+### architecture-review-r1
+
+No material findings; no resolution entry required. The review approved the canonical architecture package update and ADR for planning.
+
+### plan-review-r1
+
+#### PR1-F1 - Generated adapter proof is in scope but lacks runnable validation commands
+
+Finding ID: PR1-F1
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan
+Chosen action: Added temporary adapter archive generation and validation commands to M3 for canonical skill changes and to M5 as final cross-milestone proof; added a top-level validation-plan invariant binding `skills/` changes to public adapter archive proof; added a generated skill and adapter proof boundary statement distinguishing `build-skills.py --check` from `build-adapters.py --output-dir` plus `validate-adapters.py --root`.
+Rationale: Canonical stage-skill changes must prove both local generated skill output and public adapter archive output. Architecture sections at `docs/architecture/system/architecture.md:315`, `docs/architecture/system/architecture.md:316`, and `docs/architecture/system/architecture.md:913` require adapter generation and validation for stage-skill changes; `AGENTS.md:34` and `AGENTS.md:36` establish that public adapter skill bodies are release archives, not tracked source, and generated public adapter package output must not be hand-edited.
+Validation target: Rerun `plan-review-r2`.
+Validation evidence: `docs/plans/2026-06-25-independent-adversarial-review-gates.md` now names adapter archive proof in M3, M5, and the top-level validation plan. The plan records that `build-skills.py --check` proves local-skill output, while `build-adapters.py --output-dir <tmpdir>` followed by `validate-adapters.py --root <tmpdir>` proves public adapter archive output. This resolution was discovered under isolated formal plan-review; manual review discipline continues for this change pending independence-gates landing.
+
+### plan-review-r2
+
+No material findings; no resolution entry required. This same-stage rereview approved the revised execution plan and closed `PR1-F1`.
