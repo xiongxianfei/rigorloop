@@ -14,6 +14,11 @@ import textwrap
 from collections.abc import Callable
 from pathlib import Path
 
+from review_independence_skill_phrases import (
+    R5_FORBIDDEN_INITIAL_PACKET_ITEMS,
+    R8D_FAILED_REMEDIATION_REQUIRED_PHRASES,
+    R8D_RECONCILIATION_CATEGORIES,
+)
 import skill_validation
 
 
@@ -4995,7 +5000,6 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "risk-map-recorded",
             "Evidence challenge happens only after the risk map",
             "Prior finding reconciliation happens only after the blind-first pass",
-            "`resolved`, `still-present`, `failed-remediation`, `reopened`, `superseded`, or `new-finding`",
             "Clean automated reviews require a clean-review sufficiency receipt",
             "A clean automated review may advance only when the manifest, phase receipts, clean receipt, risk-tier escalation, unresolved-finding, and second-review gates are satisfied",
             "A final holistic code review is required before `explain-change` or `verify`",
@@ -5006,6 +5010,15 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, body)
+        for item in R5_FORBIDDEN_INITIAL_PACKET_ITEMS:
+            with self.subTest(forbidden_initial_packet_item=item):
+                self.assertIn(item, body)
+        for category in R8D_RECONCILIATION_CATEGORIES:
+            with self.subTest(reconciliation_category=category):
+                self.assertIn(category, body)
+        for phrase in R8D_FAILED_REMEDIATION_REQUIRED_PHRASES:
+            with self.subTest(failed_remediation_phrase=phrase):
+                self.assertIn(phrase, body)
 
     def test_review_independence_m3_workflow_and_implement_route_automated_gate(self) -> None:
         """Workflow and implement skills route automated code review through the independent gate."""
@@ -5020,7 +5033,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             ],
             "implement": [
                 "When handing workflow-managed implementation work to automated `code-review`, hand off to the independent adversarial review gate.",
-                "Provide tracked artifacts, the actual diff, governing contracts, and neutral routing metadata; do not provide author hidden reasoning, self-assessment, desired review outcome, validation-result summaries, evidence menus, prior finding content, or auto-fix budget in the initial review packet.",
+                "Provide tracked artifacts, the actual diff, governing contracts, and neutral routing metadata.",
                 "Do not expose auto-fix classification to review discovery; findings and verdict are recorded before fixability is classified.",
                 "Before Phase C can enter `explain-change` or `verify`, require final holistic code-review evidence for the complete cross-milestone diff.",
             ],
@@ -5030,6 +5043,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
+        implement_body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
+        for item in R5_FORBIDDEN_INITIAL_PACKET_ITEMS:
+            with self.subTest(skill="implement", forbidden_initial_packet_item=item):
+                self.assertIn(item, implement_body)
 
     def test_review_independence_m3_manifest_only_authoring_review_guidance(self) -> None:
         """Phase 1 spec-review and plan-review collect manifest evidence without full protocol migration."""

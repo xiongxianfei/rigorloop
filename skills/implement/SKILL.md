@@ -244,7 +244,9 @@ For milestone-based plans, `implement` works on one in-scope implementation mile
 
 When `implementation-through-verify` is active in a workflow-managed context, implement only the current approved milestone in order. Phase B can run implementation and reviewer-declared auto-fix loops, but it cannot run `explain-change`, `verify`, or `pr`.
 
-When handing workflow-managed implementation work to automated `code-review`, hand off to the independent adversarial review gate. Provide tracked artifacts, the actual diff, governing contracts, and neutral routing metadata; do not provide author hidden reasoning, self-assessment, desired review outcome, validation-result summaries, evidence menus, prior finding content, or auto-fix budget in the initial review packet.
+When handing workflow-managed implementation work to automated `code-review`, hand off to the independent adversarial review gate. Provide tracked artifacts, the actual diff, governing contracts, and neutral routing metadata.
+
+Do not provide R5 forbidden initial-context items in the initial review packet: author hidden reasoning, author chain-of-thought, author self-assessment, claims that the change is correct, desired review outcome, autoprogression round budget, message that approval is needed to continue, auto-fix budget, auto-fix eligibility, implementation-stage safety narrative, prior reviewer conclusion, prior finding content, validation-result summaries, and evidence menu.
 
 Automatic review-driven fixes are allowed only for reviewer-declared auto-fix findings that stay within the declared paths, approved generated outputs, workflow projections, and evidence records. Do not infer safety from a finding that merely looks small or obvious.
 
