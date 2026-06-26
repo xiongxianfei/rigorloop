@@ -85,3 +85,13 @@ Detailed record: reviews/code-review-r1.md
 Resolution: review-resolution.md#code-review-r1
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-r2
+Stage: code-review
+Round: 2
+Status: changes-requested
+Detailed record: reviews/code-review-r2.md
+Resolution: review-resolution.md#code-review-r2
+Material findings: RFG-M2-CR1
+Open findings: RFG-M2-CR1

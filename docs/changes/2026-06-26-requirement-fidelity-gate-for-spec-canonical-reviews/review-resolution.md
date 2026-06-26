@@ -4,7 +4,7 @@
 
 This record tracks material review finding closeout for the requirement-fidelity gate change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -14,11 +14,12 @@ Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-r1
+Review closeout: code-review-r2
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`
 - Findings resolved: 3
-- Unresolved findings: 0
-- Current result: `code-review-r1` returned clean-with-notes for M1, closed M1, and allowed implementation handoff to M2.
+- Unresolved findings: 1
+- Current result: `code-review-r2` requested changes for M2; `RFG-M2-CR1` remains open and requires review-resolution.
 
 ## Resolution Overview
 
@@ -27,6 +28,7 @@ Review closeout: code-review-r1
 | SR1-F1 | accepted | resolved | Path B chosen: mandatory manual-review applicability is out of first-slice scope; manual reviews may voluntarily record fidelity receipts; follow-on manual applicability proposal is routed after at least 30 calibrated records. |
 | SR1-F2 | accepted | resolved | Sampling and rotation obligations are quantified with Phase B sample floors, steady-state floors, corpus iteration size, rotation triggers, record fields, and planned test IDs. |
 | TSR1-F1 | accepted | resolved | Added a manual proof case schema, three structured manual proofs, two automated replacements for machine-checkable obligations, coverage-map links, and new planned test IDs. |
+| RFG-M2-CR1 | needs-decision | open | Pending review-resolution disposition. Clean automated handoff can omit the requirement-fidelity applicability result entirely. |
 
 ## Finding Details
 
@@ -93,3 +95,18 @@ No material findings. `test-spec-review-r2` approved the revised test spec, conf
 ### code-review-r1
 
 No material findings. `code-review-r1` reviewed the M1 implementation diff, confirmed the requirement-fidelity guidance surfaces and skill-validator coverage align with the approved first-slice contract, closed M1, and handed off to M2 implementation.
+
+### code-review-r2
+
+#### RFG-M2-CR1 - Clean automated handoff can omit the fidelity applicability result entirely
+
+Finding ID: RFG-M2-CR1
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Stop state: resolution-needed
+Rationale: `code-review-r2` found that the M2 lifecycle route advances workflow-managed clean reviews when requirement-fidelity applicability is absent, so independent-review evidence alone can still advance the profile.
+Decision needed: Accept, reject, defer, or partially accept the finding before rerun code-review.
+Decision owner: maintainer
+Expected proof: If accepted, add lifecycle and review-artifact negative tests for missing requirement-fidelity applicability and update the route so workflow-managed clean handoff requires either `applicable` with valid receipt or `not-applicable` with a closed reason.

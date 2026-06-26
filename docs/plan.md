@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Requirement-Fidelity Gate for Spec-Canonical Reviews](plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md) | active | code-review | 2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews |
+| [Requirement-Fidelity Gate for Spec-Canonical Reviews](plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md) | active | review-resolution | 2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
