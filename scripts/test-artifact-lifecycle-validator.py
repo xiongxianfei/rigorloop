@@ -1582,7 +1582,13 @@ No blocked plans.
         fixture.update(overrides)
         return fixture
 
-    def review_gate_fixture(self, **overrides: object) -> dict[str, object]:
+    def make_workflow_managed_clean_review_fixture(self, **overrides: object) -> dict[str, object]:
+        """Return a spec-canonical complete workflow-managed clean review fixture.
+
+        Tests for omitted or invalid gate fields must pass those values
+        explicitly through overrides so the default fixture cannot exercise a
+        bypass path.
+        """
         fixture: dict[str, object] = {
             "invocation_context": "workflow-managed",
             "review_stage": "code-review",
@@ -1595,6 +1601,9 @@ No blocked plans.
             "risk_tier": "standard",
             "risk_tier_classifier_valid": True,
             "risk_tier_satisfied": True,
+            "requirement_fidelity_applicability": "applicable",
+            "requirement_fidelity_receipt_valid": True,
+            "requirement_fidelity_not_applicable_reason": None,
             "unresolved_findings": 0,
             "second_review_required": False,
             "second_review_status": "not-required",
@@ -1608,6 +1617,9 @@ No blocked plans.
         }
         fixture.update(overrides)
         return fixture
+
+    def review_gate_fixture(self, **overrides: object) -> dict[str, object]:
+        return self.make_workflow_managed_clean_review_fixture(**overrides)
 
     def assertImplementationRoute(
         self,
@@ -1817,24 +1829,21 @@ No blocked plans.
 
     def test_requirement_fidelity_gate_blocks_clean_handoff_when_applicable_receipt_missing(self) -> None:
         self.assertReviewGateRoute(
-            self.review_gate_fixture(
-                requirement_fidelity_applicability="applicable",
-                requirement_fidelity_receipt_valid=True,
-            ),
+            self.make_workflow_managed_clean_review_fixture(),
             next_stage="advance",
             profile_state="active",
         )
         self.assertReviewGateRoute(
-            self.review_gate_fixture(
+            self.make_workflow_managed_clean_review_fixture(
                 requirement_fidelity_applicability="applicable",
                 requirement_fidelity_receipt_valid=False,
                 review_gate_outcome="inconclusive",
             ),
-            stop_reason="missing-requirement-fidelity-receipt",
+            stop_reason="fidelity-receipt-invalid",
             profile_state="paused",
         )
         self.assertReviewGateRoute(
-            self.review_gate_fixture(
+            self.make_workflow_managed_clean_review_fixture(
                 requirement_fidelity_applicability="not-applicable",
                 requirement_fidelity_not_applicable_reason="change unrelated to normative contracts",
             ),
@@ -1845,9 +1854,14 @@ No blocked plans.
     def test_requirement_fidelity_gate_unknown_values_fail_before_clean_continuation(self) -> None:
         cases = [
             (
+                "missing-applicability",
+                {"requirement_fidelity_applicability": None, "review_gate_outcome": "inconclusive"},
+                "fidelity-applicability-missing",
+            ),
+            (
                 "unknown-applicability",
                 {"requirement_fidelity_applicability": "maybe", "review_gate_outcome": "inconclusive"},
-                "requirement-fidelity-applicability-invalid",
+                "fidelity-applicability-unknown",
             ),
             (
                 "unknown-not-applicable-reason",
@@ -1856,24 +1870,35 @@ No blocked plans.
                     "requirement_fidelity_not_applicable_reason": "just docs",
                     "review_gate_outcome": "inconclusive",
                 },
-                "requirement-fidelity-not-applicable-reason-invalid",
+                "fidelity-not-applicable-reason-invalid",
             ),
             (
                 "missing-not-applicable-reason",
                 {
                     "requirement_fidelity_applicability": "not-applicable",
+                    "requirement_fidelity_not_applicable_reason": None,
                     "review_gate_outcome": "inconclusive",
                 },
-                "requirement-fidelity-not-applicable-reason-invalid",
+                "fidelity-not-applicable-reason-invalid",
             ),
         ]
         for name, overrides, expected_reason in cases:
             with self.subTest(name=name):
                 self.assertReviewGateRoute(
-                    self.review_gate_fixture(**overrides),
+                    self.make_workflow_managed_clean_review_fixture(**overrides),
                     stop_reason=expected_reason,
                     profile_state="paused",
                 )
+
+    def test_direct_review_unchanged_by_requirement_fidelity_gate(self) -> None:
+        self.assertReviewGateRoute(
+            self.make_workflow_managed_clean_review_fixture(
+                invocation_context="direct",
+                requirement_fidelity_applicability=None,
+            ),
+            stop_reason="isolated-invocation",
+            profile_state="paused",
+        )
 
     def test_review_gate_outcome_derives_from_native_status_and_gate_state(self) -> None:
         routing_cases: tuple[tuple[str, str, dict[str, object], str, str], ...] = (

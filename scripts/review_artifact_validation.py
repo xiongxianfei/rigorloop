@@ -240,6 +240,7 @@ MECHANICAL_AUTO_FIX_KINDS = frozenset(
 )
 # Source: specs/requirement-fidelity-gate.md R6-R11, R17d, R44g, R45c, R48.
 REQUIREMENT_FIDELITY_APPLICABILITY_RESULTS = frozenset({"applicable", "not-applicable"})
+REQUIREMENT_FIDELITY_GATE_MARKERS = frozenset({"required"})
 REQUIREMENT_FIDELITY_OVERRIDE_DIRECTIONS = frozenset({"force-applicable", "force-not-applicable"})
 REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS = frozenset(
     {
@@ -1113,6 +1114,7 @@ def _is_clean_automated_review(fields: dict[str, list[FieldValue]]) -> bool:
 
 def _is_requirement_fidelity_record(fields: dict[str, list[FieldValue]]) -> bool:
     return any(_first_nonempty(fields, label) is not None for label in (
+        "Requirement-fidelity gate",
         "Requirement-fidelity applicability",
         "Requirement-fidelity affected paths",
         "Requirement-fidelity matched path triggers",
@@ -1131,11 +1133,23 @@ def _validate_requirement_fidelity_fields(
     if not _is_requirement_fidelity_record(fields):
         return
 
+    gate_marker = _first_nonempty(fields, "Requirement-fidelity gate")
     applicability = _first_nonempty(fields, "Requirement-fidelity applicability")
     affected_paths = _first_nonempty(fields, "Requirement-fidelity affected paths")
     path_triggers = _first_nonempty(fields, "Requirement-fidelity matched path triggers")
     category_triggers = _first_nonempty(fields, "Requirement-fidelity matched category triggers")
     review_stage = _first_nonempty(fields, "Requirement-fidelity review stage")
+
+    if gate_marker is not None and gate_marker.value not in REQUIREMENT_FIDELITY_GATE_MARKERS:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=gate_marker.line,
+                mode=mode,
+                message=f"unsupported requirement-fidelity gate marker '{gate_marker.value}'",
+                review_id=review_id,
+            )
+        )
 
     for label, value in (
         ("Requirement-fidelity applicability", applicability),
@@ -1150,7 +1164,11 @@ def _validate_requirement_fidelity_fields(
                     path=path,
                     line=None,
                     mode=mode,
-                    message=f"requirement-fidelity manifest missing required field {label}",
+                    message=(
+                        "fidelity-applicability-missing"
+                        if label == "Requirement-fidelity applicability"
+                        else f"requirement-fidelity manifest missing required field {label}"
+                    ),
                     review_id=review_id,
                 )
             )
