@@ -968,6 +968,31 @@ raise SystemExit({exit_code})
         self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
         self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
 
+    def test_selector_preservation_surface_keeps_selected_check_identity(self) -> None:
+        paths = [
+            "scripts/validation_selection.py",
+            "scripts/test-select-validation.py",
+            "docs/changes/2026-04-25-example/selector-preservation.md",
+        ]
+
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertEqual(
+            {"artifact_lifecycle.validate", "selector.regression"},
+            selected_ids(payload),
+        )
+        selector_check = next(check for check in payload["selected_checks"] if check["id"] == "selector.regression")
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        self.assertEqual(selector_check["phase"], "focused")
+        self.assertEqual(selector_check["cache_status"], "not-applicable")
+        self.assertIn("Changed selector code requires selector regression fixtures.", selector_check["reason"])
+        self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
+        self.assertIn("docs/changes/2026-04-25-example/selector-preservation.md", lifecycle_check["paths"])
+
     def test_validation_cache_evidence_files_route_without_manual_debt(self) -> None:
         paths = [
             "docs/changes/2026-04-25-example/validation-cache-evidence.yaml",
@@ -1012,12 +1037,38 @@ raise SystemExit({exit_code})
         debt = next(item for item in payload["blocking_results"] if item["code"] == "manual-routing-required")
         self.assertEqual(debt["path"], "docs/changes/2026-04-25-example/notes.md")
         self.assertTrue(debt["manual_routing_required"])
+        self.assertEqual(debt["path_class"], "unregistered-change-evidence")
+        self.assertEqual(debt["affected_class"], "change-local evidence")
         self.assertEqual(debt["debt"], "evidence-registration")
         self.assertEqual(debt["verify_readiness"], "blocked")
         self.assertEqual(debt["deferral_status"], "none")
+        self.assertIn("selector routing", debt["next_action"])
         self.assertIn("owner-approved deferral", debt["next_action"])
         for required_term in ("owner", "path", "reason", "validation impact", "follow-up"):
             self.assertIn(required_term, debt["next_action"])
+
+    def test_diagnostic_broad_smoke_does_not_erase_missing_route_blocker(self) -> None:
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("docs/changes/2026-04-25-example/notes.md",),
+                broad_smoke=True,
+                repo_root=ROOT,
+            )
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "blocked")
+        self.assertTrue(payload["broad_smoke_required"])
+        self.assertIn("broad_smoke.repo", selected_ids(payload))
+        self.assertIn(
+            "manual-routing-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+        debt = next(item for item in payload["blocking_results"] if item["code"] == "manual-routing-required")
+        self.assertEqual(debt["path"], "docs/changes/2026-04-25-example/notes.md")
+        self.assertEqual(debt["verify_readiness"], "blocked")
+        self.assertIn({"type": "explicit_flag", "value": "--broad-smoke"}, payload["broad_smoke"]["sources"])
 
     def write_change_with_evidence_deferral(
         self,

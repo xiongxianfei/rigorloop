@@ -1525,12 +1525,14 @@ def _evidence_registration_debt_result(
     result: dict[str, Any] = {
         "code": "manual-routing-required",
         "path": evidence_path,
+        "path_class": "unregistered-change-evidence",
+        "affected_class": "change-local evidence",
         "manual_routing_required": True,
         "debt": "evidence-registration",
         "verify_readiness": "owner-deferred" if deferral.status == "complete" else "blocked",
         "deferral_status": deferral.status,
         "next_action": (
-            "Register an evidence class for this deterministic change-local evidence path "
+            "Register an evidence class and selector routing for this deterministic change-local evidence path "
             "or record a complete owner-approved deferral before verify with owner, path, "
             "reason, validation impact, and follow-up."
         ),
