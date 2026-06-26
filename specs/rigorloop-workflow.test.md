@@ -19,6 +19,8 @@
 - Completed amendment plan: [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md), done.
 - Related amendment spec: [Milestone-Aware Review Handoff](milestone-aware-review-handoff.md), approved.
 - Related amendment test spec: [Milestone-Aware Review Handoff test spec](milestone-aware-review-handoff.test.md), active.
+- Related amendment spec: [Test-Spec-Review Gate](test-spec-review-gate.md), approved.
+- Related amendment test spec: [Test-Spec-Review Gate test spec](test-spec-review-gate.test.md), active.
 - Completed amendment plan: [Milestone-Aware Review Handoff Execution Plan](../docs/plans/2026-05-07-milestone-aware-review-handoff.md), done.
 - Current amendment proposal: [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md), accepted.
 - Current amendment architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md), approved after architecture-review R1.
@@ -41,6 +43,7 @@
 - Treat PR-self-contained lifecycle completion as a completed workflow amendment with continuing regression coverage. A merge-dependent language warning is treated as addressed only when a contributor-visible tracked or review-visible surface classifies the wording as a true downstream completion event or stale lifecycle wording requiring correction; the first implementation slice does not need to suppress the warning automatically after classification.
 - Treat review skill material-finding recording as a completed review-recording amendment with continuing regression coverage. Detailed fixture coverage lives in `specs/formal-review-recording.test.md` and `specs/review-finding-resolution-contract.test.md`; this test spec proves the workflow-facing contract keeps isolation, broad material-finding recording, governance alignment, shared skill guidance, and scan-first resolution closeout consistent.
 - Treat milestone-aware review handoff as a completed standard-workflow routing amendment with continuing regression coverage. Detailed state-vocabulary and handoff-summary coverage lives in `specs/milestone-aware-review-handoff.test.md`; this test spec proves the broader workflow contract does not route clean non-final milestone reviews to final closeout.
+- Treat independent test-spec review as a workflow-governance amendment with detailed proof in `specs/test-spec-review-gate.test.md`; this test spec proves the broader workflow contract routes formal test specs through `test-spec-review` before implementation and preserves the test-spec `active` state.
 - Treat the single-workflow-lane amendment as the current workflow-governance amendment under test. This test spec owns broad standard-workflow, manual-skill isolation, final closeout, and active change-metadata coverage; `specs/workflow-stage-autoprogression.test.md` owns workflow-managed continuation coverage, `specs/milestone-aware-review-handoff.test.md` owns milestone closeout coverage, and `specs/skill-contract.test.md` owns public skill portability coverage.
 
 ## Requirement coverage map
@@ -53,6 +56,7 @@
 | `R7`-`R7b` | `T20`, `T22` | manual, integration | Stable obligation values, trigger behavior, and `Runs for every change` semantics |
 | `R7ba`-`R7bf` | `T23` | manual, integration | Periodic `learn`, default nonblocking behavior, session-record closeout, and final learn artifact model linkage |
 | `R7c`-`R7w` | `T24`, `T37` | manual, integration | Autoprogression, immediate handoff language, stage-owned authority, tracked-branch review and verify claims |
+| `R7qa`-`R7qk` | `T38` | manual, integration | `test-spec-review` gate, active test-spec state, result enums, staleness, upstream routing, and implementation eligibility |
 | `R7ea`-`R7es` | `T37` | manual | `authoring-through-plan-review` activation, mandatory durable authorization persistence, isolation, architecture assessment, stop conditions, and completion boundary |
 | `R8`-`R8g`, `R8i`, `R8j` | `T2`, `T30` | manual, integration | Planned milestone lifecycle, plan/index coherence, and milestone commits |
 | `R8h`-`R8hc` | `T29`, `T30` | manual, integration | PR-self-contained plan lifecycle closeout and true downstream event handling |
@@ -62,7 +66,7 @@
 | `R8l`-`R8s` | `T13`, `T17`, `T25` | integration, smoke, manual | Selector-selected proof, CI wrapper semantics, broad-smoke triggers, manual proof records |
 | `R9`-`R9b`, `R18`, `R19` | `T13`, `T14`, `T26` | smoke, manual, integration | Routine CI, thin hosted wrapper, and `ci-maintenance` boundary |
 | `R10`-`R12f` | `T3`, `T16`, `T27` | manual, integration | Durable reasoning, PR summary, review-resolution closeout, formal review recording triggers, and verify-report conditionality |
-| `R12an`-`R12av` | `T27` | manual, integration | Stage-neutral detailed-record triggers, material/no-material initial review-record roots, and artifact-local status boundary |
+| `R12an`-`R12av` | `T27`, `T38` | manual, integration | Stage-neutral detailed-record triggers, material/no-material initial review-record roots, `test-spec-review` record inclusion, and artifact-local status boundary |
 | `R12aw`-`R12bdd` | `T33` | manual, integration | Isolation stops handoff, material findings require change-local review records, isolated output fields are complete, and review-output-only settlement is forbidden for material findings |
 | `R12be`, `R12bg` | `T34` | integration, manual | Formal review skills share one canonical `Isolation and Recording` block and governance guidance teaches the same broad rule |
 | `R12bf` | `T35` | integration, manual | New `review-resolution.md` records remain scan-first while preserving validator-readable fields |
@@ -94,6 +98,7 @@
 | `E14` | `T33` | Isolated review recording follows the finding while handoff stays stopped |
 | `E15` | `T35` | Review-resolution remains scan-first and parseable |
 | Milestone-aware amendment `E1`-`E6` | `T36` | Clean non-final/final review split, findings loop, ambiguous plan state, plan revision, and lifecycle-closeout distinction |
+| `E22` | `T38` | Formal test specs require current approved `test-spec-review` before implementation. |
 
 ## Edge case coverage
 
@@ -133,6 +138,7 @@
 - Release, deploy, package publication, external migration, and unobserved hosted checks are true downstream events that can keep a plan active: `T29`, `T30`
 - Tracked wording such as "move to Done after merge" is warning evidence and becomes blocking when the PR already contains the completion evidence: `T30`, `T32`
 - A spec may remain `draft` while awaiting spec-review, but if spec-review approves it and downstream artifacts rely on it, the same PR records `approved` before review-ready handoff continues: `T31`
+- A formal workflow-managed test spec remains `active`; approval lives in `test-spec-review`, and substantive post-review edits block implementation until re-reviewed: `T38`
 
 ## Test cases
 
@@ -950,6 +956,31 @@
   - Workflow-level guidance could permit unaudited activation, skip a required gate, or broaden the profile beyond the approved proposal.
 - Automation location:
   - Manual contract review before implementation.
+
+### T38. Test-spec-review gates formal implementation handoff
+
+- Covers: `R7qa`-`R7qk`, `R12ao`, `E22`
+- Level: manual, integration
+- Fixture/setup:
+  - `specs/rigorloop-workflow.md`
+  - `specs/test-spec-review-gate.test.md`
+  - `docs/workflows.md`
+  - `AGENTS.md`
+  - `scripts/review_artifact_validation.py`
+  - `scripts/test-review-artifact-validator.py`
+- Steps:
+  - Confirm the standard workflow chain contains `plan-review -> test-spec -> test-spec-review -> implement`.
+  - Confirm test specs keep settlement state `active` while review approval is recorded separately.
+  - Confirm implementation eligibility requires a current approved `test-spec-review` with no open material findings.
+  - Confirm the review-artifact validator accepts `test-spec-review` formal records and rejects unknown review status, immediate-next-stage, and implementation-handoff values before consistency checks.
+  - Confirm substantive test-spec edits require re-review and upstream revision routing blocks implementation until artifacts are synchronized.
+- Expected result:
+  - The workflow contract, summary guidance, and validator baseline agree that implementation cannot begin merely because a test spec exists.
+- Failure proves:
+  - The independent proof-map adequacy gate can be bypassed, conflated with test-spec state, or accepted with invalid routing metadata.
+- Automation location:
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/validate-review-artifacts.py --mode structure <change-pack>`
 
 ## Fixtures and data
 

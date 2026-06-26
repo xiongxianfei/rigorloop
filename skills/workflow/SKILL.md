@@ -115,7 +115,7 @@ Use the adopted workflow contract for full category detail. Operationally, route
 - Per-change chain:
 
 ```text
-proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr
+proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr
 ```
 
 - Periodic artifacts: `learn` and other cadence- or incident-triggered repository memory.
@@ -188,7 +188,7 @@ Keep planned next steps separate from terminal closeout. Superseded artifacts id
 RigorLoop has one recommended standard workflow for complete AI-assisted delivery:
 
 ```text
-proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr
+proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr
 ```
 
 Manual skill use is allowed. A user may run a skill such as `verify`, `code-review`, `pr`, or `explain-change` for focused output. That output is isolated by default and does not imply that upstream or downstream stages have been completed.
@@ -261,6 +261,7 @@ Possible review skills:
 - `spec-review`
 - `architecture-review`
 - `plan-review`
+- `test-spec-review`
 - `code-review`
 - `verify`
 - `explain-change`
@@ -287,7 +288,7 @@ Rules:
 - Resume uses tracked artifact and review evidence. Do not rerun completed artifacts or clean reviews, do not infer completion from file existence alone, and pause when completion evidence is ambiguous.
 - A clean `plan-review` completes the profile, reports `test-spec` as next, and does not invoke `test-spec`, implementation, review-fix loops, verification, or PR.
 - The implementation profile is verify-bounded implementation autoprogression. User-facing `auto-through: verify` maps to canonical `implementation-through-verify` and requires separate change-local authorization from authoring autoprogression.
-- `implementation-through-verify` uses persisted phases. Phase `A` is audit-only. Phase `B` may run test-spec settlement, implementation milestones, independent code-review rounds, reviewer-declared correction loops, and final clean code-review; it must stop before `explain-change` or `verify`. Phase `C` may run `explain-change` and fresh `verify` only when promotion evidence is recorded, then stops before invoking `pr`.
+- `implementation-through-verify` uses persisted phases. Phase `A` is audit-only. Phase `B` may run test-spec settlement, required test-spec-review, implementation milestones, independent code-review rounds, reviewer-declared correction loops, and final clean code-review; it must stop before `explain-change` or `verify`. Phase `C` may run `explain-change` and fresh `verify` only when promotion evidence is recorded, then stops before invoking `pr`.
 - Missing promotion evidence, unsupported phase values, unpersisted authorization, unrelated dirty state, owner decisions, new findings, non-shrinking correction loops, verify failure, or any attempt to cross the PR boundary pauses `implementation-through-verify`.
 - Autoprogressed `code-review` emits a first-pass review before any review-driven fix begins.
 - First-pass `blocked` and `inconclusive` stop instead of entering review-resolution.
