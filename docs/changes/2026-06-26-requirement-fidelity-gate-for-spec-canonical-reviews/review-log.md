@@ -17,6 +17,16 @@ Material findings: None
 Open findings: None
 
 ### Review entry
+Review ID: code-review-r7
+Stage: code-review
+Round: 7
+Status: clean-with-notes
+Detailed record: reviews/code-review-r7.md
+Resolution: review-resolution.md#code-review-r7
+Material findings: None
+Open findings: None
+
+### Review entry
 Review ID: spec-review-r1
 Stage: spec-review
 Round: 1
