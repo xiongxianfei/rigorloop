@@ -355,8 +355,12 @@ validation:
     result: pass
   - command: git diff --check -- docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md
     result: pass
+  - command: explain-change
+    result: recorded
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/explain-change.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/behavior-preservation.md
+    result: pass
 review:
-  status: m5_closed_explain_change
+  status: explain_change_recorded_verify_next
   unresolved_items: 0
   material_findings: 5
   closed_findings: 5
@@ -373,6 +377,7 @@ changed_files:
   - docs/plan.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/behavior-preservation.md
+  - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/explain-change.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/architecture-review-r1.md
