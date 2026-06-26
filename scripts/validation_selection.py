@@ -385,7 +385,12 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
     ),
     EvidenceClassRegistration(
         evidence_class_id="command-output",
-        patterns=("broad-smoke-child-commands-*.txt", "change-metadata-validator-tests-*.txt", "selected-tests-m3.txt"),
+        patterns=(
+            "broad-smoke-child-classification.md",
+            "broad-smoke-child-commands-*.txt",
+            "change-metadata-validator-tests-*.txt",
+            "selected-tests-m3.txt",
+        ),
         selector_routes=("artifact_lifecycle.validate",),
         required_validator="validate-artifact-lifecycle",
         lifecycle_stage="implementation",
