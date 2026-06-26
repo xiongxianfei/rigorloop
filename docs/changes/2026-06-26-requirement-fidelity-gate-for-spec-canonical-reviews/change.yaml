@@ -311,8 +311,18 @@ validation:
     result: pass
   - command: git diff --check -- scripts/review_artifact_validation.py scripts/test-review-artifact-validator.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md
     result: pass
+  - command: code-review r6
+    result: clean_with_notes_no_material_findings_m4_closed
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r6.md
+    result: pass
+  - command: git diff --check -- docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md
+    result: pass
 review:
-  status: m4_review_requested
+  status: m4_closed_implement_m5
   unresolved_items: 0
   material_findings: 5
   closed_findings: 5
@@ -339,6 +349,7 @@ changed_files:
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r3.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r4.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r5.md
+  - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r6.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/proposal-review-r1.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/spec-review-r1.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/spec-review-r2.md

@@ -18,11 +18,12 @@ Review closeout: code-review-r2
 Review closeout: code-review-r3
 Review closeout: code-review-r4
 Review closeout: code-review-r5
+Review closeout: code-review-r6
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`
 - Findings resolved: 5
 - Unresolved findings: 0
-- Current result: `RFG-M4-CR1` is resolved and M4 is ready for `code-review-r6`; M4 is not closed until rerun code-review completes cleanly.
+- Current result: `code-review-r6` returned clean-with-notes for M4; M4 is closed and ready to hand off to M5 implementation.
 
 ## Resolution Overview
 
@@ -142,3 +143,7 @@ Chosen action: Added `REQUIREMENT_COMPRESSION_REQUIRES_CORRECTIVE_ACTION_OUTCOME
 Resolution: Added regressions for the exact `misclassified-should-have-applied` plus `Corrective action: none` probe, empty action, missing action, whitespace/case variants, `N/A`, a real corrective-action pass case, and the compatibility guard that `Audit outcome: correct` with `Corrective action: none` remains valid. The existing valid requirement-compression calibration fixture remains valid and the approved spec was not changed.
 Validation target: Rerun `code-review-r6` after the M4 resolution implementation.
 Validation evidence: `python scripts/test-review-artifact-validator.py -k requirement_compression_misclassified_audit` passed after first failing for the expected reason before the validator fix; `python scripts/test-review-artifact-validator.py -k requirement_compression` passed; `python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-requirement-compression-calibration` passed; `python scripts/test-review-artifact-validator.py` passed; `python scripts/test-select-validation.py` passed with `102 passed in 134.70s`.
+
+### code-review-r6
+
+No material findings. `code-review-r6` reviewed the M4 resolution diff at commit `83156ff4`, confirmed `RFG-M4-CR1` is resolved across the validator constant, conditional corrective-action check, exact negative regression, trivial-value normalization, real-action pass case, and `correct`-outcome compatibility guard, closed M4, and handed off to M5 implementation.
