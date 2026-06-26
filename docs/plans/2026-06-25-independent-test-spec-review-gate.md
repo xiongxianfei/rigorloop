@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Owner: maintainers
 - Start date: 2026-06-25
 - Last updated: 2026-06-26
 - Change ID: 2026-06-25-independent-test-spec-review-gate
-- Related issue or PR: none yet
+- Related issue or PR: PR #111
 - Supersedes: none
 
 ## Purpose / big picture
@@ -68,9 +68,9 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - Last reviewed milestone: M3. Validators, fixtures, generated package proof, and representative evidence
 - Review status: approved; stage=code-review; round=r6
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: pr-handoff-pending — branch-ready is verified on 2026-06-26 after refreshed explain-change, closed CR4-F1 review-resolution, clean code-review-r6, local validation, regenerated adapter-output checks, and passing hosted PR CI; PR handoff remains to be refreshed.
+- Next stage: human review complete
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — PR #111 merged; implementation milestones, review-resolution, explain-change, verify, PR handoff, hosted CI, and human review are complete.
 
 ## Milestones
 
@@ -174,6 +174,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - 2026-06-26: Isolated M3 re-review completed clean as `code-review-r6`; next stage remains `explain-change`.
 - 2026-06-26: Explain-change refreshed after `CR4-F1` resolution, the M2 review-miss learning record, and clean M3 re-review; next stage is `verify`.
 - 2026-06-26: Final verify refreshed after adapter output regeneration and passing hosted PR CI; branch-ready is recorded and next stage is `pr`.
+- 2026-06-26: PR #111 merged; plan lifecycle state is `done` with terminal disposition `closed`.
 
 ## Decision log
 
@@ -220,7 +221,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ## Outcome and retrospective
 
-- `CR4-F1` is resolved, M3 is re-reviewed clean, final explain-change is refreshed, and final verify is current. PR handoff remains to be refreshed.
+- `CR4-F1` is resolved, M3 is re-reviewed clean, final explain-change and verify are current, PR handoff is complete, and PR #111 is merged.
 
 ## Readiness
 

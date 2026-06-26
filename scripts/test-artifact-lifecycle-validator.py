@@ -813,6 +813,114 @@ No blocked plans.
             self.assertTrue(result.blocking_findings, msg=f"{name} should fail")
             self.assertIn(expected, messages)
 
+    def test_terminal_plan_with_change_yaml_and_handoff_passes(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-terminal-change-"))
+        self.addCleanupTree(fixture_root)
+
+        plan_path = fixture_root / "docs" / "plans" / "2026-06-23-workflow-state-fixture.md"
+        plan_path.parent.mkdir(parents=True, exist_ok=True)
+        plan_path.write_text(
+            """# Terminal Workflow State Fixture
+
+## Status
+
+Plan lifecycle state: done
+Terminal disposition: closed
+
+- Change ID: 2026-06-23-workflow-state-fixture
+
+## Current Handoff Summary
+
+- Current milestone: M1. Terminal milestone
+- Current milestone state: closed
+- Latest review evidence: code-review-r1
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: none
+- Next stage: human review complete
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — PR #1 merged; implementation milestones, review-resolution, explain-change, verify, PR handoff, hosted CI, and human review are complete.
+
+## Outcome and retrospective
+
+- Terminal fixture is complete.
+
+## Milestones
+
+### M1. Terminal milestone
+
+- Milestone state: closed
+
+## Readiness
+
+- See `Current Handoff Summary`.
+""",
+            encoding="utf-8",
+        )
+
+        plan_index = fixture_root / "docs" / "plan.md"
+        plan_index.parent.mkdir(parents=True, exist_ok=True)
+        plan_index.write_text(
+            """# Plan index
+
+## Active
+
+No active plans.
+
+## Blocked
+
+No blocked plans.
+
+## Done (recent)
+
+Full completed history: see [Plan archive](plan-archive.md).
+
+- [Terminal Workflow State Fixture](plans/2026-06-23-workflow-state-fixture.md) - done; terminal state: done; PR #1 merged.
+
+## Superseded
+
+- none yet
+""",
+            encoding="utf-8",
+        )
+
+        change_yaml = fixture_root / "docs" / "changes" / "2026-06-23-workflow-state-fixture" / "change.yaml"
+        change_yaml.parent.mkdir(parents=True, exist_ok=True)
+        change_yaml.write_text(
+            """change_id: 2026-06-23-workflow-state-fixture
+title: Terminal workflow state fixture
+classification: implementation
+risk: low
+artifacts:
+  plan: docs/plans/2026-06-23-workflow-state-fixture.md
+requirements:
+  - fixture
+tests:
+  - fixture
+validation:
+  - command: fixture
+    result: pass
+changed_files:
+  - docs/plans/2026-06-23-workflow-state-fixture.md
+review:
+  status: clean
+  unresolved_items: 0
+""",
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                "docs/changes/2026-06-23-workflow-state-fixture/change.yaml",
+                "docs/plan.md",
+                "docs/plans/2026-06-23-workflow-state-fixture.md",
+            ],
+        )
+        messages = "\n".join(f"{f.path.relative_to(fixture_root)}: {f.message}" for f in result.blocking_findings)
+
+        self.assertFalse(result.blocking_findings, msg=messages)
+
     def test_multi_active_plans_correct_change_ids_pass(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-multi-pass-"))
         self.addCleanupTree(fixture_root)
