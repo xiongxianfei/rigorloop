@@ -4,7 +4,7 @@
 
 This record tracks material review finding closeout for the requirement-fidelity gate change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -17,11 +17,12 @@ Review closeout: code-review-r1
 Review closeout: code-review-r2
 Review closeout: code-review-r3
 Review closeout: code-review-r4
+Review closeout: code-review-r5
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`
 - Findings resolved: 4
-- Unresolved findings: 0
-- Current result: `code-review-r4` returned clean-with-notes for M3; M3 is closed and ready to hand off to M4 implementation.
+- Unresolved findings: 1
+- Current result: `code-review-r5` requested changes for M4; M4 requires review-resolution for `RFG-M4-CR1` before it can close.
 
 ## Resolution Overview
 
@@ -31,6 +32,7 @@ Review closeout: code-review-r4
 | SR1-F2 | accepted | resolved | Sampling and rotation obligations are quantified with Phase B sample floors, steady-state floors, corpus iteration size, rotation triggers, record fields, and planned test IDs. |
 | TSR1-F1 | accepted | resolved | Added a manual proof case schema, three structured manual proofs, two automated replacements for machine-checkable obligations, coverage-map links, and new planned test IDs. |
 | RFG-M2-CR1 | accepted | resolved | Workflow-managed clean review routing now requires a recorded requirement-fidelity applicability result; missing and unknown values fail closed, and clean-review fixtures are complete by default. |
+| RFG-M4-CR1 | accepted | open | Requirement-compression calibration must reject misclassified not-applicable audits that have no corrective action. |
 
 ## Finding Details
 
@@ -122,3 +124,18 @@ No material findings. `code-review-r3` reviewed the M2 resolution diff at commit
 ### code-review-r4
 
 No material findings. `code-review-r4` reviewed the M3 implementation diff at commit `32e1b372`, confirmed the R26 property-list by surface-list matrix, missing-`recorded` negative proof, and bounded spec-read fixture align with the approved M3 contract, closed M3, and handed off to M4 implementation.
+
+### code-review-r5
+
+#### RFG-M4-CR1 - Misclassified not-applicable audits can omit corrective action
+
+Finding ID: RFG-M4-CR1
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Stop state: resolution-needed
+Rationale: `code-review-r5` found that M4 validates the closed `Audit outcome` enum but does not enforce `R45b`'s conditional corrective-action requirement when the audit outcome is `misclassified-should-have-applied`.
+Required outcome: Requirement-compression calibration validation must fail when a misclassified not-applicable audit records no corrective action.
+Safe resolution path: Add a review-artifact validator regression where `Audit outcome: misclassified-should-have-applied` and `Corrective action: none` fails, then update `scripts/review_artifact_validation.py` to reject missing, empty, or `none` corrective action for that audit outcome. Keep the existing valid requirement-compression calibration fixture passing.
+Validation target: Rerun `code-review-r6` after the M4 resolution implementation.

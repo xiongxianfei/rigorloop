@@ -76,14 +76,14 @@ The implementation should favor structured fields and closed vocabularies where 
 ## Current Handoff Summary
 
 - Current milestone: M4. Compression calibration corpus and sampling records
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r4.md
-- Last reviewed milestone: M3
-- Review status: review-requested; stage=code-review; round=r5
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r5.md
+- Last reviewed milestone: M4
+- Review status: changes-requested; stage=code-review; round=r5
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 through M3 are closed; M4 is implemented and awaits code-review-r5; M5 remains open.
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 through M3 are closed; M4 has open finding `RFG-M4-CR1`; M5 remains open.
 
 ## Milestones
 
@@ -232,7 +232,7 @@ The implementation should favor structured fields and closed vocabularies where 
 
 ### M4. Compression calibration corpus and sampling records
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add the `requirement-compression` seeded-defect family, named rotating corpus iterations, Phase B sampling floors, not-applicable sampling records, and soft-normative regression checks.
 - Requirements: `R17`-`R17d`, `R41`-`R45c`, `R48`, `AC-RFG-012`, `AC-RFG-014`, `AC-RFG-015`, `AC-RFG-020`, `RFG-T017`-`RFG-T022`
 - Files/components likely touched:
@@ -384,6 +384,7 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: M3 implementation completed. Added source-annotated R26 property and surface constants plus a property-list by surface-list skill-validator matrix; added a missing-`recorded` negative regression for the canonical compression case; next stage is `code-review-r4`.
 - 2026-06-26: Code-review R4 returned clean-with-notes for M3, closed the R26 matrix pilot milestone, and handed off to implement M4.
 - 2026-06-26: M4 implementation completed. Added requirement-compression calibration validation for corpus seed coverage, R26 canonical seed evidence, sampling floors, rotation triggers, not-applicable sampling records, closed calibration vocabularies, a public calibration fixture, selector routing coverage, and soft-normative `MUST` wording regression; next stage is `code-review-r5`.
+- 2026-06-26: Code-review R5 requested changes for M4. Finding `RFG-M4-CR1` is open; next stage is `review-resolution`.
 
 ## Decision log
 

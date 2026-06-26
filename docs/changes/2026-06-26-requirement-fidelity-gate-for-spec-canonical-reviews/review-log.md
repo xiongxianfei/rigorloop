@@ -115,3 +115,13 @@ Detailed record: reviews/code-review-r4.md
 Resolution: review-resolution.md#code-review-r4
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-r5
+Stage: code-review
+Round: 5
+Status: changes-requested
+Detailed record: reviews/code-review-r5.md
+Resolution: review-resolution.md#code-review-r5
+Material findings: RFG-M4-CR1
+Open findings: RFG-M4-CR1
