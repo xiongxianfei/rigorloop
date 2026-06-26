@@ -70,7 +70,7 @@ Representative validation recorded during implementation and review includes:
 - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/behavior-preservation.md`
 - change-local `validate-review-artifacts`, `validate-change-metadata`, `validate-artifact-lifecycle`, and `git diff --check`
 
-Final verify has not run yet.
+Final verify has now run. Branch-ready evidence is recorded in `docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/verify-report.md`; hosted CI remains a PR outcome.
 
 ## Review Resolution Summary
 
@@ -116,8 +116,8 @@ Preserved non-goals:
 
 Remaining downstream work:
 
-- run final `verify`;
-- prepare PR handoff after verify;
+- prepare PR handoff after branch-ready verify;
+- observe hosted CI after PR handoff;
 - hosted CI and human review remain external PR outcomes.
 
 Known follow-ups from the proposal remain future work, not part of this slice:
@@ -128,4 +128,4 @@ Known follow-ups from the proposal remain future work, not part of this slice:
 - validator-generation helpers from property/surface matrices;
 - review-quality reporting for compression-defect recall.
 
-Current lifecycle state: all implementation milestones are closed after `code-review-r7`; next stage is `verify` after this explanation is recorded and validated.
+Current lifecycle state: all implementation milestones are closed after `code-review-r7`; final verify is branch-ready and the next stage is `pr`.

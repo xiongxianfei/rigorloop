@@ -3,13 +3,13 @@
 ## Result
 
 - Skill: verify
-- Status: blocker-resolved-pending-final-verify
+- Status: branch-ready
 - Verification date: 2026-06-26
-- Artifacts changed: yes, standalone verification evidence updated after CI-maintenance
-- Open blockers: 0 for `VERIFY-F1`; final verify still pending
-- Next stage: `verify`
-- Validation: direct repository checks, broad smoke, and post-fix PR-scoped selected CI passed
-- Readiness: not yet `branch-ready`; final verify rerun is still required
+- Artifacts changed: yes, standalone verification evidence updated after final verify
+- Open blockers: 0
+- Next stage: `pr`
+- Validation: fresh PR-scoped selected CI, broad smoke, generated-skill checks, and adapter archive validation passed
+- Readiness: `branch-ready`; PR handoff not yet run and hosted CI was not observed
 
 ## Scope
 
@@ -28,7 +28,7 @@ The verification scope covered governing requirements, test-spec coverage, canon
 | R26 matrix pilot and bounded reads | `R24`-`R29`, `R43` | `scripts/test-skill-validator.py`, `scripts/test-fidelity-gate-spec-reads.py`, R26 fixture | skill matrix tests and spec-read proof command | pass |
 | Calibration and seeded compression defects | `R41`-`R45c` | review-artifact validator tests and calibration fixture | review-artifact validator suite | pass |
 | Generated output preservation | `R49`, M5 | canonical skills, adapter build scripts | build-skills and temporary adapter generation/validation | pass |
-| Selector routing for PR-scoped CI | validation selector contract | `scripts/test-fidelity-gate-spec-reads.py`, R26 spec-read fixture | `bash scripts/ci.sh --mode pr --base <merge-base> --head HEAD` | block |
+| Selector routing for PR-scoped CI | validation selector contract | `scripts/test-fidelity-gate-spec-reads.py`, R26 spec-read fixture | `bash scripts/ci.sh --mode pr --base <merge-base> --head HEAD` | pass |
 
 ## Validation Evidence
 
@@ -39,16 +39,21 @@ The verification scope covered governing requirements, test-spec coverage, canon
 | `python scripts/test-select-validation.py -k "ValidationSelectionTests.test_catalog_records_initial_parallel_safe_allowlist"` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | New `requirement_fidelity.spec_reads` check is recorded in the parallel-safe catalog allowlist. |
 | `python scripts/test-select-validation.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 103 tests passed after selector routing fix. |
 | `bash scripts/ci.sh --mode pr --base <merge-base> --head HEAD` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Selected CI classified all changed paths and ran `requirement_fidelity.spec_reads`; 14 selected checks passed. |
+| `bash scripts/ci.sh --mode pr --base <merge-base> --head HEAD` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Final verify rerun on current HEAD passed 14 selected checks; `requirement_fidelity.spec_reads` passed with the R26 fixture path routed deterministically. |
 | `python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Validated 1 requirement-fidelity spec-read log. |
 | `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 11 checks passed in 725 seconds. |
+| `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Final verify rerun passed 11 broad-smoke checks in 326 seconds. |
 | `python scripts/test-skill-validator.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 241 tests passed. |
 | `python scripts/validate-skills.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Validated 24 skill files. |
 | `python scripts/test-build-skills.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 7 tests passed; generated skills validated in temporary output. |
 | `python scripts/build-skills.py --check` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Generated skills validated in temporary output. |
+| `python scripts/test-build-skills.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Final verify rerun: 7 tests passed; generated skills validated in temporary output. |
+| `python scripts/build-skills.py --check` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Final verify rerun: generated skills validated in temporary output. |
 | `python scripts/test-review-artifact-validator.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 96 tests passed. |
 | `python scripts/test-artifact-lifecycle-validator.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 142 tests passed. |
 | `python scripts/test-change-metadata-validator.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 43 tests passed. |
 | `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Built and validated codex, claude, and opencode adapter archives under a temporary directory. |
+| `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Final verify rerun: built and validated codex, claude, and opencode adapter archives under a temporary directory. |
 | `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 14 reviews, 5 findings, 14 log entries, 5 resolution entries. |
 | `python scripts/validate-change-metadata.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Valid change metadata. |
 | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <plan/change/explain/behavior/review evidence>` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Validated 5 artifact files in explicit-paths mode. |
@@ -68,13 +73,13 @@ The verification scope covered governing requirements, test-spec coverage, canon
 | Test coverage | pass | Selector regression coverage now includes the exact PR-mode proof script and fixture paths plus catalog allowlist coverage. |
 | Test validity | pass | Validator suites include fail-closed checks for requirement-fidelity records, calibration, metadata, and lifecycle gates. |
 | Architecture coherence | pass | The implementation remains repository-local and matches the architecture/ADR boundaries. |
-| Artifact lifecycle state | pass | Plan/index/change metadata currently agree that `verify` is the next stage and final closeout is not ready. |
+| Artifact lifecycle state | pass | Plan/index/change metadata currently agree that `pr` is the next stage and final closeout is not ready until PR handoff. |
 | Plan completion | pass | M1-M5 are closed and `code-review-r7` is clean-with-notes. |
-| Validation evidence | concern | PR-scoped selected CI now passes; final verify has not rerun after the CI-maintenance fix. |
+| Validation evidence | pass | PR-scoped selected CI, broad smoke, generated-skill checks, and adapter archive validation passed after the CI-maintenance fix. |
 | Drift detection | pass | Selector routing drift for the new proof script and fixture path is resolved. |
-| Risk closure | concern | Rollback and compatibility evidence exists; final verify rerun remains before `branch-ready` can be claimed. |
-| Release readiness | concern | Local branch is not yet `branch-ready`; hosted CI was not observed. |
+| Risk closure | pass | Rollback and compatibility evidence exists; the selector blocker is resolved and final verify reran cleanly. |
+| Release readiness | pass | Local branch is `branch-ready`; hosted CI was not observed and remains a PR outcome. |
 
 ## Verdict
 
-`VERIFY-F1` is resolved. Final `branch-ready` verification remains pending because the selector fix changed validation code after the blocked verify report.
+`VERIFY-F1` is resolved. The branch is `branch-ready` for PR handoff based on local final verification. Hosted CI was not observed.

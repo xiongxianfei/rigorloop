@@ -378,8 +378,20 @@ validation:
     result: pass_103_tests
   - command: bash scripts/ci.sh --mode pr --base <merge-base> --head HEAD
     result: pass
+  - command: verify
+    result: branch_ready_pr_next
+  - command: bash scripts/ci.sh --mode pr --base <merge-base> --head HEAD
+    result: pass_14_selected_checks_final_verify
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: pass_11_checks_final_verify
+  - command: python scripts/test-build-skills.py
+    result: pass_final_verify
+  - command: python scripts/build-skills.py --check
+    result: pass_final_verify
+  - command: tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5
+    result: pass_final_verify
 review:
-  status: selector_routing_resolved_verify_next
+  status: verified_branch_ready_pr_next
   unresolved_items: 0
   material_findings: 5
   closed_findings: 5
