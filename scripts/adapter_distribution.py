@@ -489,10 +489,14 @@ def render_manifest_yaml(version: str, reports: Iterable[SkillPortabilityReport]
     """Render the constrained generated adapter manifest shape deterministically."""
 
     report_tuple = tuple(reports)
+    render_opencode_aliases = False
     if _supports_opencode_command_aliases(version):
         missing_alias_skills = _opencode_command_alias_missing_skill_errors(report_tuple)
         if missing_alias_skills:
-            raise ValueError("\n".join(missing_alias_skills))
+            if not version.startswith("v"):
+                raise ValueError("\n".join(missing_alias_skills))
+        else:
+            render_opencode_aliases = True
 
     lines = [f"version: {version}", "skills:"]
     for report in sorted(report_tuple, key=lambda item: item.name):
@@ -501,7 +505,7 @@ def render_manifest_yaml(version: str, reports: Iterable[SkillPortabilityReport]
         lines.append(f"    adapters: [{', '.join(report.included_adapters)}]")
         if not report.portable:
             lines.append(f"    reason: {_yaml_double_quoted(report.reason)}")
-    if _supports_opencode_command_aliases(version):
+    if render_opencode_aliases:
         lines.append("command_aliases:")
         lines.append("  opencode:")
         lines.append(f"    count: {len(OPENCODE_COMMAND_ALIASES)}")
@@ -957,7 +961,7 @@ def _adapter_contract_relative_path(relative_path: Path) -> str:
 
 
 def _parse_adapter_version_core(version: str) -> tuple[int, int, int] | None:
-    core = version.split("-", 1)[0]
+    core = version.removeprefix("v").split("-", 1)[0]
     parts = core.split(".")
     if len(parts) != 3:
         return None
@@ -1138,7 +1142,10 @@ def _expected_adapter_files_from_reports(
                     / _path_from_posix(config.skill_root / report.name / PurePosixPath(resource_path.as_posix()))
                 ] = text
 
-    if _supports_opencode_command_aliases(version):
+    if (
+        _supports_opencode_command_aliases(version)
+        and not _opencode_command_alias_missing_skill_errors(reports)
+    ):
         for alias in OPENCODE_COMMAND_ALIASES:
             expected[opencode_command_alias_relative_path(alias)] = render_opencode_command_alias(alias)
 
@@ -1239,6 +1246,8 @@ def _manifest_command_alias_contract_errors(version: str, manifest: AdapterManif
 
     section = manifest.command_aliases.get("opencode")
     if section is None:
+        if version.startswith("v"):
+            return errors
         errors.append("manifest missing command_aliases.opencode")
         section_aliases: dict[str, str] = {}
     else:
@@ -1743,6 +1752,8 @@ def _validate_opencode_command_aliases(
 
     section = manifest.command_aliases.get("opencode")
     if section is None:
+        if version.startswith("v") and not actual_aliases:
+            return errors
         errors.append("manifest missing command_aliases.opencode")
         section_aliases: dict[str, str] = {}
     else:
@@ -3362,8 +3373,12 @@ def _validate_smoke_row(
     return errors
 
 
-def _validate_opencode_command_alias_smoke(version: str, metadata: ReleaseMetadata) -> list[str]:
-    if not _supports_opencode_command_aliases(metadata.manifest_version):
+def _validate_opencode_command_alias_smoke(
+    version: str,
+    metadata: ReleaseMetadata,
+    manifest: AdapterManifest | None,
+) -> list[str]:
+    if manifest is None or "opencode" not in manifest.command_aliases:
         return []
 
     row = metadata.smoke.get("opencode")
@@ -3838,8 +3853,6 @@ def validate_release_output(
         row = metadata.smoke.get(tool)
         if row is not None:
             errors.extend(_validate_smoke_row(version, expected_release_type, tool, row))
-    errors.extend(_validate_opencode_command_alias_smoke(version, metadata))
-
     token_cost_required = version in TOKEN_COST_REPORT_REQUIRED_RELEASES
     adapter_artifacts_required = version in ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES
     npm_publication_evidence_required = version in NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES
@@ -3874,6 +3887,7 @@ def validate_release_output(
             f"{manifest_path}: version mismatch: expected {expected_manifest_version}, "
             f"found {manifest.version}"
         )
+    errors.extend(_validate_opencode_command_alias_smoke(version, metadata, manifest))
 
     current_source_profile = profile is ReleaseValidationProfile.CURRENT_SOURCE
 

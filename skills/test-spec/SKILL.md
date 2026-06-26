@@ -18,7 +18,7 @@ The test spec defines how the team will know the implementation satisfies the be
 - role_name: test-spec
 - stage: authoring
 - upstream: approved spec, spec-review findings, approved plan, and relevant architecture or ADR records when present
-- downstream: implement
+- downstream: test-spec-review
 - summary: Design the proof mapping requirements, examples, edge cases, architecture boundaries, and milestones to tests before implementation.
 - must_not_claim: implementation completion, code-review approval, verification, branch readiness, or PR readiness.
 
@@ -187,8 +187,9 @@ Required sections are listed above. Do not emit unfilled placeholders.
 - Do not hide untestable requirements; send them back to `spec-review`.
 - Do not treat downstream implementation readiness as a substitute for approved spec-review findings and concrete plan context.
 - When changed boundaries still require approved architecture or ADR input, return the work to the appropriate upstream gate instead of guessing.
-- Under `implementation-through-verify`, the workflow may run deterministic test-spec settlement after authoring. Settlement records coverage, uncovered gaps, validation commands, and input artifact identities; it is not a new `test-spec-review` stage.
-- If settlement reveals upstream ambiguity or stale inputs, pause instead of authorizing implementation. The first milestone's code-review rechecks the recorded input artifact identities before accepting the implementation review surface.
+- Formal workflow-managed test specs route to `test-spec-review` before implementation.
+- Under `implementation-through-verify`, the workflow may run deterministic test-spec settlement after authoring. Settlement records coverage, uncovered gaps, validation commands, and input artifact identities; it does not replace required `test-spec-review`.
+- If settlement or `test-spec-review` reveals upstream ambiguity or stale inputs, pause instead of authorizing implementation. The first milestone's code-review rechecks the recorded input artifact identities before accepting the implementation review surface.
 
 ## Evidence collection efficiency
 
@@ -206,4 +207,4 @@ Read the full file when the whole file is the review target, the relevant sectio
 - fixtures and commands;
 - explicit exclusions;
 - uncovered gaps, if any;
-- readiness statement for `implement`.
+- readiness statement for `test-spec-review`.
