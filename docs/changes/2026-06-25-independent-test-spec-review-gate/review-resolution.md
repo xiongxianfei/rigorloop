@@ -8,6 +8,7 @@ Closeout status: closed
 
 Review closeout: code-review-r4
 Review closeout: code-review-r5
+Review closeout: code-review-r6
 Review closeout: proposal-review-r1
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -17,7 +18,7 @@ Review closeout: code-review-r1
 Review closeout: code-review-r2
 Review closeout: code-review-r3
 
-- Reviews covered: `proposal-review-r1`, `plan-review-r1`, `plan-review-r2`, `architecture-review-r1`, `spec-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`
+- Reviews covered: `proposal-review-r1`, `plan-review-r1`, `plan-review-r2`, `architecture-review-r1`, `spec-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`
 - Findings resolved: 1
 - Unresolved findings: 0
 - Current result: `CR4-F1` is resolved by commit `d6fbf415`, and `code-review-r5` approved the fix with no material findings.
@@ -53,6 +54,10 @@ Ordering note: The fix uses the ordering `recorded, approved, current` consisten
 ### code-review-r5
 
 No material findings; this same-stage rereview approved the `CR4-F1` fix and closed the review-resolution loop.
+
+### code-review-r6
+
+No material findings; this isolated M3 re-review approved the M3 validator, lifecycle, generated adapter, and release metadata surface with no new resolution required.
 
 ### proposal-review-r1
 

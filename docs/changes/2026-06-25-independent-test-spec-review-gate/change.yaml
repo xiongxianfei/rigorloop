@@ -67,6 +67,7 @@ changed_files:
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r3.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r4.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r5.md
+  - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r6.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md
   - docs/learn/sessions/2026-06-26-m2-test-spec-review-evidence-review-miss.md
@@ -80,7 +81,7 @@ review:
   spec_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md
   architecture_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/architecture-review-r1.md
   plan_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md
-  code_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r5.md
+  code_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r6.md
   review_log: docs/changes/2026-06-25-independent-test-spec-review-gate/review-log.md
   review_resolution: docs/changes/2026-06-25-independent-test-spec-review-gate/review-resolution.md
 validation:
@@ -192,6 +193,10 @@ validation:
     result: accepted_resolved_by_d6fbf415
   - command: code-review r5
     result: clean-with-notes_no_material_findings_CR4-F1_resolved_next_explain-change
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_manifest_records_opencode_command_aliases_for_v_prefixed_releases AdapterDistributionTests.test_release_ci_validation_uses_recorded_source_commit_for_v0_1_5 AdapterDistributionTests.test_v0_1_1_release_metadata_requires_command_alias_smoke_evidence
+    result: pass
+  - command: code-review r6
+    result: clean-with-notes_no_material_findings_m3_rereview_next_explain-change
 workflow:
   autoprogression:
     authoring_through_plan_review:
