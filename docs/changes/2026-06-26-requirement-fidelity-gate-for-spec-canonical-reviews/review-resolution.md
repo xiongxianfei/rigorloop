@@ -16,11 +16,12 @@ Review closeout: test-spec-review-r2
 Review closeout: code-review-r1
 Review closeout: code-review-r2
 Review closeout: code-review-r3
+Review closeout: code-review-r4
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`
 - Findings resolved: 4
 - Unresolved findings: 0
-- Current result: `code-review-r3` returned clean-with-notes for M2; M2 is closed and ready to hand off to M3 implementation.
+- Current result: `code-review-r4` returned clean-with-notes for M3; M3 is closed and ready to hand off to M4 implementation.
 
 ## Resolution Overview
 
@@ -117,3 +118,7 @@ Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k req
 ### code-review-r3
 
 No material findings. `code-review-r3` reviewed the M2 resolution diff at commit `75635fca`, confirmed `RFG-M2-CR1` is resolved across lifecycle routing, fixture defaults, review-artifact validation, and compatibility coverage, closed M2, and handed off to M3 implementation.
+
+### code-review-r4
+
+No material findings. `code-review-r4` reviewed the M3 implementation diff at commit `32e1b372`, confirmed the R26 property-list by surface-list matrix, missing-`recorded` negative proof, and bounded spec-read fixture align with the approved M3 contract, closed M3, and handed off to M4 implementation.
