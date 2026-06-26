@@ -1775,6 +1775,12 @@ raise SystemExit({exit_code})
                 "checks": {"artifact_lifecycle.validate"},
             },
             {
+                "path": "docs/changes/2026-04-25-example/selector-regression-profile.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
                 "path": "docs/changes/2026-04-25-example/generated-output-proof.md",
                 "category": "registered-change-evidence",
                 "status": "ok",

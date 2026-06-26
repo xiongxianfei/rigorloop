@@ -1,0 +1,117 @@
+change_id: 2026-06-26-preflight-first-validation-runtime-optimization
+title: Preflight-First Validation Runtime Optimization
+classification: workflow-governance
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-26-preflight-first-validation-runtime-optimization.md
+  spec: specs/validation-runtime-follow-through.md
+  test_spec: specs/validation-runtime-follow-through.test.md
+  plan: docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md
+requirements:
+  - Record the validation-runtime optimization follow-on proposal before proposal-review.
+  - Review the proposal for problem clarity, option quality, scope control, risk honesty, vision fit, and readiness for spec.
+  - Preserve the accepted June 24 preflight-first proposal as the baseline and avoid superseding it silently.
+  - Record proposal-review R1 as durable formal review evidence.
+  - Normalize proposal status to accepted before downstream spec reliance.
+  - Author a focused validation-runtime follow-through spec from the accepted proposal.
+  - Normalize spec status to approved after clean spec-review before plan reliance.
+  - Author a living execution plan after approved spec-review.
+  - Author a traceable test spec from the approved spec and approved execution plan before implementation.
+tests:
+  - Proposal-review R1 approves the proposal or records material findings before downstream spec reliance.
+  - Review-log indexes proposal-review R1 with zero material findings when clean.
+  - Proposal status is accepted before downstream spec reliance.
+  - The validation-runtime follow-through spec is ready for spec-review.
+  - Spec-review R1 approves the validation-runtime follow-through spec or records material findings before downstream reliance.
+  - The execution plan records milestones, validation commands, recovery paths, dependencies, and current handoff state before plan-review.
+  - Plan-review R1 approves the execution plan or records material findings before test-spec reliance.
+  - The validation-runtime follow-through test spec maps R1-R25, E1-E5, EC1-EC9, and M1-M3 before test-spec-review.
+  - Test-spec-review R1 reviews proof-map adequacy before implementation handoff.
+  - Artifact lifecycle validation accepts the proposal and clean proposal-review evidence.
+changed_files:
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - docs/proposals/2026-06-26-preflight-first-validation-runtime-optimization.md
+  - specs/validation-runtime-follow-through.md
+  - specs/validation-runtime-follow-through.test.md
+  - docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md
+  - docs/plan.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r2.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/spec-review-r1.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/plan-review-r1.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r1.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r2.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md
+review:
+  status: approved
+  unresolved_items: 0
+  location: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md
+  material_findings: 1
+  closed_findings: 1
+  open_findings: 0
+  proposal_review: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r1.md
+  latest_proposal_review: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r2.md
+  spec_review: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/spec-review-r1.md
+  plan_review: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/plan-review-r1.md
+  test_spec_review: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md
+  review_log: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md
+  review_resolution: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: proposal-review r2
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted
+  - command: spec authoring
+    result: validation_runtime_follow_through_spec_draft_ready_for_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: spec_status_approved
+  - command: plan authoring
+    result: living_execution_plan_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: test-spec authoring
+    result: validation_runtime_follow_through_test_spec_ready_for_test_spec_review
+  - command: test-spec authoring validation
+    result: change_metadata_review_artifacts_artifact_lifecycle_and_diff_check_passed
+  - command: selected ci explicit
+    result: blocked_untracked_authoritative_artifacts_before_selected_checks
+  - command: test-spec-review r1
+    result: changes_requested_TSR1-F1
+  - command: review-resolution TSR1-F1
+    result: accepted_resolved_after_test_spec_revision
+  - command: test-spec-review r2
+    result: approved_no_material_findings
+  - command: test-spec-review r3
+    result: approved_no_material_findings
+  - command: "/usr/bin/time -p python scripts/test-select-validation.py"
+    result: passed_103_tests_suite_142_65s_time_real_135_04s
+  - command: "/usr/bin/time -p python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --json"
+    result: passed_selected_selector_regression_real_1_18s
+  - command: "/usr/bin/time -p python scripts/test-select-validation.py -k preflight"
+    result: passed_2_tests_real_0_16s
+  - command: "/usr/bin/time -p bash scripts/ci.sh --mode explicit --timeout 180 --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md"
+    result: timed_out_selector_regression_after_180_12s
+  - command: "/usr/bin/time -p bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md"
+    result: passed_selector_regression_273_28s
+  - command: "python scripts/test-select-validation.py -k registered_change_evidence"
+    result: passed_5_tests
+  - command: "python scripts/validate-change-metadata.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml"
+    result: passed
+  - command: "python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-preflight-first-validation-runtime-optimization"
+    result: passed
+  - command: "python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-26-preflight-first-validation-runtime-optimization"
+    result: passed
+  - command: "git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md docs/plan.md specs/validation-runtime-follow-through.md specs/validation-runtime-follow-through.test.md"
+    result: passed
+  - command: "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path specs/validation-runtime-follow-through.test.md --path docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/plan.md --path docs/proposals/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/plan-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md"
+    result: passed

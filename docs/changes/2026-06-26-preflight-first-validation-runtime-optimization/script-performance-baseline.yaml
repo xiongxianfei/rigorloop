@@ -1,0 +1,181 @@
+change_id: 2026-06-26-preflight-first-validation-runtime-optimization
+report: script-performance-baseline
+status: baseline-recorded
+measured_at: "2026-06-26T11:53:57-07:00"
+measured_by: Codex
+upstream_foundation:
+  relationship: follow-on
+  supersedes_june_24_foundation: false
+  durable_artifacts:
+    accepted_proposal: docs/proposals/2026-06-24-preflight-first-measured-script-execution-optimization.md
+    approved_spec: specs/validation-execution-performance-and-preflight.md
+    active_plan: docs/plans/2026-06-24-preflight-first-measured-script-execution-optimization.md
+    prior_change_id: 2026-06-24-preflight-first-measured-script-execution-optimization
+    prior_timing_evidence: docs/changes/2026-06-24-preflight-first-measured-script-execution-optimization/script-performance-baseline.yaml
+measurement_context:
+  branch: proposal/preflight-first-validation-runtime-optimization
+  head: b91cbb06eddb5686ff80cb8bd404bf77231500f9
+  repository_state: "dirty; lifecycle-managed proposal, spec, test spec, plan, review evidence, and M1 evidence are not yet committed"
+  operating_system: "Linux 6.6.87.2-microsoft-standard-WSL2 x86_64"
+  python: "Python 3.12.3"
+  timing_tool: "/usr/bin/time -p"
+  hosted_ci_observed: false
+  notes:
+    - "This is a local first-slice baseline, not a performance budget."
+    - "No fixed percentage runtime-reduction target is set by this report."
+    - "Selector timings were measured directly; broad-smoke and final verify were separated as distinct scenarios without rerunning expensive or final-readiness checks in this milestone."
+
+scenarios:
+  selected_validation_selector_surface:
+    purpose: "Measure selector calculation and selected-check identity for the selector implementation surface."
+    command: "python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --json"
+    result: pass
+    elapsed_seconds: 1.18
+    user_seconds: 0.04
+    sys_seconds: 0.20
+    selector_status: ok
+    changed_paths:
+      - scripts/validation_selection.py
+      - scripts/test-select-validation.py
+    classified_paths:
+      - path: scripts/validation_selection.py
+        category: selector
+      - path: scripts/test-select-validation.py
+        category: selector
+    unclassified_paths: []
+    selected_checks:
+      - check_id: selector.regression
+        phase: focused
+        cache_status: not-applicable
+        reason: "Changed selector code requires selector regression fixtures."
+    preflight_results:
+      - check: unmerged_paths
+        result: pass
+      - check: tracked_authoritative_artifacts
+        result: pass
+    dominant_contributor: "selector calculation is not the dominant cost for this surface; execution of selector.regression dominates selected validation."
+
+  selector_regression_direct:
+    purpose: "Measure direct selector-regression suite runtime before any optimization."
+    command: "python scripts/test-select-validation.py"
+    timing_command: "/usr/bin/time -p python scripts/test-select-validation.py"
+    result: pass
+    tests: 103
+    suite_reported_elapsed_seconds: 142.65
+    time_real_seconds: 135.04
+    time_user_seconds: 5.39
+    time_sys_seconds: 22.61
+    selected_checks_observed:
+      - selector.regression
+    dominant_contributor: "selector.regression direct suite runtime"
+
+  selected_ci_wrapper_timeout_180:
+    purpose: "Record selected-wrapper timeout behavior for the M1 changed surface."
+    command: "bash scripts/ci.sh --mode explicit --timeout 180 --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md"
+    timing_command: "/usr/bin/time -p bash scripts/ci.sh --mode explicit --timeout 180 --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md"
+    result: timed-out
+    exit_code: 124
+    time_real_seconds: 174.62
+    time_user_seconds: 4.59
+    time_sys_seconds: 19.18
+    selected_checks:
+      - check_id: artifact_lifecycle.validate
+        phase: focused
+        result: pass
+        elapsed_seconds: 0.49
+      - check_id: selector.regression
+        phase: focused
+        result: timed-out
+        elapsed_seconds: 180.12
+    phase_timing_summary:
+      focused_seconds: 180.60
+    implication: "The 180-second wrapper timeout is insufficient for the measured local selected-CI surface."
+
+  selected_ci_wrapper_timeout_300:
+    purpose: "Record successful selected-wrapper execution after the timeout behavior was observed."
+    command: "bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md"
+    timing_command: "/usr/bin/time -p bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md"
+    result: pass
+    time_real_seconds: 264.16
+    time_user_seconds: 5.54
+    time_sys_seconds: 26.31
+    selected_checks:
+      - check_id: artifact_lifecycle.validate
+        phase: focused
+        result: pass
+        elapsed_seconds: 0.47
+      - check_id: selector.regression
+        phase: focused
+        result: pass
+        elapsed_seconds: 273.28
+    phase_timing_summary:
+      focused_seconds: 273.75
+    dominant_contributor: "selector.regression under the selected-CI wrapper"
+
+  preflight_regression_slice:
+    purpose: "Measure cheap selector preflight tests in isolation."
+    command: "python scripts/test-select-validation.py -k preflight"
+    timing_command: "/usr/bin/time -p python scripts/test-select-validation.py -k preflight"
+    result: pass
+    tests: 2
+    suite_reported_elapsed_seconds: 0.04
+    time_real_seconds: 0.16
+    time_user_seconds: 0.08
+    time_sys_seconds: 0.02
+    dominant_contributor: "not material at this scale"
+
+  broad_smoke_boundary:
+    purpose: "Keep broad-smoke boundary cost distinct from selected-validation cost."
+    command: "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped"
+    result: not-run-this-milestone
+    prior_evidence:
+      source: docs/proposals/2026-06-26-preflight-first-validation-runtime-optimization.md
+      recorded_duration_seconds: 725
+      recorded_checks: 11
+    limitation: "M1 records the selected-validation baseline and selector profile. Broad-smoke runtime reduction is intentionally deferred until M3 child classification and a later parallelism decision."
+
+  final_verify:
+    purpose: "Keep final branch-readiness verification separate from inner-loop selected validation."
+    command: "verify"
+    result: not-run-this-milestone
+    limitation: "The repository state is intentionally dirty during implementation, so final verify cannot produce branch-readiness evidence in M1."
+
+counter_observations:
+  git_inspection_calls:
+    status: unavailable
+    reason: "No syscall/subprocess tracing tool was used for this M1 local baseline."
+  subprocess_launches:
+    status: unavailable
+    reason: "No syscall/subprocess tracing tool was used for this M1 local baseline."
+  filesystem_files_or_bytes_inspected:
+    status: unavailable
+    reason: "The current scripts do not emit this telemetry."
+
+baseline_findings:
+  - id: PERF-FOLLOW-001
+    finding: "The selected selector surface selects only selector.regression, and selector calculation itself is about one second locally."
+    evidence: "select-validation explicit selector-surface command passed in 1.18s and selected selector.regression with cache_status not-applicable."
+    implication: "M2 should focus on selector.regression execution and preservation proof rather than selector calculation overhead."
+  - id: PERF-FOLLOW-002
+    finding: "The direct selector-regression suite remains a long-running selected-validation cost."
+    evidence: "python scripts/test-select-validation.py passed 103 tests and reported 142.65s."
+    implication: "A timeout override remains necessary for wrapper paths until a safe reduction is implemented or a no-safe-reduction decision is recorded."
+  - id: PERF-FOLLOW-004
+    finding: "The selected-CI wrapper path exceeded the 180-second override locally but passed with a 300-second override."
+    evidence: "The 180-second wrapper run timed out selector.regression after 180.12s; the 300-second wrapper run passed with selector.regression at 273.28s."
+    implication: "M2 should treat timeout behavior as part of selector-regression preservation and either reduce the runtime safely or record a no-safe-reduction recommendation."
+  - id: PERF-FOLLOW-003
+    finding: "Cheap preflight tests remain suitable for early gating."
+    evidence: "python scripts/test-select-validation.py -k preflight passed 2 tests in 0.04s suite-reported time and 0.16s /usr/bin/time real time."
+    implication: "Preflight-first sequencing remains justified, but it does not by itself reduce selector.regression runtime."
+
+deferred_measurements:
+  - "Repeated-run medians across cold and warm runs."
+  - "Subprocess and Git-inspection counts using an available tracing mechanism."
+  - "Filesystem files/bytes inspected."
+  - "Broad-smoke local rerun after child classification is recorded."
+  - "Final verify timing after stable committed tracked state exists."
+
+budget_policy:
+  hard_thresholds_enabled: false
+  rationale: "The approved spec requires reviewed baselines before any fixed percentage runtime target or hard performance gate."
