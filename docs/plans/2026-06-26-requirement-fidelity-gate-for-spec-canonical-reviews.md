@@ -76,14 +76,14 @@ The implementation should favor structured fields and closed vocabularies where 
 ## Current Handoff Summary
 
 - Current milestone: M4. Compression calibration corpus and sampling records
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r4.md
 - Last reviewed milestone: M3
-- Review status: approved; stage=code-review; round=r4
+- Review status: review-requested; stage=code-review; round=r5
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: implement M4
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 through M3 are closed; M4 and M5 remain open.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 through M3 are closed; M4 is implemented and awaits code-review-r5; M5 remains open.
 
 ## Milestones
 
@@ -232,7 +232,7 @@ The implementation should favor structured fields and closed vocabularies where 
 
 ### M4. Compression calibration corpus and sampling records
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add the `requirement-compression` seeded-defect family, named rotating corpus iterations, Phase B sampling floors, not-applicable sampling records, and soft-normative regression checks.
 - Requirements: `R17`-`R17d`, `R41`-`R45c`, `R48`, `AC-RFG-012`, `AC-RFG-014`, `AC-RFG-015`, `AC-RFG-020`, `RFG-T017`-`RFG-T022`
 - Files/components likely touched:
@@ -383,6 +383,7 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: Code-review R3 returned clean-with-notes for M2, confirmed `RFG-M2-CR1` is resolved, closed M2, and handed off to implement M3.
 - 2026-06-26: M3 implementation completed. Added source-annotated R26 property and surface constants plus a property-list by surface-list skill-validator matrix; added a missing-`recorded` negative regression for the canonical compression case; next stage is `code-review-r4`.
 - 2026-06-26: Code-review R4 returned clean-with-notes for M3, closed the R26 matrix pilot milestone, and handed off to implement M4.
+- 2026-06-26: M4 implementation completed. Added requirement-compression calibration validation for corpus seed coverage, R26 canonical seed evidence, sampling floors, rotation triggers, not-applicable sampling records, closed calibration vocabularies, a public calibration fixture, selector routing coverage, and soft-normative `MUST` wording regression; next stage is `code-review-r5`.
 
 ## Decision log
 
@@ -447,6 +448,20 @@ The implementation should favor structured fields and closed vocabularies where 
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r4.md`
   - `git diff --check -- docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md`
+- 2026-06-26: M4 validation passed:
+  - `python scripts/test-review-artifact-validator.py -k requirement_compression_calibration`
+  - `python scripts/test-review-artifact-validator.py -k soft_normative`
+  - `python scripts/test-review-artifact-validator.py -k requirement_compression`
+  - `python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-requirement-compression-calibration`
+  - `python scripts/test-select-validation.py ValidationSelectionTests.test_first_slice_representative_categories_route_or_block_safely`
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml`
+  - `git diff --check -- scripts/review_artifact_validation.py scripts/test-review-artifact-validator.py scripts/test-select-validation.py tests/fixtures/review-artifacts/valid-requirement-compression-calibration docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml`
+- 2026-06-26: M4 validation limitation: full `python scripts/test-select-validation.py` was interrupted after several minutes with no assertion output while waiting in selector preflight Git status. The targeted selector routing test that covers the new calibration fixture path passed.
 
 ## Outcome and retrospective
 

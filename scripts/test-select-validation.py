@@ -1865,6 +1865,12 @@ raise SystemExit({exit_code})
                 "checks": {"review_artifacts.regression"},
             },
             {
+                "path": "tests/fixtures/review-artifacts/valid-requirement-compression-calibration/reviews/code-review-r1.md",
+                "category": "review-artifact-fixtures",
+                "status": "ok",
+                "checks": {"review_artifacts.regression"},
+            },
+            {
                 "path": "tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml",
                 "category": "review-artifact-fixtures",
                 "status": "ok",
