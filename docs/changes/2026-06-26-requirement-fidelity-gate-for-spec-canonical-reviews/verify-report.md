@@ -3,13 +3,13 @@
 ## Result
 
 - Skill: verify
-- Status: blocked
+- Status: blocker-resolved-pending-final-verify
 - Verification date: 2026-06-26
-- Artifacts changed: yes, standalone verification evidence recorded
-- Open blockers: 1
-- Next stage: blocked before `pr`
-- Validation: direct repository checks and broad smoke passed; PR-scoped selected CI is blocked by selector routing gaps
-- Readiness: not `branch-ready`
+- Artifacts changed: yes, standalone verification evidence updated after CI-maintenance
+- Open blockers: 0 for `VERIFY-F1`; final verify still pending
+- Next stage: `verify`
+- Validation: direct repository checks, broad smoke, and post-fix PR-scoped selected CI passed
+- Readiness: not yet `branch-ready`; final verify rerun is still required
 
 ## Scope
 
@@ -35,8 +35,11 @@ The verification scope covered governing requirements, test-spec coverage, canon
 | Command | Working directory | Result | Important output |
 | --- | --- | --- | --- |
 | `bash scripts/ci.sh --mode pr --base <merge-base> --head HEAD` | `/home/xiongxianfei/data/20260419-rigorloop` | blocked | Selector blocked with `manual-routing-required` for `scripts/test-fidelity-gate-spec-reads.py` and `unclassified-path` for `tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json`. |
+| `python scripts/test-select-validation.py -k requirement_fidelity` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Added PR-mode regression for the exact requirement-fidelity proof script and R26 spec-read fixture paths. |
+| `python scripts/test-select-validation.py -k "ValidationSelectionTests.test_catalog_records_initial_parallel_safe_allowlist"` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | New `requirement_fidelity.spec_reads` check is recorded in the parallel-safe catalog allowlist. |
+| `python scripts/test-select-validation.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 103 tests passed after selector routing fix. |
+| `bash scripts/ci.sh --mode pr --base <merge-base> --head HEAD` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Selected CI classified all changed paths and ran `requirement_fidelity.spec_reads`; 14 selected checks passed. |
 | `python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Validated 1 requirement-fidelity spec-read log. |
-| `python scripts/test-select-validation.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 102 tests passed. |
 | `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 11 checks passed in 725 seconds. |
 | `python scripts/test-skill-validator.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | 241 tests passed. |
 | `python scripts/validate-skills.py` | `/home/xiongxianfei/data/20260419-rigorloop` | pass | Validated 24 skill files. |
@@ -54,24 +57,24 @@ The verification scope covered governing requirements, test-spec coverage, canon
 
 | ID | Severity | Evidence | Required outcome |
 | --- | --- | --- | --- |
-| VERIFY-F1 | blocking | PR-scoped local CI stops before selected checks because the new proof script is classified as `script-unsupported` and the new R26 spec-read fixture path is unclassified. | Add deterministic selector routing and regression coverage for `scripts/test-fidelity-gate-spec-reads.py` and `tests/fixtures/requirement-fidelity-gate/representative-reviews/.../spec-read-log.json`, then rerun final verify. |
+| VERIFY-F1 | resolved | PR-scoped local CI had stopped before selected checks because the new proof script was classified as `script-unsupported` and the new R26 spec-read fixture path was unclassified. | Added deterministic selector routing and regression coverage for `scripts/test-fidelity-gate-spec-reads.py` and `tests/fixtures/requirement-fidelity-gate/representative-reviews/.../spec-read-log.json`; post-fix PR-scoped selected CI passed. |
 
 ## Drift And Risk Assessment
 
 | Dimension | Result | Notes |
 | --- | --- | --- |
 | Spec coverage | pass | Implemented behavior maps to the approved requirement-fidelity spec and accepted proposal. |
-| Requirement satisfaction | concern | Direct evidence covers the requirements, but selector-selected PR proof is blocked for two new changed paths. |
-| Test coverage | concern | Existing selector tests pass but do not cover the new path classifications required for PR-scoped validation. |
+| Requirement satisfaction | pass | Direct evidence covers the requirements, and the selector now classifies the new proof script and R26 spec-read fixture path. |
+| Test coverage | pass | Selector regression coverage now includes the exact PR-mode proof script and fixture paths plus catalog allowlist coverage. |
 | Test validity | pass | Validator suites include fail-closed checks for requirement-fidelity records, calibration, metadata, and lifecycle gates. |
 | Architecture coherence | pass | The implementation remains repository-local and matches the architecture/ADR boundaries. |
 | Artifact lifecycle state | pass | Plan/index/change metadata currently agree that `verify` is the next stage and final closeout is not ready. |
 | Plan completion | pass | M1-M5 are closed and `code-review-r7` is clean-with-notes. |
-| Validation evidence | block | PR-scoped selected CI is blocked by selector routing gaps. |
-| Drift detection | block | Selector routing drift exists for new proof script and fixture paths. |
-| Risk closure | concern | Rollback and compatibility evidence exists, but branch-ready cannot be claimed until selector routing is deterministic. |
-| Release readiness | block | Local branch is not `branch-ready`; hosted CI was not observed. |
+| Validation evidence | concern | PR-scoped selected CI now passes; final verify has not rerun after the CI-maintenance fix. |
+| Drift detection | pass | Selector routing drift for the new proof script and fixture path is resolved. |
+| Risk closure | concern | Rollback and compatibility evidence exists; final verify rerun remains before `branch-ready` can be claimed. |
+| Release readiness | concern | Local branch is not yet `branch-ready`; hosted CI was not observed. |
 
 ## Verdict
 
-Final verification is blocked. Direct validation and broad smoke passed, but `branch-ready` cannot be supported until the PR-scoped selector can classify and route every changed path.
+`VERIFY-F1` is resolved. Final `branch-ready` verification remains pending because the selector fix changed validation code after the blocked verify report.

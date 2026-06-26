@@ -368,8 +368,18 @@ validation:
     result: pass
   - command: python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads
     result: pass
+  - command: ci-maintenance VERIFY-F1
+    result: selector_routing_resolved_pending_final_verify
+  - command: python scripts/test-select-validation.py -k requirement_fidelity
+    result: pass
+  - command: python scripts/test-select-validation.py -k "ValidationSelectionTests.test_catalog_records_initial_parallel_safe_allowlist"
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass_103_tests
+  - command: bash scripts/ci.sh --mode pr --base <merge-base> --head HEAD
+    result: pass
 review:
-  status: verify_blocked_selector_routing
+  status: selector_routing_resolved_verify_next
   unresolved_items: 0
   material_findings: 5
   closed_findings: 5
@@ -404,6 +414,7 @@ changed_files:
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/proposal-review-r1.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/spec-review-r1.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/spec-review-r2.md
+  - docs/learn/sessions/2026-06-26-validation-runtime-speed-best-practices.md
   - docs/workflows.md
   - skills/code-review/SKILL.md
   - skills/workflow/SKILL.md
@@ -417,6 +428,7 @@ changed_files:
   - scripts/lifecycle_state_sync.py
   - scripts/test-artifact-lifecycle-validator.py
   - scripts/test-select-validation.py
+  - scripts/validation_selection.py
   - scripts/change_metadata_semantics.py
   - scripts/validate-change-metadata.py
   - scripts/test-change-metadata-validator.py
