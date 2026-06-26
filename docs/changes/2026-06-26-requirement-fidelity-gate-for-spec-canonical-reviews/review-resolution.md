@@ -4,7 +4,7 @@
 
 This record tracks material review finding closeout for the requirement-fidelity gate change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -17,9 +17,9 @@ Review closeout: code-review-r1
 Review closeout: code-review-r2
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`
-- Findings resolved: 3
-- Unresolved findings: 1
-- Current result: `code-review-r2` requested changes for M2; `RFG-M2-CR1` remains open and requires review-resolution.
+- Findings resolved: 4
+- Unresolved findings: 0
+- Current result: `RFG-M2-CR1` is accepted and resolved; M2 is ready for `code-review-r3`.
 
 ## Resolution Overview
 
@@ -28,7 +28,7 @@ Review closeout: code-review-r2
 | SR1-F1 | accepted | resolved | Path B chosen: mandatory manual-review applicability is out of first-slice scope; manual reviews may voluntarily record fidelity receipts; follow-on manual applicability proposal is routed after at least 30 calibrated records. |
 | SR1-F2 | accepted | resolved | Sampling and rotation obligations are quantified with Phase B sample floors, steady-state floors, corpus iteration size, rotation triggers, record fields, and planned test IDs. |
 | TSR1-F1 | accepted | resolved | Added a manual proof case schema, three structured manual proofs, two automated replacements for machine-checkable obligations, coverage-map links, and new planned test IDs. |
-| RFG-M2-CR1 | needs-decision | open | Pending review-resolution disposition. Clean automated handoff can omit the requirement-fidelity applicability result entirely. |
+| RFG-M2-CR1 | accepted | resolved | Workflow-managed clean review routing now requires a recorded requirement-fidelity applicability result; missing and unknown values fail closed, and clean-review fixtures are complete by default. |
 
 ## Finding Details
 
@@ -101,12 +101,14 @@ No material findings. `code-review-r1` reviewed the M1 implementation diff, conf
 #### RFG-M2-CR1 - Clean automated handoff can omit the fidelity applicability result entirely
 
 Finding ID: RFG-M2-CR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
-Stop state: resolution-needed
+Stop state: review-requested
 Rationale: `code-review-r2` found that the M2 lifecycle route advances workflow-managed clean reviews when requirement-fidelity applicability is absent, so independent-review evidence alone can still advance the profile.
-Decision needed: Accept, reject, defer, or partially accept the finding before rerun code-review.
-Decision owner: maintainer
-Expected proof: If accepted, add lifecycle and review-artifact negative tests for missing requirement-fidelity applicability and update the route so workflow-managed clean handoff requires either `applicable` with valid receipt or `not-applicable` with a closed reason.
+Chosen action: Introduced `WORKFLOW_MANAGED_CLEAN_REVIEW_GATES` in `scripts/lifecycle_state_sync.py` with spec-cited independent-review, fidelity-applicability, and fidelity-receipt checks. Missing requirement-fidelity applicability now fails closed with `fidelity-applicability-missing`; unknown applicability fails closed with `fidelity-applicability-unknown`; applicable reviews with invalid receipts fail with `fidelity-receipt-invalid`; and not-applicable reviews without a closed reason fail with `fidelity-not-applicable-reason-invalid`.
+Resolution: Canonicalized the lifecycle clean-review fixture through `make_workflow_managed_clean_review_fixture`, populated every R4-R8 and R30-R34 fidelity field by default, and made omission/invalid-value cases explicit per test. Added lifecycle regressions for missing applicability, unknown applicability, invalid applicable receipts, invalid/missing not-applicable reasons, complete default clean-review advancement, and direct-review compatibility. Added a review-artifact validator gate marker, a negative test for gate-in-force records missing applicability, and the durable `invalid-workflow-managed-missing-fidelity-applicability` fixture.
+Required outcome: Workflow-managed clean handoff cannot advance without a recorded fidelity applicability result, and the review-artifact validator exposes the same missing-applicability invariant when the requirement-fidelity gate is in force.
+Validation target: Rerun `code-review-r3` after the M2 resolution implementation.
+Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k requirement_fidelity` passed; `python scripts/test-review-artifact-validator.py -k requirement_fidelity` passed; `python scripts/test-artifact-lifecycle-validator.py` passed; `python scripts/test-review-artifact-validator.py` passed; `python scripts/test-change-metadata-validator.py` passed; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews` passed; `python scripts/validate-change-metadata.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml` passed; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r2.md` passed; `python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/invalid-workflow-managed-missing-fidelity-applicability` failed as expected with `fidelity-applicability-missing`; `git diff --check -- scripts/lifecycle_state_sync.py scripts/test-artifact-lifecycle-validator.py scripts/review_artifact_validation.py scripts/test-review-artifact-validator.py tests/fixtures/review-artifacts/invalid-workflow-managed-missing-fidelity-applicability docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md` passed.

@@ -500,23 +500,7 @@ def _critical_authority_requirement_failure_reason(data: dict[str, object]) -> s
     return None
 
 
-def _requirement_fidelity_failure_reason(data: dict[str, object]) -> str | None:
-    applicability = data.get("requirement_fidelity_applicability")
-    if applicability is None:
-        return None
-    if applicability not in REQUIREMENT_FIDELITY_APPLICABILITY_RESULTS:
-        return "requirement-fidelity-applicability-invalid"
-    if applicability == "not-applicable":
-        reason = data.get("requirement_fidelity_not_applicable_reason")
-        if reason not in REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS:
-            return "requirement-fidelity-not-applicable-reason-invalid"
-        return None
-    if data.get("requirement_fidelity_receipt_valid") is not True:
-        return "missing-requirement-fidelity-receipt"
-    return None
-
-
-def _clean_review_gate_failure_reason(data: dict[str, object]) -> str | None:
+def _independent_review_failure_reason(data: dict[str, object]) -> str | None:
     if data.get("independence_manifest_valid") is not True:
         return "invalid-review-manifest"
     if data.get("phase_receipts_recorded") is not True:
@@ -525,9 +509,43 @@ def _clean_review_gate_failure_reason(data: dict[str, object]) -> str | None:
         return "review-recording-invalid"
     if data.get("clean_review_receipt_valid") is not True:
         return "insufficient-clean-receipt"
-    requirement_fidelity_failure = _requirement_fidelity_failure_reason(data)
-    if requirement_fidelity_failure is not None:
-        return requirement_fidelity_failure
+    return None
+
+
+def _fidelity_applicability_presence_reason(data: dict[str, object]) -> str | None:
+    applicability = data.get("requirement_fidelity_applicability")
+    if applicability is None:
+        return "fidelity-applicability-missing"
+    if applicability not in REQUIREMENT_FIDELITY_APPLICABILITY_RESULTS:
+        return "fidelity-applicability-unknown"
+    return None
+
+
+def _fidelity_receipt_failure_reason(data: dict[str, object]) -> str | None:
+    applicability = data.get("requirement_fidelity_applicability")
+    if applicability == "not-applicable":
+        reason = data.get("requirement_fidelity_not_applicable_reason")
+        if reason not in REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS:
+            return "fidelity-not-applicable-reason-invalid"
+        return None
+    if applicability == "applicable" and data.get("requirement_fidelity_receipt_valid") is not True:
+        return "fidelity-receipt-invalid"
+    return None
+
+
+# Source: specs/requirement-fidelity-gate.md R3, R4-R8, R30-R34.
+WORKFLOW_MANAGED_CLEAN_REVIEW_GATES = (
+    ("review_independence", _independent_review_failure_reason),
+    ("fidelity_applicability", _fidelity_applicability_presence_reason),
+    ("fidelity_receipt", _fidelity_receipt_failure_reason),
+)
+
+
+def _clean_review_gate_failure_reason(data: dict[str, object]) -> str | None:
+    for _gate_name, check in WORKFLOW_MANAGED_CLEAN_REVIEW_GATES:
+        gate_failure = check(data)
+        if gate_failure is not None:
+            return gate_failure
     if data.get("unresolved_findings") not in {0, None}:
         return "review-findings-open"
     if data.get("risk_tier") not in REVIEW_GATE_RISK_TIERS:

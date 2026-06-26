@@ -272,6 +272,7 @@ def valid_calibration_record_fields(extra_fields: str = "") -> str:
 def valid_requirement_fidelity_fields(extra_fields: str = "") -> str:
     extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
     return f"""
+    Requirement-fidelity gate: required
     Requirement-fidelity applicability: applicable
     Requirement-fidelity affected paths: skills/code-review/SKILL.md; scripts/test-review-artifact-validator.py
     Requirement-fidelity matched path triggers: skills/; scripts/*validator*
@@ -972,6 +973,10 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         self.assertFails(invalid_root, "reviewer_context_id must differ from author_context_id")
         self.assertFails(invalid_root, "phase receipt evidence-menu-released appears before required predecessor risk-map-recorded")
 
+        missing_fidelity_root = copy_fixture("invalid-workflow-managed-missing-fidelity-applicability")
+        self.addCleanupTree(missing_fidelity_root)
+        self.assertFails(missing_fidelity_root, "fidelity-applicability-missing")
+
     def test_t1_valid_independence_levels_pass(self) -> None:
         for name, fixture in T1_VALID_CASES:
             with self.subTest(name=name):
@@ -1110,8 +1115,31 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
 
         self.assertPasses(root)
 
+    def test_requirement_fidelity_gate_in_force_requires_applicability(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-rfg-missing-applicability-"))
+        self.addCleanupTree(root)
+        fidelity = valid_requirement_fidelity_fields()
+        review = "\n".join(
+            line
+            for line in valid_automated_review_text(fidelity).splitlines()
+            if not line.strip().startswith("Requirement-fidelity applicability:")
+        )
+        write_text(root / "reviews" / "code-review-r1.md", review)
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+
+        self.assertFails(root, "fidelity-applicability-missing")
+
     def test_requirement_fidelity_manifest_unknown_values_fail_closed(self) -> None:
         cases = [
+            (
+                "unknown-gate-marker",
+                "Requirement-fidelity gate: required",
+                "Requirement-fidelity gate: optional",
+                "unsupported requirement-fidelity gate marker 'optional'",
+            ),
             (
                 "unknown-applicability",
                 "Requirement-fidelity applicability: applicable",
