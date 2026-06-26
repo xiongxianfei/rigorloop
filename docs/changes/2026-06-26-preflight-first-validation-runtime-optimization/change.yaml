@@ -51,6 +51,7 @@ changed_files:
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md
 review:
   status: approved
   unresolved_items: 0
@@ -143,3 +144,27 @@ validation:
     result: passed
   - command: code-review r2
     result: clean_with_notes_no_material_findings
+  - command: "python scripts/test-select-validation.py -k broad_smoke_child_classification"
+    result: failed_missing_broad_smoke_child_classification_artifact_before_m3_implementation
+  - command: "python scripts/test-select-validation.py -k broad_smoke_classification"
+    result: passed_2_tests
+  - command: "python scripts/test-select-validation.py -k broad_smoke_child_classification"
+    result: passed_1_test
+  - command: "python scripts/test-select-validation.py -k registered_change_evidence"
+    result: passed_5_tests
+  - command: "python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md --json"
+    result: passed_selected_artifact_lifecycle_validate_and_selector_regression_no_broad_smoke_required
+  - command: "/usr/bin/time -p python scripts/test-select-validation.py"
+    result: passed_108_tests_suite_260_64s_time_real_248_35s
+  - command: "/usr/bin/time -p bash scripts/ci.sh --mode explicit --timeout 180 --path scripts/ci.sh --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md"
+    result: passed_artifact_lifecycle_0_28s_selector_regression_174_54s
+  - command: "python scripts/validate-change-metadata.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml"
+    result: passed
+  - command: "python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-preflight-first-validation-runtime-optimization"
+    result: passed
+  - command: "python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-26-preflight-first-validation-runtime-optimization"
+    result: passed
+  - command: "git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md docs/plan.md"
+    result: passed
+  - command: "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path specs/validation-runtime-follow-through.test.md --path docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/plan.md --path docs/proposals/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/plan-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r2.md"
+    result: passed

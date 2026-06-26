@@ -59,14 +59,14 @@ Likely implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M3. Broad-Smoke Child Classification
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r2.md
 - Last reviewed milestone: M2. Selector Preservation and Missing-Route Blockers
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 and M2 are closed after clean code-review; M3 implementation, code-review, final holistic code-review, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 and M2 are closed after clean code-review; M3 implementation is ready for code-review; final holistic code-review, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -154,7 +154,7 @@ Likely implementation surfaces:
 
 ### M3. Broad-Smoke Child Classification
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Produce read-only broad-smoke child classification evidence without changing broad-smoke execution behavior.
 - Requirements: R16, R17, R18, R19, R20, R21, R22, R23, R24, R25
 - Files/components likely touched:
@@ -241,6 +241,9 @@ Likely implementation surfaces:
 - 2026-06-26: M2 implementation started. Added selector preservation, missing-route diagnostic, and diagnostic broad-smoke regression tests before changing selector diagnostics.
 - 2026-06-26: M2 implementation is ready for code-review. Current milestone state moved to `review-requested`; next stage is `code-review`.
 - 2026-06-26: Code-review R2 passed with no material findings. M2 is closed; next stage is M3 implementation.
+- 2026-06-26: M3 implementation started. Scope is limited to read-only broad-smoke child classification evidence and static checks; broad-smoke execution order and concurrency remain unchanged.
+- 2026-06-26: M3 implementation added read-only broad-smoke child classification evidence, selector evidence routing for `broad-smoke-child-classification.md`, and static checks for required classification fields, actual broad-smoke child coverage, unsafe candidate guardrails, and unchanged sequential broad-smoke execution.
+- 2026-06-26: M3 implementation is ready for code-review. Current milestone state moved to `review-requested`; next stage is `code-review`.
 
 ## Decision log
 
@@ -251,12 +254,14 @@ Likely implementation surfaces:
 | 2026-06-26 | Keep broad-smoke parallelism out of this plan. | The spec allows only read-only child classification in this slice. | Enable bounded broad-smoke concurrency in M3. |
 | 2026-06-26 | Record 180-second selected-wrapper timeout and use a 300-second override for M1 wrapper proof. | The required M1 evidence path timed out `selector.regression` at 180.12s but passed with a 300-second repository-supported timeout. | Hide the timeout, lower selector coverage, or treat the failed 180-second run as sufficient proof. |
 | 2026-06-26 | Use `--timeout 300` for M2 selected-wrapper proof. | M1 established that the same selector-regression wrapper path can exceed 180 seconds locally, and M2 does not claim a runtime optimization. | Repeat a known 180-second timeout before running the passing wrapper proof. |
+| 2026-06-26 | Treat broad-smoke classification as inventory, not execution permission. | R18-R19 keep broad-smoke sequential until a later approved artifact consumes the classification and authorizes bounded parallelism. | Mark child checks parallel-safe in M3 or change broad-smoke execution behavior. |
 
 ## Surprises and discoveries
 
 - 2026-06-26: `selector-regression-profile.md` initially triggered `manual-routing-required` evidence-registration debt. M1 fixed this with a narrow evidence-class registration and targeted selector test because the profile artifact is required by the active test spec.
 - 2026-06-26: Selected CI with `--timeout 180` timed out `selector.regression`; `--timeout 300` passed. M2 should preserve this timeout behavior in any optimization or no-safe-reduction decision.
 - 2026-06-26: M2 did not identify a safe selector-regression runtime reduction. The milestone records a no-safe-reduction rationale and preserves the timeout behavior for follow-up optimization work.
+- 2026-06-26: M3 direct selector regression passed but took longer than prior M2 evidence: 108 tests, suite `260.64s`, `/usr/bin/time` real `248.35s`. Selected-wrapper explicit validation still passed within the 180-second per-check timeout with `selector.regression` at `174.54s`.
 
 ## Validation notes
 
@@ -294,6 +299,22 @@ Likely implementation surfaces:
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-26-preflight-first-validation-runtime-optimization`
   - `git diff --check --cached -- scripts/validation_selection.py scripts/test-select-validation.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md docs/plan.md`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path specs/validation-runtime-follow-through.test.md --path docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/plan.md --path docs/proposals/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/plan-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r1.md`
+- 2026-06-26: M3 red test confirmed missing classification evidence before implementation:
+  - `python scripts/test-select-validation.py -k broad_smoke_child_classification` failed because `docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md` did not exist.
+- 2026-06-26: M3 targeted selector checks passed:
+  - `python scripts/test-select-validation.py -k broad_smoke_classification` passed 2 tests.
+  - `python scripts/test-select-validation.py -k broad_smoke_child_classification` passed 1 test.
+  - `python scripts/test-select-validation.py -k registered_change_evidence` passed 5 tests.
+  - `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md --json` selected `artifact_lifecycle.validate` and `selector.regression` with no broad-smoke requirement.
+- 2026-06-26: M3 selector regression and selected-wrapper validation passed:
+  - `/usr/bin/time -p python scripts/test-select-validation.py` passed 108 tests; suite reported `260.64s`; time reported real `248.35s`, user `5.51s`, sys `26.29s`.
+  - `/usr/bin/time -p bash scripts/ci.sh --mode explicit --timeout 180 --path scripts/ci.sh --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md` passed; `artifact_lifecycle.validate` took `0.28s`, `selector.regression` took `174.54s`, and focused phase timing was `174.81s`.
+- 2026-06-26: M3 lifecycle and metadata checks passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml`
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-preflight-first-validation-runtime-optimization`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-26-preflight-first-validation-runtime-optimization`
+  - `git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md docs/plan.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path specs/validation-runtime-follow-through.test.md --path docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/plan.md --path docs/proposals/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/plan-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r2.md`
 
 ## Outcome and retrospective
 
