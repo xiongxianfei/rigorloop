@@ -225,8 +225,22 @@ validation:
     result: pass
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r3.md
     result: pass
+  - command: M3 implementation
+    result: r26_property_matrix_ready_for_code_review
+  - command: python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads
+    result: pass
+  - command: python scripts/test-skill-validator.py -k requirement_fidelity_m3
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
 review:
-  status: m2_closed_implement_m3
+  status: m3_review_requested
   unresolved_items: 0
   material_findings: 4
   closed_findings: 4
@@ -269,6 +283,8 @@ changed_files:
   - scripts/change_metadata_semantics.py
   - scripts/validate-change-metadata.py
   - scripts/test-change-metadata-validator.py
+  - scripts/test-fidelity-gate-spec-reads.py
+  - tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json
   - tests/fixtures/review-artifacts/invalid-workflow-managed-missing-fidelity-applicability/change.yaml
   - tests/fixtures/review-artifacts/invalid-workflow-managed-missing-fidelity-applicability/review-log.md
   - tests/fixtures/review-artifacts/invalid-workflow-managed-missing-fidelity-applicability/reviews/code-review-r1.md

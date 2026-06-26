@@ -76,14 +76,14 @@ The implementation should favor structured fields and closed vocabularies where 
 ## Current Handoff Summary
 
 - Current milestone: M3. Spec-derived validator matrix pilot
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r3.md
 - Last reviewed milestone: M2
-- Review status: approved; stage=code-review; round=r3
+- Review status: review-requested; stage=code-review; round=r4
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: implement M3
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 and M2 are closed; M3 through M5 remain open.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 and M2 are closed; M3 is implemented and awaits code-review-r4; M4 through M5 remain open.
 
 ## Milestones
 
@@ -188,7 +188,7 @@ The implementation should favor structured fields and closed vocabularies where 
 
 ### M3. Spec-derived validator matrix pilot
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Pilot property-list by surface-list assertions for one selected high-value multi-surface contract, using the M2 missing-`recorded` R26 case as the canonical regression.
 - Requirements: `R24`-`R29`, `R43`, `R46`-`R49`, `AC-RFG-009`-`AC-RFG-012`, `AC-RFG-016`-`AC-RFG-018`
 - Files/components likely touched:
@@ -381,6 +381,7 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: Code-review R2 requested changes for M2. Finding `RFG-M2-CR1` is open; next stage is `review-resolution`.
 - 2026-06-26: Resolved `RFG-M2-CR1` by making missing fidelity applicability fail closed, canonicalizing clean-review fixtures as complete by default, and adding lifecycle plus review-artifact regressions; next stage is `code-review-r3`.
 - 2026-06-26: Code-review R3 returned clean-with-notes for M2, confirmed `RFG-M2-CR1` is resolved, closed M2, and handed off to implement M3.
+- 2026-06-26: M3 implementation completed. Added source-annotated R26 property and surface constants plus a property-list by surface-list skill-validator matrix; added a missing-`recorded` negative regression for the canonical compression case; next stage is `code-review-r4`.
 
 ## Decision log
 
@@ -431,6 +432,13 @@ The implementation should favor structured fields and closed vocabularies where 
   - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews`
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r3.md`
+- 2026-06-26: M3 validation passed:
+  - `python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads`
+  - `python scripts/test-skill-validator.py -k requirement_fidelity_m3`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-build-skills.py`
+  - `python scripts/build-skills.py --check`
 
 ## Outcome and retrospective
 
