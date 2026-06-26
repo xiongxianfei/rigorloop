@@ -76,14 +76,14 @@ The implementation should favor structured fields and closed vocabularies where 
 ## Current Handoff Summary
 
 - Current milestone: M2. Applicability, receipt, and autoprogression validators
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r1.md
 - Last reviewed milestone: M1
-- Review status: review-requested; stage=code-review; round=r2
+- Review status: changes-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed by code-review-r1; M2 implementation is complete and awaits code-review; M3 through M5 remain open.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed by code-review-r1; M2 has open code-review finding RFG-M2-CR1; M3 through M5 remain open.
 
 ## Milestones
 
@@ -134,7 +134,7 @@ The implementation should favor structured fields and closed vocabularies where 
 
 ### M2. Applicability, receipt, and autoprogression validators
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add structured validation for applicability manifests, closed vocabularies, receipt completeness, packet-order evidence, not-applicable reasons, reviewer overrides, and autoprogression blocking when applicable fidelity evidence is missing or invalid.
 - Requirements: `R3`-`R13`, `R14`-`R23`, `R30`-`R40`, `R46`, `R48`, `R50`, `AC-RFG-002`-`AC-RFG-008`, `AC-RFG-013`, `AC-RFG-016`, `AC-RFG-018`-`AC-RFG-020`
 - Files/components likely touched:
@@ -378,6 +378,7 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: Code-review R1 returned clean-with-notes for M1, closed M1, and handed off to implement M2.
 - 2026-06-26: M2 implementation started. Added tests and validator support for requirement-fidelity applicability manifests, clean-review fidelity receipts, lifecycle AND semantics, optional change-metadata fidelity fields, and the approved-and-recorded test-spec-review implementation precondition.
 - 2026-06-26: M2 implementation completed. Requirement-fidelity review artifact, lifecycle, and change-metadata validators pass targeted and full-suite validation; next stage is `code-review`.
+- 2026-06-26: Code-review R2 requested changes for M2. Finding `RFG-M2-CR1` is open; next stage is `review-resolution`.
 
 ## Decision log
 
