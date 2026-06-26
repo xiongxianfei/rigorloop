@@ -391,6 +391,7 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: M5 implementation completed. Added change-local behavior-preservation evidence; generated skill and adapter output checks passed through normal build commands without tracked generated edits; selected CI passed; next stage is `code-review-r7`.
 - 2026-06-26: Code-review R7 returned clean-with-notes for the final M5 implementation and final requirement-fidelity change surface, closed M5, and handed off to `explain-change`.
 - 2026-06-26: Explain-change recorded durable rationale linking the proposal, requirements, architecture, milestones, diffs, validation, and review-resolution outcomes; next stage is `verify`.
+- 2026-06-26: Final verify found selector blocker `VERIFY-F1` for `scripts/test-fidelity-gate-spec-reads.py` and the R26 spec-read fixture path. CI-maintenance added deterministic `requirement_fidelity.spec_reads` routing and regression coverage; post-fix PR-scoped selected CI passed. Next stage remains `verify`.
 
 ## Decision log
 

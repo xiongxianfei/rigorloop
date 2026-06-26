@@ -146,6 +146,12 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "selector",
         parallel_safe=True,
     ),
+    "requirement_fidelity.spec_reads": CheckCatalogEntry(
+        "requirement_fidelity.spec_reads",
+        "python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads",
+        "requirement-fidelity",
+        parallel_safe=True,
+    ),
     "token_cost.regression": CheckCatalogEntry(
         "token_cost.regression",
         "python scripts/test-token-cost-measurement.py",
@@ -1215,6 +1221,14 @@ def _apply_path_selection(
         )
         return
 
+    if category == "requirement-fidelity-spec-read":
+        _add_check(
+            selected,
+            "requirement_fidelity.spec_reads",
+            "Changed requirement-fidelity spec-read proof requires bounded-read validation.",
+        )
+        return
+
     if category == "examples":
         return
 
@@ -1708,6 +1722,8 @@ def _path_category(path: str) -> str | None:
         return "review-artifact-fixtures"
     if path == "tests/fixtures/change-metadata" or path.startswith("tests/fixtures/change-metadata/"):
         return "change-metadata-fixtures"
+    if path.startswith("tests/fixtures/requirement-fidelity-gate/representative-reviews/"):
+        return "requirement-fidelity-spec-read"
     if path.startswith("tests/fixtures/adapters/"):
         return "adapters"
     if path == "tests/fixtures/skills" or path.startswith("tests/fixtures/skills/"):
@@ -1732,6 +1748,8 @@ def _path_category(path: str) -> str | None:
         "scripts/validate-readme.py",
     }:
         return "selector"
+    if path == "scripts/test-fidelity-gate-spec-reads.py":
+        return "requirement-fidelity-spec-read"
     if path in {"scripts/validate-guide-system.py", "scripts/test-guide-system-validator.py"}:
         return "guide-system-validator"
     if path == "scripts/ci.sh":
