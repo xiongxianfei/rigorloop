@@ -62,15 +62,15 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Canonical skill and review assets
+- Current milestone: M3. Validators, fixtures, generated package proof, and representative evidence
 - Current milestone state: closed
-- Latest review evidence: code-review-r5
-- Last reviewed milestone: M2. Canonical skill and review assets
-- Review status: approved; stage=code-review; round=r5
+- Latest review evidence: code-review-r6
+- Last reviewed milestone: M3. Validators, fixtures, generated package proof, and representative evidence
+- Review status: approved; stage=code-review; round=r6
 - Remaining in-scope implementation milestones: none
 - Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — CR4-F1 is resolved and re-reviewed; final explain-change, verify, and PR handoff must be refreshed after the fix.
+- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — CR4-F1 is resolved and M3 is re-reviewed clean; final explain-change, verify, and PR handoff must be refreshed after the fix and re-review.
 
 ## Milestones
 
@@ -171,6 +171,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - 2026-06-25: Final verify passed; next stage is `pr`.
 - 2026-06-26: Isolated M2 re-review recorded `CR4-F1`; next stage is `review-resolution`.
 - 2026-06-26: `CR4-F1` resolved in commit `d6fbf415` and approved by `code-review-r5`; next stage is `explain-change`.
+- 2026-06-26: Isolated M3 re-review completed clean as `code-review-r6`; next stage remains `explain-change`.
 
 ## Decision log
 
@@ -217,7 +218,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ## Outcome and retrospective
 
-- `CR4-F1` is resolved and re-reviewed. Final explain-change, verify, and PR handoff remain stale until refreshed after the fix.
+- `CR4-F1` is resolved and M3 is re-reviewed clean. Final explain-change, verify, and PR handoff remain stale until refreshed after the fix and re-review.
 
 ## Readiness
 
