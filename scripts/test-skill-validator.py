@@ -158,6 +158,18 @@ PROGRESSIVE_LOADING_CODE_REVIEW_PROTECTED_TERMS = [
     "stop conditions",
     "result format",
 ]
+# Source: specs/test-spec-review-gate.md R26.
+R26_REQUIRED_TEST_SPEC_REVIEW_EVIDENCE_PROPERTIES = (
+    "approved",
+    "current",
+    "recorded",
+)
+R26_IMPLEMENT_SKILL_EVIDENCE_SURFACES = (
+    ("workflow_role", "Workflow role"),
+    ("inputs_to_read", "Inputs to read"),
+    ("default_evidence", "Evidence access"),
+    ("pre_implementation_stop_condition", "First-pass completeness"),
+)
 CUSTOMER_PORTABLE_FIRST_SLICE_SKILLS = [
     "proposal",
     "proposal-review",
@@ -542,6 +554,23 @@ def assert_boundary_id_covered(test_case: unittest.TestCase, body: str, boundary
         if start <= boundary_number <= end:
             return
     test_case.fail(f"EB{boundary_number} is not covered explicitly or by range")
+
+
+def assert_implement_skill_carries_r26_evidence_property_matrix(
+    test_case: unittest.TestCase,
+    skill_body: str,
+) -> None:
+    for surface_id, heading in R26_IMPLEMENT_SKILL_EVIDENCE_SURFACES:
+        surface_text = extract_markdown_block(skill_body, heading).lower()
+        for prop in R26_REQUIRED_TEST_SPEC_REVIEW_EVIDENCE_PROPERTIES:
+            test_case.assertIn(
+                prop,
+                surface_text,
+                msg=(
+                    f"R26 evidence property {prop!r} missing from "
+                    f"implement skill surface {surface_id!r}"
+                ),
+            )
 
 
 class SkillValidatorFixtureTests(unittest.TestCase):
@@ -5185,6 +5214,40 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         for term in workflow_doc_terms:
             with self.subTest(surface="docs/workflows.md", term=term):
                 self.assertIn(term, workflow_docs)
+
+    def test_requirement_fidelity_m3_r26_implement_skill_property_matrix(self) -> None:
+        """R26 uses one property list multiplied by required implement skill surfaces."""
+
+        self.assertEqual(
+            R26_REQUIRED_TEST_SPEC_REVIEW_EVIDENCE_PROPERTIES,
+            ("approved", "current", "recorded"),
+        )
+        self.assertEqual(
+            tuple(surface_id for surface_id, _heading in R26_IMPLEMENT_SKILL_EVIDENCE_SURFACES),
+            (
+                "workflow_role",
+                "inputs_to_read",
+                "default_evidence",
+                "pre_implementation_stop_condition",
+            ),
+        )
+        implement_body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
+        assert_implement_skill_carries_r26_evidence_property_matrix(self, implement_body)
+
+    def test_requirement_fidelity_m3_r26_missing_recorded_property_fails_matrix(self) -> None:
+        """The canonical approved+current without recorded compression fails validation."""
+
+        implement_body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
+        first_pass_block = extract_markdown_block(implement_body, "First-pass completeness")
+        compressed_first_pass_block = first_pass_block.replace("recorded, approved, current ", "approved, current ")
+        compressed_body = implement_body.replace(first_pass_block, compressed_first_pass_block)
+
+        with self.assertRaisesRegex(
+            AssertionError,
+            "R26 evidence property 'recorded' missing from implement skill surface "
+            "'pre_implementation_stop_condition'",
+        ):
+            assert_implement_skill_carries_r26_evidence_property_matrix(self, compressed_body)
 
     def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
         """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""
