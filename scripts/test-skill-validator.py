@@ -4726,7 +4726,22 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         self.assertIn("- downstream: test-spec-review", test_spec)
         self.assertIn("required `test-spec-review`", test_spec)
-        self.assertIn("approved current test-spec-review when required", implement)
+        self.assertIn(
+            "active test spec plus recorded, approved, current test-spec-review evidence when required",
+            implement,
+        )
+        self.assertIn(
+            "recorded, approved, current test-spec-review evidence when a formal workflow-managed test spec is required",
+            implement,
+        )
+        self.assertIn(
+            "recorded, approved, current test-spec-review evidence when required",
+            implement,
+        )
+        self.assertIn(
+            "lacks recorded, approved, current `test-spec-review` evidence",
+            implement,
+        )
         self.assertIn(
             "plan-review -> test-spec -> test-spec-review -> implement",
             workflow,
