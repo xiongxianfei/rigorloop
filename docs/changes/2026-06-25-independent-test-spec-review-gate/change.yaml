@@ -69,6 +69,7 @@ changed_files:
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r5.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md
+  - docs/learn/sessions/2026-06-26-m2-test-spec-review-evidence-review-miss.md
 review:
   status: clean-with-notes
   unresolved_items: 0
