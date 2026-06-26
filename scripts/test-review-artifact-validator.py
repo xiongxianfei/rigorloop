@@ -269,6 +269,39 @@ def valid_calibration_record_fields(extra_fields: str = "") -> str:
     """
 
 
+def valid_requirement_compression_calibration_fields(extra_fields: str = "") -> str:
+    extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
+    return valid_calibration_record_fields(
+        f"""
+        Seeded defect family: requirement-compression
+        Corpus iteration ID: rfg-compression-iteration-001
+        Seed types covered: A+B+C compressed to A+B; N surfaces compressed to N-1; closed enum compressed; normative verbs compressed; multi-surface asymmetry; validator mirrors implementation
+        Seed defect count: 6
+        Expected finding IDs: R26-missing-recorded; N-surfaces-minus-one; closed-enum-six-of-seven; verbs-require-reject-without-record; surface-two-weakens-contract; validator-mirrors-approved-current
+        Canonical R26 missing-recorded seed: yes
+        Calibration result iteration ID: rfg-compression-iteration-001
+        Sampling reason: reviewer-authored-decomposition
+        Applicable receipt sample rate: 30%
+        Reviewer-authored decomposition sample rate: 30%
+        Not-applicable receipt sample rate: 5%
+        Steady-state baseline sample rate: 5%
+        Steady-state reviewer-authored sample rate: 15%
+        Follow-on sampling amendment: none
+        Not-applicable receipts in cycle: 5
+        Not-applicable sampling proportional: yes
+        Original not-applicable reason: change unrelated to normative contracts
+        Audit outcome: correct
+        Corrective action: none
+        Rotation trigger: complete-defect-set-exposure
+        Previous iteration ID: rfg-compression-iteration-000
+        Next iteration ID: rfg-compression-iteration-002
+        Rotated by: calibration-corpus-maintainer
+        Rotation date: 2026-06-26
+        {extra}
+        """
+    )
+
+
 def valid_requirement_fidelity_fields(extra_fields: str = "") -> str:
     extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
     return f"""
@@ -1266,6 +1299,11 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         self.addCleanupTree(root)
         self.assertPasses(root)
 
+    def test_requirement_compression_public_calibration_fixture_passes(self) -> None:
+        root = copy_fixture("valid-requirement-compression-calibration")
+        self.addCleanupTree(root)
+        self.assertPasses(root)
+
     def test_calibration_record_requires_metric_fields_by_skill_and_tier(self) -> None:
         cases = (
             ("Review skill", "calibration record missing required field Review skill"),
@@ -1551,6 +1589,182 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
         )
         self.assertFails(root, "public calibration fixture must declare defect-class-example-not-measured-corpus")
+
+    def test_requirement_compression_calibration_record_passes(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-rfg-calibration-valid-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text(valid_requirement_compression_calibration_fields()),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+
+        self.assertPasses(root)
+
+    def test_requirement_compression_calibration_rejects_incomplete_corpus(self) -> None:
+        cases = (
+            (
+                "too-few-defects",
+                "Seed defect count: 6",
+                "Seed defect count: 5",
+                "requirement-compression corpus iteration must contain at least six defects",
+            ),
+            (
+                "too-few-seed-types",
+                (
+                    "Seed types covered: A+B+C compressed to A+B; N surfaces compressed to N-1; "
+                    "closed enum compressed; normative verbs compressed; multi-surface asymmetry; "
+                    "validator mirrors implementation"
+                ),
+                (
+                    "Seed types covered: A+B+C compressed to A+B; N surfaces compressed to N-1; "
+                    "closed enum compressed"
+                ),
+                "requirement-compression corpus iteration must span at least four seed types",
+            ),
+            (
+                "unknown-seed-type",
+                "validator mirrors implementation",
+                "validator agrees with vibes",
+                "unsupported requirement-compression seed type 'validator agrees with vibes'",
+            ),
+            (
+                "missing-canonical-r26",
+                "Canonical R26 missing-recorded seed: yes",
+                "Canonical R26 missing-recorded seed: no",
+                "requirement-compression corpus must include canonical R26 missing-recorded seed",
+            ),
+        )
+        for name, old, new, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-rfg-calibration-{name}-"))
+                self.addCleanupTree(root)
+                calibration = valid_requirement_compression_calibration_fields().replace(old, new)
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_requirement_compression_calibration_rejects_sampling_floor_gaps(self) -> None:
+        cases = (
+            (
+                "baseline-below-phase-b-floor",
+                "Applicable receipt sample rate: 30%",
+                "Applicable receipt sample rate: 9%",
+                "applicable fidelity receipt sample rate must be at least 10% during Phase B",
+            ),
+            (
+                "reviewer-authored-below-phase-b-floor",
+                "Reviewer-authored decomposition sample rate: 30%",
+                "Reviewer-authored decomposition sample rate: 29%",
+                "reviewer-authored decomposition sample rate must be at least 30% during Phase B",
+            ),
+            (
+                "not-applicable-below-floor",
+                "Not-applicable receipt sample rate: 5%",
+                "Not-applicable receipt sample rate: 4%",
+                "not-applicable receipt sample rate must be at least 5% during Phase B",
+            ),
+            (
+                "steady-baseline-below-floor",
+                "Steady-state baseline sample rate: 5%",
+                "Steady-state baseline sample rate: 4%",
+                "steady-state baseline sample rate cannot drop below 5% without follow-on amendment",
+            ),
+            (
+                "steady-reviewer-authored-below-floor",
+                "Steady-state reviewer-authored sample rate: 15%",
+                "Steady-state reviewer-authored sample rate: 14%",
+                "steady-state reviewer-authored sample rate cannot drop below 15% without follow-on amendment",
+            ),
+        )
+        for name, old, new, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-rfg-sampling-{name}-"))
+                self.addCleanupTree(root)
+                calibration = valid_requirement_compression_calibration_fields().replace(old, new)
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_requirement_compression_calibration_rejects_unknown_closed_values(self) -> None:
+        cases = (
+            (
+                "unknown-sampling-reason",
+                "Sampling reason: reviewer-authored-decomposition",
+                "Sampling reason: vibes",
+                "unsupported requirement-compression sampling reason 'vibes'",
+            ),
+            (
+                "unknown-audit-outcome",
+                "Audit outcome: correct",
+                "Audit outcome: maybe",
+                "unsupported requirement-compression audit outcome 'maybe'",
+            ),
+            (
+                "unknown-rotation-trigger",
+                "Rotation trigger: complete-defect-set-exposure",
+                "Rotation trigger: vibes",
+                "unsupported requirement-compression rotation trigger 'vibes'",
+            ),
+        )
+        for name, old, new, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-rfg-closed-{name}-"))
+                self.addCleanupTree(root)
+                calibration = valid_requirement_compression_calibration_fields().replace(old, new)
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_requirement_compression_calibration_requires_iteration_and_rotation_fields(self) -> None:
+        cases = (
+            ("Corpus iteration ID", "requirement-compression calibration missing required field Corpus iteration ID"),
+            ("Calibration result iteration ID", "requirement-compression calibration missing required field Calibration result iteration ID"),
+            ("Previous iteration ID", "requirement-compression calibration missing required field Previous iteration ID"),
+            ("Next iteration ID", "requirement-compression calibration missing required field Next iteration ID"),
+            ("Rotated by", "requirement-compression calibration missing required field Rotated by"),
+            ("Rotation date", "requirement-compression calibration missing required field Rotation date"),
+        )
+        for field, expected in cases:
+            with self.subTest(field=field):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-rfg-required-field-"))
+                self.addCleanupTree(root)
+                calibration = "\n".join(
+                    line
+                    for line in valid_requirement_compression_calibration_fields().splitlines()
+                    if not line.strip().startswith(f"{field}:")
+                )
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_requirement_fidelity_spec_rejects_unquantified_soft_normative_must_terms(self) -> None:
+        spec = read_repo_file("specs/requirement-fidelity-gate.md")
+        soft_terms = ("high-risk", "periodically", "higher", "appropriate", "sufficient", "reasonable")
+        offenders: list[str] = []
+        for line_number, line in enumerate(spec.splitlines(), start=1):
+            if "MUST" not in line:
+                continue
+            lowered = line.lower()
+            for term in soft_terms:
+                if term in lowered:
+                    offenders.append(f"specs/requirement-fidelity-gate.md:{line_number}: {term}: {line}")
+        self.assertEqual(offenders, [])
 
     def test_clean_receipt_root_requires_change_metadata_contract(self) -> None:
         cases = [

@@ -80,6 +80,11 @@ REVIEW_GATE_OUTCOMES = frozenset({"advance", "stop", "blocked", "inconclusive"})
 REVIEW_GATE_RISK_TIERS = frozenset({"standard", "elevated", "critical-internal", "irreversible-external-action"})
 ROLLOUT_MIN_STANDARD_SAMPLE_RATE = 20
 ROLLOUT_MIN_STANDARD_SECOND_REVIEWS = 10
+RFG_PHASE_B_MIN_APPLICABLE_SAMPLE_RATE = 10
+RFG_PHASE_B_MIN_REVIEWER_AUTHORED_SAMPLE_RATE = 30
+RFG_PHASE_B_MIN_NOT_APPLICABLE_SAMPLE_RATE = 5
+RFG_STEADY_STATE_MIN_BASELINE_SAMPLE_RATE = 5
+RFG_STEADY_STATE_MIN_REVIEWER_AUTHORED_SAMPLE_RATE = 15
 # Source: specs/review-independence-and-criticality.md R1-R7, R13, AC1-AC5.
 REVIEW_GATE_REQUIRED_FIELDS = (
     "Review gate outcome",
@@ -218,6 +223,63 @@ CALIBRATION_AUTHORITY_TIERS = {
     "critical-internal": frozenset({"L3", "human"}),
     "irreversible-external-action": frozenset({"human"}),
 }
+REQUIREMENT_COMPRESSION_SEED_TYPES = frozenset(
+    {
+        "A+B+C compressed to A+B",
+        "N surfaces compressed to N-1",
+        "closed enum compressed",
+        "normative verbs compressed",
+        "multi-surface asymmetry",
+        "validator mirrors implementation",
+    }
+)
+REQUIREMENT_COMPRESSION_SAMPLING_REASONS = frozenset(
+    {
+        "routine",
+        "reviewer-authored-decomposition",
+        "rotation-cycle",
+        "escape-investigation",
+    }
+)
+REQUIREMENT_COMPRESSION_ROTATION_TRIGGERS = frozenset(
+    {
+        "complete-defect-set-exposure",
+        "recall-above-95-two-cycles",
+        "scheduled-two-cycle-rotation",
+    }
+)
+REQUIREMENT_COMPRESSION_AUDIT_OUTCOMES = frozenset(
+    {
+        "correct",
+        "misclassified-should-have-applied",
+        "out-of-scope",
+    }
+)
+REQUIREMENT_COMPRESSION_REQUIRED_FIELDS = (
+    "Corpus iteration ID",
+    "Seed types covered",
+    "Seed defect count",
+    "Expected finding IDs",
+    "Canonical R26 missing-recorded seed",
+    "Calibration result iteration ID",
+    "Sampling reason",
+    "Applicable receipt sample rate",
+    "Reviewer-authored decomposition sample rate",
+    "Not-applicable receipt sample rate",
+    "Steady-state baseline sample rate",
+    "Steady-state reviewer-authored sample rate",
+    "Follow-on sampling amendment",
+    "Not-applicable receipts in cycle",
+    "Not-applicable sampling proportional",
+    "Original not-applicable reason",
+    "Audit outcome",
+    "Corrective action",
+    "Rotation trigger",
+    "Previous iteration ID",
+    "Next iteration ID",
+    "Rotated by",
+    "Rotation date",
+)
 CALIBRATION_BOUNDED_FREEFORM_FIELDS = ("Evidence gaps",)
 FORBIDDEN_CALIBRATION_FIELDS = frozenset(
     {
@@ -1519,6 +1581,7 @@ def _validate_calibration_record_fields(
     calibration_booleans = _parse_calibration_booleans(path, review_id, fields, mode, findings)
     _validate_calibration_critical_authority(path, review_id, fields, calibration_booleans, mode, findings)
     _validate_calibration_sampling_gates(path, review_id, fields, calibration_booleans, mode, findings)
+    _validate_requirement_compression_calibration_fields(path, review_id, fields, mode, findings)
 
 
 def _validate_test_spec_review_result_fields(
@@ -1826,6 +1889,257 @@ def _validate_calibration_sampling_gates(
                 review_id=review_id,
             )
         )
+
+
+def _validate_requirement_compression_calibration_fields(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    family = _first_nonempty(fields, "Seeded defect family")
+    if family is None:
+        return
+    if family.value != "requirement-compression":
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=family.line,
+                mode=mode,
+                message=f"unsupported seeded defect family '{family.value}'",
+                review_id=review_id,
+            )
+        )
+        return
+
+    for label in REQUIREMENT_COMPRESSION_REQUIRED_FIELDS:
+        if _first_nonempty(fields, label) is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=family.line,
+                    mode=mode,
+                    message=f"requirement-compression calibration missing required field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    seed_types_field = _first_nonempty(fields, "Seed types covered")
+    if seed_types_field is not None:
+        seed_types = set(_split_list_field(seed_types_field.value))
+        for seed_type in sorted(seed_types):
+            if seed_type not in REQUIREMENT_COMPRESSION_SEED_TYPES:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=seed_types_field.line,
+                        mode=mode,
+                        message=f"unsupported requirement-compression seed type '{seed_type}'",
+                        review_id=review_id,
+                    )
+                )
+        if len(seed_types & REQUIREMENT_COMPRESSION_SEED_TYPES) < 4:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=seed_types_field.line,
+                    mode=mode,
+                    message="requirement-compression corpus iteration must span at least four seed types",
+                    review_id=review_id,
+                )
+            )
+
+    seed_count_field = _first_nonempty(fields, "Seed defect count")
+    seed_count = _parse_int(seed_count_field.value) if seed_count_field is not None else None
+    if seed_count is None or seed_count < 6:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=seed_count_field.line if seed_count_field is not None else family.line,
+                mode=mode,
+                message="requirement-compression corpus iteration must contain at least six defects",
+                review_id=review_id,
+            )
+        )
+
+    canonical_r26 = _first_nonempty(fields, "Canonical R26 missing-recorded seed")
+    if canonical_r26 is not None and canonical_r26.value != "yes":
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=canonical_r26.line,
+                mode=mode,
+                message="requirement-compression corpus must include canonical R26 missing-recorded seed",
+                review_id=review_id,
+            )
+        )
+
+    expected_findings = _first_nonempty(fields, "Expected finding IDs")
+    if expected_findings is not None and "R26-missing-recorded" not in _split_list_field(expected_findings.value):
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=expected_findings.line,
+                mode=mode,
+                message="requirement-compression expected findings must include R26-missing-recorded",
+                review_id=review_id,
+            )
+        )
+
+    _validate_requirement_compression_closed_value(
+        path,
+        review_id,
+        fields,
+        "Sampling reason",
+        REQUIREMENT_COMPRESSION_SAMPLING_REASONS,
+        "sampling reason",
+        mode,
+        findings,
+    )
+    _validate_requirement_compression_closed_value(
+        path,
+        review_id,
+        fields,
+        "Audit outcome",
+        REQUIREMENT_COMPRESSION_AUDIT_OUTCOMES,
+        "audit outcome",
+        mode,
+        findings,
+    )
+    _validate_requirement_compression_closed_value(
+        path,
+        review_id,
+        fields,
+        "Rotation trigger",
+        REQUIREMENT_COMPRESSION_ROTATION_TRIGGERS,
+        "rotation trigger",
+        mode,
+        findings,
+    )
+
+    _validate_requirement_compression_min_percent(
+        path,
+        review_id,
+        fields,
+        "Applicable receipt sample rate",
+        RFG_PHASE_B_MIN_APPLICABLE_SAMPLE_RATE,
+        "applicable fidelity receipt sample rate must be at least 10% during Phase B",
+        mode,
+        findings,
+    )
+    _validate_requirement_compression_min_percent(
+        path,
+        review_id,
+        fields,
+        "Reviewer-authored decomposition sample rate",
+        RFG_PHASE_B_MIN_REVIEWER_AUTHORED_SAMPLE_RATE,
+        "reviewer-authored decomposition sample rate must be at least 30% during Phase B",
+        mode,
+        findings,
+    )
+    _validate_requirement_compression_min_percent(
+        path,
+        review_id,
+        fields,
+        "Not-applicable receipt sample rate",
+        RFG_PHASE_B_MIN_NOT_APPLICABLE_SAMPLE_RATE,
+        "not-applicable receipt sample rate must be at least 5% during Phase B",
+        mode,
+        findings,
+    )
+    _validate_requirement_compression_min_percent(
+        path,
+        review_id,
+        fields,
+        "Steady-state baseline sample rate",
+        RFG_STEADY_STATE_MIN_BASELINE_SAMPLE_RATE,
+        "steady-state baseline sample rate cannot drop below 5% without follow-on amendment",
+        mode,
+        findings,
+    )
+    _validate_requirement_compression_min_percent(
+        path,
+        review_id,
+        fields,
+        "Steady-state reviewer-authored sample rate",
+        RFG_STEADY_STATE_MIN_REVIEWER_AUTHORED_SAMPLE_RATE,
+        "steady-state reviewer-authored sample rate cannot drop below 15% without follow-on amendment",
+        mode,
+        findings,
+    )
+
+    not_applicable_count_field = _first_nonempty(fields, "Not-applicable receipts in cycle")
+    not_applicable_count = (
+        _parse_int(not_applicable_count_field.value)
+        if not_applicable_count_field is not None
+        else None
+    )
+    proportional = _first_nonempty(fields, "Not-applicable sampling proportional")
+    if (
+        not_applicable_count is not None
+        and not_applicable_count >= 5
+        and proportional is not None
+        and proportional.value != "yes"
+    ):
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=proportional.line,
+                mode=mode,
+                message="not-applicable receipt sampling must be proportional when at least five receipts exist",
+                review_id=review_id,
+            )
+        )
+
+
+def _validate_requirement_compression_closed_value(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    label: str,
+    allowed_values: frozenset[str],
+    value_kind: str,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    value = _first_nonempty(fields, label)
+    if value is None or value.value in allowed_values:
+        return
+    findings.append(
+        ValidationFinding(
+            path=path,
+            line=value.line,
+            mode=mode,
+            message=f"unsupported requirement-compression {value_kind} '{value.value}'",
+            review_id=review_id,
+        )
+    )
+
+
+def _validate_requirement_compression_min_percent(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    label: str,
+    minimum: int,
+    message: str,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    value = _first_nonempty(fields, label)
+    parsed = _parse_percent(value.value) if value is not None else None
+    if parsed is not None and parsed >= minimum:
+        return
+    findings.append(
+        ValidationFinding(
+            path=path,
+            line=value.line if value is not None else None,
+            mode=mode,
+            message=message,
+            review_id=review_id,
+        )
+    )
 
 
 def _validate_initial_packet_inventory(
