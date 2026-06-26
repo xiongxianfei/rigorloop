@@ -14,6 +14,7 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 Review closeout: code-review-r1
+Review closeout: code-review-r2
 
 ## Resolution Entries
 
@@ -59,3 +60,7 @@ No material findings. `test-spec-review-r3` approved the active test spec, confi
 ### code-review-r1
 
 No material findings. `code-review-r1` closed M1, Baseline and Selector Regression Profile, and handed off to M2 implementation.
+
+### code-review-r2
+
+No material findings. `code-review-r2` closed M2, Selector Preservation and Missing-Route Blockers, and handed off to M3 implementation.
