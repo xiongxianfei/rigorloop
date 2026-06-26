@@ -67,6 +67,11 @@ EXPECTED_CATALOG = {
     "guide_system.regression": "python scripts/test-guide-system-validator.py",
     "guide_system.validate": "python scripts/validate-guide-system.py",
     "selector.regression": "python scripts/test-select-validation.py",
+    "requirement_fidelity.spec_reads": (
+        "python scripts/test-fidelity-gate-spec-reads.py "
+        "--review-set tests/fixtures/requirement-fidelity-gate/representative-reviews "
+        "--max-bytes-per-clause 4096 --assert-no-broad-reads"
+    ),
     "token_cost.regression": "python scripts/test-token-cost-measurement.py",
     "token_cost.report_regression": "python scripts/test-token-cost-report-validation.py",
     "token_cost.report_validate": "python scripts/validate-token-cost-report.py <report-yaml>...",
@@ -1169,6 +1174,7 @@ raise SystemExit({exit_code})
             "change_record_query.regression",
             "change_metadata.regression",
             "guide_system.regression",
+            "requirement_fidelity.spec_reads",
             "review_artifacts.regression",
             "selector.regression",
             "skills.generation_regression",
@@ -1865,6 +1871,12 @@ raise SystemExit({exit_code})
                 "checks": {"review_artifacts.regression"},
             },
             {
+                "path": "tests/fixtures/review-artifacts/valid-requirement-compression-calibration/reviews/code-review-r1.md",
+                "category": "review-artifact-fixtures",
+                "status": "ok",
+                "checks": {"review_artifacts.regression"},
+            },
+            {
                 "path": "tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml",
                 "category": "review-artifact-fixtures",
                 "status": "ok",
@@ -1881,6 +1893,18 @@ raise SystemExit({exit_code})
                 "category": "change-metadata-fixtures",
                 "status": "ok",
                 "checks": {"change_metadata.regression"},
+            },
+            {
+                "path": "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
+                "category": "requirement-fidelity-spec-read",
+                "status": "ok",
+                "checks": {"requirement_fidelity.spec_reads"},
+            },
+            {
+                "path": "scripts/test-fidelity-gate-spec-reads.py",
+                "category": "requirement-fidelity-spec-read",
+                "status": "ok",
+                "checks": {"requirement_fidelity.spec_reads"},
             },
             {
                 "path": "scripts/measure-skill-tokens.py",
@@ -2580,6 +2604,60 @@ raise SystemExit({exit_code})
         self.assertTrue(
             {"adapters.regression", "adapters.drift", "adapters.validate"}.issubset(selected_ids(payload))
         )
+        self.assertFalse(payload["blocking_results"])
+
+    def test_pr_mode_routes_requirement_fidelity_spec_read_proof_paths(self) -> None:
+        repo = self.make_git_repo()
+        base = self.git_output(repo, "rev-parse", "HEAD")
+        script = repo / "scripts" / "test-fidelity-gate-spec-reads.py"
+        script.parent.mkdir(parents=True)
+        script.write_text("print('spec read proof')\n", encoding="utf-8")
+        fixture = (
+            repo
+            / "tests"
+            / "fixtures"
+            / "requirement-fidelity-gate"
+            / "representative-reviews"
+            / "r26-matrix-pilot"
+            / "spec-read-log.json"
+        )
+        fixture.parent.mkdir(parents=True)
+        fixture.write_text("{}\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "add requirement fidelity spec-read proof"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        head = self.git_output(repo, "rev-parse", "HEAD")
+
+        result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        payload = parse_stdout(result)
+
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(
+            payload["changed_paths"],
+            [
+                "scripts/test-fidelity-gate-spec-reads.py",
+                "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
+            ],
+        )
+        self.assertIn(
+            {"path": "scripts/test-fidelity-gate-spec-reads.py", "category": "requirement-fidelity-spec-read"},
+            payload["classified_paths"],
+        )
+        self.assertIn(
+            {
+                "path": "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
+                "category": "requirement-fidelity-spec-read",
+            },
+            payload["classified_paths"],
+        )
+        self.assertIn("requirement_fidelity.spec_reads", selected_ids(payload))
+        self.assertEqual(payload["unclassified_paths"], [])
         self.assertFalse(payload["blocking_results"])
 
     def test_pr_mode_routes_readme_without_unclassified_block(self) -> None:

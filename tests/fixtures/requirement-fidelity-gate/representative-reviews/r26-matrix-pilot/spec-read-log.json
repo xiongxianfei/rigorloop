@@ -1,0 +1,12 @@
+{
+  "review_id": "r26-matrix-pilot",
+  "description": "Representative M3 review fixture for the R26 property matrix pilot.",
+  "reads": [
+    {
+      "spec_path": "specs/test-spec-review-gate.md",
+      "clause_id": "R26",
+      "bytes_read": 1024,
+      "full_file": false
+    }
+  ]
+}

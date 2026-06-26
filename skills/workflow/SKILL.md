@@ -226,6 +226,10 @@ Use targeted proof and targeted validation before broad smoke unless an authorit
 
 Workflow-managed automated `code-review` uses the independent adversarial review gate. The orchestrator creates the neutral review invocation manifest and initial packet before invoking review. It must withhold validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.
 
+Workflow-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`. The requirement-fidelity gate is additive with the independent adversarial review gate; both receipts must pass when both contracts apply.
+
+Requirement-fidelity review starts from the relevant spec clause, then decomposition, expected surfaces, implementation diff, validator assertions, validation evidence, and prior findings.
+
 A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass. A non-clean result routes according to the active profile and stop reason without changing the reviewer's native verdict.
 
 Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions. Do not treat the latest milestone-local review as sufficient final holistic review evidence.
