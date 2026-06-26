@@ -58,21 +58,21 @@ Likely implementation surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Baseline and Selector Regression Profile
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md
-- Last reviewed milestone: none
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review
+- Current milestone: M2. Selector Preservation and Missing-Route Blockers
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r1.md
+- Last reviewed milestone: M1. Baseline and Selector Regression Profile
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 implementation is ready for code-review; M1 review, remaining implementation milestones, final holistic code-review, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed after clean code-review; M2 and M3 implementation, code-review, final holistic code-review, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
 ### M1. Baseline and Selector Regression Profile
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Record durable post-June-24 baseline evidence and profile `selector.regression` before any optimization.
 - Requirements: R1, R2, R3, R4, R5, R6, R20, R21, R22, R24, R25
 - Files/components likely touched:
@@ -237,6 +237,7 @@ Likely implementation surfaces:
 - 2026-06-26: M1 implementation started. Recorded `script-performance-baseline.yaml` and `selector-regression-profile.md` before any selector optimization.
 - 2026-06-26: M1 added selector-profile evidence routing for `selector-regression-profile.md` after selected CI reported deterministic evidence-registration debt for that required M1 evidence artifact.
 - 2026-06-26: M1 implementation is ready for code-review. Current milestone state moved to `review-requested`; next stage is `code-review`.
+- 2026-06-26: Code-review R1 passed with no material findings. M1 is closed; next stage is M2 implementation.
 
 ## Decision log
 

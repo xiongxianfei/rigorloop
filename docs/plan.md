@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Preflight-First Validation Runtime Optimization](plans/2026-06-26-preflight-first-validation-runtime-optimization.md) | active | code-review | 2026-06-26-preflight-first-validation-runtime-optimization |
+| [Preflight-First Validation Runtime Optimization](plans/2026-06-26-preflight-first-validation-runtime-optimization.md) | active | implement | 2026-06-26-preflight-first-validation-runtime-optimization |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked

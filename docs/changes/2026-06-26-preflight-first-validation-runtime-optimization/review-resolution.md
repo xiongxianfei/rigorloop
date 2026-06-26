@@ -13,6 +13,7 @@ Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
+Review closeout: code-review-r1
 
 ## Resolution Entries
 
@@ -54,3 +55,7 @@ No material findings. `test-spec-review-r2` approved the revised test spec, conf
 ### test-spec-review-r3
 
 No material findings. `test-spec-review-r3` approved the active test spec, confirmed `TSR1-F1` remains closed, and allowed implementation handoff.
+
+### code-review-r1
+
+No material findings. `code-review-r1` closed M1, Baseline and Selector Regression Profile, and handed off to M2 implementation.
