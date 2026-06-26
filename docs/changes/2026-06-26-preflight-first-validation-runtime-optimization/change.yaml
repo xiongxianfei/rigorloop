@@ -7,6 +7,7 @@ artifacts:
   spec: specs/validation-runtime-follow-through.md
   test_spec: specs/validation-runtime-follow-through.test.md
   plan: docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md
+  explain_change: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/explain-change.md
 requirements:
   - Record the validation-runtime optimization follow-on proposal before proposal-review.
   - Review the proposal for problem clarity, option quality, scope control, risk honesty, vision fit, and readiness for spec.
@@ -54,6 +55,7 @@ changed_files:
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/explain-change.md
 review:
   status: approved
   unresolved_items: 0
@@ -174,3 +176,15 @@ validation:
     result: clean_with_notes_no_material_findings
   - command: code-review r4
     result: clean_with_notes_no_material_findings_final_holistic
+  - command: explain-change
+    result: durable_change_rationale_recorded_ready_for_verify
+  - command: "python scripts/validate-change-metadata.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml"
+    result: passed_after_explain_change
+  - command: "python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-preflight-first-validation-runtime-optimization"
+    result: passed_after_explain_change
+  - command: "python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-26-preflight-first-validation-runtime-optimization"
+    result: passed_after_explain_change
+  - command: "git diff --check -- docs/changes/2026-06-26-preflight-first-validation-runtime-optimization docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md docs/plan.md"
+    result: passed_after_explain_change
+  - command: "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path specs/validation-runtime-follow-through.test.md --path docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/plan.md --path docs/proposals/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/explain-change.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/plan-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r3.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r4.md"
+    result: passed_validated_4_artifact_files_after_explain_change
