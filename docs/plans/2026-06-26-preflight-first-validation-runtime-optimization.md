@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Owner: maintainer
 - Change ID: 2026-06-26-preflight-first-validation-runtime-optimization
 - Start date: 2026-06-26
 - Last updated: 2026-06-26
-- Related issue or PR: none yet
+- Related issue or PR: https://github.com/xiongxianfei/rigorloop/pull/114
 - Supersedes: none
 
 ## Purpose / big picture
@@ -58,15 +58,15 @@ Likely implementation surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Broad-Smoke Child Classification
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r4.md
 - Last reviewed milestone: final holistic cross-milestone review
 - Review status: approved; stage=code-review; round=r4
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: pr-handoff-pending — M1, M2, M3, milestone code-reviews, final holistic code-review, explain-change, and verify are closed; PR handoff is not complete.
+- Next stage: human PR review
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #114 is open for review; M1, M2, M3, milestone code-reviews, final holistic code-review, explain-change, verify, and PR handoff are complete.
 
 ## Milestones
 
@@ -246,6 +246,9 @@ Likely implementation surfaces:
 - 2026-06-26: M3 implementation is ready for code-review. Current milestone state moved to `review-requested`; next stage is `code-review`.
 - 2026-06-26: Code-review R3 passed with no material findings. M3 is closed; next stage is final holistic code-review for the complete cross-milestone diff.
 - 2026-06-26: Code-review R4 completed final holistic cross-milestone review with no material findings. Next stage is `explain-change`.
+- 2026-06-26: Explain-change recorded durable rationale linking the proposal, requirements, milestones, diff, tests, validation, and review-resolution outcomes; next stage is `verify`.
+- 2026-06-26: Final verify passed with fresh selector regression, selected CI, broad-smoke, lifecycle, review-artifact, change-metadata, and diff hygiene evidence; branch-ready is recorded and next stage is `pr`.
+- 2026-06-26: PR #114 opened for review. Plan lifecycle state is `done` with terminal disposition `closed`.
 
 ## Decision log
 
