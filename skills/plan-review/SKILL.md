@@ -114,6 +114,14 @@ During Phase 1 of independent automated review rollout, workflow-managed automat
 
 Direct or review-only `plan-review` requests remain isolated by default.
 
+## Requirement-Fidelity Manual Opt-In
+
+Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt.
+
+Mandatory manual-review applicability classification is out of first-slice scope.
+
+Direct or review-only requests remain isolated by default.
+
 ## Implementation Profile Readiness
 
 When a plan is intended to support `implementation-through-verify`, review that implementation automation has separate authorization from authoring automation, explicit ordered milestones, approved commands, phase-aware boundaries, promotion evidence expectations, and a stop before PR. A clean plan-review does not authorize the implementation profile by itself.

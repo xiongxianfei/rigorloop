@@ -237,6 +237,14 @@ For `authoring-through-plan-review`, reset review context to the tracked artifac
 - When the review outcome is approval, the tracked architecture artifact should be ready to normalize to `approved` before planning or implementation relies on it. Do not leave a relied-on design in durable `reviewed` state.
 - When spec-review or architecture-review identifies required changes, the artifact must not remain in `approved` state until the required changes are resolved and re-reviewed.
 
+## Requirement-Fidelity Manual Opt-In
+
+Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt.
+
+Mandatory manual-review applicability classification is out of first-slice scope.
+
+Direct or review-only requests remain isolated by default.
+
 ## Workflow handoff behavior
 
 - Direct or review-only `architecture-review` requests remain isolated by default.
