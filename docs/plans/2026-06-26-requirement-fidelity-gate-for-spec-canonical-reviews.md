@@ -75,21 +75,21 @@ The implementation should favor structured fields and closed vocabularies where 
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Requirement-fidelity review contract and guidance
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/test-spec-review-r2.md
-- Last reviewed milestone: none
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review
+- Current milestone: M2. Applicability, receipt, and autoprogression validators
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r1.md
+- Last reviewed milestone: M1
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M2, M3, M4, M5
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 implementation is complete and awaits code-review; M2 through M5 remain open.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed by code-review-r1; M2 through M5 remain open.
 
 ## Milestones
 
 ### M1. Requirement-fidelity review contract and guidance
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add reviewer-facing and workflow-facing guidance for deterministic applicability, spec-first packet ordering, requirement-property decomposition, property-by-surface verification, fidelity receipts, requirement-compression findings, and AND semantics with the independent-review gate.
 - Requirements: `R1`-`R3`, `R9`-`R13`, `R14`-`R23`, `R27`-`R40`, `R46`-`R50`, `AC-RFG-001`-`AC-RFG-008`, `AC-RFG-013`, `AC-RFG-016`-`AC-RFG-019`
 - Files/components likely touched:
@@ -375,6 +375,7 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: Test-spec-review R2 approved the revised active test spec with no material findings; next stage is `implement` for M1.
 - 2026-06-26: M1 implementation started; current focus is skill-validator coverage and canonical guidance for requirement-fidelity review behavior.
 - 2026-06-26: M1 implementation completed. Added skill-validator coverage for requirement-fidelity guidance; updated `code-review`, `workflow`, `implement`, adjacent review skills, and `docs/workflows.md`; next stage is `code-review`.
+- 2026-06-26: Code-review R1 returned clean-with-notes for M1, closed M1, and handed off to implement M2.
 
 ## Decision log
 

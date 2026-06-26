@@ -13,11 +13,12 @@ Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: code-review-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`
 - Findings resolved: 3
 - Unresolved findings: 0
-- Current result: `test-spec-review-r2` approved the revised test spec with no material findings; implementation handoff is allowed.
+- Current result: `code-review-r1` returned clean-with-notes for M1, closed M1, and allowed implementation handoff to M2.
 
 ## Resolution Overview
 
@@ -88,3 +89,7 @@ Validation evidence: `specs/requirement-fidelity-gate.test.md` contains the manu
 ### test-spec-review-r2
 
 No material findings. `test-spec-review-r2` approved the revised test spec, confirmed `TSR1-F1` is closed, and allowed implementation handoff.
+
+### code-review-r1
+
+No material findings. `code-review-r1` reviewed the M1 implementation diff, confirmed the requirement-fidelity guidance surfaces and skill-validator coverage align with the approved first-slice contract, closed M1, and handed off to M2 implementation.

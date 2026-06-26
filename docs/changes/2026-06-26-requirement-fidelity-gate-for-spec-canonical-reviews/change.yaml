@@ -151,8 +151,18 @@ validation:
     result: pass
   - command: git diff --check -- docs/proposals/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md specs/requirement-fidelity-gate.md specs/requirement-fidelity-gate.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260626-requirement-fidelity-gate.md docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews docs/workflows.md skills/code-review/SKILL.md skills/workflow/SKILL.md skills/implement/SKILL.md skills/spec-review/SKILL.md skills/plan-review/SKILL.md skills/architecture-review/SKILL.md scripts/test-skill-validator.py
     result: pass
+  - command: code-review r1
+    result: clean_with_notes_no_material_findings_m1_closed
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path specs/requirement-fidelity-gate.md --path specs/requirement-fidelity-gate.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260626-requirement-fidelity-gate.md --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/proposal-review-r1.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/spec-review-r1.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/spec-review-r2.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/architecture-review-r1.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/plan-review-r1.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/test-spec-review-r1.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/test-spec-review-r2.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r1.md --path docs/workflows.md --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/architecture-review/SKILL.md --path scripts/test-skill-validator.py
+    result: pass
+  - command: git diff --check -- docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews
+    result: pass
 review:
-  status: m1_review_requested
+  status: m1_code_review_clean
   unresolved_items: 0
   material_findings: 3
   closed_findings: 3
@@ -174,6 +184,7 @@ changed_files:
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/plan-review-r1.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/test-spec-review-r1.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/test-spec-review-r2.md
+  - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r1.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/proposal-review-r1.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/spec-review-r1.md
   - docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/spec-review-r2.md
