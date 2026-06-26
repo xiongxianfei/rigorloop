@@ -59,14 +59,14 @@ Likely implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M3. Broad-Smoke Child Classification
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r2.md
-- Last reviewed milestone: M2. Selector Preservation and Missing-Route Blockers
-- Review status: approved; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review
+- Current milestone state: closed
+- Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r3.md
+- Last reviewed milestone: M3. Broad-Smoke Child Classification
+- Review status: approved; stage=code-review; round=r3
+- Remaining in-scope implementation milestones: none
+- Next stage: code-review (final holistic)
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 and M2 are closed after clean code-review; M3 implementation is ready for code-review; final holistic code-review, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — M1, M2, and M3 are closed after clean milestone code-review; the open lifecycle gate is final holistic code-review before explain-change, verify, and PR handoff.
 
 ## Milestones
 
@@ -154,7 +154,7 @@ Likely implementation surfaces:
 
 ### M3. Broad-Smoke Child Classification
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Produce read-only broad-smoke child classification evidence without changing broad-smoke execution behavior.
 - Requirements: R16, R17, R18, R19, R20, R21, R22, R23, R24, R25
 - Files/components likely touched:
@@ -244,6 +244,7 @@ Likely implementation surfaces:
 - 2026-06-26: M3 implementation started. Scope is limited to read-only broad-smoke child classification evidence and static checks; broad-smoke execution order and concurrency remain unchanged.
 - 2026-06-26: M3 implementation added read-only broad-smoke child classification evidence, selector evidence routing for `broad-smoke-child-classification.md`, and static checks for required classification fields, actual broad-smoke child coverage, unsafe candidate guardrails, and unchanged sequential broad-smoke execution.
 - 2026-06-26: M3 implementation is ready for code-review. Current milestone state moved to `review-requested`; next stage is `code-review`.
+- 2026-06-26: Code-review R3 passed with no material findings. M3 is closed; next stage is final holistic code-review for the complete cross-milestone diff.
 
 ## Decision log
 

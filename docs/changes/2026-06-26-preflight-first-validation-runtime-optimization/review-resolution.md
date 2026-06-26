@@ -15,6 +15,7 @@ Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 Review closeout: code-review-r1
 Review closeout: code-review-r2
+Review closeout: code-review-r3
 
 ## Resolution Entries
 
@@ -64,3 +65,7 @@ No material findings. `code-review-r1` closed M1, Baseline and Selector Regressi
 ### code-review-r2
 
 No material findings. `code-review-r2` closed M2, Selector Preservation and Missing-Route Blockers, and handed off to M3 implementation.
+
+### code-review-r3
+
+No material findings. `code-review-r3` closed M3, Broad-Smoke Child Classification. No in-scope implementation milestones remain; next stage is final holistic code-review before explain-change, verify, or PR handoff.
