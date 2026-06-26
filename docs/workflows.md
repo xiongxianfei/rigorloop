@@ -444,6 +444,9 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
   - standard workflow execution from `implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
 - In workflow-managed standard workflow runs, `code-review` first emits a first-pass review record grounded in the actual diff, upstream artifacts, checklist coverage, and validation evidence before any review-driven fixes begin.
 - Workflow-managed automated `code-review` uses the independent adversarial review gate. The orchestrator creates the neutral review invocation manifest and initial packet before invoking review, and it withholds validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.
+- Workflow-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`.
+- The requirement-fidelity gate is additive with the independent adversarial review gate; both receipts must pass when both contracts apply.
+- Manual reviews may voluntarily apply the requirement-fidelity gate, but mandatory manual-review applicability classification is out of first-slice scope.
 - A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.
 - In workflow-managed standard workflow milestone-based plans, first-pass `clean-with-notes` on a non-final implementation milestone closes the reviewed milestone and continues to the next in-scope implementation milestone.
 - In workflow-managed standard workflow milestone-based plans, first-pass `clean-with-notes` on the final implementation milestone reaches final closeout only when no in-scope implementation milestone remains open or unresolved.
