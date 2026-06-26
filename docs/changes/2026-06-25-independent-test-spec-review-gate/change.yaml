@@ -199,6 +199,40 @@ validation:
     result: clean-with-notes_no_material_findings_m3_rereview_next_explain-change
   - command: explain-change refresh
     result: recorded_after_CR4-F1_resolution_and_M3_rereview_next_verify
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_81_tests
+  - command: python scripts/test-skill-validator.py
+    result: pass_238_tests
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_137_tests
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_130_tests
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass_24_skill_files
+  - command: python scripts/build-adapters.py --version v0.1.5 --check
+    result: initial_block_missing_local_generated_adapter_output_then_pass_after_regeneration
+  - command: python scripts/validate-adapters.py --version v0.1.5
+    result: initial_block_missing_local_generated_adapter_output_then_pass_after_regeneration
+  - command: python scripts/build-adapters.py --version v0.1.5
+    result: pass_synced_generated_adapter_output
+  - command: python scripts/validate-release-ci.py --version v0.1.5
+    result: pass_recorded_source_5315a6d08b9d79e52d3276fd532b02f97c727e55
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate
+    result: pass_11_reviews_1_finding_11_log_entries_1_resolution_entry
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-25-independent-test-spec-review-gate
+    result: pass_CR4-F1_resolved
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-25-independent-test-spec-review-gate.md --path specs/test-spec-review-gate.md --path specs/test-spec-review-gate.test.md --path docs/architecture/2026-06-25-independent-test-spec-review-gate.md --path docs/adr/ADR-20260625-independent-test-spec-review-gate.md --path docs/plans/2026-06-25-independent-test-spec-review-gate.md --path docs/plan.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/change.yaml --path docs/changes/2026-06-25-independent-test-spec-review-gate/explain-change.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/review-log.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/review-resolution.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/proposal-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/architecture-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r1.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r2.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r3.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r4.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r5.md --path docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r6.md
+    result: pass_validated_5_artifact_files
+  - command: git diff --check
+    result: pass
+  - command: gh pr checks 111
+    result: pass_ci_1m40s
+  - command: verify
+    result: branch-ready_next_pr
 workflow:
   autoprogression:
     authoring_through_plan_review:
