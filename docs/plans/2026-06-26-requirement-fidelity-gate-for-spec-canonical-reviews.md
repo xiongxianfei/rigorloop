@@ -76,14 +76,14 @@ The implementation should favor structured fields and closed vocabularies where 
 ## Current Handoff Summary
 
 - Current milestone: M5. Generated guidance, behavior preservation, and lifecycle closeout
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r6.md
 - Last reviewed milestone: M4
-- Review status: approved; stage=code-review; round=r6
+- Review status: review-requested; stage=code-review; round=r7
 - Remaining in-scope implementation milestones: M5
-- Next stage: implement M5
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 through M4 are closed; M5 remains open.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 through M4 are closed; M5 is implemented and awaits code-review-r7.
 
 ## Milestones
 
@@ -284,7 +284,7 @@ The implementation should favor structured fields and closed vocabularies where 
 
 ### M5. Generated guidance, behavior preservation, and lifecycle closeout
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Refresh generated outputs after canonical guidance changes, record behavior-preservation evidence, run selected and broad-enough validation, and prepare downstream lifecycle evidence for final code-review, explain-change, verify, and PR handoff.
 - Requirements: `R46`-`R50`, all acceptance criteria as final integration proof
 - Files/components likely touched:
@@ -387,6 +387,8 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: Code-review R5 requested changes for M4. Finding `RFG-M4-CR1` is open; next stage is `review-resolution`.
 - 2026-06-26: Review-resolution for `RFG-M4-CR1` completed. Misclassified not-applicable audits now require non-trivial corrective action, regression coverage includes trivial-value normalization and compatibility cases, full selector validation passed, and M4 is ready for `code-review-r6`.
 - 2026-06-26: Code-review R6 returned clean-with-notes for M4, confirmed `RFG-M4-CR1` is resolved, closed M4, and handed off to implement M5.
+- 2026-06-26: M5 implementation started. Scope is behavior-preservation evidence, generated-output validation through repository build scripts, selected CI, and lifecycle handoff state.
+- 2026-06-26: M5 implementation completed. Added change-local behavior-preservation evidence; generated skill and adapter output checks passed through normal build commands without tracked generated edits; selected CI passed; next stage is `code-review-r7`.
 
 ## Decision log
 
