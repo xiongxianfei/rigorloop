@@ -81,9 +81,9 @@ The implementation should favor structured fields and closed vocabularies where 
 - Last reviewed milestone: M5
 - Review status: approved; stage=code-review; round=r7
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — all implementation milestones are closed; explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — all implementation milestones are closed and explain-change is recorded; verify and PR handoff remain.
 
 ## Milestones
 
@@ -390,6 +390,7 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: M5 implementation started. Scope is behavior-preservation evidence, generated-output validation through repository build scripts, selected CI, and lifecycle handoff state.
 - 2026-06-26: M5 implementation completed. Added change-local behavior-preservation evidence; generated skill and adapter output checks passed through normal build commands without tracked generated edits; selected CI passed; next stage is `code-review-r7`.
 - 2026-06-26: Code-review R7 returned clean-with-notes for the final M5 implementation and final requirement-fidelity change surface, closed M5, and handed off to `explain-change`.
+- 2026-06-26: Explain-change recorded durable rationale linking the proposal, requirements, architecture, milestones, diffs, validation, and review-resolution outcomes; next stage is `verify`.
 
 ## Decision log
 
