@@ -15,11 +15,12 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-r1
 Review closeout: code-review-r2
+Review closeout: code-review-r3
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`
 - Findings resolved: 4
 - Unresolved findings: 0
-- Current result: `RFG-M2-CR1` is accepted and resolved; M2 is ready for `code-review-r3`.
+- Current result: `code-review-r3` returned clean-with-notes for M2; M2 is closed and ready to hand off to M3 implementation.
 
 ## Resolution Overview
 
@@ -112,3 +113,7 @@ Resolution: Canonicalized the lifecycle clean-review fixture through `make_workf
 Required outcome: Workflow-managed clean handoff cannot advance without a recorded fidelity applicability result, and the review-artifact validator exposes the same missing-applicability invariant when the requirement-fidelity gate is in force.
 Validation target: Rerun `code-review-r3` after the M2 resolution implementation.
 Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k requirement_fidelity` passed; `python scripts/test-review-artifact-validator.py -k requirement_fidelity` passed; `python scripts/test-artifact-lifecycle-validator.py` passed; `python scripts/test-review-artifact-validator.py` passed; `python scripts/test-change-metadata-validator.py` passed; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews` passed; `python scripts/validate-change-metadata.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml` passed; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r2.md` passed; `python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/invalid-workflow-managed-missing-fidelity-applicability` failed as expected with `fidelity-applicability-missing`; `git diff --check -- scripts/lifecycle_state_sync.py scripts/test-artifact-lifecycle-validator.py scripts/review_artifact_validation.py scripts/test-review-artifact-validator.py tests/fixtures/review-artifacts/invalid-workflow-managed-missing-fidelity-applicability docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md` passed.
+
+### code-review-r3
+
+No material findings. `code-review-r3` reviewed the M2 resolution diff at commit `75635fca`, confirmed `RFG-M2-CR1` is resolved across lifecycle routing, fixture defaults, review-artifact validation, and compatibility coverage, closed M2, and handed off to M3 implementation.

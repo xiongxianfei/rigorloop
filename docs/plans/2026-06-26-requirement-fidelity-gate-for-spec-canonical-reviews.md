@@ -75,15 +75,15 @@ The implementation should favor structured fields and closed vocabularies where 
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Applicability, receipt, and autoprogression validators
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r2.md
-- Last reviewed milestone: M1
-- Review status: review-requested; stage=code-review; round=r3
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review
+- Current milestone: M3. Spec-derived validator matrix pilot
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r3.md
+- Last reviewed milestone: M2
+- Review status: approved; stage=code-review; round=r3
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed by code-review-r1; M2 resolution for RFG-M2-CR1 is implemented and awaits code-review-r3; M3 through M5 remain open.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 and M2 are closed; M3 through M5 remain open.
 
 ## Milestones
 
@@ -134,7 +134,7 @@ The implementation should favor structured fields and closed vocabularies where 
 
 ### M2. Applicability, receipt, and autoprogression validators
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add structured validation for applicability manifests, closed vocabularies, receipt completeness, packet-order evidence, not-applicable reasons, reviewer overrides, and autoprogression blocking when applicable fidelity evidence is missing or invalid.
 - Requirements: `R3`-`R13`, `R14`-`R23`, `R30`-`R40`, `R46`, `R48`, `R50`, `AC-RFG-002`-`AC-RFG-008`, `AC-RFG-013`, `AC-RFG-016`, `AC-RFG-018`-`AC-RFG-020`
 - Files/components likely touched:
@@ -380,6 +380,7 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: M2 implementation completed. Requirement-fidelity review artifact, lifecycle, and change-metadata validators pass targeted and full-suite validation; next stage is `code-review`.
 - 2026-06-26: Code-review R2 requested changes for M2. Finding `RFG-M2-CR1` is open; next stage is `review-resolution`.
 - 2026-06-26: Resolved `RFG-M2-CR1` by making missing fidelity applicability fail closed, canonicalizing clean-review fixtures as complete by default, and adding lifecycle plus review-artifact regressions; next stage is `code-review-r3`.
+- 2026-06-26: Code-review R3 returned clean-with-notes for M2, confirmed `RFG-M2-CR1` is resolved, closed M2, and handed off to implement M3.
 
 ## Decision log
 
@@ -424,6 +425,12 @@ The implementation should favor structured fields and closed vocabularies where 
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r2.md`
   - `python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/invalid-workflow-managed-missing-fidelity-applicability` failed as expected with `fidelity-applicability-missing`
   - `git diff --check -- scripts/lifecycle_state_sync.py scripts/test-artifact-lifecycle-validator.py scripts/review_artifact_validation.py scripts/test-review-artifact-validator.py tests/fixtures/review-artifacts/invalid-workflow-managed-missing-fidelity-applicability docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md`
+- 2026-06-26: Code-review R3 evidence validation passed:
+  - `python scripts/test-artifact-lifecycle-validator.py -k requirement_fidelity`
+  - `python scripts/test-review-artifact-validator.py -k requirement_fidelity`
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r3.md`
 
 ## Outcome and retrospective
 
