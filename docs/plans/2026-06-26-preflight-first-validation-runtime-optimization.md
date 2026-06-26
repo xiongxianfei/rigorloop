@@ -59,14 +59,14 @@ Likely implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M2. Selector Preservation and Missing-Route Blockers
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r1.md
 - Last reviewed milestone: M1. Baseline and Selector Regression Profile
-- Review status: approved; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed after clean code-review; M2 and M3 implementation, code-review, final holistic code-review, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed after clean code-review; M2 implementation is ready for code-review; M3 implementation, code-review, final holistic code-review, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -113,7 +113,7 @@ Likely implementation surfaces:
 
 ### M2. Selector Preservation and Missing-Route Blockers
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Preserve selector proof while improving or explaining `selector.regression`, and make missing selector routes deterministic blockers.
 - Requirements: R7, R8, R9, R10, R11, R12, R13, R14, R15, R20, R24, R25
 - Files/components likely touched:
@@ -135,7 +135,7 @@ Likely implementation surfaces:
   - Record no-safe-reduction rationale if the profile does not expose a safe optimization.
 - Validation commands:
   - `python scripts/test-select-validation.py`
-  - `bash scripts/ci.sh --mode explicit --timeout 180 --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md`
+  - `bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/validation-runtime-follow-through.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml`
 - Expected observable result: Selector-regression proof is preserved, missing selector routes block deterministically, and any runtime improvement is backed by before/after evidence.
 - Commit message: `M2: preserve selector proof and block missing routes`
@@ -238,6 +238,8 @@ Likely implementation surfaces:
 - 2026-06-26: M1 added selector-profile evidence routing for `selector-regression-profile.md` after selected CI reported deterministic evidence-registration debt for that required M1 evidence artifact.
 - 2026-06-26: M1 implementation is ready for code-review. Current milestone state moved to `review-requested`; next stage is `code-review`.
 - 2026-06-26: Code-review R1 passed with no material findings. M1 is closed; next stage is M2 implementation.
+- 2026-06-26: M2 implementation started. Added selector preservation, missing-route diagnostic, and diagnostic broad-smoke regression tests before changing selector diagnostics.
+- 2026-06-26: M2 implementation is ready for code-review. Current milestone state moved to `review-requested`; next stage is `code-review`.
 
 ## Decision log
 
@@ -247,11 +249,13 @@ Likely implementation surfaces:
 | 2026-06-26 | Sequence selector baseline/profile before optimization. | The spec requires proof before accepting runtime changes. | Optimize selector tests immediately. |
 | 2026-06-26 | Keep broad-smoke parallelism out of this plan. | The spec allows only read-only child classification in this slice. | Enable bounded broad-smoke concurrency in M3. |
 | 2026-06-26 | Record 180-second selected-wrapper timeout and use a 300-second override for M1 wrapper proof. | The required M1 evidence path timed out `selector.regression` at 180.12s but passed with a 300-second repository-supported timeout. | Hide the timeout, lower selector coverage, or treat the failed 180-second run as sufficient proof. |
+| 2026-06-26 | Use `--timeout 300` for M2 selected-wrapper proof. | M1 established that the same selector-regression wrapper path can exceed 180 seconds locally, and M2 does not claim a runtime optimization. | Repeat a known 180-second timeout before running the passing wrapper proof. |
 
 ## Surprises and discoveries
 
 - 2026-06-26: `selector-regression-profile.md` initially triggered `manual-routing-required` evidence-registration debt. M1 fixed this with a narrow evidence-class registration and targeted selector test because the profile artifact is required by the active test spec.
 - 2026-06-26: Selected CI with `--timeout 180` timed out `selector.regression`; `--timeout 300` passed. M2 should preserve this timeout behavior in any optimization or no-safe-reduction decision.
+- 2026-06-26: M2 did not identify a safe selector-regression runtime reduction. The milestone records a no-safe-reduction rationale and preserves the timeout behavior for follow-up optimization work.
 
 ## Validation notes
 
@@ -275,6 +279,20 @@ Likely implementation surfaces:
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-26-preflight-first-validation-runtime-optimization`
   - `git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md docs/plan.md specs/validation-runtime-follow-through.md specs/validation-runtime-follow-through.test.md`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path specs/validation-runtime-follow-through.test.md --path docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/plan.md --path docs/proposals/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/plan-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md`
+- 2026-06-26: M2 focused selector checks passed:
+  - `python scripts/test-select-validation.py -k selector_preservation_surface`
+  - `python scripts/test-select-validation.py -k unregistered_change_evidence`
+  - `python scripts/test-select-validation.py -k diagnostic_broad_smoke`
+  - `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md --json`
+- 2026-06-26: M2 selector regression and selected-wrapper validation passed:
+  - `/usr/bin/time -p python scripts/test-select-validation.py` passed 105 tests; suite reported 153.67s; time reported real 146.03s, user 5.44s, sys 24.35s.
+  - `/usr/bin/time -p bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md` passed; `artifact_lifecycle.validate` took 0.18s and `selector.regression` took 142.54s.
+- 2026-06-26: M2 lifecycle and metadata checks passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml`
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-preflight-first-validation-runtime-optimization`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-26-preflight-first-validation-runtime-optimization`
+  - `git diff --check --cached -- scripts/validation_selection.py scripts/test-select-validation.py docs/changes/2026-06-26-preflight-first-validation-runtime-optimization docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md docs/plan.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/validation-runtime-follow-through.md --path specs/validation-runtime-follow-through.test.md --path docs/plans/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/plan.md --path docs/proposals/2026-06-26-preflight-first-validation-runtime-optimization.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/change.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-preservation.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/proposal-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/plan-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r1.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r2.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md --path docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r1.md`
 
 ## Outcome and retrospective
 
