@@ -7,7 +7,7 @@ Terminal disposition: none
 
 - Owner: maintainers
 - Start date: 2026-06-25
-- Last updated: 2026-06-25
+- Last updated: 2026-06-26
 - Change ID: 2026-06-25-independent-test-spec-review-gate
 - Related issue or PR: none yet
 - Supersedes: none
@@ -68,9 +68,9 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - Last reviewed milestone: M3. Validators, fixtures, generated package proof, and representative evidence
 - Review status: approved; stage=code-review; round=r6
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — CR4-F1 is resolved and M3 is re-reviewed clean; final explain-change, verify, and PR handoff must be refreshed after the fix and re-review.
+- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — refreshed explain-change is recorded after CR4-F1 resolution and M3 re-review; final verify and PR handoff must still be refreshed.
 
 ## Milestones
 
@@ -172,6 +172,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - 2026-06-26: Isolated M2 re-review recorded `CR4-F1`; next stage is `review-resolution`.
 - 2026-06-26: `CR4-F1` resolved in commit `d6fbf415` and approved by `code-review-r5`; next stage is `explain-change`.
 - 2026-06-26: Isolated M3 re-review completed clean as `code-review-r6`; next stage remains `explain-change`.
+- 2026-06-26: Explain-change refreshed after `CR4-F1` resolution, the M2 review-miss learning record, and clean M3 re-review; next stage is `verify`.
 
 ## Decision log
 
@@ -218,7 +219,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ## Outcome and retrospective
 
-- `CR4-F1` is resolved and M3 is re-reviewed clean. Final explain-change, verify, and PR handoff remain stale until refreshed after the fix and re-review.
+- `CR4-F1` is resolved, M3 is re-reviewed clean, and final explain-change is refreshed. Final verify and PR handoff remain stale until refreshed after the fix and re-review.
 
 ## Readiness
 
