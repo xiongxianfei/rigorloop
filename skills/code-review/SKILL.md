@@ -354,6 +354,26 @@ A final holistic code review is required before `explain-change` or `verify`. It
 
 Do not introduce a minimum-finding quota. Finding count is not a review-quality target. The reviewer must not edit the reviewed target during review. Direct or profile-off review behavior remains isolated and does not require automated-review manifests unless the result is used as a workflow-managed automated handoff gate.
 
+## Requirement-Fidelity Gate
+
+Requirement fidelity is a sibling gate to independent review: independence reduces anchoring, while fidelity checks the complete normative spec projection.
+
+For workflow-managed automated `code-review`, use the requirement-fidelity gate when the applicability manifest says `applicable`.
+
+Start from the relevant spec clause before comparing implementation text, validator assertions, validation evidence, or prior findings.
+
+Decompose each relevant spec clause into requirement properties before artifact comparison unless accepted decomposition evidence already exists.
+
+For multi-surface contracts, check every requirement property on every required surface; a global substring match is insufficient.
+
+Applicable clean automated reviews require a requirement-fidelity receipt.
+
+A clean automated review may advance only when both the independent-review gate and the requirement-fidelity gate pass when both apply.
+
+Requirement compression is a material finding when an implementation, validator, skill, workflow, schema, fixture, generated output, or review-recording surface omits a required property.
+
+Direct or profile-off review behavior remains isolated and does not require requirement-fidelity manifests unless the result is used as a workflow-managed automated handoff gate.
+
 ## Plan closeout check
 
 For milestone-based plans, the review output must include or require a current handoff summary with:

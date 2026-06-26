@@ -24,6 +24,14 @@ MILESTONE_STATES = frozenset({"planned", "implementing", "review-requested", "re
 REVIEW_STATUSES = frozenset(
     {"not-started", "not-required", "review-requested", "approved", "changes-requested", "blocked", "inconclusive"}
 )
+REQUIREMENT_FIDELITY_APPLICABILITY_RESULTS = frozenset({"applicable", "not-applicable"})
+REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS = frozenset(
+    {
+        "change unrelated to normative contracts",
+        "decomposition already accepted upstream and unchanged",
+        "surfaces covered by spec-derived constants exercised in tests",
+    }
+)
 REVIEW_STAGES = frozenset(
     {
         "proposal-review",
@@ -492,7 +500,7 @@ def _critical_authority_requirement_failure_reason(data: dict[str, object]) -> s
     return None
 
 
-def _clean_review_gate_failure_reason(data: dict[str, object]) -> str | None:
+def _independent_review_failure_reason(data: dict[str, object]) -> str | None:
     if data.get("independence_manifest_valid") is not True:
         return "invalid-review-manifest"
     if data.get("phase_receipts_recorded") is not True:
@@ -501,6 +509,43 @@ def _clean_review_gate_failure_reason(data: dict[str, object]) -> str | None:
         return "review-recording-invalid"
     if data.get("clean_review_receipt_valid") is not True:
         return "insufficient-clean-receipt"
+    return None
+
+
+def _fidelity_applicability_presence_reason(data: dict[str, object]) -> str | None:
+    applicability = data.get("requirement_fidelity_applicability")
+    if applicability is None:
+        return "fidelity-applicability-missing"
+    if applicability not in REQUIREMENT_FIDELITY_APPLICABILITY_RESULTS:
+        return "fidelity-applicability-unknown"
+    return None
+
+
+def _fidelity_receipt_failure_reason(data: dict[str, object]) -> str | None:
+    applicability = data.get("requirement_fidelity_applicability")
+    if applicability == "not-applicable":
+        reason = data.get("requirement_fidelity_not_applicable_reason")
+        if reason not in REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS:
+            return "fidelity-not-applicable-reason-invalid"
+        return None
+    if applicability == "applicable" and data.get("requirement_fidelity_receipt_valid") is not True:
+        return "fidelity-receipt-invalid"
+    return None
+
+
+# Source: specs/requirement-fidelity-gate.md R3, R4-R8, R30-R34.
+WORKFLOW_MANAGED_CLEAN_REVIEW_GATES = (
+    ("review_independence", _independent_review_failure_reason),
+    ("fidelity_applicability", _fidelity_applicability_presence_reason),
+    ("fidelity_receipt", _fidelity_receipt_failure_reason),
+)
+
+
+def _clean_review_gate_failure_reason(data: dict[str, object]) -> str | None:
+    for _gate_name, check in WORKFLOW_MANAGED_CLEAN_REVIEW_GATES:
+        gate_failure = check(data)
+        if gate_failure is not None:
+            return gate_failure
     if data.get("unresolved_findings") not in {0, None}:
         return "review-findings-open"
     if data.get("risk_tier") not in REVIEW_GATE_RISK_TIERS:
@@ -786,6 +831,18 @@ def _settlement_identities(settlement: object) -> dict[str, object] | None:
     return identities
 
 
+def _approved_recorded_test_spec_review(value: object) -> bool:
+    if not isinstance(value, dict):
+        return False
+    return (
+        value.get("review_status") == "approved"
+        and value.get("recording_status") == "recorded"
+        and value.get("implementation_handoff") == "allowed"
+        and value.get("open_blockers") in {0, None}
+        and value.get("open_findings") in {0, None}
+    )
+
+
 def _promotion_evidence_complete(value: object) -> bool:
     if not isinstance(value, dict):
         return False
@@ -905,6 +962,8 @@ def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> Im
     settlement = data.get("test_spec_settlement")
     if not _is_settled_test_spec(settlement):
         return _implementation_stop(profile_state, "test-spec-settlement-incomplete")
+    if not _approved_recorded_test_spec_review(data.get("test_spec_review")):
+        return _implementation_stop(profile_state, "implementation-without-test-spec-review")
 
     current_stage = data.get("current_stage")
     if current_stage == "first-code-review-precheck":

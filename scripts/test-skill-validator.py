@@ -158,6 +158,18 @@ PROGRESSIVE_LOADING_CODE_REVIEW_PROTECTED_TERMS = [
     "stop conditions",
     "result format",
 ]
+# Source: specs/test-spec-review-gate.md R26.
+R26_REQUIRED_TEST_SPEC_REVIEW_EVIDENCE_PROPERTIES = (
+    "approved",
+    "current",
+    "recorded",
+)
+R26_IMPLEMENT_SKILL_EVIDENCE_SURFACES = (
+    ("workflow_role", "Workflow role"),
+    ("inputs_to_read", "Inputs to read"),
+    ("default_evidence", "Evidence access"),
+    ("pre_implementation_stop_condition", "First-pass completeness"),
+)
 CUSTOMER_PORTABLE_FIRST_SLICE_SKILLS = [
     "proposal",
     "proposal-review",
@@ -542,6 +554,23 @@ def assert_boundary_id_covered(test_case: unittest.TestCase, body: str, boundary
         if start <= boundary_number <= end:
             return
     test_case.fail(f"EB{boundary_number} is not covered explicitly or by range")
+
+
+def assert_implement_skill_carries_r26_evidence_property_matrix(
+    test_case: unittest.TestCase,
+    skill_body: str,
+) -> None:
+    for surface_id, heading in R26_IMPLEMENT_SKILL_EVIDENCE_SURFACES:
+        surface_text = extract_markdown_block(skill_body, heading).lower()
+        for prop in R26_REQUIRED_TEST_SPEC_REVIEW_EVIDENCE_PROPERTIES:
+            test_case.assertIn(
+                prop,
+                surface_text,
+                msg=(
+                    f"R26 evidence property {prop!r} missing from "
+                    f"implement skill surface {surface_id!r}"
+                ),
+            )
 
 
 class SkillValidatorFixtureTests(unittest.TestCase):
@@ -5130,6 +5159,95 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
+
+    def test_requirement_fidelity_m1_guidance_surfaces(self) -> None:
+        """M1 public guidance teaches requirement-fidelity as an additive code-review pilot."""
+
+        required_by_skill = {
+            "code-review": [
+                "## Requirement-Fidelity Gate",
+                "Requirement fidelity is a sibling gate to independent review: independence reduces anchoring, while fidelity checks the complete normative spec projection.",
+                "For workflow-managed automated `code-review`, use the requirement-fidelity gate when the applicability manifest says `applicable`.",
+                "Start from the relevant spec clause before comparing implementation text, validator assertions, validation evidence, or prior findings.",
+                "Decompose each relevant spec clause into requirement properties before artifact comparison unless accepted decomposition evidence already exists.",
+                "For multi-surface contracts, check every requirement property on every required surface; a global substring match is insufficient.",
+                "Applicable clean automated reviews require a requirement-fidelity receipt.",
+                "A clean automated review may advance only when both the independent-review gate and the requirement-fidelity gate pass when both apply.",
+                "Requirement compression is a material finding when an implementation, validator, skill, workflow, schema, fixture, generated output, or review-recording surface omits a required property.",
+                "Do not introduce a minimum-finding quota.",
+                "Direct or profile-off review behavior remains isolated and does not require requirement-fidelity manifests unless the result is used as a workflow-managed automated handoff gate.",
+            ],
+            "workflow": [
+                "Workflow-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`.",
+                "The requirement-fidelity gate is additive with the independent adversarial review gate; both receipts must pass when both contracts apply.",
+                "Requirement-fidelity review starts from the relevant spec clause, then decomposition, expected surfaces, implementation diff, validator assertions, validation evidence, and prior findings.",
+            ],
+            "implement": [
+                "When handing workflow-managed implementation work to automated `code-review`, include neutral routing metadata for requirement-fidelity applicability.",
+                "Do not present implementation and validator agreement as sufficient proof of spec fidelity.",
+                "When both contracts apply, downstream continuation requires both the independent-review receipt and the requirement-fidelity receipt.",
+            ],
+        }
+        for skill_name, terms in required_by_skill.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+        adjacent_review_terms = [
+            "Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt.",
+            "Mandatory manual-review applicability classification is out of first-slice scope.",
+            "Direct or review-only requests remain isolated by default.",
+        ]
+        for skill_name in ["spec-review", "architecture-review", "plan-review"]:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in adjacent_review_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+        workflow_docs = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        workflow_doc_terms = [
+            "Workflow-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`.",
+            "The requirement-fidelity gate is additive with the independent adversarial review gate; both receipts must pass when both contracts apply.",
+            "Manual reviews may voluntarily apply the requirement-fidelity gate, but mandatory manual-review applicability classification is out of first-slice scope.",
+        ]
+        for term in workflow_doc_terms:
+            with self.subTest(surface="docs/workflows.md", term=term):
+                self.assertIn(term, workflow_docs)
+
+    def test_requirement_fidelity_m3_r26_implement_skill_property_matrix(self) -> None:
+        """R26 uses one property list multiplied by required implement skill surfaces."""
+
+        self.assertEqual(
+            R26_REQUIRED_TEST_SPEC_REVIEW_EVIDENCE_PROPERTIES,
+            ("approved", "current", "recorded"),
+        )
+        self.assertEqual(
+            tuple(surface_id for surface_id, _heading in R26_IMPLEMENT_SKILL_EVIDENCE_SURFACES),
+            (
+                "workflow_role",
+                "inputs_to_read",
+                "default_evidence",
+                "pre_implementation_stop_condition",
+            ),
+        )
+        implement_body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
+        assert_implement_skill_carries_r26_evidence_property_matrix(self, implement_body)
+
+    def test_requirement_fidelity_m3_r26_missing_recorded_property_fails_matrix(self) -> None:
+        """The canonical approved+current without recorded compression fails validation."""
+
+        implement_body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
+        first_pass_block = extract_markdown_block(implement_body, "First-pass completeness")
+        compressed_first_pass_block = first_pass_block.replace("recorded, approved, current ", "approved, current ")
+        compressed_body = implement_body.replace(first_pass_block, compressed_first_pass_block)
+
+        with self.assertRaisesRegex(
+            AssertionError,
+            "R26 evidence property 'recorded' missing from implement skill surface "
+            "'pre_implementation_stop_condition'",
+        ):
+            assert_implement_skill_carries_r26_evidence_property_matrix(self, compressed_body)
 
     def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
         """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""

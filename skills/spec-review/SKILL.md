@@ -213,6 +213,14 @@ During Phase 1 of independent automated review rollout, workflow-managed automat
 
 Direct or review-only `spec-review` requests remain isolated by default.
 
+## Requirement-Fidelity Manual Opt-In
+
+Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt.
+
+Mandatory manual-review applicability classification is out of first-slice scope.
+
+Direct or review-only requests remain isolated by default.
+
 ## Rules
 
 - Do not approve vague or untestable `MUST` requirements.
