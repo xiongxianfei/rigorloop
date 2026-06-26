@@ -60,13 +60,13 @@ Likely implementation surfaces:
 
 - Current milestone: M3. Broad-Smoke Child Classification
 - Current milestone state: closed
-- Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r3.md
-- Last reviewed milestone: M3. Broad-Smoke Child Classification
-- Review status: approved; stage=code-review; round=r3
+- Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r4.md
+- Last reviewed milestone: final holistic cross-milestone review
+- Review status: approved; stage=code-review; round=r4
 - Remaining in-scope implementation milestones: none
-- Next stage: code-review (final holistic)
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — M1, M2, and M3 are closed after clean milestone code-review; the open lifecycle gate is final holistic code-review before explain-change, verify, and PR handoff.
+- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — M1, M2, M3, milestone code-reviews, and final holistic code-review are closed; explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -245,6 +245,7 @@ Likely implementation surfaces:
 - 2026-06-26: M3 implementation added read-only broad-smoke child classification evidence, selector evidence routing for `broad-smoke-child-classification.md`, and static checks for required classification fields, actual broad-smoke child coverage, unsafe candidate guardrails, and unchanged sequential broad-smoke execution.
 - 2026-06-26: M3 implementation is ready for code-review. Current milestone state moved to `review-requested`; next stage is `code-review`.
 - 2026-06-26: Code-review R3 passed with no material findings. M3 is closed; next stage is final holistic code-review for the complete cross-milestone diff.
+- 2026-06-26: Code-review R4 completed final holistic cross-milestone review with no material findings. Next stage is `explain-change`.
 
 ## Decision log
 
