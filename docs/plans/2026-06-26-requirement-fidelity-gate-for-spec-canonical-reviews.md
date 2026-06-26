@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: merged
 
 - Change ID: 2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews
 - Owner: maintainer
 - Start date: 2026-06-26
 - Last updated: 2026-06-26
-- Related issue or PR: none yet
+- Related issue or PR: PR #113 merged
 - Supersedes: none
 
 ## Purpose / big picture
@@ -81,9 +81,9 @@ The implementation should favor structured fields and closed vocabularies where 
 - Last reviewed milestone: M5
 - Review status: approved; stage=code-review; round=r7
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: pr-handoff-pending — all implementation milestones are closed, explain-change is recorded, and final verify is branch-ready; PR handoff remains.
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #113 merged after branch-ready verify and hosted CI success; no downstream lifecycle stage remains.
 
 ## Milestones
 
@@ -393,6 +393,7 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: Explain-change recorded durable rationale linking the proposal, requirements, architecture, milestones, diffs, validation, and review-resolution outcomes; next stage is `verify`.
 - 2026-06-26: Final verify found selector blocker `VERIFY-F1` for `scripts/test-fidelity-gate-spec-reads.py` and the R26 spec-read fixture path. CI-maintenance added deterministic `requirement_fidelity.spec_reads` routing and regression coverage; post-fix PR-scoped selected CI passed. Next stage remains `verify`.
 - 2026-06-26: Final verify reran after selector routing resolution. PR-scoped selected CI, broad smoke, generated-skill checks, and adapter archive validation passed; branch-ready is recorded and the next stage is `pr`.
+- 2026-06-26: PR #113 merged after hosted CI passed. Lifecycle state is terminal `done`; no downstream stage remains.
 
 ## Decision log
 

@@ -17,7 +17,6 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Requirement-Fidelity Gate for Spec-Canonical Reviews](plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md) | active | pr | 2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
@@ -28,6 +27,7 @@ No blocked plans.
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-06-26 Requirement-Fidelity Gate for Spec-Canonical Reviews](plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md) - done; terminal state: done; PR #113 merged.
 - [2026-06-26 Independent Test-Spec-Review Gate](plans/2026-06-25-independent-test-spec-review-gate.md) - done; terminal state: done; PR #111 merged.
 - [2026-06-25 Independent Adversarial Review Gates](plans/2026-06-25-independent-adversarial-review-gates.md) - done; terminal state: done; PR #110 merged.
 - [2026-06-24 Implementation Autoprogression Through Verify](plans/2026-06-24-implementation-autoprogression-through-verify.md) - done; terminal state: done; PR #108 merged.
@@ -37,7 +37,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-06-23 Workflow-State Projection and Pre-Transition Synchronization Gate](plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md) - done; terminal state: done; PR #103 merged.
 - [2026-06-18 Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) - done; terminal state: done; PR #99 merged.
 - [2026-06-18 Guide System Source-of-Truth Alignment](plans/2026-06-18-guide-system-source-of-truth-alignment.md) - done; terminal state: done; PR #100 merged.
-- [2026-05-26 CI-Maintenance Skill Rename and Workflow Authoring](plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md) - done; terminal state: done; PR #98 merged.
 
 ## Superseded
 - none yet
