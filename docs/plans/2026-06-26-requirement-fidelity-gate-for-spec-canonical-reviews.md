@@ -76,14 +76,14 @@ The implementation should favor structured fields and closed vocabularies where 
 ## Current Handoff Summary
 
 - Current milestone: M5. Generated guidance, behavior preservation, and lifecycle closeout
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r6.md
-- Last reviewed milestone: M4
-- Review status: review-requested; stage=code-review; round=r7
-- Remaining in-scope implementation milestones: M5
-- Next stage: code-review
+- Current milestone state: closed
+- Latest review evidence: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/reviews/code-review-r7.md
+- Last reviewed milestone: M5
+- Review status: approved; stage=code-review; round=r7
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 through M4 are closed; M5 is implemented and awaits code-review-r7.
+- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — all implementation milestones are closed; explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -284,7 +284,7 @@ The implementation should favor structured fields and closed vocabularies where 
 
 ### M5. Generated guidance, behavior preservation, and lifecycle closeout
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Refresh generated outputs after canonical guidance changes, record behavior-preservation evidence, run selected and broad-enough validation, and prepare downstream lifecycle evidence for final code-review, explain-change, verify, and PR handoff.
 - Requirements: `R46`-`R50`, all acceptance criteria as final integration proof
 - Files/components likely touched:
@@ -389,6 +389,7 @@ The implementation should favor structured fields and closed vocabularies where 
 - 2026-06-26: Code-review R6 returned clean-with-notes for M4, confirmed `RFG-M4-CR1` is resolved, closed M4, and handed off to implement M5.
 - 2026-06-26: M5 implementation started. Scope is behavior-preservation evidence, generated-output validation through repository build scripts, selected CI, and lifecycle handoff state.
 - 2026-06-26: M5 implementation completed. Added change-local behavior-preservation evidence; generated skill and adapter output checks passed through normal build commands without tracked generated edits; selected CI passed; next stage is `code-review-r7`.
+- 2026-06-26: Code-review R7 returned clean-with-notes for the final M5 implementation and final requirement-fidelity change surface, closed M5, and handed off to `explain-change`.
 
 ## Decision log
 
