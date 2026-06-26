@@ -255,6 +255,13 @@ REQUIREMENT_COMPRESSION_AUDIT_OUTCOMES = frozenset(
         "out-of-scope",
     }
 )
+# Source: specs/requirement-fidelity-gate.md R45b.
+REQUIREMENT_COMPRESSION_REQUIRES_CORRECTIVE_ACTION_OUTCOMES = frozenset(
+    {
+        "misclassified-should-have-applied",
+    }
+)
+TRIVIAL_CORRECTIVE_ACTION_VALUES = frozenset({"", "none", "n/a", "na"})
 REQUIREMENT_COMPRESSION_REQUIRED_FIELDS = (
     "Corpus iteration ID",
     "Seed types covered",
@@ -2007,6 +2014,7 @@ def _validate_requirement_compression_calibration_fields(
         mode,
         findings,
     )
+    _validate_requirement_compression_corrective_action(path, review_id, fields, mode, findings)
     _validate_requirement_compression_closed_value(
         path,
         review_id,
@@ -2088,6 +2096,38 @@ def _validate_requirement_compression_calibration_fields(
                 line=proportional.line,
                 mode=mode,
                 message="not-applicable receipt sampling must be proportional when at least five receipts exist",
+                review_id=review_id,
+            )
+        )
+
+
+def _validate_requirement_compression_corrective_action(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    audit_outcome = _first_nonempty(fields, "Audit outcome")
+    if (
+        audit_outcome is None
+        or audit_outcome.value not in REQUIREMENT_COMPRESSION_REQUIRES_CORRECTIVE_ACTION_OUTCOMES
+    ):
+        return
+
+    corrective_action_values = fields.get("Corrective action", [])
+    corrective_action = corrective_action_values[0] if corrective_action_values else None
+    normalized = corrective_action.value.strip().lower() if corrective_action is not None else ""
+    if normalized in TRIVIAL_CORRECTIVE_ACTION_VALUES:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=corrective_action.line if corrective_action is not None else audit_outcome.line,
+                mode=mode,
+                message=(
+                    "requirement-compression misclassified audit requires corrective action "
+                    "to be present and non-trivial per specs/requirement-fidelity-gate.md R45b"
+                ),
                 review_id=review_id,
             )
         )

@@ -287,12 +287,36 @@ validation:
     result: pass
   - command: git diff --check -- docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md
     result: pass
+  - command: review-resolution RFG-M4-CR1
+    result: accepted_resolved_pending_code_review_r6
+  - command: python scripts/test-review-artifact-validator.py -k requirement_compression_misclassified_audit
+    result: pass
+  - command: python scripts/test-review-artifact-validator.py -k requirement_compression
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-requirement-compression-calibration
+    result: pass
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass_102_tests
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md --path docs/plan.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md --path docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md
+    result: pass
+  - command: git diff --check -- scripts/review_artifact_validation.py scripts/test-review-artifact-validator.py docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews docs/plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md docs/plan.md
+    result: pass
 review:
-  status: m4_resolution_needed
-  unresolved_items: 1
+  status: m4_review_requested
+  unresolved_items: 0
   material_findings: 5
-  closed_findings: 4
-  open_findings: 1
+  closed_findings: 5
+  open_findings: 0
   review_log: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-log.md
   review_resolution: docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/review-resolution.md
 changed_files:

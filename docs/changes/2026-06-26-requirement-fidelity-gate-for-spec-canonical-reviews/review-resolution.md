@@ -4,7 +4,7 @@
 
 This record tracks material review finding closeout for the requirement-fidelity gate change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -20,9 +20,9 @@ Review closeout: code-review-r4
 Review closeout: code-review-r5
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`
-- Findings resolved: 4
-- Unresolved findings: 1
-- Current result: `code-review-r5` requested changes for M4; M4 requires review-resolution for `RFG-M4-CR1` before it can close.
+- Findings resolved: 5
+- Unresolved findings: 0
+- Current result: `RFG-M4-CR1` is resolved and M4 is ready for `code-review-r6`; M4 is not closed until rerun code-review completes cleanly.
 
 ## Resolution Overview
 
@@ -32,7 +32,7 @@ Review closeout: code-review-r5
 | SR1-F2 | accepted | resolved | Sampling and rotation obligations are quantified with Phase B sample floors, steady-state floors, corpus iteration size, rotation triggers, record fields, and planned test IDs. |
 | TSR1-F1 | accepted | resolved | Added a manual proof case schema, three structured manual proofs, two automated replacements for machine-checkable obligations, coverage-map links, and new planned test IDs. |
 | RFG-M2-CR1 | accepted | resolved | Workflow-managed clean review routing now requires a recorded requirement-fidelity applicability result; missing and unknown values fail closed, and clean-review fixtures are complete by default. |
-| RFG-M4-CR1 | accepted | open | Requirement-compression calibration must reject misclassified not-applicable audits that have no corrective action. |
+| RFG-M4-CR1 | accepted | resolved | Requirement-compression calibration now rejects misclassified not-applicable audits that have missing or trivial corrective action. |
 
 ## Finding Details
 
@@ -131,11 +131,14 @@ No material findings. `code-review-r4` reviewed the M3 implementation diff at co
 
 Finding ID: RFG-M4-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
-Stop state: resolution-needed
+Stop state: review-requested
 Rationale: `code-review-r5` found that M4 validates the closed `Audit outcome` enum but does not enforce `R45b`'s conditional corrective-action requirement when the audit outcome is `misclassified-should-have-applied`.
 Required outcome: Requirement-compression calibration validation must fail when a misclassified not-applicable audit records no corrective action.
 Safe resolution path: Add a review-artifact validator regression where `Audit outcome: misclassified-should-have-applied` and `Corrective action: none` fails, then update `scripts/review_artifact_validation.py` to reject missing, empty, or `none` corrective action for that audit outcome. Keep the existing valid requirement-compression calibration fixture passing.
+Chosen action: Added `REQUIREMENT_COMPRESSION_REQUIRES_CORRECTIVE_ACTION_OUTCOMES` citing `R45b` and `TRIVIAL_CORRECTIVE_ACTION_VALUES` covering empty, `none`, `n/a`, and `na` values after whitespace and case normalization. Added `_validate_requirement_compression_corrective_action` at the existing requirement-compression parse site.
+Resolution: Added regressions for the exact `misclassified-should-have-applied` plus `Corrective action: none` probe, empty action, missing action, whitespace/case variants, `N/A`, a real corrective-action pass case, and the compatibility guard that `Audit outcome: correct` with `Corrective action: none` remains valid. The existing valid requirement-compression calibration fixture remains valid and the approved spec was not changed.
 Validation target: Rerun `code-review-r6` after the M4 resolution implementation.
+Validation evidence: `python scripts/test-review-artifact-validator.py -k requirement_compression_misclassified_audit` passed after first failing for the expected reason before the validator fix; `python scripts/test-review-artifact-validator.py -k requirement_compression` passed; `python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-requirement-compression-calibration` passed; `python scripts/test-review-artifact-validator.py` passed; `python scripts/test-select-validation.py` passed with `102 passed in 134.70s`.

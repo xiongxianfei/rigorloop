@@ -1728,6 +1728,69 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                 )
                 self.assertFails(root, expected)
 
+    def test_requirement_compression_misclassified_audit_rejects_trivial_corrective_action(self) -> None:
+        cases = (
+            ("none", "Corrective action: none", "Corrective action: none"),
+            ("empty", "Corrective action: none", "Corrective action:"),
+            ("missing", "Corrective action: none\n", ""),
+            ("whitespace-cased-none", "Corrective action: none", "Corrective action:   None  "),
+            ("n-a", "Corrective action: none", "Corrective action: N/A"),
+        )
+        for name, old, new in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-rfg-corrective-{name}-"))
+                self.addCleanupTree(root)
+                calibration = (
+                    valid_requirement_compression_calibration_fields()
+                    .replace("Audit outcome: correct", "Audit outcome: misclassified-should-have-applied")
+                    .replace(old, new)
+                )
+                write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(
+                    root,
+                    "requirement-compression misclassified audit requires corrective action",
+                )
+
+    def test_requirement_compression_misclassified_audit_accepts_real_corrective_action(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-rfg-corrective-real-"))
+        self.addCleanupTree(root)
+        calibration = (
+            valid_requirement_compression_calibration_fields()
+            .replace("Audit outcome: correct", "Audit outcome: misclassified-should-have-applied")
+            .replace(
+                "Corrective action: none",
+                (
+                    "Corrective action: Re-classified receipt R-2026-06-22-014 "
+                    "and routed to corpus rotation under RFG-CAL-014."
+                ),
+            )
+        )
+        write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(calibration))
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+
+        self.assertPasses(root)
+
+    def test_requirement_compression_correct_audit_allows_none_corrective_action(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-rfg-corrective-correct-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text(valid_requirement_compression_calibration_fields()),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+
+        self.assertPasses(root)
+
     def test_requirement_compression_calibration_requires_iteration_and_rotation_fields(self) -> None:
         cases = (
             ("Corpus iteration ID", "requirement-compression calibration missing required field Corpus iteration ID"),

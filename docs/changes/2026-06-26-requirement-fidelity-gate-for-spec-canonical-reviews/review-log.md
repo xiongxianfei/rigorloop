@@ -124,4 +124,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-r5.md
 Resolution: review-resolution.md#code-review-r5
 Material findings: RFG-M4-CR1
-Open findings: RFG-M4-CR1
+Open findings: None
