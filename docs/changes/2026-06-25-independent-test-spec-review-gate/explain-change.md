@@ -28,17 +28,19 @@ The approved proposal identified an ownership gap: `plan-review` happens before 
 | Feature contract | `specs/test-spec-review-gate.md`, `specs/test-spec-review-gate.test.md` | Record the approved requirements, examples, edge cases, acceptance criteria, and proof plan for the new gate. | Proposal-review, spec-review, architecture-review, plan-review records. |
 | Architecture records | `docs/architecture/...`, `docs/adr/...` | Document that the established review-family pattern is sufficient and that generated adapter/package surfaces are affected. | Architecture-review R1. |
 | Canonical skill | `skills/test-spec-review/SKILL.md`, `skills/test-spec-review/assets/*` | Add the public skill, result skeleton, and material-finding asset for independent proof-map adequacy review. | R13-R24; M2; `code-review-r2`. |
-| Adjacent skill routing | `skills/test-spec/SKILL.md`, `skills/implement/SKILL.md`, `skills/workflow/SKILL.md` | Route formal test-spec output to review, require approved current review before implementation, and expose the new stage in workflow guidance. | R25-R26; T10; skill-validator evidence. |
+| Adjacent skill routing | `skills/test-spec/SKILL.md`, `skills/implement/SKILL.md`, `skills/workflow/SKILL.md` | Route formal test-spec output to review, require recorded, approved, current review evidence before implementation, and expose the new stage in workflow guidance. | R25-R26; T10; skill-validator evidence. |
 | Review validators | `scripts/review_artifact_validation.py`, `scripts/test-review-artifact-validator.py` | Recognize `test-spec-review`, enforce closed enums, status/handoff mapping, next-stage combinations, and formal record placement. | R5-R12, R22-R23, R27; T3-T6. |
 | Skill validators | `scripts/skill_validation.py`, `scripts/test-skill-validator.py` | Include review-family assets for the new skill and prove adjacent routing/claim boundaries. | R24-R26; T10. |
 | Lifecycle sync | `scripts/lifecycle_state_sync.py`, `scripts/test-artifact-lifecycle-validator.py` | Accept `test-spec-review` as a formal review stage in workflow-state handoffs. | R1-R2, R21; T1-T2, T9. |
 | Adapter packaging | `dist/adapters/manifest.yaml`, `scripts/adapter_distribution.py`, `scripts/test-adapter-distribution.py`, `docs/releases/v0.1.5/release.yaml` | Package `test-spec-review` for supported adapters and keep v-prefixed adapter alias handling/release validation coherent. | R28; T11; full adapter distribution suite. |
-| Change evidence | `docs/changes/...`, `docs/plans/...`, `docs/plan.md` | Record proposal/spec/architecture/plan reviews, implementation reviews, validation evidence, behavior preservation, and current handoff state. | Workflow recording contract; `code-review-r1` through `code-review-r3`. |
+| Change evidence | `docs/changes/...`, `docs/plans/...`, `docs/plan.md` | Record proposal/spec/architecture/plan reviews, implementation reviews, validation evidence, behavior preservation, and current handoff state. | Workflow recording contract; `code-review-r1` through `code-review-r6`. |
+| Review-resolution and learning evidence | `docs/changes/.../review-resolution.md`, `docs/learn/sessions/2026-06-26-m2-test-spec-review-evidence-review-miss.md` | Close the M2 `recorded` evidence wording finding and capture why earlier review autoprogression missed it. | `CR4-F1`; `code-review-r4` through `code-review-r6`. |
 
 ## Tests Added Or Changed
 
 - `scripts/test-review-artifact-validator.py`: added `test-spec-review` result fixtures, unknown-value regression cases, and invalid status/handoff/next-stage combinations.
 - `scripts/test-skill-validator.py`: added workflow baseline and canonical skill/asset/adjacent-routing checks for `test-spec-review`.
+- `scripts/test-skill-validator.py`: after `CR4-F1`, tightened the focused adjacent-routing check to assert the role, inputs, default evidence, and stop-condition surfaces independently require recorded, approved, current `test-spec-review` evidence.
 - `scripts/test-artifact-lifecycle-validator.py`: added a workflow-state fixture proving `stage=test-spec-review` is accepted in review-requested state.
 - `scripts/test-adapter-distribution.py`: added a v-prefixed release regression proving `v0.1.5` manifests include OpenCode command aliases when the canonical alias skills are present.
 - `specs/rigorloop-workflow.test.md` and `specs/test-spec-review-gate.test.md`: record the contract-level proof map for workflow order, status separation, staleness, review records, and generated adapter proof.
@@ -60,6 +62,11 @@ Recorded passing validation includes:
 - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`
 - scoped `git diff --check` commands
+- post-`CR4-F1` focused reruns:
+  - `python scripts/test-skill-validator.py -k test_test_spec_review_canonical_skill_assets_and_adjacent_routing`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_manifest_records_opencode_command_aliases_for_v_prefixed_releases AdapterDistributionTests.test_release_ci_validation_uses_recorded_source_commit_for_v0_1_5 AdapterDistributionTests.test_v0_1_1_release_metadata_requires_command_alias_smoke_evidence`
 
 No hosted CI status is claimed here.
 
@@ -72,8 +79,20 @@ Formal review records:
 - `architecture-review-r1`: approved, no material findings.
 - `plan-review-r1` and `plan-review-r2`: approved, no material findings.
 - `code-review-r1`, `code-review-r2`, `code-review-r3`: clean-with-notes, no material findings.
+- `code-review-r4`: changes-requested with one material finding, `CR4-F1`.
+- `code-review-r5`: clean-with-notes, approved the `CR4-F1` fix with no material findings.
+- `code-review-r6`: clean-with-notes, re-reviewed M3 with no material findings.
 
-No `review-resolution.md` was required because no material findings were recorded.
+Review resolution summary:
+
+- Accepted: 1
+- Rejected: 0
+- Deferred: 0
+- Partially accepted: 0
+- Needs decision: 0
+- Unresolved findings: 0
+
+`CR4-F1` is resolved in [review-resolution.md](review-resolution.md). The fix commit `d6fbf415` updates `skills/implement/SKILL.md` and `scripts/test-skill-validator.py` so formal implementation eligibility requires recorded, approved, current `test-spec-review` evidence.
 
 ## Alternatives Rejected
 
@@ -92,7 +111,8 @@ The change does not implement historical test-spec migration, automated semantic
 - Stale-review detection remains first-slice, evidence-based behavior rather than content-hash fingerprinting. The proposal keeps fingerprinting as a possible follow-on if manual staleness checks prove insufficient.
 - Review-model/vendor diversity remains a broader review-independence policy question, not part of this gate.
 - Generated adapter directories under `dist/adapters/{codex,claude,opencode}` are local validation output and remain untracked.
+- The previous final verify report predates `CR4-F1`, the fix, the learning record, and M3 re-review. It is retained as historical evidence but does not establish current branch or PR readiness.
 
 ## Readiness
 
-All implementation milestones are closed with clean code-review records. The active plan routes next to `verify`; this explanation does not claim final verification, branch readiness, or PR readiness.
+All implementation milestones are closed, `CR4-F1` is resolved, and the latest code-review evidence is clean through `code-review-r6`. The active plan routes next to `verify`; this explanation does not claim final verification, branch readiness, or PR readiness.

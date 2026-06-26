@@ -197,6 +197,8 @@ validation:
     result: pass
   - command: code-review r6
     result: clean-with-notes_no_material_findings_m3_rereview_next_explain-change
+  - command: explain-change refresh
+    result: recorded_after_CR4-F1_resolution_and_M3_rereview_next_verify
 workflow:
   autoprogression:
     authoring_through_plan_review:
