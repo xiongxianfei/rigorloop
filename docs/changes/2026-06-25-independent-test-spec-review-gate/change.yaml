@@ -66,19 +66,20 @@ changed_files:
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r2.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r3.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r4.md
+  - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r5.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r1.md
   - docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: clean-with-notes
+  unresolved_items: 0
   material_findings: 1
-  open_findings: 1
-  closed_findings: 0
+  open_findings: 0
+  closed_findings: 1
   proposal_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/proposal-review-r1.md
   spec_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md
   architecture_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/architecture-review-r1.md
   plan_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/plan-review-r2.md
-  code_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r4.md
+  code_review: docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/code-review-r5.md
   review_log: docs/changes/2026-06-25-independent-test-spec-review-gate/review-log.md
   review_resolution: docs/changes/2026-06-25-independent-test-spec-review-gate/review-resolution.md
 validation:
@@ -180,6 +181,16 @@ validation:
     result: branch-ready_next_pr
   - command: code-review r4
     result: changes-requested_CR4-F1_m2_resolution-needed_next_review-resolution
+  - command: python scripts/test-skill-validator.py -k test_test_spec_review_canonical_skill_assets_and_adjacent_routing
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: review-resolution CR4-F1
+    result: accepted_resolved_by_d6fbf415
+  - command: code-review r5
+    result: clean-with-notes_no_material_findings_CR4-F1_resolved_next_explain-change
 workflow:
   autoprogression:
     authoring_through_plan_review:
