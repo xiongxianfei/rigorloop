@@ -63,14 +63,14 @@ Generated public adapter skill bodies are not authored source and must not be ha
 ## Current Handoff Summary
 
 - Current milestone: M2. Canonical skill and review assets
-- Current milestone state: resolution-needed
-- Latest review evidence: code-review-r4
+- Current milestone state: closed
+- Latest review evidence: code-review-r5
 - Last reviewed milestone: M2. Canonical skill and review assets
-- Review status: changes-requested; stage=code-review; round=r4
+- Review status: approved; stage=code-review; round=r5
 - Remaining in-scope implementation milestones: none
-- Next stage: review-resolution
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — CR4-F1 is open after isolated M2 re-review; the previous PR-ready state is stale until resolution, re-review, explain-change, verify, and PR handoff are refreshed.
+- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — CR4-F1 is resolved and re-reviewed; final explain-change, verify, and PR handoff must be refreshed after the fix.
 
 ## Milestones
 
@@ -94,7 +94,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ### M2. Canonical skill and review assets
 
-- Milestone state: resolution-needed
+- Milestone state: closed
 - Requirements: R13-R18, R22-R26
 - Deliverable: add `skills/test-spec-review/SKILL.md`, result and material-finding assets, update `test-spec`, `implement`, and workflow-facing skill wording.
 - Likely files: `skills/test-spec-review/SKILL.md`, `skills/test-spec-review/assets/review-result-skeleton.md`, `skills/test-spec-review/assets/material-finding.md`, `skills/test-spec/SKILL.md`, `skills/implement/SKILL.md`, `skills/workflow/SKILL.md`.
@@ -170,6 +170,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 - 2026-06-25: Explain-change recorded durable change rationale; next stage is `verify`.
 - 2026-06-25: Final verify passed; next stage is `pr`.
 - 2026-06-26: Isolated M2 re-review recorded `CR4-F1`; next stage is `review-resolution`.
+- 2026-06-26: `CR4-F1` resolved in commit `d6fbf415` and approved by `code-review-r5`; next stage is `explain-change`.
 
 ## Decision log
 
@@ -216,7 +217,7 @@ Generated public adapter skill bodies are not authored source and must not be ha
 
 ## Outcome and retrospective
 
-- Isolated M2 re-review found `CR4-F1`; final verify and PR handoff are stale until review-resolution closes the finding.
+- `CR4-F1` is resolved and re-reviewed. Final explain-change, verify, and PR handoff remain stale until refreshed after the fix.
 
 ## Readiness
 
