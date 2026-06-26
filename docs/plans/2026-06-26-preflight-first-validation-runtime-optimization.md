@@ -64,9 +64,9 @@ Likely implementation surfaces:
 - Last reviewed milestone: final holistic cross-milestone review
 - Review status: approved; stage=code-review; round=r4
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — M1, M2, M3, milestone code-reviews, and final holistic code-review are closed; explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — M1, M2, M3, milestone code-reviews, final holistic code-review, and explain-change are closed; verify and PR handoff are not complete.
 
 ## Milestones
 
