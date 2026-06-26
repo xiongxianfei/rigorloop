@@ -48,6 +48,7 @@ changed_files:
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r1.md
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r2.md
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r3.md
+  - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r4.md
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/script-performance-baseline.yaml
   - docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/selector-regression-profile.md
@@ -65,7 +66,7 @@ review:
   spec_review: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/spec-review-r1.md
   plan_review: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/plan-review-r1.md
   test_spec_review: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/test-spec-review-r3.md
-  code_review: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r3.md
+  code_review: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r4.md
   review_log: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-log.md
   review_resolution: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/review-resolution.md
 validation:
@@ -171,3 +172,5 @@ validation:
     result: passed
   - command: code-review r3
     result: clean_with_notes_no_material_findings
+  - command: code-review r4
+    result: clean_with_notes_no_material_findings_final_holistic

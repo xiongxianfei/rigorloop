@@ -105,3 +105,13 @@ Detailed record: reviews/code-review-r3.md
 Resolution: review-resolution.md#code-review-r3
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-r4
+Stage: code-review
+Round: 4
+Status: clean-with-notes
+Detailed record: reviews/code-review-r4.md
+Resolution: review-resolution.md#code-review-r4
+Material findings: None
+Open findings: None

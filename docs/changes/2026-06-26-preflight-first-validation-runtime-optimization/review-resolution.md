@@ -16,6 +16,7 @@ Review closeout: test-spec-review-r3
 Review closeout: code-review-r1
 Review closeout: code-review-r2
 Review closeout: code-review-r3
+Review closeout: code-review-r4
 
 ## Resolution Entries
 
@@ -69,3 +70,7 @@ No material findings. `code-review-r2` closed M2, Selector Preservation and Miss
 ### code-review-r3
 
 No material findings. `code-review-r3` closed M3, Broad-Smoke Child Classification. No in-scope implementation milestones remain; next stage is final holistic code-review before explain-change, verify, or PR handoff.
+
+### code-review-r4
+
+No material findings. `code-review-r4` completed the final holistic cross-milestone review for the complete branch diff and handed off to explain-change.
