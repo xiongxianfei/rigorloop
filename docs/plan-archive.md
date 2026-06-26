@@ -4,6 +4,7 @@ Completed plan history moved out of the common-read plan index.
 
 ## Done (archive)
 
+- [2026-05-26 CI-Maintenance Skill Rename and Workflow Authoring](plans/2026-05-26-ci-maintenance-skill-rename-and-workflow-authoring.md) - done; terminal state: done; PR #98 merged.
 - [2026-05-25 Spec-Review Testability Routing and Output Consolidation](plans/2026-05-25-spec-review-testability-routing-output-consolidation.md) - done; terminal state: done; PR #96 merged.
 - [2026-05-25 Adopter-Facing Vision and README Principle Rewrite](plans/2026-05-25-adopter-facing-vision-and-readme-principle-rewrite.md) - done; terminal state: done; PR #94 merged through release PR #95.
 - [2026-05-25 Installed-Skill Artifact Placement Contract](plans/2026-05-25-installed-skill-artifact-placement-contract.md) - done; terminal state: done; PR #93 merged.

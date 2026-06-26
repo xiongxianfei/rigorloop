@@ -391,7 +391,7 @@ validation:
   - command: tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5
     result: pass_final_verify
 review:
-  status: verified_branch_ready_pr_next
+  status: done_pr_113_merged
   unresolved_items: 0
   material_findings: 5
   closed_findings: 5
