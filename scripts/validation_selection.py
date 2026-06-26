@@ -328,6 +328,14 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("baseline evidence is recorded for a comparison",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="selector-regression-profile",
+        patterns=("selector-regression-profile.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("selector-regression profiling evidence is recorded before optimization",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="token-cost",
         patterns=("token-cost.md",),
         selector_routes=("artifact_lifecycle.validate",),
