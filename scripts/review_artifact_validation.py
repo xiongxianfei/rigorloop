@@ -238,6 +238,52 @@ MECHANICAL_AUTO_FIX_KINDS = frozenset(
         "deterministic-manifest-regeneration",
     }
 )
+# Source: specs/requirement-fidelity-gate.md R6-R11, R17d, R44g, R45c, R48.
+REQUIREMENT_FIDELITY_APPLICABILITY_RESULTS = frozenset({"applicable", "not-applicable"})
+REQUIREMENT_FIDELITY_OVERRIDE_DIRECTIONS = frozenset({"force-applicable", "force-not-applicable"})
+REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS = frozenset(
+    {
+        "change unrelated to normative contracts",
+        "decomposition already accepted upstream and unchanged",
+        "surfaces covered by spec-derived constants exercised in tests",
+    }
+)
+REQUIREMENT_FIDELITY_PATH_TRIGGERS = frozenset(
+    {
+        "skills/",
+        "scripts/*validator*",
+        "scripts/validate-*",
+        "schemas/",
+        "specs/",
+        "templates/",
+        "docs/workflows.md",
+        "docs/changes/**/reviews/",
+        "docs/changes/**/review-*.md",
+    }
+)
+REQUIREMENT_FIDELITY_CATEGORY_TRIGGERS = frozenset(
+    {
+        "spec-derived validators",
+        "skill instructions derived from specs",
+        "review-recording contracts",
+        "workflow routing contracts",
+        "closed enums",
+        "multi-surface public skill guidance",
+        "artifact lifecycle validators",
+        "metadata validators",
+        "generated-output or package parity validators",
+        "autoprogression gates",
+        "material-finding schemas",
+    }
+)
+REQUIREMENT_FIDELITY_RECEIPT_FIELDS = (
+    "Relevant spec clauses decomposed",
+    "Property matrix complete",
+    "Multi-surface contracts identified",
+    "Validator assertions checked against spec",
+    "Compressed requirement risk",
+    "Requirement-fidelity no-finding rationale",
+)
 
 
 @dataclass(frozen=True)
@@ -574,6 +620,7 @@ def _parse_review_file(
     finding_records = _parse_finding_records(path, review_id, lines, mode, findings)
     _validate_clean_receipt_review_fields(path, review_id, fields, mode, findings)
     _validate_automated_review_gate_fields(path, review_id, fields, mode, findings)
+    _validate_requirement_fidelity_fields(path, review_id, fields, mode, findings)
     _validate_calibration_record_fields(path, review_id, fields, mode, findings)
     if stage is not None and stage.value == "test-spec-review":
         _validate_test_spec_review_result_fields(path, review_id, fields, mode, findings)
@@ -1062,6 +1109,247 @@ def _is_clean_automated_review(fields: dict[str, list[FieldValue]]) -> bool:
         and outcome is not None
         and outcome.value == "advance"
     )
+
+
+def _is_requirement_fidelity_record(fields: dict[str, list[FieldValue]]) -> bool:
+    return any(_first_nonempty(fields, label) is not None for label in (
+        "Requirement-fidelity applicability",
+        "Requirement-fidelity affected paths",
+        "Requirement-fidelity matched path triggers",
+        "Requirement-fidelity matched category triggers",
+        "Requirement-fidelity receipt",
+    ))
+
+
+def _validate_requirement_fidelity_fields(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    if not _is_requirement_fidelity_record(fields):
+        return
+
+    applicability = _first_nonempty(fields, "Requirement-fidelity applicability")
+    affected_paths = _first_nonempty(fields, "Requirement-fidelity affected paths")
+    path_triggers = _first_nonempty(fields, "Requirement-fidelity matched path triggers")
+    category_triggers = _first_nonempty(fields, "Requirement-fidelity matched category triggers")
+    review_stage = _first_nonempty(fields, "Requirement-fidelity review stage")
+
+    for label, value in (
+        ("Requirement-fidelity applicability", applicability),
+        ("Requirement-fidelity affected paths", affected_paths),
+        ("Requirement-fidelity matched path triggers", path_triggers),
+        ("Requirement-fidelity matched category triggers", category_triggers),
+        ("Requirement-fidelity review stage", review_stage),
+    ):
+        if value is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=None,
+                    mode=mode,
+                    message=f"requirement-fidelity manifest missing required field {label}",
+                    review_id=review_id,
+                )
+            )
+
+    applicability_value = applicability.value if applicability is not None else None
+    if applicability is not None and applicability.value not in REQUIREMENT_FIDELITY_APPLICABILITY_RESULTS:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=applicability.line,
+                mode=mode,
+                message=f"unsupported requirement-fidelity applicability '{applicability.value}'",
+                review_id=review_id,
+            )
+        )
+
+    _validate_requirement_fidelity_trigger_list(
+        path,
+        review_id,
+        path_triggers,
+        allowed_values=REQUIREMENT_FIDELITY_PATH_TRIGGERS,
+        value_kind="path trigger",
+        mode=mode,
+        findings=findings,
+    )
+    _validate_requirement_fidelity_trigger_list(
+        path,
+        review_id,
+        category_triggers,
+        allowed_values=REQUIREMENT_FIDELITY_CATEGORY_TRIGGERS,
+        value_kind="category trigger",
+        mode=mode,
+        findings=findings,
+    )
+
+    if applicability_value == "applicable" and path_triggers is not None and category_triggers is not None:
+        matched_path_values = set(_split_list_field(path_triggers.value))
+        matched_category_values = set(_split_list_field(category_triggers.value))
+        if matched_path_values <= {"none"} and matched_category_values <= {"none"}:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=applicability.line,
+                    mode=mode,
+                    message="requirement-fidelity applicable manifest missing matched trigger evidence",
+                    review_id=review_id,
+                )
+            )
+
+    override_direction = _first_nonempty(fields, "Requirement-fidelity override direction")
+    override_justification = _first_nonempty(fields, "Requirement-fidelity override justification")
+    if override_direction is not None:
+        if override_direction.value not in REQUIREMENT_FIDELITY_OVERRIDE_DIRECTIONS:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=override_direction.line,
+                    mode=mode,
+                    message=f"unsupported requirement-fidelity override direction '{override_direction.value}'",
+                    review_id=review_id,
+                )
+            )
+        if override_justification is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=override_direction.line,
+                    mode=mode,
+                    message="requirement-fidelity override missing non-empty justification",
+                    review_id=review_id,
+                )
+            )
+
+    not_applicable_reason = _first_nonempty(fields, "Requirement-fidelity not-applicable reason")
+    if applicability_value == "not-applicable" and not_applicable_reason is None:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=applicability.line if applicability is not None else None,
+                mode=mode,
+                message="requirement-fidelity not-applicable manifest missing closed reason",
+                review_id=review_id,
+            )
+        )
+    if not_applicable_reason is not None and not_applicable_reason.value not in REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=not_applicable_reason.line,
+                mode=mode,
+                message=f"unsupported requirement-fidelity not-applicable reason '{not_applicable_reason.value}'",
+                review_id=review_id,
+            )
+        )
+
+    if applicability_value == "applicable":
+        packet_order = _first_nonempty(fields, "Requirement-fidelity packet order")
+        if packet_order is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=applicability.line if applicability is not None else None,
+                    mode=mode,
+                    message="requirement-fidelity applicable review missing packet order evidence",
+                    review_id=review_id,
+                )
+            )
+        else:
+            order = _split_list_field(packet_order.value)
+            if not order or order[0] != "spec clause":
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=packet_order.line,
+                        mode=mode,
+                        message="requirement-fidelity packet order must start with spec clause",
+                        review_id=review_id,
+                    )
+                )
+
+    if applicability_value == "applicable" and _is_clean_automated_review(fields):
+        receipt = _first_nonempty(fields, "Requirement-fidelity receipt")
+        if receipt is None or receipt.value.lower() not in {"yes", "true"}:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=applicability.line if applicability is not None else None,
+                    mode=mode,
+                    message="applicable clean automated review missing requirement-fidelity receipt",
+                    review_id=review_id,
+                )
+            )
+        for label in REQUIREMENT_FIDELITY_RECEIPT_FIELDS:
+            if _first_nonempty(fields, label) is None:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=None,
+                        mode=mode,
+                        message=f"requirement-fidelity receipt missing required field {label}",
+                        review_id=review_id,
+                    )
+                )
+        for label in (
+            "Relevant spec clauses decomposed",
+            "Property matrix complete",
+            "Multi-surface contracts identified",
+            "Validator assertions checked against spec",
+        ):
+            value = _first_nonempty(fields, label)
+            if value is not None and value.value != "yes":
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=value.line,
+                        mode=mode,
+                        message=f"requirement-fidelity receipt field {label} must be yes",
+                        review_id=review_id,
+                    )
+                )
+        decomposed = _first_nonempty(fields, "Relevant spec clauses decomposed")
+        decomposition = _first_nonempty(fields, "Requirement-property decomposition evidence")
+        if decomposed is not None and decomposed.value == "yes" and decomposition is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=decomposed.line,
+                    mode=mode,
+                    message="requirement-fidelity receipt says clauses were decomposed but decomposition evidence is missing",
+                    review_id=review_id,
+                )
+            )
+
+
+def _validate_requirement_fidelity_trigger_list(
+    path: Path,
+    review_id: str,
+    field: FieldValue | None,
+    *,
+    allowed_values: frozenset[str],
+    value_kind: str,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    if field is None:
+        return
+    for value in _split_list_field(field.value):
+        if value == "none":
+            continue
+        if value not in allowed_values:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=field.line,
+                    mode=mode,
+                    message=f"unsupported requirement-fidelity {value_kind} '{value}'",
+                    review_id=review_id,
+                )
+            )
 
 
 def _validate_calibration_record_fields(

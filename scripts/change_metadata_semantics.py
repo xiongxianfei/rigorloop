@@ -21,6 +21,36 @@ REVIEW_GATE_PHASE_ORDER = (
     "prior-findings-released",
     "verdict-recorded",
 )
+REQUIREMENT_FIDELITY_APPLICABILITY_RESULTS = {"applicable", "not-applicable"}
+REQUIREMENT_FIDELITY_PATH_TRIGGERS = {
+    "skills/",
+    "scripts/*validator*",
+    "scripts/validate-*",
+    "schemas/",
+    "specs/",
+    "templates/",
+    "docs/workflows.md",
+    "docs/changes/**/reviews/",
+    "docs/changes/**/review-*.md",
+}
+REQUIREMENT_FIDELITY_CATEGORY_TRIGGERS = {
+    "spec-derived validators",
+    "skill instructions derived from specs",
+    "review-recording contracts",
+    "workflow routing contracts",
+    "closed enums",
+    "multi-surface public skill guidance",
+    "artifact lifecycle validators",
+    "metadata validators",
+    "generated-output or package parity validators",
+    "autoprogression gates",
+    "material-finding schemas",
+}
+REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS = {
+    "change unrelated to normative contracts",
+    "decomposition already accepted upstream and unchanged",
+    "surfaces covered by spec-derived constants exercised in tests",
+}
 SHA256_RE = re.compile(r"^sha256:[0-9a-fA-F]{64}$")
 
 
@@ -124,6 +154,64 @@ def validate_review_gate_metadata(data: Any) -> list[str]:
                 errors.append("review.review_gate.phase_receipts: duplicate phase receipt")
 
     return errors
+
+
+def validate_requirement_fidelity_metadata(data: Any) -> list[str]:
+    if not isinstance(data, dict):
+        return []
+    review = data.get("review")
+    if not isinstance(review, dict):
+        return []
+    fidelity = review.get("requirement_fidelity")
+    if fidelity is None:
+        return []
+    if not isinstance(fidelity, dict):
+        return ["review.requirement_fidelity: expected object"]
+
+    errors: list[str] = []
+    applicability = fidelity.get("applicability")
+    if applicability not in REQUIREMENT_FIDELITY_APPLICABILITY_RESULTS:
+        errors.append("review.requirement_fidelity.applicability: expected one of applicable, not-applicable")
+
+    _validate_string_list_closed(
+        fidelity.get("matched_path_triggers"),
+        "review.requirement_fidelity.matched_path_triggers",
+        REQUIREMENT_FIDELITY_PATH_TRIGGERS | {"none"},
+        errors,
+    )
+    _validate_string_list_closed(
+        fidelity.get("matched_category_triggers"),
+        "review.requirement_fidelity.matched_category_triggers",
+        REQUIREMENT_FIDELITY_CATEGORY_TRIGGERS | {"none"},
+        errors,
+    )
+
+    review_stage = fidelity.get("review_stage")
+    if not _nonempty_string(review_stage):
+        errors.append("review.requirement_fidelity.review_stage: expected string")
+
+    if applicability == "applicable":
+        if fidelity.get("receipt_valid") is not True:
+            errors.append("review.requirement_fidelity.receipt_valid: expected true when applicability is applicable")
+    if applicability == "not-applicable":
+        reason = fidelity.get("not_applicable_reason")
+        if reason not in REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS:
+            errors.append("review.requirement_fidelity.not_applicable_reason: expected closed reason")
+
+    return errors
+
+
+def _validate_string_list_closed(value: Any, path: str, allowed: set[str], errors: list[str]) -> None:
+    if not isinstance(value, list) or not value:
+        errors.append(f"{path}: expected non-empty list")
+        return
+    for index, item in enumerate(value):
+        if not isinstance(item, str):
+            errors.append(f"{path}[{index}]: expected string")
+            continue
+        if item not in allowed:
+            kind = "path trigger" if "path" in path else "category trigger"
+            errors.append(f"{path}[{index}]: unknown {kind} {item}")
 
 
 def _nonempty_string(value: Any) -> bool:

@@ -433,6 +433,71 @@ review:
                     target = self.write_policy_fixture(Path(temp_dir), workflow_block=review_gate_block)
                     self.assertPathFails(target, expected)
 
+    def test_requirement_fidelity_metadata_passes_with_closed_values(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-rfg-valid-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block="""  requirement_fidelity:
+    applicability: applicable
+    matched_path_triggers:
+      - skills/
+      - scripts/*validator*
+    matched_category_triggers:
+      - skill instructions derived from specs
+    review_stage: code-review
+    receipt_valid: true
+""",
+            )
+            self.assertPathPasses(target)
+
+    def test_requirement_fidelity_metadata_rejects_unknown_values(self) -> None:
+        cases = [
+            (
+                "unknown-applicability",
+                """  requirement_fidelity:
+    applicability: maybe
+    matched_path_triggers:
+      - skills/
+    matched_category_triggers:
+      - skill instructions derived from specs
+    review_stage: code-review
+    receipt_valid: true
+""",
+                "review.requirement_fidelity.applicability: expected one of applicable, not-applicable",
+            ),
+            (
+                "unknown-path-trigger",
+                """  requirement_fidelity:
+    applicability: applicable
+    matched_path_triggers:
+      - random/
+    matched_category_triggers:
+      - skill instructions derived from specs
+    review_stage: code-review
+    receipt_valid: true
+""",
+                "review.requirement_fidelity.matched_path_triggers[0]: unknown path trigger random/",
+            ),
+            (
+                "unknown-not-applicable-reason",
+                """  requirement_fidelity:
+    applicability: not-applicable
+    matched_path_triggers:
+      - none
+    matched_category_triggers:
+      - none
+    review_stage: code-review
+    not_applicable_reason: just docs
+""",
+                "review.requirement_fidelity.not_applicable_reason: expected closed reason",
+            ),
+        ]
+        for name, block, expected in cases:
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory(prefix=f"change-metadata-rfg-{name}-") as temp_dir:
+                    target = self.write_policy_fixture(Path(temp_dir), workflow_block=block)
+                    self.assertPathFails(target, expected)
+
     def test_autoprogression_policy_record_required_fields_fail(self) -> None:
         cases = [
             (

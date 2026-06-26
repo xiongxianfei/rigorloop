@@ -269,6 +269,27 @@ def valid_calibration_record_fields(extra_fields: str = "") -> str:
     """
 
 
+def valid_requirement_fidelity_fields(extra_fields: str = "") -> str:
+    extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
+    return f"""
+    Requirement-fidelity applicability: applicable
+    Requirement-fidelity affected paths: skills/code-review/SKILL.md; scripts/test-review-artifact-validator.py
+    Requirement-fidelity matched path triggers: skills/; scripts/*validator*
+    Requirement-fidelity matched category triggers: skill instructions derived from specs; review-recording contracts
+    Requirement-fidelity review stage: code-review
+    Requirement-fidelity packet order: spec clause > decomposition > expected surfaces > implementation diff > validator assertions > validation evidence > prior findings
+    Requirement-property decomposition evidence: present
+    Requirement-fidelity receipt: yes
+    Relevant spec clauses decomposed: yes
+    Property matrix complete: yes
+    Multi-surface contracts identified: yes
+    Validator assertions checked against spec: yes
+    Compressed requirement risk: none found
+    Requirement-fidelity no-finding rationale: Decomposition and property matrix were checked against the cited spec clauses.
+    {extra}
+    """
+
+
 T1_VALID_CASES = (
     ("l1-standard", "valid-automated-review-gate-l1"),
     ("l2-elevated", "valid-automated-review-gate"),
@@ -1074,6 +1095,130 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                     valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
                 )
                 self.assertFails(root, expected)
+
+    def test_requirement_fidelity_applicable_clean_review_receipt_passes(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-rfg-valid-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "code-review-r1.md",
+            valid_automated_review_text(valid_requirement_fidelity_fields()),
+        )
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+
+        self.assertPasses(root)
+
+    def test_requirement_fidelity_manifest_unknown_values_fail_closed(self) -> None:
+        cases = [
+            (
+                "unknown-applicability",
+                "Requirement-fidelity applicability: applicable",
+                "Requirement-fidelity applicability: maybe",
+                "unsupported requirement-fidelity applicability 'maybe'",
+            ),
+            (
+                "unknown-path-trigger",
+                "Requirement-fidelity matched path triggers: skills/; scripts/*validator*",
+                "Requirement-fidelity matched path triggers: random/",
+                "unsupported requirement-fidelity path trigger 'random/'",
+            ),
+            (
+                "unknown-category-trigger",
+                "Requirement-fidelity matched category triggers: skill instructions derived from specs; review-recording contracts",
+                "Requirement-fidelity matched category triggers: vibes",
+                "unsupported requirement-fidelity category trigger 'vibes'",
+            ),
+            (
+                "unknown-override-direction",
+                None,
+                "Requirement-fidelity override direction: shrug",
+                "unsupported requirement-fidelity override direction 'shrug'",
+            ),
+            (
+                "free-form-not-applicable",
+                "Requirement-fidelity applicability: applicable",
+                "Requirement-fidelity applicability: not-applicable\nRequirement-fidelity not-applicable reason: just docs",
+                "unsupported requirement-fidelity not-applicable reason 'just docs'",
+            ),
+        ]
+        for name, old, new, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-rfg-{name}-"))
+                self.addCleanupTree(root)
+                extra = valid_requirement_fidelity_fields()
+                review = valid_automated_review_text(extra)
+                if old is None:
+                    review = valid_automated_review_text(extra + "\n" + new)
+                else:
+                    review = review.replace(old, new)
+                write_text(root / "reviews" / "code-review-r1.md", review)
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_requirement_fidelity_applicable_review_requires_spec_first_and_receipt_evidence(self) -> None:
+        cases = [
+            (
+                "implementation-first",
+                "Requirement-fidelity packet order: spec clause > decomposition > expected surfaces > implementation diff > validator assertions > validation evidence > prior findings",
+                "Requirement-fidelity packet order: implementation diff > spec clause > validator assertions",
+                "requirement-fidelity packet order must start with spec clause",
+            ),
+            (
+                "missing-decomposition-evidence",
+                "Requirement-property decomposition evidence: present\n",
+                "",
+                "requirement-fidelity receipt says clauses were decomposed but decomposition evidence is missing",
+            ),
+            (
+                "validator-not-compared",
+                "Validator assertions checked against spec: yes",
+                "Validator assertions checked against spec: no",
+                "requirement-fidelity receipt field Validator assertions checked against spec must be yes",
+            ),
+            (
+                "missing-no-finding-rationale",
+                "Requirement-fidelity no-finding rationale: Decomposition and property matrix were checked against the cited spec clauses.\n",
+                "",
+                "requirement-fidelity receipt missing required field Requirement-fidelity no-finding rationale",
+            ),
+        ]
+        for name, old, new, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-rfg-{name}-"))
+                self.addCleanupTree(root)
+                write_text(
+                    root / "reviews" / "code-review-r1.md",
+                    valid_automated_review_text(valid_requirement_fidelity_fields()).replace(old, new),
+                )
+                write_text(
+                    root / "review-log.md",
+                    valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+                )
+                self.assertFails(root, expected)
+
+    def test_requirement_fidelity_not_applicable_requires_closed_reason_and_skips_clean_receipt(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-rfg-not-applicable-"))
+        self.addCleanupTree(root)
+        fidelity = """
+        Requirement-fidelity applicability: not-applicable
+        Requirement-fidelity affected paths: docs/example.md
+        Requirement-fidelity matched path triggers: none
+        Requirement-fidelity matched category triggers: none
+        Requirement-fidelity review stage: code-review
+        Requirement-fidelity not-applicable reason: change unrelated to normative contracts
+        """
+        write_text(root / "reviews" / "code-review-r1.md", valid_automated_review_text(fidelity))
+        write_text(
+            root / "review-log.md",
+            valid_log_text("None", "None").replace("changes-requested", "clean-with-notes"),
+        )
+
+        self.assertPasses(root)
 
     def test_calibration_record_shape_and_sampling_fields_pass(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="review-artifact-calibration-valid-"))
