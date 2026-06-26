@@ -58,15 +58,15 @@ Likely implementation surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Selector Preservation and Missing-Route Blockers
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r1.md
-- Last reviewed milestone: M1. Baseline and Selector Regression Profile
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review
+- Current milestone: M3. Broad-Smoke Child Classification
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/reviews/code-review-r2.md
+- Last reviewed milestone: M2. Selector Preservation and Missing-Route Blockers
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed after clean code-review; M2 implementation is ready for code-review; M3 implementation, code-review, final holistic code-review, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 and M2 are closed after clean code-review; M3 implementation, code-review, final holistic code-review, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -113,7 +113,7 @@ Likely implementation surfaces:
 
 ### M2. Selector Preservation and Missing-Route Blockers
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Preserve selector proof while improving or explaining `selector.regression`, and make missing selector routes deterministic blockers.
 - Requirements: R7, R8, R9, R10, R11, R12, R13, R14, R15, R20, R24, R25
 - Files/components likely touched:
@@ -240,6 +240,7 @@ Likely implementation surfaces:
 - 2026-06-26: Code-review R1 passed with no material findings. M1 is closed; next stage is M2 implementation.
 - 2026-06-26: M2 implementation started. Added selector preservation, missing-route diagnostic, and diagnostic broad-smoke regression tests before changing selector diagnostics.
 - 2026-06-26: M2 implementation is ready for code-review. Current milestone state moved to `review-requested`; next stage is `code-review`.
+- 2026-06-26: Code-review R2 passed with no material findings. M2 is closed; next stage is M3 implementation.
 
 ## Decision log
 
