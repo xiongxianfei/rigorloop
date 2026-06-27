@@ -1,0 +1,600 @@
+{
+  "schema_version": "broad-smoke-child-classification-v1",
+  "scenario": "broad-smoke-safe-parallelism-m1-classification",
+  "classification_source": "scripts/ci.sh run_broad_smoke",
+  "prior_classification_artifact": "docs/changes/2026-06-26-preflight-first-validation-runtime-optimization/broad-smoke-child-classification.md",
+  "notes": [
+    "M1 records current classification and freshness evidence only.",
+    "Runtime execution remains sequential until opt-in parallel scheduling is implemented and reviewed.",
+    "Dynamic review-artifact and artifact-lifecycle children are kept sequential because their command scope depends on worktree or push-range state."
+  ],
+  "children": [
+    {
+      "check_id": "broad_smoke.skills.validate",
+      "run_check_label": "Validate canonical skills",
+      "command": "python scripts/validate-skills.py",
+      "current_order": 1,
+      "required": true,
+      "estimated_duration_ms": 827,
+      "classification": {
+        "parallel_candidate": true,
+        "confidence": "high",
+        "reason": "read-only canonical skill validation with captured output and no shared temp or output writes."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "low",
+        "io_intensity": "low",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "skills",
+          "specs/skill-contract.md"
+        ],
+        "write_paths": [],
+        "temp_roots": [],
+        "shared_outputs": []
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "none required",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "inherit read-only environment",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": true
+      }
+    },
+    {
+      "check_id": "broad_smoke.skills.regression",
+      "run_check_label": "Run skill validator fixtures",
+      "command": "python scripts/test-skill-validator.py",
+      "current_order": 2,
+      "required": true,
+      "estimated_duration_ms": 13279,
+      "classification": {
+        "parallel_candidate": true,
+        "confidence": "high",
+        "reason": "fixture test uses test-managed temp roots and captured output; no shared generated output is declared."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "medium",
+        "io_intensity": "medium",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "skills",
+          "tests/fixtures"
+        ],
+        "write_paths": [],
+        "temp_roots": [
+          "test-managed temp roots"
+        ],
+        "shared_outputs": []
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "test-owned unique temp roots",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "inherit read-only environment",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": true
+      }
+    },
+    {
+      "check_id": "broad_smoke.skills.generation_regression",
+      "run_check_label": "Run local skill mirror generation fixtures",
+      "command": "python scripts/test-build-skills.py",
+      "current_order": 3,
+      "required": true,
+      "estimated_duration_ms": 3559,
+      "classification": {
+        "parallel_candidate": true,
+        "confidence": "high",
+        "reason": "generation fixtures use test-managed temp roots and do not write shared repository outputs."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "medium",
+        "io_intensity": "medium",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "skills",
+          "templates",
+          "tests/fixtures"
+        ],
+        "write_paths": [],
+        "temp_roots": [
+          "test-managed temp roots"
+        ],
+        "shared_outputs": []
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "test-owned unique temp roots",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "inherit read-only environment",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": true
+      }
+    },
+    {
+      "check_id": "broad_smoke.skills.drift",
+      "run_check_label": "Validate generated skill mirror output",
+      "command": "python scripts/build-skills.py --check",
+      "current_order": 4,
+      "required": true,
+      "estimated_duration_ms": 873,
+      "classification": {
+        "parallel_candidate": true,
+        "confidence": "high",
+        "reason": "check mode validates generated skill mirror output without writing shared outputs."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "medium",
+        "io_intensity": "medium",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "skills",
+          ".agents/skills"
+        ],
+        "write_paths": [],
+        "temp_roots": [],
+        "shared_outputs": []
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "none required",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "inherit read-only environment",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": true
+      }
+    },
+    {
+      "check_id": "broad_smoke.adapters.regression",
+      "run_check_label": "Run adapter distribution fixtures",
+      "command": "python scripts/test-adapter-distribution.py",
+      "current_order": 5,
+      "required": true,
+      "estimated_duration_ms": 173108,
+      "classification": {
+        "parallel_candidate": false,
+        "confidence": "high",
+        "reason": "CPU/IO-heavy adapter archive fixture work should remain sequential in the first slice."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "high",
+        "io_intensity": "high",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "adapters",
+          "dist/adapters",
+          "tests/fixtures"
+        ],
+        "write_paths": [],
+        "temp_roots": [
+          "test-managed temp roots"
+        ],
+        "shared_outputs": []
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "keep sequential until resource budget is approved",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "inherit read-only environment",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": false
+      }
+    },
+    {
+      "check_id": "broad_smoke.adapters.build_archives",
+      "run_check_label": "Build generated adapter archives",
+      "command": "python scripts/build-adapters.py --version v0.1.3 --output-dir \"$adapter_release_output\"",
+      "current_order": 6,
+      "required": true,
+      "estimated_duration_ms": 1584,
+      "classification": {
+        "parallel_candidate": false,
+        "confidence": "high",
+        "reason": "writes the shared adapter_release_output consumed by the following archive validation child."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": true,
+        "writes_shared_output": true,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "medium",
+        "io_intensity": "high",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "adapters",
+          "dist/adapters"
+        ],
+        "write_paths": [
+          "$adapter_release_output"
+        ],
+        "temp_roots": [
+          "$adapter_release_output"
+        ],
+        "shared_outputs": [
+          "$adapter_release_output"
+        ]
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "keep sequential with paired archive validation child",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "inherits adapter_release_output temp directory",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": false
+      }
+    },
+    {
+      "check_id": "broad_smoke.adapters.validate_archives",
+      "run_check_label": "Validate generated adapter archives",
+      "command": "python scripts/validate-adapters.py --root \"$adapter_release_output\" --version v0.1.3",
+      "current_order": 7,
+      "required": true,
+      "estimated_duration_ms": 3620,
+      "classification": {
+        "parallel_candidate": false,
+        "confidence": "high",
+        "reason": "depends on archive output produced by broad_smoke.adapters.build_archives."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": true,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "low",
+        "io_intensity": "medium",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "$adapter_release_output"
+        ],
+        "write_paths": [],
+        "temp_roots": [
+          "$adapter_release_output"
+        ],
+        "shared_outputs": [
+          "$adapter_release_output"
+        ]
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "keep sequential with archive build child",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "inherits adapter_release_output temp directory",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": false
+      }
+    },
+    {
+      "check_id": "broad_smoke.change_metadata.regression",
+      "run_check_label": "Run change metadata validator fixtures",
+      "command": "python scripts/test-change-metadata-validator.py",
+      "current_order": 8,
+      "required": true,
+      "estimated_duration_ms": 10126,
+      "classification": {
+        "parallel_candidate": true,
+        "confidence": "high",
+        "reason": "fixture test uses isolated temp roots and no shared output paths."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "low",
+        "io_intensity": "medium",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "schemas",
+          "docs/changes",
+          "tests/fixtures"
+        ],
+        "write_paths": [],
+        "temp_roots": [
+          "test-managed temp roots"
+        ],
+        "shared_outputs": []
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "test-owned unique temp roots",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "inherit read-only environment",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": true
+      }
+    },
+    {
+      "check_id": "broad_smoke.artifact_lifecycle.regression",
+      "run_check_label": "Run artifact lifecycle validator fixtures",
+      "command": "python scripts/test-artifact-lifecycle-validator.py",
+      "current_order": 9,
+      "required": true,
+      "estimated_duration_ms": 13909,
+      "classification": {
+        "parallel_candidate": true,
+        "confidence": "high",
+        "reason": "fixture test uses isolated temp roots and no shared output paths."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "medium",
+        "io_intensity": "medium",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "docs",
+          "specs",
+          "tests/fixtures"
+        ],
+        "write_paths": [],
+        "temp_roots": [
+          "test-managed temp roots"
+        ],
+        "shared_outputs": []
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "test-owned unique temp roots",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "inherit read-only environment",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": true
+      }
+    },
+    {
+      "check_id": "broad_smoke.review_artifacts.regression",
+      "run_check_label": "Run review artifact validator fixtures",
+      "command": "python scripts/test-review-artifact-validator.py",
+      "current_order": 10,
+      "required": true,
+      "estimated_duration_ms": 3741,
+      "classification": {
+        "parallel_candidate": true,
+        "confidence": "high",
+        "reason": "fixture test uses isolated temp roots and no shared output paths."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "medium",
+        "io_intensity": "medium",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "docs/changes",
+          "tests/fixtures"
+        ],
+        "write_paths": [],
+        "temp_roots": [
+          "test-managed temp roots"
+        ],
+        "shared_outputs": []
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "test-owned unique temp roots",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "inherit read-only environment",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": true
+      }
+    },
+    {
+      "check_id": "broad_smoke.review_artifacts.changed_roots",
+      "run_check_label": "$review_artifact_label",
+      "command": "\"${review_artifact_cmd[@]}\"",
+      "current_order": 11,
+      "required": true,
+      "estimated_duration_ms": null,
+      "classification": {
+        "parallel_candidate": false,
+        "confidence": "medium",
+        "reason": "dynamic command is conditional on changed review artifact roots and remains sequential until command scope and resource behavior are stable."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "low",
+        "io_intensity": "low",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "changed review artifact roots"
+        ],
+        "write_paths": [],
+        "temp_roots": [],
+        "shared_outputs": []
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "none required",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "depends on changed roots",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": false
+      }
+    },
+    {
+      "check_id": "broad_smoke.artifact_lifecycle.scoped",
+      "run_check_label": "$artifact_lifecycle_label",
+      "command": "\"${artifact_lifecycle_cmd[@]}\"",
+      "current_order": 12,
+      "required": true,
+      "estimated_duration_ms": 149434,
+      "classification": {
+        "parallel_candidate": false,
+        "confidence": "medium",
+        "reason": "dynamic command scope depends on dirty worktree or push-range lifecycle state and remains sequential in first slice."
+      },
+      "side_effects": {
+        "mutates_tracked_files": false,
+        "mutates_generated_files": false,
+        "writes_shared_temp": false,
+        "writes_shared_output": false,
+        "changes_cwd_assumptions": false,
+        "relies_on_command_order": false,
+        "network_sensitive": false,
+        "network_hermetic": false,
+        "uses_shared_cache": false,
+        "starts_nested_parallelism": false,
+        "cpu_intensity": "medium",
+        "io_intensity": "medium",
+        "diagnostic_order_sensitive": false,
+        "failure_output_captured": true
+      },
+      "paths": {
+        "read_paths": [
+          "tracked diff paths or HEAD range"
+        ],
+        "write_paths": [],
+        "temp_roots": [],
+        "shared_outputs": []
+      },
+      "isolation_plan": {
+        "temp_root_strategy": "none required",
+        "output_capture_strategy": "per-child capture before aggregation",
+        "environment_strategy": "depends on Git diff scope",
+        "cwd_strategy": "repository root"
+      },
+      "result": {
+        "eligible_for_parallelism": false
+      }
+    }
+  ]
+}

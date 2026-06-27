@@ -22,6 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SELECTOR = ROOT / "scripts" / "select-validation.py"
 CI = ROOT / "scripts" / "ci.sh"
+BROAD_SMOKE_CLASSIFICATION_VALIDATOR = ROOT / "scripts" / "validate-broad-smoke-classification.py"
 CHANGE_METADATA_TEST = ROOT / "scripts" / "test-change-metadata-validator.py"
 README_VALIDATOR = ROOT / "scripts" / "validate-readme.py"
 BROAD_SMOKE_CLASSIFICATION = (
@@ -124,6 +125,20 @@ BROAD_SMOKE_REQUIRED_CLASSIFICATION_FIELDS = (
     "Classification confidence",
 )
 NON_CANDIDATE_VALUES = {"no", "not-approved", "blocked"}
+BROAD_SMOKE_PARALLEL_CLASSIFICATION = (
+    ROOT
+    / "docs"
+    / "changes"
+    / "2026-06-27-broad-smoke-safe-parallelism"
+    / "broad-smoke-child-classification.yaml"
+)
+BROAD_SMOKE_PARALLEL_BASELINE = (
+    ROOT
+    / "docs"
+    / "changes"
+    / "2026-06-27-broad-smoke-safe-parallelism"
+    / "broad-smoke-parallelism-baseline.yaml"
+)
 
 VALIDATION_PRODUCER_PATTERN = re.compile(
     r"\bpython\s+scripts/(?:test|validate|build)-[\w-]+\.py\b"
@@ -585,8 +600,28 @@ class ValidationSelectionTests(unittest.TestCase):
         shutil.copy2(ROOT / "scripts" / "validation_selection.py", workspace / "scripts" / "validation_selection.py")
         return workspace
 
-    def make_broad_smoke_workspace(self, *, failing_child: str | None = None) -> Path:
+    def make_broad_smoke_workspace(
+        self,
+        *,
+        failing_child: str | None = None,
+        failing_children: set[str] | None = None,
+        active_counter_children: set[str] | None = None,
+        child_bodies: dict[str, str] | None = None,
+        sleep_seconds: float = 0.2,
+    ) -> Path:
         workspace = self.make_ci_workspace()
+        shutil.copy2(
+            BROAD_SMOKE_CLASSIFICATION_VALIDATOR,
+            workspace / "scripts" / "validate-broad-smoke-classification.py",
+        )
+        classification_copy = workspace / BROAD_SMOKE_PARALLEL_CLASSIFICATION.relative_to(ROOT)
+        classification_copy.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(BROAD_SMOKE_PARALLEL_CLASSIFICATION, classification_copy)
+        all_failing_children = set(failing_children or set())
+        if failing_child is not None:
+            all_failing_children.add(failing_child)
+        active_counter_children = set(active_counter_children or set())
+        child_bodies = dict(child_bodies or {})
         child_scripts = [
             "scripts/validate-skills.py",
             "scripts/test-skill-validator.py",
@@ -603,7 +638,19 @@ class ValidationSelectionTests(unittest.TestCase):
         ]
         for relative_path in child_scripts:
             name = Path(relative_path).name
-            exit_code = 7 if relative_path == failing_child else 0
+            exit_code = 7 if relative_path in all_failing_children else 0
+            if relative_path in child_bodies:
+                self.write_fake_script(workspace, relative_path, child_bodies[relative_path])
+                continue
+            if relative_path in active_counter_children:
+                self.write_active_counter_script(
+                    workspace,
+                    relative_path,
+                    name,
+                    sleep_seconds=sleep_seconds,
+                    exit_code=exit_code,
+                )
+                continue
             self.write_fake_script(
                 workspace,
                 relative_path,
@@ -781,12 +828,12 @@ raise SystemExit({exit_code})
         self.assert_selected_ci_policy_exception_is_documented()
 
     def producer_line_uses_capture_helper(self, lines: list[str], index: int) -> bool:
-        if re.search(r"\brun_check\b", lines[index]):
+        if re.search(r"\b(run_check|broad_smoke_schedule_child)\b", lines[index]):
             return True
 
         current = index - 1
         while current >= 0 and lines[current].rstrip().endswith("\\"):
-            if re.search(r"\brun_check\b", lines[current]):
+            if re.search(r"\b(run_check|broad_smoke_schedule_child)\b", lines[current]):
                 return True
             current -= 1
         return False
@@ -888,6 +935,29 @@ raise SystemExit({exit_code})
             self.assertEqual(len(cells), len(headers), msg=line)
             rows.append(dict(zip(headers, cells, strict=True)))
         return rows
+
+    def load_broad_smoke_parallel_classification(self) -> dict[str, object]:
+        self.assertTrue(BROAD_SMOKE_PARALLEL_CLASSIFICATION.exists(), msg=str(BROAD_SMOKE_PARALLEL_CLASSIFICATION))
+        with BROAD_SMOKE_PARALLEL_CLASSIFICATION.open(encoding="utf-8") as handle:
+            loaded = json.load(handle)
+        self.assertIsInstance(loaded, dict)
+        return loaded
+
+    def run_broad_smoke_classification_validator(
+        self,
+        classification: Path = BROAD_SMOKE_PARALLEL_CLASSIFICATION,
+    ) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            [
+                sys.executable,
+                str(BROAD_SMOKE_CLASSIFICATION_VALIDATOR),
+                "--classification",
+                str(classification),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
 
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
         kwargs.setdefault("preflight_context", self.root_preflight_context)
@@ -1322,7 +1392,13 @@ raise SystemExit({exit_code})
         self.assertIn("docs/changes/2026-04-25-local/", local_payload["affected_roots"])
 
     def test_selector_registry_changes_select_selector_regression(self) -> None:
-        result = self.select(["scripts/validation_selection.py", "scripts/test-select-validation.py"])
+        result = self.select(
+            [
+                "scripts/validation_selection.py",
+                "scripts/test-select-validation.py",
+                "scripts/validate-broad-smoke-classification.py",
+            ]
+        )
         payload = result.to_json_dict()
 
         self.assertEqual(result.status, "ok")
@@ -1953,6 +2029,24 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/selector-regression-profile.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/broad-smoke-child-classification.yaml",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/broad-smoke-parallelism-baseline.yaml",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/broad-smoke-parallelism-result.yaml",
                 "category": "registered-change-evidence",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
@@ -3614,6 +3708,80 @@ print("SECOND_STDOUT")
         self.assertNotIn("==>", output)
         self.assertNotIn("--quiet", output)
 
+    def test_broad_smoke_omitted_jobs_keeps_parallel_mode_opt_in(self) -> None:
+        active_children = {
+            "scripts/validate-skills.py",
+            "scripts/test-skill-validator.py",
+            "scripts/test-build-skills.py",
+            "scripts/build-skills.py",
+        }
+        workspace = self.make_broad_smoke_workspace(active_counter_children=active_children)
+        active_dir = workspace / "active"
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--skip-diff-scoped",
+            env={"ACTIVE_DIR": str(active_dir), "RIGORLOOP_CI_CPU_COUNT_FIXTURE": "8"},
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        self.assertEqual(self.read_max_active(active_dir), 1, msg=output)
+
+    def test_broad_smoke_jobs_one_keeps_sequential_compatibility(self) -> None:
+        active_children = {
+            "scripts/validate-skills.py",
+            "scripts/test-skill-validator.py",
+            "scripts/test-build-skills.py",
+            "scripts/build-skills.py",
+        }
+        workspace = self.make_broad_smoke_workspace(active_counter_children=active_children)
+        active_dir = workspace / "active"
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--skip-diff-scoped",
+            "--jobs",
+            "1",
+            env={"ACTIVE_DIR": str(active_dir)},
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        self.assertEqual(self.read_max_active(active_dir), 1, msg=output)
+
+    def test_broad_smoke_explicit_jobs_parallelizes_eligible_children(self) -> None:
+        active_children = {
+            "scripts/validate-skills.py",
+            "scripts/test-skill-validator.py",
+            "scripts/test-build-skills.py",
+            "scripts/build-skills.py",
+        }
+        workspace = self.make_broad_smoke_workspace(active_counter_children=active_children)
+        active_dir = workspace / "active"
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--skip-diff-scoped",
+            "--jobs",
+            "2",
+            env={"ACTIVE_DIR": str(active_dir)},
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        self.assertGreaterEqual(self.read_max_active(active_dir), 2, msg=output)
+        self.assertRegex(output, r"^\[PASS\] broad-smoke: 11 checks passed in \d+(?:\.\d+)?s")
+
     def test_ci_wrapper_duration_reporting_does_not_use_bash_seconds(self) -> None:
         ci_text = CI.read_text(encoding="utf-8")
 
@@ -3639,6 +3807,87 @@ print("SECOND_STDOUT")
         stderr_index = output.index("test-skill-validator.py STDERR marker")
         self.assertLess(stdout_index, stderr_index)
 
+    def test_broad_smoke_parallel_multiple_failures_report_all_in_canonical_order(self) -> None:
+        workspace = self.make_broad_smoke_workspace(
+            failing_children={
+                "scripts/test-skill-validator.py",
+                "scripts/test-adapter-distribution.py",
+            }
+        )
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--skip-diff-scoped",
+            "--jobs",
+            "4",
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 7, msg=output)
+        first_failure = output.index("[FAIL] broad_smoke.skills.regression")
+        second_failure = output.index("[FAIL] broad_smoke.adapters.regression")
+        self.assertLess(first_failure, second_failure)
+        self.assertIn("Execution phase:\nparallel", output)
+        self.assertIn("Execution phase:\nsequential", output)
+        self.assertIn("Check ID:\nbroad_smoke.skills.regression", output)
+        self.assertIn("Check ID:\nbroad_smoke.adapters.regression", output)
+        self.assertIn("Captured output:", output)
+        self.assertIn("Re-run:\npython scripts/test-skill-validator.py", output)
+
+    def test_broad_smoke_parallel_missing_classification_fails_before_children(self) -> None:
+        workspace = self.make_broad_smoke_workspace()
+        (workspace / BROAD_SMOKE_PARALLEL_CLASSIFICATION.relative_to(ROOT)).unlink()
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--skip-diff-scoped",
+            "--jobs",
+            "2",
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertNotEqual(result.returncode, 0, msg=output)
+        self.assertIn("broad-smoke classification validation failed", output)
+        self.assertNotIn("STDOUT marker", output)
+
+    def test_broad_smoke_parallel_worker_crash_reports_scheduler_error(self) -> None:
+        workspace = self.make_broad_smoke_workspace(
+            child_bodies={
+                "scripts/test-skill-validator.py": """
+import os
+import signal
+
+parent = os.getppid()
+with open(f"/proc/{parent}/stat", encoding="utf-8") as handle:
+    grandparent = int(handle.read().split()[3])
+os.kill(grandparent, signal.SIGKILL)
+""".lstrip()
+            }
+        )
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--skip-diff-scoped",
+            "--jobs",
+            "2",
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 4, msg=output)
+        self.assertIn("[FAIL] broad_smoke.skills.regression / Run skill validator fixtures: scheduler error", output)
+        self.assertIn("Scheduler error:", output)
+        self.assertIn("missing result metadata", output)
+        self.assertNotIn("[PASS] broad-smoke", output)
+
     def test_broad_smoke_verbose_prints_successful_child_output_in_order(self) -> None:
         workspace = self.make_broad_smoke_workspace()
 
@@ -3656,6 +3905,64 @@ print("SECOND_STDOUT")
         self.assertLess(output.index("validate-skills.py STDOUT marker"), output.index("test-skill-validator.py STDOUT marker"))
         self.assertIn("validate-skills.py STDERR marker", output)
         self.assertIn("test-skill-validator.py STDERR marker", output)
+
+    def test_broad_smoke_parallel_verbose_groups_successful_child_output_in_order(self) -> None:
+        active_children = {
+            "scripts/validate-skills.py",
+            "scripts/test-skill-validator.py",
+            "scripts/test-build-skills.py",
+            "scripts/build-skills.py",
+        }
+        workspace = self.make_broad_smoke_workspace(active_counter_children=active_children)
+        active_dir = workspace / "active"
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--skip-diff-scoped",
+            "--jobs",
+            "4",
+            "--verbose",
+            env={"ACTIVE_DIR": str(active_dir)},
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        self.assertGreaterEqual(self.read_max_active(active_dir), 2, msg=output)
+        self.assertLess(output.index("==> Validate canonical skills (passed)"), output.index("==> Run skill validator fixtures (passed)"))
+        self.assertLess(output.index("validate-skills.py done"), output.index("test-skill-validator.py done"))
+        self.assertNotRegex(output, r"validate-skills.py done.*==> Run skill validator fixtures", msg=output)
+
+    def test_broad_smoke_parallel_result_evidence_records_child_phases(self) -> None:
+        workspace = self.make_broad_smoke_workspace()
+        result_path = workspace / "parallel-result.json"
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--skip-diff-scoped",
+            "--jobs",
+            "3",
+            env={"RIGORLOOP_BROAD_SMOKE_RESULT_JSON": str(result_path)},
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        with result_path.open(encoding="utf-8") as handle:
+            evidence = json.load(handle)
+        self.assertEqual(evidence["scenario"], "broad-smoke-safe-parallelism")
+        self.assertEqual(evidence["parallel"]["jobs"], 3)
+        child_phases = {
+            child["check_id"]: child["phase"]
+            for child in evidence["parallel"]["child_durations"]
+        }
+        self.assertEqual(child_phases["broad_smoke.skills.validate"], "parallel")
+        self.assertEqual(child_phases["broad_smoke.adapters.regression"], "sequential")
+        self.assertIn("delta", evidence)
 
     def test_broad_smoke_child_classification_covers_ci_children(self) -> None:
         ci_check_ids = self.extract_broad_smoke_run_check_ids(CI.read_text(encoding="utf-8"))
@@ -3689,13 +3996,68 @@ print("SECOND_STDOUT")
         broad_smoke_body = self.extract_ci_functions(ci_text)["run_broad_smoke"]
 
         self.assertNotIn("ThreadPoolExecutor", broad_smoke_body)
-        self.assertNotIn("run_parallel_safe_chunk", broad_smoke_body)
-        self.assertNotIn("parallel_safe", broad_smoke_body)
         self.assertNotRegex(broad_smoke_body, r"(?m)^\s*run_check\b.*&\s*$")
         self.assertEqual(
             self.extract_broad_smoke_run_check_ids(ci_text),
             [row["Check ID"] for row in self.parse_broad_smoke_classification_rows()],
         )
+
+    def test_broad_smoke_parallel_classification_reconciles_with_ci_inventory(self) -> None:
+        result = self.run_broad_smoke_classification_validator()
+
+        self.assertEqual(result.returncode, 0, msg=result.stdout + result.stderr)
+        self.assertIn("broad-smoke classification validation passed", result.stdout)
+
+    def test_broad_smoke_parallel_classification_fails_on_stale_command(self) -> None:
+        classification = self.load_broad_smoke_parallel_classification()
+        children = classification["children"]
+        assert isinstance(children, list)
+        stale = dict(children[0])
+        stale["command"] = "python scripts/validate-skills.py --unexpected"
+        mutated_children = [stale, *children[1:]]
+        mutated = dict(classification)
+        mutated["children"] = mutated_children
+        temp_path = Path(tempfile.mkdtemp(prefix="broad-smoke-stale-classification-")) / "classification.yaml"
+        self.addCleanupTree(temp_path.parent)
+        temp_path.write_text(json.dumps(mutated, indent=2) + "\n", encoding="utf-8")
+
+        result = self.run_broad_smoke_classification_validator(temp_path)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("stale command", result.stderr)
+
+    def test_broad_smoke_parallel_classification_fails_on_contradictory_parallel_candidate(self) -> None:
+        classification = self.load_broad_smoke_parallel_classification()
+        children = classification["children"]
+        assert isinstance(children, list)
+        contradictory = dict(children[0])
+        contradictory["side_effects"] = dict(contradictory["side_effects"])
+        contradictory["side_effects"]["writes_shared_temp"] = True
+        mutated = dict(classification)
+        mutated["children"] = [contradictory, *children[1:]]
+        temp_path = Path(tempfile.mkdtemp(prefix="broad-smoke-contradictory-classification-")) / "classification.yaml"
+        self.addCleanupTree(temp_path.parent)
+        temp_path.write_text(json.dumps(mutated, indent=2) + "\n", encoding="utf-8")
+
+        result = self.run_broad_smoke_classification_validator(temp_path)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("blocking side-effect fields", result.stderr)
+
+    def test_broad_smoke_parallel_baseline_artifact_has_child_timing_shape(self) -> None:
+        self.assertTrue(BROAD_SMOKE_PARALLEL_BASELINE.exists(), msg=str(BROAD_SMOKE_PARALLEL_BASELINE))
+        with BROAD_SMOKE_PARALLEL_BASELINE.open(encoding="utf-8") as handle:
+            baseline = json.load(handle)
+        self.assertEqual(baseline["scenario"], "broad-smoke-sequential-baseline")
+        children = baseline["children"]
+        self.assertEqual(
+            [child["check_id"] for child in children],
+            [child["check_id"] for child in self.load_broad_smoke_parallel_classification()["children"]],
+        )
+        for child in children:
+            with self.subTest(check_id=child["check_id"]):
+                for field in ("command", "order", "duration_ms", "result", "output_bytes"):
+                    self.assertIn(field, child)
 
     def test_broad_smoke_wrapper_mode_consistency_guard_is_enforced(self) -> None:
         self.assert_ci_wrapper_consistency_guard_passes(CI.read_text(encoding="utf-8"))

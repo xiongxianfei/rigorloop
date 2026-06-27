@@ -1,0 +1,245 @@
+{
+  "scenario": "broad-smoke-safe-parallelism",
+  "command": "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 4",
+  "environment": {
+    "os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "shell": "/bin/bash",
+    "cpu_class": "24 logical CPUs",
+    "local_or_ci": "local"
+  },
+  "repository_state": {
+    "head": "08cbc3fedb26992dcb679ac38ad09a1d352fc9a3",
+    "worktree_state": "dirty"
+  },
+  "baseline": {
+    "total_duration_ms": 374061,
+    "child_durations": [
+      {
+        "check_id": "broad_smoke.skills.validate",
+        "command": "python scripts/validate-skills.py",
+        "order": 1,
+        "duration_ms": 827,
+        "result": "passed",
+        "output_bytes": 81
+      },
+      {
+        "check_id": "broad_smoke.skills.regression",
+        "command": "python scripts/test-skill-validator.py",
+        "order": 2,
+        "duration_ms": 13279,
+        "result": "passed",
+        "output_bytes": 42175
+      },
+      {
+        "check_id": "broad_smoke.skills.generation_regression",
+        "command": "python scripts/test-build-skills.py",
+        "order": 3,
+        "duration_ms": 3559,
+        "result": "passed",
+        "output_bytes": 518
+      },
+      {
+        "check_id": "broad_smoke.skills.drift",
+        "command": "python scripts/build-skills.py --check",
+        "order": 4,
+        "duration_ms": 873,
+        "result": "passed",
+        "output_bytes": 149
+      },
+      {
+        "check_id": "broad_smoke.adapters.regression",
+        "command": "python scripts/test-adapter-distribution.py",
+        "order": 5,
+        "duration_ms": 173108,
+        "result": "passed",
+        "output_bytes": 22996
+      },
+      {
+        "check_id": "broad_smoke.adapters.build_archives",
+        "command": "python scripts/build-adapters.py --version v0.1.3 --output-dir \"$adapter_release_output\"",
+        "order": 6,
+        "duration_ms": 1584,
+        "result": "passed",
+        "output_bytes": 283
+      },
+      {
+        "check_id": "broad_smoke.adapters.validate_archives",
+        "command": "python scripts/validate-adapters.py --root \"$adapter_release_output\" --version v0.1.3",
+        "order": 7,
+        "duration_ms": 3620,
+        "result": "passed",
+        "output_bytes": 97
+      },
+      {
+        "check_id": "broad_smoke.change_metadata.regression",
+        "command": "python scripts/test-change-metadata-validator.py",
+        "order": 8,
+        "duration_ms": 10126,
+        "result": "passed",
+        "output_bytes": 59
+      },
+      {
+        "check_id": "broad_smoke.artifact_lifecycle.regression",
+        "command": "python scripts/test-artifact-lifecycle-validator.py",
+        "order": 9,
+        "duration_ms": 13909,
+        "result": "passed",
+        "output_bytes": 25083
+      },
+      {
+        "check_id": "broad_smoke.review_artifacts.regression",
+        "command": "python scripts/test-review-artifact-validator.py",
+        "order": 10,
+        "duration_ms": 3741,
+        "result": "passed",
+        "output_bytes": 16893
+      },
+      {
+        "check_id": "broad_smoke.review_artifacts.changed_roots",
+        "command": "\"${review_artifact_cmd[@]}\"",
+        "order": 11,
+        "duration_ms": null,
+        "result": "skipped_by_skip_diff_scoped",
+        "output_bytes": 0
+      },
+      {
+        "check_id": "broad_smoke.artifact_lifecycle.scoped",
+        "command": "\"${artifact_lifecycle_cmd[@]}\"",
+        "order": 12,
+        "duration_ms": 149434,
+        "result": "passed",
+        "output_bytes": 861
+      }
+    ]
+  },
+  "parallel": {
+    "jobs": 4,
+    "total_duration_ms": 332000,
+    "exit_code": 0,
+    "child_durations": [
+      {
+        "check_id": "broad_smoke.skills.validate",
+        "command": "python scripts/validate-skills.py",
+        "duration_ms": 1000,
+        "phase": "parallel",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 81
+      },
+      {
+        "check_id": "broad_smoke.skills.regression",
+        "command": "python scripts/test-skill-validator.py",
+        "duration_ms": 11000,
+        "phase": "parallel",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 42175
+      },
+      {
+        "check_id": "broad_smoke.skills.generation_regression",
+        "command": "python scripts/test-build-skills.py",
+        "duration_ms": 3000,
+        "phase": "parallel",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 518
+      },
+      {
+        "check_id": "broad_smoke.skills.drift",
+        "command": "python scripts/build-skills.py --check",
+        "duration_ms": 1000,
+        "phase": "parallel",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 149
+      },
+      {
+        "check_id": "broad_smoke.adapters.regression",
+        "command": "python scripts/test-adapter-distribution.py",
+        "duration_ms": 165000,
+        "phase": "sequential",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 22996
+      },
+      {
+        "check_id": "broad_smoke.adapters.build_archives",
+        "command": "python scripts/build-adapters.py --version v0.1.3 --output-dir \"$adapter_release_output\"",
+        "duration_ms": 1000,
+        "phase": "sequential",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 238
+      },
+      {
+        "check_id": "broad_smoke.adapters.validate_archives",
+        "command": "python scripts/validate-adapters.py --root \"$adapter_release_output\" --version v0.1.3",
+        "duration_ms": 4000,
+        "phase": "sequential",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 82
+      },
+      {
+        "check_id": "broad_smoke.change_metadata.regression",
+        "command": "python scripts/test-change-metadata-validator.py",
+        "duration_ms": 9000,
+        "phase": "parallel",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 58
+      },
+      {
+        "check_id": "broad_smoke.artifact_lifecycle.regression",
+        "command": "python scripts/test-artifact-lifecycle-validator.py",
+        "duration_ms": 12000,
+        "phase": "parallel",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 25083
+      },
+      {
+        "check_id": "broad_smoke.review_artifacts.regression",
+        "command": "python scripts/test-review-artifact-validator.py",
+        "duration_ms": 4000,
+        "phase": "parallel",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 16893
+      },
+      {
+        "check_id": "broad_smoke.artifact_lifecycle.scoped",
+        "command": "python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before ed859260fbb8fe64835ed5960050d69f958d2792 --after 08cbc3fedb26992dcb679ac38ad09a1d352fc9a3",
+        "duration_ms": 139000,
+        "phase": "sequential",
+        "result": "passed",
+        "exit_code": 0,
+        "output_bytes": 861
+      }
+    ]
+  },
+  "delta": {
+    "duration_ms": 42061,
+    "percent": 11.24
+  },
+  "preservation": {
+    "child_set_preserved": true,
+    "exit_behavior_preserved": true,
+    "diagnostics_preserved": true,
+    "output_order_preserved": true
+  },
+  "notes": {
+    "variance": "single local opt-in run; M3 records limitation rather than median claim",
+    "low_confidence_children": [
+      "broad_smoke.review_artifacts.changed_roots",
+      "broad_smoke.artifact_lifecycle.scoped"
+    ],
+    "sequential_only_children": [
+      "broad_smoke.adapters.regression",
+      "broad_smoke.adapters.build_archives",
+      "broad_smoke.adapters.validate_archives",
+      "broad_smoke.artifact_lifecycle.scoped"
+    ],
+    "default_promotion_decision": "not_promoted_first_slice_remains_opt_in"
+  }
+}
