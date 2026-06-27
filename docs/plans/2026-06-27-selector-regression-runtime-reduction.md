@@ -25,6 +25,7 @@ This plan sequences the accepted selector-regression runtime reduction contract 
 - Test spec: [Selector-Regression Runtime Reduction Test Spec](../../specs/selector-regression-runtime-reduction.test.md)
 - Change metadata: [change.yaml](../changes/2026-06-27-selector-regression-runtime-reduction/change.yaml)
 - Explain change: [explain-change.md](../changes/2026-06-27-selector-regression-runtime-reduction/explain-change.md)
+- Verify report: [verify-report.md](../changes/2026-06-27-selector-regression-runtime-reduction/verify-report.md)
 - Review log: [review-log.md](../changes/2026-06-27-selector-regression-runtime-reduction/review-log.md)
 - Proposal reviews: [proposal-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r1.md), [proposal-review-r2](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r2.md)
 - Spec review: [spec-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/spec-review-r1.md)
@@ -83,9 +84,9 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - Last reviewed milestone: M3. Runtime Result and Closeout Evidence
 - Review status: approved; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, verify-pending, pr-handoff-pending — implementation milestones, code-review, and explain-change are closed, but verify and PR handoff remain.
+- Reason final closeout is or is not ready: lifecycle-gates-open, pr-handoff-pending — implementation milestones, code-review, explain-change, and verify are closed, but PR handoff remains.
 
 ## Milestones
 
@@ -279,6 +280,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - 2026-06-27: M3 recorded revised runtime result evidence, selected-CI timeout status, preservation closeout, and a broad-smoke duration-output regression fix; M3 moved to review-requested after targeted validation passed.
 - 2026-06-27: Code-review R3 closed M3 with no material findings; all in-scope implementation milestones are closed and the next stage is explain-change.
 - 2026-06-27: Explain-change recorded durable rationale for the selector-regression runtime reduction and moved the next stage to verify.
+- 2026-06-27: Verify passed fresh selector-regression, selected-CI, review-artifact, and broad-smoke checks; branch-ready evidence recorded and the next stage is PR handoff.
 
 ## Decision log
 
@@ -346,6 +348,13 @@ The broader June 26 validation-runtime follow-through work already added selecto
   - `code-review-r3`: clean-with-notes; no material findings; M3 closed; all in-scope implementation milestones closed.
 - Explain-change result:
   - `docs/changes/2026-06-27-selector-regression-runtime-reduction/explain-change.md`: recorded the problem-to-diff rationale, tests, validation evidence, alternatives rejected, scope control, risks, and verify handoff.
+- Verify result:
+  - `python scripts/test-select-validation.py`: passed, 111 tests in 36.99s.
+  - `python scripts/select-validation.py --mode explicit --path ...`: passed with selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `guide_system.validate`, and `selector.regression`; no blockers or registration debt.
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-27-selector-regression-runtime-reduction`: passed.
+  - `bash scripts/ci.sh --mode explicit --path ...`: passed; selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `guide_system.validate`, and `selector.regression`; focused phase total 50.37s.
+  - `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped`: passed, 11 checks in 354s.
+  - Post-report selected validation for verify-stage bookkeeping passed with selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `guide_system.validate`.
 
 ## Outcome and retrospective
 
