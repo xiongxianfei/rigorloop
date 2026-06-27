@@ -24,6 +24,7 @@ This plan sequences the accepted selector-regression runtime reduction contract 
 - Architecture: not-required for this slice; revisit only if implementation introduces persistent workers, shared caches, broad validator composition, or new cross-process execution protocols.
 - Test spec: [Selector-Regression Runtime Reduction Test Spec](../../specs/selector-regression-runtime-reduction.test.md)
 - Change metadata: [change.yaml](../changes/2026-06-27-selector-regression-runtime-reduction/change.yaml)
+- Explain change: [explain-change.md](../changes/2026-06-27-selector-regression-runtime-reduction/explain-change.md)
 - Review log: [review-log.md](../changes/2026-06-27-selector-regression-runtime-reduction/review-log.md)
 - Proposal reviews: [proposal-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r1.md), [proposal-review-r2](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r2.md)
 - Spec review: [spec-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/spec-review-r1.md)
@@ -82,9 +83,9 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - Last reviewed milestone: M3. Runtime Result and Closeout Evidence
 - Review status: approved; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones are closed, but explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: lifecycle-gates-open, verify-pending, pr-handoff-pending — implementation milestones, code-review, and explain-change are closed, but verify and PR handoff remain.
 
 ## Milestones
 
@@ -277,6 +278,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - 2026-06-27: Code-review R2 closed M2 with no material findings; next stage is implement M3.
 - 2026-06-27: M3 recorded revised runtime result evidence, selected-CI timeout status, preservation closeout, and a broad-smoke duration-output regression fix; M3 moved to review-requested after targeted validation passed.
 - 2026-06-27: Code-review R3 closed M3 with no material findings; all in-scope implementation milestones are closed and the next stage is explain-change.
+- 2026-06-27: Explain-change recorded durable rationale for the selector-regression runtime reduction and moved the next stage to verify.
 
 ## Decision log
 
@@ -342,6 +344,8 @@ The broader June 26 validation-runtime follow-through work already added selecto
   - `git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction specs/selector-regression-runtime-reduction.md docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md`: passed.
 - Code-review R3 result:
   - `code-review-r3`: clean-with-notes; no material findings; M3 closed; all in-scope implementation milestones closed.
+- Explain-change result:
+  - `docs/changes/2026-06-27-selector-regression-runtime-reduction/explain-change.md`: recorded the problem-to-diff rationale, tests, validation evidence, alternatives rejected, scope control, risks, and verify handoff.
 
 ## Outcome and retrospective
 

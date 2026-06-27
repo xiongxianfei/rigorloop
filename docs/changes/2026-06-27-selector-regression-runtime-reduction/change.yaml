@@ -48,6 +48,7 @@ changed_files:
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/explain-change.md
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/review-log.md
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/review-resolution.md
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r1.md
@@ -157,3 +158,5 @@ validation:
     result: pass
   - command: code-review r3
     result: clean_with_notes_no_material_findings_m3_closed_all_implementation_milestones_closed
+  - command: explain-change
+    result: change_rationale_recorded_next_stage_verify
