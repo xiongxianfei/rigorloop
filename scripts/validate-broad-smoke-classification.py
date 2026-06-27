@@ -151,8 +151,13 @@ def extract_run_check_invocations(ci_text: str) -> list[dict[str, Any]]:
 
 
 def load_classification(path: Path) -> dict[str, Any]:
-    with path.open(encoding="utf-8") as handle:
-        data = json.load(handle)
+    try:
+        with path.open(encoding="utf-8") as handle:
+            data = json.load(handle)
+    except OSError as exc:
+        raise ClassificationError(f"classification artifact unavailable: {exc}") from exc
+    except json.JSONDecodeError as exc:
+        raise ClassificationError(f"classification artifact is not valid JSON-compatible YAML: {exc}") from exc
     if not isinstance(data, dict):
         raise ClassificationError("classification artifact must be a mapping")
     children = data.get("children")

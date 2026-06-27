@@ -13,11 +13,14 @@ release_version=""
 broad_smoke=0
 skip_diff_scoped=0
 jobs=""
+jobs_explicit=0
 timeout_seconds="$DEFAULT_TIMEOUT_SECONDS"
 fail_fast=0
 verbose=0
 paths=()
 broad_smoke_passed_checks=0
+declare -A broad_smoke_parallel_eligible=()
+broad_smoke_parallel_pids=()
 
 usage() {
   cat <<'EOF'
@@ -30,14 +33,15 @@ Usage:
   bash scripts/ci.sh --mode broad-smoke [--skip-diff-scoped]
 
 Execution options:
-  --jobs <positive-integer>       Limit selected-check concurrency.
+  --jobs <positive-integer>       Limit selected-check concurrency and opt in to broad-smoke parallelism when greater than 1.
   --timeout <positive-seconds>    Per-check timeout, default 300 seconds.
   --fail-fast                     Stop launching queued checks after a failure.
   --verbose                       Print successful check output when supported.
   --skip-diff-scoped              In broad-smoke mode, skip dirty-worktree review roots and use push-range lifecycle scope.
 
 When no --mode is supplied, ci.sh defaults to --mode broad-smoke for legacy compatibility.
-When --jobs is omitted, ci.sh uses available CPU count minus one with a floor of one.
+When --jobs is omitted, ci.sh uses available CPU count minus one with a floor of one for selected checks.
+Broad-smoke remains sequential unless --jobs is explicitly greater than 1.
 EOF
 }
 
@@ -159,6 +163,208 @@ run_check() {
   fi
 }
 
+broad_smoke_classification_path() {
+  echo "${RIGORLOOP_BROAD_SMOKE_CLASSIFICATION:-docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml}"
+}
+
+broad_smoke_parallel_enabled() {
+  [[ "$jobs_explicit" -eq 1 && "$jobs" -gt 1 ]]
+}
+
+load_broad_smoke_parallel_eligible_ids() {
+  local classification_path
+  classification_path="$(broad_smoke_classification_path)"
+  python - "$classification_path" <<'PY'
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+with path.open(encoding="utf-8") as handle:
+    payload = json.load(handle)
+for child in payload.get("children", []):
+    if child.get("result", {}).get("eligible_for_parallelism") is True:
+        print(child.get("check_id", ""))
+PY
+}
+
+broad_smoke_parallel_validate_classification() {
+  local classification_path
+  classification_path="$(broad_smoke_classification_path)"
+  python scripts/validate-broad-smoke-classification.py --classification "$classification_path" >/dev/null
+}
+
+broad_smoke_prepare_parallel_eligibility() {
+  broad_smoke_parallel_validate_classification
+  local eligible_ids
+  eligible_ids="$(load_broad_smoke_parallel_eligible_ids)"
+  local check_id=""
+  while IFS= read -r check_id; do
+    if [[ -n "$check_id" ]]; then
+      broad_smoke_parallel_eligible["$check_id"]=1
+    fi
+  done <<<"$eligible_ids"
+}
+
+broad_smoke_child_is_parallel_eligible() {
+  local check_id="$1"
+  [[ "${broad_smoke_parallel_eligible[$check_id]:-0}" == "1" ]]
+}
+
+broad_smoke_write_child_result() {
+  local result_dir="$1"
+  local index="$2"
+  local check_id="$3"
+  local label="$4"
+  local phase="$5"
+  shift 5
+  local child_dir="$result_dir/$index"
+  local started
+  local command_text=""
+  local output=""
+  local status=0
+  local elapsed=0
+
+  mkdir -p "$child_dir"
+  printf -v command_text '%q ' "$@"
+  command_text="${command_text% }"
+
+  started="$(current_epoch_seconds)"
+  set +e
+  output="$("$@" 2>&1)"
+  status=$?
+  set -e
+  elapsed="$(elapsed_seconds_since "$started")"
+
+  printf '%s\n' "$check_id" >"$child_dir/check_id"
+  printf '%s\n' "$label" >"$child_dir/label"
+  printf '%s\n' "$phase" >"$child_dir/phase"
+  printf '%s\n' "$command_text" >"$child_dir/command"
+  printf '%s\n' "$status" >"$child_dir/status"
+  printf '%s\n' "$elapsed" >"$child_dir/elapsed"
+  printf '%s\n' "$output" >"$child_dir/output"
+  return 0
+}
+
+broad_smoke_wait_oldest_parallel_child() {
+  if [[ ${#broad_smoke_parallel_pids[@]} -eq 0 ]]; then
+    return 0
+  fi
+  local pid="${broad_smoke_parallel_pids[0]}"
+  wait "$pid" || true
+  broad_smoke_parallel_pids=("${broad_smoke_parallel_pids[@]:1}")
+}
+
+broad_smoke_wait_all_parallel_children() {
+  while [[ ${#broad_smoke_parallel_pids[@]} -gt 0 ]]; do
+    broad_smoke_wait_oldest_parallel_child
+  done
+}
+
+broad_smoke_schedule_child() {
+  local result_dir="$1"
+  local index="$2"
+  local check_id="$3"
+  local label="$4"
+  shift 4
+
+  if broad_smoke_child_is_parallel_eligible "$check_id"; then
+    while [[ ${#broad_smoke_parallel_pids[@]} -ge "$jobs" ]]; do
+      broad_smoke_wait_oldest_parallel_child
+    done
+    broad_smoke_write_child_result "$result_dir" "$index" "$check_id" "$label" "parallel" "$@" &
+    broad_smoke_parallel_pids+=("$!")
+    return 0
+  fi
+
+  broad_smoke_wait_all_parallel_children
+  broad_smoke_write_child_result "$result_dir" "$index" "$check_id" "$label" "sequential" "$@"
+}
+
+broad_smoke_print_child_output() {
+  local child_dir="$1"
+  local output
+  output="$(cat "$child_dir/output")"
+  if [[ -n "$output" ]]; then
+    printf '%s\n' "$output"
+  fi
+}
+
+broad_smoke_aggregate_results() {
+  local result_dir="$1"
+  local started="$2"
+  local passed=0
+  local first_failure_status=0
+  local index=0
+
+  for index in $(seq 1 12); do
+    local child_dir="$result_dir/$index"
+    if [[ ! -d "$child_dir" ]]; then
+      continue
+    fi
+    local status
+    status="$(cat "$child_dir/status")"
+    if [[ "$status" == "0" ]]; then
+      passed=$((passed + 1))
+      if [[ "$verbose" -eq 1 ]]; then
+        echo "==> $(cat "$child_dir/label") (passed)"
+        echo "Check ID:"
+        cat "$child_dir/check_id"
+        echo "Execution phase:"
+        cat "$child_dir/phase"
+        echo "Command:"
+        cat "$child_dir/command"
+        echo "Captured output:"
+        broad_smoke_print_child_output "$child_dir"
+        echo
+      fi
+    fi
+  done
+
+  for index in $(seq 1 12); do
+    local child_dir="$result_dir/$index"
+    if [[ ! -d "$child_dir" ]]; then
+      continue
+    fi
+    local status
+    status="$(cat "$child_dir/status")"
+    if [[ "$status" == "0" ]]; then
+      continue
+    fi
+    if [[ "$first_failure_status" -eq 0 ]]; then
+      first_failure_status="$status"
+    fi
+    echo "[FAIL] $(cat "$child_dir/check_id") / $(cat "$child_dir/label"): exit $status in $(cat "$child_dir/elapsed")s"
+    echo
+    echo "Check ID:"
+    cat "$child_dir/check_id"
+    echo "Command:"
+    cat "$child_dir/command"
+    echo "Exit code:"
+    cat "$child_dir/status"
+    echo "Duration:"
+    echo "$(cat "$child_dir/elapsed")s"
+    echo "Execution phase:"
+    cat "$child_dir/phase"
+    echo
+    echo "Captured output:"
+    broad_smoke_print_child_output "$child_dir"
+    echo
+    echo "Re-run:"
+    cat "$child_dir/command"
+    echo
+  done
+
+  broad_smoke_passed_checks="$passed"
+  if [[ "$first_failure_status" -ne 0 ]]; then
+    return "$first_failure_status"
+  fi
+
+  echo "[PASS] broad-smoke: ${broad_smoke_passed_checks} checks passed in $(elapsed_seconds_since "$started")s"
+}
+
 artifact_lifecycle_label=""
 artifact_lifecycle_cmd=()
 review_artifact_label=""
@@ -257,6 +463,8 @@ run_broad_smoke() {
   local started
   started="$(current_epoch_seconds)"
   broad_smoke_passed_checks=0
+  broad_smoke_parallel_eligible=()
+  broad_smoke_parallel_pids=()
 
   local review_artifact_available=0
   if [[ "$skip_diff_scoped" != "1" ]]; then
@@ -276,6 +484,64 @@ run_broad_smoke() {
     determine_artifact_lifecycle_command
   fi
 
+  local adapter_release_output
+  adapter_release_output="$(mktemp -d)"
+  trap 'rm -rf "$adapter_release_output"' RETURN
+
+  if broad_smoke_parallel_enabled; then
+    local broad_smoke_result_dir
+    broad_smoke_result_dir="$(mktemp -d)"
+    trap 'rm -rf "$adapter_release_output" "$broad_smoke_result_dir"' RETURN
+    broad_smoke_prepare_parallel_eligibility
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 1 "broad_smoke.skills.validate" "Validate canonical skills" \
+      python scripts/validate-skills.py
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 2 "broad_smoke.skills.regression" "Run skill validator fixtures" \
+      python scripts/test-skill-validator.py
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 3 "broad_smoke.skills.generation_regression" "Run local skill mirror generation fixtures" \
+      python scripts/test-build-skills.py
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 4 "broad_smoke.skills.drift" "Validate generated skill mirror output" \
+      python scripts/build-skills.py --check
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 5 "broad_smoke.adapters.regression" "Run adapter distribution fixtures" \
+      python scripts/test-adapter-distribution.py
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 6 "broad_smoke.adapters.build_archives" "Build generated adapter archives" \
+      python scripts/build-adapters.py --version v0.1.3 --output-dir "$adapter_release_output"
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 7 "broad_smoke.adapters.validate_archives" "Validate generated adapter archives" \
+      python scripts/validate-adapters.py --root "$adapter_release_output" --version v0.1.3
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 8 "broad_smoke.change_metadata.regression" "Run change metadata validator fixtures" \
+      python scripts/test-change-metadata-validator.py
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 9 "broad_smoke.artifact_lifecycle.regression" "Run artifact lifecycle validator fixtures" \
+      python scripts/test-artifact-lifecycle-validator.py
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 10 "broad_smoke.review_artifacts.regression" "Run review artifact validator fixtures" \
+      python scripts/test-review-artifact-validator.py
+
+    if [[ "$review_artifact_available" == "1" ]]; then
+      broad_smoke_schedule_child "$broad_smoke_result_dir" 11 "broad_smoke.review_artifacts.changed_roots" "$review_artifact_label" \
+        "${review_artifact_cmd[@]}"
+    else
+      if [[ "$verbose" -eq 1 ]]; then
+        echo "No changed review artifact roots to validate."
+        echo
+      fi
+    fi
+
+    broad_smoke_schedule_child "$broad_smoke_result_dir" 12 "broad_smoke.artifact_lifecycle.scoped" "$artifact_lifecycle_label" \
+      "${artifact_lifecycle_cmd[@]}"
+
+    broad_smoke_wait_all_parallel_children
+    broad_smoke_aggregate_results "$broad_smoke_result_dir" "$started"
+    return $?
+  fi
+
   run_check "Validate canonical skills" \
     python scripts/validate-skills.py
 
@@ -290,10 +556,6 @@ run_broad_smoke() {
 
   run_check "Run adapter distribution fixtures" \
     python scripts/test-adapter-distribution.py
-
-  local adapter_release_output
-  adapter_release_output="$(mktemp -d)"
-  trap 'rm -rf "$adapter_release_output"' RETURN
 
   run_check "Build generated adapter archives" \
     python scripts/build-adapters.py --version v0.1.3 --output-dir "$adapter_release_output"
@@ -356,6 +618,7 @@ parse_args() {
       --jobs)
         require_option_value "$1" "$#"
         jobs="${2:-}"
+        jobs_explicit=1
         validate_positive_integer "$1" "$jobs"
         shift 2
         ;;
