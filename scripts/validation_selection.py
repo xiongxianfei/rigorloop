@@ -336,6 +336,14 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("selector-regression profiling evidence is recorded before optimization",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="selector-regression-runtime",
+        patterns=("selector-regression-runtime-baseline.yaml", "selector-regression-runtime-result.yaml"),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("selector-regression runtime evidence is recorded before and after optimization",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="token-cost",
         patterns=("token-cost.md",),
         selector_routes=("artifact_lifecycle.validate",),
