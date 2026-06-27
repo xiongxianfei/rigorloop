@@ -76,15 +76,15 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 
 ## Current Handoff Summary
 
-- Current milestone: explain-change
+- Current milestone: verify
 - Current milestone state: closed
 - Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-final-r1.md
 - Last reviewed milestone: final holistic cross-milestone review
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, verify-pending, pr-handoff-pending — M1, M2, M3, review-resolution, final holistic code-review, and explain-change are closed; verify and PR handoff have not completed.
+- Reason final closeout is or is not ready: lifecycle-gates-open, pr-handoff-pending — M1, M2, M3, review-resolution, final holistic code-review, explain-change, and verify are closed; branch-ready is established locally, but PR handoff has not completed and hosted CI has not been observed.
 
 ## Milestones
 
@@ -289,6 +289,44 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - Rollback/recovery:
   - Correct the explanation or lifecycle metadata before running verify.
 
+### verify
+
+- Milestone state: closed
+- Goal: Verify artifact-code-test coherence and record branch-ready evidence before PR handoff.
+- Requirements: all in-scope requirements `R1`-`R42` and `AC1`-`AC24`.
+- Files/components likely touched:
+  - `docs/changes/2026-06-27-broad-smoke-safe-parallelism/verify-report.md`
+  - `docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml`
+  - `docs/plans/2026-06-27-broad-smoke-safe-parallelism.md`
+  - `docs/plan.md`
+- Dependencies:
+  - M1, M2, M3, review-resolution, final holistic code-review, and explain-change are closed.
+- Tests to add/update: none; this is the final verification gate.
+- Validation commands:
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-27-broad-smoke-safe-parallelism`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml`
+  - `python scripts/validate-broad-smoke-classification.py`
+  - `python scripts/test-select-validation.py -k broad_smoke`
+  - `python scripts/test-select-validation.py -k jobs`
+  - `python scripts/test-select-validation.py -k result_evidence`
+  - `bash scripts/ci.sh --mode explicit ...`
+  - `bash -n scripts/ci.sh`
+  - `python -m json.tool ...`
+  - `git diff --check -- ...`
+  - `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 1`
+  - `RIGORLOOP_BROAD_SMOKE_RESULT_JSON=<temp> bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 4`
+- Expected observable result: Branch-ready evidence is recorded with no open blockers, and next stage is PR handoff.
+- Commit message: `verify: broad-smoke safe parallelism`
+- Milestone closeout:
+  - verify report recorded
+  - branch-ready local evidence recorded
+  - handoff to PR
+- Risks:
+  - Hosted CI remains unobserved until PR opens.
+- Rollback/recovery:
+  - Fix any failing validation before PR handoff.
+
 ## Validation plan
 
 - `python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism`: review record structure.
@@ -337,6 +375,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - 2026-06-27: Code-review M3 R1 completed clean-with-notes and closed M3; next stage is final holistic cross-milestone code-review.
 - 2026-06-27: Final holistic code-review completed clean-with-notes across the complete M1-M3 diff; next stage is explain-change.
 - 2026-06-27: Explain-change recorded durable rationale for the reviewed M1-M3 diff; next stage is verify.
+- 2026-06-27: Final verify passed review closeout, metadata, classification validation, focused broad-smoke tests, result-evidence test, lifecycle checks, selected CI, shell syntax, JSON artifact shape, diff hygiene, `--jobs 1` broad-smoke, and opt-in `--jobs 4` broad-smoke with temporary result evidence; branch-ready is recorded and next stage is PR handoff.
 
 ## Decision log
 
@@ -436,6 +475,20 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md` passed after explain-change.
 - `git diff --check -- docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md` passed after explain-change.
 - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md` passed after explain-change.
+- `python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism` passed during final verify.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-27-broad-smoke-safe-parallelism` passed during final verify.
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml` passed during final verify.
+- `python scripts/validate-broad-smoke-classification.py` passed during final verify.
+- `python scripts/test-select-validation.py -k broad_smoke` passed during final verify (`25 passed in 7.47s`).
+- `python scripts/test-select-validation.py -k jobs` passed during final verify (`5 passed in 3.95s`).
+- `python scripts/test-select-validation.py -k result_evidence` passed during final verify (`1 passed in 0.26s`).
+- `bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path scripts/validate-broad-smoke-classification.py --path scripts/validation_selection.py --path docs/proposals/2026-06-27-broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-result.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r2.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/spec-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/plan-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/test-spec-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r2.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m2-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m2-r2.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m3-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-final-r1.md` passed during final verify.
+- `bash -n scripts/ci.sh` passed during final verify.
+- `python -m json.tool docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml >/dev/null && python -m json.tool docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml >/dev/null && python -m json.tool docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-result.yaml >/dev/null` passed during final verify.
+- `git diff --check -- scripts docs/changes/2026-06-27-broad-smoke-safe-parallelism specs/broad-smoke-safe-parallelism.md specs/broad-smoke-safe-parallelism.test.md docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md docs/proposals/2026-06-27-broad-smoke-safe-parallelism.md` passed during final verify.
+- `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 1` passed during final verify (`[PASS] broad-smoke: 11 checks passed in 350s`).
+- `tmp_result=$(mktemp) && RIGORLOOP_BROAD_SMOKE_RESULT_JSON="$tmp_result" bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 4 && python -m json.tool "$tmp_result" >/dev/null && rm -f "$tmp_result"` passed during final verify (`[PASS] broad-smoke: 11 checks passed in 338s`).
+- `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/verify-report.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md` passed after recording the verify report.
 
 ## Outcome and retrospective
 

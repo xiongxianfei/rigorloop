@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Broad-Smoke Safe Parallelism](plans/2026-06-27-broad-smoke-safe-parallelism.md) | active | verify | 2026-06-27-broad-smoke-safe-parallelism |
+| [Broad-Smoke Safe Parallelism](plans/2026-06-27-broad-smoke-safe-parallelism.md) | active | pr | 2026-06-27-broad-smoke-safe-parallelism |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
