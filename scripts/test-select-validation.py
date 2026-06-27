@@ -24,6 +24,13 @@ SELECTOR = ROOT / "scripts" / "select-validation.py"
 CI = ROOT / "scripts" / "ci.sh"
 CHANGE_METADATA_TEST = ROOT / "scripts" / "test-change-metadata-validator.py"
 README_VALIDATOR = ROOT / "scripts" / "validate-readme.py"
+BROAD_SMOKE_CLASSIFICATION = (
+    ROOT
+    / "docs"
+    / "changes"
+    / "2026-06-26-preflight-first-validation-runtime-optimization"
+    / "broad-smoke-child-classification.md"
+)
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from validation_selection import (  # noqa: E402
@@ -85,6 +92,37 @@ CI_SELECTED_POLICY_EXCEPTION = {
     "spec": "specs/script-output-optimization.md R29-R31, R51-R52",
     "test": "specs/script-output-optimization.test.md TSRO-020, TSRO-026",
 }
+
+BROAD_SMOKE_CHECK_IDS_BY_RUN_CHECK_LABEL = {
+    "Validate canonical skills": "broad_smoke.skills.validate",
+    "Run skill validator fixtures": "broad_smoke.skills.regression",
+    "Run local skill mirror generation fixtures": "broad_smoke.skills.generation_regression",
+    "Validate generated skill mirror output": "broad_smoke.skills.drift",
+    "Run adapter distribution fixtures": "broad_smoke.adapters.regression",
+    "Build generated adapter archives": "broad_smoke.adapters.build_archives",
+    "Validate generated adapter archives": "broad_smoke.adapters.validate_archives",
+    "Run change metadata validator fixtures": "broad_smoke.change_metadata.regression",
+    "Run artifact lifecycle validator fixtures": "broad_smoke.artifact_lifecycle.regression",
+    "Run review artifact validator fixtures": "broad_smoke.review_artifacts.regression",
+    "$review_artifact_label": "broad_smoke.review_artifacts.changed_roots",
+    "$artifact_lifecycle_label": "broad_smoke.artifact_lifecycle.scoped",
+}
+BROAD_SMOKE_REQUIRED_CLASSIFICATION_FIELDS = (
+    "Check ID",
+    "Command",
+    "Reads",
+    "Writes",
+    "Temp roots",
+    "Shared outputs",
+    "Network use",
+    "CPU/I/O expectations",
+    "Nested parallelism risk",
+    "Output-order risk",
+    "Failure-output dependency",
+    "Parallel-safe candidate",
+    "Classification confidence",
+)
+NON_CANDIDATE_VALUES = {"no", "not-approved", "blocked"}
 
 VALIDATION_PRODUCER_PATTERN = re.compile(
     r"\bpython\s+scripts/(?:test|validate|build)-[\w-]+\.py\b"
@@ -808,6 +846,47 @@ raise SystemExit({exit_code})
         with context:
             self.assert_ci_wrapper_consistency_guard_passes(ci_text)
 
+    def extract_broad_smoke_run_check_ids(self, ci_text: str) -> list[str]:
+        functions = self.extract_ci_functions(ci_text)
+        self.assertIn("run_broad_smoke", functions)
+        labels: list[str] = []
+        for match in re.finditer(
+            r"(?m)^\s*run_check\s+(?P<label>\"[^\"]+\"|\$[A-Za-z_][A-Za-z0-9_]*)",
+            functions["run_broad_smoke"],
+        ):
+            label = match.group("label")
+            if label.startswith('"') and label.endswith('"'):
+                label = label[1:-1]
+            labels.append(label)
+
+        check_ids: list[str] = []
+        for label in labels:
+            self.assertIn(label, BROAD_SMOKE_CHECK_IDS_BY_RUN_CHECK_LABEL)
+            check_ids.append(BROAD_SMOKE_CHECK_IDS_BY_RUN_CHECK_LABEL[label])
+        return check_ids
+
+    def parse_broad_smoke_classification_rows(self) -> list[dict[str, str]]:
+        self.assertTrue(BROAD_SMOKE_CLASSIFICATION.exists(), msg=str(BROAD_SMOKE_CLASSIFICATION))
+        lines = BROAD_SMOKE_CLASSIFICATION.read_text(encoding="utf-8").splitlines()
+        header_index = next(
+            index
+            for index, line in enumerate(lines)
+            if line.startswith("| Check ID | Command | Reads |")
+        )
+        headers = [cell.strip() for cell in lines[header_index].strip("|").split("|")]
+        self.assertEqual(tuple(headers), BROAD_SMOKE_REQUIRED_CLASSIFICATION_FIELDS)
+
+        rows: list[dict[str, str]] = []
+        for line in lines[header_index + 2 :]:
+            if not line.startswith("| broad_smoke."):
+                if rows:
+                    break
+                continue
+            cells = [cell.strip().strip("`") for cell in line.strip("|").split("|")]
+            self.assertEqual(len(cells), len(headers), msg=line)
+            rows.append(dict(zip(headers, cells, strict=True)))
+        return rows
+
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
         return select_validation(SelectionRequest(mode=mode, paths=tuple(paths), repo_root=ROOT, **kwargs))
 
@@ -888,6 +967,7 @@ raise SystemExit({exit_code})
             "docs/changes/2026-04-25-example/token-cost.md",
             "docs/changes/2026-04-25-example/cold-read-proof.md",
             "docs/changes/2026-04-25-example/representative-project-map-outputs.md",
+            "docs/changes/2026-04-25-example/broad-smoke-child-classification.md",
         ]
         result = self.select(paths)
         payload = result.to_json_dict()
@@ -968,6 +1048,31 @@ raise SystemExit({exit_code})
         self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
         self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
 
+    def test_selector_preservation_surface_keeps_selected_check_identity(self) -> None:
+        paths = [
+            "scripts/validation_selection.py",
+            "scripts/test-select-validation.py",
+            "docs/changes/2026-04-25-example/selector-preservation.md",
+        ]
+
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertEqual(
+            {"artifact_lifecycle.validate", "selector.regression"},
+            selected_ids(payload),
+        )
+        selector_check = next(check for check in payload["selected_checks"] if check["id"] == "selector.regression")
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        self.assertEqual(selector_check["phase"], "focused")
+        self.assertEqual(selector_check["cache_status"], "not-applicable")
+        self.assertIn("Changed selector code requires selector regression fixtures.", selector_check["reason"])
+        self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
+        self.assertIn("docs/changes/2026-04-25-example/selector-preservation.md", lifecycle_check["paths"])
+
     def test_validation_cache_evidence_files_route_without_manual_debt(self) -> None:
         paths = [
             "docs/changes/2026-04-25-example/validation-cache-evidence.yaml",
@@ -1012,12 +1117,38 @@ raise SystemExit({exit_code})
         debt = next(item for item in payload["blocking_results"] if item["code"] == "manual-routing-required")
         self.assertEqual(debt["path"], "docs/changes/2026-04-25-example/notes.md")
         self.assertTrue(debt["manual_routing_required"])
+        self.assertEqual(debt["path_class"], "unregistered-change-evidence")
+        self.assertEqual(debt["affected_class"], "change-local evidence")
         self.assertEqual(debt["debt"], "evidence-registration")
         self.assertEqual(debt["verify_readiness"], "blocked")
         self.assertEqual(debt["deferral_status"], "none")
+        self.assertIn("selector routing", debt["next_action"])
         self.assertIn("owner-approved deferral", debt["next_action"])
         for required_term in ("owner", "path", "reason", "validation impact", "follow-up"):
             self.assertIn(required_term, debt["next_action"])
+
+    def test_diagnostic_broad_smoke_does_not_erase_missing_route_blocker(self) -> None:
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("docs/changes/2026-04-25-example/notes.md",),
+                broad_smoke=True,
+                repo_root=ROOT,
+            )
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "blocked")
+        self.assertTrue(payload["broad_smoke_required"])
+        self.assertIn("broad_smoke.repo", selected_ids(payload))
+        self.assertIn(
+            "manual-routing-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+        debt = next(item for item in payload["blocking_results"] if item["code"] == "manual-routing-required")
+        self.assertEqual(debt["path"], "docs/changes/2026-04-25-example/notes.md")
+        self.assertEqual(debt["verify_readiness"], "blocked")
+        self.assertIn({"type": "explicit_flag", "value": "--broad-smoke"}, payload["broad_smoke"]["sources"])
 
     def write_change_with_evidence_deferral(
         self,
@@ -1733,6 +1864,12 @@ raise SystemExit({exit_code})
                 "checks": {"artifact_lifecycle.validate"},
             },
             {
+                "path": "docs/changes/2026-04-25-example/broad-smoke-child-classification.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
                 "path": "docs/changes/2026-04-25-example/broad-smoke-child-commands-post-m4.txt",
                 "category": "registered-change-evidence",
                 "status": "ok",
@@ -1770,6 +1907,12 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/script-performance-baseline.yaml",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/selector-regression-profile.md",
                 "category": "registered-change-evidence",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
@@ -3467,6 +3610,46 @@ print("SECOND_STDOUT")
         self.assertLess(output.index("validate-skills.py STDOUT marker"), output.index("test-skill-validator.py STDOUT marker"))
         self.assertIn("validate-skills.py STDERR marker", output)
         self.assertIn("test-skill-validator.py STDERR marker", output)
+
+    def test_broad_smoke_child_classification_covers_ci_children(self) -> None:
+        ci_check_ids = self.extract_broad_smoke_run_check_ids(CI.read_text(encoding="utf-8"))
+        rows = self.parse_broad_smoke_classification_rows()
+        row_ids = [row["Check ID"] for row in rows]
+
+        self.assertEqual(row_ids, ci_check_ids)
+        for row in rows:
+            with self.subTest(check_id=row["Check ID"]):
+                for field in BROAD_SMOKE_REQUIRED_CLASSIFICATION_FIELDS:
+                    self.assertTrue(row[field], msg=field)
+                self.assertIn(
+                    row["Parallel-safe candidate"],
+                    {"no", "needs-follow-up", "candidate-after-separate-approval"},
+                )
+                self.assertIn(row["Classification confidence"], {"high", "medium", "low"})
+
+    def test_broad_smoke_classification_blocks_unsafe_candidate_claims(self) -> None:
+        rows = self.parse_broad_smoke_classification_rows()
+
+        for row in rows:
+            with self.subTest(check_id=row["Check ID"]):
+                has_writes = row["Writes"].lower() != "none"
+                has_shared_outputs = row["Shared outputs"].lower() != "none"
+                low_confidence = row["Classification confidence"] == "low"
+                if has_writes or has_shared_outputs or low_confidence:
+                    self.assertIn(row["Parallel-safe candidate"], NON_CANDIDATE_VALUES | {"needs-follow-up"})
+
+    def test_broad_smoke_classification_keeps_runtime_sequential(self) -> None:
+        ci_text = CI.read_text(encoding="utf-8")
+        broad_smoke_body = self.extract_ci_functions(ci_text)["run_broad_smoke"]
+
+        self.assertNotIn("ThreadPoolExecutor", broad_smoke_body)
+        self.assertNotIn("run_parallel_safe_chunk", broad_smoke_body)
+        self.assertNotIn("parallel_safe", broad_smoke_body)
+        self.assertNotRegex(broad_smoke_body, r"(?m)^\s*run_check\b.*&\s*$")
+        self.assertEqual(
+            self.extract_broad_smoke_run_check_ids(ci_text),
+            [row["Check ID"] for row in self.parse_broad_smoke_classification_rows()],
+        )
 
     def test_broad_smoke_wrapper_mode_consistency_guard_is_enforced(self) -> None:
         self.assert_ci_wrapper_consistency_guard_passes(CI.read_text(encoding="utf-8"))
