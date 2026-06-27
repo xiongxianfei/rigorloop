@@ -1100,6 +1100,29 @@ raise SystemExit({exit_code})
         metadata_check = next(check for check in payload["selected_checks"] if check["id"] == "change_metadata.validate")
         self.assertIn("docs/changes/2026-04-25-example/validation-cache-measurement.yaml", metadata_check["paths"])
 
+    def test_selector_runtime_evidence_files_route_without_manual_debt(self) -> None:
+        paths = [
+            "docs/changes/2026-04-25-example/selector-regression-runtime-baseline.yaml",
+            "docs/changes/2026-04-25-example/selector-regression-runtime-result.yaml",
+        ]
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(payload["blocking_results"])
+        self.assertFalse(payload["registration_debt"])
+        self.assertTrue(
+            all(
+                classified["category"] == "registered-change-evidence"
+                for classified in payload["classified_paths"]
+            )
+        )
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
+        self.assertIn("docs/changes/2026-04-25-example/selector-regression-runtime-baseline.yaml", lifecycle_check["paths"])
+        self.assertIn("docs/changes/2026-04-25-example/selector-regression-runtime-result.yaml", lifecycle_check["paths"])
+
     def test_unregistered_change_evidence_produces_registration_debt(self) -> None:
         result = self.select(["docs/changes/2026-04-25-example/notes.md"])
         payload = result.to_json_dict()

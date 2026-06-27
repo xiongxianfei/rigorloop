@@ -1,0 +1,100 @@
+change_id: 2026-06-27-selector-regression-runtime-reduction
+title: Selector-Regression Runtime Reduction
+classification: spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-27-selector-regression-runtime-reduction.md
+  spec: specs/selector-regression-runtime-reduction.md
+  test_spec: specs/selector-regression-runtime-reduction.test.md
+  plan: docs/plans/2026-06-27-selector-regression-runtime-reduction.md
+  review_resolution: docs/changes/2026-06-27-selector-regression-runtime-reduction/review-resolution.md
+requirements:
+  - Record the selector-regression runtime reduction proposal before proposal-review.
+  - Review the proposal for problem clarity, option quality, scope control, risk honesty, vision fit, and readiness for spec.
+  - Normalize proposal status to accepted before downstream spec reliance.
+  - Author a focused selector-regression runtime reduction spec from the accepted proposal.
+  - Review the spec before planning relies on it.
+  - Normalize spec status to approved before plan reliance.
+  - Record architecture as not required unless implementation expands into persistent workers, shared caches, broad validator composition, or new cross-process execution protocols.
+  - Author a living execution plan before plan-review.
+  - Author a traceable test specification after plan-review and before implementation.
+  - Record selector-regression baseline runtime, profile, and preservation evidence before runtime-reducing changes.
+  - Register selector-regression runtime evidence files so they do not create manual-routing debt.
+tests:
+  - Proposal-review approves the proposal or records material findings before downstream spec reliance.
+  - Review-log indexes proposal-review receipts with zero material findings when clean.
+  - Spec-review approves the selector-regression runtime reduction spec or records material findings before plan reliance.
+  - The execution plan records milestones, validation commands, recovery paths, dependencies, current handoff state, and readiness before plan-review.
+  - The test specification maps selector-regression runtime reduction requirements, examples, edge cases, and milestones to concrete tests before implementation.
+  - Selector-regression runtime evidence files route as registered change evidence without manual-routing debt.
+  - Selector-regression baseline/profile/preservation evidence exists before runtime-reducing changes.
+changed_files:
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - docs/proposals/2026-06-27-selector-regression-runtime-reduction.md
+  - specs/selector-regression-runtime-reduction.md
+  - specs/selector-regression-runtime-reduction.test.md
+  - docs/plans/2026-06-27-selector-regression-runtime-reduction.md
+  - docs/plan.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-profile.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/review-log.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/review-resolution.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r2.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/spec-review-r1.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/plan-review-r1.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/test-spec-review-r1.md
+review:
+  status: approved
+  unresolved_items: 0
+  location: docs/changes/2026-06-27-selector-regression-runtime-reduction/review-log.md
+  material_findings: 0
+  closed_findings: 0
+  open_findings: 0
+  proposal_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r1.md
+  latest_proposal_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r2.md
+  spec_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/spec-review-r1.md
+  plan_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/plan-review-r1.md
+  test_spec_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/test-spec-review-r1.md
+  review_log: docs/changes/2026-06-27-selector-regression-runtime-reduction/review-log.md
+  review_resolution: docs/changes/2026-06-27-selector-regression-runtime-reduction/review-resolution.md
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: proposal-review r2
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted
+  - command: spec authoring
+    result: selector_regression_runtime_reduction_spec_draft_ready_for_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: spec_status_approved
+  - command: plan authoring
+    result: active_plan_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: test-spec authoring
+    result: selector_regression_runtime_reduction_test_spec_ready_for_test_spec_review
+  - command: test-spec-review r1
+    result: approved_no_material_findings_implementation_handoff_allowed
+  - command: python scripts/test-select-validation.py -k selector_runtime_evidence_files_route_without_manual_debt
+    result: pass
+  - command: /usr/bin/time -p python scripts/test-select-validation.py
+    result: pass_3_runs_median_real_164730ms_109_tests
+  - command: grouped selector-regression profiling
+    result: validation_selection_tests_bucket_real_164200ms_99_tests
+  - command: python scripts/test-select-validation.py
+    result: pass_109_tests_179_92s
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-27-selector-regression-runtime-reduction
+    result: pass
+  - command: git diff --check
+    result: pass
