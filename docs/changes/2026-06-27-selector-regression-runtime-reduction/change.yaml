@@ -44,6 +44,7 @@ changed_files:
   - specs/selector-regression-runtime-reduction.test.md
   - docs/plans/2026-06-27-selector-regression-runtime-reduction.md
   - docs/plan.md
+  - docs/plan-archive.md
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-profile.md
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml
@@ -179,4 +180,14 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-selector-regression-runtime-reduction/verify-report.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md
     result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate_focused_12060ms
   - command: git diff --check -- docs/changes/2026-06-27-selector-regression-runtime-reduction/verify-report.md docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md
+    result: pass
+  - command: pr
+    result: opened_pr_115_against_proposal_preflight_first_validation_runtime_optimization
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/plan-archive.md
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate_focused_12580ms
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-27-selector-regression-runtime-reduction
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass
+  - command: git diff --check -- docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md docs/plan-archive.md
     result: pass
