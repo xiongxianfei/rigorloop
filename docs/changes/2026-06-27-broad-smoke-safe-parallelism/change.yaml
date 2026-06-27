@@ -1,0 +1,129 @@
+change_id: 2026-06-27-broad-smoke-safe-parallelism
+title: Broad-Smoke Safe Parallelism With Deterministic Aggregation
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-27-broad-smoke-safe-parallelism.md
+  spec: specs/broad-smoke-safe-parallelism.md
+  test_spec: specs/broad-smoke-safe-parallelism.test.md
+  plan: docs/plans/2026-06-27-broad-smoke-safe-parallelism.md
+  review_resolution: docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md
+requirements:
+  - Normalize the broad-smoke safe parallelism proposal to accepted after approved proposal-review with no material findings.
+  - Author and approve the broad-smoke safe parallelism spec before execution planning.
+  - Record architecture assessment before plan routing.
+  - Create a milestone-based execution plan before plan-review.
+  - Review the execution plan before test-spec authoring.
+  - Author a traceable test spec before implementation.
+  - Implement M1 classification freshness validation and baseline evidence before scheduling behavior changes.
+tests:
+  - Proposal-review R1 and R2 are recorded with approved status and no material findings.
+  - Spec-review R1 is recorded with approved status and no material findings.
+  - Architecture assessment records architecture-not-required because the change stays inside the existing CI wrapper and repository-owned validation scripts.
+  - Plan-review R1 is recorded with approved status and no material findings.
+  - Test spec maps approved requirements, examples, edge cases, and milestones to concrete tests before implementation.
+  - Broad-smoke classification validator reconciles the change-local classification artifact with the current scripts/ci.sh child inventory.
+  - Broad-smoke baseline artifact records per-child timing evidence before execution scheduling changes.
+  - Validation selection routes broad-smoke parallelism evidence and validator script changes without manual routing debt.
+changed_files:
+  - docs/proposals/2026-06-27-broad-smoke-safe-parallelism.md
+  - specs/broad-smoke-safe-parallelism.md
+  - specs/broad-smoke-safe-parallelism.test.md
+  - docs/plans/2026-06-27-broad-smoke-safe-parallelism.md
+  - docs/plan.md
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r2.md
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/spec-review-r1.md
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/plan-review-r1.md
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/test-spec-review-r1.md
+  - scripts/validate-broad-smoke-classification.py
+  - scripts/test-select-validation.py
+  - scripts/validation_selection.py
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md
+review:
+  status: approved
+  unresolved_items: 0
+  material_findings: 0
+  open_findings: 0
+  closed_findings: 0
+  proposal_review: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r2.md
+  spec_review: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/spec-review-r1.md
+  plan_review: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/plan-review-r1.md
+  test_spec_review: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/test-spec-review-r1.md
+  review_log: docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md
+  review_resolution: docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: proposal-review r2
+    result: approved_no_material_findings
+  - command: workflow auto-through plan-review authorization
+    result: profile_authoring-through-plan-review_armed_by_user_2026-06-27T14:49:58Z
+  - command: upstream status settlement
+    result: spec_status_approved
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: architecture assessment
+    result: architecture-not-required_existing_ci_wrapper_no_persistent_worker_cache_composition_or_new_protocol
+  - command: plan authoring
+    result: created_three_milestone_plan_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings_authoring_profile_completed_next_test_spec
+  - command: test-spec authoring
+    result: drafted_requirement_example_edge_case_and_milestone_proof_map_ready_for_test_spec_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml
+    result: passed
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism
+    result: passed
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-27-broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r2.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/spec-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/plan-review-r1.md
+    result: passed
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-27-broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r2.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/spec-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/plan-review-r1.md
+    result: passed
+  - command: test-spec-review r1
+    result: approved_no_material_findings_implementation_handoff_allowed
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism
+    result: passed_after_test_spec_review
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-27-broad-smoke-safe-parallelism
+    result: passed_after_test_spec_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-27-broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r2.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/spec-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/plan-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/test-spec-review-r1.md
+    result: passed_after_test_spec_review
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-06-27-broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r2.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/spec-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/plan-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/test-spec-review-r1.md
+    result: passed_after_test_spec_review
+  - command: workflow auto-through verify authorization
+    result: profile_implementation-through-verify_active_by_user_2026-06-27T15:23:18Z
+  - command: python scripts/validate-broad-smoke-classification.py
+    result: passed_m1
+  - command: python scripts/test-select-validation.py -k broad_smoke
+    result: passed_17_tests_m1
+  - command: sequential broad-smoke child timing run
+    result: passed_total_duration_ms_374061
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 1
+    result: passed_11_checks_365s_m1
+  - command: python scripts/test-select-validation.py -k registered_change_evidence
+    result: passed_5_tests_m1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validate-broad-smoke-classification.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md
+    result: passed_m1_selected_ci
+workflow:
+  autoprogression:
+    authoring_through_plan_review:
+      profile: authoring-through-plan-review
+      state: completed
+      authorized_by: user
+      authorized_at: 2026-06-27T14:49:58Z
+      change_id: 2026-06-27-broad-smoke-safe-parallelism
+    implementation_through_verify:
+      profile: implementation-through-verify
+      state: active
+      phase: B
+      authorized_by: user
+      authorized_at: 2026-06-27T15:23:18Z
+      change_id: 2026-06-27-broad-smoke-safe-parallelism
+      stop_before: explain-change-until-final-holistic-code-review
+architecture_assessment:
+  result: architecture-not-required
+  rationale: existing_ci_wrapper_and_repository_validation_scripts_only_no_persistent_worker_cache_composition_new_protocol_persistence_deployment_or_trust_boundary

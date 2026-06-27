@@ -1,0 +1,104 @@
+scenario: broad-smoke-sequential-baseline
+command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 1
+environment:
+  os: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+  shell: /bin/bash
+  cpu_class: 24 logical CPUs
+  local_or_ci: local
+  runner: local WSL2
+repository_state:
+  head: d27ab6ec1a13f0339f162bac381428b1e769ecb4
+  worktree_state: dirty with M1 implementation in progress
+children:
+  - check_id: broad_smoke.skills.validate
+    command: python scripts/validate-skills.py
+    order: 1
+    duration_ms: 827
+    result: passed
+    output_bytes: 81
+  - check_id: broad_smoke.skills.regression
+    command: python scripts/test-skill-validator.py
+    order: 2
+    duration_ms: 13279
+    result: passed
+    output_bytes: 42175
+  - check_id: broad_smoke.skills.generation_regression
+    command: python scripts/test-build-skills.py
+    order: 3
+    duration_ms: 3559
+    result: passed
+    output_bytes: 518
+  - check_id: broad_smoke.skills.drift
+    command: python scripts/build-skills.py --check
+    order: 4
+    duration_ms: 873
+    result: passed
+    output_bytes: 149
+  - check_id: broad_smoke.adapters.regression
+    command: python scripts/test-adapter-distribution.py
+    order: 5
+    duration_ms: 173108
+    result: passed
+    output_bytes: 22996
+  - check_id: broad_smoke.adapters.build_archives
+    command: python scripts/build-adapters.py --version v0.1.3 --output-dir "$adapter_release_output"
+    order: 6
+    duration_ms: 1584
+    result: passed
+    output_bytes: 283
+  - check_id: broad_smoke.adapters.validate_archives
+    command: python scripts/validate-adapters.py --root "$adapter_release_output" --version v0.1.3
+    order: 7
+    duration_ms: 3620
+    result: passed
+    output_bytes: 97
+  - check_id: broad_smoke.change_metadata.regression
+    command: python scripts/test-change-metadata-validator.py
+    order: 8
+    duration_ms: 10126
+    result: passed
+    output_bytes: 59
+  - check_id: broad_smoke.artifact_lifecycle.regression
+    command: python scripts/test-artifact-lifecycle-validator.py
+    order: 9
+    duration_ms: 13909
+    result: passed
+    output_bytes: 25083
+  - check_id: broad_smoke.review_artifacts.regression
+    command: python scripts/test-review-artifact-validator.py
+    order: 10
+    duration_ms: 3741
+    result: passed
+    output_bytes: 16893
+  - check_id: broad_smoke.review_artifacts.changed_roots
+    command: '"${review_artifact_cmd[@]}"'
+    order: 11
+    duration_ms: null
+    result: skipped_by_skip_diff_scoped
+    output_bytes: 0
+  - check_id: broad_smoke.artifact_lifecycle.scoped
+    command: '"${artifact_lifecycle_cmd[@]}"'
+    order: 12
+    duration_ms: 149434
+    result: passed
+    output_bytes: 861
+total_duration_ms: 374061
+slowest_children:
+  - check_id: broad_smoke.adapters.regression
+    duration_ms: 173108
+  - check_id: broad_smoke.artifact_lifecycle.scoped
+    duration_ms: 149434
+  - check_id: broad_smoke.artifact_lifecycle.regression
+    duration_ms: 13909
+  - check_id: broad_smoke.skills.regression
+    duration_ms: 13279
+  - check_id: broad_smoke.change_metadata.regression
+    duration_ms: 10126
+classification_artifact: docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml
+notes:
+  measurement_status: measured
+  run_count: 1
+  skipped_children:
+    - check_id: broad_smoke.review_artifacts.changed_roots
+      reason: --skip-diff-scoped skips dirty-worktree review root validation.
+  limitations: one local WSL2 run recorded because full sequential child timing took about 374s; use paired same-machine runs for M3 before/after comparison.
