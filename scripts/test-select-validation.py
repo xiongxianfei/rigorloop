@@ -36,6 +36,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from validation_selection import (  # noqa: E402
     CHECK_CATALOG,
     EvidenceClassRegistration,
+    build_repository_preflight_context,
     SelectionRequest,
     normalize_path,
     select_validation,
@@ -500,6 +501,7 @@ class ScriptOutputContractTests(unittest.TestCase):
 
 class ValidationSelectionTests(unittest.TestCase):
     maxDiff = None
+    root_preflight_context = build_repository_preflight_context(ROOT)
 
     def addCleanupTree(self, path: Path) -> None:
         self.addCleanup(lambda: shutil.rmtree(path, ignore_errors=True))
@@ -888,7 +890,22 @@ raise SystemExit({exit_code})
         return rows
 
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
+        kwargs.setdefault("preflight_context", self.root_preflight_context)
         return select_validation(SelectionRequest(mode=mode, paths=tuple(paths), repo_root=ROOT, **kwargs))
+
+    def test_shared_preflight_context_requires_matching_repository_identity(self) -> None:
+        other_root = Path(tempfile.mkdtemp(prefix="validation-selection-preflight-mismatch-"))
+        self.addCleanupTree(other_root)
+
+        with self.assertRaisesRegex(ValueError, "preflight context does not match repository root"):
+            select_validation(
+                SelectionRequest(
+                    mode="explicit",
+                    paths=("docs/workflows.md",),
+                    repo_root=other_root,
+                    preflight_context=self.root_preflight_context,
+                )
+            )
 
     def test_change_evidence_registry_entries_are_complete_and_stable(self) -> None:
         valid = [
@@ -1099,6 +1116,29 @@ raise SystemExit({exit_code})
         self.assertIn("docs/changes/2026-04-25-example/validation-cache-measurement.yaml", lifecycle_check["paths"])
         metadata_check = next(check for check in payload["selected_checks"] if check["id"] == "change_metadata.validate")
         self.assertIn("docs/changes/2026-04-25-example/validation-cache-measurement.yaml", metadata_check["paths"])
+
+    def test_selector_runtime_evidence_files_route_without_manual_debt(self) -> None:
+        paths = [
+            "docs/changes/2026-04-25-example/selector-regression-runtime-baseline.yaml",
+            "docs/changes/2026-04-25-example/selector-regression-runtime-result.yaml",
+        ]
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(payload["blocking_results"])
+        self.assertFalse(payload["registration_debt"])
+        self.assertTrue(
+            all(
+                classified["category"] == "registered-change-evidence"
+                for classified in payload["classified_paths"]
+            )
+        )
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
+        self.assertIn("docs/changes/2026-04-25-example/selector-regression-runtime-baseline.yaml", lifecycle_check["paths"])
+        self.assertIn("docs/changes/2026-04-25-example/selector-regression-runtime-result.yaml", lifecycle_check["paths"])
 
     def test_unregistered_change_evidence_produces_registration_debt(self) -> None:
         result = self.select(["docs/changes/2026-04-25-example/notes.md"])
@@ -3573,6 +3613,12 @@ print("SECOND_STDOUT")
         self.assertNotIn("STDERR marker", output)
         self.assertNotIn("==>", output)
         self.assertNotIn("--quiet", output)
+
+    def test_ci_wrapper_duration_reporting_does_not_use_bash_seconds(self) -> None:
+        ci_text = CI.read_text(encoding="utf-8")
+
+        self.assertNotIn("$SECONDS", ci_text)
+        self.assertIn("elapsed_seconds_since", ci_text)
 
     def test_broad_smoke_failure_prints_command_exit_duration_and_captured_output(self) -> None:
         workspace = self.make_broad_smoke_workspace(failing_child="scripts/test-skill-validator.py")
