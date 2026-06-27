@@ -15,6 +15,7 @@ Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m3-r1
 
 ## Resolution Entries
 
@@ -73,5 +74,9 @@ Validation target: `python scripts/test-select-validation.py -k broad_smoke`; `p
 Validation evidence: `python scripts/test-select-validation.py -k worker_crash` passed with 1 test; `python scripts/test-select-validation.py -k broad_smoke` passed with 24 tests; `python scripts/test-select-validation.py -k jobs` passed with 5 tests; `bash -n scripts/ci.sh` passed; `python scripts/validate-broad-smoke-classification.py` passed.
 
 ### code-review-m2-r2
+
+No material findings.
+
+### code-review-m3-r1
 
 No material findings.

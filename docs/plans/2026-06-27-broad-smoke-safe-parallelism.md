@@ -76,15 +76,15 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Performance Result, Default-Promotion Decision, and Closeout Evidence
+- Current milestone: final holistic cross-milestone review
 - Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m2-r2.md
-- Last reviewed milestone: M2. Opt-In Parallel Executor and Deterministic Aggregation
-- Review status: approved; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M3
+- Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m3-r1.md
+- Last reviewed milestone: M3. Performance Result, Default-Promotion Decision, and Closeout Evidence
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: none
 - Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 is closed after clean R2 code-review, but M3 implementation, final holistic code-review, explain-change, verify, and PR handoff have not completed.
+- Reason final closeout is or is not ready: lifecycle-gates-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1, M2, and M3 are closed, but final holistic code-review, explain-change, verify, and PR handoff have not completed.
 
 ## Milestones
 
@@ -186,7 +186,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 
 ### M3. Performance Result, Default-Promotion Decision, and Closeout Evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Record before/after runtime evidence, decide whether default promotion is justified, and close with measured scheduling improvement or no-safe-parallelism evidence.
 - Requirements: `R13`-`R18`, `R33`-`R42`, `AC8`-`AC24`
 - Files/components likely touched:
@@ -237,6 +237,30 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
   - Preserve timing and classification evidence for child isolation or future composition work.
   - Record the next optimization target without weakening broad-smoke proof.
 
+### final holistic cross-milestone review
+
+- Milestone state: review-requested
+- Goal: Review the complete M1-M3 implementation and evidence set before entering explain-change and verify.
+- Requirements: all in-scope requirements `R1`-`R42` and `AC1`-`AC24`.
+- Files/components likely touched: none unless review finds a blocking issue.
+- Dependencies:
+  - M1, M2, and M3 implementation milestones are closed.
+  - Review-resolution is closed with no open findings.
+- Tests to add/update: none expected; this is a review gate over the complete implementation and evidence surface.
+- Validation commands:
+  - Review the complete branch diff and recorded validation evidence.
+  - Run lifecycle and review artifact validation after recording the final holistic review.
+- Expected observable result: A clean final holistic code-review record or recorded material findings before explain-change.
+- Commit message: `final review: record broad-smoke holistic code review`
+- Milestone closeout:
+  - final holistic code-review recorded
+  - no open material findings
+  - handoff to explain-change
+- Risks:
+  - Cross-milestone evidence could drift even when individual milestones passed.
+- Rollback/recovery:
+  - Route any material finding through review-resolution before explain-change or verify.
+
 ## Validation plan
 
 - `python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism`: review record structure.
@@ -282,6 +306,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - 2026-06-27: Resolved `CR-M2-1` by registering expected child result slots before launch, failing closed on missing or incomplete result metadata, and adding a worker-crash regression.
 - 2026-06-27: Code-review M2 R2 completed clean-with-notes, closed M2, and handed off to M3 implementation.
 - 2026-06-27: M3 recorded opt-in broad-smoke runtime evidence from `--jobs 4`: 332s total, 42061ms / 11.24% faster than the M1 single-run baseline. Default promotion remains deferred; first-slice parallelism stays opt-in.
+- 2026-06-27: Code-review M3 R1 completed clean-with-notes and closed M3; next stage is final holistic cross-milestone code-review.
 
 ## Decision log
 
@@ -367,6 +392,11 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-result.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md` passed for M3.
 - `git diff --check -- scripts docs/changes/2026-06-27-broad-smoke-safe-parallelism specs/broad-smoke-safe-parallelism.md specs/broad-smoke-safe-parallelism.test.md docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md` passed for M3.
 - `bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-result.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md` passed for M3 selected CI.
+- `python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism` passed after code-review M3 R1.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-27-broad-smoke-safe-parallelism` passed after code-review M3 R1.
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml` passed after code-review M3 R1.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m3-r1.md` passed after code-review M3 R1.
+- `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m3-r1.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md` passed after code-review M3 R1.
 
 ## Outcome and retrospective
 
