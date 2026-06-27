@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Change ID: 2026-06-27-selector-regression-runtime-reduction
 - Owner: agent
 - Start date: 2026-06-27
 - Last updated: 2026-06-27
-- Related issue or PR: none yet
+- Related issue or PR: PR #115, https://github.com/xiongxianfei/rigorloop/pull/115
 - Supersedes: none
 
 ## Purpose / big picture
@@ -78,15 +78,15 @@ The broader June 26 validation-runtime follow-through work already added selecto
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Runtime Result and Closeout Evidence
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r3.md
 - Last reviewed milestone: M3. Runtime Result and Closeout Evidence
 - Review status: approved; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, pr-handoff-pending — implementation milestones, code-review, explain-change, and verify are closed, but PR handoff remains.
+- Next stage: human PR review
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #115 is open for review; implementation milestones, code-review, explain-change, verify, and PR handoff are complete.
 
 ## Milestones
 
@@ -281,6 +281,8 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - 2026-06-27: Code-review R3 closed M3 with no material findings; all in-scope implementation milestones are closed and the next stage is explain-change.
 - 2026-06-27: Explain-change recorded durable rationale for the selector-regression runtime reduction and moved the next stage to verify.
 - 2026-06-27: Verify passed fresh selector-regression, selected-CI, review-artifact, and broad-smoke checks; branch-ready evidence recorded and the next stage is PR handoff.
+- 2026-06-27: PR #115 opened against `proposal/preflight-first-validation-runtime-optimization` for stacked review.
+- 2026-06-27: PR handoff lifecycle validation passed after moving the plan to Done and archiving the oldest recent Done entry.
 
 ## Decision log
 
@@ -355,12 +357,15 @@ The broader June 26 validation-runtime follow-through work already added selecto
   - `bash scripts/ci.sh --mode explicit --path ...`: passed; selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `guide_system.validate`, and `selector.regression`; focused phase total 50.37s.
   - `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped`: passed, 11 checks in 354s.
   - Post-report selected validation for verify-stage bookkeeping passed with selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `guide_system.validate`.
+- PR handoff validation:
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/plan-archive.md`: passed; selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `guide_system.validate`; focused phase total 12.58s.
 
 ## Outcome and retrospective
 
-- Pending; fill after implementation, review, verify, and PR handoff complete.
+Selector-regression runtime reduction is complete and ready for human PR review. The revised runtime evidence records a median selector-regression runtime of `36.23s` versus the `164.73s` baseline, a `78.01%` reduction, while preserving selected-check identity, missing-route blockers, command-boundary coverage, cache-boundary semantics, broad-smoke classification, and final-verify boundaries.
+
+Opened PR #115: `https://github.com/xiongxianfei/rigorloop/pull/115`.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- Readiness is not Done.
+- Done for this branch handoff. PR #115 is open for hosted CI and human review.
