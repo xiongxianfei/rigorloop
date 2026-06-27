@@ -2,7 +2,7 @@
 
 ## Status
 
-M2 opt-in preservation evidence.
+M3 opt-in preservation and result evidence.
 
 ## Scope
 
@@ -10,6 +10,9 @@ M1 recorded the canonical broad-smoke child inventory, reconciled classification
 freshness, and recorded sequential timing before execution behavior changes.
 M2 adds first-slice opt-in parallel execution only when broad-smoke receives an
 explicit `--jobs` value greater than `1`.
+M3 records one local opt-in timing run and keeps default promotion deferred:
+the measured first-slice reduction is useful but below the proposal's 30%
+median target and is based on a single local run.
 
 Omitted `--jobs` and `--jobs 1` remain strict sequential compatibility paths.
 The opt-in path validates classification freshness before launching children,
@@ -52,17 +55,39 @@ aggregates output and failures in canonical child order.
 ## Timing Evidence
 
 - Baseline artifact: `docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml`
+- Result artifact: `docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-result.yaml`
 - Status: one measured local sequential baseline run recorded in M1.
 - Total measured child time: `374061ms`.
+- M3 opt-in broad-smoke run: `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 4` passed with `[PASS] broad-smoke: 11 checks passed in 332s`.
+- Recorded opt-in total: `332000ms`, delta `42061ms`, `11.24%` faster than the M1 single-run baseline.
 - Slowest children: `broad_smoke.adapters.regression` at `173108ms`,
   `broad_smoke.artifact_lifecycle.scoped` at `149434ms`,
   `broad_smoke.artifact_lifecycle.regression` at `13909ms`.
-- Limitation: one local WSL2 run is recorded because full sequential child
-  timing took about 374s; M3 must use paired same-machine runs before making a
-  before/after runtime claim.
+- Limitation: one local WSL2 baseline and one local WSL2 opt-in run are recorded
+  because full broad-smoke runs take several minutes. This evidence supports
+  retaining opt-in parallelism and does not support default promotion or a
+  median speed claim.
+
+## Default-Promotion Decision
+
+Default promotion is not enabled in this slice.
+
+Reasons:
+
+- The measured single-run reduction is `11.24%`, below the 30% median target.
+- The largest remaining costs are sequential-only children:
+  `broad_smoke.adapters.regression` and `broad_smoke.artifact_lifecycle.scoped`.
+- Classification remains change-local rather than a permanent validator-owned
+  default-promotion artifact.
+- The evidence is one paired local run, not a median of at least three paired
+  same-environment runs.
+
+Follow-up optimization should target child isolation or further classification
+of the sequential-only dominant children before default promotion is reconsidered.
 
 ## Validation Evidence
 
 - `python scripts/test-select-validation.py -k broad_smoke` covers sequential compatibility, opt-in overlap, missing-classification preflight failure, deterministic verbose grouping, and all-failures aggregation.
 - `python scripts/test-select-validation.py -k jobs` covers existing bounded worker behavior.
 - M2 must still run real `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 1` before handoff to prove the rollback path on real commands.
+- `python scripts/test-select-validation.py -k result_evidence` covers opt-in result evidence shape, jobs value, child phases, and delta field.
