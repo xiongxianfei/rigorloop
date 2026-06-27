@@ -77,12 +77,12 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 ## Current Handoff Summary
 
 - Current milestone: M3. Performance Result, Default-Promotion Decision, and Closeout Evidence
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m2-r2.md
 - Last reviewed milestone: M2. Opt-In Parallel Executor and Deterministic Aggregation
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 is closed after clean R2 code-review, but M3 implementation, final holistic code-review, explain-change, verify, and PR handoff have not completed.
 
@@ -186,7 +186,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 
 ### M3. Performance Result, Default-Promotion Decision, and Closeout Evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Record before/after runtime evidence, decide whether default promotion is justified, and close with measured scheduling improvement or no-safe-parallelism evidence.
 - Requirements: `R13`-`R18`, `R33`-`R42`, `AC8`-`AC24`
 - Files/components likely touched:
@@ -281,6 +281,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - 2026-06-27: Code-review M2 R1 requested changes for `CR-M2-1`, a scheduler-error gap where a missing worker result could be skipped and produce incomplete broad-smoke evidence.
 - 2026-06-27: Resolved `CR-M2-1` by registering expected child result slots before launch, failing closed on missing or incomplete result metadata, and adding a worker-crash regression.
 - 2026-06-27: Code-review M2 R2 completed clean-with-notes, closed M2, and handed off to M3 implementation.
+- 2026-06-27: M3 recorded opt-in broad-smoke runtime evidence from `--jobs 4`: 332s total, 42061ms / 11.24% faster than the M1 single-run baseline. Default promotion remains deferred; first-slice parallelism stays opt-in.
 
 ## Decision log
 
@@ -291,12 +292,14 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 | 2026-06-27 | Keep first-slice broad-smoke parallelism opt-in. | The spec requires parity and failure-output evidence before default promotion. | Enable default parallel broad-smoke immediately. |
 | 2026-06-27 | Keep broad-smoke runtime sequential in M1. | M1 records freshness and timing evidence before scheduling behavior changes. | Introduce scheduling changes before baseline evidence. |
 | 2026-06-27 | Keep omitted broad-smoke `--jobs` sequential in M2. | The spec separates first-slice opt-in parallelism from default promotion, so default worker calculation remains selected-CI-only until M3 decision evidence exists. | Treat computed default jobs as broad-smoke opt-in. |
+| 2026-06-27 | Do not promote broad-smoke parallelism to default in M3. | The measured single-run reduction is 11.24%, below the 30% median target, and dominant children remain sequential-only. | Enable default parallel broad-smoke immediately. |
 
 ## Surprises and discoveries
 
 - Current `scripts/ci.sh` already supports `--jobs` and selected-check parallel-safe chunks, but broad-smoke still calls `run_check` sequentially.
 - M1 measured `broad_smoke.adapters.regression` at `173108ms` and `broad_smoke.artifact_lifecycle.scoped` at `149434ms`; these dominate the sequential baseline.
 - M2 can prove broad-smoke child overlap with fixture child scripts and active counters without running expensive real child commands in parallel before M3 runtime evidence.
+- M3 opt-in runtime improved wall time but remained dominated by sequential-only adapter regression and scoped artifact-lifecycle checks.
 
 ## Validation notes
 
@@ -350,6 +353,20 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml` passed after code-review M2 R2.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m2-r2.md` passed after code-review M2 R2.
 - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m2-r2.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md` passed after code-review M2 R2.
+- `python scripts/test-select-validation.py -k result_evidence` failed before M3 implementation because no result artifact was written.
+- `python scripts/test-select-validation.py -k result_evidence` passed after M3 result writer implementation (`1 passed in 0.24s`).
+- `python scripts/test-select-validation.py -k broad_smoke` passed for M3 (`25 passed in 7.53s`).
+- `python scripts/test-select-validation.py -k jobs` passed for M3 (`5 passed in 3.95s`).
+- `bash -n scripts/ci.sh` passed for M3.
+- `RIGORLOOP_BROAD_SMOKE_RESULT_JSON=docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-result.yaml bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 4` passed for M3 (`[PASS] broad-smoke: 11 checks passed in 332s`).
+- `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 1` passed for M3 rollback compatibility (`[PASS] broad-smoke: 11 checks passed in 353s`).
+- `python scripts/test-select-validation.py -k broad_smoke` passed after result sanitization (`25 passed in 7.52s`).
+- `python scripts/test-select-validation.py -k jobs` passed after result sanitization (`5 passed in 3.97s`).
+- `python -m json.tool docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-result.yaml >/dev/null` passed for M3.
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml` passed for M3.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-result.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md` passed for M3.
+- `git diff --check -- scripts docs/changes/2026-06-27-broad-smoke-safe-parallelism specs/broad-smoke-safe-parallelism.md specs/broad-smoke-safe-parallelism.test.md docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md` passed for M3.
+- `bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-result.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md` passed for M3 selected CI.
 
 ## Outcome and retrospective
 

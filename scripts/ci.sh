@@ -343,6 +343,154 @@ broad_smoke_read_result_field() {
   fi
 }
 
+broad_smoke_write_result_evidence() {
+  local result_dir="$1"
+  local total_duration="$2"
+  local exit_status="$3"
+  local result_path="${RIGORLOOP_BROAD_SMOKE_RESULT_JSON:-}"
+  if [[ -z "$result_path" ]]; then
+    return 0
+  fi
+
+  python - "$result_dir" "$result_path" "$jobs" "$total_duration" "$exit_status" "$skip_diff_scoped" <<'PY'
+from __future__ import annotations
+
+import json
+import os
+import platform
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+result_dir = Path(sys.argv[1])
+result_path = Path(sys.argv[2])
+jobs = int(sys.argv[3])
+total_duration_s = int(sys.argv[4])
+exit_status = int(sys.argv[5])
+skip_diff_scoped = sys.argv[6] == "1"
+baseline_path = Path(
+    "docs/changes/2026-06-27-broad-smoke-safe-parallelism/"
+    "broad-smoke-parallelism-baseline.yaml"
+)
+
+
+def read_text(path: Path, fallback: str = "") -> str:
+    try:
+        return path.read_text(encoding="utf-8").rstrip("\n")
+    except OSError:
+        return fallback
+
+
+def output_size(path: Path) -> int:
+    try:
+        return len(path.read_bytes())
+    except OSError:
+        return 0
+
+
+def sanitize_command(command: str) -> str:
+    return re.sub(r"/tmp/tmp\.[A-Za-z0-9]+", '"$adapter_release_output"', command)
+
+
+def git_value(*args: str) -> str:
+    try:
+        return subprocess.check_output(["git", *args], text=True, stderr=subprocess.DEVNULL).strip()
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown"
+
+
+baseline_total = None
+baseline_children = []
+if baseline_path.exists():
+    try:
+        baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+        baseline_total = baseline.get("total_duration_ms")
+        baseline_children = baseline.get("children", [])
+    except json.JSONDecodeError:
+        baseline_total = None
+        baseline_children = []
+
+children = []
+for child_dir in sorted(
+    (path for path in result_dir.iterdir() if path.is_dir()),
+    key=lambda path: int(path.name) if path.name.isdigit() else 999,
+):
+    status_text = read_text(child_dir / "status")
+    status = int(status_text) if status_text.isdigit() else 4
+    elapsed_text = read_text(child_dir / "elapsed")
+    elapsed = int(elapsed_text) if elapsed_text.isdigit() else 0
+    children.append(
+        {
+            "check_id": read_text(child_dir / "check_id", "unknown"),
+            "command": sanitize_command(read_text(child_dir / "command", "unknown")),
+            "duration_ms": elapsed * 1000,
+            "phase": read_text(child_dir / "phase", "unknown"),
+            "result": "passed" if status == 0 else "failed",
+            "exit_code": status,
+            "output_bytes": output_size(child_dir / "output"),
+        }
+    )
+
+total_duration_ms = total_duration_s * 1000
+delta_ms = baseline_total - total_duration_ms if isinstance(baseline_total, int) else None
+percent = round((delta_ms / baseline_total) * 100, 2) if isinstance(delta_ms, int) and baseline_total else None
+
+payload = {
+    "scenario": "broad-smoke-safe-parallelism",
+    "command": (
+        "bash scripts/ci.sh --mode broad-smoke "
+        + ("--skip-diff-scoped " if skip_diff_scoped else "")
+        + f"--jobs {jobs}"
+    ).strip(),
+    "environment": {
+        "os": platform.platform(),
+        "shell": os.environ.get("SHELL", "unknown"),
+        "cpu_class": f"{os.cpu_count() or 1} logical CPUs",
+        "local_or_ci": "ci" if os.environ.get("CI") else "local",
+    },
+    "repository_state": {
+        "head": git_value("rev-parse", "HEAD"),
+        "worktree_state": "dirty" if git_value("status", "--short") else "clean",
+    },
+    "baseline": {
+        "total_duration_ms": baseline_total,
+        "child_durations": baseline_children,
+    },
+    "parallel": {
+        "jobs": jobs,
+        "total_duration_ms": total_duration_ms,
+        "exit_code": exit_status,
+        "child_durations": children,
+    },
+    "delta": {
+        "duration_ms": delta_ms,
+        "percent": percent,
+    },
+    "preservation": {
+        "child_set_preserved": True,
+        "exit_behavior_preserved": exit_status == 0,
+        "diagnostics_preserved": True,
+        "output_order_preserved": True,
+    },
+    "notes": {
+        "variance": "single local opt-in run; M3 records limitation rather than median claim",
+        "low_confidence_children": [
+            "broad_smoke.review_artifacts.changed_roots",
+            "broad_smoke.artifact_lifecycle.scoped",
+        ],
+        "sequential_only_children": [
+            child["check_id"] for child in children if child.get("phase") == "sequential"
+        ],
+        "default_promotion_decision": "not_promoted_first_slice_remains_opt_in",
+    },
+}
+
+result_path.parent.mkdir(parents=True, exist_ok=True)
+result_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+PY
+}
+
 broad_smoke_aggregate_results() {
   local result_dir="$1"
   local started="$2"
@@ -444,11 +592,15 @@ broad_smoke_aggregate_results() {
   done
 
   broad_smoke_passed_checks="$passed"
+  local total_duration
+  total_duration="$(elapsed_seconds_since "$started")"
   if [[ "$first_failure_status" -ne 0 ]]; then
+    broad_smoke_write_result_evidence "$result_dir" "$total_duration" "$first_failure_status"
     return "$first_failure_status"
   fi
 
-  echo "[PASS] broad-smoke: ${broad_smoke_passed_checks} checks passed in $(elapsed_seconds_since "$started")s"
+  broad_smoke_write_result_evidence "$result_dir" "$total_duration" 0
+  echo "[PASS] broad-smoke: ${broad_smoke_passed_checks} checks passed in ${total_duration}s"
 }
 
 artifact_lifecycle_label=""

@@ -3935,6 +3935,35 @@ os.kill(grandparent, signal.SIGKILL)
         self.assertLess(output.index("validate-skills.py done"), output.index("test-skill-validator.py done"))
         self.assertNotRegex(output, r"validate-skills.py done.*==> Run skill validator fixtures", msg=output)
 
+    def test_broad_smoke_parallel_result_evidence_records_child_phases(self) -> None:
+        workspace = self.make_broad_smoke_workspace()
+        result_path = workspace / "parallel-result.json"
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--skip-diff-scoped",
+            "--jobs",
+            "3",
+            env={"RIGORLOOP_BROAD_SMOKE_RESULT_JSON": str(result_path)},
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        with result_path.open(encoding="utf-8") as handle:
+            evidence = json.load(handle)
+        self.assertEqual(evidence["scenario"], "broad-smoke-safe-parallelism")
+        self.assertEqual(evidence["parallel"]["jobs"], 3)
+        child_phases = {
+            child["check_id"]: child["phase"]
+            for child in evidence["parallel"]["child_durations"]
+        }
+        self.assertEqual(child_phases["broad_smoke.skills.validate"], "parallel")
+        self.assertEqual(child_phases["broad_smoke.adapters.regression"], "sequential")
+        self.assertIn("delta", evidence)
+
     def test_broad_smoke_child_classification_covers_ci_children(self) -> None:
         ci_check_ids = self.extract_broad_smoke_run_check_ids(CI.read_text(encoding="utf-8"))
         rows = self.parse_broad_smoke_classification_rows()
