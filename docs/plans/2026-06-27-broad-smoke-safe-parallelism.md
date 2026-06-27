@@ -76,15 +76,15 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 
 ## Current Handoff Summary
 
-- Current milestone: final holistic cross-milestone review
+- Current milestone: explain-change
 - Current milestone state: closed
 - Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-final-r1.md
 - Last reviewed milestone: final holistic cross-milestone review
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — M1, M2, M3, review-resolution, and final holistic code-review are closed; explain-change, verify, and PR handoff have not completed.
+- Reason final closeout is or is not ready: lifecycle-gates-open, verify-pending, pr-handoff-pending — M1, M2, M3, review-resolution, final holistic code-review, and explain-change are closed; verify and PR handoff have not completed.
 
 ## Milestones
 
@@ -261,6 +261,34 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - Rollback/recovery:
   - Route any material finding through review-resolution before explain-change or verify.
 
+### explain-change
+
+- Milestone state: closed
+- Goal: Record durable rationale for the reviewed M1-M3 diff before final verification.
+- Requirements: all in-scope requirements `R1`-`R42` and `AC1`-`AC24`.
+- Files/components likely touched:
+  - `docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md`
+  - `docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml`
+  - `docs/plans/2026-06-27-broad-smoke-safe-parallelism.md`
+  - `docs/plan.md`
+- Dependencies:
+  - M1, M2, M3, review-resolution, and final holistic code-review are closed.
+- Tests to add/update: none; this is a rationale and lifecycle handoff artifact.
+- Validation commands:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md`
+  - `git diff --check -- docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md`
+- Expected observable result: `explain-change.md` links the accepted problem, requirements, implementation areas, tests, review outcomes, and pre-verify validation evidence; handoff moves to verify.
+- Commit message: `explain-change: broad-smoke safe parallelism`
+- Milestone closeout:
+  - explanation artifact recorded
+  - lifecycle metadata updated
+  - handoff to verify
+- Risks:
+  - Explanation could overclaim final readiness before verify completes.
+- Rollback/recovery:
+  - Correct the explanation or lifecycle metadata before running verify.
+
 ## Validation plan
 
 - `python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism`: review record structure.
@@ -308,6 +336,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - 2026-06-27: M3 recorded opt-in broad-smoke runtime evidence from `--jobs 4`: 332s total, 42061ms / 11.24% faster than the M1 single-run baseline. Default promotion remains deferred; first-slice parallelism stays opt-in.
 - 2026-06-27: Code-review M3 R1 completed clean-with-notes and closed M3; next stage is final holistic cross-milestone code-review.
 - 2026-06-27: Final holistic code-review completed clean-with-notes across the complete M1-M3 diff; next stage is explain-change.
+- 2026-06-27: Explain-change recorded durable rationale for the reviewed M1-M3 diff; next stage is verify.
 
 ## Decision log
 
@@ -403,6 +432,10 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml` passed after final holistic code-review.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-final-r1.md` passed after final holistic code-review.
 - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-final-r1.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md` passed after final holistic code-review.
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml` passed after explain-change.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md` passed after explain-change.
+- `git diff --check -- docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md` passed after explain-change.
+- `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md` passed after explain-change.
 
 ## Outcome and retrospective
 
