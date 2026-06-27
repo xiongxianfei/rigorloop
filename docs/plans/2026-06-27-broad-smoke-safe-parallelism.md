@@ -77,14 +77,14 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 ## Current Handoff Summary
 
 - Current milestone: M2. Opt-In Parallel Executor and Deterministic Aggregation
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m2-r1.md
 - Last reviewed milestone: M2. Opt-In Parallel Executor and Deterministic Aggregation
 - Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: review-resolution
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 code-review found `CR-M2-1`; M2 review-resolution, M2 re-review, M3 implementation, final holistic code-review, explain-change, verify, and PR handoff have not completed.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — `CR-M2-1` is resolved and M2 is ready for code-review rerun, but M2 review closure, M3 implementation, final holistic code-review, explain-change, verify, and PR handoff have not completed.
 
 ## Milestones
 
@@ -135,7 +135,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 
 ### M2. Opt-In Parallel Executor and Deterministic Aggregation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Add opt-in bounded broad-smoke parallel scheduling for high-confidence eligible children while preserving sequential fallback, `--jobs 1` parity, deterministic aggregation, and failure-output parity.
 - Requirements: `R3`-`R32`, `R36`-`R40`, `AC5`-`AC21`, `AC23`
 - Files/components likely touched:
@@ -279,6 +279,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - 2026-06-27: Code-review M1 R2 completed clean-with-notes, closed M1, and handed off to M2 implementation.
 - 2026-06-27: M2 implemented explicit `--jobs > 1` broad-smoke opt-in scheduling with classification preflight, bounded parallel windows, sequential fallback for ineligible children, per-child output capture, deterministic aggregation, all-failure reporting, and controlled missing-classification diagnostics. M2 is ready for code-review.
 - 2026-06-27: Code-review M2 R1 requested changes for `CR-M2-1`, a scheduler-error gap where a missing worker result could be skipped and produce incomplete broad-smoke evidence.
+- 2026-06-27: Resolved `CR-M2-1` by registering expected child result slots before launch, failing closed on missing or incomplete result metadata, and adding a worker-crash regression.
 
 ## Decision log
 
@@ -332,6 +333,17 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md` passed for M2.
 - `git diff --check -- scripts docs/changes/2026-06-27-broad-smoke-safe-parallelism specs/broad-smoke-safe-parallelism.md specs/broad-smoke-safe-parallelism.test.md docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md` passed for M2.
 - `bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path scripts/validate-broad-smoke-classification.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md` passed for M2 selected CI.
+- `python scripts/test-select-validation.py -k worker_crash` passed after `CR-M2-1` resolution (`1 passed in 0.23s`).
+- `python scripts/test-select-validation.py -k broad_smoke` passed after `CR-M2-1` resolution (`24 passed in 7.37s`).
+- `python scripts/test-select-validation.py -k jobs` passed after `CR-M2-1` resolution (`5 passed in 3.94s`).
+- `bash -n scripts/ci.sh` passed after `CR-M2-1` resolution.
+- `python scripts/validate-broad-smoke-classification.py` passed after `CR-M2-1` resolution.
+- `python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism` passed after `CR-M2-1` resolution.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-27-broad-smoke-safe-parallelism` passed after `CR-M2-1` resolution.
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml` passed after `CR-M2-1` resolution.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m2-r1.md` passed after `CR-M2-1` resolution.
+- `git diff --check -- scripts docs/changes/2026-06-27-broad-smoke-safe-parallelism docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md` passed after `CR-M2-1` resolution.
+- `bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path scripts/validate-broad-smoke-classification.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m2-r1.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md` passed after `CR-M2-1` resolution.
 
 ## Outcome and retrospective
 
