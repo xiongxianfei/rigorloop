@@ -8,6 +8,7 @@ artifacts:
   test_spec: specs/broad-smoke-safe-parallelism.test.md
   plan: docs/plans/2026-06-27-broad-smoke-safe-parallelism.md
   review_resolution: docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md
+  explain_change: docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md
 requirements:
   - Normalize the broad-smoke safe parallelism proposal to accepted after approved proposal-review with no material findings.
   - Author and approve the broad-smoke safe parallelism spec before execution planning.
@@ -41,6 +42,7 @@ changed_files:
   - docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml
   - docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md
   - docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md
+  - docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md
   - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r1.md
   - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r2.md
   - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/spec-review-r1.md
@@ -258,6 +260,16 @@ validation:
     result: passed_after_final_holistic_code_review
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-final-r1.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md
     result: passed_after_final_holistic_code_review
+  - command: explain-change
+    result: recorded_durable_change_rationale_next_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml
+    result: passed_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md
+    result: passed_after_explain_change
+  - command: git diff --check -- docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md
+    result: passed_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/explain-change.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md
+    result: passed_after_explain_change
 workflow:
   autoprogression:
     authoring_through_plan_review:
