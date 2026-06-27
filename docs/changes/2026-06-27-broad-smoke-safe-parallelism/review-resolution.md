@@ -4,7 +4,7 @@
 
 This record tracks review finding closeout for the broad-smoke safe parallelism change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -62,11 +62,11 @@ No material findings.
 
 Finding ID: CR-M2-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: review-resolution
 Stop state: Re-review required after resolution before M2 can close.
 Chosen action: Track expected opt-in broad-smoke child result slots, fail closed on missing or incomplete result metadata, and add a scheduler-error regression fixture.
 Rationale: Broad-smoke is boundary evidence; a required child that never produced result evidence must not be omitted from the aggregate proof.
 Validation target: `python scripts/test-select-validation.py -k broad_smoke`; `python scripts/test-select-validation.py -k jobs`; `bash -n scripts/ci.sh`; selected explicit CI for M2 paths.
-Validation evidence: pending
+Validation evidence: `python scripts/test-select-validation.py -k worker_crash` passed with 1 test; `python scripts/test-select-validation.py -k broad_smoke` passed with 24 tests; `python scripts/test-select-validation.py -k jobs` passed with 5 tests; `bash -n scripts/ci.sh` passed; `python scripts/validate-broad-smoke-classification.py` passed.

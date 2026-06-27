@@ -606,6 +606,7 @@ class ValidationSelectionTests(unittest.TestCase):
         failing_child: str | None = None,
         failing_children: set[str] | None = None,
         active_counter_children: set[str] | None = None,
+        child_bodies: dict[str, str] | None = None,
         sleep_seconds: float = 0.2,
     ) -> Path:
         workspace = self.make_ci_workspace()
@@ -620,6 +621,7 @@ class ValidationSelectionTests(unittest.TestCase):
         if failing_child is not None:
             all_failing_children.add(failing_child)
         active_counter_children = set(active_counter_children or set())
+        child_bodies = dict(child_bodies or {})
         child_scripts = [
             "scripts/validate-skills.py",
             "scripts/test-skill-validator.py",
@@ -637,6 +639,9 @@ class ValidationSelectionTests(unittest.TestCase):
         for relative_path in child_scripts:
             name = Path(relative_path).name
             exit_code = 7 if relative_path in all_failing_children else 0
+            if relative_path in child_bodies:
+                self.write_fake_script(workspace, relative_path, child_bodies[relative_path])
+                continue
             if relative_path in active_counter_children:
                 self.write_active_counter_script(
                     workspace,
@@ -3850,6 +3855,38 @@ print("SECOND_STDOUT")
         self.assertNotEqual(result.returncode, 0, msg=output)
         self.assertIn("broad-smoke classification validation failed", output)
         self.assertNotIn("STDOUT marker", output)
+
+    def test_broad_smoke_parallel_worker_crash_reports_scheduler_error(self) -> None:
+        workspace = self.make_broad_smoke_workspace(
+            child_bodies={
+                "scripts/test-skill-validator.py": """
+import os
+import signal
+
+parent = os.getppid()
+with open(f"/proc/{parent}/stat", encoding="utf-8") as handle:
+    grandparent = int(handle.read().split()[3])
+os.kill(grandparent, signal.SIGKILL)
+""".lstrip()
+            }
+        )
+
+        result = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--skip-diff-scoped",
+            "--jobs",
+            "2",
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 4, msg=output)
+        self.assertIn("[FAIL] broad_smoke.skills.regression / Run skill validator fixtures: scheduler error", output)
+        self.assertIn("Scheduler error:", output)
+        self.assertIn("missing result metadata", output)
+        self.assertNotIn("[PASS] broad-smoke", output)
 
     def test_broad_smoke_verbose_prints_successful_child_output_in_order(self) -> None:
         workspace = self.make_broad_smoke_workspace()

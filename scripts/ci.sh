@@ -248,6 +248,25 @@ broad_smoke_write_child_result() {
   return 0
 }
 
+broad_smoke_register_expected_child() {
+  local result_dir="$1"
+  local index="$2"
+  local check_id="$3"
+  local label="$4"
+  local phase="$5"
+  shift 5
+  local child_dir="$result_dir/$index"
+  local command_text=""
+
+  mkdir -p "$child_dir"
+  printf -v command_text '%q ' "$@"
+  command_text="${command_text% }"
+  printf '%s\n' "$check_id" >"$child_dir/check_id"
+  printf '%s\n' "$label" >"$child_dir/label"
+  printf '%s\n' "$phase" >"$child_dir/phase"
+  printf '%s\n' "$command_text" >"$child_dir/command"
+}
+
 broad_smoke_wait_oldest_parallel_child() {
   if [[ ${#broad_smoke_parallel_pids[@]} -eq 0 ]]; then
     return 0
@@ -274,21 +293,53 @@ broad_smoke_schedule_child() {
     while [[ ${#broad_smoke_parallel_pids[@]} -ge "$jobs" ]]; do
       broad_smoke_wait_oldest_parallel_child
     done
+    broad_smoke_register_expected_child "$result_dir" "$index" "$check_id" "$label" "parallel" "$@"
     broad_smoke_write_child_result "$result_dir" "$index" "$check_id" "$label" "parallel" "$@" &
     broad_smoke_parallel_pids+=("$!")
     return 0
   fi
 
   broad_smoke_wait_all_parallel_children
+  broad_smoke_register_expected_child "$result_dir" "$index" "$check_id" "$label" "sequential" "$@"
   broad_smoke_write_child_result "$result_dir" "$index" "$check_id" "$label" "sequential" "$@"
 }
 
 broad_smoke_print_child_output() {
   local child_dir="$1"
   local output
+  if [[ ! -f "$child_dir/output" ]]; then
+    echo "(no captured output)"
+    return 0
+  fi
   output="$(cat "$child_dir/output")"
   if [[ -n "$output" ]]; then
     printf '%s\n' "$output"
+  else
+    echo "(empty)"
+  fi
+}
+
+broad_smoke_missing_result_fields() {
+  local child_dir="$1"
+  local -a missing=()
+  local field=""
+  for field in check_id label phase command status elapsed output; do
+    if [[ ! -f "$child_dir/$field" ]]; then
+      missing+=("$field")
+    fi
+  done
+  local IFS=", "
+  echo "${missing[*]}"
+}
+
+broad_smoke_read_result_field() {
+  local child_dir="$1"
+  local field="$2"
+  local fallback="$3"
+  if [[ -f "$child_dir/$field" ]]; then
+    cat "$child_dir/$field"
+  else
+    printf '%s\n' "$fallback"
   fi
 }
 
@@ -302,6 +353,11 @@ broad_smoke_aggregate_results() {
   for index in $(seq 1 12); do
     local child_dir="$result_dir/$index"
     if [[ ! -d "$child_dir" ]]; then
+      continue
+    fi
+    local missing_fields
+    missing_fields="$(broad_smoke_missing_result_fields "$child_dir")"
+    if [[ -n "$missing_fields" ]]; then
       continue
     fi
     local status
@@ -326,6 +382,36 @@ broad_smoke_aggregate_results() {
   for index in $(seq 1 12); do
     local child_dir="$result_dir/$index"
     if [[ ! -d "$child_dir" ]]; then
+      continue
+    fi
+    local missing_fields
+    missing_fields="$(broad_smoke_missing_result_fields "$child_dir")"
+    if [[ -n "$missing_fields" ]]; then
+      if [[ "$first_failure_status" -eq 0 ]]; then
+        first_failure_status=4
+      fi
+      echo "[FAIL] $(broad_smoke_read_result_field "$child_dir" check_id "unknown") / $(broad_smoke_read_result_field "$child_dir" label "unknown child"): scheduler error in 0s"
+      echo
+      echo "Check ID:"
+      broad_smoke_read_result_field "$child_dir" check_id "unknown"
+      echo "Command:"
+      broad_smoke_read_result_field "$child_dir" command "unknown"
+      echo "Exit code:"
+      echo "4"
+      echo "Duration:"
+      echo "0s"
+      echo "Execution phase:"
+      broad_smoke_read_result_field "$child_dir" phase "unknown"
+      echo
+      echo "Captured output:"
+      broad_smoke_print_child_output "$child_dir"
+      echo
+      echo "Scheduler error:"
+      echo "missing result metadata: $missing_fields"
+      echo
+      echo "Re-run:"
+      broad_smoke_read_result_field "$child_dir" command "unknown"
+      echo
       continue
     fi
     local status
