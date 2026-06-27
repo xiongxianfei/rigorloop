@@ -28,7 +28,7 @@ This plan sequences the accepted selector-regression runtime reduction contract 
 - Proposal reviews: [proposal-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r1.md), [proposal-review-r2](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r2.md)
 - Spec review: [spec-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/spec-review-r1.md)
 - Test-spec review: [test-spec-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/test-spec-review-r1.md)
-- Code review: [code-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md)
+- Code reviews: [code-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md), [code-review-r2](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r2.md)
 
 ## Upstream status settlement
 
@@ -76,13 +76,13 @@ The broader June 26 validation-runtime follow-through work already added selecto
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Fixture Reuse and In-Process Selector Conversion
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md
-- Last reviewed milestone: M1. Baseline, Profile, and Identity Inventory
-- Review status: approved; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2
+- Current milestone: M3. Runtime Result and Closeout Evidence
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r2.md
+- Last reviewed milestone: M2. Fixture Reuse and In-Process Selector Conversion
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones, code-review, explain-change, verify, and PR handoff remain.
 
@@ -132,7 +132,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 
 ### M2. Fixture Reuse and In-Process Selector Conversion
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Convert pure selector logic coverage to lower-overhead in-process/table-driven execution while retaining subprocess-backed command-boundary coverage.
 - Requirements: `R1`-`R3`, `R8`-`R21`, `R28`-`R30`, `AC4`-`AC17`
 - Files/components likely touched:
@@ -274,6 +274,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - 2026-06-27: M1 targeted validation passed and M1 moved to review-requested for code-review.
 - 2026-06-27: Code-review R1 closed M1 with no material findings; next stage is implement M2.
 - 2026-06-27: M2 implementation added reusable repository preflight context for pure selector calls, preserved subprocess CLI/wrapper tests, and moved M2 to review-requested after targeted validation passed.
+- 2026-06-27: Code-review R2 closed M2 with no material findings; next stage is implement M3.
 
 ## Decision log
 
@@ -319,6 +320,8 @@ The broader June 26 validation-runtime follow-through work already added selecto
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml`: passed.
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml`: passed.
   - `git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md`: passed.
+- Code-review R2 result:
+  - `code-review-r2`: clean-with-notes; no material findings; M2 closed.
 
 ## Outcome and retrospective
 

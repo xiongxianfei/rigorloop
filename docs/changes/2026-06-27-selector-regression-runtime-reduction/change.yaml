@@ -50,6 +50,7 @@ changed_files:
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/plan-review-r1.md
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/test-spec-review-r1.md
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r2.md
 review:
   status: approved
   unresolved_items: 0
@@ -63,6 +64,7 @@ review:
   plan_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/plan-review-r1.md
   test_spec_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/test-spec-review-r1.md
   code_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md
+  latest_code_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r2.md
   review_log: docs/changes/2026-06-27-selector-regression-runtime-reduction/review-log.md
   review_resolution: docs/changes/2026-06-27-selector-regression-runtime-reduction/review-resolution.md
 validation:
@@ -120,3 +122,5 @@ validation:
     result: pass
   - command: git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md
     result: pass
+  - command: code-review r2
+    result: clean_with_notes_no_material_findings_m2_closed
