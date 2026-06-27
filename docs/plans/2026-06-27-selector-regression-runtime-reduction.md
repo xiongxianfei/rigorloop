@@ -28,6 +28,7 @@ This plan sequences the accepted selector-regression runtime reduction contract 
 - Proposal reviews: [proposal-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r1.md), [proposal-review-r2](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r2.md)
 - Spec review: [spec-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/spec-review-r1.md)
 - Test-spec review: [test-spec-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/test-spec-review-r1.md)
+- Code review: [code-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md)
 
 ## Upstream status settlement
 
@@ -75,13 +76,13 @@ The broader June 26 validation-runtime follow-through work already added selecto
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Baseline, Profile, and Identity Inventory
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/test-spec-review-r1.md
-- Last reviewed milestone: none
-- Review status: approved; stage=test-spec-review; round=r1
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review M1
+- Current milestone: M2. Fixture Reuse and In-Process Selector Conversion
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md
+- Last reviewed milestone: M1. Baseline, Profile, and Identity Inventory
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones, code-review, explain-change, verify, and PR handoff remain.
 
@@ -89,7 +90,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 
 ### M1. Baseline, Profile, and Identity Inventory
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Record selector-regression baseline runtime, profile evidence, and identity/failure-sensitivity inventory before restructuring tests.
 - Requirements: `R1`-`R11`, `R22`-`R23`, `AC1`, `AC3`-`AC6`
 - Files/components likely touched:
@@ -271,6 +272,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - 2026-06-27: M1 discovered `selector-regression-runtime-baseline.yaml` was unregistered change evidence; added a selector regression test and registered selector-runtime YAML evidence routing before recording baseline evidence.
 - 2026-06-27: M1 recorded selector-regression profile, runtime baseline, and preservation baseline evidence. Baseline median real runtime is 164.73s for 109 tests.
 - 2026-06-27: M1 targeted validation passed and M1 moved to review-requested for code-review.
+- 2026-06-27: Code-review R1 closed M1 with no material findings; next stage is implement M2.
 
 ## Decision log
 
@@ -301,6 +303,9 @@ The broader June 26 validation-runtime follow-through work already added selecto
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml`: passed.
   - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-27-selector-regression-runtime-reduction`: passed.
   - `git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction specs/selector-regression-runtime-reduction.md specs/selector-regression-runtime-reduction.test.md docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md`: passed.
+- Code-review R1 direct proof:
+  - `python scripts/test-select-validation.py -k selector_runtime_evidence_files_route_without_manual_debt`: passed.
+  - `python scripts/select-validation.py --mode explicit --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-profile.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md --path specs/selector-regression-runtime-reduction.md --path specs/selector-regression-runtime-reduction.test.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md`: selector status `ok`, selected checks `artifact_lifecycle.validate` and `selector.regression`, no blockers, no registration debt.
 
 ## Outcome and retrospective
 
