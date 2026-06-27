@@ -328,6 +328,14 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("baseline evidence is recorded for a comparison",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="selector-regression-profile",
+        patterns=("selector-regression-profile.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("selector-regression profiling evidence is recorded before optimization",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="token-cost",
         patterns=("token-cost.md",),
         selector_routes=("artifact_lifecycle.validate",),
@@ -377,7 +385,12 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
     ),
     EvidenceClassRegistration(
         evidence_class_id="command-output",
-        patterns=("broad-smoke-child-commands-*.txt", "change-metadata-validator-tests-*.txt", "selected-tests-m3.txt"),
+        patterns=(
+            "broad-smoke-child-classification.md",
+            "broad-smoke-child-commands-*.txt",
+            "change-metadata-validator-tests-*.txt",
+            "selected-tests-m3.txt",
+        ),
         selector_routes=("artifact_lifecycle.validate",),
         required_validator="validate-artifact-lifecycle",
         lifecycle_stage="implementation",
@@ -1517,12 +1530,14 @@ def _evidence_registration_debt_result(
     result: dict[str, Any] = {
         "code": "manual-routing-required",
         "path": evidence_path,
+        "path_class": "unregistered-change-evidence",
+        "affected_class": "change-local evidence",
         "manual_routing_required": True,
         "debt": "evidence-registration",
         "verify_readiness": "owner-deferred" if deferral.status == "complete" else "blocked",
         "deferral_status": deferral.status,
         "next_action": (
-            "Register an evidence class for this deterministic change-local evidence path "
+            "Register an evidence class and selector routing for this deterministic change-local evidence path "
             "or record a complete owner-approved deferral before verify with owner, path, "
             "reason, validation impact, and follow-up."
         ),
