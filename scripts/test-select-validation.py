@@ -18,10 +18,13 @@ from dataclasses import dataclass
 from io import StringIO
 from pathlib import Path
 
+import yaml
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SELECTOR = ROOT / "scripts" / "select-validation.py"
 CI = ROOT / "scripts" / "ci.sh"
+BROAD_SMOKE_CLASSIFICATION_VALIDATOR = ROOT / "scripts" / "validate-broad-smoke-classification.py"
 CHANGE_METADATA_TEST = ROOT / "scripts" / "test-change-metadata-validator.py"
 README_VALIDATOR = ROOT / "scripts" / "validate-readme.py"
 BROAD_SMOKE_CLASSIFICATION = (
@@ -124,6 +127,20 @@ BROAD_SMOKE_REQUIRED_CLASSIFICATION_FIELDS = (
     "Classification confidence",
 )
 NON_CANDIDATE_VALUES = {"no", "not-approved", "blocked"}
+BROAD_SMOKE_PARALLEL_CLASSIFICATION = (
+    ROOT
+    / "docs"
+    / "changes"
+    / "2026-06-27-broad-smoke-safe-parallelism"
+    / "broad-smoke-child-classification.yaml"
+)
+BROAD_SMOKE_PARALLEL_BASELINE = (
+    ROOT
+    / "docs"
+    / "changes"
+    / "2026-06-27-broad-smoke-safe-parallelism"
+    / "broad-smoke-parallelism-baseline.yaml"
+)
 
 VALIDATION_PRODUCER_PATTERN = re.compile(
     r"\bpython\s+scripts/(?:test|validate|build)-[\w-]+\.py\b"
@@ -889,6 +906,29 @@ raise SystemExit({exit_code})
             rows.append(dict(zip(headers, cells, strict=True)))
         return rows
 
+    def load_broad_smoke_parallel_classification(self) -> dict[str, object]:
+        self.assertTrue(BROAD_SMOKE_PARALLEL_CLASSIFICATION.exists(), msg=str(BROAD_SMOKE_PARALLEL_CLASSIFICATION))
+        with BROAD_SMOKE_PARALLEL_CLASSIFICATION.open(encoding="utf-8") as handle:
+            loaded = yaml.safe_load(handle)
+        self.assertIsInstance(loaded, dict)
+        return loaded
+
+    def run_broad_smoke_classification_validator(
+        self,
+        classification: Path = BROAD_SMOKE_PARALLEL_CLASSIFICATION,
+    ) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            [
+                sys.executable,
+                str(BROAD_SMOKE_CLASSIFICATION_VALIDATOR),
+                "--classification",
+                str(classification),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
         kwargs.setdefault("preflight_context", self.root_preflight_context)
         return select_validation(SelectionRequest(mode=mode, paths=tuple(paths), repo_root=ROOT, **kwargs))
@@ -1322,7 +1362,13 @@ raise SystemExit({exit_code})
         self.assertIn("docs/changes/2026-04-25-local/", local_payload["affected_roots"])
 
     def test_selector_registry_changes_select_selector_regression(self) -> None:
-        result = self.select(["scripts/validation_selection.py", "scripts/test-select-validation.py"])
+        result = self.select(
+            [
+                "scripts/validation_selection.py",
+                "scripts/test-select-validation.py",
+                "scripts/validate-broad-smoke-classification.py",
+            ]
+        )
         payload = result.to_json_dict()
 
         self.assertEqual(result.status, "ok")
@@ -1953,6 +1999,24 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/selector-regression-profile.md",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/broad-smoke-child-classification.yaml",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/broad-smoke-parallelism-baseline.yaml",
+                "category": "registered-change-evidence",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/broad-smoke-parallelism-result.yaml",
                 "category": "registered-change-evidence",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
@@ -3696,6 +3760,63 @@ print("SECOND_STDOUT")
             self.extract_broad_smoke_run_check_ids(ci_text),
             [row["Check ID"] for row in self.parse_broad_smoke_classification_rows()],
         )
+
+    def test_broad_smoke_parallel_classification_reconciles_with_ci_inventory(self) -> None:
+        result = self.run_broad_smoke_classification_validator()
+
+        self.assertEqual(result.returncode, 0, msg=result.stdout + result.stderr)
+        self.assertIn("broad-smoke classification validation passed", result.stdout)
+
+    def test_broad_smoke_parallel_classification_fails_on_stale_command(self) -> None:
+        classification = self.load_broad_smoke_parallel_classification()
+        children = classification["children"]
+        assert isinstance(children, list)
+        stale = dict(children[0])
+        stale["command"] = "python scripts/validate-skills.py --unexpected"
+        mutated_children = [stale, *children[1:]]
+        mutated = dict(classification)
+        mutated["children"] = mutated_children
+        temp_path = Path(tempfile.mkdtemp(prefix="broad-smoke-stale-classification-")) / "classification.yaml"
+        self.addCleanupTree(temp_path.parent)
+        temp_path.write_text(yaml.safe_dump(mutated, sort_keys=False), encoding="utf-8")
+
+        result = self.run_broad_smoke_classification_validator(temp_path)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("stale command", result.stderr)
+
+    def test_broad_smoke_parallel_classification_fails_on_contradictory_parallel_candidate(self) -> None:
+        classification = self.load_broad_smoke_parallel_classification()
+        children = classification["children"]
+        assert isinstance(children, list)
+        contradictory = dict(children[0])
+        contradictory["side_effects"] = dict(contradictory["side_effects"])
+        contradictory["side_effects"]["writes_shared_temp"] = True
+        mutated = dict(classification)
+        mutated["children"] = [contradictory, *children[1:]]
+        temp_path = Path(tempfile.mkdtemp(prefix="broad-smoke-contradictory-classification-")) / "classification.yaml"
+        self.addCleanupTree(temp_path.parent)
+        temp_path.write_text(yaml.safe_dump(mutated, sort_keys=False), encoding="utf-8")
+
+        result = self.run_broad_smoke_classification_validator(temp_path)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("blocking side-effect fields", result.stderr)
+
+    def test_broad_smoke_parallel_baseline_artifact_has_child_timing_shape(self) -> None:
+        self.assertTrue(BROAD_SMOKE_PARALLEL_BASELINE.exists(), msg=str(BROAD_SMOKE_PARALLEL_BASELINE))
+        with BROAD_SMOKE_PARALLEL_BASELINE.open(encoding="utf-8") as handle:
+            baseline = yaml.safe_load(handle)
+        self.assertEqual(baseline["scenario"], "broad-smoke-sequential-baseline")
+        children = baseline["children"]
+        self.assertEqual(
+            [child["check_id"] for child in children],
+            [child["check_id"] for child in self.load_broad_smoke_parallel_classification()["children"]],
+        )
+        for child in children:
+            with self.subTest(check_id=child["check_id"]):
+                for field in ("command", "order", "duration_ms", "result", "output_bytes"):
+                    self.assertIn(field, child)
 
     def test_broad_smoke_wrapper_mode_consistency_guard_is_enforced(self) -> None:
         self.assert_ci_wrapper_consistency_guard_passes(CI.read_text(encoding="utf-8"))

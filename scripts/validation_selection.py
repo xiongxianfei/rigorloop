@@ -346,6 +346,18 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("selector-regression runtime evidence is recorded before and after optimization",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="broad-smoke-parallelism",
+        patterns=(
+            "broad-smoke-child-classification.yaml",
+            "broad-smoke-parallelism-baseline.yaml",
+            "broad-smoke-parallelism-result.yaml",
+        ),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("broad-smoke parallelism classification and runtime evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="token-cost",
         patterns=("token-cost.md",),
         selector_routes=("artifact_lifecycle.validate",),
@@ -1792,6 +1804,7 @@ def _path_category(path: str) -> str | None:
         "scripts/select-validation.py",
         "scripts/validation_selection.py",
         "scripts/test-select-validation.py",
+        "scripts/validate-broad-smoke-classification.py",
         "scripts/validate-readme.py",
     }:
         return "selector"
