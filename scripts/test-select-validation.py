@@ -18,8 +18,6 @@ from dataclasses import dataclass
 from io import StringIO
 from pathlib import Path
 
-import yaml
-
 
 ROOT = Path(__file__).resolve().parents[1]
 SELECTOR = ROOT / "scripts" / "select-validation.py"
@@ -909,7 +907,7 @@ raise SystemExit({exit_code})
     def load_broad_smoke_parallel_classification(self) -> dict[str, object]:
         self.assertTrue(BROAD_SMOKE_PARALLEL_CLASSIFICATION.exists(), msg=str(BROAD_SMOKE_PARALLEL_CLASSIFICATION))
         with BROAD_SMOKE_PARALLEL_CLASSIFICATION.open(encoding="utf-8") as handle:
-            loaded = yaml.safe_load(handle)
+            loaded = json.load(handle)
         self.assertIsInstance(loaded, dict)
         return loaded
 
@@ -3778,7 +3776,7 @@ print("SECOND_STDOUT")
         mutated["children"] = mutated_children
         temp_path = Path(tempfile.mkdtemp(prefix="broad-smoke-stale-classification-")) / "classification.yaml"
         self.addCleanupTree(temp_path.parent)
-        temp_path.write_text(yaml.safe_dump(mutated, sort_keys=False), encoding="utf-8")
+        temp_path.write_text(json.dumps(mutated, indent=2) + "\n", encoding="utf-8")
 
         result = self.run_broad_smoke_classification_validator(temp_path)
 
@@ -3796,7 +3794,7 @@ print("SECOND_STDOUT")
         mutated["children"] = [contradictory, *children[1:]]
         temp_path = Path(tempfile.mkdtemp(prefix="broad-smoke-contradictory-classification-")) / "classification.yaml"
         self.addCleanupTree(temp_path.parent)
-        temp_path.write_text(yaml.safe_dump(mutated, sort_keys=False), encoding="utf-8")
+        temp_path.write_text(json.dumps(mutated, indent=2) + "\n", encoding="utf-8")
 
         result = self.run_broad_smoke_classification_validator(temp_path)
 
@@ -3806,7 +3804,7 @@ print("SECOND_STDOUT")
     def test_broad_smoke_parallel_baseline_artifact_has_child_timing_shape(self) -> None:
         self.assertTrue(BROAD_SMOKE_PARALLEL_BASELINE.exists(), msg=str(BROAD_SMOKE_PARALLEL_BASELINE))
         with BROAD_SMOKE_PARALLEL_BASELINE.open(encoding="utf-8") as handle:
-            baseline = yaml.safe_load(handle)
+            baseline = json.load(handle)
         self.assertEqual(baseline["scenario"], "broad-smoke-sequential-baseline")
         children = baseline["children"]
         self.assertEqual(
