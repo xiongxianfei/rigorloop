@@ -14,6 +14,7 @@ Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
 ## Resolution Entries
 
@@ -70,3 +71,7 @@ Chosen action: Track expected opt-in broad-smoke child result slots, fail closed
 Rationale: Broad-smoke is boundary evidence; a required child that never produced result evidence must not be omitted from the aggregate proof.
 Validation target: `python scripts/test-select-validation.py -k broad_smoke`; `python scripts/test-select-validation.py -k jobs`; `bash -n scripts/ci.sh`; selected explicit CI for M2 paths.
 Validation evidence: `python scripts/test-select-validation.py -k worker_crash` passed with 1 test; `python scripts/test-select-validation.py -k broad_smoke` passed with 24 tests; `python scripts/test-select-validation.py -k jobs` passed with 5 tests; `bash -n scripts/ci.sh` passed; `python scripts/validate-broad-smoke-classification.py` passed.
+
+### code-review-m2-r2
+
+No material findings.
