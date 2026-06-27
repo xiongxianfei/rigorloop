@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Selector-Regression Runtime Reduction](plans/2026-06-27-selector-regression-runtime-reduction.md) | active | code-review M3 | 2026-06-27-selector-regression-runtime-reduction |
+| [Selector-Regression Runtime Reduction](plans/2026-06-27-selector-regression-runtime-reduction.md) | active | explain-change | 2026-06-27-selector-regression-runtime-reduction |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked

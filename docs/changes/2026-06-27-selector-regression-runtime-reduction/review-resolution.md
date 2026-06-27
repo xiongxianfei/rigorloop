@@ -13,6 +13,7 @@ Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: code-review-r1
 Review closeout: code-review-r2
+Review closeout: code-review-r3
 
 ## Resolution Entries
 
@@ -41,5 +42,9 @@ No material findings.
 No material findings.
 
 ### code-review-r2
+
+No material findings.
+
+### code-review-r3
 
 No material findings.

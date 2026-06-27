@@ -28,7 +28,7 @@ This plan sequences the accepted selector-regression runtime reduction contract 
 - Proposal reviews: [proposal-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r1.md), [proposal-review-r2](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r2.md)
 - Spec review: [spec-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/spec-review-r1.md)
 - Test-spec review: [test-spec-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/test-spec-review-r1.md)
-- Code reviews: [code-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md), [code-review-r2](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r2.md)
+- Code reviews: [code-review-r1](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md), [code-review-r2](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r2.md), [code-review-r3](../changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r3.md)
 
 ## Upstream status settlement
 
@@ -77,14 +77,14 @@ The broader June 26 validation-runtime follow-through work already added selecto
 ## Current Handoff Summary
 
 - Current milestone: M3. Runtime Result and Closeout Evidence
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r2.md
-- Last reviewed milestone: M2. Fixture Reuse and In-Process Selector Conversion
-- Review status: approved; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review M3
+- Current milestone state: closed
+- Latest review evidence: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r3.md
+- Last reviewed milestone: M3. Runtime Result and Closeout Evidence
+- Review status: approved; stage=code-review; round=r3
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones are closed, but explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -178,7 +178,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 
 ### M3. Runtime Result and Closeout Evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Record revised runtime, compare preservation evidence, decide timeout status, and close with either measured runtime reduction or no-safe-reduction evidence.
 - Requirements: `R4`-`R7`, `R21`, `R24`-`R30`, `AC1`-`AC18`
 - Files/components likely touched:
@@ -276,6 +276,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - 2026-06-27: M2 implementation added reusable repository preflight context for pure selector calls, preserved subprocess CLI/wrapper tests, and moved M2 to review-requested after targeted validation passed.
 - 2026-06-27: Code-review R2 closed M2 with no material findings; next stage is implement M3.
 - 2026-06-27: M3 recorded revised runtime result evidence, selected-CI timeout status, preservation closeout, and a broad-smoke duration-output regression fix; M3 moved to review-requested after targeted validation passed.
+- 2026-06-27: Code-review R3 closed M3 with no material findings; all in-scope implementation milestones are closed and the next stage is explain-change.
 
 ## Decision log
 
@@ -339,6 +340,8 @@ The broader June 26 validation-runtime follow-through work already added selecto
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml`: passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/selector-regression-runtime-reduction.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-profile.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md`: passed.
   - `git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction specs/selector-regression-runtime-reduction.md docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md`: passed.
+- Code-review R3 result:
+  - `code-review-r3`: clean-with-notes; no material findings; M3 closed; all in-scope implementation milestones closed.
 
 ## Outcome and retrospective
 
