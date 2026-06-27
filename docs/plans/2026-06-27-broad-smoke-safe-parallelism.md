@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Change ID: 2026-06-27-broad-smoke-safe-parallelism
 - Owner: agent
 - Start date: 2026-06-27
 - Last updated: 2026-06-27
-- Related issue or PR: none yet
+- Related issue or PR: PR #116
 - Supersedes: none
 
 ## Purpose / big picture
@@ -84,7 +84,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - Remaining in-scope implementation milestones: none
 - Next stage: human PR review
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: ready — Implementation milestones, review-resolution, final holistic code-review, explain-change, verify, and PR handoff are complete locally; hosted CI has not been observed.
+- Reason final closeout is or is not ready: ready — PR #116 is open for review; implementation milestones, review-resolution, final holistic code-review, explain-change, verify, and PR handoff are complete locally.
 
 ## Milestones
 
@@ -406,6 +406,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - 2026-06-27: Final verify passed review closeout, metadata, classification validation, focused broad-smoke tests, result-evidence test, lifecycle checks, selected CI, shell syntax, JSON artifact shape, diff hygiene, `--jobs 1` broad-smoke, and opt-in `--jobs 4` broad-smoke with temporary result evidence; branch-ready is recorded and next stage is PR handoff.
 - 2026-06-27: Learn session recorded why the first autoprogression review finding was catchable; current-tip selected CI for the learn session passed.
 - 2026-06-27: PR handoff prepared; next stage is human PR review after the PR opens.
+- 2026-06-27: PR #116 opened for review; plan lifecycle state is done.
 
 ## Decision log
 
@@ -524,6 +525,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/learn/sessions/2026-06-27-first-autoprogression-review-finding.md` passed during PR handoff.
 - `git diff --check -- docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md` passed during PR handoff.
 - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/learn/sessions/2026-06-27-first-autoprogression-review-finding.md` passed during PR handoff.
+- `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/plan-archive.md` passed after PR #116 opened and lifecycle closeout moved the plan to Done.
 
 ## Outcome and retrospective
 
