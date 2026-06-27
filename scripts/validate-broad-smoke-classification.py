@@ -4,12 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
 from typing import Any
-
-import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -153,7 +152,7 @@ def extract_run_check_invocations(ci_text: str) -> list[dict[str, Any]]:
 
 def load_classification(path: Path) -> dict[str, Any]:
     with path.open(encoding="utf-8") as handle:
-        data = yaml.safe_load(handle)
+        data = json.load(handle)
     if not isinstance(data, dict):
         raise ClassificationError("classification artifact must be a mapping")
     children = data.get("children")

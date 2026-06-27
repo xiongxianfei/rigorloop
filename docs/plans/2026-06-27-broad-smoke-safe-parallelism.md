@@ -78,13 +78,13 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 
 - Current milestone: M1. Inventory, Classification Freshness, and Timing Baseline
 - Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/test-spec-review-r1.md
-- Last reviewed milestone: test-spec
-- Review status: approved; stage=test-spec-review; round=r1
+- Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r1.md
+- Last reviewed milestone: M1. Inventory, Classification Freshness, and Timing Baseline
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M1, M2, M3
 - Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 implementation is ready for code-review, but M1 review, M2/M3 implementation, final holistic code-review, explain-change, verify, and PR handoff have not completed.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — `CR-M1-1` is resolved and M1 is ready for code-review rerun, but M1 review closure, M2/M3 implementation, final holistic code-review, explain-change, verify, and PR handoff have not completed.
 
 ## Milestones
 
@@ -274,6 +274,8 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - 2026-06-27: Plan-review R1 approved the plan with no material findings; test spec drafted for test-spec-review.
 - 2026-06-27: Test-spec-review R1 approved the proof map with no material findings and allowed implementation handoff.
 - 2026-06-27: M1 implemented classification freshness validation, change-local classification evidence, sequential baseline timing, and preservation evidence; M1 is ready for code-review.
+- 2026-06-27: Code-review M1 R1 requested changes for `CR-M1-1`, an undeclared PyYAML dependency in the M1 validation path.
+- 2026-06-27: Resolved `CR-M1-1` by removing the PyYAML dependency and parsing JSON-compatible YAML artifacts with the Python standard library.
 
 ## Decision log
 
@@ -305,6 +307,11 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - Sequential per-child timing run passed for M1 and recorded `374061ms` total child time in `broad-smoke-parallelism-baseline.yaml`.
 - `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 1` passed for M1 (`[PASS] broad-smoke: 11 checks passed in 365s`).
 - `bash scripts/ci.sh --mode explicit --path scripts/validate-broad-smoke-classification.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md` passed for M1 selected CI.
+- `python scripts/validate-broad-smoke-classification.py` passed after `CR-M1-1` resolution.
+- `python scripts/test-select-validation.py -k broad_smoke` passed after `CR-M1-1` resolution (`17 passed in 3.85s`).
+- `python scripts/test-select-validation.py -k registered_change_evidence` passed after `CR-M1-1` resolution (`5 passed in 0.14s`).
+- `rg -n "^import yaml|from yaml|yaml\\.safe" scripts docs/changes/2026-06-27-broad-smoke-safe-parallelism` returned no matches after `CR-M1-1` resolution.
+- `bash scripts/ci.sh --mode explicit --path scripts/validate-broad-smoke-classification.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r1.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md` passed after `CR-M1-1` resolution.
 
 ## Outcome and retrospective
 
