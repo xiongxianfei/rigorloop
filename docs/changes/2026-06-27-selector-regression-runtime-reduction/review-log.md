@@ -55,3 +55,13 @@ Detailed record: reviews/test-spec-review-r1.md
 Resolution: review-resolution.md#test-spec-review-r1
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-r1
+Stage: code-review
+Round: 1
+Status: clean-with-notes
+Detailed record: reviews/code-review-r1.md
+Resolution: review-resolution.md#code-review-r1
+Material findings: None
+Open findings: None
