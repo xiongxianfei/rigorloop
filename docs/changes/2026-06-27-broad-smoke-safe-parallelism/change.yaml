@@ -16,6 +16,7 @@ requirements:
   - Review the execution plan before test-spec authoring.
   - Author a traceable test spec before implementation.
   - Implement M1 classification freshness validation and baseline evidence before scheduling behavior changes.
+  - Implement M2 first-slice opt-in broad-smoke parallel scheduling behind explicit --jobs greater than 1.
 tests:
   - Proposal-review R1 and R2 are recorded with approved status and no material findings.
   - Spec-review R1 is recorded with approved status and no material findings.
@@ -24,6 +25,9 @@ tests:
   - Test spec maps approved requirements, examples, edge cases, and milestones to concrete tests before implementation.
   - Broad-smoke classification validator reconciles the change-local classification artifact with the current scripts/ci.sh child inventory.
   - Broad-smoke baseline artifact records per-child timing evidence before execution scheduling changes.
+  - Broad-smoke omitted --jobs and --jobs 1 remain sequential compatibility paths.
+  - Broad-smoke explicit --jobs greater than 1 validates classification before launching parallel children.
+  - Broad-smoke opt-in parallel mode captures child output separately, aggregates deterministic output, and reports all required failures in canonical order.
   - Validation selection routes broad-smoke parallelism evidence and validator script changes without manual routing debt.
 changed_files:
   - docs/proposals/2026-06-27-broad-smoke-safe-parallelism.md
@@ -41,6 +45,7 @@ changed_files:
   - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/test-spec-review-r1.md
   - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r1.md
   - docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r2.md
+  - scripts/ci.sh
   - scripts/validate-broad-smoke-classification.py
   - scripts/test-select-validation.py
   - scripts/validation_selection.py
@@ -137,6 +142,24 @@ validation:
     result: passed_after_code_review_m1_r2
   - command: bash scripts/ci.sh --mode explicit --path scripts/validate-broad-smoke-classification.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r2.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md
     result: passed_after_code_review_m1_r2
+  - command: python scripts/validate-broad-smoke-classification.py
+    result: passed_m2
+  - command: python scripts/test-select-validation.py -k broad_smoke
+    result: passed_23_tests_m2
+  - command: python scripts/test-select-validation.py -k jobs
+    result: passed_5_tests_m2
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 1
+    result: passed_11_checks_352s_m2_rollback
+  - command: bash -n scripts/ci.sh
+    result: passed_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml
+    result: passed_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md
+    result: passed_m2
+  - command: git diff --check -- scripts docs/changes/2026-06-27-broad-smoke-safe-parallelism specs/broad-smoke-safe-parallelism.md specs/broad-smoke-safe-parallelism.test.md docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md
+    result: passed_m2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path scripts/validate-broad-smoke-classification.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md
+    result: passed_m2_selected_ci
 workflow:
   autoprogression:
     authoring_through_plan_review:
