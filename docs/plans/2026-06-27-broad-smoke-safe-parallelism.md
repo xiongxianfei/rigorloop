@@ -77,14 +77,14 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 ## Current Handoff Summary
 
 - Current milestone: M2. Opt-In Parallel Executor and Deterministic Aggregation
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r2.md
-- Last reviewed milestone: M1. Inventory, Classification Freshness, and Timing Baseline
-- Review status: approved; stage=code-review; round=r2
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m2-r1.md
+- Last reviewed milestone: M2. Opt-In Parallel Executor and Deterministic Aggregation
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed after clean R2 code-review, but M2/M3 implementation, final holistic code-review, explain-change, verify, and PR handoff have not completed.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 code-review found `CR-M2-1`; M2 review-resolution, M2 re-review, M3 implementation, final holistic code-review, explain-change, verify, and PR handoff have not completed.
 
 ## Milestones
 
@@ -135,7 +135,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 
 ### M2. Opt-In Parallel Executor and Deterministic Aggregation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add opt-in bounded broad-smoke parallel scheduling for high-confidence eligible children while preserving sequential fallback, `--jobs 1` parity, deterministic aggregation, and failure-output parity.
 - Requirements: `R3`-`R32`, `R36`-`R40`, `AC5`-`AC21`, `AC23`
 - Files/components likely touched:
@@ -278,6 +278,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - 2026-06-27: Resolved `CR-M1-1` by removing the PyYAML dependency and parsing JSON-compatible YAML artifacts with the Python standard library.
 - 2026-06-27: Code-review M1 R2 completed clean-with-notes, closed M1, and handed off to M2 implementation.
 - 2026-06-27: M2 implemented explicit `--jobs > 1` broad-smoke opt-in scheduling with classification preflight, bounded parallel windows, sequential fallback for ineligible children, per-child output capture, deterministic aggregation, all-failure reporting, and controlled missing-classification diagnostics. M2 is ready for code-review.
+- 2026-06-27: Code-review M2 R1 requested changes for `CR-M2-1`, a scheduler-error gap where a missing worker result could be skipped and produce incomplete broad-smoke evidence.
 
 ## Decision log
 
