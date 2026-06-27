@@ -12,6 +12,7 @@ Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
 ## Resolution Entries
 
@@ -49,3 +50,7 @@ Chosen action: Remove the undeclared PyYAML dependency from the M1 validator and
 Rationale: The validator is selected by repository CI, so ordinary contributor validation must not depend on undeclared third-party packages.
 Validation target: `python scripts/validate-broad-smoke-classification.py`; `python scripts/test-select-validation.py -k broad_smoke`; `python scripts/test-select-validation.py -k registered_change_evidence`; selected explicit CI for M1 paths.
 Validation evidence: `python scripts/validate-broad-smoke-classification.py` passed; `python scripts/test-select-validation.py -k broad_smoke` passed with 17 tests; `python scripts/test-select-validation.py -k registered_change_evidence` passed with 5 tests; `rg -n "^import yaml|from yaml|yaml\\.safe" scripts docs/changes/2026-06-27-broad-smoke-safe-parallelism` returned no matches.
+
+### code-review-m1-r2
+
+No material findings.

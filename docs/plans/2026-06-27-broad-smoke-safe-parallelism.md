@@ -76,21 +76,21 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Inventory, Classification Freshness, and Timing Baseline
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r1.md
+- Current milestone: M2. Opt-In Parallel Executor and Deterministic Aggregation
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r2.md
 - Last reviewed milestone: M1. Inventory, Classification Freshness, and Timing Baseline
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — `CR-M1-1` is resolved and M1 is ready for code-review rerun, but M1 review closure, M2/M3 implementation, final holistic code-review, explain-change, verify, and PR handoff have not completed.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed after clean R2 code-review, but M2/M3 implementation, final holistic code-review, explain-change, verify, and PR handoff have not completed.
 
 ## Milestones
 
 ### M1. Inventory, Classification Freshness, and Timing Baseline
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Establish the canonical broad-smoke child inventory, reconcile existing classification evidence, add freshness validation, and record sequential per-child timing before behavior changes.
 - Requirements: `R1`-`R12`, `R31`-`R36`, `R41`-`R42`, `AC1`-`AC7`, `AC18`, `AC22`
 - Files/components likely touched:
@@ -276,6 +276,7 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - 2026-06-27: M1 implemented classification freshness validation, change-local classification evidence, sequential baseline timing, and preservation evidence; M1 is ready for code-review.
 - 2026-06-27: Code-review M1 R1 requested changes for `CR-M1-1`, an undeclared PyYAML dependency in the M1 validation path.
 - 2026-06-27: Resolved `CR-M1-1` by removing the PyYAML dependency and parsing JSON-compatible YAML artifacts with the Python standard library.
+- 2026-06-27: Code-review M1 R2 completed clean-with-notes, closed M1, and handed off to M2 implementation.
 
 ## Decision log
 
@@ -312,6 +313,12 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - `python scripts/test-select-validation.py -k registered_change_evidence` passed after `CR-M1-1` resolution (`5 passed in 0.14s`).
 - `rg -n "^import yaml|from yaml|yaml\\.safe" scripts docs/changes/2026-06-27-broad-smoke-safe-parallelism` returned no matches after `CR-M1-1` resolution.
 - `bash scripts/ci.sh --mode explicit --path scripts/validate-broad-smoke-classification.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r1.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md` passed after `CR-M1-1` resolution.
+- `python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism` passed after code-review M1 R2.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-27-broad-smoke-safe-parallelism` passed after code-review M1 R2.
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml` passed after code-review M1 R2.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-27-broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/proposal-review-r2.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/spec-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/plan-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/test-spec-review-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r2.md` passed after code-review M1 R2.
+- `git diff --check -- scripts docs/changes/2026-06-27-broad-smoke-safe-parallelism specs/broad-smoke-safe-parallelism.md specs/broad-smoke-safe-parallelism.test.md docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md` passed after code-review M1 R2.
+- `bash scripts/ci.sh --mode explicit --path scripts/validate-broad-smoke-classification.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-baseline.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-parallelism-preservation.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-log.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/review-resolution.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r1.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-m1-r2.md --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path specs/broad-smoke-safe-parallelism.md --path specs/broad-smoke-safe-parallelism.test.md` passed after code-review M1 R2.
 
 ## Outcome and retrospective
 
