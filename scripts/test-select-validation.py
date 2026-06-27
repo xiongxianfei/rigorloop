@@ -3614,6 +3614,12 @@ print("SECOND_STDOUT")
         self.assertNotIn("==>", output)
         self.assertNotIn("--quiet", output)
 
+    def test_ci_wrapper_duration_reporting_does_not_use_bash_seconds(self) -> None:
+        ci_text = CI.read_text(encoding="utf-8")
+
+        self.assertNotIn("$SECONDS", ci_text)
+        self.assertIn("elapsed_seconds_since", ci_text)
+
     def test_broad_smoke_failure_prints_command_exit_duration_and_captured_output(self) -> None:
         workspace = self.make_broad_smoke_workspace(failing_child="scripts/test-skill-validator.py")
 

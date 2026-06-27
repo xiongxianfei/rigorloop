@@ -99,3 +99,14 @@ Not applicable for M1. Profiling found a safe candidate for M2; runtime reductio
 ## Follow-Up Decision
 
 Proceed to M2 only after M1 code-review. M2 should target duplicate work in `ValidationSelectionTests` while preserving selected-check identity, missing-route blockers, CLI-boundary subprocess tests, cache-boundary metadata, and broad-smoke classification behavior.
+
+## M3 Outcome
+
+M3 recorded revised runtime evidence after M2 code-review closed:
+
+- Baseline median real duration: 164.73s for 109 tests.
+- Revised median real duration: 36.23s for 111 tests.
+- Median reduction: 78.01%.
+- Selected-CI timeout override status: no 180-second override is required for the selector-regression path; selected-CI completed `selector.regression` in 36.47s without `--timeout 300`.
+
+The runtime result is recorded in `selector-regression-runtime-result.yaml`. M3 also fixed a broad-smoke elapsed-time output regression discovered during timing; the fix preserves sequential broad-smoke execution and changes only duration reporting.

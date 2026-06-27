@@ -21,6 +21,8 @@ requirements:
   - Record selector-regression baseline runtime, profile, and preservation evidence before runtime-reducing changes.
   - Register selector-regression runtime evidence files so they do not create manual-routing debt.
   - Reduce pure selector test duplicate work by reusing complete repository preflight identity without moving required coverage out of the default command.
+  - Record revised selector-regression runtime evidence, selected-CI timeout status, and preservation result.
+  - Keep broad-smoke duration diagnostics non-negative while preserving sequential broad-smoke execution.
 tests:
   - Proposal-review approves the proposal or records material findings before downstream spec reliance.
   - Review-log indexes proposal-review receipts with zero material findings when clean.
@@ -30,9 +32,12 @@ tests:
   - Selector-regression runtime evidence files route as registered change evidence without manual-routing debt.
   - Selector-regression baseline/profile/preservation evidence exists before runtime-reducing changes.
   - Shared selector preflight context rejects mismatched repository roots and preserves default selector-regression coverage.
+  - Revised selector-regression runtime result records median reduction and selected-CI timeout status.
+  - CI duration reporting does not use Bash SECONDS and cannot emit negative broad-smoke elapsed output.
 changed_files:
   - scripts/validation_selection.py
   - scripts/test-select-validation.py
+  - scripts/ci.sh
   - docs/proposals/2026-06-27-selector-regression-runtime-reduction.md
   - specs/selector-regression-runtime-reduction.md
   - specs/selector-regression-runtime-reduction.test.md
@@ -41,6 +46,7 @@ changed_files:
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-profile.md
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/review-log.md
   - docs/changes/2026-06-27-selector-regression-runtime-reduction/review-resolution.md
@@ -124,3 +130,27 @@ validation:
     result: pass
   - command: code-review r2
     result: clean_with_notes_no_material_findings_m2_closed
+  - command: python scripts/test-select-validation.py -k duration_reporting_does_not_use_bash_seconds
+    result: pass_after_expected_seconds_regression_failure
+  - command: python scripts/test-select-validation.py -k broad_smoke_default_success_captures_child_output_and_prints_aggregate
+    result: pass
+  - command: python scripts/test-select-validation.py -k broad_smoke_verbose_prints_successful_child_output_in_order
+    result: pass
+  - command: python scripts/test-select-validation.py -k broad_smoke_failure_prints_command_exit_duration_and_captured_output
+    result: pass
+  - command: /usr/bin/time -p python scripts/test-select-validation.py
+    result: pass_3_runs_median_real_36230ms_111_tests
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+    result: pass_without_timeout_override_selector_regression_elapsed_36470ms
+  - command: bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+    result: pass_selector_regression_elapsed_36920ms
+  - command: python scripts/test-select-validation.py -k selector
+    result: pass_12_tests_3_20s
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-27-selector-regression-runtime-reduction
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/selector-regression-runtime-reduction.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-profile.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+    result: pass
+  - command: git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction specs/selector-regression-runtime-reduction.md docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md
+    result: pass

@@ -1,26 +1,26 @@
 # Selector-Regression Preservation Evidence
 
 Change ID: 2026-06-27-selector-regression-runtime-reduction
-Milestone: M1 baseline with M2 fixture-reuse update
+Milestone: M1 baseline with M2/M3 updates
 Recorded: 2026-06-27
 Last updated: 2026-06-27
 
 ## Scope
 
-This evidence records the M1 baseline preservation inventory and the M2 fixture-reuse preservation update. M2 introduces reusable repository preflight context for pure selector calls in `ValidationSelectionTests`; it does not change selector routing semantics, CLI-boundary coverage, broad-smoke execution, cache behavior, final verify semantics, branch readiness, PR readiness, or hosted CI claims.
+This evidence records the M1 baseline preservation inventory, the M2 fixture-reuse preservation update, and the M3 runtime-result preservation closeout. M2 introduces reusable repository preflight context for pure selector calls in `ValidationSelectionTests`; M3 records revised runtime evidence and fixes a broad-smoke duration-output regression exposed during timing. The slice does not change selector routing semantics, CLI-boundary coverage, broad-smoke execution order, cache behavior, final verify semantics, branch readiness, PR readiness, or hosted CI claims.
 
 ## Summary Matrix
 
 | Surface | Baseline evidence | Revised proof | Result |
 | --- | --- | --- | --- |
-| selected test IDs | 109 unittest IDs, SHA-256 `5ff607b42e770590fcb15d5dd45ba2b512c9e0486a079d158c54051009f63ec4` | 110 unittest IDs, SHA-256 `a9b79aba3de146846384b7b1f5d00410b84e2682fb65696134085916a50ccb35`; approved test-structure delta adds `ValidationSelectionTests.test_shared_preflight_context_requires_matching_repository_identity` | preserved with approved test-structure delta |
-| selected check IDs | `artifact_lifecycle.validate`, `selector.regression` for M1 selector paths after runtime evidence registration | M2 touched-path selector query returns `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `guide_system.validate`, and `selector.regression` with no blockers or registration debt | preserved for touched M2 path set |
+| selected test IDs | 109 unittest IDs, SHA-256 `5ff607b42e770590fcb15d5dd45ba2b512c9e0486a079d158c54051009f63ec4` | 111 unittest IDs, SHA-256 `370e9338748017a2e93c94e1555d9f28890d265c4167320616257e1db27880f8`; approved test-structure deltas add `ValidationSelectionTests.test_shared_preflight_context_requires_matching_repository_identity` and `ValidationSelectionTests.test_ci_wrapper_duration_reporting_does_not_use_bash_seconds` | preserved with approved test-structure deltas |
+| selected check IDs | `artifact_lifecycle.validate`, `selector.regression` for M1 selector paths after runtime evidence registration | M3 touched-path selector query returns `artifact_lifecycle.validate` and `selector.regression` with no blockers or registration debt | preserved for touched M3 path set |
 | missing-route blockers | `test_unregistered_change_evidence_produces_registration_debt`, `test_unclassified_path_blocks_without_fail_open`, `test_mixed_classified_and_unclassified_paths_block_partial_execution`, `test_diagnostic_broad_smoke_does_not_erase_missing_route_blocker` | retained in default command and targeted `-k selector` validation | preserved |
 | registered routes | `test_registered_change_evidence_selects_declared_checks_and_governing_metadata`, `test_selector_runtime_evidence_files_route_without_manual_debt` | retained in default command and targeted `-k selector` validation | preserved |
 | CLI behavior | `ScriptOutputContractTests`, `test_cli_outputs_json_for_classified_skill_path`, `test_missing_mode_specific_inputs_return_json_error` | subprocess-backed tests retained; M2 conversion changes only in-process selector preflight reuse | preserved |
 | selected-CI wrapper | `test_ci_wrapper_executes_selector_selected_path_and_root_checks`, timeout/signal, execution-flag, selector-fixture, and failure-preservation tests | subprocess-backed selected-CI wrapper tests retained | preserved |
 | diagnostics | output-contract tests, missing-route blocker tests, selected-CI failure tests | diagnostics tests retained; no output-shape shortening in M2 | preserved |
-| broad-smoke classification | `test_broad_smoke_child_classification_covers_ci_children`, `test_broad_smoke_classification_blocks_unsafe_candidate_claims`, `test_broad_smoke_classification_keeps_runtime_sequential` | retained; M2 does not alter broad-smoke classification or execution | preserved |
+| broad-smoke classification | `test_broad_smoke_child_classification_covers_ci_children`, `test_broad_smoke_classification_blocks_unsafe_candidate_claims`, `test_broad_smoke_classification_keeps_runtime_sequential` | retained; M3 fixes elapsed-time reporting without changing broad-smoke classification or sequential execution | preserved |
 | cache boundary | `cache_status: not-applicable` asserted in selector checks and CLI output tests | unchanged; M2 adds no validation cache behavior | preserved |
 | final verify | unchanged and outside selector-runtime evidence | unchanged; no final verify, branch readiness, PR readiness, or hosted CI claim | preserved |
 
@@ -104,6 +104,12 @@ M2 result:
 - SHA-256: `a9b79aba3de146846384b7b1f5d00410b84e2682fb65696134085916a50ccb35`
 - Approved test-structure delta: M2 adds `ValidationSelectionTests.test_shared_preflight_context_requires_matching_repository_identity` to prove reusable preflight context cannot be applied to a different repository root.
 
+M3 result:
+
+- Count: 111
+- SHA-256: `370e9338748017a2e93c94e1555d9f28890d265c4167320616257e1db27880f8`
+- Approved test-structure delta: M3 adds `ValidationSelectionTests.test_ci_wrapper_duration_reporting_does_not_use_bash_seconds` to prevent the broad-smoke aggregate duration output from regressing to negative elapsed values.
+
 ## M2 Runtime-Reducer Preservation
 
 M2 adds `build_repository_preflight_context(repo_root)` and an optional `preflight_context` on `SelectionRequest`. The default selector API behavior is unchanged when no context is provided. `ValidationSelectionTests.select(...)` now reuses one immutable `RepositoryPreflightContext` for pure selector calls against `ROOT`, avoiding repeated `git rev-parse`, `git status`, and `git ls-files` work for the representative selector table.
@@ -159,3 +165,30 @@ python scripts/select-validation.py --mode explicit --path scripts/test-select-v
 ```
 
 All listed M2 preservation commands passed before full milestone validation.
+
+## M3 Runtime Result Preservation
+
+M3 records the revised runtime evidence in:
+
+```text
+docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml
+```
+
+Revised median:
+
+- Baseline median real duration: `164.73s`
+- Revised median real duration: `36.23s`
+- Median reduction: `78.01%`
+- Revised test count: `111`
+
+The revised default command still exercises the complete selector-regression suite. The test count increased because M2 and M3 added preservation tests; runtime decreased because repeated repository preflight work was removed, not because coverage was deleted.
+
+M3 also records that selected-CI no longer needs the 180-second timeout override for this selector-regression path:
+
+```bash
+bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+```
+
+The command selected `artifact_lifecycle.validate` and `selector.regression`, passed without a timeout override, and reported `selector.regression` elapsed `36.47s`.
+
+During the first M3 timing attempt, `test_broad_smoke_verbose_prints_successful_child_output_in_order` exposed a negative broad-smoke elapsed value (`-2s`). M3 fixed this with a non-`$SECONDS` duration helper in `scripts/ci.sh` plus the regression test named above. The failed pre-fix timing run is excluded from revised median evidence and recorded as a limitation in the runtime result YAML.
