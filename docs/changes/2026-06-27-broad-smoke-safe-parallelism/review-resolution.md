@@ -16,6 +16,7 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
+Review closeout: code-review-final-r1
 
 ## Resolution Entries
 
@@ -78,5 +79,9 @@ Validation evidence: `python scripts/test-select-validation.py -k worker_crash` 
 No material findings.
 
 ### code-review-m3-r1
+
+No material findings.
+
+### code-review-final-r1
 
 No material findings.
