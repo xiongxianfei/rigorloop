@@ -20,6 +20,7 @@ requirements:
   - Author a traceable test specification after plan-review and before implementation.
   - Record selector-regression baseline runtime, profile, and preservation evidence before runtime-reducing changes.
   - Register selector-regression runtime evidence files so they do not create manual-routing debt.
+  - Reduce pure selector test duplicate work by reusing complete repository preflight identity without moving required coverage out of the default command.
 tests:
   - Proposal-review approves the proposal or records material findings before downstream spec reliance.
   - Review-log indexes proposal-review receipts with zero material findings when clean.
@@ -28,6 +29,7 @@ tests:
   - The test specification maps selector-regression runtime reduction requirements, examples, edge cases, and milestones to concrete tests before implementation.
   - Selector-regression runtime evidence files route as registered change evidence without manual-routing debt.
   - Selector-regression baseline/profile/preservation evidence exists before runtime-reducing changes.
+  - Shared selector preflight context rejects mismatched repository roots and preserves default selector-regression coverage.
 changed_files:
   - scripts/validation_selection.py
   - scripts/test-select-validation.py
@@ -102,3 +104,19 @@ validation:
     result: pass
   - command: code-review r1
     result: clean_with_notes_no_material_findings_m1_closed
+  - command: python scripts/test-select-validation.py -k shared_preflight_context_requires_matching_repository_identity
+    result: pass_after_expected_missing_api_failure
+  - command: /usr/bin/time -p python scripts/test-select-validation.py -k first_slice_representative_categories_route_or_block_safely
+    result: pass_1_test_real_1050ms
+  - command: python scripts/test-select-validation.py -k selector
+    result: pass_12_tests_3_34s
+  - command: /usr/bin/time -p python scripts/test-select-validation.py
+    result: pass_110_tests_real_35090ms
+  - command: bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+    result: pass_selected_checks_artifact_lifecycle_validate_selector_regression_elapsed_39390ms
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass
+  - command: git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md
+    result: pass

@@ -231,6 +231,8 @@ class EvidenceDeferralStatus:
 
 @dataclass(frozen=True)
 class RepositoryPreflightContext:
+    repo_root: str
+    inside_worktree: bool
     tracked_paths: frozenset[str]
     unmerged_paths: tuple[str, ...]
 
@@ -482,6 +484,7 @@ class SelectionRequest:
     trigger_context_paths: tuple[str, ...] = ()
     repo_root: Path | str = Path.cwd()
     adapter_version: str = DEFAULT_ADAPTER_VERSION
+    preflight_context: RepositoryPreflightContext | None = None
 
 
 @dataclass(frozen=True)
@@ -707,7 +710,11 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
     affected_roots: set[str] = set()
     blocking_results: list[dict[str, str]] = []
     blocking_results.extend(normalization_blocks)
-    preflight_results = _preflight_results(changed_paths, repo_root=repo_root)
+    preflight_results = _preflight_results(
+        changed_paths,
+        repo_root=repo_root,
+        preflight_context=request.preflight_context,
+    )
     blocking_results.extend(
         result for result in preflight_results if result.get("result") == "blocked"
     )
@@ -878,19 +885,36 @@ def _git_tracked_paths(repo_root: Path) -> frozenset[str]:
     return frozenset(path for path in result.stdout.split("\0") if path)
 
 
-def _build_preflight_context(repo_root: Path) -> RepositoryPreflightContext:
+def build_repository_preflight_context(repo_root: Path | str) -> RepositoryPreflightContext:
+    resolved_root = Path(repo_root).resolve()
+    inside_worktree = _inside_git_worktree(resolved_root)
     return RepositoryPreflightContext(
-        tracked_paths=_git_tracked_paths(repo_root),
-        unmerged_paths=tuple(_git_unmerged_paths(repo_root)),
+        repo_root=resolved_root.as_posix(),
+        inside_worktree=inside_worktree,
+        tracked_paths=_git_tracked_paths(resolved_root) if inside_worktree else frozenset(),
+        unmerged_paths=tuple(_git_unmerged_paths(resolved_root)) if inside_worktree else (),
     )
 
 
-def _preflight_results(changed_paths: list[str], *, repo_root: Path) -> list[dict[str, str]]:
-    if not _inside_git_worktree(repo_root):
+def _build_preflight_context(repo_root: Path) -> RepositoryPreflightContext:
+    return build_repository_preflight_context(repo_root)
+
+
+def _preflight_results(
+    changed_paths: list[str],
+    *,
+    repo_root: Path,
+    preflight_context: RepositoryPreflightContext | None = None,
+) -> list[dict[str, str]]:
+    if preflight_context is None and not _inside_git_worktree(repo_root):
         return []
+    if preflight_context is not None and Path(preflight_context.repo_root).resolve() != repo_root:
+        raise ValueError("preflight context does not match repository root")
 
     results: list[dict[str, str]] = []
-    context = _build_preflight_context(repo_root)
+    context = preflight_context or _build_preflight_context(repo_root)
+    if not context.inside_worktree:
+        return []
     unmerged = list(context.unmerged_paths)
     if unmerged:
         results.append(

@@ -77,12 +77,12 @@ The broader June 26 validation-runtime follow-through work already added selecto
 ## Current Handoff Summary
 
 - Current milestone: M2. Fixture Reuse and In-Process Selector Conversion
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md
 - Last reviewed milestone: M1. Baseline, Profile, and Identity Inventory
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones, code-review, explain-change, verify, and PR handoff remain.
 
@@ -132,7 +132,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 
 ### M2. Fixture Reuse and In-Process Selector Conversion
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Convert pure selector logic coverage to lower-overhead in-process/table-driven execution while retaining subprocess-backed command-boundary coverage.
 - Requirements: `R1`-`R3`, `R8`-`R21`, `R28`-`R30`, `AC4`-`AC17`
 - Files/components likely touched:
@@ -273,6 +273,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - 2026-06-27: M1 recorded selector-regression profile, runtime baseline, and preservation baseline evidence. Baseline median real runtime is 164.73s for 109 tests.
 - 2026-06-27: M1 targeted validation passed and M1 moved to review-requested for code-review.
 - 2026-06-27: Code-review R1 closed M1 with no material findings; next stage is implement M2.
+- 2026-06-27: M2 implementation added reusable repository preflight context for pure selector calls, preserved subprocess CLI/wrapper tests, and moved M2 to review-requested after targeted validation passed.
 
 ## Decision log
 
@@ -283,11 +284,14 @@ The broader June 26 validation-runtime follow-through work already added selecto
 | 2026-06-27 | Keep architecture not required for this plan. | The spec excludes workers, caches, broad composition, and cross-process protocols. | Create an architecture artifact for a test-suite restructuring slice. |
 | 2026-06-27 | Use three implementation milestones. | Baseline/profile, restructuring, and runtime-result proof have distinct evidence and review boundaries. | One large implementation milestone or per-test micro-milestones. |
 | 2026-06-27 | Register selector runtime YAML evidence during M1. | The approved M1/M3 evidence filenames must not create manual-routing debt before selected validation can run. | Leave the evidence file as unregistered debt or hide it from selected validation. |
+| 2026-06-27 | Reuse immutable repository preflight context for pure selector tests. | Per-test timing showed `test_first_slice_representative_categories_route_or_block_safely` spent about 105.804s repeating repository-state discovery; reusable preflight context preserves selector behavior while avoiding repeated `git` discovery. | Remove table rows, convert CLI-boundary tests in process, or cache without repository identity. |
 
 ## Surprises and discoveries
 
 - M1 selector probing found `selector-regression-runtime-baseline.yaml` was initially classified as unregistered change evidence. The fix adds a deterministic `selector-regression-runtime` evidence class for baseline and result YAML files.
 - Grouped timing showed the broad `ValidationSelectionTests` bucket accounts for nearly all selector-regression wall time, while smaller `ci_wrapper`, script-output, and broad-smoke classification focused groups are much shorter.
+- M2 per-test timing identified one dominant duplicate-work case: `ValidationSelectionTests.test_first_slice_representative_categories_route_or_block_safely` took about 105.804s because the table re-ran repository preflight discovery for each pure selector row.
+- Reusing a frozen `RepositoryPreflightContext` for `ROOT` reduced the representative table to `real 1.05s` while adding an identity guard that raises if the context is used with a different repository root.
 
 ## Validation notes
 
@@ -306,6 +310,15 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - Code-review R1 direct proof:
   - `python scripts/test-select-validation.py -k selector_runtime_evidence_files_route_without_manual_debt`: passed.
   - `python scripts/select-validation.py --mode explicit --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-profile.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md --path specs/selector-regression-runtime-reduction.md --path specs/selector-regression-runtime-reduction.test.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md`: selector status `ok`, selected checks `artifact_lifecycle.validate` and `selector.regression`, no blockers, no registration debt.
+- M2 validation:
+  - `python scripts/test-select-validation.py -k shared_preflight_context_requires_matching_repository_identity`: failed before production support with missing import, then passed after adding `build_repository_preflight_context` and root identity validation.
+  - `/usr/bin/time -p python scripts/test-select-validation.py -k first_slice_representative_categories_route_or_block_safely`: passed, 1 test in 0.57s, real 1.05s.
+  - `python scripts/test-select-validation.py -k selector`: passed, 12 tests in 3.34s.
+  - `/usr/bin/time -p python scripts/test-select-validation.py`: passed, 110 tests in 38.45s, real 35.09s.
+  - `bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md`: passed; selected checks `artifact_lifecycle.validate` and `selector.regression`; `selector.regression` elapsed 39.39s.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml`: passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml`: passed.
+  - `git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md`: passed.
 
 ## Outcome and retrospective
 

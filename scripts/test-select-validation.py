@@ -36,6 +36,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from validation_selection import (  # noqa: E402
     CHECK_CATALOG,
     EvidenceClassRegistration,
+    build_repository_preflight_context,
     SelectionRequest,
     normalize_path,
     select_validation,
@@ -500,6 +501,7 @@ class ScriptOutputContractTests(unittest.TestCase):
 
 class ValidationSelectionTests(unittest.TestCase):
     maxDiff = None
+    root_preflight_context = build_repository_preflight_context(ROOT)
 
     def addCleanupTree(self, path: Path) -> None:
         self.addCleanup(lambda: shutil.rmtree(path, ignore_errors=True))
@@ -888,7 +890,22 @@ raise SystemExit({exit_code})
         return rows
 
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
+        kwargs.setdefault("preflight_context", self.root_preflight_context)
         return select_validation(SelectionRequest(mode=mode, paths=tuple(paths), repo_root=ROOT, **kwargs))
+
+    def test_shared_preflight_context_requires_matching_repository_identity(self) -> None:
+        other_root = Path(tempfile.mkdtemp(prefix="validation-selection-preflight-mismatch-"))
+        self.addCleanupTree(other_root)
+
+        with self.assertRaisesRegex(ValueError, "preflight context does not match repository root"):
+            select_validation(
+                SelectionRequest(
+                    mode="explicit",
+                    paths=("docs/workflows.md",),
+                    repo_root=other_root,
+                    preflight_context=self.root_preflight_context,
+                )
+            )
 
     def test_change_evidence_registry_entries_are_complete_and_stable(self) -> None:
         valid = [
