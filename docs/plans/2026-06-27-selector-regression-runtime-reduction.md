@@ -77,12 +77,12 @@ The broader June 26 validation-runtime follow-through work already added selecto
 ## Current Handoff Summary
 
 - Current milestone: M3. Runtime Result and Closeout Evidence
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r2.md
 - Last reviewed milestone: M2. Fixture Reuse and In-Process Selector Conversion
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones, code-review, explain-change, verify, and PR handoff remain.
 
@@ -178,7 +178,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 
 ### M3. Runtime Result and Closeout Evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Record revised runtime, compare preservation evidence, decide timeout status, and close with either measured runtime reduction or no-safe-reduction evidence.
 - Requirements: `R4`-`R7`, `R21`, `R24`-`R30`, `AC1`-`AC18`
 - Files/components likely touched:
@@ -275,6 +275,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - 2026-06-27: Code-review R1 closed M1 with no material findings; next stage is implement M2.
 - 2026-06-27: M2 implementation added reusable repository preflight context for pure selector calls, preserved subprocess CLI/wrapper tests, and moved M2 to review-requested after targeted validation passed.
 - 2026-06-27: Code-review R2 closed M2 with no material findings; next stage is implement M3.
+- 2026-06-27: M3 recorded revised runtime result evidence, selected-CI timeout status, preservation closeout, and a broad-smoke duration-output regression fix; M3 moved to review-requested after targeted validation passed.
 
 ## Decision log
 
@@ -286,6 +287,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 | 2026-06-27 | Use three implementation milestones. | Baseline/profile, restructuring, and runtime-result proof have distinct evidence and review boundaries. | One large implementation milestone or per-test micro-milestones. |
 | 2026-06-27 | Register selector runtime YAML evidence during M1. | The approved M1/M3 evidence filenames must not create manual-routing debt before selected validation can run. | Leave the evidence file as unregistered debt or hide it from selected validation. |
 | 2026-06-27 | Reuse immutable repository preflight context for pure selector tests. | Per-test timing showed `test_first_slice_representative_categories_route_or_block_safely` spent about 105.804s repeating repository-state discovery; reusable preflight context preserves selector behavior while avoiding repeated `git` discovery. | Remove table rows, convert CLI-boundary tests in process, or cache without repository identity. |
+| 2026-06-27 | Fix broad-smoke duration reporting during M3. | Revised timing exposed a negative elapsed value in broad-smoke output; selector-regression cannot close with a known default-command failure. | Ignore the failed timing run or weaken the output regex. |
 
 ## Surprises and discoveries
 
@@ -293,6 +295,7 @@ The broader June 26 validation-runtime follow-through work already added selecto
 - Grouped timing showed the broad `ValidationSelectionTests` bucket accounts for nearly all selector-regression wall time, while smaller `ci_wrapper`, script-output, and broad-smoke classification focused groups are much shorter.
 - M2 per-test timing identified one dominant duplicate-work case: `ValidationSelectionTests.test_first_slice_representative_categories_route_or_block_safely` took about 105.804s because the table re-ran repository preflight discovery for each pure selector row.
 - Reusing a frozen `RepositoryPreflightContext` for `ROOT` reduced the representative table to `real 1.05s` while adding an identity guard that raises if the context is used with a different repository root.
+- M3 revised timing initially exposed `test_broad_smoke_verbose_prints_successful_child_output_in_order` failing on a negative broad-smoke elapsed value (`-2s`). M3 fixed duration reporting to avoid Bash `$SECONDS`, added a regression guard, and restarted the three-run timing evidence after the fix.
 
 ## Validation notes
 
@@ -322,6 +325,20 @@ The broader June 26 validation-runtime follow-through work already added selecto
   - `git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md`: passed.
 - Code-review R2 result:
   - `code-review-r2`: clean-with-notes; no material findings; M2 closed.
+- M3 validation:
+  - First attempted revised timing loop found one failure before final runtime evidence: `test_broad_smoke_verbose_prints_successful_child_output_in_order` failed because broad-smoke printed `-2s` elapsed. This was fixed before recording the final three-run revised runtime evidence.
+  - `python scripts/test-select-validation.py -k duration_reporting_does_not_use_bash_seconds`: failed before replacing Bash `$SECONDS` duration reporting, then passed after the fix.
+  - `python scripts/test-select-validation.py -k broad_smoke_default_success_captures_child_output_and_prints_aggregate`: passed.
+  - `python scripts/test-select-validation.py -k broad_smoke_verbose_prints_successful_child_output_in_order`: passed.
+  - `python scripts/test-select-validation.py -k broad_smoke_failure_prints_command_exit_duration_and_captured_output`: passed.
+  - `/usr/bin/time -p python scripts/test-select-validation.py`: three final revised runs passed with 111 tests; real durations 36.23s, 36.19s, and 36.46s; median real duration 36.23s.
+  - `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md`: passed without timeout override; selected checks `artifact_lifecycle.validate` and `selector.regression`; `selector.regression` elapsed 36.47s.
+  - `bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md`: passed; selected checks `artifact_lifecycle.validate` and `selector.regression`; `selector.regression` elapsed 36.92s.
+  - `python scripts/test-select-validation.py -k selector`: passed, 12 tests in 3.20s.
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-27-selector-regression-runtime-reduction`: passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml`: passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/selector-regression-runtime-reduction.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-profile.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md`: passed.
+  - `git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction specs/selector-regression-runtime-reduction.md docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md`: passed.
 
 ## Outcome and retrospective
 

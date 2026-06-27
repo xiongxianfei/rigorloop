@@ -95,10 +95,27 @@ default_jobs() {
   fi
 }
 
+current_epoch_seconds() {
+  date +%s
+}
+
+elapsed_seconds_since() {
+  local started="$1"
+  local current
+  current="$(current_epoch_seconds)"
+  local elapsed=$((current - started))
+  if [[ "$elapsed" -lt 0 ]]; then
+    echo 0
+  else
+    echo "$elapsed"
+  fi
+}
+
 run_check() {
   local label="$1"
   shift
-  local started="$SECONDS"
+  local started
+  started="$(current_epoch_seconds)"
   local command_text=""
   local output=""
   local status=0
@@ -111,7 +128,7 @@ run_check() {
   output="$("$@" 2>&1)"
   status=$?
   set -e
-  elapsed=$((SECONDS - started))
+  elapsed="$(elapsed_seconds_since "$started")"
 
   if [[ "$status" -ne 0 ]]; then
     echo "[FAIL] $label: exit $status in ${elapsed}s"
@@ -237,7 +254,8 @@ run_broad_smoke() {
     return 0
   fi
 
-  local started="$SECONDS"
+  local started
+  started="$(current_epoch_seconds)"
   broad_smoke_passed_checks=0
 
   local review_artifact_available=0
@@ -305,7 +323,7 @@ run_broad_smoke() {
   run_check "$artifact_lifecycle_label" \
     "${artifact_lifecycle_cmd[@]}"
 
-  echo "[PASS] broad-smoke: ${broad_smoke_passed_checks} checks passed in $((SECONDS - started))s"
+  echo "[PASS] broad-smoke: ${broad_smoke_passed_checks} checks passed in $(elapsed_seconds_since "$started")s"
 }
 
 parse_args() {
