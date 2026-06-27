@@ -76,15 +76,15 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 
 ## Current Handoff Summary
 
-- Current milestone: verify
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: docs/changes/2026-06-27-broad-smoke-safe-parallelism/reviews/code-review-final-r1.md
 - Last reviewed milestone: final holistic cross-milestone review
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, pr-handoff-pending — M1, M2, M3, review-resolution, final holistic code-review, explain-change, and verify are closed; branch-ready is established locally, but PR handoff has not completed and hosted CI has not been observed.
+- Next stage: human PR review
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — Implementation milestones, review-resolution, final holistic code-review, explain-change, verify, and PR handoff are complete locally; hosted CI has not been observed.
 
 ## Milestones
 
@@ -327,6 +327,34 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - Rollback/recovery:
   - Fix any failing validation before PR handoff.
 
+### PR handoff
+
+- Milestone state: closed
+- Goal: Prepare the verified branch for human PR review.
+- Requirements: all in-scope requirements `R1`-`R42` and `AC1`-`AC24`.
+- Files/components likely touched:
+  - `docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml`
+  - `docs/plans/2026-06-27-broad-smoke-safe-parallelism.md`
+  - `docs/plan.md`
+- Dependencies:
+  - Verify recorded branch-ready evidence.
+  - Post-verify learn session validation passed at the current branch tip.
+- Tests to add/update: none; this is PR handoff bookkeeping.
+- Validation commands:
+  - `bash scripts/ci.sh --mode explicit --path docs/learn/sessions/2026-06-27-first-autoprogression-review-finding.md`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/learn/sessions/2026-06-27-first-autoprogression-review-finding.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/learn/sessions/2026-06-27-first-autoprogression-review-finding.md`
+- Expected observable result: PR body/open readiness is established and the branch is opened for human review.
+- Commit message: `pr: prepare broad-smoke safe parallelism handoff`
+- Milestone closeout:
+  - PR handoff state recorded
+  - human PR review is the next stage
+- Risks:
+  - Hosted CI remains pending until the PR opens.
+- Rollback/recovery:
+  - Fix any PR-readiness blocker before opening or updating the PR.
+
 ## Validation plan
 
 - `python scripts/validate-review-artifacts.py docs/changes/2026-06-27-broad-smoke-safe-parallelism`: review record structure.
@@ -376,6 +404,8 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - 2026-06-27: Final holistic code-review completed clean-with-notes across the complete M1-M3 diff; next stage is explain-change.
 - 2026-06-27: Explain-change recorded durable rationale for the reviewed M1-M3 diff; next stage is verify.
 - 2026-06-27: Final verify passed review closeout, metadata, classification validation, focused broad-smoke tests, result-evidence test, lifecycle checks, selected CI, shell syntax, JSON artifact shape, diff hygiene, `--jobs 1` broad-smoke, and opt-in `--jobs 4` broad-smoke with temporary result evidence; branch-ready is recorded and next stage is PR handoff.
+- 2026-06-27: Learn session recorded why the first autoprogression review finding was catchable; current-tip selected CI for the learn session passed.
+- 2026-06-27: PR handoff prepared; next stage is human PR review after the PR opens.
 
 ## Decision log
 
@@ -489,6 +519,11 @@ Current code evidence shows `scripts/ci.sh` accepts `--jobs`, selected-check exe
 - `bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 1` passed during final verify (`[PASS] broad-smoke: 11 checks passed in 350s`).
 - `tmp_result=$(mktemp) && RIGORLOOP_BROAD_SMOKE_RESULT_JSON="$tmp_result" bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 4 && python -m json.tool "$tmp_result" >/dev/null && rm -f "$tmp_result"` passed during final verify (`[PASS] broad-smoke: 11 checks passed in 338s`).
 - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/verify-report.md --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md` passed after recording the verify report.
+- `bash scripts/ci.sh --mode explicit --path docs/learn/sessions/2026-06-27-first-autoprogression-review-finding.md` passed after the learn session commit.
+- `python scripts/validate-change-metadata.py docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml` passed during PR handoff.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/learn/sessions/2026-06-27-first-autoprogression-review-finding.md` passed during PR handoff.
+- `git diff --check -- docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml docs/plans/2026-06-27-broad-smoke-safe-parallelism.md docs/plan.md` passed during PR handoff.
+- `bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-broad-smoke-safe-parallelism/change.yaml --path docs/plans/2026-06-27-broad-smoke-safe-parallelism.md --path docs/plan.md --path docs/learn/sessions/2026-06-27-first-autoprogression-review-finding.md` passed during PR handoff.
 
 ## Outcome and retrospective
 
