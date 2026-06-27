@@ -1,0 +1,73 @@
+scenario: selector-regression
+command: python scripts/test-select-validation.py
+proof_id: MP-SEL-001
+recorded_at: "2026-06-27T03:57:27-07:00"
+environment:
+  runner: local WSL2
+  os: "Linux LAPTOP-RLULAM5H 6.6.87.2-microsoft-standard-WSL2"
+  python: "3.12.3"
+  cpu_class: "Intel Core Ultra 9 275HX, 24 vCPU visible"
+  local_or_ci: local
+repository_state:
+  head: bf3f97dba7f16c807c38d20923f298da0aa4afb8
+  branch: proposal/selector-regression-runtime-reduction
+  worktree_state: dirty with current change artifacts and M1 selector-route edits
+baseline:
+  runs:
+    - run: 1
+      duration_ms: 165710
+      suite_duration_ms: 175300
+      test_count: 109
+      result: pass
+    - run: 2
+      duration_ms: 164730
+      suite_duration_ms: 174410
+      test_count: 109
+      result: pass
+    - run: 3
+      duration_ms: 161130
+      suite_duration_ms: 172790
+      test_count: 109
+      result: pass
+  median_duration_ms: 164730
+  median_suite_duration_ms: 174410
+  test_count: 109
+  selected_check_identity:
+    selector_status: ok
+    blocker: none
+    selected_check_ids:
+      - artifact_lifecycle.validate
+      - selector.regression
+    registration_debt: none
+profile:
+  grouped_runs:
+    - command: python scripts/test-select-validation.py -k ci_wrapper
+      duration_ms: 7610
+      test_count: 21
+      result: pass
+    - command: python scripts/test-select-validation.py -k ScriptOutputContractTests
+      duration_ms: 1960
+      test_count: 10
+      result: pass
+    - command: python scripts/test-select-validation.py -k broad_smoke
+      duration_ms: 4130
+      test_count: 13
+      result: pass
+    - command: python scripts/test-select-validation.py -k ValidationSelectionTests
+      duration_ms: 164200
+      test_count: 99
+      result: pass
+  dominant_contributor: ValidationSelectionTests accounts for nearly all default command wall time
+revised:
+  duration_ms: null
+  test_count: null
+  selected_check_identity: not_recorded_until_M3
+delta:
+  duration_ms: null
+  percent: null
+preservation:
+  selected_identity_preserved: baseline_recorded
+  failure_sensitivity_preserved: baseline_recorded
+notes:
+  timeout_behavior: no timeout fired during M1 baseline collection
+  limitations: grouped timings overlap because boundary and broad-smoke tests live inside ValidationSelectionTests
