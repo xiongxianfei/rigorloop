@@ -1,0 +1,193 @@
+change_id: 2026-06-27-selector-regression-runtime-reduction
+title: Selector-Regression Runtime Reduction
+classification: spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-27-selector-regression-runtime-reduction.md
+  spec: specs/selector-regression-runtime-reduction.md
+  test_spec: specs/selector-regression-runtime-reduction.test.md
+  plan: docs/plans/2026-06-27-selector-regression-runtime-reduction.md
+  verify_report: docs/changes/2026-06-27-selector-regression-runtime-reduction/verify-report.md
+  review_resolution: docs/changes/2026-06-27-selector-regression-runtime-reduction/review-resolution.md
+requirements:
+  - Record the selector-regression runtime reduction proposal before proposal-review.
+  - Review the proposal for problem clarity, option quality, scope control, risk honesty, vision fit, and readiness for spec.
+  - Normalize proposal status to accepted before downstream spec reliance.
+  - Author a focused selector-regression runtime reduction spec from the accepted proposal.
+  - Review the spec before planning relies on it.
+  - Normalize spec status to approved before plan reliance.
+  - Record architecture as not required unless implementation expands into persistent workers, shared caches, broad validator composition, or new cross-process execution protocols.
+  - Author a living execution plan before plan-review.
+  - Author a traceable test specification after plan-review and before implementation.
+  - Record selector-regression baseline runtime, profile, and preservation evidence before runtime-reducing changes.
+  - Register selector-regression runtime evidence files so they do not create manual-routing debt.
+  - Reduce pure selector test duplicate work by reusing complete repository preflight identity without moving required coverage out of the default command.
+  - Record revised selector-regression runtime evidence, selected-CI timeout status, and preservation result.
+  - Keep broad-smoke duration diagnostics non-negative while preserving sequential broad-smoke execution.
+tests:
+  - Proposal-review approves the proposal or records material findings before downstream spec reliance.
+  - Review-log indexes proposal-review receipts with zero material findings when clean.
+  - Spec-review approves the selector-regression runtime reduction spec or records material findings before plan reliance.
+  - The execution plan records milestones, validation commands, recovery paths, dependencies, current handoff state, and readiness before plan-review.
+  - The test specification maps selector-regression runtime reduction requirements, examples, edge cases, and milestones to concrete tests before implementation.
+  - Selector-regression runtime evidence files route as registered change evidence without manual-routing debt.
+  - Selector-regression baseline/profile/preservation evidence exists before runtime-reducing changes.
+  - Shared selector preflight context rejects mismatched repository roots and preserves default selector-regression coverage.
+  - Revised selector-regression runtime result records median reduction and selected-CI timeout status.
+  - CI duration reporting does not use Bash SECONDS and cannot emit negative broad-smoke elapsed output.
+changed_files:
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - scripts/ci.sh
+  - docs/proposals/2026-06-27-selector-regression-runtime-reduction.md
+  - specs/selector-regression-runtime-reduction.md
+  - specs/selector-regression-runtime-reduction.test.md
+  - docs/plans/2026-06-27-selector-regression-runtime-reduction.md
+  - docs/plan.md
+  - docs/plan-archive.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-profile.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/explain-change.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/verify-report.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/review-log.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/review-resolution.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r2.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/spec-review-r1.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/plan-review-r1.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/test-spec-review-r1.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r2.md
+  - docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r3.md
+review:
+  status: approved
+  unresolved_items: 0
+  location: docs/changes/2026-06-27-selector-regression-runtime-reduction/review-log.md
+  material_findings: 0
+  closed_findings: 0
+  open_findings: 0
+  proposal_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r1.md
+  latest_proposal_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/proposal-review-r2.md
+  spec_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/spec-review-r1.md
+  plan_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/plan-review-r1.md
+  test_spec_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/test-spec-review-r1.md
+  code_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r1.md
+  latest_code_review: docs/changes/2026-06-27-selector-regression-runtime-reduction/reviews/code-review-r3.md
+  review_log: docs/changes/2026-06-27-selector-regression-runtime-reduction/review-log.md
+  review_resolution: docs/changes/2026-06-27-selector-regression-runtime-reduction/review-resolution.md
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: proposal-review r2
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted
+  - command: spec authoring
+    result: selector_regression_runtime_reduction_spec_draft_ready_for_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: spec_status_approved
+  - command: plan authoring
+    result: active_plan_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: test-spec authoring
+    result: selector_regression_runtime_reduction_test_spec_ready_for_test_spec_review
+  - command: test-spec-review r1
+    result: approved_no_material_findings_implementation_handoff_allowed
+  - command: python scripts/test-select-validation.py -k selector_runtime_evidence_files_route_without_manual_debt
+    result: pass
+  - command: /usr/bin/time -p python scripts/test-select-validation.py
+    result: pass_3_runs_median_real_164730ms_109_tests
+  - command: grouped selector-regression profiling
+    result: validation_selection_tests_bucket_real_164200ms_99_tests
+  - command: python scripts/test-select-validation.py
+    result: pass_109_tests_179_92s
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-27-selector-regression-runtime-reduction
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: code-review r1
+    result: clean_with_notes_no_material_findings_m1_closed
+  - command: python scripts/test-select-validation.py -k shared_preflight_context_requires_matching_repository_identity
+    result: pass_after_expected_missing_api_failure
+  - command: /usr/bin/time -p python scripts/test-select-validation.py -k first_slice_representative_categories_route_or_block_safely
+    result: pass_1_test_real_1050ms
+  - command: python scripts/test-select-validation.py -k selector
+    result: pass_12_tests_3_34s
+  - command: /usr/bin/time -p python scripts/test-select-validation.py
+    result: pass_110_tests_real_35090ms
+  - command: bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+    result: pass_selected_checks_artifact_lifecycle_validate_selector_regression_elapsed_39390ms
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/test-select-validation.py --path scripts/validation_selection.py --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass
+  - command: git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md
+    result: pass
+  - command: code-review r2
+    result: clean_with_notes_no_material_findings_m2_closed
+  - command: python scripts/test-select-validation.py -k duration_reporting_does_not_use_bash_seconds
+    result: pass_after_expected_seconds_regression_failure
+  - command: python scripts/test-select-validation.py -k broad_smoke_default_success_captures_child_output_and_prints_aggregate
+    result: pass
+  - command: python scripts/test-select-validation.py -k broad_smoke_verbose_prints_successful_child_output_in_order
+    result: pass
+  - command: python scripts/test-select-validation.py -k broad_smoke_failure_prints_command_exit_duration_and_captured_output
+    result: pass
+  - command: /usr/bin/time -p python scripts/test-select-validation.py
+    result: pass_3_runs_median_real_36230ms_111_tests
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+    result: pass_without_timeout_override_selector_regression_elapsed_36470ms
+  - command: bash scripts/ci.sh --mode explicit --timeout 300 --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+    result: pass_selector_regression_elapsed_36920ms
+  - command: python scripts/test-select-validation.py -k selector
+    result: pass_12_tests_3_20s
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-27-selector-regression-runtime-reduction
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/selector-regression-runtime-reduction.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-profile.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md
+    result: pass
+  - command: git diff --check -- scripts docs/changes/2026-06-27-selector-regression-runtime-reduction specs/selector-regression-runtime-reduction.md docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md
+    result: pass
+  - command: code-review r3
+    result: clean_with_notes_no_material_findings_m3_closed_all_implementation_milestones_closed
+  - command: explain-change
+    result: change_rationale_recorded_next_stage_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_111_tests_36_99s
+  - command: python scripts/select-validation.py --mode explicit --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/explain-change.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate_selector_regression_no_blockers
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-27-selector-regression-runtime-reduction
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-baseline.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-runtime-result.yaml --path docs/changes/2026-06-27-selector-regression-runtime-reduction/selector-regression-preservation.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/explain-change.md --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate_selector_regression_focused_50370ms
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: pass_11_checks_354s
+  - command: verify
+    result: branch_ready_next_stage_pr_hosted_ci_not_observed
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-06-27-selector-regression-runtime-reduction/verify-report.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate_no_blockers
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-selector-regression-runtime-reduction/verify-report.md --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate_focused_12060ms
+  - command: git diff --check -- docs/changes/2026-06-27-selector-regression-runtime-reduction/verify-report.md docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md
+    result: pass
+  - command: pr
+    result: opened_pr_115_against_proposal_preflight_first_validation_runtime_optimization
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml --path docs/plans/2026-06-27-selector-regression-runtime-reduction.md --path docs/plan.md --path docs/plan-archive.md
+    result: pass_selected_checks_artifact_lifecycle_validate_change_metadata_regression_change_metadata_validate_guide_system_validate_focused_12580ms
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-27-selector-regression-runtime-reduction
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml
+    result: pass
+  - command: git diff --check -- docs/changes/2026-06-27-selector-regression-runtime-reduction/change.yaml docs/plans/2026-06-27-selector-regression-runtime-reduction.md docs/plan.md docs/plan-archive.md
+    result: pass
