@@ -72,9 +72,9 @@ Important existing boundaries:
 
 - Current milestone: M2. Release-surface inventory and ownership classification
 - Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m1-r2.md
-- Last reviewed milestone: M1
-- Review status: approved; stage=code-review; round=r2
+- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r1.md
+- Last reviewed milestone: M2
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M2 review pending, M3, M4, M5, M6
 - Next stage: code-review M2
 - Final closeout readiness: not ready
@@ -277,6 +277,8 @@ Important existing boundaries:
 - 2026-06-29: code-review-m1-r2 completed cleanly with no material findings. M1 is closed; current next stage is `implement M2`.
 - 2026-06-29: M2 implementation started. Scope is limited to release-prep surface ownership classification, literal-audit baseline classification, and focused release-transaction tests.
 - 2026-06-29: M2 implementation added release surface inventory validation, literal-audit baseline validation, fixture coverage, and change-local inventory/baseline evidence. Current next stage is `code-review M2`.
+- 2026-06-29: code-review-m2-r1 requested changes for `CR-RTA-M2-F1` and `CR-RTA-M2-F2`; current next stage is `review-resolution M2`.
+- 2026-06-29: review-resolution for `CR-RTA-M2-F1` and `CR-RTA-M2-F2` added direct missing-classification fixture coverage for literal audit and surface inventory, and classified prior profile snapshots as historical immutable. Current next stage is `code-review M2`.
 
 ## Decision log
 
@@ -315,6 +317,9 @@ Important existing boundaries:
 - 2026-06-29: `python scripts/select-validation.py --mode explicit ...` classified M2 change-local evidence as registered and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `guide_system.validate`, and `selector.regression`; it still reported manual routing for the new release transaction script and fixture directories.
 - 2026-06-29: `python scripts/test-select-validation.py` passed after M2 selector evidence-class registration: 123 tests.
 - 2026-06-29: `python scripts/test-change-metadata-validator.py`, `python scripts/validate-guide-system.py`, and selected artifact lifecycle validation passed during M2 validation.
+- 2026-06-29: `python scripts/test-release-transaction.py` passed after M2 review-resolution: 23 tests.
+- 2026-06-29: `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/surface-inventory --path tests/fixtures/release-transaction/literal-audit --path docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml --path docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml` reported manual routing for release transaction script and fixture paths and selected `artifact_lifecycle.validate` for registered release transaction evidence.
+- 2026-06-29: `python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml`, `python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/`, and `git diff --check --` passed after M2 review-resolution updates.
 - Final implementation verification should include review artifact validation, change metadata validation, lifecycle explicit-path validation, selected release tooling tests, and release-gate preservation checks.
 
 ## Outcome and retrospective
