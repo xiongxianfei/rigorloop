@@ -7,6 +7,8 @@ import shutil
 import sys
 import tempfile
 import unittest
+import json
+import subprocess
 from pathlib import Path
 
 
@@ -23,7 +25,9 @@ from release_transaction import (  # noqa: E402
     load_release_profile,
     load_release_profile_file,
     load_surface_inventory_file,
+    prepare_release,
     profile_path_for_tag,
+    validate_pending_release_artifacts,
 )
 
 REQUIRED_PROFILE_FIELD_CASES = (
@@ -269,6 +273,170 @@ class LiteralAuditBaselineTests(unittest.TestCase):
 
         self.assertEqual(baseline.change_id, "2026-06-29-release-transaction-automation")
         self.assertEqual(baseline.audited_release_tag, "v0.3.5")
+
+
+class PrepareReleaseTests(unittest.TestCase):
+    maxDiff = None
+
+    def make_repo(self, root: Path) -> None:
+        profile_dir = root / "docs" / "releases" / "profiles"
+        profile_dir.mkdir(parents=True)
+        shutil.copy2(PROFILE_FIXTURES / "valid-routine-v0.3.5.yaml", profile_dir / "v0.3.5.yaml")
+        package_root = root / "packages" / "rigorloop"
+        package_root.mkdir(parents=True)
+        (package_root / "package.json").write_text(
+            json.dumps(
+                {
+                    "name": "@xiongxianfei/rigorloop",
+                    "version": "0.3.4",
+                    "files": ["dist/", "package.json", "README.md", "LICENSE"],
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        (package_root / "README.md").write_text(
+            "Pinned example:\n\n"
+            "```bash\n"
+            "npx @xiongxianfei/rigorloop@0.3.4 init codex --json\n"
+            "```\n",
+            encoding="utf-8",
+        )
+        metadata_dir = package_root / "dist" / "metadata"
+        metadata_dir.mkdir(parents=True)
+        (metadata_dir / "releases.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "releases": {
+                        "v0.3.4": {
+                            "source_repository": "xiongxianfei/rigorloop",
+                            "release_tag": "v0.3.4",
+                            "bundled_metadata": "adapter-artifacts-v0.3.4.json",
+                            "bundled_metadata_sha256": "abc",
+                        }
+                    },
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        release_dir = root / "docs" / "releases" / "v0.3.5"
+        release_dir.mkdir(parents=True)
+        (release_dir / "release-notes.md").write_text(
+            "# RigorLoop v0.3.5\n\n"
+            "Human-authored opening narrative.\n\n"
+            "<!-- rigorloop:generated:start release-transaction surface=release-metadata profile=docs/releases/profiles/v0.3.5.yaml -->\n"
+            "stale generated content\n"
+            "<!-- rigorloop:generated:end release-transaction surface=release-metadata -->\n\n"
+            "Human-authored closing notes.\n",
+            encoding="utf-8",
+        )
+        historical_dir = root / "docs" / "releases" / "v0.3.4"
+        historical_dir.mkdir(parents=True)
+        (historical_dir / "release.yaml").write_text("version: v0.3.4\n", encoding="utf-8")
+
+    def relative_file_texts(self, root: Path) -> dict[str, str]:
+        return {
+            str(path.relative_to(root)): path.read_text(encoding="utf-8")
+            for path in sorted(root.rglob("*"))
+            if path.is_file()
+        }
+
+    def test_prepare_release_generates_pending_artifacts_idempotently(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+            before = self.relative_file_texts(root)
+
+            result = prepare_release("v0.3.5", root=root)
+            after_first = self.relative_file_texts(root)
+            second = prepare_release("v0.3.5", root=root)
+            after_second = self.relative_file_texts(root)
+
+        self.assertEqual(after_first, after_second)
+        self.assertFalse(second.changed_paths)
+        self.assertEqual(
+            set(result.changed_paths),
+            {
+                "docs/releases/v0.3.5/npm-publication.md",
+                "docs/releases/v0.3.5/release-notes.md",
+                "docs/releases/v0.3.5/release.yaml",
+                "docs/reports/adapter-artifacts/releases/v0.3.5.yaml",
+                "packages/rigorloop/README.md",
+                "packages/rigorloop/dist/metadata/releases.json",
+                "packages/rigorloop/package.json",
+                "tests/fixtures/release-transaction/current-version.json",
+            },
+        )
+        self.assertEqual(before["docs/releases/v0.3.4/release.yaml"], "version: v0.3.4\n")
+        self.assertEqual(after_first["docs/releases/v0.3.4/release.yaml"], "version: v0.3.4\n")
+        self.assertIn("Human-authored opening narrative.", after_first["docs/releases/v0.3.5/release-notes.md"])
+        self.assertIn("Human-authored closing notes.", after_first["docs/releases/v0.3.5/release-notes.md"])
+        self.assertNotIn("stale generated content", after_first["docs/releases/v0.3.5/release-notes.md"])
+        self.assertIn("npx @xiongxianfei/rigorloop@0.3.5 init codex --json", after_first["packages/rigorloop/README.md"])
+        self.assertNotIn("@0.3.4 init codex", after_first["packages/rigorloop/README.md"])
+
+    def test_prepare_release_check_mode_reports_pending_changes_without_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+            before = self.relative_file_texts(root)
+
+            with self.assertRaises(ReleaseProfileError) as raised:
+                prepare_release("v0.3.5", root=root, check=True)
+
+            after = self.relative_file_texts(root)
+
+        self.assertEqual(before, after)
+        self.assertIn("prepare-release would update", "\n".join(raised.exception.errors))
+        self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
+
+    def test_generated_pending_release_artifacts_validate_shape(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+            prepare_release("v0.3.5", root=root)
+
+            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+        self.assertEqual(errors, [])
+
+    def test_prepare_release_does_not_publish_or_require_external_state(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+
+            result = prepare_release("v0.3.5", root=root)
+
+        self.assertEqual(result.external_actions, ())
+
+    def test_prepare_release_cli_check_succeeds_after_generation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+            prepare_release("v0.3.5", root=root)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "prepare-release.py"),
+                    "v0.3.5",
+                    "--root",
+                    str(root),
+                    "--check",
+                ],
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        self.assertIn("prepared v0.3.5: no changes", result.stdout)
+        self.assertIn("next: python scripts/release-preflight.py v0.3.5", result.stdout)
 
 
 if __name__ == "__main__":

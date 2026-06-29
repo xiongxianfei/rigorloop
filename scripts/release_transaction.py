@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -101,6 +102,13 @@ class LiteralAuditBaseline:
     warnings: tuple[str, ...] = ()
 
 
+@dataclass(frozen=True)
+class PrepareReleaseResult:
+    release_tag: str
+    changed_paths: tuple[str, ...]
+    external_actions: tuple[str, ...] = ()
+
+
 SURFACE_CLASSIFICATIONS = frozenset(
     (
         "profile-owned-generated",
@@ -178,6 +186,479 @@ def load_literal_audit_baseline_file(
         data,
         changed_files=frozenset(changed_files),
     )
+
+
+def prepare_release(
+    tag: str,
+    *,
+    root: Path | str = Path("."),
+    check: bool = False,
+) -> PrepareReleaseResult:
+    repo_root = Path(root)
+    profile = load_release_profile(tag, root=repo_root)
+    if not is_routine_release_profile(profile):
+        raise ReleaseProfileError(profile.path, ["prepare-release requires a routine release profile"])
+
+    planned: dict[Path, str] = {}
+    package_version = _current_package_version(repo_root)
+    _plan_package_json_update(planned, repo_root, profile)
+    _plan_package_readme_update(planned, repo_root, profile, current_version=package_version)
+    _plan_release_index_update(planned, repo_root, profile)
+    _plan_release_yaml(planned, repo_root, profile)
+    _plan_release_notes(planned, repo_root, profile)
+    _plan_npm_publication(planned, repo_root, profile)
+    _plan_adapter_artifact_report(planned, repo_root, profile)
+    _plan_current_version_fixture(planned, repo_root, profile)
+
+    changed_paths = tuple(
+        _repo_relative(path, repo_root)
+        for path, content in planned.items()
+        if not path.exists() or path.read_text(encoding="utf-8") != content
+    )
+    if check and changed_paths:
+        raise ReleaseProfileError(
+            profile.path,
+            ["prepare-release would update: " + ", ".join(changed_paths)],
+        )
+    if not check:
+        for path, content in planned.items():
+            if path.exists() and path.read_text(encoding="utf-8") == content:
+                continue
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+
+    return PrepareReleaseResult(
+        release_tag=tag,
+        changed_paths=changed_paths,
+    )
+
+
+def validate_pending_release_artifacts(
+    tag: str,
+    *,
+    root: Path | str = Path("."),
+) -> list[str]:
+    repo_root = Path(root)
+    errors: list[str] = []
+    profile = load_release_profile(tag, root=repo_root)
+    release_dir = repo_root / "docs" / "releases" / tag
+    release_yaml = release_dir / "release.yaml"
+    npm_publication = release_dir / "npm-publication.md"
+    release_notes = release_dir / "release-notes.md"
+
+    for path in (release_yaml, npm_publication, release_notes):
+        if not path.exists():
+            errors.append(f"{_repo_relative(path, repo_root)}: missing pending release artifact")
+
+    if release_yaml.exists():
+        text = release_yaml.read_text(encoding="utf-8")
+        _require_text(errors, release_yaml, repo_root, text, f"version: {profile.release_tag}")
+        _require_text(errors, release_yaml, repo_root, text, "publication_status: pending-publication")
+        _require_text(errors, release_yaml, repo_root, text, f'  version: "{profile.package_version}"')
+        _require_text(errors, release_yaml, repo_root, text, f"  release_tag: {profile.release_tag}")
+        _require_text(errors, release_yaml, repo_root, text, f"  bundled_metadata: {profile.adapter_artifacts['metadata_file']}")
+    if npm_publication.exists():
+        text = npm_publication.read_text(encoding="utf-8")
+        _require_text(errors, npm_publication, repo_root, text, "Status: pending-publication")
+        _require_text(errors, npm_publication, repo_root, text, "published: false")
+        for target in profile.targets:
+            _require_text(
+                errors,
+                npm_publication,
+                repo_root,
+                text,
+                f'npx {profile.npm_package}@{profile.package_version} init {target} --json',
+            )
+            _require_text(errors, npm_publication, repo_root, text, "result: \"pending-publication\"")
+            _require_text(errors, npm_publication, repo_root, text, "post_publish_closeout_blocked: true")
+            if "npx -y " in text:
+                errors.append(f"{_repo_relative(npm_publication, repo_root)}: pending evidence must not record npx -y command shape")
+    if release_notes.exists():
+        text = release_notes.read_text(encoding="utf-8")
+        marker = _generated_region_start("release-metadata", profile)
+        _require_text(errors, release_notes, repo_root, text, marker)
+        _require_text(errors, release_notes, repo_root, text, _generated_region_end("release-metadata"))
+    return errors
+
+
+def _current_package_version(repo_root: Path) -> str | None:
+    package_json_path = repo_root / "packages" / "rigorloop" / "package.json"
+    if not package_json_path.exists():
+        return None
+    data = json.loads(package_json_path.read_text(encoding="utf-8"))
+    version = data.get("version")
+    return version if isinstance(version, str) else None
+
+
+def _plan_package_json_update(
+    planned: dict[Path, str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    package_json_path = repo_root / "packages" / "rigorloop" / "package.json"
+    data: dict[str, Any] = {}
+    if package_json_path.exists():
+        data = json.loads(package_json_path.read_text(encoding="utf-8"))
+    data["name"] = profile.npm_package
+    data["version"] = profile.package_version
+    planned[package_json_path] = json.dumps(data, indent=2) + "\n"
+
+
+def _plan_package_readme_update(
+    planned: dict[Path, str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+    *,
+    current_version: str | None,
+) -> None:
+    readme_path = repo_root / "packages" / "rigorloop" / "README.md"
+    if readme_path.exists():
+        text = readme_path.read_text(encoding="utf-8")
+    else:
+        text = "# @xiongxianfei/rigorloop\n\n"
+    if current_version:
+        text = text.replace(f"{profile.npm_package}@{current_version}", f"{profile.npm_package}@{profile.package_version}")
+        text = text.replace(f"rigorloop-adapter-codex-v{current_version}.zip", f"rigorloop-adapter-codex-{profile.release_tag}.zip")
+        text = text.replace(f"rigorloop-adapter-claude-v{current_version}.zip", f"rigorloop-adapter-claude-{profile.release_tag}.zip")
+        text = text.replace(f"rigorloop-adapter-opencode-v{current_version}.zip", f"rigorloop-adapter-opencode-{profile.release_tag}.zip")
+    planned[readme_path] = text
+
+
+def _plan_release_index_update(
+    planned: dict[Path, str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    index_path = repo_root / "packages" / "rigorloop" / "dist" / "metadata" / "releases.json"
+    data: dict[str, Any] = {"schema_version": 1, "releases": {}}
+    if index_path.exists():
+        data = json.loads(index_path.read_text(encoding="utf-8"))
+    releases = data.setdefault("releases", {})
+    if not isinstance(releases, dict):
+        releases = {}
+        data["releases"] = releases
+    releases[profile.release_tag] = {
+        "source_repository": "xiongxianfei/rigorloop",
+        "release_tag": profile.release_tag,
+        "bundled_metadata": profile.adapter_artifacts["metadata_file"],
+        "bundled_metadata_sha256": "pending",
+    }
+    planned[index_path] = json.dumps(data, indent=2, sort_keys=True) + "\n"
+
+
+def _plan_release_yaml(
+    planned: dict[Path, str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    release_path = repo_root / "docs" / "releases" / profile.release_tag / "release.yaml"
+    target_lines = "\n".join(f"  - {target}" for target in profile.targets)
+    smoke_lines = "\n".join(
+        (
+            f"  {target}:\n"
+            "    result: pending\n"
+            "    tool_version: \"packed-package\"\n"
+            f"    evidence: \"Pending packed-package smoke for {profile.release_tag} {target}.\"\n"
+            "    reason: \"pending release verification\"\n"
+            "    owner: maintainer"
+        )
+        for target in profile.targets
+    )
+    planned[release_path] = (
+        f"version: {profile.release_tag}\n"
+        "release_type: final\n"
+        "publication_status: pending-publication\n"
+        "manifest_version: pending\n"
+        "\n"
+        "supported_tools:\n"
+        f"{target_lines}\n"
+        "\n"
+        "smoke:\n"
+        f"{smoke_lines}\n"
+        "\n"
+        "validation:\n"
+        "  generated_sync: pending\n"
+        "  release_notes_consistency: pending\n"
+        "  placeholder_release_check: pending\n"
+        "  security: pending\n"
+        "  adapter_archives: pending\n"
+        "  adapter_artifact_metadata: pending\n"
+        "  npm_publication_evidence: pending\n"
+        "\n"
+        "npm_package:\n"
+        f"  name: \"{profile.npm_package}\"\n"
+        f"  version: \"{profile.package_version}\"\n"
+        f"  release_tag: {profile.release_tag}\n"
+        "\n"
+        "adapter_release:\n"
+        f"  tag: {profile.release_tag}\n"
+        f"  bundled_metadata: {profile.adapter_artifacts['metadata_file']}\n"
+    )
+
+
+def _plan_release_notes(
+    planned: dict[Path, str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    notes_path = repo_root / "docs" / "releases" / profile.release_tag / "release-notes.md"
+    generated = _release_notes_generated_block(profile)
+    if notes_path.exists():
+        text = notes_path.read_text(encoding="utf-8")
+        text = _replace_or_append_generated_region(text, "release-metadata", profile, generated)
+    else:
+        text = (
+            f"# RigorLoop {profile.release_tag}\n\n"
+            "Release narrative pending maintainer notes.\n\n"
+            f"{generated}\n"
+        )
+    planned[notes_path] = text
+
+
+def _plan_npm_publication(
+    planned: dict[Path, str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    path = repo_root / "docs" / "releases" / profile.release_tag / "npm-publication.md"
+    yaml_block = _pending_npm_publication_yaml(profile)
+    table_rows = "\n".join(
+        (
+            f"| {target} | `npx {profile.npm_package}@{profile.package_version} init {target} --json` "
+            f"| `{profile.package_version}` | pending publication | pending public archive URL | pending | pending | pending | pending live command output summary | pending | pending | pending-publication | live-smoke-pending |"
+        )
+        for target in profile.targets
+    )
+    planned[path] = (
+        f"# npm publication evidence for {profile.release_tag}\n\n"
+        "Status: pending-publication\n\n"
+        "This file is generated by `prepare-release` before public GitHub and npm evidence exists. "
+        "Publication closeout must replace pending values with public evidence.\n\n"
+        "```yaml\n"
+        f"{yaml_block}"
+        "```\n\n"
+        "| Target | Command | npm version | Package source | Public archive URL | Installed root(s) | Tree hash value(s) | File count(s) | Command output summary | Archive verified | Tree verified | Result | Closeout blocker |\n"
+        "|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+        f"{table_rows}\n"
+    )
+
+
+def _plan_adapter_artifact_report(
+    planned: dict[Path, str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    path = repo_root / "docs" / "reports" / "adapter-artifacts" / "releases" / f"{profile.release_tag}.yaml"
+    artifacts = "\n".join(
+        (
+            f"  - adapter: {target}\n"
+            f"    archive: rigorloop-adapter-{target}-{profile.release_tag}.zip\n"
+            "    sha256: pending\n"
+            f"    install_root: {_target_install_root(target)}\n"
+            "    result: pending"
+        )
+        for target in profile.targets
+    )
+    planned[path] = (
+        "schema_version: 1\n"
+        "\n"
+        "release:\n"
+        f"  version: {profile.release_tag}\n"
+        "  source_commit: pending\n"
+        "  date: pending\n"
+        "\n"
+        "generator:\n"
+        f"  command: \"python scripts/build-adapters.py --version {profile.release_tag} --output-dir <release-output-dir>\"\n"
+        "  source_skills: \"skills/\"\n"
+        "  manifest: \"dist/adapters/manifest.yaml\"\n"
+        "\n"
+        "artifacts:\n"
+        f"{artifacts}\n"
+        "\n"
+        "validation:\n"
+        f"  command: \"python scripts/validate-adapters.py --root <release-output-dir> --version {profile.release_tag}\"\n"
+        "  result: pending\n"
+    )
+
+
+def _plan_current_version_fixture(
+    planned: dict[Path, str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    path = repo_root / "tests" / "fixtures" / "release-transaction" / "current-version.json"
+    data = {
+        "schema_version": "release-current-version-fixture-v1",
+        "release_tag": profile.release_tag,
+        "package_version": profile.package_version,
+        "npm_package": profile.npm_package,
+        "targets": list(profile.targets),
+        "release_profile": _repo_relative(profile.path, repo_root),
+    }
+    planned[path] = json.dumps(data, indent=2, sort_keys=True) + "\n"
+
+
+def _pending_npm_publication_yaml(profile: ReleaseProfile) -> str:
+    rows = "\n".join(
+        _pending_target_init_smoke_yaml(profile, target)
+        for target in profile.targets
+    )
+    return (
+        "publication:\n"
+        f"  package: \"{profile.npm_package}\"\n"
+        f"  version: \"{profile.package_version}\"\n"
+        f"  release_tag: \"{profile.release_tag}\"\n"
+        "  source_commit: \"pending\"\n"
+        "  mode: \"trusted-publishing\"\n"
+        "\n"
+        "workflow:\n"
+        "  release_workflow: \".github/workflows/release.yml\"\n"
+        "  published_by_workflow: true\n"
+        "  unsupported_tags_rejected: true\n"
+        "\n"
+        "tarball:\n"
+        f"  filename: \"xiongxianfei-rigorloop-{profile.package_version}.tgz\"\n"
+        "  sha256: \"pending\"\n"
+        "  pack_command: \"npm pack --prefix packages/rigorloop\"\n"
+        "  content_check: \"pending\"\n"
+        "  smoke_result: \"pending\"\n"
+        "\n"
+        "trusted_publishing:\n"
+        "  configured: true\n"
+        "  workflow: \".github/workflows/release.yml\"\n"
+        "  id_token_write: true\n"
+        "\n"
+        "bootstrap:\n"
+        "  used: false\n"
+        "  approving_maintainer: null\n"
+        "  publish_command: null\n"
+        "\n"
+        "npm:\n"
+        "  published: false\n"
+        "  package_url: \"pending\"\n"
+        "  published_at: \"pending\"\n"
+        "  dist_tag_latest: \"pending\"\n"
+        "  integrity: \"pending\"\n"
+        "  tarball: \"pending\"\n"
+        "\n"
+        "target_init_smoke:\n"
+        f"{rows}"
+    )
+
+
+def _pending_target_init_smoke_yaml(profile: ReleaseProfile, target: str) -> str:
+    roots = _target_install_roots(target)
+    root_lines = "\n".join(f"      - \"{root}\"" for root in roots)
+    if target == "opencode":
+        tree_hashes = (
+            "      - \".opencode/skills=<pending skills tree sha256>\"\n"
+            "      - \".opencode/commands=<pending commands tree sha256>\""
+        )
+        file_counts = (
+            "      - \".opencode/skills=<pending skills file count>\"\n"
+            "      - \".opencode/commands=<pending commands file count>\""
+        )
+    else:
+        tree_hashes = "      - \"<pending live tree sha256>\""
+        file_counts = "      - \"<pending live file count>\""
+    return (
+        f"  {target}:\n"
+        f"    command: \"npx {profile.npm_package}@{profile.package_version} init {target} --json\"\n"
+        f"    npm_version: \"{profile.package_version}\"\n"
+        "    temp_project: \"pending\"\n"
+        "    package_source: \"pending publication\"\n"
+        f"    target: \"{target}\"\n"
+        "    official_archive_url: \"<pending public archive URL>\"\n"
+        "    installed_roots:\n"
+        f"{root_lines}\n"
+        "    tree_hashes:\n"
+        f"{tree_hashes}\n"
+        "    file_counts:\n"
+        f"{file_counts}\n"
+        "    command_output_summary: \"<pending live command output summary>\"\n"
+        "    archive_sha256_verified: \"pending\"\n"
+        "    tree_hash_verified: \"pending\"\n"
+        "    result: \"pending-publication\"\n"
+        "    closeout_blocker: \"live-smoke-pending\"\n"
+        "    post_publish_closeout_blocked: true\n"
+    )
+
+
+def _release_notes_generated_block(profile: ReleaseProfile) -> str:
+    targets = ", ".join(profile.targets)
+    return (
+        f"{_generated_region_start('release-metadata', profile)}\n"
+        f"- Release profile: `{_repo_relative(profile.path, profile.path.parents[3])}`\n"
+        f"- npm package: `{profile.npm_package}@{profile.package_version}`\n"
+        f"- Supported targets: {targets}\n"
+        f"- Adapter metadata: `{profile.adapter_artifacts['metadata_file']}`\n"
+        f"- Pending publication evidence: `docs/releases/{profile.release_tag}/npm-publication.md`\n"
+        f"{_generated_region_end('release-metadata')}\n"
+    )
+
+
+def _replace_or_append_generated_region(
+    text: str,
+    surface: str,
+    profile: ReleaseProfile,
+    generated: str,
+) -> str:
+    start_prefix = f"<!-- rigorloop:generated:start release-transaction surface={surface} "
+    end = _generated_region_end(surface)
+    start_index = text.find(start_prefix)
+    if start_index == -1:
+        suffix = "" if text.endswith("\n") else "\n"
+        return f"{text}{suffix}\n{generated}"
+    end_index = text.find(end, start_index)
+    if end_index == -1:
+        raise ReleaseProfileError(profile.path, [f"generated region {surface} missing end marker"])
+    end_index += len(end)
+    if end_index < len(text) and text[end_index:end_index + 1] == "\n":
+        end_index += 1
+    return text[:start_index] + generated + text[end_index:]
+
+
+def _generated_region_start(surface: str, profile: ReleaseProfile) -> str:
+    return (
+        "<!-- rigorloop:generated:start release-transaction "
+        f"surface={surface} profile={_repo_relative(profile.path, profile.path.parents[3])} -->"
+    )
+
+
+def _generated_region_end(surface: str) -> str:
+    return f"<!-- rigorloop:generated:end release-transaction surface={surface} -->"
+
+
+def _target_install_root(target: str) -> str:
+    return _target_install_roots(target)[0]
+
+
+def _target_install_roots(target: str) -> tuple[str, ...]:
+    if target == "codex":
+        return (".agents/skills",)
+    if target == "claude":
+        return (".claude/skills",)
+    if target == "opencode":
+        return (".opencode/skills", ".opencode/commands")
+    return ("pending",)
+
+
+def _repo_relative(path: Path, repo_root: Path) -> str:
+    try:
+        return str(path.relative_to(repo_root)).replace("\\", "/")
+    except ValueError:
+        return str(path).replace("\\", "/")
+
+
+def _require_text(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    text: str,
+    needle: str,
+) -> None:
+    if needle not in text:
+        errors.append(f"{_repo_relative(path, repo_root)}: missing {needle}")
 
 
 def _validate_profile_data(path: Path, data: dict[str, Any]) -> ReleaseProfile:
