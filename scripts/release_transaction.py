@@ -68,6 +68,10 @@ class ReleaseProfileError(ValueError):
         super().__init__(f"{path}: " + "; ".join(errors))
 
 
+class ReleasePreflightChangedFilesError(ValueError):
+    """Raised when release preflight cannot determine changed files."""
+
+
 @dataclass(frozen=True)
 class ReleaseProfile:
     path: Path
@@ -326,6 +330,41 @@ def release_preflight(
         errors=tuple(errors),
         warnings=tuple(warnings),
     )
+
+
+def discover_changed_files(root: Path | str = Path(".")) -> tuple[str, ...]:
+    repo_root = Path(root)
+    git_root = _run_git(repo_root, "rev-parse", "--show-toplevel")
+    if git_root.returncode != 0:
+        raise ReleasePreflightChangedFilesError(
+            "release preflight could not derive changed files; run in a Git working tree "
+            "or pass --changed-file explicitly for fixture mode"
+        )
+
+    changed: list[str] = []
+    commands = (
+        ("diff", "--name-only", "--cached", "--diff-filter=ACMRTUXB"),
+        ("diff", "--name-only", "--diff-filter=ACMRTUXB"),
+        ("ls-files", "--others", "--exclude-standard"),
+    )
+    for command in commands:
+        result = _run_git(repo_root, *command)
+        if result.returncode != 0:
+            detail = result.stderr.strip() or result.stdout.strip() or "git command failed"
+            raise ReleasePreflightChangedFilesError(
+                f"release preflight could not derive changed files: {detail}"
+            )
+        changed.extend(line.strip() for line in result.stdout.splitlines() if line.strip())
+
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for file_path in changed:
+        normalized = Path(file_path).as_posix()
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        deduped.append(normalized)
+    return tuple(deduped)
 
 
 def _current_package_version(repo_root: Path) -> str | None:

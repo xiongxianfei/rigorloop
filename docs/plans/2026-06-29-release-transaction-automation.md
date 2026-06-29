@@ -71,12 +71,12 @@ Important existing boundaries:
 ## Current Handoff Summary
 
 - Current milestone: M4. Release preflight command
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r1.md
 - Last reviewed milestone: M4
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M4 resolution needed, M5, M6
-- Next stage: review-resolution M4
+- Review status: review-requested; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M4 review pending, M5, M6
+- Next stage: code-review M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -173,7 +173,7 @@ Important existing boundaries:
 
 ### M4. Release preflight command
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Add Python-owned `release-preflight` as the cheap deterministic local/profile/schema gate before full release verification.
 - Requirements: `R18`-`R27`, `AC8`, `AC9`
 - Files/components likely touched:
@@ -200,10 +200,11 @@ Important existing boundaries:
 
 M4 code review status:
 
-- `code-review-m4-r1` requested changes for `CR-RTA-M4-F1` and `CR-RTA-M4-F2`.
-- `CR-RTA-M4-F1`: default `python scripts/release-preflight.py <tag>` does not enforce newly changed unauthorized literals unless `--changed-file` is supplied.
-- `CR-RTA-M4-F2`: direct M4 preflight negative proof is missing for malformed profile, incomplete profile, and missing required local input.
-- Next action: resolve both findings, rerun M4 validation, return M4 to code review.
+- `code-review-m4-r1` requested changes for `CR-RTA-M4-F1` and `CR-RTA-M4-F2`; both findings are resolved in review-resolution and M4 is ready for rerun review.
+- `CR-RTA-M4-F1`: default `python scripts/release-preflight.py <tag>` now derives changed files from Git when `--changed-file` is absent. CLI regression coverage proves a changed unauthorized current-version literal fails under the default invocation.
+- `CR-RTA-M4-F2`: direct M4 preflight negative tests now cover malformed profile, incomplete profile, and missing required local input.
+- Validation: `python scripts/test-release-transaction.py` passed with 50 tests; `python scripts/release-preflight.py --help` passed; Python compilation passed; selector validation remains blocked on known manual-routing for release transaction scripts and unclassified fixture directories while tracked-authoritative-artifact preflights passed.
+- Next action: rerun `code-review M4`.
 
 ### M5. Full release gate parity and timing evidence
 

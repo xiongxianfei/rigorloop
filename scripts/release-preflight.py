@@ -6,7 +6,11 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from release_transaction import release_preflight
+from release_transaction import (
+    ReleasePreflightChangedFilesError,
+    discover_changed_files,
+    release_preflight,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -35,12 +39,29 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    root = Path(args.root)
+    if args.changed_file:
+        changed_files = tuple(args.changed_file)
+        changed_file_source = "explicit --changed-file"
+    else:
+        try:
+            changed_files = discover_changed_files(root)
+        except ReleasePreflightChangedFilesError as exc:
+            print(f"release-preflight {args.tag}: fail")
+            print(str(exc))
+            return 1
+        changed_file_source = "git"
     result = release_preflight(
         args.tag,
-        root=Path(args.root),
-        changed_files=tuple(args.changed_file),
+        root=root,
+        changed_files=changed_files,
         check_remote=not args.skip_remote,
     )
+    print(f"release preflight changed-file source: {changed_file_source}")
+    if changed_files:
+        print("release preflight changed files: " + ", ".join(changed_files))
+    else:
+        print("release preflight changed files: none")
     for warning in result.warnings:
         print(f"warning: {warning}")
     if result.errors:
