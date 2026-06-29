@@ -78,6 +78,7 @@ review:
   plan_review: docs/changes/2026-06-29-release-transaction-automation/reviews/plan-review-r1.md
   test_spec_review: docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r3.md
   code_review_m1_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m1-r1.md
+  code_review_m1_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m1-r2.md
   review_log: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   review_resolution: docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
 validation:
@@ -131,6 +132,8 @@ validation:
     result: pass
   - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py
     result: pass
+  - command: code-review-m1-r2
+    result: clean_with_notes_no_material_findings
   - command: python scripts/test-release-transaction.py
     result: fail_expected_missing_release_transaction_module_before_M1_implementation
   - command: python scripts/test-release-transaction.py

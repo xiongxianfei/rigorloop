@@ -77,3 +77,7 @@ Required outcome: M1 must add direct tests and fixtures for the required missing
 Chosen action: Added focused negative fixtures and assertions in `scripts/test-release-transaction.py` for missing profile path, missing `release_tag`, missing `package_version`, missing `npm_package`, missing `adapter_artifacts`, missing `publication`, missing `evidence`, and missing `validation`. The existing missing `targets` case remains in the table-driven required-field coverage.
 Validation target: Rerun `python scripts/test-release-transaction.py`, `python scripts/validate-release.py --help`, selector explicit routing, change metadata validation, lifecycle explicit-path validation, review artifact validation, and whitespace validation before rerunning `code-review M1`.
 Validation evidence: `python scripts/test-release-transaction.py` passed after the targeted fix: 11 tests. Remaining lifecycle validation is recorded in the active plan and change metadata.
+
+### code-review-m1-r2
+
+No material findings. No resolution entry is required for this clean review round.
