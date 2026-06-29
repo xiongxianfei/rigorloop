@@ -70,13 +70,13 @@ Important existing boundaries:
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Release profile schema and loader
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r3.md
+- Current milestone: M2. Release-surface inventory and ownership classification
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m1-r2.md
 - Last reviewed milestone: M1
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M1 review pending, M2, M3, M4, M5, M6
-- Next stage: code-review M1
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M2, M3, M4, M5, M6
+- Next stage: implement M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -84,7 +84,7 @@ Important existing boundaries:
 
 ### M1. Release profile schema and loader
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Define `release-profile-v1`, load profiles from `docs/releases/profiles/<tag>.yaml`, and validate routine versus special release boundaries.
 - Requirements: `R1`-`R6`, `AC1`, `AC19`
 - Files/components likely touched:
@@ -274,6 +274,7 @@ Important existing boundaries:
 - 2026-06-29: M1 implementation added the shared release-profile loader, closed-vocabulary schema validation, profile path resolution for `docs/releases/profiles/<tag>.yaml`, and release profile fixtures. Current next stage is `code-review M1`.
 - 2026-06-29: code-review-m1-r1 requested changes for `CR-RTA-M1-F1`; current next stage is `review-resolution M1`.
 - 2026-06-29: review-resolution for `CR-RTA-M1-F1` added direct missing-profile-path and missing-required-field coverage for the M1 profile loader. Current next stage is `code-review M1`.
+- 2026-06-29: code-review-m1-r2 completed cleanly with no material findings. M1 is closed; current next stage is `implement M2`.
 
 ## Decision log
 
