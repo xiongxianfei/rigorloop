@@ -71,12 +71,12 @@ Important existing boundaries:
 ## Current Handoff Summary
 
 - Current milestone: M5. Full release gate parity and timing evidence
-- Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r2.md
+- Current milestone state: review-requested
+- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r1.md
 - Last reviewed milestone: M5
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M5 resolution needed, M6
-- Next stage: review-resolution M5
+- Review status: review-requested; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M5 review pending, M6
+- Next stage: code-review M5
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -209,7 +209,7 @@ M4 code review status:
 
 ### M5. Full release gate parity and timing evidence
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Preserve `release-verify.sh <tag>` as the full local gate, align CI release workflow with the same repository-owned command set, and record timing evidence.
 - Requirements: `R28`-`R30`, `R39`-`R42`, `AC10`, `AC11`, `AC16`, `AC17`, `AC20`
 - Files/components likely touched:
@@ -244,11 +244,12 @@ M5 implementation status:
 - `prepare-release` now generates a reviewable `docs/releases/<tag>/timing.yaml` skeleton for routine releases when the profile requires timing evidence.
 - `release-verify.sh` now registers `v0.3.5` in the existing release target, release-output, untracked-public-adapter, and npm-package release gates. The required command set remains unchanged.
 - Added a static release workflow parity check proving `.github/workflows/release.yml` delegates release readiness and npm publication validation to `bash scripts/release-verify.sh` instead of duplicating release-gate checks.
+- `CR-RTA-M5-F1` resolution: `scripts/validate-release.py` now wires profile-required timing validation into the repository-owned release validation path. Missing or malformed required timing evidence fails through `validate-release.py`; over-target timing produces warning output without failing; releases without profiles remain compatible.
 - Unaffected aligned surface: `.github/workflows/release.yml` already used the repository-owned release command set, so M5 added validator coverage instead of changing the workflow.
-- Unaffected aligned surface: `scripts/validate-release.py` remains unchanged because M5 timing proof is owned by release transaction helpers and focused tests in this slice; full published release validation remains M6 scope.
-- Validation: `python scripts/test-release-transaction.py` passed with 60 tests; `RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-release-output RELEASE_COMMIT=fixture-commit bash scripts/release-verify.sh v0.3.5` passed; Python compilation passed; selector validation selected `adapters.regression` and remained blocked only on known manual routing for release transaction scripts; the selected adapter/release regression command passed; `python scripts/validate-release.py --help` passed; lifecycle explicit-path validation passed for `.github/workflows/release.yml`, `scripts/release-verify.sh`, `scripts/validate-release.py`, plan, plan index, and change metadata.
+- Validation: `python scripts/test-release-transaction.py` passed with 65 tests; `python scripts/validate-release.py --help` passed; `RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-release-output RELEASE_COMMIT=fixture-commit bash scripts/release-verify.sh v0.3.5` passed; Python compilation passed; selector validation selected `adapters.regression` and remained blocked only on known manual routing for release transaction scripts; the selected adapter/release regression command passed; lifecycle validation, review artifact validation, and whitespace validation passed.
 - `code-review-m5-r1` requested changes for `CR-RTA-M5-F1`: timing validation exists as a helper but is not wired into the repository-owned release validation path.
-- Next action: resolve `CR-RTA-M5-F1`, rerun M5 validation, return M5 to code review.
+- `CR-RTA-M5-F1` is resolved in review-resolution.
+- Next action: rerun `code-review M5`.
 
 ### M6. Published evidence closeout and behavior preservation
 

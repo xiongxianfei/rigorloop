@@ -5,9 +5,11 @@ from __future__ import annotations
 
 import argparse
 import subprocess
+import sys
 from pathlib import Path
 
 from adapter_distribution import RELEASE_ROOT, validate_release_output
+from release_transaction import profile_path_for_tag, validate_release_timing_evidence
 
 
 def read_changed_paths_file(path: Path) -> list[str]:
@@ -51,6 +53,15 @@ def current_git_commit() -> str:
         ["git", "rev-parse", "HEAD"],
         text=True,
     ).strip()
+
+
+def validate_release_transaction_timing(version: str) -> tuple[list[str], list[str]]:
+    profile_path = profile_path_for_tag(version)
+    if not profile_path.exists():
+        return [], []
+
+    result = validate_release_timing_evidence(version)
+    return list(result.errors), list(result.warnings)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -104,6 +115,10 @@ def main(argv: list[str] | None = None) -> int:
         release_commit=release_commit,
         npm_tarball_root=npm_tarball_root,
     )
+    timing_errors, timing_warnings = validate_release_transaction_timing(args.version)
+    errors.extend(timing_errors)
+    for warning in timing_warnings:
+        print(f"[WARN] {warning}", file=sys.stderr)
     if errors:
         for error in errors:
             print(error)

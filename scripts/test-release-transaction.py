@@ -3,6 +3,9 @@
 
 from __future__ import annotations
 
+import contextlib
+import importlib.util
+import io
 import shutil
 import sys
 import tempfile
@@ -831,6 +834,30 @@ class ReleasePreflightTests(unittest.TestCase):
 class ReleaseGateParityAndTimingTests(unittest.TestCase):
     maxDiff = None
 
+    def load_validate_release_module(self):
+        module_path = ROOT / "scripts" / "validate-release.py"
+        spec = importlib.util.spec_from_file_location("validate_release_cli_under_test", module_path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def run_validate_release_cli(self, root: Path, version: str = "v0.3.5"):
+        module = self.load_validate_release_module()
+        module.validate_release_output = lambda *args, **kwargs: []
+        module.current_git_commit = lambda: "fixture-commit"
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        previous_cwd = Path.cwd()
+        try:
+            os.chdir(root)
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                exit_code = module.main(["--version", version])
+        finally:
+            os.chdir(previous_cwd)
+        return exit_code, stdout.getvalue(), stderr.getvalue()
+
     def make_prepared_repo(self, root: Path) -> None:
         PrepareReleaseTests().make_repo(root)
         prepare_release("v0.3.5", root=root)
@@ -998,6 +1025,66 @@ class ReleaseGateParityAndTimingTests(unittest.TestCase):
 
         self.assertEqual(result.errors, ())
         self.assertTrue(any("preflight" in warning and "target" in warning for warning in result.warnings), result.warnings)
+
+    def test_validate_release_fails_when_profile_requires_missing_timing_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            PrepareReleaseTests().make_repo(root)
+
+            exit_code, stdout, stderr = self.run_validate_release_cli(root)
+
+        output = stdout + stderr
+        self.assertNotEqual(exit_code, 0, output)
+        self.assertIn("timing.yaml", output)
+        self.assertIn("missing", output)
+
+    def test_validate_release_accepts_profile_required_valid_timing_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            self.write_timing(root, self.valid_timing_text())
+
+            exit_code, stdout, stderr = self.run_validate_release_cli(root)
+
+        output = stdout + stderr
+        self.assertEqual(exit_code, 0, output)
+        self.assertIn("validated release metadata for v0.3.5", stdout)
+
+    def test_validate_release_rejects_malformed_timing_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            self.write_timing(root, self.valid_timing_text().replace("id: preflight", "id: fast_lane", 1))
+
+            exit_code, stdout, stderr = self.run_validate_release_cli(root)
+
+        output = stdout + stderr
+        self.assertNotEqual(exit_code, 0, output)
+        self.assertIn("unknown timing phase id: fast_lane", output)
+
+    def test_validate_release_reports_timing_budget_warning_without_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            self.write_timing(root, self.valid_timing_text(preflight_duration=999))
+
+            exit_code, stdout, stderr = self.run_validate_release_cli(root)
+
+        output = stdout + stderr
+        self.assertEqual(exit_code, 0, output)
+        self.assertIn("[WARN]", stderr)
+        self.assertIn("preflight", stderr)
+        self.assertIn("target", stderr)
+
+    def test_validate_release_does_not_require_timing_for_release_without_profile(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+
+            exit_code, stdout, stderr = self.run_validate_release_cli(root, version="v0.3.4")
+
+        output = stdout + stderr
+        self.assertEqual(exit_code, 0, output)
+        self.assertNotIn("timing.yaml", output)
 
 
 if __name__ == "__main__":
