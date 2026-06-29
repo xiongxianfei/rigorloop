@@ -41,6 +41,11 @@ surfaces:
     classification: historical-immutable
     expected_owner: historical-release
     rationale: "Prior release evidence is not rewritten by routine release prep."
+  - id: prior-profile-snapshots
+    path: docs/releases/profiles/v*.yaml
+    classification: historical-immutable
+    expected_owner: historical-release
+    rationale: "Prior release transaction profiles are durable historical release evidence and are not rewritten by routine release prep."
   - id: historical-fixtures
     path: tests/fixtures/**/v*.yaml
     classification: historical-immutable

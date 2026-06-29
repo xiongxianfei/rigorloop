@@ -274,14 +274,15 @@ def _validate_surface_inventory(path: Path, data: dict[str, Any]) -> ReleaseSurf
     seen_ids: set[str] = set()
     for surface in surfaces:
         surface_id = _require_entry_string(errors, surface, "surface", "id")
-        _require_entry_string(errors, surface, surface_id or "surface", "path")
+        surface_context = f"surface inventory entry {surface_id}" if surface_id else "surface"
+        _require_entry_string(errors, surface, surface_context, "path")
         classification = _require_entry_string(
             errors,
             surface,
-            surface_id or "surface",
+            surface_context,
             "classification",
         )
-        _require_entry_string(errors, surface, surface_id or "surface", "expected_owner")
+        _require_entry_string(errors, surface, surface_context, "expected_owner")
         if surface_id:
             if surface_id in seen_ids:
                 errors.append(f"duplicate surface id: {surface_id}")
@@ -320,7 +321,8 @@ def _validate_literal_audit_baseline(
         errors.append("schema_version must be release-literal-audit-baseline-v1")
 
     for entry in entries:
-        _require_entry_string(errors, entry, "literal audit entry", "id")
+        entry_id = _require_entry_string(errors, entry, "literal audit entry", "id")
+        entry_context = f"literal audit entry {entry_id}" if entry_id else "literal audit entry"
         literal = _require_entry_string(errors, entry, "literal audit entry", "literal")
         file_path = _require_entry_string(errors, entry, literal or "literal audit entry", "file")
         line = entry.get("line")
@@ -329,7 +331,7 @@ def _validate_literal_audit_baseline(
         classification = _require_entry_string(
             errors,
             entry,
-            literal or "literal audit entry",
+            entry_context,
             "classification",
         )
         expected_owner = _require_entry_string(

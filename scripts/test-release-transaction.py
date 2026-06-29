@@ -160,12 +160,21 @@ class ReleaseSurfaceInventoryTests(unittest.TestCase):
         self.assertEqual(classifications["release-metadata"], "profile-owned-generated")
         self.assertEqual(classifications["release-notes-narrative"], "human-authored-profile-checked")
         self.assertEqual(classifications["prior-release-evidence"], "historical-immutable")
+        self.assertEqual(classifications["prior-profile-snapshots"], "historical-immutable")
 
     def test_unknown_surface_classification_fails_closed(self) -> None:
         with self.assertRaises(ReleaseProfileError) as raised:
             load_surface_inventory_file(self.fixture("invalid-unknown-classification.yaml"))
 
         self.assertIn("unknown surface classification: generated", "\n".join(raised.exception.errors))
+
+    def test_surface_inventory_missing_classification_fails_with_surface_context(self) -> None:
+        with self.assertRaises(ReleaseProfileError) as raised:
+            load_surface_inventory_file(self.fixture("invalid-missing-classification.yaml"))
+
+        errors = "\n".join(raised.exception.errors)
+        self.assertIn("prior-profile-snapshots", errors)
+        self.assertIn("missing required field: classification", errors)
 
     def test_manual_override_without_rationale_fails(self) -> None:
         with self.assertRaises(ReleaseProfileError) as raised:
@@ -211,6 +220,14 @@ class LiteralAuditBaselineTests(unittest.TestCase):
             load_literal_audit_baseline_file(self.fixture("invalid-unknown-classification.yaml"))
 
         self.assertIn("unknown literal classification: stale-current", "\n".join(raised.exception.errors))
+
+    def test_literal_audit_missing_classification_fails_with_entry_context(self) -> None:
+        with self.assertRaises(ReleaseProfileError) as raised:
+            load_literal_audit_baseline_file(self.fixture("invalid-missing-classification.yaml"))
+
+        errors = "\n".join(raised.exception.errors)
+        self.assertIn("literal audit entry literal-baseline-001", errors)
+        self.assertIn("missing required field: classification", errors)
 
     def test_changed_unauthorized_current_literal_fails(self) -> None:
         with self.assertRaises(ReleaseProfileError) as raised:

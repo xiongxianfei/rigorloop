@@ -14,6 +14,7 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
 
 ## Resolution Entries
 
@@ -81,3 +82,27 @@ Validation evidence: `python scripts/test-release-transaction.py` passed after t
 ### code-review-m1-r2
 
 No material findings. No resolution entry is required for this clean review round.
+
+### code-review-m2-r1
+
+Finding ID: CR-RTA-M2-F1
+Disposition: accepted
+Status: resolved after implementation
+Owner: implementer
+Owning stage: implement
+Rationale: The finding identifies a direct proof gap against the approved literal-audit proof contract.
+Required outcome: Add a direct literal-audit negative fixture and test proving an entry missing `classification` fails with a diagnostic naming `classification`.
+Chosen action: Added `tests/fixtures/release-transaction/literal-audit/invalid-missing-classification.yaml` and a focused `LiteralAuditBaselineTests` assertion proving an entry missing `classification` fails with a diagnostic naming `literal audit entry literal-baseline-001` and `classification`.
+Validation target: Rerun M2 focused release transaction tests and lifecycle validation after the targeted fixture/test fix.
+Validation evidence: `python scripts/test-release-transaction.py` passed with 23 tests. Existing literal-audit negative tests for unknown classification, changed unauthorized literal, historical fixture without rationale, and generated-current without owner remain green.
+
+Finding ID: CR-RTA-M2-F2
+Disposition: accepted
+Status: resolved after implementation
+Owner: implementer
+Owning stage: implement
+Rationale: The finding identifies an incomplete surface ownership inventory and a direct proof gap against the approved M2 surface-classification test case.
+Required outcome: Add prior profile snapshots to the M2 surface inventory and valid fixture as a `historical-immutable` surface, and add a direct negative fixture/test proving an unclassified surface fails with an owner/classification diagnostic.
+Chosen action: Added prior profile snapshots as a `historical-immutable` surface in the change-local release surface inventory and valid fixture. Added `tests/fixtures/release-transaction/surface-inventory/invalid-missing-classification.yaml` and a focused `ReleaseSurfaceInventoryTests` assertion proving a surface missing `classification` fails with a diagnostic naming `prior-profile-snapshots` and `classification`.
+Validation target: Rerun M2 focused release transaction tests and lifecycle validation after the targeted inventory and fixture/test fix.
+Validation evidence: `python scripts/test-release-transaction.py` passed with 23 tests. No release preparation, preflight, publication closeout, release verification, CI workflow, or generated evidence behavior changed in this M2 resolution.
