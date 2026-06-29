@@ -37,6 +37,16 @@ Material findings: CR-RTA-M2-F1, CR-RTA-M2-F2
 Open findings: None
 
 ### Review entry
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: 2
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: None
+Open findings: None
+
+### Review entry
 Review ID: spec-review-r1
 Stage: spec-review
 Round: 1

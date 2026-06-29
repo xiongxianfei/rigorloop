@@ -106,3 +106,7 @@ Required outcome: Add prior profile snapshots to the M2 surface inventory and va
 Chosen action: Added prior profile snapshots as a `historical-immutable` surface in the change-local release surface inventory and valid fixture. Added `tests/fixtures/release-transaction/surface-inventory/invalid-missing-classification.yaml` and a focused `ReleaseSurfaceInventoryTests` assertion proving a surface missing `classification` fails with a diagnostic naming `prior-profile-snapshots` and `classification`.
 Validation target: Rerun M2 focused release transaction tests and lifecycle validation after the targeted inventory and fixture/test fix.
 Validation evidence: `python scripts/test-release-transaction.py` passed with 23 tests. No release preparation, preflight, publication closeout, release verification, CI workflow, or generated evidence behavior changed in this M2 resolution.
+
+### code-review-m2-r2
+
+No material findings. No resolution entry is required for this clean review round.

@@ -70,13 +70,13 @@ Important existing boundaries:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Release-surface inventory and ownership classification
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r1.md
+- Current milestone: M3. `prepare-release` pending artifact generation
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
 - Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M2 review pending, M3, M4, M5, M6
-- Next stage: code-review M2
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M3, M4, M5, M6
+- Next stage: implement M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -112,7 +112,7 @@ Important existing boundaries:
 
 ### M2. Release-surface inventory and ownership classification
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Inventory routine release-prep surfaces, classify them as profile-owned generated, human-authored profile-checked, or historical immutable, and add the baseline literal-audit classification needed before enforcement.
 - Requirements: `R7`, `R10`, `R11`, `R14`, `R15`, `R22`-`R26`, `R43`, `R44`, `AC5`-`AC7`, `AC18`
 - Files/components likely touched:
@@ -279,6 +279,7 @@ Important existing boundaries:
 - 2026-06-29: M2 implementation added release surface inventory validation, literal-audit baseline validation, fixture coverage, and change-local inventory/baseline evidence. Current next stage is `code-review M2`.
 - 2026-06-29: code-review-m2-r1 requested changes for `CR-RTA-M2-F1` and `CR-RTA-M2-F2`; current next stage is `review-resolution M2`.
 - 2026-06-29: review-resolution for `CR-RTA-M2-F1` and `CR-RTA-M2-F2` added direct missing-classification fixture coverage for literal audit and surface inventory, and classified prior profile snapshots as historical immutable. Current next stage is `code-review M2`.
+- 2026-06-29: code-review-m2-r2 completed cleanly with no material findings. M2 is closed; current next stage is `implement M3`.
 
 ## Decision log
 
