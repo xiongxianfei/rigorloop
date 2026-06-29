@@ -291,6 +291,7 @@ RELEASE_TARGETS = {
     "v0.3.1": ("final", "v0.1.5"),
     "v0.3.2": ("final", "v0.1.5"),
     "v0.3.3": ("final", "v0.1.5"),
+    "v0.3.4": ("final", "v0.1.5"),
 }
 REQUIRED_RELEASE_VALIDATION_KEYS = (
     "generated_sync",
@@ -299,10 +300,10 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "security",
 )
 TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
-ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3"})
-UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3"})
-NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4", "v0.1.5", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3"})
-TARGET_NATIVE_INIT_RELEASES = frozenset({"v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3"})
+ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4"})
+UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4"})
+NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4", "v0.1.5", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4"})
+TARGET_NATIVE_INIT_RELEASES = frozenset({"v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4"})
 TOKEN_COST_RUNTIME_V2 = "skill-token-runtime-v2"
 PLACEHOLDER_RELEASE_PATTERNS = (
     "Replace this script with repository-specific release checks",
@@ -2380,13 +2381,52 @@ def _local_release_candidate_metadata(version: str, release_output_dir: Path) ->
             "url": f"https://github.com/xiongxianfei/rigorloop/releases/download/{version}/{archive_name}",
             "sha256": hashlib.sha256(archive_path.read_bytes()).hexdigest(),
             "size_bytes": archive_path.stat().st_size,
-            "install_root": install_root,
             "tree_hash_algorithm": "rigorloop-tree-hash-v1",
-            "tree_sha256": tree_sha256,
-            "file_count": file_count,
         }
-        if adapter_name == "opencode":
-            artifact["skills_only_compatibility"] = {"releases": [version]}
+        command_root = OPENCODE_COMMAND_ROOT.as_posix()
+        command_tree_sha256, command_file_count = (
+            _archive_root_hash(archive_path, command_root)
+            if adapter_name == "opencode" and _supports_opencode_command_aliases(version)
+            else ("", 0)
+        )
+        if adapter_name == "opencode" and command_file_count:
+            artifact.update(
+                {
+                    "install_roots": {
+                        "skills": install_root,
+                        "commands": command_root,
+                    },
+                    "root_hashes": {
+                        "skills": {
+                            "tree_sha256": tree_sha256,
+                            "file_count": file_count,
+                        },
+                        "commands": {
+                            "tree_sha256": command_tree_sha256,
+                            "file_count": command_file_count,
+                        },
+                    },
+                    "command_aliases": {
+                        "opencode": {
+                            "count": len(OPENCODE_COMMAND_ALIASES),
+                            "paths": [
+                                f"{command_root}/{alias}.md"
+                                for alias in OPENCODE_COMMAND_ALIASES
+                            ],
+                        },
+                    },
+                }
+            )
+        else:
+            artifact.update(
+                {
+                    "install_root": install_root,
+                    "tree_sha256": tree_sha256,
+                    "file_count": file_count,
+                }
+            )
+            if adapter_name == "opencode":
+                artifact["skills_only_compatibility"] = {"releases": [version]}
         artifacts.append(artifact)
 
     return {
@@ -2403,11 +2443,6 @@ def _local_release_candidate_metadata(version: str, release_output_dir: Path) ->
             "sha256": "0" * 64,
         },
         "artifacts": artifacts,
-        "compatibility": {
-            "opencode_skills_only": {
-                "releases": [version],
-            },
-        },
         "validation": {
             "command": f"python scripts/validate-adapters.py --root <release-output-dir> --version {version}",
             "result": "pass",
