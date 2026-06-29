@@ -17,6 +17,7 @@ Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m4-r1
+Review closeout: code-review-m4-r2
 
 ## Resolution Entries
 
@@ -153,3 +154,7 @@ Required outcome: Add direct proof for the missing M4 preflight negative cases, 
 Chosen action: Added direct M4 preflight negative tests for malformed profile, incomplete profile, and missing required local input. The tests exercise the preflight path and assert diagnostics naming the profile parse failure, missing profile field, or missing metadata input path.
 Validation target: Rerun M4 focused tests, lifecycle validation, review artifact validation, and whitespace validation after resolution.
 Validation evidence: `python scripts/test-release-transaction.py` passed with 50 tests. Existing M4 clean fixture, package mismatch, metadata pointer drift, invalid pending evidence, dirty `release-output`, helper-level changed unauthorized literal, local tag conflict, unreachable remote warning, and reachable remote conflict tests remain green.
+
+### code-review-m4-r2
+
+No material findings. No resolution entry is required for this clean review round.

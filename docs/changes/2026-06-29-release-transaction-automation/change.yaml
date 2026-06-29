@@ -86,6 +86,7 @@ changed_files:
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r2.md
 review:
   status: resolution-complete
   unresolved_items: 0
@@ -105,6 +106,7 @@ review:
   code_review_m3_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
   code_review_m3_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
   code_review_m4_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r1.md
+  code_review_m4_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r2.md
   review_log: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   review_resolution: docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
 validation:
@@ -178,6 +180,8 @@ validation:
     result: pass
   - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/release-preflight.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/profiles --path tests/fixtures/release-transaction/evidence
     result: blocked_manual_routing_for_release_transaction_scripts_unclassified_fixture_directories_tracked_artifact_preflights_passed
+  - command: code-review-m4-r2
+    result: clean_with_notes_no_material_findings
   - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py
     result: pass
   - command: code-review-m1-r2

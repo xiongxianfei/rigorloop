@@ -70,13 +70,13 @@ Important existing boundaries:
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Release preflight command
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r1.md
+- Current milestone: M5. Full release gate parity and timing evidence
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r2.md
 - Last reviewed milestone: M4
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M4 review pending, M5, M6
-- Next stage: code-review M4
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M5, M6
+- Next stage: implement M5
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -173,7 +173,7 @@ Important existing boundaries:
 
 ### M4. Release preflight command
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add Python-owned `release-preflight` as the cheap deterministic local/profile/schema gate before full release verification.
 - Requirements: `R18`-`R27`, `AC8`, `AC9`
 - Files/components likely touched:
@@ -204,7 +204,8 @@ M4 code review status:
 - `CR-RTA-M4-F1`: default `python scripts/release-preflight.py <tag>` now derives changed files from Git when `--changed-file` is absent. CLI regression coverage proves a changed unauthorized current-version literal fails under the default invocation.
 - `CR-RTA-M4-F2`: direct M4 preflight negative tests now cover malformed profile, incomplete profile, and missing required local input.
 - Validation: `python scripts/test-release-transaction.py` passed with 50 tests; `python scripts/release-preflight.py --help` passed; Python compilation passed; selector validation remains blocked on known manual-routing for release transaction scripts and unclassified fixture directories while tracked-authoritative-artifact preflights passed.
-- Next action: rerun `code-review M4`.
+- `code-review-m4-r2` completed with no material findings. M4 is closed.
+- Next action: implement M5.
 
 ### M5. Full release gate parity and timing evidence
 
