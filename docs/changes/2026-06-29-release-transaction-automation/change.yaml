@@ -50,6 +50,7 @@ changed_files:
   - specs/release-transaction-automation.test.md
   - scripts/release_transaction.py
   - scripts/test-release-transaction.py
+  - scripts/prepare-release.py
   - tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml
   - tests/fixtures/release-transaction/profiles/invalid-missing-release-tag.yaml
   - tests/fixtures/release-transaction/profiles/invalid-missing-package-version.yaml
@@ -168,6 +169,24 @@ validation:
     result: resolved_added_missing_classification_coverage_and_prior_profile_snapshot_inventory
   - command: code-review-m2-r2
     result: clean_with_notes_no_material_findings
+  - command: M3 tests before implementation
+    result: fail_expected_missing_prepare_release_api
+  - command: python scripts/test-release-transaction.py
+    result: pass_28_tests
+  - command: python scripts/prepare-release.py --help
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path scripts/prepare-release.py
+    result: blocked_manual_routing_for_release_transaction_script_paths_new_prepare_release_untracked_before_staging
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path scripts/prepare-release.py
+    result: blocked_manual_routing_for_release_transaction_script_paths_tracked_artifact_preflight_passed
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
   - command: python scripts/test-release-transaction.py
     result: pass_23_tests
   - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/surface-inventory --path tests/fixtures/release-transaction/literal-audit --path docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml --path docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml

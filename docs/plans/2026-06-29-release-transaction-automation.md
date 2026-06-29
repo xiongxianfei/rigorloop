@@ -71,12 +71,12 @@ Important existing boundaries:
 ## Current Handoff Summary
 
 - Current milestone: M3. `prepare-release` pending artifact generation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
 - Last reviewed milestone: M2
-- Review status: approved; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M3, M4, M5, M6
-- Next stage: implement M3
+- Review status: review-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M3 review pending, M4, M5, M6
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -140,7 +140,7 @@ Important existing boundaries:
 
 ### M3. `prepare-release` pending artifact generation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Implement idempotent release preparation from the active profile, generating profile-owned surfaces and pending evidence while preserving human-authored narrative and historical evidence.
 - Requirements: `R8`-`R17`, `R43`, `R44`, `AC2`-`AC5`, `AC18`
 - Files/components likely touched:
@@ -280,6 +280,8 @@ Important existing boundaries:
 - 2026-06-29: code-review-m2-r1 requested changes for `CR-RTA-M2-F1` and `CR-RTA-M2-F2`; current next stage is `review-resolution M2`.
 - 2026-06-29: review-resolution for `CR-RTA-M2-F1` and `CR-RTA-M2-F2` added direct missing-classification fixture coverage for literal audit and surface inventory, and classified prior profile snapshots as historical immutable. Current next stage is `code-review M2`.
 - 2026-06-29: code-review-m2-r2 completed cleanly with no material findings. M2 is closed; current next stage is `implement M3`.
+- 2026-06-29: M3 implementation started. Scope is limited to fixture-safe `prepare-release` pending artifact generation, generated-region preservation, pending evidence shape proof, and the CLI wrapper.
+- 2026-06-29: M3 implementation added a fixture-safe `prepare-release` generator, CLI wrapper, pending artifact shape validation helper, idempotency/narrative-preservation/historical-immutability tests, and check-mode proof. Current next stage is `code-review M3`.
 
 ## Decision log
 
@@ -291,10 +293,12 @@ Important existing boundaries:
 - 2026-06-29: `scripts/validate-release.py` is unaffected in M1 because profile-backed generated-surface validation belongs to M2-M4. M1 only introduces the source-of-truth profile loader that later release validators can consume.
 - 2026-06-29: M2 keeps release surface inventory and literal-audit baseline validation in `scripts/release_transaction.py` so M1-M2 release transaction proof stays in one focused command. Enforcement in preflight remains deferred to M4.
 - 2026-06-29: M2 registers `release-surface-inventory.yaml` and `release-literal-audit-baseline.yaml` as exact change-evidence classes in the selector. This removes deterministic evidence-registration debt while keeping release transaction script and fixture routing manually owned by `python scripts/test-release-transaction.py`.
+- 2026-06-29: M3 keeps `prepare-release` generation in `scripts/release_transaction.py` with a thin `scripts/prepare-release.py` wrapper. The first slice validates generated pending release artifacts with a release-transaction helper because existing `scripts/validate-release.py` has no `--phase pre-publication` fixture mode.
 
 ## Surprises and discoveries
 
 - The validation selector does not yet classify the new release transaction scripts or fixtures, so M1 uses the approved command matrix validation plus lifecycle/change-metadata checks instead of a selector-owned script check.
+- `docs/releases/profiles/` does not yet exist for a live release. M3 uses temporary repository fixtures with `docs/releases/profiles/v0.3.5.yaml` so the generator contract is proven without creating a real release profile or publishing release artifacts.
 
 ## Validation notes
 
@@ -321,6 +325,12 @@ Important existing boundaries:
 - 2026-06-29: `python scripts/test-release-transaction.py` passed after M2 review-resolution: 23 tests.
 - 2026-06-29: `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/surface-inventory --path tests/fixtures/release-transaction/literal-audit --path docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml --path docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml` reported manual routing for release transaction script and fixture paths and selected `artifact_lifecycle.validate` for registered release transaction evidence.
 - 2026-06-29: `python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml`, `python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/`, and `git diff --check --` passed after M2 review-resolution updates.
+- 2026-06-29: `python scripts/test-release-transaction.py` failed at the start of M3 with `ImportError: cannot import name 'prepare_release'`, proving the new M3 tests were not passing before generator implementation.
+- 2026-06-29: `python scripts/test-release-transaction.py` passed after M3 implementation: 28 tests.
+- 2026-06-29: `python scripts/prepare-release.py --help` passed after adding the CLI wrapper.
+- 2026-06-29: `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path scripts/prepare-release.py` reported manual routing for release transaction script paths and initially reported the new `scripts/prepare-release.py` as untracked before staging.
+- 2026-06-29: `python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py`, `python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md`, and `git diff --check --` passed after M3 implementation.
+- 2026-06-29: `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path scripts/prepare-release.py` reported manual routing for the release transaction scripts after staging; tracked-authoritative-artifacts preflight passed.
 - Final implementation verification should include review artifact validation, change metadata validation, lifecycle explicit-path validation, selected release tooling tests, and release-gate preservation checks.
 
 ## Outcome and retrospective
