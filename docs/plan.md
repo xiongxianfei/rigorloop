@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Release Transaction Automation](plans/2026-06-29-release-transaction-automation.md) | active | implement M4 | 2026-06-29-release-transaction-automation |
+| [Release Transaction Automation](plans/2026-06-29-release-transaction-automation.md) | active | code-review M4 | 2026-06-29-release-transaction-automation |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked

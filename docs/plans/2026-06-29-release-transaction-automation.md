@@ -71,12 +71,12 @@ Important existing boundaries:
 ## Current Handoff Summary
 
 - Current milestone: M4. Release preflight command
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
 - Last reviewed milestone: M3
-- Review status: approved; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M4, M5, M6
-- Next stage: implement M4
+- Review status: review-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M4 review pending, M5, M6
+- Next stage: code-review M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -173,7 +173,7 @@ Important existing boundaries:
 
 ### M4. Release preflight command
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add Python-owned `release-preflight` as the cheap deterministic local/profile/schema gate before full release verification.
 - Requirements: `R18`-`R27`, `AC8`, `AC9`
 - Files/components likely touched:
@@ -285,6 +285,8 @@ Important existing boundaries:
 - 2026-06-29: code-review-m3-r1 requested changes for `CR-RTA-M3-F1`. M3 remains in `resolution-needed` until pending-evidence validation rejects malformed target-specific placeholders and direct negative proof is added.
 - 2026-06-29: review-resolution for `CR-RTA-M3-F1` added target-bound pending npm-publication validation and direct negative tests for published target result, `npx -y` command shape, missing target, duplicate target, unknown target, and table/YAML projection mismatch. Current next stage is `code-review M3`.
 - 2026-06-29: code-review-m3-r2 completed cleanly with no material findings. M3 is closed; current next stage is `implement M4`.
+- 2026-06-29: M4 implementation started. Scope is limited to Python-owned release preflight, cheap deterministic local/profile/schema checks, fixture-safe tag checks, and focused release transaction tests.
+- 2026-06-29: M4 implementation added `scripts/release-preflight.py`, the shared `release_preflight` helper, package/profile and metadata pointer checks, pending evidence validation, literal-audit integration, release-output cleanliness checks, local tag conflict checks, reachable remote tag conflict checks, unreachable remote-state warnings, and focused tests. Current next stage is `code-review M4`.
 
 ## Decision log
 
@@ -298,6 +300,7 @@ Important existing boundaries:
 - 2026-06-29: M2 registers `release-surface-inventory.yaml` and `release-literal-audit-baseline.yaml` as exact change-evidence classes in the selector. This removes deterministic evidence-registration debt while keeping release transaction script and fixture routing manually owned by `python scripts/test-release-transaction.py`.
 - 2026-06-29: M3 keeps `prepare-release` generation in `scripts/release_transaction.py` with a thin `scripts/prepare-release.py` wrapper. The first slice validates generated pending release artifacts with a release-transaction helper because existing `scripts/validate-release.py` has no `--phase pre-publication` fixture mode.
 - 2026-06-29: M3 pending npm-publication validation treats the generated YAML block as canonical and validates the Markdown table as a projection of that structured target data. This keeps pending evidence checks target-bound while preserving the generated evidence file shape.
+- 2026-06-29: M4 keeps preflight side-effect-light and local by default. Remote tag checks use repository-configured `origin` only when reachable; unreachable remote tag state is a warning, not a silent pass or a hard local blocker.
 
 ## Surprises and discoveries
 
@@ -339,6 +342,10 @@ Important existing boundaries:
 - 2026-06-29: `python scripts/test-release-transaction.py` passed after `CR-RTA-M3-F1` resolution: 34 tests.
 - 2026-06-29: `python scripts/prepare-release.py --help`, `python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py`, and `git diff --check --` passed after `CR-RTA-M3-F1` resolution.
 - 2026-06-29: `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/prepare-release.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/evidence` reported manual routing for release transaction scripts and an unclassified static evidence fixture path. The `CR-RTA-M3-F1` resolution uses temporary generated repository fixtures in `python scripts/test-release-transaction.py`, so no static `tests/fixtures/release-transaction/evidence` files were added.
+- 2026-06-29: `python scripts/test-release-transaction.py` failed at the start of M4 with `ImportError: cannot import name 'release_preflight'`, proving the new M4 tests were not passing before preflight implementation.
+- 2026-06-29: `python scripts/test-release-transaction.py` passed after M4 implementation: 45 tests.
+- 2026-06-29: `python scripts/release-preflight.py --help`, `python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py scripts/release-preflight.py`, and `git diff --check --` passed after M4 implementation.
+- 2026-06-29: `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/release-preflight.py --path scripts/test-release-transaction.py` initially blocked because `scripts/release-preflight.py` was untracked, then after staging reported manual routing for release transaction scripts with tracked-authoritative-artifacts preflight passed.
 - Final implementation verification should include review artifact validation, change metadata validation, lifecycle explicit-path validation, selected release tooling tests, and release-gate preservation checks.
 
 ## Outcome and retrospective

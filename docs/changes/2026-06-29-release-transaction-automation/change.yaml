@@ -51,6 +51,7 @@ changed_files:
   - scripts/release_transaction.py
   - scripts/test-release-transaction.py
   - scripts/prepare-release.py
+  - scripts/release-preflight.py
   - tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml
   - tests/fixtures/release-transaction/profiles/invalid-missing-release-tag.yaml
   - tests/fixtures/release-transaction/profiles/invalid-missing-package-version.yaml
@@ -189,6 +190,18 @@ validation:
     result: pass
   - command: code-review-m3-r2
     result: clean_with_notes_no_material_findings
+  - command: M4 tests before implementation
+    result: fail_expected_missing_release_preflight_api
+  - command: python scripts/test-release-transaction.py
+    result: pass_45_tests
+  - command: python scripts/release-preflight.py --help
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py scripts/release-preflight.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/release-preflight.py --path scripts/test-release-transaction.py
+    result: blocked_manual_routing_for_release_transaction_scripts_new_release_preflight_tracked_artifact_preflight_passed
+  - command: git diff --check --
+    result: pass
   - command: M3 tests before implementation
     result: fail_expected_missing_prepare_release_api
   - command: python scripts/test-release-transaction.py
