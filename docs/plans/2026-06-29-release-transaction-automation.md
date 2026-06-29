@@ -70,13 +70,13 @@ Important existing boundaries:
 
 ## Current Handoff Summary
 
-- Current milestone: M3. `prepare-release` pending artifact generation
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
+- Current milestone: M4. Release preflight command
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
 - Last reviewed milestone: M3
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M3 review pending, M4, M5, M6
-- Next stage: code-review M3
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M4, M5, M6
+- Next stage: implement M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -140,7 +140,7 @@ Important existing boundaries:
 
 ### M3. `prepare-release` pending artifact generation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Implement idempotent release preparation from the active profile, generating profile-owned surfaces and pending evidence while preserving human-authored narrative and historical evidence.
 - Requirements: `R8`-`R17`, `R43`, `R44`, `AC2`-`AC5`, `AC18`
 - Files/components likely touched:
@@ -284,6 +284,7 @@ Important existing boundaries:
 - 2026-06-29: M3 implementation added a fixture-safe `prepare-release` generator, CLI wrapper, pending artifact shape validation helper, idempotency/narrative-preservation/historical-immutability tests, and check-mode proof. Current next stage is `code-review M3`.
 - 2026-06-29: code-review-m3-r1 requested changes for `CR-RTA-M3-F1`. M3 remains in `resolution-needed` until pending-evidence validation rejects malformed target-specific placeholders and direct negative proof is added.
 - 2026-06-29: review-resolution for `CR-RTA-M3-F1` added target-bound pending npm-publication validation and direct negative tests for published target result, `npx -y` command shape, missing target, duplicate target, unknown target, and table/YAML projection mismatch. Current next stage is `code-review M3`.
+- 2026-06-29: code-review-m3-r2 completed cleanly with no material findings. M3 is closed; current next stage is `implement M4`.
 
 ## Decision log
 

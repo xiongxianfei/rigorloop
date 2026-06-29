@@ -83,6 +83,7 @@ changed_files:
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r1.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
 review:
   status: resolution-complete
   unresolved_items: 0
@@ -100,6 +101,7 @@ review:
   code_review_m2_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r1.md
   code_review_m2_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
   code_review_m3_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
+  code_review_m3_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
   review_log: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   review_resolution: docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
 validation:
@@ -185,6 +187,8 @@ validation:
     result: blocked_manual_routing_for_release_transaction_scripts_unclassified_static_evidence_fixture_path_focused_release_transaction_tests_own_M3_resolution_proof
   - command: git diff --check --
     result: pass
+  - command: code-review-m3-r2
+    result: clean_with_notes_no_material_findings
   - command: M3 tests before implementation
     result: fail_expected_missing_prepare_release_api
   - command: python scripts/test-release-transaction.py
