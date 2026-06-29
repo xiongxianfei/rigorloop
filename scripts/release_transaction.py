@@ -4,10 +4,15 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import subprocess
+import tempfile
+import urllib.error
+import urllib.parse
+import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 
 SCHEMA_VERSION = "release-profile-v1"
@@ -96,6 +101,10 @@ class ReleasePreflightChangedFilesError(ValueError):
     """Raised when release preflight cannot determine changed files."""
 
 
+class PublicEvidenceUnavailable(RuntimeError):
+    """Raised when public release closeout evidence is not available."""
+
+
 @dataclass(frozen=True)
 class ReleaseProfile:
     path: Path
@@ -159,6 +168,44 @@ class CloseReleasePublicationResult:
     errors: tuple[str, ...]
     warnings: tuple[str, ...] = ()
     changed_paths: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class GitHubReleaseAsset:
+    name: str
+    url: str
+    size: int
+    sha256: str | None = None
+
+
+@dataclass(frozen=True)
+class NpmPackageMetadata:
+    package: str
+    version: str
+    tarball_url: str
+    integrity: str
+    shasum: str | None = None
+    published_at: str | None = None
+
+
+@dataclass(frozen=True)
+class PublicSmokeResult:
+    command: str
+    exit_code: int
+    stdout: str
+    stderr: str
+    summary: str
+
+
+class PublicEvidenceProvider(Protocol):
+    def fetch_github_release_assets(self, *, tag: str) -> tuple[GitHubReleaseAsset, ...]:
+        ...
+
+    def fetch_npm_package_metadata(self, *, package: str, version: str) -> NpmPackageMetadata:
+        ...
+
+    def run_public_npx_smoke(self, *, command: str, cwd: Path) -> PublicSmokeResult:
+        ...
 
 
 @dataclass(frozen=True)
@@ -496,30 +543,141 @@ def validate_release_workflow_parity(root: Path | str = Path(".")) -> list[str]:
     return errors
 
 
+class NetworkPublicEvidenceProvider:
+    """Collect public closeout evidence from GitHub, npm, and npx."""
+
+    def __init__(self, *, github_repository: str = "xiongxianfei/rigorloop") -> None:
+        self.github_repository = github_repository
+
+    def fetch_github_release_assets(self, *, tag: str) -> tuple[GitHubReleaseAsset, ...]:
+        release_url = (
+            f"https://api.github.com/repos/{self.github_repository}/releases/tags/"
+            f"{urllib.parse.quote(tag, safe='')}"
+        )
+        data = _read_json_url(release_url, f"GitHub release asset metadata not found for {tag}")
+        assets = data.get("assets")
+        if not isinstance(assets, list) or not assets:
+            raise PublicEvidenceUnavailable(f"GitHub release asset metadata not found for {tag}")
+
+        collected: list[GitHubReleaseAsset] = []
+        for item in assets:
+            if not isinstance(item, dict):
+                continue
+            name = item.get("name")
+            url = item.get("browser_download_url")
+            size = item.get("size", 0)
+            if not isinstance(name, str) or not isinstance(url, str):
+                continue
+            collected.append(
+                GitHubReleaseAsset(
+                    name=name,
+                    url=url,
+                    size=int(size) if isinstance(size, int) else 0,
+                    sha256=_download_sha256(url),
+                )
+            )
+        if not collected:
+            raise PublicEvidenceUnavailable(f"GitHub release asset metadata not found for {tag}")
+        return tuple(collected)
+
+    def fetch_npm_package_metadata(self, *, package: str, version: str) -> NpmPackageMetadata:
+        package_url = f"https://registry.npmjs.org/{urllib.parse.quote(package, safe='')}"
+        data = _read_json_url(package_url, f"npm metadata for {package}@{version} not available")
+        versions = data.get("versions")
+        if not isinstance(versions, dict) or version not in versions:
+            raise PublicEvidenceUnavailable(f"npm metadata for {package}@{version} not available")
+        record = versions[version]
+        if not isinstance(record, dict):
+            raise PublicEvidenceUnavailable(f"npm metadata for {package}@{version} not available")
+        dist = record.get("dist")
+        if not isinstance(dist, dict):
+            raise PublicEvidenceUnavailable(f"npm tarball metadata for {package}@{version} not available")
+        tarball = dist.get("tarball")
+        integrity = dist.get("integrity")
+        if not isinstance(tarball, str) or not isinstance(integrity, str):
+            raise PublicEvidenceUnavailable(f"npm tarball metadata for {package}@{version} not available")
+        shasum = dist.get("shasum")
+        times = data.get("time")
+        published_at = times.get(version) if isinstance(times, dict) and isinstance(times.get(version), str) else None
+        return NpmPackageMetadata(
+            package=package,
+            version=version,
+            tarball_url=tarball,
+            integrity=integrity,
+            shasum=shasum if isinstance(shasum, str) else None,
+            published_at=published_at,
+        )
+
+    def run_public_npx_smoke(self, *, command: str, cwd: Path) -> PublicSmokeResult:
+        result = subprocess.run(
+            command.split(),
+            cwd=cwd,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        summary = _first_output_line(result.stdout) or _first_output_line(result.stderr) or "no output"
+        return PublicSmokeResult(
+            command=command,
+            exit_code=result.returncode,
+            stdout=result.stdout,
+            stderr=result.stderr,
+            summary=summary,
+        )
+
+
 def close_release_publication(
     tag: str,
     *,
     root: Path | str = Path("."),
     public_evidence: Path | str | None = None,
+    fixture_mode: bool = False,
+    provider: PublicEvidenceProvider | None = None,
     check: bool = False,
 ) -> CloseReleasePublicationResult:
     repo_root = Path(root)
     profile = load_release_profile(tag, root=repo_root)
-    evidence_path = Path(public_evidence) if public_evidence is not None else (
-        repo_root / "docs" / "releases" / tag / "public-evidence.yaml"
-    )
-    if not evidence_path.exists():
-        return CloseReleasePublicationResult(
-            tag,
-            (f"public evidence not available: {_repo_relative(evidence_path, repo_root)}",),
-        )
+    evidence_path: Path | None = None
+    if fixture_mode:
+        if public_evidence is None:
+            return CloseReleasePublicationResult(
+                tag,
+                ("fixture public evidence mode requires --fixture-public-evidence",),
+            )
+        evidence_path = Path(public_evidence)
+        if not evidence_path.exists():
+            return CloseReleasePublicationResult(
+                tag,
+                (f"fixture public evidence not available: {_repo_relative(evidence_path, repo_root)}",),
+            )
+        try:
+            evidence = _load_yaml_subset(evidence_path, "fixture public release evidence")
+        except ReleaseProfileError as exc:
+            return CloseReleasePublicationResult(tag, tuple(exc.errors))
+    else:
+        if public_evidence is not None:
+            return CloseReleasePublicationResult(
+                tag,
+                (
+                    "manual public evidence cannot satisfy routine closeout; "
+                    "collect public evidence through closeout providers or use explicit fixture mode"
+                ,),
+            )
+        try:
+            evidence = _collect_public_release_evidence(
+                profile,
+                provider=provider or NetworkPublicEvidenceProvider(),
+                repo_root=repo_root,
+            )
+        except PublicEvidenceUnavailable as exc:
+            return CloseReleasePublicationResult(
+                tag,
+                (f"public closeout unavailable: {exc}",),
+            )
 
-    try:
-        evidence = _load_yaml_subset(evidence_path, "public release evidence")
-    except ReleaseProfileError as exc:
-        return CloseReleasePublicationResult(tag, tuple(exc.errors))
-
-    errors = _validate_public_release_evidence(evidence, profile, evidence_path, repo_root)
+    validation_path = evidence_path or repo_root / "public-closeout-provider"
+    errors = _validate_public_release_evidence(evidence, profile, validation_path, repo_root)
     if errors:
         return CloseReleasePublicationResult(tag, tuple(errors))
 
@@ -564,6 +722,156 @@ def validate_published_release_artifacts(
     return errors
 
 
+def _collect_public_release_evidence(
+    profile: ReleaseProfile,
+    *,
+    provider: PublicEvidenceProvider,
+    repo_root: Path,
+) -> dict[str, Any]:
+    github_assets = provider.fetch_github_release_assets(tag=profile.release_tag)
+    npm_metadata = provider.fetch_npm_package_metadata(
+        package=profile.npm_package,
+        version=profile.package_version,
+    )
+    asset_rows = _public_asset_rows(profile, github_assets)
+
+    smoke_rows: list[dict[str, Any]] = []
+    with tempfile.TemporaryDirectory(prefix="rigorloop-public-closeout-") as tmp:
+        smoke_root = Path(tmp)
+        version_command = f"npx {profile.npm_package}@{profile.package_version} version"
+        version_smoke = provider.run_public_npx_smoke(command=version_command, cwd=smoke_root)
+        if version_smoke.exit_code != 0:
+            raise PublicEvidenceUnavailable(
+                f"public npx version smoke failed for {profile.release_tag}: "
+                f"`{version_command}` exited {version_smoke.exit_code}"
+            )
+        for target in profile.targets:
+            command = f"npx {profile.npm_package}@{profile.package_version} init {target}"
+            smoke = provider.run_public_npx_smoke(command=command, cwd=smoke_root)
+            if smoke.exit_code != 0:
+                raise PublicEvidenceUnavailable(
+                    f"public npx smoke failed for {target}: `{command}` exited {smoke.exit_code}"
+                )
+            smoke_rows.append(_public_smoke_row(target, smoke, cwd=smoke_root))
+
+    return {
+        "schema_version": "release-public-evidence-v1",
+        "release_tag": profile.release_tag,
+        "package": npm_metadata.package,
+        "version": npm_metadata.version,
+        "github_release_url": f"https://github.com/xiongxianfei/rigorloop/releases/tag/{profile.release_tag}",
+        "npm_package_url": f"https://www.npmjs.com/package/{profile.npm_package}/v/{profile.package_version}",
+        "npm_integrity": npm_metadata.integrity,
+        "npm_tarball": npm_metadata.tarball_url,
+        "published_at": npm_metadata.published_at or "public registry timestamp unavailable",
+        "dist_tag_latest": npm_metadata.version,
+        "version_command": version_smoke.command,
+        "version_result": "pass",
+        "version_output_summary": version_smoke.summary,
+        "github_assets": asset_rows,
+        "target_init_smoke": smoke_rows,
+    }
+
+
+def _public_asset_rows(
+    profile: ReleaseProfile,
+    github_assets: tuple[GitHubReleaseAsset, ...],
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for target in profile.targets:
+        matches = [
+            asset for asset in github_assets
+            if target in asset.name and profile.release_tag in asset.name
+        ]
+        if not matches:
+            raise PublicEvidenceUnavailable(
+                f"GitHub release asset metadata not found for {profile.release_tag} target {target}"
+            )
+        if len(matches) > 1:
+            raise PublicEvidenceUnavailable(
+                f"GitHub release asset metadata is ambiguous for {profile.release_tag} target {target}"
+            )
+        asset = matches[0]
+        if not asset.sha256:
+            raise PublicEvidenceUnavailable(
+                f"GitHub release asset checksum not available for {profile.release_tag} target {target}"
+            )
+        rows.append(
+            {
+                "target": target,
+                "url": asset.url,
+                "sha256": _normalize_sha256(asset.sha256),
+            }
+        )
+    return rows
+
+
+def _public_smoke_row(target: str, smoke: PublicSmokeResult, *, cwd: Path) -> dict[str, Any]:
+    tree_hashes, file_counts = _public_install_root_evidence(target, cwd)
+    if tree_hashes is None:
+        tree_hashes = _public_smoke_output_value(smoke, "tree_hashes")
+    if file_counts is None:
+        file_counts = _public_smoke_output_value(smoke, "file_counts")
+    if tree_hashes is None:
+        raise PublicEvidenceUnavailable(f"public npx smoke for {target} did not report tree_hashes")
+    if file_counts is None:
+        raise PublicEvidenceUnavailable(f"public npx smoke for {target} did not report file_counts")
+    return {
+        "target": target,
+        "command": smoke.command,
+        "result": "pass",
+        "output_summary": smoke.summary,
+        "tree_hashes": tree_hashes,
+        "file_counts": file_counts,
+    }
+
+
+def _public_install_root_evidence(target: str, cwd: Path) -> tuple[str | None, str | None]:
+    tree_values: list[str] = []
+    count_values: list[str] = []
+    roots = _target_install_roots(target)
+    for root_name in roots:
+        root_path = cwd / root_name
+        if not root_path.exists():
+            return None, None
+        tree_hash, file_count = _tree_hash_and_file_count(root_path)
+        value = f"sha256:{tree_hash}"
+        count = str(file_count)
+        if len(roots) > 1:
+            value = f"{root_name}={value}"
+            count = f"{root_name}={count}"
+        tree_values.append(value)
+        count_values.append(count)
+    return ";".join(tree_values), ";".join(count_values)
+
+
+def _tree_hash_and_file_count(root: Path) -> tuple[str, int]:
+    rows: list[tuple[str, str]] = []
+    for path in sorted(root.rglob("*")):
+        if not path.is_file():
+            continue
+        relative = path.relative_to(root).as_posix()
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        rows.append((relative, digest))
+    manifest = "".join(f"{relative}\t{digest}\n" for relative, digest in rows)
+    return hashlib.sha256(manifest.encode("utf-8")).hexdigest(), len(rows)
+
+
+def _public_smoke_output_value(smoke: PublicSmokeResult, key: str) -> str | None:
+    prefix = f"{key}="
+    for line in smoke.stdout.splitlines():
+        stripped = line.strip()
+        if stripped.startswith(prefix):
+            value = stripped[len(prefix):].strip()
+            if value:
+                return value
+    return None
+
+
+def _normalize_sha256(value: str) -> str:
+    return value if value.startswith("sha256:") else f"sha256:{value}"
+
+
 def _validate_public_release_evidence(
     evidence: dict[str, Any],
     profile: ReleaseProfile,
@@ -593,7 +901,7 @@ def _validate_public_release_evidence(
     ):
         if not isinstance(evidence.get(field), str) or not evidence.get(field):
             errors.append(f"{prefix}: missing required public evidence field: {field}")
-    expected_version_command = f"npx {profile.npm_package}@{profile.package_version} --version"
+    expected_version_command = f"npx {profile.npm_package}@{profile.package_version} version"
     if evidence.get("version_command") != expected_version_command:
         errors.append(f"{prefix}: version smoke has invalid command; expected `{expected_version_command}`")
     if evidence.get("version_result") != "pass":
@@ -645,7 +953,7 @@ def _validate_public_smoke_row(
     row: dict[str, Any],
     profile: ReleaseProfile,
 ) -> None:
-    expected_command = f"npx {profile.npm_package}@{profile.package_version} init {target} --json"
+    expected_command = f"npx {profile.npm_package}@{profile.package_version} init {target}"
     command = row.get("command")
     if command != expected_command:
         errors.append(f"{prefix}: public npx smoke target {target} has invalid command; expected `{expected_command}`")
@@ -793,7 +1101,7 @@ def _validate_published_version_smoke(
     fields: dict[str, Any],
     profile: ReleaseProfile,
 ) -> None:
-    expected_command = f"npx {profile.npm_package}@{profile.package_version} --version"
+    expected_command = f"npx {profile.npm_package}@{profile.package_version} version"
     command = fields.get("command")
     if command != expected_command:
         errors.append(f"{_repo_relative(path, repo_root)}: version smoke has invalid command; expected `{expected_command}`")
@@ -837,7 +1145,7 @@ def _validate_published_target_row(
 ) -> None:
     prefix = _repo_relative(path, repo_root)
     fields = row.fields
-    expected_command = f"npx {profile.npm_package}@{profile.package_version} init {expected_target} --json"
+    expected_command = f"npx {profile.npm_package}@{profile.package_version} init {expected_target}"
     if fields.get("target") != expected_target:
         errors.append(f"{prefix}: published npm-publication target {expected_target} records mismatched target `{fields.get('target')}`")
     if fields.get("command") != expected_command:
@@ -1007,6 +1315,39 @@ def discover_changed_files(root: Path | str = Path(".")) -> tuple[str, ...]:
         seen.add(normalized)
         deduped.append(normalized)
     return tuple(deduped)
+
+
+def _read_json_url(url: str, unavailable_message: str) -> dict[str, Any]:
+    try:
+        with urllib.request.urlopen(url, timeout=30) as response:
+            data = json.loads(response.read().decode("utf-8"))
+    except (OSError, urllib.error.URLError, json.JSONDecodeError) as exc:
+        raise PublicEvidenceUnavailable(f"{unavailable_message}: {exc}") from exc
+    if not isinstance(data, dict):
+        raise PublicEvidenceUnavailable(unavailable_message)
+    return data
+
+
+def _download_sha256(url: str) -> str:
+    digest = hashlib.sha256()
+    try:
+        with urllib.request.urlopen(url, timeout=60) as response:
+            while True:
+                chunk = response.read(1024 * 1024)
+                if not chunk:
+                    break
+                digest.update(chunk)
+    except (OSError, urllib.error.URLError) as exc:
+        raise PublicEvidenceUnavailable(f"GitHub release asset checksum not available for {url}: {exc}") from exc
+    return f"sha256:{digest.hexdigest()}"
+
+
+def _first_output_line(text: str) -> str:
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped:
+            return stripped
+    return ""
 
 
 def _current_package_version(repo_root: Path) -> str | None:

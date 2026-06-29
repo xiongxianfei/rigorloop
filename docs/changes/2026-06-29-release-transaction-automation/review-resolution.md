@@ -182,14 +182,12 @@ No material findings. No resolution entry is required for this clean review roun
 ### code-review-m6-r1
 
 Finding ID: CR-RTA-M6-F1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved after implementation
 Owner: implementer
 Owning stage: review-resolution
-Decision owner: implementer
-Decision needed: Accept and make `close-release-publication.py` collect GitHub/npm metadata and fresh public npx smoke itself with fixture-safe stubs, or revise the approved spec/test spec to allow manually supplied public evidence files to satisfy routine closeout.
 Rationale: The review found that M6 validates and publishes a local public-evidence YAML file, but does not read public GitHub/npm metadata or run fresh public npx smoke as required by `R32` and `R33`.
 Required outcome: Published closeout must not mark evidence published solely from manually supplied local assertions; it must own the required public evidence collection or the governing contract must change.
-Chosen action: pending
+Chosen action: Changed routine `close-release-publication.py <tag>` so default closeout collects public evidence through injectable closeout providers. The production provider reads GitHub release asset metadata, npm registry metadata, npm tarball identity/integrity, and runs fresh public `npx ... version` plus `npx ... init <target>` smoke for every release-profile target. Local public evidence can only be used through explicit fixture mode and cannot satisfy default routine closeout. Published evidence is generated from provider-collected values and validated through the existing published-evidence validator.
 Validation target: Rerun M6 focused tests, closeout command-path provider/stub tests, published evidence validation, release-verify dry-run, Python compilation, selector-selected validation, lifecycle validation, review artifact validation, and whitespace validation after resolution.
-Validation evidence: pending
+Validation evidence: `python scripts/test-release-transaction.py` passed with 84 tests, including provider-call coverage for GitHub assets, npm metadata, public version smoke, public target smoke for codex/claude/opencode, unavailable GitHub/npm/smoke failures, manual evidence rejection in default mode, explicit fixture mode, and provider-value provenance. `python scripts/close-release-publication.py --help`, Python compilation, `release-verify.sh` dry-run, selector-selected adapter/release regression, lifecycle validation, review artifact validation, and whitespace validation passed. Selector validation remains blocked only on known manual routing for release transaction scripts while selecting the adapter/release regression that passed.
