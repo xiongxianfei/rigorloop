@@ -154,6 +154,14 @@ class ReleaseTimingValidationResult:
 
 
 @dataclass(frozen=True)
+class CloseReleasePublicationResult:
+    release_tag: str
+    errors: tuple[str, ...]
+    warnings: tuple[str, ...] = ()
+    changed_paths: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
 class PendingTargetSmoke:
     target: str
     fields: dict[str, Any]
@@ -486,6 +494,436 @@ def validate_release_workflow_parity(root: Path | str = Path(".")) -> list[str]:
                 f".github/workflows/release.yml: release workflow must not duplicate release gate command directly: {check}"
             )
     return errors
+
+
+def close_release_publication(
+    tag: str,
+    *,
+    root: Path | str = Path("."),
+    public_evidence: Path | str | None = None,
+    check: bool = False,
+) -> CloseReleasePublicationResult:
+    repo_root = Path(root)
+    profile = load_release_profile(tag, root=repo_root)
+    evidence_path = Path(public_evidence) if public_evidence is not None else (
+        repo_root / "docs" / "releases" / tag / "public-evidence.yaml"
+    )
+    if not evidence_path.exists():
+        return CloseReleasePublicationResult(
+            tag,
+            (f"public evidence not available: {_repo_relative(evidence_path, repo_root)}",),
+        )
+
+    try:
+        evidence = _load_yaml_subset(evidence_path, "public release evidence")
+    except ReleaseProfileError as exc:
+        return CloseReleasePublicationResult(tag, tuple(exc.errors))
+
+    errors = _validate_public_release_evidence(evidence, profile, evidence_path, repo_root)
+    if errors:
+        return CloseReleasePublicationResult(tag, tuple(errors))
+
+    npm_publication = repo_root / "docs" / "releases" / tag / "npm-publication.md"
+    published_text = _published_npm_publication_text(profile, evidence)
+    planned = {npm_publication: published_text}
+    changed_paths = tuple(
+        _repo_relative(path, repo_root)
+        for path, content in planned.items()
+        if not path.exists() or path.read_text(encoding="utf-8") != content
+    )
+    if not check:
+        for path, content in planned.items():
+            if path.exists() and path.read_text(encoding="utf-8") == content:
+                continue
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+
+    return CloseReleasePublicationResult(tag, (), changed_paths=changed_paths)
+
+
+def validate_published_release_artifacts(
+    tag: str,
+    *,
+    root: Path | str = Path("."),
+) -> list[str]:
+    repo_root = Path(root)
+    errors: list[str] = []
+    profile = load_release_profile(tag, root=repo_root)
+    path = repo_root / "docs" / "releases" / tag / "npm-publication.md"
+    if not path.exists():
+        return [f"{_repo_relative(path, repo_root)}: missing published npm-publication evidence"]
+    text = path.read_text(encoding="utf-8")
+    _require_text(errors, path, repo_root, text, "Status: published")
+    _require_text(errors, path, repo_root, text, "published: true")
+    yaml_block = _extract_yaml_fence(errors, path, repo_root, text)
+    version_smoke = _parse_section_fields(yaml_block, "version_smoke")
+    _validate_published_version_smoke(errors, path, repo_root, version_smoke, profile)
+    rows = _parse_published_target_init_smoke(errors, path, repo_root, yaml_block)
+    _validate_published_target_rows(errors, path, repo_root, rows, profile)
+    _validate_published_table_projection(errors, path, repo_root, text, rows, profile)
+    return errors
+
+
+def _validate_public_release_evidence(
+    evidence: dict[str, Any],
+    profile: ReleaseProfile,
+    path: Path,
+    repo_root: Path,
+) -> list[str]:
+    errors: list[str] = []
+    prefix = _repo_relative(path, repo_root)
+    if evidence.get("schema_version") != "release-public-evidence-v1":
+        errors.append(f"{prefix}: schema_version must be release-public-evidence-v1")
+    if evidence.get("release_tag") != profile.release_tag:
+        errors.append(f"{prefix}: release_tag `{evidence.get('release_tag')}` does not match `{profile.release_tag}`")
+    if evidence.get("package") != profile.npm_package:
+        errors.append(f"{prefix}: package `{evidence.get('package')}` does not match `{profile.npm_package}`")
+    if evidence.get("version") != profile.package_version:
+        errors.append(f"{prefix}: version `{evidence.get('version')}` does not match `{profile.package_version}`")
+    for field in (
+        "github_release_url",
+        "npm_package_url",
+        "npm_integrity",
+        "npm_tarball",
+        "published_at",
+        "dist_tag_latest",
+        "version_command",
+        "version_result",
+        "version_output_summary",
+    ):
+        if not isinstance(evidence.get(field), str) or not evidence.get(field):
+            errors.append(f"{prefix}: missing required public evidence field: {field}")
+    expected_version_command = f"npx {profile.npm_package}@{profile.package_version} --version"
+    if evidence.get("version_command") != expected_version_command:
+        errors.append(f"{prefix}: version smoke has invalid command; expected `{expected_version_command}`")
+    if evidence.get("version_result") != "pass":
+        errors.append(f"{prefix}: version smoke result must be pass")
+
+    asset_rows = _require_mapping_list(errors, evidence, "github_assets")
+    smoke_rows = _require_mapping_list(errors, evidence, "target_init_smoke")
+    asset_by_target = _rows_by_target(asset_rows)
+    smoke_by_target = _rows_by_target(smoke_rows)
+    for target in profile.targets:
+        assets = asset_by_target.get(target, [])
+        smokes = smoke_by_target.get(target, [])
+        if not assets:
+            errors.append(f"{prefix}: missing GitHub release asset for target: {target}")
+        elif len(assets) > 1:
+            errors.append(f"{prefix}: duplicate GitHub release asset for target: {target}")
+        else:
+            asset = assets[0]
+            if not isinstance(asset.get("url"), str) or not asset.get("url", "").startswith("https://"):
+                errors.append(f"{prefix}: GitHub release asset {target} missing public URL")
+            _validate_sha_values(errors, prefix, target, "archive sha256", str(asset.get("sha256", "")), allow_root_qualified=False)
+        if not smokes:
+            errors.append(f"{prefix}: missing public npx smoke for target: {target}")
+        elif len(smokes) > 1:
+            errors.append(f"{prefix}: duplicate public npx smoke for target: {target}")
+        else:
+            _validate_public_smoke_row(errors, prefix, target, smokes[0], profile)
+
+    for target in sorted(set(asset_by_target) - set(profile.targets)):
+        errors.append(f"{prefix}: unknown GitHub release asset target: {target}")
+    for target in sorted(set(smoke_by_target) - set(profile.targets)):
+        errors.append(f"{prefix}: unknown public npx smoke target: {target}")
+    return errors
+
+
+def _rows_by_target(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    by_target: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        target = row.get("target")
+        if isinstance(target, str):
+            by_target.setdefault(target, []).append(row)
+    return by_target
+
+
+def _validate_public_smoke_row(
+    errors: list[str],
+    prefix: str,
+    target: str,
+    row: dict[str, Any],
+    profile: ReleaseProfile,
+) -> None:
+    expected_command = f"npx {profile.npm_package}@{profile.package_version} init {target} --json"
+    command = row.get("command")
+    if command != expected_command:
+        errors.append(f"{prefix}: public npx smoke target {target} has invalid command; expected `{expected_command}`")
+    if row.get("result") != "pass":
+        errors.append(f"{prefix}: public npx smoke target {target} result must be pass")
+    if not isinstance(row.get("output_summary"), str) or not row.get("output_summary"):
+        errors.append(f"{prefix}: public npx smoke target {target} missing output_summary")
+    _validate_sha_values(errors, prefix, target, "tree hash", str(row.get("tree_hashes", "")), allow_root_qualified=True)
+    _validate_file_count_values(errors, prefix, target, str(row.get("file_counts", "")))
+
+
+def _published_npm_publication_text(profile: ReleaseProfile, evidence: dict[str, Any]) -> str:
+    asset_by_target = {row["target"]: row for row in _require_mapping_list([], evidence, "github_assets")}
+    smoke_by_target = {row["target"]: row for row in _require_mapping_list([], evidence, "target_init_smoke")}
+    yaml_block = _published_npm_publication_yaml(profile, evidence, asset_by_target, smoke_by_target)
+    table_rows = "\n".join(
+        _published_table_row(profile, target, asset_by_target[target], smoke_by_target[target])
+        for target in profile.targets
+    )
+    return (
+        f"# npm publication evidence for {profile.release_tag}\n\n"
+        "Status: published\n\n"
+        "This file is generated by `close-release-publication` from public GitHub, npm, and npx evidence.\n\n"
+        "```yaml\n"
+        f"{yaml_block}"
+        "```\n\n"
+        "| Target | Command | npm version | Package source | Public archive URL | Installed root(s) | Tree hash value(s) | File count(s) | Command output summary | Archive verified | Tree verified | Result | Closeout blocker |\n"
+        "|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+        f"{table_rows}\n"
+    )
+
+
+def _published_npm_publication_yaml(
+    profile: ReleaseProfile,
+    evidence: dict[str, Any],
+    asset_by_target: dict[str, dict[str, Any]],
+    smoke_by_target: dict[str, dict[str, Any]],
+) -> str:
+    target_rows = "\n".join(
+        _published_target_init_smoke_yaml(profile, target, asset_by_target[target], smoke_by_target[target])
+        for target in profile.targets
+    )
+    return (
+        "publication:\n"
+        f"  package: \"{profile.npm_package}\"\n"
+        f"  version: \"{profile.package_version}\"\n"
+        f"  release_tag: \"{profile.release_tag}\"\n"
+        "  mode: \"trusted-publishing\"\n"
+        "  status: \"published\"\n"
+        "\n"
+        "github:\n"
+        f"  release_url: \"{evidence['github_release_url']}\"\n"
+        "\n"
+        "npm:\n"
+        "  published: true\n"
+        f"  package_url: \"{evidence['npm_package_url']}\"\n"
+        f"  published_at: \"{evidence['published_at']}\"\n"
+        f"  dist_tag_latest: \"{evidence['dist_tag_latest']}\"\n"
+        f"  integrity: \"{evidence['npm_integrity']}\"\n"
+        f"  tarball: \"{evidence['npm_tarball']}\"\n"
+        "\n"
+        "version_smoke:\n"
+        f"  command: \"{evidence['version_command']}\"\n"
+        f"  result: \"{evidence['version_result']}\"\n"
+        f"  output_summary: \"{evidence['version_output_summary']}\"\n"
+        "\n"
+        "target_init_smoke:\n"
+        f"{target_rows}"
+    )
+
+
+def _published_target_init_smoke_yaml(
+    profile: ReleaseProfile,
+    target: str,
+    asset: dict[str, Any],
+    smoke: dict[str, Any],
+) -> str:
+    return (
+        f"  {target}:\n"
+        f"    command: \"{smoke['command']}\"\n"
+        f"    npm_version: \"{profile.package_version}\"\n"
+        "    package_source: \"npm public registry\"\n"
+        f"    target: \"{target}\"\n"
+        f"    official_archive_url: \"{asset['url']}\"\n"
+        f"    archive_sha256: \"{asset['sha256']}\"\n"
+        f"    installed_roots: \"{';'.join(_target_install_roots(target))}\"\n"
+        f"    tree_hashes: \"{smoke['tree_hashes']}\"\n"
+        f"    file_counts: \"{smoke['file_counts']}\"\n"
+        f"    command_output_summary: \"{smoke['output_summary']}\"\n"
+        "    archive_sha256_verified: true\n"
+        "    tree_hash_verified: true\n"
+        "    result: \"pass\"\n"
+        "    closeout_blocker: \"none\"\n"
+        "    post_publish_closeout_blocked: false\n"
+    )
+
+
+def _published_table_row(
+    profile: ReleaseProfile,
+    target: str,
+    asset: dict[str, Any],
+    smoke: dict[str, Any],
+) -> str:
+    return (
+        f"| {target} | `{smoke['command']}` | `{profile.package_version}` | npm public registry "
+        f"| {asset['url']} | {';'.join(_target_install_roots(target))} | {smoke['tree_hashes']} "
+        f"| {smoke['file_counts']} | {smoke['output_summary']} | true | true | pass | none |"
+    )
+
+
+def _parse_section_fields(yaml_block: str, section_name: str) -> dict[str, Any]:
+    fields: dict[str, Any] = {}
+    in_section = False
+    for raw_line in yaml_block.splitlines():
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+        indent = len(raw_line) - len(raw_line.lstrip(" "))
+        line = raw_line.strip()
+        if indent == 0:
+            if in_section:
+                break
+            in_section = line == f"{section_name}:"
+            continue
+        if in_section and indent == 2 and ":" in line:
+            key, raw_value = line.split(":", 1)
+            value = raw_value.strip()
+            if value:
+                fields[key.strip()] = _parse_scalar(value)
+    return fields
+
+
+def _parse_published_target_init_smoke(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    yaml_block: str,
+) -> tuple[PendingTargetSmoke, ...]:
+    return _parse_pending_target_init_smoke(errors, path, repo_root, yaml_block)
+
+
+def _validate_published_version_smoke(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    fields: dict[str, Any],
+    profile: ReleaseProfile,
+) -> None:
+    expected_command = f"npx {profile.npm_package}@{profile.package_version} --version"
+    command = fields.get("command")
+    if command != expected_command:
+        errors.append(f"{_repo_relative(path, repo_root)}: version smoke has invalid command; expected `{expected_command}`")
+    if fields.get("result") != "pass":
+        errors.append(f"{_repo_relative(path, repo_root)}: version smoke result must be pass")
+    if not isinstance(fields.get("output_summary"), str) or not fields.get("output_summary"):
+        errors.append(f"{_repo_relative(path, repo_root)}: version smoke missing output_summary")
+
+
+def _validate_published_target_rows(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    rows: tuple[PendingTargetSmoke, ...],
+    profile: ReleaseProfile,
+) -> None:
+    rows_by_target: dict[str, list[PendingTargetSmoke]] = {}
+    expected_targets = set(profile.targets)
+    for row in rows:
+        rows_by_target.setdefault(row.target, []).append(row)
+        if row.target not in expected_targets:
+            errors.append(f"{_repo_relative(path, repo_root)}: published npm-publication target_init_smoke unknown target: {row.target}")
+    for target in profile.targets:
+        target_rows = rows_by_target.get(target, [])
+        if not target_rows:
+            errors.append(f"{_repo_relative(path, repo_root)}: published npm-publication target_init_smoke missing target: {target}")
+            continue
+        if len(target_rows) > 1:
+            errors.append(f"{_repo_relative(path, repo_root)}: published npm-publication target_init_smoke duplicate target: {target}")
+            continue
+        _validate_published_target_row(errors, path, repo_root, target_rows[0], target, profile)
+
+
+def _validate_published_target_row(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    row: PendingTargetSmoke,
+    expected_target: str,
+    profile: ReleaseProfile,
+) -> None:
+    prefix = _repo_relative(path, repo_root)
+    fields = row.fields
+    expected_command = f"npx {profile.npm_package}@{profile.package_version} init {expected_target} --json"
+    if fields.get("target") != expected_target:
+        errors.append(f"{prefix}: published npm-publication target {expected_target} records mismatched target `{fields.get('target')}`")
+    if fields.get("command") != expected_command:
+        errors.append(f"{prefix}: published npm-publication target {expected_target} has invalid command; expected `{expected_command}`")
+    if fields.get("npm_version") != profile.package_version:
+        errors.append(f"{prefix}: published npm-publication target {expected_target} has invalid npm_version")
+    if fields.get("result") != "pass":
+        errors.append(f"{prefix}: published npm-publication target {expected_target} result must be pass")
+    if fields.get("closeout_blocker") != "none":
+        errors.append(f"{prefix}: published npm-publication target {expected_target} closeout_blocker must be none")
+    if fields.get("post_publish_closeout_blocked") is not False:
+        errors.append(f"{prefix}: published npm-publication target {expected_target} must set post_publish_closeout_blocked false")
+    if fields.get("archive_sha256_verified") is not True:
+        errors.append(f"{prefix}: published npm-publication target {expected_target} archive_sha256_verified must be true")
+    if fields.get("tree_hash_verified") is not True:
+        errors.append(f"{prefix}: published npm-publication target {expected_target} tree_hash_verified must be true")
+    _validate_sha_values(errors, prefix, expected_target, "archive sha256", str(fields.get("archive_sha256", "")), allow_root_qualified=False)
+    _validate_sha_values(errors, prefix, expected_target, "tree hash", str(fields.get("tree_hashes", "")), allow_root_qualified=True)
+    _validate_file_count_values(errors, prefix, expected_target, str(fields.get("file_counts", "")))
+
+
+def _validate_sha_values(
+    errors: list[str],
+    prefix: str,
+    target: str,
+    field_name: str,
+    value: str,
+    *,
+    allow_root_qualified: bool,
+) -> None:
+    if not value:
+        errors.append(f"{prefix}: target {target} missing {field_name}")
+        return
+    for item in value.split(";"):
+        item = item.strip()
+        if allow_root_qualified and "=" in item:
+            _, item = item.split("=", 1)
+            item = item.strip()
+        if not item.startswith("sha256:"):
+            errors.append(f"{prefix}: target {target} {field_name} must use sha256:<hex> form")
+
+
+def _validate_file_count_values(errors: list[str], prefix: str, target: str, value: str) -> None:
+    if not value:
+        errors.append(f"{prefix}: target {target} missing file count")
+        return
+    for item in value.split(";"):
+        item = item.strip()
+        if "=" in item:
+            _, item = item.split("=", 1)
+            item = item.strip()
+        if not item.isdigit():
+            errors.append(f"{prefix}: target {target} file count must be numeric")
+
+
+def _validate_published_table_projection(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    text: str,
+    rows: tuple[PendingTargetSmoke, ...],
+    profile: ReleaseProfile,
+) -> None:
+    table_rows = _parse_pending_table_rows(text)
+    if not table_rows:
+        errors.append(f"{_repo_relative(path, repo_root)}: missing published npm-publication target table")
+        return
+    rows_by_target = {row.target: row for row in rows}
+    table_by_target = {row["target"]: row for row in table_rows}
+    for target in profile.targets:
+        table_row = table_by_target.get(target)
+        yaml_row = rows_by_target.get(target)
+        if table_row is None or yaml_row is None:
+            continue
+        comparisons = (
+            ("command", table_row["command"], yaml_row.fields.get("command")),
+            ("npm_version", table_row["npm_version"], yaml_row.fields.get("npm_version")),
+            ("result", table_row["result"], yaml_row.fields.get("result")),
+            ("closeout_blocker", table_row["closeout_blocker"], yaml_row.fields.get("closeout_blocker")),
+        )
+        for field, table_value, yaml_value in comparisons:
+            if table_value != yaml_value:
+                errors.append(
+                    f"{_repo_relative(path, repo_root)}: published npm-publication target {target} table projection mismatch for {field}: "
+                    f"table `{table_value}` yaml `{yaml_value}`"
+                )
 
 
 def _validate_timing_record(
