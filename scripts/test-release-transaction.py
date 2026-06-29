@@ -29,9 +29,11 @@ from release_transaction import (  # noqa: E402
     load_release_profile,
     load_release_profile_file,
     load_surface_inventory_file,
+    close_release_publication,
     prepare_release,
     profile_path_for_tag,
     release_preflight,
+    validate_published_release_artifacts,
     validate_release_timing_evidence,
     validate_release_workflow_parity,
     validate_pending_release_artifacts,
@@ -1085,6 +1087,256 @@ class ReleaseGateParityAndTimingTests(unittest.TestCase):
         output = stdout + stderr
         self.assertEqual(exit_code, 0, output)
         self.assertNotIn("timing.yaml", output)
+
+
+class PublishedEvidenceCloseoutTests(unittest.TestCase):
+    maxDiff = None
+
+    def load_validate_release_module(self):
+        module_path = ROOT / "scripts" / "validate-release.py"
+        spec = importlib.util.spec_from_file_location("validate_release_published_under_test", module_path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def run_validate_release_cli(self, root: Path):
+        module = self.load_validate_release_module()
+        module.validate_release_output = lambda *args, **kwargs: []
+        module.current_git_commit = lambda: "fixture-commit"
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        previous_cwd = Path.cwd()
+        try:
+            os.chdir(root)
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                exit_code = module.main(["--version", "v0.3.5"])
+        finally:
+            os.chdir(previous_cwd)
+        return exit_code, stdout.getvalue(), stderr.getvalue()
+
+    def make_prepared_repo(self, root: Path) -> None:
+        PrepareReleaseTests().make_repo(root)
+        prepare_release("v0.3.5", root=root)
+
+    def public_evidence_text(self, *, command_prefix: str = "npx", tree_hash: str = "sha256:codextree") -> str:
+        return (
+            "schema_version: release-public-evidence-v1\n"
+            "release_tag: v0.3.5\n"
+            "package: \"@xiongxianfei/rigorloop\"\n"
+            "version: \"0.3.5\"\n"
+            "github_release_url: \"https://github.com/xiongxianfei/rigorloop/releases/tag/v0.3.5\"\n"
+            "npm_package_url: \"https://www.npmjs.com/package/@xiongxianfei/rigorloop/v/0.3.5\"\n"
+            "npm_integrity: \"sha512-fixture\"\n"
+            "npm_tarball: \"https://registry.npmjs.org/@xiongxianfei/rigorloop/-/rigorloop-0.3.5.tgz\"\n"
+            "published_at: \"2026-06-29T00:00:00Z\"\n"
+            "dist_tag_latest: \"0.3.5\"\n"
+            "version_command: \"npx @xiongxianfei/rigorloop@0.3.5 --version\"\n"
+            "version_result: pass\n"
+            "version_output_summary: \"0.3.5\"\n"
+            "\n"
+            "github_assets:\n"
+            "  - target: codex\n"
+            "    url: \"https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.5/rigorloop-adapter-codex-v0.3.5.zip\"\n"
+            "    sha256: \"sha256:codexarchive\"\n"
+            "  - target: claude\n"
+            "    url: \"https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.5/rigorloop-adapter-claude-v0.3.5.zip\"\n"
+            "    sha256: \"sha256:claudearchive\"\n"
+            "  - target: opencode\n"
+            "    url: \"https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.5/rigorloop-adapter-opencode-v0.3.5.zip\"\n"
+            "    sha256: \"sha256:opencodearchive\"\n"
+            "\n"
+            "target_init_smoke:\n"
+            "  - target: codex\n"
+            f"    command: \"{command_prefix} @xiongxianfei/rigorloop@0.3.5 init codex --json\"\n"
+            "    result: pass\n"
+            "    output_summary: \"created codex adapter\"\n"
+            f"    tree_hashes: \"{tree_hash}\"\n"
+            "    file_counts: \"12\"\n"
+            "  - target: claude\n"
+            "    command: \"npx @xiongxianfei/rigorloop@0.3.5 init claude --json\"\n"
+            "    result: pass\n"
+            "    output_summary: \"created claude adapter\"\n"
+            "    tree_hashes: \"sha256:claudetree\"\n"
+            "    file_counts: \"13\"\n"
+            "  - target: opencode\n"
+            "    command: \"npx @xiongxianfei/rigorloop@0.3.5 init opencode --json\"\n"
+            "    result: pass\n"
+            "    output_summary: \"created opencode adapter\"\n"
+            "    tree_hashes: \".opencode/skills=sha256:opencodeskills;.opencode/commands=sha256:opencodecommands\"\n"
+            "    file_counts: \".opencode/skills=14;.opencode/commands=3\"\n"
+        )
+
+    def write_public_evidence(self, root: Path, text: str | None = None) -> Path:
+        path = root / "tests" / "fixtures" / "release-transaction" / "public-evidence-v0.3.5.yaml"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text if text is not None else self.public_evidence_text(), encoding="utf-8")
+        return path
+
+    def relative_file_texts(self, root: Path) -> dict[str, str]:
+        return {
+            str(path.relative_to(root)): path.read_text(encoding="utf-8")
+            for path in sorted(root.rglob("*"))
+            if path.is_file()
+        }
+
+    def test_close_release_publication_fails_when_public_evidence_unavailable_without_modifying_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            before = self.relative_file_texts(root)
+
+            result = close_release_publication(
+                "v0.3.5",
+                root=root,
+                public_evidence=root / "missing-public-evidence.yaml",
+            )
+
+            after = self.relative_file_texts(root)
+
+        self.assertTrue(any("public evidence not available" in error for error in result.errors), result.errors)
+        self.assertEqual(before, after)
+
+    def test_close_release_publication_generates_published_evidence_and_validation_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            public_evidence = self.write_public_evidence(root)
+
+            result = close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            errors = validate_published_release_artifacts("v0.3.5", root=root)
+            npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
+            text = npm_publication.read_text(encoding="utf-8")
+
+        self.assertEqual(result.errors, ())
+        self.assertEqual(errors, [])
+        self.assertIn("Status: published", text)
+        self.assertIn("version_smoke:", text)
+        self.assertIn("npx @xiongxianfei/rigorloop@0.3.5 init codex --json", text)
+        self.assertNotIn("npx -y", text)
+        self.assertIn("sha256:codextree", text)
+        self.assertIn(".opencode/skills=sha256:opencodeskills", text)
+        self.assertIn("post_publish_closeout_blocked: false", text)
+
+    def test_close_release_publication_cli_check_reports_without_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            public_evidence = self.write_public_evidence(root)
+            npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "close-release-publication.py"),
+                    "v0.3.5",
+                    "--root",
+                    str(root),
+                    "--public-evidence",
+                    str(public_evidence),
+                    "--check",
+                ],
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+            text = npm_publication.read_text(encoding="utf-8")
+
+        output = result.stdout + result.stderr
+        self.assertEqual(result.returncode, 0, output)
+        self.assertIn("docs/releases/v0.3.5/npm-publication.md", stdout := result.stdout)
+        self.assertIn("Status: pending-publication", text)
+        self.assertNotIn("Status: published", text)
+
+    def test_validate_release_accepts_published_closeout_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            public_evidence = self.write_public_evidence(root)
+            close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+
+            exit_code, stdout, stderr = self.run_validate_release_cli(root)
+
+        output = stdout + stderr
+        self.assertEqual(exit_code, 0, output)
+        self.assertIn("validated release metadata for v0.3.5", stdout)
+
+    def test_validate_release_rejects_published_raw_tree_hash(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            public_evidence = self.write_public_evidence(root)
+            close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
+            npm_publication.write_text(
+                npm_publication.read_text(encoding="utf-8").replace("sha256:codextree", "codextree", 1),
+                encoding="utf-8",
+            )
+
+            exit_code, stdout, stderr = self.run_validate_release_cli(root)
+
+        output = stdout + stderr
+        self.assertNotEqual(exit_code, 0, output)
+        self.assertIn("codex", output)
+        self.assertIn("sha256:", output)
+
+    def test_close_release_publication_rejects_npx_y_command_shape(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            public_evidence = self.write_public_evidence(root, self.public_evidence_text(command_prefix="npx -y"))
+
+            result = close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+
+        self.assertTrue(any("codex" in error and "invalid command" in error for error in result.errors), result.errors)
+
+    def test_validate_published_release_artifacts_rejects_raw_tree_hash(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            public_evidence = self.write_public_evidence(root)
+            close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
+            npm_publication.write_text(
+                npm_publication.read_text(encoding="utf-8").replace("sha256:codextree", "codextree", 1),
+                encoding="utf-8",
+            )
+
+            errors = validate_published_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(any("codex" in error and "sha256:" in error for error in errors), errors)
+
+    def test_validate_published_release_artifacts_rejects_missing_target(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            public_evidence = self.write_public_evidence(root)
+            close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
+            text = npm_publication.read_text(encoding="utf-8")
+            start = text.index("  claude:\n")
+            end = text.index("  opencode:\n")
+            npm_publication.write_text(text[:start] + text[end:], encoding="utf-8")
+
+            errors = validate_published_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(any("missing target: claude" in error for error in errors), errors)
+
+    def test_close_release_publication_does_not_rewrite_historical_release_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            historical = root / "docs" / "releases" / "v0.3.4" / "release.yaml"
+            before = historical.read_text(encoding="utf-8")
+            public_evidence = self.write_public_evidence(root)
+
+            result = close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            after = historical.read_text(encoding="utf-8")
+
+        self.assertEqual(result.errors, ())
+        self.assertEqual(before, after)
 
 
 if __name__ == "__main__":

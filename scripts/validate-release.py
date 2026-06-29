@@ -9,7 +9,11 @@ import sys
 from pathlib import Path
 
 from adapter_distribution import RELEASE_ROOT, validate_release_output
-from release_transaction import profile_path_for_tag, validate_release_timing_evidence
+from release_transaction import (
+    profile_path_for_tag,
+    validate_published_release_artifacts,
+    validate_release_timing_evidence,
+)
 
 
 def read_changed_paths_file(path: Path) -> list[str]:
@@ -62,6 +66,16 @@ def validate_release_transaction_timing(version: str) -> tuple[list[str], list[s
 
     result = validate_release_timing_evidence(version)
     return list(result.errors), list(result.warnings)
+
+
+def validate_release_transaction_published_evidence(version: str) -> list[str]:
+    npm_publication = Path("docs") / "releases" / version / "npm-publication.md"
+    if not npm_publication.exists():
+        return []
+    text = npm_publication.read_text(encoding="utf-8")
+    if "Status: published" not in text:
+        return []
+    return validate_published_release_artifacts(version)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -119,6 +133,7 @@ def main(argv: list[str] | None = None) -> int:
     errors.extend(timing_errors)
     for warning in timing_warnings:
         print(f"[WARN] {warning}", file=sys.stderr)
+    errors.extend(validate_release_transaction_published_evidence(args.version))
     if errors:
         for error in errors:
             print(error)
