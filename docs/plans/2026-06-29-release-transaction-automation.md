@@ -71,14 +71,14 @@ Important existing boundaries:
 ## Current Handoff Summary
 
 - Current milestone: M6. Published evidence closeout and behavior preservation
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r1.md
+- Current milestone state: closed
+- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r2.md
 - Last reviewed milestone: M6
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M6 review requested
-- Next stage: code-review M6
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — all in-scope implementation milestones are closed, but explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -254,7 +254,7 @@ M5 implementation status:
 
 ### M6. Published evidence closeout and behavior preservation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add rerunnable public closeout generation from GitHub/npm/npx data, validate published evidence shape, and record behavior-preservation proof.
 - Requirements: `R31`-`R38`, `R39`-`R44`, `AC12`-`AC18`, `AC20`
 - Files/components likely touched:
@@ -298,7 +298,8 @@ M6 implementation status:
 - Validation: `python scripts/test-release-transaction.py` passed with 84 tests; `python scripts/close-release-publication.py --help` passed; Python compilation passed; `release-verify.sh` dry-run passed; selector validation selected adapter/release regression while remaining blocked on known manual routing for release transaction scripts; selected adapter/release regression passed. Lifecycle validation, review artifact validation, and whitespace validation passed after plan and review-resolution updates.
 - `code-review-m6-r1` requested changes for `CR-RTA-M6-F1`: closeout currently validates a local public-evidence file but does not collect GitHub/npm metadata or run fresh public `npx` smoke as required by `R32` and `R33`.
 - `CR-RTA-M6-F1` is resolved in review-resolution.
-- Next action: rerun M6 code review.
+- `code-review-m6-r2` completed with no material findings. M6 is closed.
+- Next action: explain-change.
 
 ## Progress
 
