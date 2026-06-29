@@ -1,0 +1,48 @@
+schema_version: release-surface-inventory-v1
+change_id: 2026-06-29-release-transaction-automation
+surfaces:
+  - id: release-metadata
+    path: docs/releases/<tag>/release.yaml
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Routine release metadata is generated from the active release profile."
+  - id: adapter-artifact-expectations
+    path: docs/reports/adapter-artifacts/releases/adapter-artifacts-<tag>.json
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Adapter artifact expectations derive from the active release profile."
+  - id: pending-npm-publication
+    path: docs/releases/<tag>/npm-publication.md
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Pending npm publication evidence is generated from the active release profile."
+  - id: target-init-smoke
+    path: docs/releases/<tag>/release.yaml
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Target smoke rows are generated from profile target support."
+  - id: current-version-fixtures
+    path: tests/fixtures/release-transaction/current-version.*
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Current-version fixture data may be generated from the active profile; test logic remains hand-authored."
+  - id: package-metadata-pointers
+    path: packages/rigorloop/package.json
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Routine package metadata pointers derive from the active release profile."
+  - id: release-notes-narrative
+    path: docs/releases/<tag>/release-notes.md
+    classification: human-authored-profile-checked
+    expected_owner: maintainer
+    rationale: "Release notes narrative, migration notes, and risk notes are authored by maintainers and checked against the profile."
+  - id: prior-release-evidence
+    path: docs/releases/v*/release.yaml
+    classification: historical-immutable
+    expected_owner: historical-release
+    rationale: "Prior release evidence is not rewritten by routine release prep."
+  - id: historical-fixtures
+    path: tests/fixtures/**/v*.yaml
+    classification: historical-immutable
+    expected_owner: historical-fixture
+    rationale: "Historical fixtures stay pinned and explicitly classified."

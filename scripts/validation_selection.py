@@ -346,6 +346,22 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("selector-regression runtime evidence is recorded before and after optimization",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="release-transaction-inventory",
+        patterns=("release-surface-inventory.yaml",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("release transaction surface ownership inventory is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="release-literal-audit-baseline",
+        patterns=("release-literal-audit-baseline.yaml",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("release literal audit baseline evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="broad-smoke-parallelism",
         patterns=(
             "broad-smoke-child-classification.yaml",

@@ -1,0 +1,31 @@
+schema_version: release-literal-audit-baseline-v1
+change_id: 2026-06-29-release-transaction-automation
+baseline_created_at: 2026-06-29T12:00:00Z
+audited_release_tag: v0.3.5
+release_profile: docs/releases/profiles/v0.3.5.yaml
+entries:
+  - id: literal-baseline-001
+    literal: v0.3.4
+    file: docs/releases/v0.3.4/release.yaml
+    line: 1
+    classification: historical-fixture
+    expected_owner: historical-release
+    disposition: allowed
+    rationale: "Published historical release evidence remains immutable."
+  - id: literal-baseline-002
+    literal: v0.3.5
+    file: docs/releases/v0.3.5/release.yaml
+    line: 1
+    classification: generated-current
+    expected_owner: release-profile
+    disposition: allowed
+    release_profile: docs/releases/profiles/v0.3.5.yaml
+    rationale: "Current release evidence is generated from the active release profile in later milestones."
+  - id: literal-baseline-003
+    literal: v0.3.4
+    file: scripts/adapter_distribution.py
+    line: 1
+    classification: baseline-drift
+    expected_owner: release-profile
+    disposition: report-only
+    rationale: "Existing version-specific release state remains report-only until M2 classification cleanup is complete."

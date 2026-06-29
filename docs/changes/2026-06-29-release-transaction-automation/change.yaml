@@ -65,6 +65,18 @@ changed_files:
   - tests/fixtures/release-transaction/profiles/invalid-unknown-target.yaml
   - tests/fixtures/release-transaction/profiles/invalid-wrong-package-version.yaml
   - tests/fixtures/release-transaction/profiles/special-release-with-rationale.yaml
+  - tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml
+  - tests/fixtures/release-transaction/surface-inventory/invalid-unknown-classification.yaml
+  - tests/fixtures/release-transaction/surface-inventory/invalid-manual-override-without-rationale.yaml
+  - tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml
+  - tests/fixtures/release-transaction/literal-audit/invalid-unknown-classification.yaml
+  - tests/fixtures/release-transaction/literal-audit/unauthorized-new-literal.yaml
+  - tests/fixtures/release-transaction/literal-audit/historical-fixture-without-rationale.yaml
+  - tests/fixtures/release-transaction/literal-audit/generated-current-without-owner.yaml
+  - docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml
+  - docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
 review:
   status: resolution-complete
   unresolved_items: 0
@@ -118,6 +130,16 @@ validation:
     result: resolved_added_missing_profile_and_required_field_coverage
   - command: python scripts/test-release-transaction.py
     result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/surface-inventory --path tests/fixtures/release-transaction/literal-audit --path docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml --path docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path scripts/validation_selection.py --path scripts/test-select-validation.py
+    result: blocked_manual_routing_for_release_transaction_script_and_fixture_paths_selected_artifact_lifecycle_change_metadata_guide_system_selector_regression
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-guide-system.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml --path docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-06-29-release-transaction-automation.md
+    result: pass
   - command: python scripts/validate-release.py --help
     result: pass
   - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/profiles
@@ -134,6 +156,8 @@ validation:
     result: pass
   - command: code-review-m1-r2
     result: clean_with_notes_no_material_findings
+  - command: python scripts/test-release-transaction.py
+    result: pass
   - command: python scripts/test-release-transaction.py
     result: fail_expected_missing_release_transaction_module_before_M1_implementation
   - command: python scripts/test-release-transaction.py
