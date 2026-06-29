@@ -51,7 +51,14 @@ changed_files:
   - scripts/release_transaction.py
   - scripts/test-release-transaction.py
   - tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-release-tag.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-package-version.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-npm-package.yaml
   - tests/fixtures/release-transaction/profiles/invalid-missing-targets.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-adapter-artifacts.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-publication.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-evidence.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-validation.yaml
   - tests/fixtures/release-transaction/profiles/invalid-malformed.yaml
   - tests/fixtures/release-transaction/profiles/invalid-special-release-without-rationale.yaml
   - tests/fixtures/release-transaction/profiles/invalid-unknown-release-kind.yaml
@@ -59,12 +66,12 @@ changed_files:
   - tests/fixtures/release-transaction/profiles/invalid-wrong-package-version.yaml
   - tests/fixtures/release-transaction/profiles/special-release-with-rationale.yaml
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: resolution-complete
+  unresolved_items: 0
   location: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   material_findings: 3
-  closed_findings: 2
-  open_findings: 1
+  closed_findings: 3
+  open_findings: 0
   proposal_review: docs/changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md
   spec_review: docs/changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md
   architecture_review: docs/changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md
@@ -106,6 +113,24 @@ validation:
     result: approved_no_material_findings
   - command: code-review-m1-r1
     result: changes_requested_CR-RTA-M1-F1
+  - command: review-resolution CR-RTA-M1-F1
+    result: resolved_added_missing_profile_and_required_field_coverage
+  - command: python scripts/test-release-transaction.py
+    result: pass
+  - command: python scripts/validate-release.py --help
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/profiles
+    result: blocked_manual_routing_for_new_release_transaction_script_and_fixture_paths
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py
+    result: pass
   - command: python scripts/test-release-transaction.py
     result: fail_expected_missing_release_transaction_module_before_M1_implementation
   - command: python scripts/test-release-transaction.py

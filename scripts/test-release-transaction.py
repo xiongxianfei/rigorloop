@@ -23,6 +23,17 @@ from release_transaction import (  # noqa: E402
     profile_path_for_tag,
 )
 
+REQUIRED_PROFILE_FIELD_CASES = (
+    ("invalid-missing-release-tag.yaml", "release_tag"),
+    ("invalid-missing-package-version.yaml", "package_version"),
+    ("invalid-missing-npm-package.yaml", "npm_package"),
+    ("invalid-missing-targets.yaml", "targets"),
+    ("invalid-missing-adapter-artifacts.yaml", "adapter_artifacts"),
+    ("invalid-missing-publication.yaml", "publication"),
+    ("invalid-missing-evidence.yaml", "evidence"),
+    ("invalid-missing-validation.yaml", "validation"),
+)
+
 
 class ReleaseProfileTests(unittest.TestCase):
     maxDiff = None
@@ -77,8 +88,22 @@ class ReleaseProfileTests(unittest.TestCase):
         self.assertEqual(profile.path, profile_dir / "v0.3.5.yaml")
         self.assertEqual(profile.release_tag, "v0.3.5")
 
-    def test_missing_targets_fail_with_named_field(self) -> None:
-        self.assert_profile_error("invalid-missing-targets.yaml", "missing required field: targets")
+    def test_missing_profile_path_fails_with_named_path(self) -> None:
+        missing_path = self.profile_fixture("does-not-exist.yaml")
+
+        with self.assertRaises(ReleaseProfileError) as raised:
+            load_release_profile_file(missing_path)
+
+        self.assertIn("release profile not found", "\n".join(raised.exception.errors))
+        self.assertIn("does-not-exist.yaml", str(raised.exception))
+
+    def test_missing_required_profile_fields_fail_with_named_field(self) -> None:
+        for fixture_name, field_name in REQUIRED_PROFILE_FIELD_CASES:
+            with self.subTest(field=field_name):
+                self.assert_profile_error(
+                    fixture_name,
+                    f"release profile missing required field: {field_name}",
+                )
 
     def test_malformed_profile_fails_with_path_context(self) -> None:
         error = self.assert_profile_error("invalid-malformed.yaml", "could not parse release profile")

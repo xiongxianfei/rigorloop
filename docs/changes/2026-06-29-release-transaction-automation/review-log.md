@@ -84,4 +84,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: CR-RTA-M1-F1
-Open findings: CR-RTA-M1-F1
+Open findings: None

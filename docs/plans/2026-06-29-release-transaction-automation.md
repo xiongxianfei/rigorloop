@@ -71,12 +71,12 @@ Important existing boundaries:
 ## Current Handoff Summary
 
 - Current milestone: M1. Release profile schema and loader
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r3.md
 - Last reviewed milestone: M1
 - Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M1 resolution needed, M2, M3, M4, M5, M6
-- Next stage: review-resolution M1
+- Remaining in-scope implementation milestones: M1 review pending, M2, M3, M4, M5, M6
+- Next stage: code-review M1
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -84,7 +84,7 @@ Important existing boundaries:
 
 ### M1. Release profile schema and loader
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Define `release-profile-v1`, load profiles from `docs/releases/profiles/<tag>.yaml`, and validate routine versus special release boundaries.
 - Requirements: `R1`-`R6`, `AC1`, `AC19`
 - Files/components likely touched:
@@ -273,6 +273,7 @@ Important existing boundaries:
 - 2026-06-29: M1 implementation started. Scope is limited to the release-profile loader/schema validator, profile fixtures, and focused release-transaction tests.
 - 2026-06-29: M1 implementation added the shared release-profile loader, closed-vocabulary schema validation, profile path resolution for `docs/releases/profiles/<tag>.yaml`, and release profile fixtures. Current next stage is `code-review M1`.
 - 2026-06-29: code-review-m1-r1 requested changes for `CR-RTA-M1-F1`; current next stage is `review-resolution M1`.
+- 2026-06-29: review-resolution for `CR-RTA-M1-F1` added direct missing-profile-path and missing-required-field coverage for the M1 profile loader. Current next stage is `code-review M1`.
 
 ## Decision log
 
@@ -292,12 +293,19 @@ Important existing boundaries:
 - Test-spec-review-r3 approved the active proof map before implementation.
 - 2026-06-29: `python scripts/test-release-transaction.py` failed before implementation with `ModuleNotFoundError: No module named 'release_transaction'`, proving the new focused tests were not passing without the M1 helper.
 - 2026-06-29: `python scripts/test-release-transaction.py` passed after implementation: 10 tests.
+- 2026-06-29: `python scripts/test-release-transaction.py` passed after `CR-RTA-M1-F1` resolution: 11 tests.
 - 2026-06-29: `python scripts/validate-release.py --help` passed and confirmed the existing release validator CLI remains available.
 - 2026-06-29: `python scripts/select-validation.py --mode explicit ...` reported manual routing for the new script and fixture paths; the M1-specific test command above owns those paths for this milestone.
 - 2026-06-29: `python scripts/test-change-metadata-validator.py` passed: 43 tests.
 - 2026-06-29: `python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml` passed.
 - 2026-06-29: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md` initially caught a structured `Review status` format issue, then passed after the plan field was restored to the validator-owned shape.
 - 2026-06-29: `git diff --check -- ...` passed for M1 implementation, plan, plan index, and change-metadata paths.
+- 2026-06-29: `python scripts/validate-release.py --help` passed after `CR-RTA-M1-F1` resolution.
+- 2026-06-29: `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/profiles` reported manual routing for the new script and fixture family; the M1-specific focused test remains the owner for those paths.
+- 2026-06-29: `python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml` passed after `CR-RTA-M1-F1` resolution.
+- 2026-06-29: `python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/` passed after `CR-RTA-M1-F1` resolution.
+- 2026-06-29: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md` passed after `CR-RTA-M1-F1` resolution.
+- 2026-06-29: `git diff --check --` and `python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py` passed after `CR-RTA-M1-F1` resolution.
 - Final implementation verification should include review artifact validation, change metadata validation, lifecycle explicit-path validation, selected release tooling tests, and release-gate preservation checks.
 
 ## Outcome and retrospective
