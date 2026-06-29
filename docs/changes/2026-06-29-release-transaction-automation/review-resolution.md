@@ -20,6 +20,7 @@ Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m5-r1
 Review closeout: code-review-m5-r2
+Review closeout: code-review-m6-r1
 
 ## Resolution Entries
 
@@ -177,3 +178,18 @@ Validation evidence: `python scripts/test-release-transaction.py` passed with 65
 ### code-review-m5-r2
 
 No material findings. No resolution entry is required for this clean review round.
+
+### code-review-m6-r1
+
+Finding ID: CR-RTA-M6-F1
+Disposition: needs-decision
+Status: open
+Owner: implementer
+Owning stage: review-resolution
+Decision owner: implementer
+Decision needed: Accept and make `close-release-publication.py` collect GitHub/npm metadata and fresh public npx smoke itself with fixture-safe stubs, or revise the approved spec/test spec to allow manually supplied public evidence files to satisfy routine closeout.
+Rationale: The review found that M6 validates and publishes a local public-evidence YAML file, but does not read public GitHub/npm metadata or run fresh public npx smoke as required by `R32` and `R33`.
+Required outcome: Published closeout must not mark evidence published solely from manually supplied local assertions; it must own the required public evidence collection or the governing contract must change.
+Chosen action: pending
+Validation target: Rerun M6 focused tests, closeout command-path provider/stub tests, published evidence validation, release-verify dry-run, Python compilation, selector-selected validation, lifecycle validation, review artifact validation, and whitespace validation after resolution.
+Validation evidence: pending

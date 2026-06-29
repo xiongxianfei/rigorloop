@@ -71,12 +71,12 @@ Important existing boundaries:
 ## Current Handoff Summary
 
 - Current milestone: M6. Published evidence closeout and behavior preservation
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r2.md
-- Last reviewed milestone: M5
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M6 review pending
-- Next stage: code-review M6
+- Last reviewed milestone: M6
+- Review status: changes-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M6 resolution needed
+- Next stage: review-resolution M6
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -254,7 +254,7 @@ M5 implementation status:
 
 ### M6. Published evidence closeout and behavior preservation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add rerunnable public closeout generation from GitHub/npm/npx data, validate published evidence shape, and record behavior-preservation proof.
 - Requirements: `R31`-`R38`, `R39`-`R44`, `AC12`-`AC18`, `AC20`
 - Files/components likely touched:
@@ -295,7 +295,8 @@ M6 implementation status:
 - Test coverage: public evidence unavailable fails without modifying files; valid closeout generates published evidence accepted by validators; CLI `--check` reports the generated closeout path without writing; `npx -y` command shape is rejected; raw tree hash is rejected through helper and `validate-release.py`; missing target is rejected; historical `v0.3.4` evidence is unchanged.
 - Unaffected aligned surface: `release-verify.sh` command set remains unchanged; it inherits published evidence validation through `validate-release.py` only after publication evidence is marked published.
 - Validation: `python scripts/test-release-transaction.py` passed with 74 tests; `python scripts/close-release-publication.py --help` passed; Python compilation passed; `release-verify.sh` dry-run passed; selector validation selected adapter/release regression and artifact lifecycle validation while blocked on untracked new CLI before staging and known manual routing for release transaction scripts; selected adapter/release regression passed; selected behavior-preservation artifact lifecycle validation passed.
-- Next action: rerun `code-review M6`.
+- `code-review-m6-r1` requested changes for `CR-RTA-M6-F1`: closeout currently validates a local public-evidence file but does not collect GitHub/npm metadata or run fresh public `npx` smoke as required by `R32` and `R33`.
+- Next action: resolve `CR-RTA-M6-F1`, rerun M6 validation, return M6 to code review.
 
 ## Progress
 

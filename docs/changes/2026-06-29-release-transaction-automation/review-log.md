@@ -107,6 +107,16 @@ Material findings: None
 Open findings: None
 
 ### Review entry
+Review ID: code-review-m6-r1
+Stage: code-review
+Round: M6 R1
+Status: changes-requested
+Detailed record: reviews/code-review-m6-r1.md
+Resolution: review-resolution.md#code-review-m6-r1
+Material findings: CR-RTA-M6-F1
+Open findings: CR-RTA-M6-F1
+
+### Review entry
 Review ID: spec-review-r1
 Stage: spec-review
 Round: 1
