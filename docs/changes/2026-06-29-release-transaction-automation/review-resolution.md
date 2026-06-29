@@ -4,7 +4,7 @@
 
 This record tracks review finding closeout for the release transaction automation change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -18,6 +18,7 @@ Review closeout: code-review-m2-r1
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
+Review closeout: code-review-m5-r1
 
 ## Resolution Entries
 
@@ -158,3 +159,18 @@ Validation evidence: `python scripts/test-release-transaction.py` passed with 50
 ### code-review-m4-r2
 
 No material findings. No resolution entry is required for this clean review round.
+
+### code-review-m5-r1
+
+Finding ID: CR-RTA-M5-F1
+Disposition: needs-decision
+Status: open
+Owner: implementer
+Owning stage: review-resolution
+Decision owner: implementer
+Decision needed: Accept and wire timing evidence validation into the profile-required release validation path, or revise the approved spec/test spec to allow helper-only timing validation.
+Rationale: The review found that M5 added a timing validation helper and helper-level tests, but the repository-owned release validation command used by the full release gate does not call it.
+Required outcome: Missing timing evidence must fail through the profile-required release validation path when the release profile requires timing.
+Chosen action: pending
+Validation target: Rerun M5 focused tests, command-level release validation timing regression, release-verify dry-run, Python compilation, selector-selected validation, lifecycle validation, review artifact validation, and whitespace validation after resolution.
+Validation evidence: pending
