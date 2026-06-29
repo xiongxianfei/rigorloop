@@ -345,6 +345,29 @@ class PrepareReleaseTests(unittest.TestCase):
             if path.is_file()
         }
 
+    def make_prepared_repo(self, root: Path) -> Path:
+        self.make_repo(root)
+        prepare_release("v0.3.5", root=root)
+        return root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
+
+    def assert_pending_evidence_error(
+        self,
+        mutator,
+        *needles: str,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            npm_publication = self.make_prepared_repo(root)
+            text = npm_publication.read_text(encoding="utf-8")
+            npm_publication.write_text(mutator(text), encoding="utf-8")
+
+            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(
+            any(all(needle in error for needle in needles) for error in errors),
+            errors,
+        )
+
     def test_prepare_release_generates_pending_artifacts_idempotently(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -403,6 +426,67 @@ class PrepareReleaseTests(unittest.TestCase):
             errors = validate_pending_release_artifacts("v0.3.5", root=root)
 
         self.assertEqual(errors, [])
+
+    def test_pending_release_artifacts_reject_target_result_published(self) -> None:
+        def mutate(text: str) -> str:
+            return text.replace('    result: "pending-publication"\n', '    result: "published"\n', 1)
+
+        self.assert_pending_evidence_error(mutate, "codex", "result", "pending-publication")
+
+    def test_pending_release_artifacts_reject_npx_y_command_shape(self) -> None:
+        def mutate(text: str) -> str:
+            return text.replace(
+                "npx @xiongxianfei/rigorloop@0.3.5 init codex --json",
+                "npx -y @xiongxianfei/rigorloop@0.3.5 init codex --json",
+                1,
+            )
+
+        self.assert_pending_evidence_error(
+            mutate,
+            "codex",
+            "command",
+            "npx @xiongxianfei/rigorloop@0.3.5 init codex --json",
+        )
+
+    def test_pending_release_artifacts_reject_missing_target_row(self) -> None:
+        def mutate(text: str) -> str:
+            start = text.index("  claude:\n")
+            end = text.index("  opencode:\n")
+            return text[:start] + text[end:]
+
+        self.assert_pending_evidence_error(mutate, "missing target: claude")
+
+    def test_pending_release_artifacts_reject_duplicate_target_row(self) -> None:
+        def mutate(text: str) -> str:
+            start = text.index("  codex:\n")
+            end = text.index("  claude:\n")
+            return text[:end] + text[start:end] + text[end:]
+
+        self.assert_pending_evidence_error(mutate, "duplicate target: codex")
+
+    def test_pending_release_artifacts_reject_unknown_target_row(self) -> None:
+        def mutate(text: str) -> str:
+            start = text.index("  codex:\n")
+            end = text.index("  claude:\n")
+            cursor = text[start:end].replace("  codex:\n", "  cursor:\n").replace(
+                '    target: "codex"\n',
+                '    target: "cursor"\n',
+            ).replace(
+                " init codex --json",
+                " init cursor --json",
+            )
+            return text[:end] + cursor + text[end:]
+
+        self.assert_pending_evidence_error(mutate, "unknown target: cursor")
+
+    def test_pending_release_artifacts_reject_table_projection_mismatch(self) -> None:
+        def mutate(text: str) -> str:
+            return text.replace(
+                "| codex | `npx @xiongxianfei/rigorloop@0.3.5 init codex --json` | `0.3.5` | pending publication | pending public archive URL | pending | pending | pending | pending live command output summary | pending | pending | pending-publication | live-smoke-pending |",
+                "| codex | `npx @xiongxianfei/rigorloop@0.3.5 init codex --json` | `0.3.5` | pending publication | pending public archive URL | pending | pending | pending | pending live command output summary | pending | pending | published | live-smoke-pending |",
+            )
+
+        self.assert_pending_evidence_error(mutate, "codex", "table projection mismatch", "result")
 
     def test_prepare_release_does_not_publish_or_require_external_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

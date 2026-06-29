@@ -71,12 +71,12 @@ Important existing boundaries:
 ## Current Handoff Summary
 
 - Current milestone: M3. `prepare-release` pending artifact generation
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
 - Last reviewed milestone: M3
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M3 resolution needed, M4, M5, M6
-- Next stage: review-resolution M3
+- Review status: review-requested; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M3 review pending, M4, M5, M6
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -140,7 +140,7 @@ Important existing boundaries:
 
 ### M3. `prepare-release` pending artifact generation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Implement idempotent release preparation from the active profile, generating profile-owned surfaces and pending evidence while preserving human-authored narrative and historical evidence.
 - Requirements: `R8`-`R17`, `R43`, `R44`, `AC2`-`AC5`, `AC18`
 - Files/components likely touched:
@@ -283,6 +283,7 @@ Important existing boundaries:
 - 2026-06-29: M3 implementation started. Scope is limited to fixture-safe `prepare-release` pending artifact generation, generated-region preservation, pending evidence shape proof, and the CLI wrapper.
 - 2026-06-29: M3 implementation added a fixture-safe `prepare-release` generator, CLI wrapper, pending artifact shape validation helper, idempotency/narrative-preservation/historical-immutability tests, and check-mode proof. Current next stage is `code-review M3`.
 - 2026-06-29: code-review-m3-r1 requested changes for `CR-RTA-M3-F1`. M3 remains in `resolution-needed` until pending-evidence validation rejects malformed target-specific placeholders and direct negative proof is added.
+- 2026-06-29: review-resolution for `CR-RTA-M3-F1` added target-bound pending npm-publication validation and direct negative tests for published target result, `npx -y` command shape, missing target, duplicate target, unknown target, and table/YAML projection mismatch. Current next stage is `code-review M3`.
 
 ## Decision log
 
@@ -295,6 +296,7 @@ Important existing boundaries:
 - 2026-06-29: M2 keeps release surface inventory and literal-audit baseline validation in `scripts/release_transaction.py` so M1-M2 release transaction proof stays in one focused command. Enforcement in preflight remains deferred to M4.
 - 2026-06-29: M2 registers `release-surface-inventory.yaml` and `release-literal-audit-baseline.yaml` as exact change-evidence classes in the selector. This removes deterministic evidence-registration debt while keeping release transaction script and fixture routing manually owned by `python scripts/test-release-transaction.py`.
 - 2026-06-29: M3 keeps `prepare-release` generation in `scripts/release_transaction.py` with a thin `scripts/prepare-release.py` wrapper. The first slice validates generated pending release artifacts with a release-transaction helper because existing `scripts/validate-release.py` has no `--phase pre-publication` fixture mode.
+- 2026-06-29: M3 pending npm-publication validation treats the generated YAML block as canonical and validates the Markdown table as a projection of that structured target data. This keeps pending evidence checks target-bound while preserving the generated evidence file shape.
 
 ## Surprises and discoveries
 
@@ -332,6 +334,10 @@ Important existing boundaries:
 - 2026-06-29: `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path scripts/prepare-release.py` reported manual routing for release transaction script paths and initially reported the new `scripts/prepare-release.py` as untracked before staging.
 - 2026-06-29: `python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py`, `python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md`, and `git diff --check --` passed after M3 implementation.
 - 2026-06-29: `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path scripts/prepare-release.py` reported manual routing for the release transaction scripts after staging; tracked-authoritative-artifacts preflight passed.
+- 2026-06-29: `python scripts/test-release-transaction.py` failed after adding `CR-RTA-M3-F1` negative tests, proving the existing fragment-based pending evidence validator still accepted invalid target-specific evidence.
+- 2026-06-29: `python scripts/test-release-transaction.py` passed after `CR-RTA-M3-F1` resolution: 34 tests.
+- 2026-06-29: `python scripts/prepare-release.py --help`, `python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py`, and `git diff --check --` passed after `CR-RTA-M3-F1` resolution.
+- 2026-06-29: `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/prepare-release.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/evidence` reported manual routing for release transaction scripts and an unclassified static evidence fixture path. The `CR-RTA-M3-F1` resolution uses temporary generated repository fixtures in `python scripts/test-release-transaction.py`, so no static `tests/fixtures/release-transaction/evidence` files were added.
 - Final implementation verification should include review artifact validation, change metadata validation, lifecycle explicit-path validation, selected release tooling tests, and release-gate preservation checks.
 
 ## Outcome and retrospective
