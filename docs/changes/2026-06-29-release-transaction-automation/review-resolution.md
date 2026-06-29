@@ -19,6 +19,7 @@ Review closeout: code-review-m3-r1
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m5-r1
+Review closeout: code-review-m5-r2
 
 ## Resolution Entries
 
@@ -172,3 +173,7 @@ Required outcome: Missing timing evidence must fail through the profile-required
 Chosen action: Wired timing evidence validation into `scripts/validate-release.py`. The release validation command now calls `validate_release_timing_evidence` when a release profile exists for the requested tag. Timing errors are appended to release validation errors, timing warnings are printed without failing, and releases without profiles remain compatible.
 Validation target: Rerun M5 focused tests, command-level release validation timing regression, release-verify dry-run, Python compilation, selector-selected validation, lifecycle validation, review artifact validation, and whitespace validation after resolution.
 Validation evidence: `python scripts/test-release-transaction.py` passed with 65 tests, including command-path coverage for missing timing evidence, malformed timing evidence, warning-only over-target timing, valid timing evidence, and historical no-profile compatibility. `python scripts/validate-release.py --help`, Python compilation, `release-verify.sh` dry-run, selector-selected adapter/release regression, lifecycle validation, review artifact validation, and whitespace validation passed. Selector validation remains blocked only on known manual routing for release transaction scripts while selecting the adapter/release regression that passed.
+
+### code-review-m5-r2
+
+No material findings. No resolution entry is required for this clean review round.

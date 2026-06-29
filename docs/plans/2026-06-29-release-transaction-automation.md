@@ -70,13 +70,13 @@ Important existing boundaries:
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Full release gate parity and timing evidence
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r1.md
+- Current milestone: M6. Published evidence closeout and behavior preservation
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r2.md
 - Last reviewed milestone: M5
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M5 review pending, M6
-- Next stage: code-review M5
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M6
+- Next stage: implement M6
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -209,7 +209,7 @@ M4 code review status:
 
 ### M5. Full release gate parity and timing evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Preserve `release-verify.sh <tag>` as the full local gate, align CI release workflow with the same repository-owned command set, and record timing evidence.
 - Requirements: `R28`-`R30`, `R39`-`R42`, `AC10`, `AC11`, `AC16`, `AC17`, `AC20`
 - Files/components likely touched:
@@ -249,7 +249,8 @@ M5 implementation status:
 - Validation: `python scripts/test-release-transaction.py` passed with 65 tests; `python scripts/validate-release.py --help` passed; `RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-release-output RELEASE_COMMIT=fixture-commit bash scripts/release-verify.sh v0.3.5` passed; Python compilation passed; selector validation selected `adapters.regression` and remained blocked only on known manual routing for release transaction scripts; the selected adapter/release regression command passed; lifecycle validation, review artifact validation, and whitespace validation passed.
 - `code-review-m5-r1` requested changes for `CR-RTA-M5-F1`: timing validation exists as a helper but is not wired into the repository-owned release validation path.
 - `CR-RTA-M5-F1` is resolved in review-resolution.
-- Next action: rerun `code-review M5`.
+- `code-review-m5-r2` completed with no material findings. M5 is closed.
+- Next action: implement M6.
 
 ### M6. Published evidence closeout and behavior preservation
 
