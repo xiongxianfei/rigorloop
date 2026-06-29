@@ -82,13 +82,14 @@ changed_files:
   - scripts/test-select-validation.py
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r1.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
 review:
-  status: resolution-complete
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1
   location: docs/changes/2026-06-29-release-transaction-automation/review-log.md
-  material_findings: 5
+  material_findings: 6
   closed_findings: 5
-  open_findings: 0
+  open_findings: 1
   proposal_review: docs/changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md
   spec_review: docs/changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md
   architecture_review: docs/changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md
@@ -98,6 +99,7 @@ review:
   code_review_m1_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m1-r2.md
   code_review_m2_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r1.md
   code_review_m2_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
+  code_review_m3_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
   review_log: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   review_resolution: docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
 validation:
@@ -169,6 +171,8 @@ validation:
     result: resolved_added_missing_classification_coverage_and_prior_profile_snapshot_inventory
   - command: code-review-m2-r2
     result: clean_with_notes_no_material_findings
+  - command: code-review-m3-r1
+    result: changes_requested_CR-RTA-M3-F1
   - command: M3 tests before implementation
     result: fail_expected_missing_prepare_release_api
   - command: python scripts/test-release-transaction.py

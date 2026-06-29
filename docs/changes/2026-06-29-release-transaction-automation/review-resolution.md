@@ -4,7 +4,7 @@
 
 This record tracks review finding closeout for the release transaction automation change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -15,6 +15,7 @@ Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m3-r1
 
 ## Resolution Entries
 
@@ -110,3 +111,18 @@ Validation evidence: `python scripts/test-release-transaction.py` passed with 23
 ### code-review-m2-r2
 
 No material findings. No resolution entry is required for this clean review round.
+
+### code-review-m3-r1
+
+Finding ID: CR-RTA-M3-F1
+Disposition: needs-decision
+Status: open
+Decision owner: implementer
+Decision needed: Accept and implement the pending-evidence validation fix, or explicitly revise the approved M3 test contract before proceeding.
+Owner: implementer
+Owning stage: review-resolution
+Rationale: The finding identifies a direct M3 contract and proof gap against `R17`, `RTA-T006`, and `RTA-T010`: pending evidence validation can accept malformed target evidence because it searches for global fragments rather than validating target-specific pending values.
+Required outcome: Add direct M3 proof that invalid pending evidence fails pre-publication validation, and strengthen the validator so target-specific malformed pending values cannot pass because another target contains a valid fragment.
+Chosen action: pending
+Validation target: Rerun `python scripts/test-release-transaction.py`, `python scripts/prepare-release.py --help`, M3 lifecycle validation, review artifact validation, and whitespace validation after the targeted fix.
+Validation evidence: pending
