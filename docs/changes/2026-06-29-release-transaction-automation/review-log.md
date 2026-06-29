@@ -75,3 +75,13 @@ Detailed record: reviews/test-spec-review-r3.md
 Resolution: review-resolution.md#test-spec-review-r3
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: M1 R1
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: CR-RTA-M1-F1
+Open findings: CR-RTA-M1-F1

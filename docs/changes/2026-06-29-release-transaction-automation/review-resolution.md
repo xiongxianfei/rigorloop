@@ -4,7 +4,7 @@
 
 This record tracks review finding closeout for the release transaction automation change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -13,6 +13,7 @@ Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
+Review closeout pending: code-review-m1-r1
 
 ## Resolution Entries
 
@@ -63,3 +64,16 @@ No material findings.
 ### test-spec-review-r3
 
 No material findings.
+
+### code-review-m1-r1
+
+Finding ID: CR-RTA-M1-F1
+Disposition: accepted
+Status: open
+Owner: implementer
+Owning stage: implement
+Rationale: The finding identifies a direct proof gap against `specs/release-transaction-automation.test.md` `RTA-T001` and the active plan M1 test list.
+Required outcome: M1 must add direct tests and fixtures for the required missing profile and missing required profile-field failures, or revise the approved test spec and plan before claiming M1 review closeout.
+Chosen action: Add focused negative fixtures and assertions in `scripts/test-release-transaction.py` for missing profile, missing `release_tag`, missing `package_version`, missing `npm_package`, missing `adapter_artifacts`, missing `publication`, missing `evidence`, and missing `validation`.
+Validation target: Rerun `python scripts/test-release-transaction.py`, `python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml`, lifecycle explicit-path validation, and whitespace validation before rerunning `code-review M1`.
+Validation evidence: pending
