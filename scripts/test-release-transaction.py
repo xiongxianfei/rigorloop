@@ -23,6 +23,10 @@ CHANGE_ROOT = ROOT / "docs" / "changes" / "2026-06-29-release-transaction-automa
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from release_transaction import (  # noqa: E402
+    GitHubReleaseAsset,
+    NpmPackageMetadata,
+    PublicEvidenceUnavailable,
+    PublicSmokeResult,
     ReleaseProfileError,
     is_routine_release_profile,
     load_literal_audit_baseline_file,
@@ -1089,6 +1093,100 @@ class ReleaseGateParityAndTimingTests(unittest.TestCase):
         self.assertNotIn("timing.yaml", output)
 
 
+class RecordingPublicEvidenceProvider:
+    def __init__(
+        self,
+        *,
+        fail_github: bool = False,
+        fail_npm: bool = False,
+        fail_smoke_command: str | None = None,
+        github_assets: tuple[GitHubReleaseAsset, ...] | None = None,
+        npm_metadata: NpmPackageMetadata | None = None,
+    ) -> None:
+        self.fail_github = fail_github
+        self.fail_npm = fail_npm
+        self.fail_smoke_command = fail_smoke_command
+        self.github_calls: list[str] = []
+        self.npm_calls: list[tuple[str, str]] = []
+        self.smoke_calls: list[str] = []
+        self.github_assets = github_assets or (
+            GitHubReleaseAsset(
+                name="rigorloop-adapter-codex-v0.3.5.zip",
+                url="https://provider.example/releases/codex-provider.zip",
+                size=123,
+                sha256="provider-codex-archive",
+            ),
+            GitHubReleaseAsset(
+                name="rigorloop-adapter-claude-v0.3.5.zip",
+                url="https://provider.example/releases/claude-provider.zip",
+                size=124,
+                sha256="sha256:provider-claude-archive",
+            ),
+            GitHubReleaseAsset(
+                name="rigorloop-adapter-opencode-v0.3.5.zip",
+                url="https://provider.example/releases/opencode-provider.zip",
+                size=125,
+                sha256="sha256:provider-opencode-archive",
+            ),
+        )
+        self.npm_metadata = npm_metadata or NpmPackageMetadata(
+            package="@xiongxianfei/rigorloop",
+            version="0.3.5",
+            tarball_url="https://registry.provider.example/rigorloop-0.3.5.tgz",
+            integrity="sha512-provider-integrity",
+            shasum="provider-shasum",
+            published_at="2026-06-29T00:00:00Z",
+        )
+
+    def fetch_github_release_assets(self, *, tag: str) -> tuple[GitHubReleaseAsset, ...]:
+        self.github_calls.append(tag)
+        if self.fail_github:
+            raise PublicEvidenceUnavailable(f"GitHub release asset metadata not found for {tag}")
+        return self.github_assets
+
+    def fetch_npm_package_metadata(self, *, package: str, version: str) -> NpmPackageMetadata:
+        self.npm_calls.append((package, version))
+        if self.fail_npm:
+            raise PublicEvidenceUnavailable(f"npm metadata for {package}@{version} not available")
+        return self.npm_metadata
+
+    def run_public_npx_smoke(self, *, command: str, cwd: Path) -> PublicSmokeResult:
+        self.smoke_calls.append(command)
+        if command == self.fail_smoke_command:
+            return PublicSmokeResult(
+                command=command,
+                exit_code=1,
+                stdout="",
+                stderr="smoke failed",
+                summary="smoke failed",
+            )
+        target = command.split()[-1]
+        if command.endswith(" version"):
+            stdout = "0.3.5\n"
+            summary = "0.3.5"
+        elif target == "opencode":
+            stdout = (
+                "created opencode adapter\n"
+                "tree_hashes=.opencode/skills=sha256:provider-opencode-skills;.opencode/commands=sha256:provider-opencode-commands\n"
+                "file_counts=.opencode/skills=14;.opencode/commands=3\n"
+            )
+            summary = "created opencode adapter"
+        else:
+            stdout = (
+                f"created {target} adapter\n"
+                f"tree_hashes=sha256:provider-{target}-tree\n"
+                "file_counts=12\n"
+            )
+            summary = f"created {target} adapter"
+        return PublicSmokeResult(
+            command=command,
+            exit_code=0,
+            stdout=stdout,
+            stderr="",
+            summary=summary,
+        )
+
+
 class PublishedEvidenceCloseoutTests(unittest.TestCase):
     maxDiff = None
 
@@ -1132,7 +1230,7 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
             "npm_tarball: \"https://registry.npmjs.org/@xiongxianfei/rigorloop/-/rigorloop-0.3.5.tgz\"\n"
             "published_at: \"2026-06-29T00:00:00Z\"\n"
             "dist_tag_latest: \"0.3.5\"\n"
-            "version_command: \"npx @xiongxianfei/rigorloop@0.3.5 --version\"\n"
+            "version_command: \"npx @xiongxianfei/rigorloop@0.3.5 version\"\n"
             "version_result: pass\n"
             "version_output_summary: \"0.3.5\"\n"
             "\n"
@@ -1149,19 +1247,19 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
             "\n"
             "target_init_smoke:\n"
             "  - target: codex\n"
-            f"    command: \"{command_prefix} @xiongxianfei/rigorloop@0.3.5 init codex --json\"\n"
+            f"    command: \"{command_prefix} @xiongxianfei/rigorloop@0.3.5 init codex\"\n"
             "    result: pass\n"
             "    output_summary: \"created codex adapter\"\n"
             f"    tree_hashes: \"{tree_hash}\"\n"
             "    file_counts: \"12\"\n"
             "  - target: claude\n"
-            "    command: \"npx @xiongxianfei/rigorloop@0.3.5 init claude --json\"\n"
+            "    command: \"npx @xiongxianfei/rigorloop@0.3.5 init claude\"\n"
             "    result: pass\n"
             "    output_summary: \"created claude adapter\"\n"
             "    tree_hashes: \"sha256:claudetree\"\n"
             "    file_counts: \"13\"\n"
             "  - target: opencode\n"
-            "    command: \"npx @xiongxianfei/rigorloop@0.3.5 init opencode --json\"\n"
+            "    command: \"npx @xiongxianfei/rigorloop@0.3.5 init opencode\"\n"
             "    result: pass\n"
             "    output_summary: \"created opencode adapter\"\n"
             "    tree_hashes: \".opencode/skills=sha256:opencodeskills;.opencode/commands=sha256:opencodecommands\"\n"
@@ -1186,25 +1284,26 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
             root = Path(tmp)
             self.make_prepared_repo(root)
             before = self.relative_file_texts(root)
+            provider = RecordingPublicEvidenceProvider(fail_github=True)
 
             result = close_release_publication(
                 "v0.3.5",
                 root=root,
-                public_evidence=root / "missing-public-evidence.yaml",
+                provider=provider,
             )
 
             after = self.relative_file_texts(root)
 
-        self.assertTrue(any("public evidence not available" in error for error in result.errors), result.errors)
+        self.assertTrue(any("GitHub" in error and "v0.3.5" in error for error in result.errors), result.errors)
         self.assertEqual(before, after)
 
     def test_close_release_publication_generates_published_evidence_and_validation_passes(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self.make_prepared_repo(root)
-            public_evidence = self.write_public_evidence(root)
+            provider = RecordingPublicEvidenceProvider()
 
-            result = close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            result = close_release_publication("v0.3.5", root=root, provider=provider)
             errors = validate_published_release_artifacts("v0.3.5", root=root)
             npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
             text = npm_publication.read_text(encoding="utf-8")
@@ -1213,11 +1312,152 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertIn("Status: published", text)
         self.assertIn("version_smoke:", text)
-        self.assertIn("npx @xiongxianfei/rigorloop@0.3.5 init codex --json", text)
+        self.assertIn("npx @xiongxianfei/rigorloop@0.3.5 init codex", text)
         self.assertNotIn("npx -y", text)
-        self.assertIn("sha256:codextree", text)
-        self.assertIn(".opencode/skills=sha256:opencodeskills", text)
+        self.assertIn("sha256:provider-codex-tree", text)
+        self.assertIn(".opencode/skills=sha256:provider-opencode-skills", text)
         self.assertIn("post_publish_closeout_blocked: false", text)
+
+    def test_close_release_publication_fetches_github_release_assets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            provider = RecordingPublicEvidenceProvider()
+
+            result = close_release_publication("v0.3.5", root=root, provider=provider)
+            text = (root / "docs" / "releases" / "v0.3.5" / "npm-publication.md").read_text(encoding="utf-8")
+
+        self.assertEqual(result.errors, ())
+        self.assertEqual(provider.github_calls, ["v0.3.5"])
+        self.assertIn("https://provider.example/releases/codex-provider.zip", text)
+        self.assertIn("sha256:provider-codex-archive", text)
+
+    def test_close_release_publication_fetches_npm_registry_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            provider = RecordingPublicEvidenceProvider()
+
+            result = close_release_publication("v0.3.5", root=root, provider=provider)
+            text = (root / "docs" / "releases" / "v0.3.5" / "npm-publication.md").read_text(encoding="utf-8")
+
+        self.assertEqual(result.errors, ())
+        self.assertEqual(provider.npm_calls, [("@xiongxianfei/rigorloop", "0.3.5")])
+        self.assertIn("sha512-provider-integrity", text)
+        self.assertIn("https://registry.provider.example/rigorloop-0.3.5.tgz", text)
+
+    def test_close_release_publication_runs_public_version_smoke(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            provider = RecordingPublicEvidenceProvider()
+
+            result = close_release_publication("v0.3.5", root=root, provider=provider)
+
+        self.assertEqual(result.errors, ())
+        self.assertIn("npx @xiongxianfei/rigorloop@0.3.5 version", provider.smoke_calls)
+
+    def test_close_release_publication_runs_public_target_init_smoke_for_all_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            provider = RecordingPublicEvidenceProvider()
+
+            result = close_release_publication("v0.3.5", root=root, provider=provider)
+
+        self.assertEqual(result.errors, ())
+        target_commands = [
+            command for command in provider.smoke_calls
+            if " init " in command
+        ]
+        self.assertEqual(
+            target_commands,
+            [
+                "npx @xiongxianfei/rigorloop@0.3.5 init codex",
+                "npx @xiongxianfei/rigorloop@0.3.5 init claude",
+                "npx @xiongxianfei/rigorloop@0.3.5 init opencode",
+            ],
+        )
+
+    def test_close_release_publication_rejects_manual_public_evidence_in_default_mode(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            public_evidence = self.write_public_evidence(root)
+            before = self.relative_file_texts(root)
+
+            result = close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+
+            after = self.relative_file_texts(root)
+
+        self.assertTrue(any("manual public evidence" in error for error in result.errors), result.errors)
+        self.assertEqual(before, after)
+
+    def test_close_release_publication_fails_when_npm_metadata_unavailable(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            before = self.relative_file_texts(root)
+
+            result = close_release_publication(
+                "v0.3.5",
+                root=root,
+                provider=RecordingPublicEvidenceProvider(fail_npm=True),
+            )
+
+            after = self.relative_file_texts(root)
+
+        self.assertTrue(any("npm metadata" in error and "0.3.5" in error for error in result.errors), result.errors)
+        self.assertEqual(before, after)
+
+    def test_close_release_publication_fails_when_public_npx_smoke_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            before = self.relative_file_texts(root)
+            failed_command = "npx @xiongxianfei/rigorloop@0.3.5 init codex"
+
+            result = close_release_publication(
+                "v0.3.5",
+                root=root,
+                provider=RecordingPublicEvidenceProvider(fail_smoke_command=failed_command),
+            )
+
+            after = self.relative_file_texts(root)
+
+        self.assertTrue(any("codex" in error and failed_command in error for error in result.errors), result.errors)
+        self.assertEqual(before, after)
+
+    def test_close_release_publication_uses_provider_values_not_fixture_literals(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            self.write_public_evidence(root)
+
+            result = close_release_publication("v0.3.5", root=root, provider=RecordingPublicEvidenceProvider())
+            text = (root / "docs" / "releases" / "v0.3.5" / "npm-publication.md").read_text(encoding="utf-8")
+
+        self.assertEqual(result.errors, ())
+        self.assertIn("provider-codex", text)
+        self.assertNotIn("codexarchive", text)
+        self.assertNotIn("sha256:codextree", text)
+
+    def test_public_evidence_fixture_mode_is_explicit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            public_evidence = self.write_public_evidence(root)
+
+            result = close_release_publication(
+                "v0.3.5",
+                root=root,
+                public_evidence=public_evidence,
+                fixture_mode=True,
+            )
+            errors = validate_published_release_artifacts("v0.3.5", root=root)
+
+        self.assertEqual(result.errors, ())
+        self.assertEqual(errors, [])
 
     def test_close_release_publication_cli_check_reports_without_writing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1233,7 +1473,8 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
                     "v0.3.5",
                     "--root",
                     str(root),
-                    "--public-evidence",
+                    "--fixture-mode",
+                    "--fixture-public-evidence",
                     str(public_evidence),
                     "--check",
                 ],
@@ -1250,12 +1491,37 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
         self.assertIn("Status: pending-publication", text)
         self.assertNotIn("Status: published", text)
 
-    def test_validate_release_accepts_published_closeout_evidence(self) -> None:
+    def test_close_release_publication_cli_rejects_fixture_evidence_without_fixture_mode(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self.make_prepared_repo(root)
             public_evidence = self.write_public_evidence(root)
-            close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "close-release-publication.py"),
+                    "v0.3.5",
+                    "--root",
+                    str(root),
+                    "--fixture-public-evidence",
+                    str(public_evidence),
+                ],
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+
+        output = result.stdout + result.stderr
+        self.assertNotEqual(result.returncode, 0, output)
+        self.assertIn("fixture public evidence mode", output)
+
+    def test_validate_release_accepts_published_closeout_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            close_release_publication("v0.3.5", root=root, provider=RecordingPublicEvidenceProvider())
 
             exit_code, stdout, stderr = self.run_validate_release_cli(root)
 
@@ -1267,11 +1533,10 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self.make_prepared_repo(root)
-            public_evidence = self.write_public_evidence(root)
-            close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            close_release_publication("v0.3.5", root=root, provider=RecordingPublicEvidenceProvider())
             npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
             npm_publication.write_text(
-                npm_publication.read_text(encoding="utf-8").replace("sha256:codextree", "codextree", 1),
+                npm_publication.read_text(encoding="utf-8").replace("sha256:provider-codex-tree", "codextree", 1),
                 encoding="utf-8",
             )
 
@@ -1288,7 +1553,12 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
             self.make_prepared_repo(root)
             public_evidence = self.write_public_evidence(root, self.public_evidence_text(command_prefix="npx -y"))
 
-            result = close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            result = close_release_publication(
+                "v0.3.5",
+                root=root,
+                public_evidence=public_evidence,
+                fixture_mode=True,
+            )
 
         self.assertTrue(any("codex" in error and "invalid command" in error for error in result.errors), result.errors)
 
@@ -1296,11 +1566,10 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self.make_prepared_repo(root)
-            public_evidence = self.write_public_evidence(root)
-            close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            close_release_publication("v0.3.5", root=root, provider=RecordingPublicEvidenceProvider())
             npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
             npm_publication.write_text(
-                npm_publication.read_text(encoding="utf-8").replace("sha256:codextree", "codextree", 1),
+                npm_publication.read_text(encoding="utf-8").replace("sha256:provider-codex-tree", "codextree", 1),
                 encoding="utf-8",
             )
 
@@ -1312,8 +1581,7 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self.make_prepared_repo(root)
-            public_evidence = self.write_public_evidence(root)
-            close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            close_release_publication("v0.3.5", root=root, provider=RecordingPublicEvidenceProvider())
             npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
             text = npm_publication.read_text(encoding="utf-8")
             start = text.index("  claude:\n")
@@ -1330,9 +1598,8 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
             self.make_prepared_repo(root)
             historical = root / "docs" / "releases" / "v0.3.4" / "release.yaml"
             before = historical.read_text(encoding="utf-8")
-            public_evidence = self.write_public_evidence(root)
 
-            result = close_release_publication("v0.3.5", root=root, public_evidence=public_evidence)
+            result = close_release_publication("v0.3.5", root=root, provider=RecordingPublicEvidenceProvider())
             after = historical.read_text(encoding="utf-8")
 
         self.assertEqual(result.errors, ())

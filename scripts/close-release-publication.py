@@ -20,11 +20,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="Repository root. Defaults to the current directory.",
     )
     parser.add_argument(
-        "--public-evidence",
-        help=(
-            "Path to collected public evidence. Defaults to "
-            "docs/releases/<tag>/public-evidence.yaml."
-        ),
+        "--fixture-mode",
+        action="store_true",
+        help="Use fixture public evidence for tests/imports. Not valid as routine release proof.",
+    )
+    parser.add_argument(
+        "--fixture-public-evidence",
+        help="Path to fixture public evidence. Requires --fixture-mode.",
     )
     parser.add_argument(
         "--check",
@@ -36,12 +38,19 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    public_evidence = Path(args.public_evidence) if args.public_evidence else None
+    public_evidence = Path(args.fixture_public_evidence) if args.fixture_public_evidence else None
+    if public_evidence is not None and not args.fixture_mode:
+        print(
+            "fixture public evidence mode must be explicitly enabled with --fixture-mode; "
+            "routine closeout collects public evidence through providers"
+        )
+        return 1
     try:
         result = close_release_publication(
             args.tag,
             root=Path(args.root),
             public_evidence=public_evidence,
+            fixture_mode=args.fixture_mode,
             check=args.check,
         )
     except ReleaseProfileError as exc:
