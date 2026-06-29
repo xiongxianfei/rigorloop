@@ -57,6 +57,30 @@ REQUIRED_VALIDATION_FIELDS = (
     "ci_release_verify_required",
     "security_scanning_required",
 )
+TIMING_PHASE_IDS = frozenset(
+    (
+        "prepare_release",
+        "preflight",
+        "local_release_verify",
+        "ci_release_verify",
+        "publication_wait",
+        "public_closeout",
+    )
+)
+REQUIRED_TIMING_PHASES = (
+    "prepare_release",
+    "preflight",
+    "local_release_verify",
+    "ci_release_verify",
+    "publication_wait",
+    "public_closeout",
+)
+TIMING_RESULTS = frozenset(("pass", "fail", "skipped", "pending", "not-applicable"))
+TIMING_DURATION_TARGET_SECONDS = {
+    "preflight": 30,
+    "local_release_verify": 1800,
+    "public_closeout": 600,
+}
 
 
 class ReleaseProfileError(ValueError):
@@ -120,6 +144,13 @@ class ReleasePreflightResult:
     errors: tuple[str, ...]
     warnings: tuple[str, ...] = ()
     external_actions: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class ReleaseTimingValidationResult:
+    release_tag: str
+    errors: tuple[str, ...]
+    warnings: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -226,6 +257,7 @@ def prepare_release(
     _plan_release_yaml(planned, repo_root, profile)
     _plan_release_notes(planned, repo_root, profile)
     _plan_npm_publication(planned, repo_root, profile)
+    _plan_timing_evidence(planned, repo_root, profile)
     _plan_adapter_artifact_report(planned, repo_root, profile)
     _plan_current_version_fixture(planned, repo_root, profile)
 
@@ -330,6 +362,178 @@ def release_preflight(
         errors=tuple(errors),
         warnings=tuple(warnings),
     )
+
+
+def validate_release_timing_evidence(
+    tag: str,
+    *,
+    root: Path | str = Path("."),
+) -> ReleaseTimingValidationResult:
+    repo_root = Path(root)
+    try:
+        profile = load_release_profile(tag, root=repo_root)
+    except ReleaseProfileError as exc:
+        return ReleaseTimingValidationResult(tag, tuple(exc.errors))
+
+    if profile.evidence.get("timing") != REQUIRED_VALUE:
+        return ReleaseTimingValidationResult(tag, ())
+
+    timing_path = repo_root / "docs" / "releases" / tag / "timing.yaml"
+    if not timing_path.exists():
+        return ReleaseTimingValidationResult(
+            tag,
+            (f"{_repo_relative(timing_path, repo_root)}: missing required timing evidence",),
+        )
+
+    try:
+        data = _load_yaml_subset(timing_path, "release timing evidence")
+    except ReleaseProfileError as exc:
+        return ReleaseTimingValidationResult(tag, tuple(exc.errors))
+
+    errors: list[str] = []
+    warnings: list[str] = []
+    schema_version = data.get("schema_version")
+    release_tag = data.get("release_tag")
+    release_profile = data.get("release_profile")
+    phases = data.get("phases")
+    checks = data.get("checks", [])
+
+    if schema_version != "release-timing-v1":
+        errors.append("timing schema_version must be release-timing-v1")
+    if release_tag != tag:
+        errors.append(f"timing release_tag `{release_tag}` does not match `{tag}`")
+    expected_profile_path = f"docs/releases/profiles/{tag}.yaml"
+    if release_profile != expected_profile_path:
+        errors.append(
+            f"timing release_profile `{release_profile}` does not match `{expected_profile_path}`"
+        )
+    if "created_at" not in data:
+        errors.append("timing missing required field: created_at")
+
+    if not isinstance(phases, list):
+        errors.append("timing phases must be a list")
+        phases = []
+    if checks is None:
+        checks = []
+    if not isinstance(checks, list):
+        errors.append("timing checks must be a list")
+        checks = []
+
+    seen_phases: set[str] = set()
+    for phase in phases:
+        if not isinstance(phase, dict):
+            errors.append("timing phase must be a mapping")
+            continue
+        phase_id = phase.get("id")
+        if not isinstance(phase_id, str) or not phase_id:
+            errors.append("timing phase missing required field: id")
+            continue
+        if phase_id in seen_phases:
+            errors.append(f"duplicate timing phase id: {phase_id}")
+        seen_phases.add(phase_id)
+        if phase_id not in TIMING_PHASE_IDS:
+            errors.append(f"unknown timing phase id: {phase_id}")
+        _validate_timing_record(errors, warnings, phase, f"timing phase {phase_id}", phase_id=phase_id)
+
+    for phase_id in REQUIRED_TIMING_PHASES:
+        if phase_id not in seen_phases:
+            errors.append(f"missing timing phase: {phase_id}")
+
+    for check in checks:
+        if not isinstance(check, dict):
+            errors.append("timing check must be a mapping")
+            continue
+        check_id = check.get("id")
+        context = f"timing check {check_id}" if isinstance(check_id, str) and check_id else "timing check"
+        phase_id = check.get("phase")
+        if phase_id not in TIMING_PHASE_IDS:
+            errors.append(f"{context} references unknown phase: {phase_id}")
+        _validate_timing_record(errors, warnings, check, context, phase_id=phase_id if isinstance(phase_id, str) else None)
+
+    return ReleaseTimingValidationResult(tag, tuple(errors), tuple(warnings))
+
+
+def validate_release_workflow_parity(root: Path | str = Path(".")) -> list[str]:
+    repo_root = Path(root)
+    workflow_path = repo_root / ".github" / "workflows" / "release.yml"
+    if not workflow_path.exists():
+        return [f"{_repo_relative(workflow_path, repo_root)}: release workflow not found"]
+    text = workflow_path.read_text(encoding="utf-8")
+    errors: list[str] = []
+    release_verify_count = text.count("bash scripts/release-verify.sh")
+    if release_verify_count == 0:
+        errors.append(
+            ".github/workflows/release.yml: release workflow must invoke bash scripts/release-verify.sh"
+        )
+    if 'bash scripts/release-verify.sh "$GITHUB_REF_NAME"' not in text:
+        errors.append(
+            ".github/workflows/release.yml: release job must delegate readiness to bash scripts/release-verify.sh \"$GITHUB_REF_NAME\""
+        )
+    if 'bash scripts/release-verify.sh "$tag"' not in text:
+        errors.append(
+            ".github/workflows/release.yml: npm publication validation must delegate to bash scripts/release-verify.sh \"$tag\""
+        )
+    forbidden_direct_checks = (
+        "python scripts/validate-release.py",
+        "python scripts/test-adapter-distribution.py",
+        "python scripts/test-npm-package-publication.py",
+        "python scripts/build-adapters.py",
+        "python scripts/validate-adapters.py",
+    )
+    for check in forbidden_direct_checks:
+        if check in text:
+            errors.append(
+                f".github/workflows/release.yml: release workflow must not duplicate release gate command directly: {check}"
+            )
+    return errors
+
+
+def _validate_timing_record(
+    errors: list[str],
+    warnings: list[str],
+    record: dict[str, Any],
+    context: str,
+    *,
+    phase_id: str | None,
+) -> None:
+    command = record.get("command")
+    if not isinstance(command, str) or not command:
+        errors.append(f"{context} missing required field: command")
+
+    if "duration_seconds" not in record:
+        errors.append(f"{context} missing required field: duration_seconds")
+    else:
+        duration = _coerce_duration_seconds(record.get("duration_seconds"))
+        if duration is None:
+            errors.append(f"{context} duration_seconds must be a non-negative number")
+        elif phase_id in TIMING_DURATION_TARGET_SECONDS and duration > TIMING_DURATION_TARGET_SECONDS[phase_id]:
+            warnings.append(
+                f"{context} duration_seconds {duration:g} exceeds first-slice target "
+                f"{TIMING_DURATION_TARGET_SECONDS[phase_id]:g}; warning only"
+            )
+
+    result = record.get("result")
+    if not isinstance(result, str) or not result:
+        errors.append(f"{context} missing required field: result")
+    elif result not in TIMING_RESULTS:
+        errors.append(f"unknown timing result: {result}")
+
+
+def _coerce_duration_seconds(value: Any) -> float | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        duration = float(value)
+    elif isinstance(value, str):
+        try:
+            duration = float(value)
+        except ValueError:
+            return None
+    else:
+        return None
+    if duration < 0:
+        return None
+    return duration
 
 
 def discover_changed_files(root: Path | str = Path(".")) -> tuple[str, ...]:
@@ -526,6 +730,48 @@ def _plan_npm_publication(
         "| Target | Command | npm version | Package source | Public archive URL | Installed root(s) | Tree hash value(s) | File count(s) | Command output summary | Archive verified | Tree verified | Result | Closeout blocker |\n"
         "|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
         f"{table_rows}\n"
+    )
+
+
+def _plan_timing_evidence(
+    planned: dict[Path, str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    path = repo_root / "docs" / "releases" / profile.release_tag / "timing.yaml"
+    planned[path] = (
+        "schema_version: release-timing-v1\n"
+        f"release_tag: {profile.release_tag}\n"
+        f"release_profile: docs/releases/profiles/{profile.release_tag}.yaml\n"
+        "created_at: pending\n"
+        "\n"
+        "phases:\n"
+        "  - id: prepare_release\n"
+        f"    command: python scripts/prepare-release.py {profile.release_tag}\n"
+        "    duration_seconds: 0\n"
+        "    result: pending\n"
+        "  - id: preflight\n"
+        f"    command: python scripts/release-preflight.py {profile.release_tag}\n"
+        "    duration_seconds: 0\n"
+        "    result: pending\n"
+        "  - id: local_release_verify\n"
+        f"    command: bash scripts/release-verify.sh {profile.release_tag}\n"
+        "    duration_seconds: 0\n"
+        "    result: pending\n"
+        "  - id: ci_release_verify\n"
+        f"    command: bash scripts/release-verify.sh {profile.release_tag}\n"
+        "    duration_seconds: 0\n"
+        "    result: pending\n"
+        "  - id: publication_wait\n"
+        "    command: external GitHub and npm publication wait\n"
+        "    duration_seconds: 0\n"
+        "    result: pending\n"
+        "  - id: public_closeout\n"
+        f"    command: python scripts/close-release-publication.py {profile.release_tag}\n"
+        "    duration_seconds: 0\n"
+        "    result: pending\n"
+        "\n"
+        "checks: []\n"
     )
 
 
@@ -1521,8 +1767,15 @@ def _parse_scalar(value: str) -> str | bool:
         return True
     if value == "false":
         return False
+    if value == "[]":
+        return []
     if value.isdigit():
         return int(value)
+    try:
+        if "." in value:
+            return float(value)
+    except ValueError:
+        pass
     if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
         return value[1:-1]
     return value
