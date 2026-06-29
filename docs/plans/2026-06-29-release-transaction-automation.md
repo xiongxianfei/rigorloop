@@ -71,12 +71,12 @@ Important existing boundaries:
 ## Current Handoff Summary
 
 - Current milestone: M2. Release-surface inventory and ownership classification
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m1-r2.md
 - Last reviewed milestone: M1
 - Review status: approved; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M2, M3, M4, M5, M6
-- Next stage: implement M2
+- Remaining in-scope implementation milestones: M2 review pending, M3, M4, M5, M6
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -112,7 +112,7 @@ Important existing boundaries:
 
 ### M2. Release-surface inventory and ownership classification
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Inventory routine release-prep surfaces, classify them as profile-owned generated, human-authored profile-checked, or historical immutable, and add the baseline literal-audit classification needed before enforcement.
 - Requirements: `R7`, `R10`, `R11`, `R14`, `R15`, `R22`-`R26`, `R43`, `R44`, `AC5`-`AC7`, `AC18`
 - Files/components likely touched:
@@ -275,6 +275,8 @@ Important existing boundaries:
 - 2026-06-29: code-review-m1-r1 requested changes for `CR-RTA-M1-F1`; current next stage is `review-resolution M1`.
 - 2026-06-29: review-resolution for `CR-RTA-M1-F1` added direct missing-profile-path and missing-required-field coverage for the M1 profile loader. Current next stage is `code-review M1`.
 - 2026-06-29: code-review-m1-r2 completed cleanly with no material findings. M1 is closed; current next stage is `implement M2`.
+- 2026-06-29: M2 implementation started. Scope is limited to release-prep surface ownership classification, literal-audit baseline classification, and focused release-transaction tests.
+- 2026-06-29: M2 implementation added release surface inventory validation, literal-audit baseline validation, fixture coverage, and change-local inventory/baseline evidence. Current next stage is `code-review M2`.
 
 ## Decision log
 
@@ -284,6 +286,8 @@ Important existing boundaries:
 - 2026-06-29: keep test logic hand-authored -> the spec allows generated fixture data and expected values, but generated test logic would reduce reviewability.
 - 2026-06-29: M1 uses a Python-owned schema validator in `scripts/release_transaction.py` rather than a standalone schema file. This keeps the first slice executable by `python scripts/test-release-transaction.py`; later milestones can add schema export if generators need it.
 - 2026-06-29: `scripts/validate-release.py` is unaffected in M1 because profile-backed generated-surface validation belongs to M2-M4. M1 only introduces the source-of-truth profile loader that later release validators can consume.
+- 2026-06-29: M2 keeps release surface inventory and literal-audit baseline validation in `scripts/release_transaction.py` so M1-M2 release transaction proof stays in one focused command. Enforcement in preflight remains deferred to M4.
+- 2026-06-29: M2 registers `release-surface-inventory.yaml` and `release-literal-audit-baseline.yaml` as exact change-evidence classes in the selector. This removes deterministic evidence-registration debt while keeping release transaction script and fixture routing manually owned by `python scripts/test-release-transaction.py`.
 
 ## Surprises and discoveries
 
@@ -307,6 +311,10 @@ Important existing boundaries:
 - 2026-06-29: `python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/` passed after `CR-RTA-M1-F1` resolution.
 - 2026-06-29: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md` passed after `CR-RTA-M1-F1` resolution.
 - 2026-06-29: `git diff --check --` and `python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py` passed after `CR-RTA-M1-F1` resolution.
+- 2026-06-29: `python scripts/test-release-transaction.py` passed after M2 implementation: 21 tests.
+- 2026-06-29: `python scripts/select-validation.py --mode explicit ...` classified M2 change-local evidence as registered and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `guide_system.validate`, and `selector.regression`; it still reported manual routing for the new release transaction script and fixture directories.
+- 2026-06-29: `python scripts/test-select-validation.py` passed after M2 selector evidence-class registration: 123 tests.
+- 2026-06-29: `python scripts/test-change-metadata-validator.py`, `python scripts/validate-guide-system.py`, and selected artifact lifecycle validation passed during M2 validation.
 - Final implementation verification should include review artifact validation, change metadata validation, lifecycle explicit-path validation, selected release tooling tests, and release-gate preservation checks.
 
 ## Outcome and retrospective

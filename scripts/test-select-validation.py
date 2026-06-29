@@ -1055,6 +1055,8 @@ raise SystemExit({exit_code})
             "docs/changes/2026-04-25-example/cold-read-proof.md",
             "docs/changes/2026-04-25-example/representative-project-map-outputs.md",
             "docs/changes/2026-04-25-example/broad-smoke-child-classification.md",
+            "docs/changes/2026-04-25-example/release-surface-inventory.yaml",
+            "docs/changes/2026-04-25-example/release-literal-audit-baseline.yaml",
         ]
         result = self.select(paths)
         payload = result.to_json_dict()

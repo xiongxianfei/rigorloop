@@ -1,0 +1,14 @@
+schema_version: release-literal-audit-baseline-v1
+change_id: 2026-06-29-release-transaction-automation
+baseline_created_at: 2026-06-29T12:00:00Z
+audited_release_tag: v0.3.5
+release_profile: docs/releases/profiles/v0.3.5.yaml
+entries:
+  - id: literal-baseline-001
+    literal: v0.3.5
+    file: scripts/example.py
+    line: 4
+    classification: stale-current
+    expected_owner: release-profile
+    disposition: must-fix
+    rationale: "Invalid classification fixture."
