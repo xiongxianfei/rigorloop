@@ -1,0 +1,316 @@
+# Release Transaction Automation Execution Plan
+
+## Status
+
+Plan lifecycle state: active
+Terminal disposition: none
+
+- Change ID: 2026-06-29-release-transaction-automation
+- Owner: maintainer
+- Start date: 2026-06-29
+- Last updated: 2026-06-29
+- Related issue or PR: none yet
+- Supersedes: none
+
+## Purpose / big picture
+
+Implement routine release automation as a typed release transaction. The work moves routine release state into `docs/releases/profiles/<tag>.yaml`, generates or checks release-prep surfaces from that profile, catches cheap drift before full verification, preserves `release-verify.sh <tag>` as the authoritative release gate, generates validator-compatible public closeout evidence, and records timing evidence.
+
+The plan keeps release safety ahead of speed. It reduces human release time by removing duplicated hand-edited state and late evidence-shape loops, not by deleting release checks.
+
+## Source artifacts
+
+- Proposal: [Release Transaction Automation and Evidence Generation](../proposals/2026-06-29-release-transaction-automation.md)
+- Proposal-review: [proposal-review-r1](../changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md)
+- Spec: [Release Transaction Automation and Evidence Generation](../../specs/release-transaction-automation.md)
+- Spec-review: [spec-review-r1](../changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md)
+- Architecture: [canonical system architecture](../architecture/system/architecture.md)
+- ADR: [ADR-20260629-release-transaction-profile](../adr/ADR-20260629-release-transaction-profile.md)
+- Architecture-review: [architecture-review-r1](../changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md)
+- Change metadata: [change.yaml](../changes/2026-06-29-release-transaction-automation/change.yaml)
+
+## Context and orientation
+
+This is repository release tooling and evidence work. It touches release profiles under `docs/releases/profiles/`, release evidence under `docs/releases/`, adapter artifact metadata under `docs/reports/adapter-artifacts/releases/`, npm package metadata under `packages/rigorloop/`, release validators under `scripts/`, tests and fixtures, and `.github/workflows/release.yml` only as a thin CI wrapper around repository-owned release commands.
+
+Important existing boundaries:
+
+- `docs/releases/` owns durable release evidence.
+- `release-verify.sh <tag>` is the full maintainer-facing release gate.
+- `validate-release.py` owns structured release evidence validation delegated from the release gate.
+- Generated adapter archives are release assets; metadata and checksums are tracked evidence.
+- Historical release evidence must not be rewritten by routine release prep.
+- Public npm/GitHub/npx evidence is external state and may require rerunnable closeout.
+
+## Non-goals
+
+- Do not weaken full release verification.
+- Do not remove GitHub release asset validation, npm publication validation, public `npx` smoke, archive SHA checks, tree hash checks, file count checks, adapter metadata validation, or package content checks.
+- Do not migrate historical release evidence.
+- Do not add release-gate parallelism in this slice.
+- Do not add remote/shared caches.
+- Do not add background publication monitoring.
+- Do not generate or rewrite test logic.
+- Do not proceed to implementation until plan-review and the matching test spec are complete.
+
+## Requirements covered
+
+- `R1`-`R6`: M1, M2, M3
+- `R7`-`R17`: M1, M2, M3
+- `R18`-`R27`: M4
+- `R28`-`R30`: M5
+- `R31`-`R38`: M6
+- `R39`-`R42`: M5, M6
+- `R43`-`R44`: M2, M3, M6
+- `R45`: completed by this authoring profile after clean plan-review
+- `AC1`-`AC7`: M1, M2, M3, M4
+- `AC8`-`AC11`: M4, M5
+- `AC12`-`AC17`: M6
+- `AC18`-`AC20`: M2, M3, M5, M6
+
+## Current Handoff Summary
+
+- Current milestone: M1. Release profile schema and loader
+- Current milestone state: review-requested
+- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r3.md
+- Last reviewed milestone: test-spec
+- Review status: approved; stage=test-spec-review; round=r3
+- Remaining in-scope implementation milestones: M1 review pending, M2, M3, M4, M5, M6
+- Next stage: code-review M1
+- Final closeout readiness: not ready
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
+
+## Milestones
+
+### M1. Release profile schema and loader
+
+- Milestone state: review-requested
+- Goal: Define `release-profile-v1`, load profiles from `docs/releases/profiles/<tag>.yaml`, and validate routine versus special release boundaries.
+- Requirements: `R1`-`R6`, `AC1`, `AC19`
+- Files/components likely touched:
+  - `schemas/` or existing schema location selected by test spec
+  - `scripts/validate-release.py`
+  - new shared release-profile helper under `scripts/`
+  - `docs/releases/profiles/`
+  - release-profile fixtures under the existing test fixture tree
+- Dependencies:
+  - Test spec must settle exact schema fields, fixture names, and whether schema validation is YAML-schema, Python validator, or both.
+- Tests to add/update:
+  - Valid routine profile for supported targets.
+  - Missing profile, malformed profile, wrong package version, unknown target, and special-release classification fixtures.
+  - Unknown closed-vocabulary values fail closed before consistency checks.
+- Validation commands:
+  - `python scripts/test-release-transaction.py` after M1 introduces it
+  - `python scripts/validate-release.py --help`
+- Expected observable result: A routine release profile is a loadable, validated source of truth, and invalid/special profiles block routine automation.
+- Commit message: `M1: add release profile schema`
+- Risks:
+  - The profile could duplicate existing constants without displacing them.
+  - Schema validation could accept unknown fields too broadly.
+- Rollback/recovery:
+  - Revert profile loader/schema changes while leaving existing hand-authored release process and `release-verify.sh` intact.
+
+### M2. Release-surface inventory and ownership classification
+
+- Milestone state: planned
+- Goal: Inventory routine release-prep surfaces, classify them as profile-owned generated, human-authored profile-checked, or historical immutable, and add the baseline literal-audit classification needed before enforcement.
+- Requirements: `R7`, `R10`, `R11`, `R14`, `R15`, `R22`-`R26`, `R43`, `R44`, `AC5`-`AC7`, `AC18`
+- Files/components likely touched:
+  - release validation fixtures and expected values
+  - `scripts/validate-release.py`
+  - new or existing release literal audit helper
+  - `docs/changes/2026-06-29-release-transaction-automation/` evidence for baseline classification if required by test spec
+- Dependencies:
+  - M1 profile model must exist before generated-current literals can be classified as derived from the active profile.
+- Tests to add/update:
+  - Changed unauthorized current-version literal fails.
+  - Existing baseline unauthorized current-version literal reports without blocking initial adoption.
+  - Historical fixture literal is allowed only when classified historical.
+  - Generated current literal is allowed only when profile-derived.
+- Validation commands:
+  - `python scripts/test-release-transaction.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml`
+- Expected observable result: Every routine release surface has an ownership classification, and literal-drift diagnostics name literal, file, classification, and expected owner.
+- Commit message: `M2: classify release surfaces and literals`
+- Risks:
+  - Baseline reporting could become permanent drift.
+  - Classification rules could accidentally flag historical release evidence.
+- Rollback/recovery:
+  - Keep audit in report-only mode and disable enforcement while preserving the inventory.
+
+### M3. `prepare-release` pending artifact generation
+
+- Milestone state: planned
+- Goal: Implement idempotent release preparation from the active profile, generating profile-owned surfaces and pending evidence while preserving human-authored narrative and historical evidence.
+- Requirements: `R8`-`R17`, `R43`, `R44`, `AC2`-`AC5`, `AC18`
+- Files/components likely touched:
+  - `scripts/prepare-release.py`
+  - shared release-profile helper
+  - `docs/releases/<tag>/release.yaml`
+  - `docs/releases/<tag>/release-notes.md`
+  - `docs/releases/<tag>/npm-publication.md`
+  - package metadata and release fixture data selected by test spec
+- Dependencies:
+  - M1 profile schema and M2 ownership classification.
+  - Test spec must settle generated-region marker syntax.
+- Tests to add/update:
+  - `prepare-release` idempotency.
+  - Pending evidence passes pre-publication validation.
+  - Human-authored release-note narrative outside generated regions is preserved.
+  - Historical release evidence is not modified.
+  - The command does not publish, tag, push, or read npm publication state.
+- Validation commands:
+  - `python scripts/test-release-transaction.py`
+  - `python scripts/prepare-release.py <fixture-tag> --check` if implemented by the milestone
+  - `python scripts/validate-release.py <fixture-tag> --phase pre-publication` or the test-spec-selected equivalent
+- Expected observable result: Routine release prep becomes a repeatable generated transaction from a complete profile.
+- Commit message: `M3: generate pending release artifacts`
+- Risks:
+  - Generator breadth could overwrite narrative or unrelated files.
+  - Generated diffs could become hard to review if ownership regions are vague.
+- Rollback/recovery:
+  - Disable the generator entrypoint and keep validator-compatible templates if useful.
+
+### M4. Release preflight command
+
+- Milestone state: planned
+- Goal: Add Python-owned `release-preflight` as the cheap deterministic local/profile/schema gate before full release verification.
+- Requirements: `R18`-`R27`, `AC8`, `AC9`
+- Files/components likely touched:
+  - `scripts/release-preflight.py`
+  - shared release-profile and literal-audit helpers
+  - release validator tests and fixtures
+  - optional thin shell wrapper only if test spec allows it
+- Dependencies:
+  - M1-M3 must provide profiles, ownership classes, and pending evidence surfaces.
+- Tests to add/update:
+  - Missing profile, malformed profile, version mismatch, stale metadata pointer, unauthorized changed literal, invalid pending evidence shape, local tag conflict, reachable remote tag conflict, unreachable remote diagnostic, and dirty release-output fixtures.
+  - Idempotency and side-effect-light behavior.
+  - No broad adapter distribution tests are run by preflight.
+- Validation commands:
+  - `python scripts/test-release-transaction.py`
+  - `python scripts/release-preflight.py <fixture-tag>`
+- Expected observable result: Cheap deterministic drift fails before `release-verify.sh`, with actionable diagnostics and no publication side effects.
+- Commit message: `M4: add release preflight`
+- Risks:
+  - Preflight could duplicate expensive release verification.
+  - Remote tag checks could be flaky if unreachable state is not explicit.
+- Rollback/recovery:
+  - Keep preflight advisory or report-only while full release gate remains unchanged.
+
+### M5. Full release gate parity and timing evidence
+
+- Milestone state: planned
+- Goal: Preserve `release-verify.sh <tag>` as the full local gate, align CI release workflow with the same repository-owned command set, and record timing evidence.
+- Requirements: `R28`-`R30`, `R39`-`R42`, `AC10`, `AC11`, `AC16`, `AC17`, `AC20`
+- Files/components likely touched:
+  - `scripts/release-verify.sh`
+  - `.github/workflows/release.yml`
+  - `scripts/validate-release.py`
+  - timing evidence helper or template
+  - release validation tests
+- Dependencies:
+  - M4 preflight must exist so the full gate boundary can be tested against cheap deterministic drift.
+- Tests to add/update:
+  - CI workflow invokes the same repository-owned command set.
+  - Full release gate remains required after preflight.
+  - Timing evidence presence is required when profile requires it.
+  - Over-target duration records warning/observation, not a hard first-slice failure.
+  - Safety checks are not removed from `release-verify.sh`.
+- Validation commands:
+  - `python scripts/test-release-transaction.py`
+  - `bash scripts/release-verify.sh <fixture-tag>` or a fixture-safe equivalent selected by test spec
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path .github/workflows/release.yml --path scripts/release-verify.sh --path scripts/validate-release.py`
+- Expected observable result: Local and CI release readiness rely on the same command set, timing is durable evidence, and preflight does not weaken the full gate.
+- Commit message: `M5: preserve release gate parity and timing`
+- Risks:
+  - CI workflow edits could drift from local command behavior.
+  - Timing capture could become flaky if it enforces duration too early.
+- Rollback/recovery:
+  - Revert CI parity/timing edits while keeping full local `release-verify.sh` unchanged.
+
+### M6. Published evidence closeout and behavior preservation
+
+- Milestone state: planned
+- Goal: Add rerunnable public closeout generation from GitHub/npm/npx data, validate published evidence shape, and record behavior-preservation proof.
+- Requirements: `R31`-`R38`, `R39`-`R44`, `AC12`-`AC18`, `AC20`
+- Files/components likely touched:
+  - `scripts/close-release-publication.py`
+  - shared release-profile helper
+  - `scripts/validate-release.py`
+  - release evidence templates or fixtures
+  - `docs/changes/2026-06-29-release-transaction-automation/behavior-preservation.md`
+- Dependencies:
+  - M3 pending evidence and M5 release-gate/timing behavior.
+  - Test spec must choose fixture strategy for public GitHub/npm/npx evidence without requiring live publication in unit tests.
+- Tests to add/update:
+  - Public evidence unavailable fails clearly and modifies no unrelated files.
+  - Generated published evidence uses validator-compatible `npx` command strings, `sha256:<hex>` tree hashes, root-qualified multi-root entries, file counts, archive status, and closeout blockers.
+  - Fresh public smoke remains required for `version`, `init codex`, `init claude`, and `init opencode`.
+  - Published evidence validation passes for fixture closeout.
+  - Historical release evidence is not modified.
+- Validation commands:
+  - `python scripts/test-release-transaction.py`
+  - `python scripts/close-release-publication.py <fixture-tag> --check` if implemented by the milestone
+  - `python scripts/validate-release.py <fixture-tag> --phase published` or the test-spec-selected equivalent
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/behavior-preservation.md --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml`
+- Expected observable result: Post-publication evidence is generated from public data and accepted by validators without manual command/hash-shape churn.
+- Commit message: `M6: generate published release evidence`
+- Risks:
+  - Live registry/network behavior could make tests slow or flaky if not fixture-isolated.
+  - Closeout could accidentally mark pending evidence published before all public proof exists.
+- Rollback/recovery:
+  - Disable closeout generation and keep validator-compatible manual templates while preserving full release verification.
+
+## Progress
+
+- 2026-06-29: plan created after accepted proposal, approved spec-review, architecture-required assessment, accepted ADR, and clean architecture-review.
+- 2026-06-29: plan-review-r1 approved the execution plan with no material findings; current next stage is `test-spec`.
+- 2026-06-29: test spec authored at `specs/release-transaction-automation.test.md`; current next stage is `test-spec-review`.
+- 2026-06-29: test-spec-review-r1 requested changes for RTA-TSR1 and RTA-TSR2; current next stage is `test-spec revision`.
+- 2026-06-29: test spec revised to define proof-contract details and command ownership; test-spec-review-r2 approved implementation handoff; current next stage is `implement M1`.
+- 2026-06-29: test-spec-review-r3 reran against the active test spec with no material findings; current next stage remains `implement M1`.
+- 2026-06-29: M1 implementation started. Scope is limited to the release-profile loader/schema validator, profile fixtures, and focused release-transaction tests.
+- 2026-06-29: M1 implementation added the shared release-profile loader, closed-vocabulary schema validation, profile path resolution for `docs/releases/profiles/<tag>.yaml`, and release profile fixtures. Current next stage is `code-review M1`.
+
+## Decision log
+
+- 2026-06-29: sequence profile schema before generators -> generators need a typed profile and closed vocabularies before routine surfaces can safely derive from it.
+- 2026-06-29: sequence preflight after pending generation -> preflight should validate generated pending surfaces instead of inventing a parallel generation path.
+- 2026-06-29: sequence public closeout last -> published evidence generation depends on stable profile parsing, pending evidence shape, release-gate preservation, and timing evidence.
+- 2026-06-29: keep test logic hand-authored -> the spec allows generated fixture data and expected values, but generated test logic would reduce reviewability.
+- 2026-06-29: M1 uses a Python-owned schema validator in `scripts/release_transaction.py` rather than a standalone schema file. This keeps the first slice executable by `python scripts/test-release-transaction.py`; later milestones can add schema export if generators need it.
+- 2026-06-29: `scripts/validate-release.py` is unaffected in M1 because profile-backed generated-surface validation belongs to M2-M4. M1 only introduces the source-of-truth profile loader that later release validators can consume.
+
+## Surprises and discoveries
+
+- The validation selector does not yet classify the new release transaction scripts or fixtures, so M1 uses the approved command matrix validation plus lifecycle/change-metadata checks instead of a selector-owned script check.
+
+## Validation notes
+
+- Test-spec-review-r3 approved the active proof map before implementation.
+- 2026-06-29: `python scripts/test-release-transaction.py` failed before implementation with `ModuleNotFoundError: No module named 'release_transaction'`, proving the new focused tests were not passing without the M1 helper.
+- 2026-06-29: `python scripts/test-release-transaction.py` passed after implementation: 10 tests.
+- 2026-06-29: `python scripts/validate-release.py --help` passed and confirmed the existing release validator CLI remains available.
+- 2026-06-29: `python scripts/select-validation.py --mode explicit ...` reported manual routing for the new script and fixture paths; the M1-specific test command above owns those paths for this milestone.
+- 2026-06-29: `python scripts/test-change-metadata-validator.py` passed: 43 tests.
+- 2026-06-29: `python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml` passed.
+- 2026-06-29: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md` initially caught a structured `Review status` format issue, then passed after the plan field was restored to the validator-owned shape.
+- 2026-06-29: `git diff --check -- ...` passed for M1 implementation, plan, plan index, and change-metadata paths.
+- Final implementation verification should include review artifact validation, change metadata validation, lifecycle explicit-path validation, selected release tooling tests, and release-gate preservation checks.
+
+## Outcome and retrospective
+
+- M1 implementation is review-requested. Keep this section historical until all implementation milestones and final closeout are complete.
+
+## Readiness
+
+- See `Current Handoff Summary`.
+
+## Risks and follow-ups
+
+- Profile generation can become another source of drift unless unauthorized current-version literals fail or report as baseline debt.
+- Public closeout must be fixture-testable without requiring live publication in normal unit tests.
+- Release timing should be captured as evidence before hard duration budgets or parallelism are proposed.
+- A follow-up proposal may cover release-gate parallelism after several timing records exist.
+- A follow-up proposal may cover background publication monitoring after rerunnable closeout is stable.

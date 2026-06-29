@@ -1,0 +1,65 @@
+# Release Transaction Automation Review Resolution
+
+## Scope
+
+This record tracks review finding closeout for the release transaction automation change.
+
+Closeout status: closed
+
+Review closeout: proposal-review-r1
+Review closeout: spec-review-r1
+Review closeout: architecture-review-r1
+Review closeout: plan-review-r1
+Review closeout: test-spec-review-r1
+Review closeout: test-spec-review-r2
+Review closeout: test-spec-review-r3
+
+## Resolution Entries
+
+### proposal-review-r1
+
+No material findings.
+
+### spec-review-r1
+
+No material findings.
+
+### architecture-review-r1
+
+No material findings.
+
+### plan-review-r1
+
+No material findings.
+
+### test-spec-review-r1
+
+Finding ID: RTA-TSR1
+Disposition: accepted
+Status: resolved
+Owner: maintainer
+Owning stage: test-spec revision
+Rationale: The active plan requires test-spec-review to approve these proof-contract details before implementation, and the current test spec defers them to implementation.
+Required outcome: The test spec must define, or explicitly constrain with testable compatibility rules, generated-region marker behavior, literal-audit baseline artifact shape, timing evidence field names, and fixture layout enough for implementation without proof-semantics guessing.
+Chosen action: Added a proof-contract section to `specs/release-transaction-automation.test.md` defining generated-region marker syntax, allowed generated surface IDs, literal-audit baseline schema and closed enums, timing evidence schema and phase/result values, fixture layout, local/stubbed execution boundaries, and proof tests.
+Validation target: `test-spec-review-r2` approved the revised test spec with no material findings.
+Validation evidence: `test-spec-review-r2` passed with no material findings after confirming the revised test spec defines generated-region marker syntax, generated surface IDs, literal-audit baseline schema and enums, timing evidence schema and enums, fixture layout, and `TRTA-GEN-*`, `TRTA-LIT-*`, `TRTA-TIME-*`, and `TRTA-FIX-*` proof tests.
+
+Finding ID: RTA-TSR2
+Disposition: accepted
+Status: resolved
+Owner: maintainer
+Owning stage: test-spec revision
+Rationale: Implementation needs a command ownership and activation matrix before it can rely on the proof map; the current test spec leaves existing versus planned commands ambiguous.
+Required outcome: The test spec must provide a validation command matrix that classifies existing, planned, manual-only, and external/release-owned commands with owner milestone, activation point, safe-mode expectations, and missing/zero-test behavior.
+Chosen action: Added an implementation-handoff command matrix classifying existing, planned, manual-only, and external/release-owned command families, including owner milestone, activation point, missing-command behavior, safe/dry-run expectations, zero-test behavior, CI workflow static checks, public `npx` smoke ownership, and explicit handling for absent `python scripts/test-release-validation.py`.
+Validation target: `test-spec-review-r2` approved the revised test spec with no material findings.
+Validation evidence: `test-spec-review-r2` passed with no material findings after confirming the revised test spec includes the implementation-handoff command matrix, command ownership rules, `TRTA-CMD-*` proof tests, and explicit handling for absent `python scripts/test-release-validation.py`.
+
+### test-spec-review-r2
+
+No material findings.
+
+### test-spec-review-r3
+
+No material findings.
