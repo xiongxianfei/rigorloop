@@ -4,7 +4,7 @@
 
 This record tracks review finding closeout for the release transaction automation change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -163,14 +163,12 @@ No material findings. No resolution entry is required for this clean review roun
 ### code-review-m5-r1
 
 Finding ID: CR-RTA-M5-F1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved after implementation
 Owner: implementer
 Owning stage: review-resolution
-Decision owner: implementer
-Decision needed: Accept and wire timing evidence validation into the profile-required release validation path, or revise the approved spec/test spec to allow helper-only timing validation.
 Rationale: The review found that M5 added a timing validation helper and helper-level tests, but the repository-owned release validation command used by the full release gate does not call it.
 Required outcome: Missing timing evidence must fail through the profile-required release validation path when the release profile requires timing.
-Chosen action: pending
+Chosen action: Wired timing evidence validation into `scripts/validate-release.py`. The release validation command now calls `validate_release_timing_evidence` when a release profile exists for the requested tag. Timing errors are appended to release validation errors, timing warnings are printed without failing, and releases without profiles remain compatible.
 Validation target: Rerun M5 focused tests, command-level release validation timing regression, release-verify dry-run, Python compilation, selector-selected validation, lifecycle validation, review artifact validation, and whitespace validation after resolution.
-Validation evidence: pending
+Validation evidence: `python scripts/test-release-transaction.py` passed with 65 tests, including command-path coverage for missing timing evidence, malformed timing evidence, warning-only over-target timing, valid timing evidence, and historical no-profile compatibility. `python scripts/validate-release.py --help`, Python compilation, `release-verify.sh` dry-run, selector-selected adapter/release regression, lifecycle validation, review artifact validation, and whitespace validation passed. Selector validation remains blocked only on known manual routing for release transaction scripts while selecting the adapter/release regression that passed.

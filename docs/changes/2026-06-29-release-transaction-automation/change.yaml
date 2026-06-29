@@ -52,6 +52,7 @@ changed_files:
   - scripts/test-release-transaction.py
   - scripts/prepare-release.py
   - scripts/release-preflight.py
+  - scripts/validate-release.py
   - scripts/release-verify.sh
   - tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml
   - tests/fixtures/release-transaction/profiles/invalid-missing-release-tag.yaml
@@ -90,12 +91,12 @@ changed_files:
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r2.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r1.md
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: resolution-complete
+  unresolved_items: 0
   location: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   material_findings: 9
-  closed_findings: 8
-  open_findings: 1
+  closed_findings: 9
+  open_findings: 0
   proposal_review: docs/changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md
   spec_review: docs/changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md
   architecture_review: docs/changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md
@@ -203,6 +204,20 @@ validation:
     result: pass
   - command: code-review-m5-r1
     result: changes_requested_CR-RTA-M5-F1
+  - command: review-resolution CR-RTA-M5-F1
+    result: resolved_timing_validation_wired_into_validate_release
+  - command: python scripts/test-release-transaction.py
+    result: pass_65_tests
+  - command: python scripts/validate-release.py --help
+    result: pass
+  - command: RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-release-output RELEASE_COMMIT=fixture-commit bash scripts/release-verify.sh v0.3.5
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py scripts/release-preflight.py scripts/validate-release.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/validate-release.py --path scripts/release-verify.sh --path scripts/test-release-transaction.py
+    result: blocked_manual_routing_for_release_transaction_scripts_selected_adapters_regression
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
   - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py
     result: pass
   - command: code-review-m1-r2
