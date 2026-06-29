@@ -94,8 +94,9 @@ changed_files:
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r1.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r2.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r2.md
 review:
-  status: review-requested
+  status: clean-with-notes
   unresolved_items: 0
   location: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   material_findings: 10
@@ -117,6 +118,7 @@ review:
   code_review_m5_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r1.md
   code_review_m5_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r2.md
   code_review_m6_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r1.md
+  code_review_m6_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r2.md
   review_log: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   review_resolution: docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
 validation:
@@ -390,6 +392,8 @@ validation:
     result: blocked_manual_routing_for_release_transaction_scripts_selected_adapters_regression
   - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
     result: pass
+  - command: code-review-m6-r2
+    result: clean_with_notes_no_material_findings_M6_closed_next_explain_change
 architecture:
   assessment: architecture-required
   rationale: Release transaction automation changes release source-of-truth ownership, generated-output flow, validation layering, local/CI release gate parity, public evidence closeout, and timing evidence.
