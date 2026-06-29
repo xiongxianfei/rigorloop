@@ -4,7 +4,7 @@
 
 This record tracks review finding closeout for the release transaction automation change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -133,27 +133,23 @@ No material findings. No resolution entry is required for this clean review roun
 ### code-review-m4-r1
 
 Finding ID: CR-RTA-M4-F1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved after implementation
 Owner: implementer
 Owning stage: review-resolution
-Decision owner: implementer
-Decision needed: Accept and implement default changed-file discovery for the preflight CLI, or revise the approved spec and test spec to make explicit changed-file input mandatory.
 Rationale: The review found that the preferred `python scripts/release-preflight.py <tag>` command can pass when an unauthorized current-version literal is present in the literal-audit baseline unless the caller explicitly supplies `--changed-file`.
 Required outcome: The default M4 preflight command must detect newly changed unauthorized literals under normal CLI usage, or the governing command contract must be revised before M4 closeout.
-Chosen action: pending
+Chosen action: Added Git changed-file discovery for the default CLI path. When `--changed-file` is absent, `scripts/release-preflight.py` now derives changed files from Git staged, unstaged tracked, and untracked paths. Explicit `--changed-file` remains an override for deterministic fixture tests. The CLI fails clearly when changed files cannot be derived from Git.
 Validation target: Rerun M4 focused tests, `python scripts/release-preflight.py --help`, Python compilation, lifecycle validation, review artifact validation, and whitespace validation after resolution.
-Validation evidence: pending
+Validation evidence: `python scripts/test-release-transaction.py` passed with 50 tests, including CLI-level coverage for default Git discovery catching an unauthorized changed literal and non-Git roots failing without explicit `--changed-file`. `python scripts/release-preflight.py --help` and Python compilation passed.
 
 Finding ID: CR-RTA-M4-F2
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved after implementation
 Owner: implementer
 Owning stage: review-resolution
-Decision owner: implementer
-Decision needed: Accept and add direct M4 preflight tests for malformed profile, incomplete profile, and missing required local input, or revise the approved plan and test spec to reduce that proof requirement.
 Rationale: The review found direct preflight tests for several M4 failures, but not for malformed profile, incomplete profile, or missing required local input, which are named by the active plan and approved test spec.
 Required outcome: Add direct proof for the missing M4 preflight negative cases, or revise the approved artifacts before claiming M4 closeout.
-Chosen action: pending
+Chosen action: Added direct M4 preflight negative tests for malformed profile, incomplete profile, and missing required local input. The tests exercise the preflight path and assert diagnostics naming the profile parse failure, missing profile field, or missing metadata input path.
 Validation target: Rerun M4 focused tests, lifecycle validation, review artifact validation, and whitespace validation after resolution.
-Validation evidence: pending
+Validation evidence: `python scripts/test-release-transaction.py` passed with 50 tests. Existing M4 clean fixture, package mismatch, metadata pointer drift, invalid pending evidence, dirty `release-output`, helper-level changed unauthorized literal, local tag conflict, unreachable remote warning, and reachable remote conflict tests remain green.

@@ -74,7 +74,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: CR-RTA-M4-F1, CR-RTA-M4-F2
-Open findings: CR-RTA-M4-F1, CR-RTA-M4-F2
+Open findings: None
 
 ### Review entry
 Review ID: spec-review-r1

@@ -87,12 +87,12 @@ changed_files:
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r1.md
 review:
-  status: changes-requested
-  unresolved_items: 2
+  status: resolution-complete
+  unresolved_items: 0
   location: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   material_findings: 8
-  closed_findings: 6
-  open_findings: 2
+  closed_findings: 8
+  open_findings: 0
   proposal_review: docs/changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md
   spec_review: docs/changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md
   architecture_review: docs/changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md
@@ -168,6 +168,16 @@ validation:
     result: pass
   - command: code-review-m4-r1
     result: changes_requested_CR-RTA-M4-F1_CR-RTA-M4-F2
+  - command: review-resolution CR-RTA-M4-F1 CR-RTA-M4-F2
+    result: resolved_default_git_changed_file_discovery_and_named_preflight_negative_tests
+  - command: python scripts/test-release-transaction.py
+    result: pass_50_tests
+  - command: python scripts/release-preflight.py --help
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py scripts/release-preflight.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/release-preflight.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/profiles --path tests/fixtures/release-transaction/evidence
+    result: blocked_manual_routing_for_release_transaction_scripts_unclassified_fixture_directories_tracked_artifact_preflights_passed
   - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py
     result: pass
   - command: code-review-m1-r2
