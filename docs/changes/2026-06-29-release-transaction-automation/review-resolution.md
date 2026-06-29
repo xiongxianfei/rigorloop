@@ -4,7 +4,7 @@
 
 This record tracks review finding closeout for the release transaction automation change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -115,14 +115,12 @@ No material findings. No resolution entry is required for this clean review roun
 ### code-review-m3-r1
 
 Finding ID: CR-RTA-M3-F1
-Disposition: needs-decision
-Status: open
-Decision owner: implementer
-Decision needed: Accept and implement the pending-evidence validation fix, or explicitly revise the approved M3 test contract before proceeding.
+Disposition: accepted
+Status: resolved after implementation
 Owner: implementer
 Owning stage: review-resolution
 Rationale: The finding identifies a direct M3 contract and proof gap against `R17`, `RTA-T006`, and `RTA-T010`: pending evidence validation can accept malformed target evidence because it searches for global fragments rather than validating target-specific pending values.
 Required outcome: Add direct M3 proof that invalid pending evidence fails pre-publication validation, and strengthen the validator so target-specific malformed pending values cannot pass because another target contains a valid fragment.
-Chosen action: pending
+Chosen action: Reworked pending npm-publication validation so target-init smoke evidence is extracted from the generated YAML block and validated per target. The validator now checks the expected target set from the release profile, rejects missing, duplicate, and unknown targets, validates target-specific command, npm version, result, and closeout blocking fields, and compares the Markdown table projection against the canonical YAML target data. Added temporary-repository negative tests proving a published target result, `npx -y` command shape, missing target, duplicate target, unknown target, and table/YAML result mismatch fail with target-specific diagnostics.
 Validation target: Rerun `python scripts/test-release-transaction.py`, `python scripts/prepare-release.py --help`, M3 lifecycle validation, review artifact validation, and whitespace validation after the targeted fix.
-Validation evidence: pending
+Validation evidence: `python scripts/test-release-transaction.py` passed with 34 tests, including the new M3 pending-evidence negative tests. `python scripts/prepare-release.py --help`, `python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py`, and `git diff --check --` passed. `python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/prepare-release.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/evidence` reported manual routing for release transaction scripts and an unclassified static evidence fixture path; this M3 resolution uses temporary generated repository fixtures and `python scripts/test-release-transaction.py` as the approved focused proof.

@@ -84,12 +84,12 @@ changed_files:
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: resolution-complete
+  unresolved_items: 0
   location: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   material_findings: 6
-  closed_findings: 5
-  open_findings: 1
+  closed_findings: 6
+  open_findings: 0
   proposal_review: docs/changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md
   spec_review: docs/changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md
   architecture_review: docs/changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md
@@ -173,6 +173,18 @@ validation:
     result: clean_with_notes_no_material_findings
   - command: code-review-m3-r1
     result: changes_requested_CR-RTA-M3-F1
+  - command: review-resolution CR-RTA-M3-F1
+    result: resolved_structured_target_bound_pending_evidence_validation
+  - command: python scripts/test-release-transaction.py
+    result: pass_34_tests
+  - command: python scripts/prepare-release.py --help
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/prepare-release.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/evidence
+    result: blocked_manual_routing_for_release_transaction_scripts_unclassified_static_evidence_fixture_path_focused_release_transaction_tests_own_M3_resolution_proof
+  - command: git diff --check --
+    result: pass
   - command: M3 tests before implementation
     result: fail_expected_missing_prepare_release_api
   - command: python scripts/test-release-transaction.py

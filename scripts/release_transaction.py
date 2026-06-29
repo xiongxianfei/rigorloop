@@ -109,6 +109,12 @@ class PrepareReleaseResult:
     external_actions: tuple[str, ...] = ()
 
 
+@dataclass(frozen=True)
+class PendingTargetSmoke:
+    target: str
+    fields: dict[str, Any]
+
+
 SURFACE_CLASSIFICATIONS = frozenset(
     (
         "profile-owned-generated",
@@ -261,18 +267,13 @@ def validate_pending_release_artifacts(
         text = npm_publication.read_text(encoding="utf-8")
         _require_text(errors, npm_publication, repo_root, text, "Status: pending-publication")
         _require_text(errors, npm_publication, repo_root, text, "published: false")
-        for target in profile.targets:
-            _require_text(
-                errors,
-                npm_publication,
-                repo_root,
-                text,
-                f'npx {profile.npm_package}@{profile.package_version} init {target} --json',
-            )
-            _require_text(errors, npm_publication, repo_root, text, "result: \"pending-publication\"")
-            _require_text(errors, npm_publication, repo_root, text, "post_publish_closeout_blocked: true")
-            if "npx -y " in text:
-                errors.append(f"{_repo_relative(npm_publication, repo_root)}: pending evidence must not record npx -y command shape")
+        _validate_pending_npm_publication(
+            errors,
+            npm_publication,
+            repo_root,
+            text,
+            profile,
+        )
     if release_notes.exists():
         text = release_notes.read_text(encoding="utf-8")
         marker = _generated_region_start("release-metadata", profile)
@@ -659,6 +660,262 @@ def _require_text(
 ) -> None:
     if needle not in text:
         errors.append(f"{_repo_relative(path, repo_root)}: missing {needle}")
+
+
+def _validate_pending_npm_publication(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    text: str,
+    profile: ReleaseProfile,
+) -> None:
+    yaml_block = _extract_yaml_fence(errors, path, repo_root, text)
+    rows = _parse_pending_target_init_smoke(errors, path, repo_root, yaml_block)
+    _validate_pending_target_rows(errors, path, repo_root, rows, profile)
+    _validate_pending_table_projection(errors, path, repo_root, text, rows, profile)
+
+
+def _extract_yaml_fence(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    text: str,
+) -> str:
+    start = text.find("```yaml\n")
+    if start == -1:
+        errors.append(f"{_repo_relative(path, repo_root)}: missing pending npm-publication yaml block")
+        return ""
+    content_start = start + len("```yaml\n")
+    end = text.find("\n```", content_start)
+    if end == -1:
+        errors.append(f"{_repo_relative(path, repo_root)}: pending npm-publication yaml block missing closing fence")
+        return ""
+    return text[content_start:end]
+
+
+def _parse_pending_target_init_smoke(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    yaml_block: str,
+) -> tuple[PendingTargetSmoke, ...]:
+    rows: list[PendingTargetSmoke] = []
+    in_target_init_smoke = False
+    current_target: str | None = None
+    current_fields: dict[str, Any] = {}
+
+    def finish_current() -> None:
+        nonlocal current_target, current_fields
+        if current_target is not None:
+            rows.append(PendingTargetSmoke(target=current_target, fields=dict(current_fields)))
+        current_target = None
+        current_fields = {}
+
+    for line_number, raw_line in enumerate(yaml_block.splitlines(), start=1):
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+        indent = len(raw_line) - len(raw_line.lstrip(" "))
+        line = raw_line.strip()
+        if not in_target_init_smoke:
+            if line == "target_init_smoke:" and indent == 0:
+                in_target_init_smoke = True
+            continue
+
+        if indent == 0:
+            finish_current()
+            break
+        if indent == 2 and line.endswith(":"):
+            finish_current()
+            current_target = line[:-1].strip()
+            if not current_target:
+                errors.append(f"{_repo_relative(path, repo_root)}: pending target_init_smoke has empty target at yaml line {line_number}")
+            continue
+        if indent == 4 and current_target is not None:
+            if ":" not in line:
+                errors.append(f"{_repo_relative(path, repo_root)}: pending target_init_smoke target {current_target} has malformed field at yaml line {line_number}")
+                continue
+            key, raw_value = line.split(":", 1)
+            key = key.strip()
+            value = raw_value.strip()
+            if not key:
+                errors.append(f"{_repo_relative(path, repo_root)}: pending target_init_smoke target {current_target} has empty field at yaml line {line_number}")
+                continue
+            if value:
+                current_fields[key] = _parse_scalar(value)
+            continue
+        if indent >= 6:
+            continue
+        errors.append(f"{_repo_relative(path, repo_root)}: pending target_init_smoke has unsupported yaml line {line_number}: {line}")
+
+    if in_target_init_smoke:
+        finish_current()
+    else:
+        errors.append(f"{_repo_relative(path, repo_root)}: pending npm-publication yaml missing target_init_smoke")
+    return tuple(rows)
+
+
+def _validate_pending_target_rows(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    rows: tuple[PendingTargetSmoke, ...],
+    profile: ReleaseProfile,
+) -> None:
+    rows_by_target: dict[str, list[PendingTargetSmoke]] = {}
+    expected_targets = set(profile.targets)
+    for row in rows:
+        rows_by_target.setdefault(row.target, []).append(row)
+        if row.target not in expected_targets:
+            errors.append(f"{_repo_relative(path, repo_root)}: pending npm-publication target_init_smoke unknown target: {row.target}")
+
+    for target in profile.targets:
+        target_rows = rows_by_target.get(target, [])
+        if not target_rows:
+            errors.append(f"{_repo_relative(path, repo_root)}: pending npm-publication target_init_smoke missing target: {target}")
+            continue
+        if len(target_rows) > 1:
+            errors.append(f"{_repo_relative(path, repo_root)}: pending npm-publication target_init_smoke duplicate target: {target}")
+            continue
+        _validate_pending_target_row(errors, path, repo_root, target_rows[0], target, profile)
+
+
+def _validate_pending_target_row(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    row: PendingTargetSmoke,
+    expected_target: str,
+    profile: ReleaseProfile,
+) -> None:
+    fields = row.fields
+    row_target = fields.get("target")
+    if row_target != expected_target:
+        errors.append(
+            f"{_repo_relative(path, repo_root)}: pending npm-publication target_init_smoke target/command mismatch: "
+            f"row target {expected_target} records target `{row_target}`"
+        )
+
+    expected_command = f"npx {profile.npm_package}@{profile.package_version} init {expected_target} --json"
+    command = fields.get("command")
+    if _uses_unpermitted_placeholder(command):
+        errors.append(
+            f"{_repo_relative(path, repo_root)}: pending npm-publication target {expected_target} uses unpermitted placeholder in command"
+        )
+    if command != expected_command:
+        errors.append(
+            f"{_repo_relative(path, repo_root)}: pending npm-publication target {expected_target} has invalid command; "
+            f"expected `{expected_command}`"
+        )
+
+    npm_version = fields.get("npm_version")
+    if _uses_unpermitted_placeholder(npm_version) or npm_version != profile.package_version:
+        errors.append(
+            f"{_repo_relative(path, repo_root)}: pending npm-publication target {expected_target} has invalid npm_version "
+            f"`{npm_version}`; expected `{profile.package_version}`"
+        )
+
+    result = fields.get("result")
+    if _uses_unpermitted_placeholder(result):
+        errors.append(
+            f"{_repo_relative(path, repo_root)}: pending npm-publication target {expected_target} uses unpermitted placeholder in result"
+        )
+    if result != "pending-publication":
+        errors.append(
+            f"{_repo_relative(path, repo_root)}: pending npm-publication target {expected_target} has invalid result "
+            f"`{result}`; expected `pending-publication`"
+        )
+
+    if fields.get("post_publish_closeout_blocked") is not True:
+        errors.append(
+            f"{_repo_relative(path, repo_root)}: pending npm-publication target {expected_target} must set post_publish_closeout_blocked true"
+        )
+
+
+def _uses_unpermitted_placeholder(value: Any) -> bool:
+    return isinstance(value, str) and ("<pending" in value or value in {"pending", "<pending>"})
+
+
+def _validate_pending_table_projection(
+    errors: list[str],
+    path: Path,
+    repo_root: Path,
+    text: str,
+    rows: tuple[PendingTargetSmoke, ...],
+    profile: ReleaseProfile,
+) -> None:
+    table_rows = _parse_pending_table_rows(text)
+    if not table_rows:
+        errors.append(f"{_repo_relative(path, repo_root)}: missing pending npm-publication target table")
+        return
+
+    yaml_by_target: dict[str, PendingTargetSmoke] = {}
+    for row in rows:
+        if row.target not in yaml_by_target:
+            yaml_by_target[row.target] = row
+
+    table_by_target: dict[str, list[dict[str, str]]] = {}
+    expected_targets = set(profile.targets)
+    for table_row in table_rows:
+        target = table_row["target"]
+        table_by_target.setdefault(target, []).append(table_row)
+        if target not in expected_targets:
+            errors.append(f"{_repo_relative(path, repo_root)}: pending npm-publication table unknown target: {target}")
+
+    for target in profile.targets:
+        target_rows = table_by_target.get(target, [])
+        if not target_rows:
+            errors.append(f"{_repo_relative(path, repo_root)}: pending npm-publication table missing target: {target}")
+            continue
+        if len(target_rows) > 1:
+            errors.append(f"{_repo_relative(path, repo_root)}: pending npm-publication table duplicate target: {target}")
+            continue
+        yaml_row = yaml_by_target.get(target)
+        if yaml_row is None:
+            continue
+        table_row = target_rows[0]
+        comparisons = (
+            ("command", table_row["command"], yaml_row.fields.get("command")),
+            ("npm_version", table_row["npm_version"], yaml_row.fields.get("npm_version")),
+            ("result", table_row["result"], yaml_row.fields.get("result")),
+            ("closeout_blocker", table_row["closeout_blocker"], yaml_row.fields.get("closeout_blocker")),
+        )
+        for field, table_value, yaml_value in comparisons:
+            if table_value != yaml_value:
+                errors.append(
+                    f"{_repo_relative(path, repo_root)}: pending npm-publication target {target} table projection mismatch for {field}: "
+                    f"table `{table_value}` yaml `{yaml_value}`"
+                )
+
+
+def _parse_pending_table_rows(text: str) -> tuple[dict[str, str], ...]:
+    rows: list[dict[str, str]] = []
+    in_table = False
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if line.startswith("| Target | Command |"):
+            in_table = True
+            continue
+        if not in_table:
+            continue
+        if line.startswith("|---"):
+            continue
+        if not line.startswith("|"):
+            if rows:
+                break
+            continue
+        cells = [cell.strip().strip("`") for cell in line.strip("|").split("|")]
+        if len(cells) != 13:
+            continue
+        rows.append(
+            {
+                "target": cells[0],
+                "command": cells[1],
+                "npm_version": cells[2],
+                "result": cells[11],
+                "closeout_blocker": cells[12],
+            }
+        )
+    return tuple(rows)
 
 
 def _validate_profile_data(path: Path, data: dict[str, Any]) -> ReleaseProfile:
