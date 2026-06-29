@@ -71,12 +71,12 @@ Important existing boundaries:
 ## Current Handoff Summary
 
 - Current milestone: M4. Release preflight command
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
-- Last reviewed milestone: M3
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M4 review pending, M5, M6
-- Next stage: code-review M4
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r1.md
+- Last reviewed milestone: M4
+- Review status: changes-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M4 resolution needed, M5, M6
+- Next stage: review-resolution M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — Test-spec-review-r3 approved implementation handoff, but implementation milestones, explain-change, verify, and PR handoff remain.
 
@@ -173,7 +173,7 @@ Important existing boundaries:
 
 ### M4. Release preflight command
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add Python-owned `release-preflight` as the cheap deterministic local/profile/schema gate before full release verification.
 - Requirements: `R18`-`R27`, `AC8`, `AC9`
 - Files/components likely touched:
@@ -197,6 +197,13 @@ Important existing boundaries:
   - Remote tag checks could be flaky if unreachable state is not explicit.
 - Rollback/recovery:
   - Keep preflight advisory or report-only while full release gate remains unchanged.
+
+M4 code review status:
+
+- `code-review-m4-r1` requested changes for `CR-RTA-M4-F1` and `CR-RTA-M4-F2`.
+- `CR-RTA-M4-F1`: default `python scripts/release-preflight.py <tag>` does not enforce newly changed unauthorized literals unless `--changed-file` is supplied.
+- `CR-RTA-M4-F2`: direct M4 preflight negative proof is missing for malformed profile, incomplete profile, and missing required local input.
+- Next action: resolve both findings, rerun M4 validation, return M4 to code review.
 
 ### M5. Full release gate parity and timing evidence
 

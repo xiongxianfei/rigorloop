@@ -85,13 +85,14 @@ changed_files:
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
   - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r1.md
 review:
-  status: resolution-complete
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 2
   location: docs/changes/2026-06-29-release-transaction-automation/review-log.md
-  material_findings: 6
+  material_findings: 8
   closed_findings: 6
-  open_findings: 0
+  open_findings: 2
   proposal_review: docs/changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md
   spec_review: docs/changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md
   architecture_review: docs/changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md
@@ -103,6 +104,7 @@ review:
   code_review_m2_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
   code_review_m3_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
   code_review_m3_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
+  code_review_m4_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r1.md
   review_log: docs/changes/2026-06-29-release-transaction-automation/review-log.md
   review_resolution: docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
 validation:
@@ -164,6 +166,8 @@ validation:
     result: pass
   - command: git diff --check --
     result: pass
+  - command: code-review-m4-r1
+    result: changes_requested_CR-RTA-M4-F1_CR-RTA-M4-F2
   - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py
     result: pass
   - command: code-review-m1-r2

@@ -4,7 +4,7 @@
 
 This record tracks review finding closeout for the release transaction automation change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -16,6 +16,7 @@ Review closeout: test-spec-review-r3
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m3-r1
+Review closeout: code-review-m4-r1
 
 ## Resolution Entries
 
@@ -128,3 +129,31 @@ Validation evidence: `python scripts/test-release-transaction.py` passed with 34
 ### code-review-m3-r2
 
 No material findings. No resolution entry is required for this clean review round.
+
+### code-review-m4-r1
+
+Finding ID: CR-RTA-M4-F1
+Disposition: needs-decision
+Status: open
+Owner: implementer
+Owning stage: review-resolution
+Decision owner: implementer
+Decision needed: Accept and implement default changed-file discovery for the preflight CLI, or revise the approved spec and test spec to make explicit changed-file input mandatory.
+Rationale: The review found that the preferred `python scripts/release-preflight.py <tag>` command can pass when an unauthorized current-version literal is present in the literal-audit baseline unless the caller explicitly supplies `--changed-file`.
+Required outcome: The default M4 preflight command must detect newly changed unauthorized literals under normal CLI usage, or the governing command contract must be revised before M4 closeout.
+Chosen action: pending
+Validation target: Rerun M4 focused tests, `python scripts/release-preflight.py --help`, Python compilation, lifecycle validation, review artifact validation, and whitespace validation after resolution.
+Validation evidence: pending
+
+Finding ID: CR-RTA-M4-F2
+Disposition: needs-decision
+Status: open
+Owner: implementer
+Owning stage: review-resolution
+Decision owner: implementer
+Decision needed: Accept and add direct M4 preflight tests for malformed profile, incomplete profile, and missing required local input, or revise the approved plan and test spec to reduce that proof requirement.
+Rationale: The review found direct preflight tests for several M4 failures, but not for malformed profile, incomplete profile, or missing required local input, which are named by the active plan and approved test spec.
+Required outcome: Add direct proof for the missing M4 preflight negative cases, or revise the approved artifacts before claiming M4 closeout.
+Chosen action: pending
+Validation target: Rerun M4 focused tests, lifecycle validation, review artifact validation, and whitespace validation after resolution.
+Validation evidence: pending
