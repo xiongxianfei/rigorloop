@@ -27,6 +27,7 @@ from release_transaction import (  # noqa: E402
     load_surface_inventory_file,
     prepare_release,
     profile_path_for_tag,
+    release_preflight,
     validate_pending_release_artifacts,
 )
 
@@ -521,6 +522,197 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
         self.assertIn("prepared v0.3.5: no changes", result.stdout)
         self.assertIn("next: python scripts/release-preflight.py v0.3.5", result.stdout)
+
+
+class ReleasePreflightTests(unittest.TestCase):
+    maxDiff = None
+
+    def make_prepared_repo(self, root: Path) -> None:
+        PrepareReleaseTests().make_repo(root)
+        prepare_release("v0.3.5", root=root)
+
+    def relative_file_texts(self, root: Path) -> dict[str, str]:
+        return {
+            str(path.relative_to(root)): path.read_text(encoding="utf-8")
+            for path in sorted(root.rglob("*"))
+            if path.is_file()
+        }
+
+    def assert_preflight_error(self, mutator, *needles: str) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            mutator(root)
+
+            result = release_preflight("v0.3.5", root=root)
+
+        self.assertTrue(
+            any(all(needle in error for needle in needles) for error in result.errors),
+            result.errors,
+        )
+
+    def test_release_preflight_clean_fixture_is_idempotent_and_side_effect_light(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            before = self.relative_file_texts(root)
+
+            first = release_preflight("v0.3.5", root=root)
+            second = release_preflight("v0.3.5", root=root)
+            after = self.relative_file_texts(root)
+
+        self.assertEqual(first.errors, ())
+        self.assertEqual(second.errors, ())
+        self.assertEqual(before, after)
+        self.assertEqual(first.external_actions, ())
+
+    def test_release_preflight_cli_succeeds_on_clean_fixture(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "release-preflight.py"),
+                    "v0.3.5",
+                    "--root",
+                    str(root),
+                ],
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        self.assertIn("release-preflight v0.3.5: pass", result.stdout)
+
+    def test_release_preflight_fails_missing_profile(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = release_preflight("v0.3.5", root=Path(tmp))
+
+        self.assertTrue(any("release profile not found" in error for error in result.errors), result.errors)
+
+    def test_release_preflight_fails_package_profile_version_mismatch(self) -> None:
+        def mutate(root: Path) -> None:
+            package_json = root / "packages" / "rigorloop" / "package.json"
+            data = json.loads(package_json.read_text(encoding="utf-8"))
+            data["version"] = "0.3.4"
+            package_json.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+        self.assert_preflight_error(mutate, "package version", "0.3.4", "0.3.5")
+
+    def test_release_preflight_fails_stale_metadata_pointer(self) -> None:
+        def mutate(root: Path) -> None:
+            releases_json = root / "packages" / "rigorloop" / "dist" / "metadata" / "releases.json"
+            data = json.loads(releases_json.read_text(encoding="utf-8"))
+            data["releases"]["v0.3.5"]["bundled_metadata"] = "adapter-artifacts-v0.3.4.json"
+            releases_json.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+        self.assert_preflight_error(mutate, "metadata pointer", "adapter-artifacts-v0.3.4.json", "adapter-artifacts-v0.3.5.json")
+
+    def test_release_preflight_fails_invalid_pending_evidence_shape(self) -> None:
+        def mutate(root: Path) -> None:
+            npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
+            text = npm_publication.read_text(encoding="utf-8")
+            npm_publication.write_text(
+                text.replace('    result: "pending-publication"\n', '    result: "published"\n', 1),
+                encoding="utf-8",
+            )
+
+        self.assert_preflight_error(mutate, "codex", "result", "pending-publication")
+
+    def test_release_preflight_fails_dirty_release_output(self) -> None:
+        def mutate(root: Path) -> None:
+            output = root / "release-output"
+            output.mkdir()
+            (output / "leftover.txt").write_text("stale\n", encoding="utf-8")
+
+        self.assert_preflight_error(mutate, "release-output", "not clean")
+
+    def test_release_preflight_fails_changed_unauthorized_literal(self) -> None:
+        def mutate(root: Path) -> None:
+            baseline = root / "docs" / "changes" / "2026-06-29-release-transaction-automation" / "release-literal-audit-baseline.yaml"
+            baseline.parent.mkdir(parents=True)
+            baseline.write_text(
+                "schema_version: release-literal-audit-baseline-v1\n"
+                "change_id: 2026-06-29-release-transaction-automation\n"
+                "audited_release_tag: v0.3.5\n"
+                "release_profile: docs/releases/profiles/v0.3.5.yaml\n"
+                "\n"
+                "entries:\n"
+                "  - id: literal-baseline-001\n"
+                "    literal: v0.3.5\n"
+                "    file: scripts/new_release_state.py\n"
+                "    line: 1\n"
+                "    classification: unauthorized\n"
+                "    expected_owner: release-profile\n"
+                "    disposition: must-fix\n",
+                encoding="utf-8",
+            )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            mutate(root)
+
+            result = release_preflight(
+                "v0.3.5",
+                root=root,
+                changed_files=("scripts/new_release_state.py",),
+            )
+
+        self.assertTrue(any("unauthorized changed literal" in error for error in result.errors), result.errors)
+
+    def test_release_preflight_fails_local_tag_conflict(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            subprocess.run(["git", "init"], cwd=root, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=root, check=True)
+            subprocess.run(["git", "config", "user.name", "Test User"], cwd=root, check=True)
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-m", "fixture"], cwd=root, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "tag", "v0.3.5"], cwd=root, check=True)
+
+            result = release_preflight("v0.3.5", root=root)
+
+        self.assertTrue(any("local tag conflict" in error and "v0.3.5" in error for error in result.errors), result.errors)
+
+    def test_release_preflight_reports_unreachable_remote_tag_state(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            subprocess.run(["git", "init"], cwd=root, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "remote", "add", "origin", str(root / "missing-remote.git")], cwd=root, check=True)
+
+            result = release_preflight("v0.3.5", root=root)
+
+        self.assertFalse(any("remote tag conflict" in error for error in result.errors), result.errors)
+        self.assertTrue(any("remote tag state unreachable" in warning for warning in result.warnings), result.warnings)
+
+    def test_release_preflight_fails_reachable_remote_tag_conflict(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp)
+            root = fixture / "repo"
+            remote = fixture / "remote.git"
+            root.mkdir()
+            self.make_prepared_repo(root)
+            subprocess.run(["git", "init"], cwd=root, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=root, check=True)
+            subprocess.run(["git", "config", "user.name", "Test User"], cwd=root, check=True)
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-m", "fixture"], cwd=root, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "init", "--bare", str(remote)], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "remote", "add", "origin", str(remote)], cwd=root, check=True)
+            subprocess.run(["git", "tag", "v0.3.5"], cwd=root, check=True)
+            subprocess.run(["git", "push", "origin", "v0.3.5"], cwd=root, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "tag", "-d", "v0.3.5"], cwd=root, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            result = release_preflight("v0.3.5", root=root)
+
+        self.assertTrue(any("remote tag conflict" in error and "v0.3.5" in error for error in result.errors), result.errors)
 
 
 if __name__ == "__main__":

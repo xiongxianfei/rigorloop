@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -106,6 +107,14 @@ class LiteralAuditBaseline:
 class PrepareReleaseResult:
     release_tag: str
     changed_paths: tuple[str, ...]
+    external_actions: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class ReleasePreflightResult:
+    release_tag: str
+    errors: tuple[str, ...]
+    warnings: tuple[str, ...] = ()
     external_actions: tuple[str, ...] = ()
 
 
@@ -280,6 +289,43 @@ def validate_pending_release_artifacts(
         _require_text(errors, release_notes, repo_root, text, marker)
         _require_text(errors, release_notes, repo_root, text, _generated_region_end("release-metadata"))
     return errors
+
+
+def release_preflight(
+    tag: str,
+    *,
+    root: Path | str = Path("."),
+    changed_files: tuple[str, ...] = (),
+    check_remote: bool = True,
+) -> ReleasePreflightResult:
+    repo_root = Path(root)
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    try:
+        profile = load_release_profile(tag, root=repo_root)
+    except ReleaseProfileError as exc:
+        return ReleasePreflightResult(
+            release_tag=tag,
+            errors=tuple(exc.errors),
+        )
+
+    if not is_routine_release_profile(profile):
+        errors.append("release-preflight requires a routine release profile")
+    _preflight_package_profile_agreement(errors, repo_root, profile)
+    _preflight_release_metadata_pointer(errors, repo_root, profile)
+    errors.extend(validate_pending_release_artifacts(tag, root=repo_root))
+    _preflight_literal_audit(errors, warnings, repo_root, changed_files=changed_files)
+    _preflight_release_output(errors, repo_root)
+    _preflight_local_tag(errors, repo_root, tag)
+    if check_remote:
+        _preflight_remote_tag(errors, warnings, repo_root, tag)
+
+    return ReleasePreflightResult(
+        release_tag=tag,
+        errors=tuple(errors),
+        warnings=tuple(warnings),
+    )
 
 
 def _current_package_version(repo_root: Path) -> str | None:
@@ -660,6 +706,143 @@ def _require_text(
 ) -> None:
     if needle not in text:
         errors.append(f"{_repo_relative(path, repo_root)}: missing {needle}")
+
+
+def _preflight_package_profile_agreement(
+    errors: list[str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    package_json_path = repo_root / "packages" / "rigorloop" / "package.json"
+    if not package_json_path.exists():
+        errors.append(f"{_repo_relative(package_json_path, repo_root)}: missing required local input")
+        return
+    try:
+        data = json.loads(package_json_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"{_repo_relative(package_json_path, repo_root)}: could not parse package metadata: {exc}")
+        return
+    name = data.get("name")
+    version = data.get("version")
+    if name != profile.npm_package:
+        errors.append(
+            f"{_repo_relative(package_json_path, repo_root)}: package name `{name}` does not match profile `{profile.npm_package}`"
+        )
+    if version != profile.package_version:
+        errors.append(
+            f"{_repo_relative(package_json_path, repo_root)}: package version `{version}` does not match profile `{profile.package_version}`"
+        )
+
+
+def _preflight_release_metadata_pointer(
+    errors: list[str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    metadata_path = repo_root / "packages" / "rigorloop" / "dist" / "metadata" / "releases.json"
+    if not metadata_path.exists():
+        errors.append(f"{_repo_relative(metadata_path, repo_root)}: missing required local input")
+        return
+    try:
+        data = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"{_repo_relative(metadata_path, repo_root)}: could not parse release metadata: {exc}")
+        return
+    releases = data.get("releases")
+    if not isinstance(releases, dict):
+        errors.append(f"{_repo_relative(metadata_path, repo_root)}: releases must be a mapping")
+        return
+    entry = releases.get(profile.release_tag)
+    if not isinstance(entry, dict):
+        errors.append(f"{_repo_relative(metadata_path, repo_root)}: missing release metadata pointer for {profile.release_tag}")
+        return
+    bundled_metadata = entry.get("bundled_metadata")
+    expected_metadata = profile.adapter_artifacts["metadata_file"]
+    if bundled_metadata != expected_metadata:
+        errors.append(
+            f"{_repo_relative(metadata_path, repo_root)}: metadata pointer `{bundled_metadata}` does not match profile `{expected_metadata}`"
+        )
+    release_tag = entry.get("release_tag")
+    if release_tag != profile.release_tag:
+        errors.append(
+            f"{_repo_relative(metadata_path, repo_root)}: release metadata tag `{release_tag}` does not match profile `{profile.release_tag}`"
+        )
+
+
+def _preflight_literal_audit(
+    errors: list[str],
+    warnings: list[str],
+    repo_root: Path,
+    *,
+    changed_files: tuple[str, ...],
+) -> None:
+    baseline_path = (
+        repo_root
+        / "docs"
+        / "changes"
+        / "2026-06-29-release-transaction-automation"
+        / "release-literal-audit-baseline.yaml"
+    )
+    if not baseline_path.exists():
+        return
+    try:
+        baseline = load_literal_audit_baseline_file(
+            baseline_path,
+            changed_files=changed_files,
+        )
+    except ReleaseProfileError as exc:
+        errors.extend(exc.errors)
+        return
+    warnings.extend(baseline.warnings)
+
+
+def _preflight_release_output(errors: list[str], repo_root: Path) -> None:
+    release_output = repo_root / "release-output"
+    if not release_output.exists():
+        return
+    if not release_output.is_dir():
+        errors.append(f"{_repo_relative(release_output, repo_root)}: release-output path is not a directory")
+        return
+    if any(release_output.iterdir()):
+        errors.append(f"{_repo_relative(release_output, repo_root)}: release-output is not clean")
+
+
+def _preflight_local_tag(errors: list[str], repo_root: Path, tag: str) -> None:
+    if not (repo_root / ".git").exists():
+        return
+    result = _run_git(repo_root, "show-ref", "--verify", "--quiet", f"refs/tags/{tag}")
+    if result.returncode == 0:
+        errors.append(f"local tag conflict: {tag}")
+
+
+def _preflight_remote_tag(
+    errors: list[str],
+    warnings: list[str],
+    repo_root: Path,
+    tag: str,
+) -> None:
+    if not (repo_root / ".git").exists():
+        return
+    remote = _run_git(repo_root, "remote", "get-url", "origin")
+    if remote.returncode != 0:
+        return
+    result = _run_git(repo_root, "ls-remote", "--tags", "origin", f"refs/tags/{tag}")
+    if result.returncode != 0:
+        detail = result.stderr.strip() or result.stdout.strip() or "git ls-remote failed"
+        warnings.append(f"remote tag state unreachable for {tag}: {detail}")
+        return
+    if result.stdout.strip():
+        errors.append(f"remote tag conflict: {tag}")
+
+
+def _run_git(repo_root: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ("git", "-C", str(repo_root), *args),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
 
 
 def _validate_pending_npm_publication(
