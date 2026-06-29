@@ -1088,10 +1088,10 @@ release_gate:
             root = Path(tmp)
             skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
             output_dir = root / "release-output"
-            build_adapter_archives("v0.3.3", output_dir, skills_root=skills_root)
+            build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
 
             errors = validate_clean_install_smoke(
-                "v0.3.3",
+                "v0.3.4",
                 output_dir,
                 skills_root=skills_root,
                 skill_names=("portable-with-assets",),
@@ -1131,13 +1131,13 @@ release_gate:
             root = Path(tmp)
             skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
             output_dir = root / "release-output"
-            build_adapter_archives("v0.3.3", output_dir, skills_root=skills_root)
+            build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
 
             def fake_runner(command, **kwargs):
                 return subprocess.CompletedProcess(command, 0, stdout='{"status":"success"}', stderr="")
 
             errors = validate_clean_install_smoke(
-                "v0.3.3",
+                "v0.3.4",
                 output_dir,
                 skills_root=skills_root,
                 skill_names=("portable-with-assets",),
@@ -1154,10 +1154,10 @@ release_gate:
             root = Path(tmp)
             skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
             output_dir = root / "release-output"
-            build_adapter_archives("v0.3.3", output_dir, skills_root=skills_root)
+            build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
 
             errors = validate_clean_install_smoke(
-                "v0.3.3",
+                "v0.3.4",
                 output_dir,
                 skills_root=skills_root,
                 skill_names=("portable-with-assets",),
@@ -1184,10 +1184,10 @@ release_gate:
             root = Path(tmp)
             skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
             output_dir = root / "release-output"
-            build_adapter_archives("v0.3.3", output_dir, skills_root=skills_root)
+            build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
 
             errors = validate_clean_install_smoke(
-                "v0.3.3",
+                "v0.3.4",
                 output_dir,
                 skills_root=skills_root,
                 skill_names=("portable-with-assets",),

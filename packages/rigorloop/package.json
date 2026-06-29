@@ -1,6 +1,6 @@
 {
   "name": "@xiongxianfei/rigorloop",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Git-first workflow for AI coding agents: proposals, specs, tests, review gates, and durable validation evidence from idea to PR.",
   "keywords": [
     "ai-agents",

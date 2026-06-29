@@ -1,0 +1,56 @@
+version: v0.3.4
+release_type: final
+manifest_version: v0.1.5
+
+supported_tools:
+  - codex
+  - claude
+  - opencode
+
+adapter_paths:
+  codex: dist/adapters/codex/
+  claude: dist/adapters/claude/
+  opencode: dist/adapters/opencode/
+
+instruction_entrypoints:
+  codex: dist/adapters/codex/AGENTS.md
+  claude: dist/adapters/claude/CLAUDE.md
+  opencode: dist/adapters/opencode/AGENTS.md
+
+smoke:
+  codex:
+    result: pass
+    tool_version: "packed-package"
+    evidence: "Packed-package pre-publish smoke runs real non-dry-run `init codex` and `init codex --write-state` against the v0.3.4 Codex archive."
+    reason: ""
+    owner: maintainer
+  claude:
+    result: pass
+    tool_version: "packed-package"
+    evidence: "Packed-package pre-publish smoke runs real non-dry-run `init claude` and `init claude --write-state` against the v0.3.4 Claude archive."
+    reason: ""
+    owner: maintainer
+  opencode:
+    result: pass
+    tool_version: "packed-package"
+    evidence: "Packed-package pre-publish smoke runs real non-dry-run `init opencode` and `init opencode --write-state` against the v0.3.4 opencode archive. Command alias smoke evidence covers `opencode run --command proposal`, loaded `proposal` skill behavior, and argument_marker_m3_smoke."
+    reason: ""
+    owner: maintainer
+
+validation:
+  generated_sync: pass
+  release_notes_consistency: pass
+  placeholder_release_check: pass
+  security: pass
+  adapter_archives: pass
+  adapter_artifact_metadata: pass
+  npm_publication_evidence: pass
+
+npm_package:
+  name: "@xiongxianfei/rigorloop"
+  version: "0.3.4"
+  release_tag: v0.3.4
+
+adapter_release:
+  tag: v0.3.4
+  bundled_metadata: adapter-artifacts-v0.3.4.json

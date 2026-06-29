@@ -37,7 +37,7 @@ Use `init claude` for Claude Code or `init opencode` for opencode.
 Pin the package version anywhere reproducibility matters:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.3.3 init codex
+npx @xiongxianfei/rigorloop@0.3.4 init codex
 ```
 
 For a project-local dev dependency, install once and run through `npx`:
@@ -265,7 +265,7 @@ npx @xiongxianfei/rigorloop@latest init codex --dry-run --json
 Use `@latest` for quick manual trials. Use a pinned version for automation, CI, onboarding docs, and repeatable agent setup:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.3.3 init codex --json
+npx @xiongxianfei/rigorloop@0.3.4 init codex --json
 ```
 
 ### Run after project-local install
