@@ -101,6 +101,11 @@ def load_release_profile_file(path: Path | str) -> ReleaseProfile:
     profile_path = Path(path)
     try:
         text = profile_path.read_text(encoding="utf-8")
+    except FileNotFoundError as exc:
+        raise ReleaseProfileError(
+            profile_path,
+            [f"release profile not found: {profile_path}"],
+        ) from exc
     except OSError as exc:
         raise ReleaseProfileError(profile_path, [f"could not read release profile: {exc}"]) from exc
 
@@ -124,7 +129,7 @@ def _validate_profile_data(path: Path, data: dict[str, Any]) -> ReleaseProfile:
     errors: list[str] = []
     for field in REQUIRED_TOP_LEVEL_FIELDS:
         if field not in data:
-            errors.append(f"missing required field: {field}")
+            errors.append(f"release profile missing required field: {field}")
 
     if errors:
         raise ReleaseProfileError(path, errors)
