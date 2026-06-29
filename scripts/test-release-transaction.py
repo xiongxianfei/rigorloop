@@ -8,6 +8,7 @@ import sys
 import tempfile
 import unittest
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -28,6 +29,8 @@ from release_transaction import (  # noqa: E402
     prepare_release,
     profile_path_for_tag,
     release_preflight,
+    validate_release_timing_evidence,
+    validate_release_workflow_parity,
     validate_pending_release_artifacts,
 )
 
@@ -388,6 +391,7 @@ class PrepareReleaseTests(unittest.TestCase):
                 "docs/releases/v0.3.5/npm-publication.md",
                 "docs/releases/v0.3.5/release-notes.md",
                 "docs/releases/v0.3.5/release.yaml",
+                "docs/releases/v0.3.5/timing.yaml",
                 "docs/reports/adapter-artifacts/releases/v0.3.5.yaml",
                 "packages/rigorloop/README.md",
                 "packages/rigorloop/dist/metadata/releases.json",
@@ -822,6 +826,178 @@ class ReleasePreflightTests(unittest.TestCase):
             result = release_preflight("v0.3.5", root=root)
 
         self.assertTrue(any("remote tag conflict" in error and "v0.3.5" in error for error in result.errors), result.errors)
+
+
+class ReleaseGateParityAndTimingTests(unittest.TestCase):
+    maxDiff = None
+
+    def make_prepared_repo(self, root: Path) -> None:
+        PrepareReleaseTests().make_repo(root)
+        prepare_release("v0.3.5", root=root)
+
+    def write_timing(self, root: Path, text: str) -> Path:
+        timing = root / "docs" / "releases" / "v0.3.5" / "timing.yaml"
+        timing.parent.mkdir(parents=True, exist_ok=True)
+        timing.write_text(text, encoding="utf-8")
+        return timing
+
+    def valid_timing_text(self, *, preflight_duration: int = 12) -> str:
+        return (
+            "schema_version: release-timing-v1\n"
+            "release_tag: v0.3.5\n"
+            "release_profile: docs/releases/profiles/v0.3.5.yaml\n"
+            "created_at: 2026-06-29T00:00:00Z\n"
+            "\n"
+            "phases:\n"
+            "  - id: prepare_release\n"
+            "    command: python scripts/prepare-release.py v0.3.5\n"
+            "    duration_seconds: 10\n"
+            "    result: pass\n"
+            "  - id: preflight\n"
+            "    command: python scripts/release-preflight.py v0.3.5\n"
+            f"    duration_seconds: {preflight_duration}\n"
+            "    result: pass\n"
+            "  - id: local_release_verify\n"
+            "    command: bash scripts/release-verify.sh v0.3.5\n"
+            "    duration_seconds: 180\n"
+            "    result: pass\n"
+            "  - id: ci_release_verify\n"
+            "    command: bash scripts/release-verify.sh v0.3.5\n"
+            "    duration_seconds: 0\n"
+            "    result: pending\n"
+            "  - id: publication_wait\n"
+            "    command: external GitHub and npm publication wait\n"
+            "    duration_seconds: 0\n"
+            "    result: pending\n"
+            "  - id: public_closeout\n"
+            "    command: python scripts/close-release-publication.py v0.3.5\n"
+            "    duration_seconds: 0\n"
+            "    result: pending\n"
+            "\n"
+            "checks:\n"
+            "  - id: adapter_distribution.regression\n"
+            "    command: python scripts/test-adapter-distribution.py\n"
+            "    phase: local_release_verify\n"
+            "    duration_seconds: 120\n"
+            "    result: pass\n"
+        )
+
+    def test_release_verify_dry_run_preserves_full_gate_checks(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            env = dict(os.environ)
+            env["RELEASE_VERIFY_DRY_RUN"] = "1"
+            env["RELEASE_OUTPUT_DIR"] = str(Path(tmp) / "release-output")
+            env["RELEASE_COMMIT"] = "fixture-commit"
+
+            result = subprocess.run(
+                ["bash", "scripts/release-verify.sh", "v0.3.5"],
+                cwd=ROOT,
+                env=env,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+
+        output = result.stderr + result.stdout
+        self.assertEqual(result.returncode, 0, output)
+        self.assertIn("python scripts/test-adapter-distribution.py", output)
+        self.assertIn("python scripts/test-npm-package-publication.py", output)
+        self.assertIn("python scripts/validate-release.py --version v0.3.5", output)
+        self.assertIn("security", output.lower())
+
+    def test_release_workflow_delegates_to_release_verify(self) -> None:
+        self.assertEqual(validate_release_workflow_parity(ROOT), [])
+
+    def test_release_workflow_parity_rejects_direct_validate_release_gate(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workflow = root / ".github" / "workflows" / "release.yml"
+            workflow.parent.mkdir(parents=True)
+            workflow.write_text(
+                "name: release\n"
+                "jobs:\n"
+                "  release:\n"
+                "    steps:\n"
+                "      - run: python scripts/validate-release.py --version \"$GITHUB_REF_NAME\"\n",
+                encoding="utf-8",
+            )
+
+            errors = validate_release_workflow_parity(root)
+
+        self.assertTrue(any("release-verify.sh" in error for error in errors), errors)
+        self.assertTrue(any("validate-release.py" in error for error in errors), errors)
+
+    def test_prepare_release_generates_timing_evidence_skeleton(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+
+            result = validate_release_timing_evidence("v0.3.5", root=root)
+
+        self.assertEqual(result.errors, ())
+        self.assertEqual(result.warnings, ())
+
+    def test_release_timing_evidence_validates_required_phases(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            self.write_timing(root, self.valid_timing_text())
+
+            result = validate_release_timing_evidence("v0.3.5", root=root)
+
+        self.assertEqual(result.errors, ())
+        self.assertEqual(result.warnings, ())
+
+    def test_release_timing_missing_when_profile_requires_it_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            PrepareReleaseTests().make_repo(root)
+
+            result = validate_release_timing_evidence("v0.3.5", root=root)
+
+        self.assertTrue(any("timing.yaml" in error and "missing" in error for error in result.errors), result.errors)
+
+    def test_release_timing_missing_duration_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            self.write_timing(root, self.valid_timing_text().replace("    duration_seconds: 12\n", ""))
+
+            result = validate_release_timing_evidence("v0.3.5", root=root)
+
+        self.assertTrue(any("preflight" in error and "duration_seconds" in error for error in result.errors), result.errors)
+
+    def test_release_timing_unknown_phase_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            self.write_timing(root, self.valid_timing_text().replace("id: preflight", "id: fast_lane", 1))
+
+            result = validate_release_timing_evidence("v0.3.5", root=root)
+
+        self.assertTrue(any("unknown timing phase id: fast_lane" in error for error in result.errors), result.errors)
+
+    def test_release_timing_unknown_result_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            self.write_timing(root, self.valid_timing_text().replace("result: pass", "result: done", 1))
+
+            result = validate_release_timing_evidence("v0.3.5", root=root)
+
+        self.assertTrue(any("unknown timing result: done" in error for error in result.errors), result.errors)
+
+    def test_release_timing_duration_over_target_is_warning_only(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            self.write_timing(root, self.valid_timing_text(preflight_duration=999))
+
+            result = validate_release_timing_evidence("v0.3.5", root=root)
+
+        self.assertEqual(result.errors, ())
+        self.assertTrue(any("preflight" in warning and "target" in warning for warning in result.warnings), result.warnings)
 
 
 if __name__ == "__main__":
