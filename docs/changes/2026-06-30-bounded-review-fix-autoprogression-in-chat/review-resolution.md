@@ -1,0 +1,152 @@
+# Review Resolution: Bounded Review-Fix Autoprogression in Chat
+
+## Summary
+
+Closeout status: closed
+
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: Proposal-review R2 approved the proposal, spec-review R2 approved the revised spec, architecture-review R2 approved the architecture package and ADR, plan-review R2 approved the revised execution plan, and test-spec-review R1 approved the active test spec with no material findings. Code-review M1 R1 is inconclusive with no material findings because governing artifacts are local-only/untracked, so M1 remains open.
+
+## Resolution Entries
+
+### proposal-review-r1
+
+Review closeout: proposal-review-r1
+
+#### AUTO-PR1 - Proposal still uses slice language that conflicts with owner direction
+
+Finding ID: AUTO-PR1
+Disposition: accepted
+Status: closed
+Owner: proposal owner
+Owning stage: proposal
+Chosen action: Revised the proposal to define one integrated proposal-side feature through `test-spec-review`, removed partial first-slice/later-slice user-visible scope, and kept implementation, code-review, verify, PR, release, publication, network, and external-state operations out of scope.
+Rationale: The finding correctly identified a mismatch between owner direction and the previous proposal/spec-only first-slice framing.
+Validation target: Rerun proposal-review after proposal revision.
+Validation evidence: Proposal-review R2 approved the revised proposal with no material findings. Revised proposal passed `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md`.
+
+#### AUTO-PR2 - Target-stage enum should cover the full proposal-side path
+
+Finding ID: AUTO-PR2
+Disposition: accepted
+Status: closed
+Owner: proposal owner
+Owning stage: proposal
+Chosen action: Replaced the limited target-stage enum with the closed integrated proposal-side enum from `proposal-review` through `test-spec-review`; kept `verify`, `pr`, release, publication, and external-state operations out of scope.
+Rationale: The durable state needs one deterministic enum for the full proposal-side feature.
+Validation target: Rerun proposal-review after proposal revision.
+Validation evidence: Proposal-review R2 approved the revised proposal with no material findings. Revised proposal passed `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md`.
+
+#### AUTO-PR3 - Integrated scope needs hard loop/edit budgets
+
+Finding ID: AUTO-PR3
+Disposition: partially-accepted
+Status: closed
+Owner: proposal owner
+Owning stage: proposal
+Chosen action: Added loop and edit budgets, driver-owned classification, exact reviewer wording criteria, review-resolution auto-resolution shape, stale-reviewed-artifact preflight, and expanded acceptance checks. Removed dry-run and apply-mode state by direct owner decision.
+Accepted portion: Add explicit loop/edit budgets, driver-owned classification, exact reviewer wording criteria, review-resolution auto-resolution shape, stale-reviewed-artifact preflight, and expanded acceptance checks.
+Rejected portion: Reject dry-run default, explicit `apply safe fixes` authorization, and persistent apply-mode state.
+Rationale: Integrated proposal-side automation needs deterministic loop and mutation limits before specification. The dry-run and separate apply-mode requirement was rejected because the owner explicitly requested a simpler solution without dry-run mode; the profile arming plus auto-safe classification, budgets, recorded dispositions, and rereview remain the safety boundary.
+Validation target: Rerun proposal-review after proposal revision.
+Validation evidence: Proposal-review R2 approved the revised proposal with no material findings. Revised proposal passed `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md`.
+
+### proposal-review-r2
+
+Review closeout: proposal-review-r2
+
+No material findings; no resolution entry required.
+
+### spec-review-r1
+
+Review closeout: spec-review-r1
+
+#### SR-RFA-1 - Activation and persistence semantics are incomplete
+
+Finding ID: SR-RFA-1
+Disposition: accepted
+Status: closed
+Owner: spec author
+Owning stage: spec
+Chosen action: Added requirements R9a through R9f to define durable activation, proposal-start gate requirements, direct-review isolation with existing state, malformed-state pause behavior, and deterministic `workflow.autoprogression.review_fix` terminal transitions.
+Rationale: The review finding identifies a real contract gap. The spec needs normative activation and persistence requirements before implementation or validators can rely on the profile state.
+Validation target: Revise the spec and rerun spec-review.
+Validation evidence: Spec-review R2 approved the revised spec with no material findings. `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r1.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r2.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r1.md`, `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat`, and `git diff --check` passed after the revision.
+
+#### SR-RFA-2 - Architecture assessment and conditional target behavior are ambiguous
+
+Finding ID: SR-RFA-2
+Disposition: accepted
+Status: closed
+Owner: spec author
+Owning stage: spec
+Chosen action: Added requirements R22a through R22g and boundary behavior for recorded architecture assessment, `architecture-required`, `architecture-not-required`, `architecture-ambiguous`, and `target-not-applicable`.
+Rationale: The review finding identifies a real routing gap. The spec needs recorded architecture assessment and target-not-applicable behavior before downstream routing can be implemented safely.
+Validation target: Revise the spec and rerun spec-review.
+Validation evidence: Spec-review R2 approved the revised spec with no material findings. `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r1.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r2.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r1.md`, `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat`, and `git diff --check` passed after the revision.
+
+### spec-review-r2
+
+Review closeout: spec-review-r2
+
+No material findings; no resolution entry required.
+
+### architecture-review-r1
+
+Review closeout: architecture-review-r1
+
+#### AR-RFA-1 - Runtime View workflow list has duplicated item numbers after the review-fix insertion
+
+Finding ID: AR-RFA-1
+Disposition: accepted
+Status: closed
+Owner: architecture author
+Owning stage: architecture
+Chosen action: Renumbered the duplicated Runtime View workflow list block from `24` through `28` to `27` through `31` in `docs/architecture/system/architecture.md`, preserving existing semantics.
+Rationale: Architecture-review R1 found a mechanical source-numbering defect in the canonical Runtime View workflow list after the `bounded-review-fix` insertion.
+Required outcome: Renumber the second `24` through `28` block to `27` through `31` in `docs/architecture/system/architecture.md`, preserving existing semantics.
+Validation target: Revise the architecture source and rerun architecture-review.
+Validation evidence: Architecture-review R2 approved the repaired architecture package and ADR with no material findings.
+
+### architecture-review-r2
+
+Review closeout: architecture-review-r2
+
+No material findings; no resolution entry required.
+
+### plan-review-r1
+
+Review closeout: plan-review-r1
+
+#### PR-RFA-1 - Test-spec authoring is incorrectly placed inside an implementation milestone
+
+Finding ID: PR-RFA-1
+Disposition: accepted
+Status: closed
+Owner: plan author
+Owning stage: plan
+Chosen action: Revised the plan so `test-spec` and `test-spec-review` are downstream lifecycle stages after clean plan-review and before M1 implementation, not implementation work inside M5. Removed `specs/review-fix-autoprogression.test.md` from M5's implementation-owned file list and removed the M5 implementation step that created the test spec.
+Rationale: The finding identifies a sequencing defect. The plan correctly requires a matching test spec and test-spec-review before implementation, but M5 also lists creation of that test spec as an implementation milestone step.
+Required outcome: Remove test-spec authoring from M5 implementation ownership and make the test spec a pending downstream lifecycle artifact created and reviewed before implementation starts.
+Validation target: Revise the plan and rerun plan-review.
+Validation evidence: Plan-review R2 approved the revised plan with no material findings. Artifact lifecycle explicit-path validation, review artifact closeout validation, change metadata validation, and `git diff --check` passed after the review.
+
+### plan-review-r2
+
+Review closeout: plan-review-r2
+
+No material findings; no resolution entry required.
+
+### test-spec-review-r1
+
+Review closeout: test-spec-review-r1
+
+No material findings; no resolution entry required.
+
+### code-review-m1-r1
+
+Review closeout: code-review-m1-r1
+
+No material findings; no resolution entry required. The review is inconclusive because missing tracked governing authority blocks a clean branch-scoped code-review conclusion.
