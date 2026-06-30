@@ -436,9 +436,17 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - Stop or pause `authoring-through-plan-review` on non-clean reviews, material findings, `needs-decision`, user pause or cancellation, missing or malformed authorization persistence, contradictory workflow state, unreliable partial completion, exhausted transition budget, direct review-only invocation, or an out-of-scope stage request.
 - Resume must use tracked artifact and review evidence. Do not recreate completed artifacts, rerun clean reviews without an explicit rereview event, or infer completion from file existence alone.
 - Clean `plan-review` completes this profile and reports `test-spec` next without invoking `test-spec`, implementation, review-fix loops, verification, or PR.
+- The bounded review-fix profile uses the command form `$workflow auto: <target-stage>` and persists authorization as `workflow.autoprogression.review_fix` with profile `bounded-review-fix`.
+- Valid review-fix target stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, and `test-spec-review`; unknown targets fail closed before routing.
+- Review-fix activation requires workflow-managed context, durable user authorization, accepted proposal, approved recorded `proposal-review`, no open findings, closed resolution, clean current gate evidence, current review evidence, fresh artifact state, and unambiguous artifact placement.
+- Direct review invocations do not activate, resume, or advance `bounded-review-fix`, even when persisted review-fix state exists.
+- After approved recorded `spec-review`, review-fix routing requires exactly one architecture assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`. `architecture-required` routes through `architecture` and `architecture-review`; `architecture-not-required` skips those conditional stages; `architecture-ambiguous` pauses for owner decision.
+- If `architecture-not-required` skips a user-requested conditional target such as `architecture` or `architecture-review`, stop with `target-not-applicable` instead of claiming that target was reached.
+- `bounded-review-fix` never routes past the requested target and never invokes `implement`, `code-review`, `verify`, `pr`, release, publication, network, destructive, or external-state operations.
 - In v1, workflow-managed autoprogression applies only to:
   - `proposal -> proposal-review`
   - `proposal-review -> spec -> spec-review -> architecture assessment -> architecture/architecture-review when required -> plan -> plan-review -> stop`, only under the explicitly armed `authoring-through-plan-review` profile
+  - `$workflow auto: <target-stage>` through the proposal-side path ending no later than `test-spec-review`, only under the explicitly armed `bounded-review-fix` profile
   - `spec -> spec-review`
   - `architecture -> architecture-review` when that review stage is the next mandatory or triggered downstream step
   - standard workflow execution from `implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`

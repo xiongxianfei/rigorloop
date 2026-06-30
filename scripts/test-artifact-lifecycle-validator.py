@@ -17,6 +17,7 @@ from lifecycle_state_sync import evaluate_authoring_autoprogression_route
 from lifecycle_state_sync import evaluate_automated_review_gate_route
 from lifecycle_state_sync import evaluate_implementation_autoprogression_route
 from lifecycle_state_sync import evaluate_implementation_correction_guardrails
+from lifecycle_state_sync import evaluate_review_fix_autoprogression_route
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1523,6 +1524,240 @@ No blocked plans.
             ),
             next_stage="test-spec",
             profile_state="completed",
+        )
+
+    def review_fix_fixture(self, **overrides: object) -> dict[str, object]:
+        fixture: dict[str, object] = {
+            "invocation_context": "workflow-managed",
+            "profile": "bounded-review-fix",
+            "profile_state": "armed",
+            "durable_authorization": "persisted",
+            "target_stage": "test-spec-review",
+            "current_stage": "proposal",
+            "latest_review_status": "approved",
+            "proposal_gate": {
+                "proposal_exists": True,
+                "proposal_status": "accepted",
+                "proposal_review_status": "approved",
+                "proposal_review_recording": "recorded",
+                "proposal_review_material_findings": 0,
+                "proposal_review_open_blockers": 0,
+                "scope_settled": True,
+                "open_questions_block_spec": False,
+                "standing_gates_satisfied": True,
+                "change_identity_unambiguous": True,
+                "artifact_placement_unambiguous": True,
+            },
+            "current_gate_clean": True,
+            "review_recording": "recorded",
+            "artifact_fresh": True,
+            "change_id_resolved": True,
+            "artifact_placement": "resolved",
+            "architecture_assessment": None,
+            "transition_count": 0,
+        }
+        fixture.update(overrides)
+        return fixture
+
+    def assertReviewFixRoute(
+        self,
+        fixture: dict[str, object],
+        *,
+        next_stage: str | None = None,
+        stop_reason: str | None = None,
+        profile_state: str | None = None,
+    ) -> None:
+        result = evaluate_review_fix_autoprogression_route(fixture)
+        if next_stage is not None:
+            self.assertEqual(result.next_stage, next_stage, result)
+            self.assertIsNone(result.stop_reason, result)
+        if stop_reason is not None:
+            self.assertEqual(result.stop_reason, stop_reason, result)
+        if profile_state is not None:
+            self.assertEqual(result.profile_state, profile_state, result)
+
+    def test_review_fix_autoprogression_rejects_unknown_targets_and_direct_reviews(self) -> None:
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(profile="off", profile_state="off"),
+            next_stage="explicit-user-action",
+            profile_state="off",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(target_stage="verify"),
+            stop_reason="unknown-target-stage",
+            profile_state="paused",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(invocation_context="isolated"),
+            stop_reason="isolated-invocation",
+            profile_state="armed",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(direct_review_invocation=True),
+            stop_reason="isolated-invocation",
+            profile_state="armed",
+        )
+
+    def test_review_fix_autoprogression_activation_requires_authorization_and_clean_current_gate(self) -> None:
+        self.assertReviewFixRoute(self.review_fix_fixture(), next_stage="proposal-review", profile_state="active")
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(durable_authorization="missing"),
+            stop_reason="authorization-not-persisted",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(
+                proposal_gate={
+                    "proposal_exists": True,
+                    "proposal_status": "draft",
+                    "proposal_review_status": "approved",
+                    "proposal_review_recording": "recorded",
+                    "proposal_review_material_findings": 0,
+                    "proposal_review_open_blockers": 0,
+                    "scope_settled": True,
+                    "open_questions_block_spec": False,
+                    "standing_gates_satisfied": True,
+                    "change_identity_unambiguous": True,
+                    "artifact_placement_unambiguous": True,
+                }
+            ),
+            stop_reason="proposal-gate-incomplete",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(current_gate_clean=False),
+            stop_reason="current-gate-not-clean",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(review_recording="missing"),
+            stop_reason="missing-review-evidence",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(artifact_fresh=False),
+            stop_reason="stale-review",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(contradictory_workflow_state=True),
+            stop_reason="contradictory-workflow-state",
+        )
+
+    def test_review_fix_autoprogression_routes_through_target_bounds(self) -> None:
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(current_stage="proposal-review", target_stage="proposal-review"),
+            stop_reason="target-reached",
+            profile_state="completed",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(current_stage="proposal-review", target_stage="spec-review"),
+            next_stage="spec",
+            profile_state="active",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(current_stage="spec", target_stage="spec"),
+            stop_reason="target-reached",
+            profile_state="completed",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(current_stage="plan-review", target_stage="test-spec-review"),
+            next_stage="test-spec",
+            profile_state="active",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(current_stage="test-spec-review", target_stage="test-spec-review"),
+            stop_reason="target-reached",
+            profile_state="completed",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(current_stage="plan-review", target_stage="plan-review"),
+            stop_reason="target-reached",
+            profile_state="completed",
+        )
+
+    def test_review_fix_autoprogression_architecture_assessment_routes_or_stops(self) -> None:
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(
+                current_stage="spec-review",
+                target_stage="plan-review",
+                architecture_assessment="architecture-required",
+            ),
+            next_stage="architecture",
+            profile_state="active",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(
+                current_stage="spec-review",
+                target_stage="plan-review",
+                architecture_assessment="architecture-not-required",
+            ),
+            next_stage="plan",
+            profile_state="active",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(
+                current_stage="spec-review",
+                target_stage="architecture",
+                architecture_assessment="architecture-not-required",
+            ),
+            stop_reason="target-not-applicable",
+            profile_state="paused",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(
+                current_stage="spec-review",
+                architecture_assessment="architecture-ambiguous",
+            ),
+            stop_reason="architecture-ambiguous",
+            profile_state="paused",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(current_stage="spec-review"),
+            stop_reason="architecture-assessment-missing",
+            profile_state="paused",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(current_stage="spec-review", architecture_assessment="maybe"),
+            stop_reason="architecture-assessment-invalid",
+            profile_state="paused",
+        )
+
+    def test_review_fix_autoprogression_resume_and_terminal_state_transitions(self) -> None:
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(profile_state="paused", current_stage="spec"),
+            stop_reason="explicit-resume-required",
+            profile_state="paused",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(
+                profile_state="paused",
+                resume_record={"resumed_by": "user", "resumed_at": "2026-06-30T12:00:00Z"},
+                cursor_valid=True,
+                current_stage="spec",
+            ),
+            next_stage="spec-review",
+            profile_state="active",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(
+                profile_state="paused",
+                resume_record={"resumed_by": "user", "resumed_at": "2026-06-30T12:00:00Z"},
+                cursor_valid=False,
+                current_stage="spec",
+            ),
+            stop_reason="resume-cursor-mismatch",
+            profile_state="paused",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(profile_state="active", cancellation_record={"cancelled_by": "user"}),
+            next_stage="explicit-user-action",
+            profile_state="cancelled",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(profile_state="completed"),
+            stop_reason="profile-completed",
+            profile_state="completed",
+        )
+        self.assertReviewFixRoute(
+            self.review_fix_fixture(profile_state="bogus"),
+            stop_reason="unhandled-profile-state",
+            profile_state="paused",
         )
 
     def implementation_profile_fixture(self, **overrides: object) -> dict[str, object]:
