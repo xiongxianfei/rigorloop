@@ -73,14 +73,14 @@ Relevant implementation areas:
 ## Current Handoff Summary
 
 - Current milestone: M2. Review-Fix Driver Routing, Preflight, and Target Bounds
-- Current milestone state: review-requested
-- Latest review evidence: implement-m2
+- Current milestone state: resolution-needed
+- Latest review evidence: code-review-m2-r1
 - Last reviewed milestone: M1. Review-Fix State Schema and Metadata Validation
-- Review status: review-requested; stage=code-review; round=r1
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 is implemented and awaiting code-review; M3-M5, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 has code-review finding CR-RFA-M2-1 open; M3-M5, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -145,7 +145,7 @@ Relevant implementation areas:
 
 ### M2. Review-Fix Driver Routing, Preflight, and Target Bounds
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add route evaluation and lifecycle proof for `$workflow auto: <target-stage>`, activation gates, preflight, direct-review isolation, architecture assessment, and target-boundary stops.
 - Requirements: `R11`-`R22g`, `R37`, `R39`-`R40`, `R43`, `AC7`, `AC13`-`AC24`
 - Files/components likely touched:
@@ -191,6 +191,7 @@ Relevant implementation areas:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path docs/workflows.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
   - `git diff --check` passed.
+  - `code-review-m2-r1` requested changes for CR-RFA-M2-1.
 - Commit message: `M2: route bounded review-fix autoprogression`
 - Milestone closeout:
   - validation passed
@@ -401,6 +402,7 @@ Relevant implementation areas:
 - 2026-06-30: Authored active test spec `specs/review-fix-autoprogression.test.md`; next stage is `test-spec-review`.
 - 2026-06-30: Test-spec-review R1 approved the active test spec with no material findings; next stage is `implement`.
 - 2026-06-30: M1 implementation was approved by code-review M1 R2 and closed; M2 implementation added review-fix route evaluation, preflight proof, target-boundary stops, architecture-assessment routing, and workflow guidance; next stage is `code-review`.
+- 2026-06-30: Code-review M2 R1 requested changes for CR-RFA-M2-1; next stage is `review-resolution`.
 
 ## Decision log
 
