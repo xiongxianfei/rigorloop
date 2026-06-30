@@ -1,0 +1,472 @@
+change_id: 2026-06-29-release-transaction-automation
+title: Release Transaction Automation and Evidence Generation
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-29-release-transaction-automation.md
+  spec: specs/release-transaction-automation.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260629-release-transaction-profile.md
+  plan: docs/plans/2026-06-29-release-transaction-automation.md
+  test_spec: specs/release-transaction-automation.test.md
+  review_resolution: docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
+requirements:
+  - Record the release transaction automation proposal before proposal-review.
+  - Review the proposal for problem clarity, option quality, scope control, risk honesty, vision fit, and readiness for spec.
+  - Preserve full release verification, GitHub release evidence, npm publication evidence, adapter archive integrity, and public npx smoke in any accepted direction.
+  - Keep proposal-review isolated; do not automatically continue into spec from this review request.
+  - Author and review a release transaction automation spec before architecture assessment or planning.
+  - Record an architecture assessment before planning.
+  - Architecture-review any required architecture update before planning.
+  - Create a reviewable execution plan before test-spec or implementation.
+  - Author and review a release transaction automation test spec before implementation.
+  - Implement M1 release profile schema and loader before downstream release automation milestones.
+tests:
+  - Proposal-review approves the proposal or records material findings before downstream spec reliance.
+  - Review-log indexes the proposal-review receipt.
+  - Spec-review approves the release transaction automation spec or records material findings before architecture assessment or planning.
+  - Architecture assessment records architecture-required, architecture-not-required, or architecture-ambiguous before planning.
+  - Architecture-review approves required architecture artifacts or records material findings before planning.
+  - Plan-review approves the execution plan or records material findings before test-spec.
+  - Test-spec-review approves the release transaction automation test spec or records material findings before implementation.
+  - Release transaction profile loader tests validate routine profiles, special-release handling, malformed profiles, version mismatches, and fail-closed closed vocabularies.
+changed_files:
+  - docs/proposals/2026-06-29-release-transaction-automation.md
+  - specs/release-transaction-automation.md
+  - docs/changes/2026-06-29-release-transaction-automation/change.yaml
+  - docs/changes/2026-06-29-release-transaction-automation/review-log.md
+  - docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/plan-review-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r2.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r3.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260629-release-transaction-profile.md
+  - docs/plans/2026-06-29-release-transaction-automation.md
+  - docs/plan.md
+  - docs/plan-archive.md
+  - specs/release-transaction-automation.test.md
+  - scripts/release_transaction.py
+  - scripts/test-release-transaction.py
+  - scripts/prepare-release.py
+  - scripts/release-preflight.py
+  - scripts/validate-release.py
+  - scripts/close-release-publication.py
+  - scripts/release-verify.sh
+  - docs/changes/2026-06-29-release-transaction-automation/behavior-preservation.md
+  - tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-release-tag.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-package-version.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-npm-package.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-targets.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-adapter-artifacts.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-publication.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-evidence.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-missing-validation.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-malformed.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-special-release-without-rationale.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-unknown-release-kind.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-unknown-target.yaml
+  - tests/fixtures/release-transaction/profiles/invalid-wrong-package-version.yaml
+  - tests/fixtures/release-transaction/profiles/special-release-with-rationale.yaml
+  - tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml
+  - tests/fixtures/release-transaction/surface-inventory/invalid-unknown-classification.yaml
+  - tests/fixtures/release-transaction/surface-inventory/invalid-manual-override-without-rationale.yaml
+  - tests/fixtures/release-transaction/surface-inventory/invalid-missing-classification.yaml
+  - tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml
+  - tests/fixtures/release-transaction/literal-audit/invalid-unknown-classification.yaml
+  - tests/fixtures/release-transaction/literal-audit/invalid-missing-classification.yaml
+  - tests/fixtures/release-transaction/literal-audit/unauthorized-new-literal.yaml
+  - tests/fixtures/release-transaction/literal-audit/historical-fixture-without-rationale.yaml
+  - tests/fixtures/release-transaction/literal-audit/generated-current-without-owner.yaml
+  - docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml
+  - docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml
+  - docs/changes/2026-06-29-release-transaction-automation/explain-change.md
+  - docs/changes/2026-06-29-release-transaction-automation/verify-report.md
+  - docs/learn/sessions/2026-06-29-release-time-root-cause.md
+  - docs/learn/sessions/2026-06-29-release-automation-review-findings.md
+  - docs/learn/sessions/2026-06-29-ci-maintenance-before-explain-change.md
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r2.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r2.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r1.md
+  - docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r2.md
+review:
+  status: clean-with-notes
+  unresolved_items: 0
+  location: docs/changes/2026-06-29-release-transaction-automation/review-log.md
+  material_findings: 10
+  closed_findings: 10
+  open_findings: 0
+  proposal_review: docs/changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md
+  spec_review: docs/changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md
+  architecture_review: docs/changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md
+  plan_review: docs/changes/2026-06-29-release-transaction-automation/reviews/plan-review-r1.md
+  test_spec_review: docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r3.md
+  code_review_m1_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m1-r1.md
+  code_review_m1_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m1-r2.md
+  code_review_m2_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r1.md
+  code_review_m2_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m2-r2.md
+  code_review_m3_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r1.md
+  code_review_m3_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m3-r2.md
+  code_review_m4_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r1.md
+  code_review_m4_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m4-r2.md
+  code_review_m5_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r1.md
+  code_review_m5_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m5-r2.md
+  code_review_m6_r1: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r1.md
+  code_review_m6_r2: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r2.md
+  review_log: docs/changes/2026-06-29-release-transaction-automation/review-log.md
+  review_resolution: docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: proposal status settlement
+    result: proposal_status_accepted
+  - command: spec authoring
+    result: release_transaction_automation_spec_draft_ready_for_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: spec_status_approved
+  - command: architecture assessment
+    result: architecture-required
+  - command: architecture-review r1
+    result: approved_no_material_findings
+  - command: plan authoring
+    result: release_transaction_automation_plan_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: authoring-through-plan-review profile
+    result: completed_at_plan_review
+  - command: test-spec authoring
+    result: release_transaction_automation_test_spec_ready_for_test_spec_review
+  - command: test-spec-review r1
+    result: changes_requested_RTA-TSR1_RTA-TSR2
+  - command: test-spec revision
+    result: addressed_RTA-TSR1_RTA-TSR2_ready_for_test_spec_review_r2
+  - command: test-spec-review r2
+    result: approved_no_material_findings
+  - command: test-spec-review r3
+    result: approved_no_material_findings
+  - command: code-review-m1-r1
+    result: changes_requested_CR-RTA-M1-F1
+  - command: review-resolution CR-RTA-M1-F1
+    result: resolved_added_missing_profile_and_required_field_coverage
+  - command: python scripts/test-release-transaction.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/surface-inventory --path tests/fixtures/release-transaction/literal-audit --path docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml --path docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path scripts/validation_selection.py --path scripts/test-select-validation.py
+    result: blocked_manual_routing_for_release_transaction_script_and_fixture_paths_selected_artifact_lifecycle_change_metadata_guide_system_selector_regression
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-guide-system.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml --path docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-06-29-release-transaction-automation.md
+    result: pass
+  - command: python scripts/validate-release.py --help
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/profiles
+    result: blocked_manual_routing_for_new_release_transaction_script_and_fixture_paths
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: code-review-m4-r1
+    result: changes_requested_CR-RTA-M4-F1_CR-RTA-M4-F2
+  - command: review-resolution CR-RTA-M4-F1 CR-RTA-M4-F2
+    result: resolved_default_git_changed_file_discovery_and_named_preflight_negative_tests
+  - command: python scripts/test-release-transaction.py
+    result: pass_50_tests
+  - command: python scripts/release-preflight.py --help
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py scripts/release-preflight.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/release-preflight.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/profiles --path tests/fixtures/release-transaction/evidence
+    result: blocked_manual_routing_for_release_transaction_scripts_unclassified_fixture_directories_tracked_artifact_preflights_passed
+  - command: code-review-m4-r2
+    result: clean_with_notes_no_material_findings
+  - command: M5 tests before implementation
+    result: fail_expected_missing_timing_and_workflow_parity_helpers
+  - command: python scripts/test-release-transaction.py
+    result: pass_60_tests
+  - command: RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-release-output RELEASE_COMMIT=fixture-commit bash scripts/release-verify.sh v0.3.5
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py scripts/release-preflight.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/release-verify.sh --path .github/workflows/release.yml --path scripts/test-release-transaction.py
+    result: blocked_manual_routing_for_release_transaction_scripts_selected_adapters_regression_tracked_artifact_preflights_passed
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: code-review-m5-r2
+    result: clean_with_notes_no_material_findings_M5_closed_next_implement_M6
+  - command: M6 tests before implementation
+    result: fail_expected_missing_closeout_helper
+  - command: python scripts/test-release-transaction.py
+    result: pass_74_tests
+  - command: python scripts/close-release-publication.py --help
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py scripts/release-preflight.py scripts/validate-release.py scripts/close-release-publication.py
+    result: pass
+  - command: RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-release-output RELEASE_COMMIT=fixture-commit bash scripts/release-verify.sh v0.3.5
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/close-release-publication.py --path scripts/validate-release.py --path scripts/test-release-transaction.py --path docs/changes/2026-06-29-release-transaction-automation/behavior-preservation.md
+    result: blocked_manual_routing_for_release_transaction_scripts_selected_adapters_regression_artifact_lifecycle_tracked_artifact_preflights_passed
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/behavior-preservation.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: code-review-m6-r1
+    result: changes_requested_CR-RTA-M6-F1
+  - command: python scripts/validate-release.py --help
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path .github/workflows/release.yml --path scripts/release-verify.sh --path scripts/validate-release.py --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: code-review-m5-r1
+    result: changes_requested_CR-RTA-M5-F1
+  - command: review-resolution CR-RTA-M5-F1
+    result: resolved_timing_validation_wired_into_validate_release
+  - command: python scripts/test-release-transaction.py
+    result: pass_65_tests
+  - command: python scripts/validate-release.py --help
+    result: pass
+  - command: RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-release-output RELEASE_COMMIT=fixture-commit bash scripts/release-verify.sh v0.3.5
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py scripts/release-preflight.py scripts/validate-release.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/validate-release.py --path scripts/release-verify.sh --path scripts/test-release-transaction.py
+    result: blocked_manual_routing_for_release_transaction_scripts_selected_adapters_regression
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py
+    result: pass
+  - command: code-review-m1-r2
+    result: clean_with_notes_no_material_findings
+  - command: code-review-m2-r1
+    result: changes_requested_CR-RTA-M2-F1_CR-RTA-M2-F2
+  - command: review-resolution CR-RTA-M2-F1 CR-RTA-M2-F2
+    result: resolved_added_missing_classification_coverage_and_prior_profile_snapshot_inventory
+  - command: code-review-m2-r2
+    result: clean_with_notes_no_material_findings
+  - command: code-review-m3-r1
+    result: changes_requested_CR-RTA-M3-F1
+  - command: review-resolution CR-RTA-M3-F1
+    result: resolved_structured_target_bound_pending_evidence_validation
+  - command: python scripts/test-release-transaction.py
+    result: pass_34_tests
+  - command: python scripts/prepare-release.py --help
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/prepare-release.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/evidence
+    result: blocked_manual_routing_for_release_transaction_scripts_unclassified_static_evidence_fixture_path_focused_release_transaction_tests_own_M3_resolution_proof
+  - command: git diff --check --
+    result: pass
+  - command: code-review-m3-r2
+    result: clean_with_notes_no_material_findings
+  - command: M4 tests before implementation
+    result: fail_expected_missing_release_preflight_api
+  - command: python scripts/test-release-transaction.py
+    result: pass_45_tests
+  - command: python scripts/release-preflight.py --help
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py scripts/release-preflight.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/release-preflight.py --path scripts/test-release-transaction.py
+    result: blocked_manual_routing_for_release_transaction_scripts_new_release_preflight_tracked_artifact_preflight_passed
+  - command: git diff --check --
+    result: pass
+  - command: M3 tests before implementation
+    result: fail_expected_missing_prepare_release_api
+  - command: python scripts/test-release-transaction.py
+    result: pass_28_tests
+  - command: python scripts/prepare-release.py --help
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path scripts/prepare-release.py
+    result: blocked_manual_routing_for_release_transaction_script_paths_new_prepare_release_untracked_before_staging
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path scripts/prepare-release.py
+    result: blocked_manual_routing_for_release_transaction_script_paths_tracked_artifact_preflight_passed
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-release-transaction.py
+    result: pass_23_tests
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/surface-inventory --path tests/fixtures/release-transaction/literal-audit --path docs/changes/2026-06-29-release-transaction-automation/release-surface-inventory.yaml --path docs/changes/2026-06-29-release-transaction-automation/release-literal-audit-baseline.yaml
+    result: blocked_manual_routing_for_release_transaction_script_and_fixture_paths_selected_artifact_lifecycle_change_evidence
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: git diff --check --
+    result: pass
+  - command: python scripts/test-release-transaction.py
+    result: pass
+  - command: python scripts/test-release-transaction.py
+    result: fail_expected_missing_release_transaction_module_before_M1_implementation
+  - command: python scripts/test-release-transaction.py
+    result: pass
+  - command: python scripts/validate-release.py --help
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: blocked_manual_routing_for_new_release_transaction_script_and_fixture_paths
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md
+    result: pass
+  - command: git diff --check -- docs/plans/2026-06-29-release-transaction-automation.md docs/plan.md docs/changes/2026-06-29-release-transaction-automation/change.yaml scripts/release_transaction.py scripts/test-release-transaction.py tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml tests/fixtures/release-transaction/profiles/invalid-missing-targets.yaml tests/fixtures/release-transaction/profiles/invalid-malformed.yaml tests/fixtures/release-transaction/profiles/invalid-special-release-without-rationale.yaml tests/fixtures/release-transaction/profiles/invalid-unknown-release-kind.yaml tests/fixtures/release-transaction/profiles/invalid-unknown-target.yaml tests/fixtures/release-transaction/profiles/invalid-wrong-package-version.yaml tests/fixtures/release-transaction/profiles/special-release-with-rationale.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-29-release-transaction-automation.md --path specs/release-transaction-automation.md --path specs/release-transaction-automation.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260629-release-transaction-profile.md --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md --path docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r1.md --path docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r2.md --path docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r3.md
+    result: pass
+  - command: git diff --check -- docs/proposals/2026-06-29-release-transaction-automation.md specs/release-transaction-automation.md specs/release-transaction-automation.test.md docs/plans/2026-06-29-release-transaction-automation.md docs/plan.md docs/changes/2026-06-29-release-transaction-automation/change.yaml docs/changes/2026-06-29-release-transaction-automation/review-log.md docs/changes/2026-06-29-release-transaction-automation/review-resolution.md docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r1.md docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r2.md docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r3.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-29-release-transaction-automation.md --path specs/release-transaction-automation.md --path specs/release-transaction-automation.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260629-release-transaction-profile.md --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md --path docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r1.md --path docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r2.md
+    result: pass
+  - command: git diff --check -- docs/proposals/2026-06-29-release-transaction-automation.md specs/release-transaction-automation.md specs/release-transaction-automation.test.md docs/plans/2026-06-29-release-transaction-automation.md docs/plan.md docs/changes/2026-06-29-release-transaction-automation/change.yaml docs/changes/2026-06-29-release-transaction-automation/review-log.md docs/changes/2026-06-29-release-transaction-automation/review-resolution.md docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r1.md docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r2.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-29-release-transaction-automation.md --path specs/release-transaction-automation.md --path specs/release-transaction-automation.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260629-release-transaction-profile.md --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md --path docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r1.md
+    result: pass
+  - command: explain-change
+    result: recorded_release_transaction_automation_rationale_next_verify
+  - command: verify
+    result: blocked_selector_manual_routing_for_release_transaction_scripts_and_fixtures
+  - command: ci-maintenance
+    result: resolved_release_transaction_selector_routing_next_explain_change
+  - command: python scripts/test-select-validation.py
+    result: pass_124_tests
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/test-release-transaction.py --path scripts/prepare-release.py --path scripts/release-preflight.py --path scripts/close-release-publication.py --path tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml --path tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml --path tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml
+    result: pass_selected_release_transaction_regression_no_blockers
+  - command: bash scripts/ci.sh --mode explicit --path ...
+    result: pass_selected_release_transaction_regression_and_full_changed_path_set
+  - command: explain-change
+    result: refreshed_for_ci_maintenance_selector_routing_next_verify
+  - command: verify
+    result: passed_local_branch_ready_next_pr
+  - command: learn ci-maintenance-before-explain-change
+    result: captured_session_next_verify_due_to_post_verify_artifact_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/learn/sessions/2026-06-29-ci-maintenance-before-explain-change.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/verify-report.md
+    result: pass
+  - command: git diff --check -- docs/learn/sessions/2026-06-29-ci-maintenance-before-explain-change.md docs/changes/2026-06-29-release-transaction-automation/change.yaml docs/plans/2026-06-29-release-transaction-automation.md docs/plan.md docs/changes/2026-06-29-release-transaction-automation/verify-report.md
+    result: pass
+  - command: verify
+    result: rerun_after_post_verify_learn_update_branch_ready_next_pr
+  - command: python scripts/test-release-transaction.py
+    result: pass_84_tests
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/prepare-release.py scripts/release-preflight.py scripts/validate-release.py scripts/close-release-publication.py scripts/validation_selection.py scripts/test-select-validation.py
+    result: pass
+  - command: RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-release-output RELEASE_COMMIT=fixture-commit bash scripts/release-verify.sh v0.3.5
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass_124_tests
+  - command: python scripts/prepare-release.py --help
+    result: pass
+  - command: python scripts/release-preflight.py --help
+    result: pass
+  - command: python scripts/close-release-publication.py --help
+    result: pass
+  - command: python scripts/validate-release.py --help
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/explain-change.md --path docs/changes/2026-06-29-release-transaction-automation/verify-report.md --path docs/learn/sessions/2026-06-29-ci-maintenance-before-explain-change.md --path docs/learn/sessions/2026-06-29-release-automation-review-findings.md --path docs/learn/sessions/2026-06-29-release-time-root-cause.md --path docs/plan.md --path docs/plans/2026-06-29-release-transaction-automation.md --path scripts/test-select-validation.py --path scripts/validation_selection.py
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_guide_system_selector_regression
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/explain-change.md --path docs/changes/2026-06-29-release-transaction-automation/verify-report.md --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md --path docs/changes/2026-06-29-release-transaction-automation/behavior-preservation.md --path docs/learn/sessions/2026-06-29-ci-maintenance-before-explain-change.md
+    result: pass
+  - command: pr
+    result: opened_PR_117_next_human_PR_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/explain-change.md --path docs/changes/2026-06-29-release-transaction-automation/verify-report.md --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md --path docs/changes/2026-06-29-release-transaction-automation/behavior-preservation.md
+    result: pass
+  - command: git diff --check -- docs/changes/2026-06-29-release-transaction-automation/change.yaml docs/plans/2026-06-29-release-transaction-automation.md docs/plan.md docs/plan-archive.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/explain-change.md --path docs/changes/2026-06-29-release-transaction-automation/verify-report.md --path docs/learn/sessions/2026-06-29-ci-maintenance-before-explain-change.md --path docs/learn/sessions/2026-06-29-release-automation-review-findings.md --path docs/learn/sessions/2026-06-29-release-time-root-cause.md --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-06-29-release-transaction-automation.md --path scripts/test-select-validation.py --path scripts/validation_selection.py
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_guide_system_selector_regression
+  - command: git diff --check -- docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r1.md docs/changes/2026-06-29-release-transaction-automation/review-log.md docs/changes/2026-06-29-release-transaction-automation/review-resolution.md docs/changes/2026-06-29-release-transaction-automation/change.yaml docs/plans/2026-06-29-release-transaction-automation.md docs/plan.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-29-release-transaction-automation.md --path specs/release-transaction-automation.md --path specs/release-transaction-automation.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260629-release-transaction-profile.md --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
+    result: pass
+  - command: git diff --check -- docs/proposals/2026-06-29-release-transaction-automation.md specs/release-transaction-automation.md specs/release-transaction-automation.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260629-release-transaction-profile.md docs/plans/2026-06-29-release-transaction-automation.md docs/plan.md docs/changes/2026-06-29-release-transaction-automation/change.yaml docs/changes/2026-06-29-release-transaction-automation/review-log.md docs/changes/2026-06-29-release-transaction-automation/review-resolution.md docs/changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md docs/changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md docs/changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md docs/changes/2026-06-29-release-transaction-automation/reviews/plan-review-r1.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-29-release-transaction-automation/
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-29-release-transaction-automation.md --path specs/release-transaction-automation.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260629-release-transaction-profile.md --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md
+    result: pass
+  - command: git diff --check -- docs/proposals/2026-06-29-release-transaction-automation.md specs/release-transaction-automation.md docs/architecture/system/architecture.md docs/adr/ADR-20260629-release-transaction-profile.md docs/plans/2026-06-29-release-transaction-automation.md docs/plan.md docs/changes/2026-06-29-release-transaction-automation/change.yaml docs/changes/2026-06-29-release-transaction-automation/review-log.md docs/changes/2026-06-29-release-transaction-automation/review-resolution.md docs/changes/2026-06-29-release-transaction-automation/reviews/proposal-review-r1.md docs/changes/2026-06-29-release-transaction-automation/reviews/spec-review-r1.md docs/changes/2026-06-29-release-transaction-automation/reviews/architecture-review-r1.md docs/changes/2026-06-29-release-transaction-automation/reviews/plan-review-r1.md
+    result: pass
+  - command: review-resolution CR-RTA-M6-F1
+    result: resolved_provider_owned_public_evidence_closeout
+  - command: python scripts/test-release-transaction.py
+    result: pass_84_tests
+  - command: python scripts/close-release-publication.py --help
+    result: pass
+  - command: python -m py_compile scripts/release_transaction.py scripts/test-release-transaction.py scripts/close-release-publication.py scripts/validate-release.py
+    result: pass
+  - command: RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-release-output RELEASE_COMMIT=fixture-commit bash scripts/release-verify.sh v0.3.5
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/release_transaction.py --path scripts/close-release-publication.py --path scripts/validate-release.py --path scripts/test-release-transaction.py
+    result: blocked_manual_routing_for_release_transaction_scripts_selected_adapters_regression
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass
+  - command: code-review-m6-r2
+    result: clean_with_notes_no_material_findings_M6_closed_next_explain_change
+architecture:
+  assessment: architecture-required
+  rationale: Release transaction automation changes release source-of-truth ownership, generated-output flow, validation layering, local/CI release gate parity, public evidence closeout, and timing evidence.
+  package: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260629-release-transaction-profile.md
+workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    state: completed
+    authorized_by: user
+    authorized_at: 2026-06-29T13:45:00Z
+    change_id: 2026-06-29-release-transaction-automation

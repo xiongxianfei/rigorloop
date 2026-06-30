@@ -1,0 +1,7 @@
+schema_version: release-surface-inventory-v1
+change_id: 2026-06-29-release-transaction-automation
+surfaces:
+  - id: prior-profile-snapshots
+    path: docs/releases/profiles/v*.yaml
+    expected_owner: historical-release
+    rationale: "Prior release profile snapshots are historical immutable release evidence."
