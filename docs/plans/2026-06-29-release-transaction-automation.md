@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Change ID: 2026-06-29-release-transaction-automation
 - Owner: maintainer
 - Start date: 2026-06-29
 - Last updated: 2026-06-29
-- Related issue or PR: none yet
+- Related issue or PR: PR #117, https://github.com/xiongxianfei/rigorloop/pull/117
 - Supersedes: none
 
 ## Purpose / big picture
@@ -70,15 +70,15 @@ Important existing boundaries:
 
 ## Current Handoff Summary
 
-- Current milestone: M6. Published evidence closeout and behavior preservation
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: docs/changes/2026-06-29-release-transaction-automation/reviews/code-review-m6-r2.md
 - Last reviewed milestone: M6
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: pr-handoff-pending — all in-scope implementation milestones are closed and final verify passed locally, but PR handoff remains.
+- Next stage: human PR review
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — PR #117 is open for review; implementation milestones, review-resolution, explain-change, verify, and PR handoff are complete locally.
 
 ## Milestones
 
@@ -306,7 +306,8 @@ M6 implementation status:
 - `verify` passed local branch-readiness checks and recorded branch-ready evidence in `docs/changes/2026-06-29-release-transaction-automation/verify-report.md`.
 - A post-verify learn session recorded the CI-maintenance-before-explain-change routing lesson. Because this touched the change pack after verify, final verify must rerun before PR handoff.
 - `verify` reran after the learn-session update, passed local branch-readiness checks, and refreshed `docs/changes/2026-06-29-release-transaction-automation/verify-report.md`.
-- Next action: pr.
+- PR #117 opened for review: https://github.com/xiongxianfei/rigorloop/pull/117
+- Next action: human PR review.
 
 ## Progress
 
