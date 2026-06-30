@@ -72,15 +72,15 @@ Relevant implementation areas:
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Review-Fix State Schema and Metadata Validation
-- Current milestone state: closed
-- Latest review evidence: code-review-m1-r2
+- Current milestone: M2. Review-Fix Driver Routing, Preflight, and Target Bounds
+- Current milestone state: review-requested
+- Latest review evidence: implement-m2
 - Last reviewed milestone: M1. Review-Fix State Schema and Metadata Validation
-- Review status: approved; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed by code-review M1 R2; M2-M5, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 is implemented and awaiting code-review; M3-M5, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -145,7 +145,7 @@ Relevant implementation areas:
 
 ### M2. Review-Fix Driver Routing, Preflight, and Target Bounds
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add route evaluation and lifecycle proof for `$workflow auto: <target-stage>`, activation gates, preflight, direct-review isolation, architecture assessment, and target-boundary stops.
 - Requirements: `R11`-`R22g`, `R37`, `R39`-`R40`, `R43`, `AC7`, `AC13`-`AC24`
 - Files/components likely touched:
@@ -179,6 +179,18 @@ Relevant implementation areas:
   - `python scripts/test-artifact-lifecycle-validator.py`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path docs/workflows.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`
 - Expected observable result: The route evaluator can explain start, pause, completion, target-not-applicable, and direct-review isolation without hidden downstream handoff.
+- Implementation notes:
+  - Added a dedicated `bounded-review-fix` route evaluator separate from `authoring-through-plan-review` and `implementation-through-verify`.
+  - Added closed target-stage routing through `test-spec-review`, direct-review isolation, durable authorization and preflight stops, stale artifact stops, resume cursor checks, terminal transitions, and target-boundary handling.
+  - Added architecture-assessment routing for `architecture-required`, `architecture-not-required`, `architecture-ambiguous`, missing assessment, invalid assessment, and skipped conditional target handling with `target-not-applicable`.
+  - Updated `docs/workflows.md` and `skills/workflow/SKILL.md` with the command form, target enum, activation gates, architecture assessment behavior, and out-of-scope stage boundary.
+- Validation notes:
+  - `python scripts/test-artifact-lifecycle-validator.py -k review_fix` passed.
+  - `python scripts/test-artifact-lifecycle-validator.py -k autoprogression` passed.
+  - `python scripts/test-artifact-lifecycle-validator.py` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path docs/workflows.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
+  - `git diff --check` passed.
 - Commit message: `M2: route bounded review-fix autoprogression`
 - Milestone closeout:
   - validation passed
@@ -388,6 +400,7 @@ Relevant implementation areas:
 - 2026-06-30: Plan-review R2 approved the revised plan with no material findings; next stage is `test-spec`.
 - 2026-06-30: Authored active test spec `specs/review-fix-autoprogression.test.md`; next stage is `test-spec-review`.
 - 2026-06-30: Test-spec-review R1 approved the active test spec with no material findings; next stage is `implement`.
+- 2026-06-30: M1 implementation was approved by code-review M1 R2 and closed; M2 implementation added review-fix route evaluation, preflight proof, target-boundary stops, architecture-assessment routing, and workflow guidance; next stage is `code-review`.
 
 ## Decision log
 
@@ -398,11 +411,12 @@ Relevant implementation areas:
 
 ## Surprises and discoveries
 
-- None yet.
+- The planned `-k autoprogression` lifecycle selector matched no tests until the M2 route tests were named with both `review_fix` and `autoprogression`; the test names now keep both planned validation selectors meaningful.
 
 ## Validation notes
 
 - 2026-06-30: Pre-plan validation already passed for review artifact closeout, change metadata, artifact lifecycle explicit paths, and diff whitespace after architecture-review R2.
+- 2026-06-30: M2 targeted validation passed: `python scripts/test-artifact-lifecycle-validator.py -k review_fix`, `python scripts/test-artifact-lifecycle-validator.py -k autoprogression`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path docs/workflows.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`, `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`, and `git diff --check`.
 
 ## Outcome and retrospective
 
