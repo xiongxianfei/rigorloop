@@ -1638,6 +1638,18 @@ No blocked plans.
             self.review_fix_fixture(contradictory_workflow_state=True),
             stop_reason="contradictory-workflow-state",
         )
+        for status in ("not-started", "not-required", "banana"):
+            with self.subTest(status=status):
+                self.assertReviewFixRoute(
+                    self.review_fix_fixture(latest_review_status=status),
+                    stop_reason="current-review-not-approved",
+                )
+        fixture_without_status = self.review_fix_fixture()
+        fixture_without_status.pop("latest_review_status")
+        self.assertReviewFixRoute(
+            fixture_without_status,
+            stop_reason="current-review-not-approved",
+        )
 
     def test_review_fix_autoprogression_routes_through_target_bounds(self) -> None:
         self.assertReviewFixRoute(
