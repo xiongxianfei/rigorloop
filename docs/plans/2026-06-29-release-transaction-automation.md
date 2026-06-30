@@ -76,9 +76,9 @@ Important existing boundaries:
 - Last reviewed milestone: M6
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — all in-scope implementation milestones are closed, but explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: pr-handoff-pending — all in-scope implementation milestones are closed and final verify passed locally, but PR handoff remains.
 
 ## Milestones
 
@@ -299,7 +299,14 @@ M6 implementation status:
 - `code-review-m6-r1` requested changes for `CR-RTA-M6-F1`: closeout currently validates a local public-evidence file but does not collect GitHub/npm metadata or run fresh public `npx` smoke as required by `R32` and `R33`.
 - `CR-RTA-M6-F1` is resolved in review-resolution.
 - `code-review-m6-r2` completed with no material findings. M6 is closed.
-- Next action: explain-change.
+- `explain-change` recorded the implementation rationale in `docs/changes/2026-06-29-release-transaction-automation/explain-change.md`.
+- `verify` recorded `docs/changes/2026-06-29-release-transaction-automation/verify-report.md` and blocked branch readiness because `bash scripts/ci.sh --mode explicit --path ...` reports selector manual-routing/unclassified-path blockers for the new release transaction scripts and fixture directories.
+- CI maintenance added deterministic selector routing for release transaction scripts and fixtures through `release_transaction.regression`.
+- `explain-change` refreshed `docs/changes/2026-06-29-release-transaction-automation/explain-change.md` to cover the CI-maintenance selector-routing diff.
+- `verify` passed local branch-readiness checks and recorded branch-ready evidence in `docs/changes/2026-06-29-release-transaction-automation/verify-report.md`.
+- A post-verify learn session recorded the CI-maintenance-before-explain-change routing lesson. Because this touched the change pack after verify, final verify must rerun before PR handoff.
+- `verify` reran after the learn-session update, passed local branch-readiness checks, and refreshed `docs/changes/2026-06-29-release-transaction-automation/verify-report.md`.
+- Next action: pr.
 
 ## Progress
 
