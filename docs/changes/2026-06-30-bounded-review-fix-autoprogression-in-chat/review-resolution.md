@@ -4,10 +4,10 @@
 
 Closeout status: closed
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`
 - Findings resolved: 8
 - Unresolved findings: 0
-- Current result: Proposal-review R2 approved the proposal, spec-review R2 approved the revised spec, architecture-review R2 approved the architecture package and ADR, plan-review R2 approved the revised execution plan, and test-spec-review R1 approved the active test spec with no material findings. Code-review M1 R2 is clean-with-notes with no material findings. Code-review M2 R1 requested changes for CR-RFA-M2-1; the accepted fix is implemented and ready for M2 code-review rerun.
+- Current result: Proposal-review R2 approved the proposal, spec-review R2 approved the revised spec, architecture-review R2 approved the architecture package and ADR, plan-review R2 approved the revised execution plan, and test-spec-review R1 approved the active test spec with no material findings. Code-review M1 R2 and M2 R2 are clean-with-notes with no material findings, so M1 and M2 are closed and the next stage is M3 implementation.
 
 ## Resolution Entries
 
@@ -172,4 +172,10 @@ Chosen action: Added regression coverage for `latest_review_status` values `not-
 Rationale: The finding identifies a real `R20` gap. Review-fix routing must fail closed unless the current review status is approved before downstream continuation.
 Required outcome: Add targeted tests for non-approved and unknown `latest_review_status` values, then update `evaluate_review_fix_autoprogression_route` to stop before routing unless the current review status is exactly `approved`.
 Validation target: Rerun M2 validation after the fix, including `python scripts/test-artifact-lifecycle-validator.py -k review_fix`, `python scripts/test-artifact-lifecycle-validator.py -k autoprogression`, `python scripts/test-artifact-lifecycle-validator.py`, explicit-path artifact lifecycle validation, change metadata validation, and `git diff --check`.
-Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k review_fix`, `python scripts/test-artifact-lifecycle-validator.py -k autoprogression`, and `python scripts/test-artifact-lifecycle-validator.py` passed after the fix. Explicit-path artifact lifecycle validation, change metadata validation, review-artifact structure and closeout validation, and `git diff --check` are pending final rerun after bookkeeping updates.
+Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k review_fix`, `python scripts/test-artifact-lifecycle-validator.py -k autoprogression`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat`, and `git diff --check` passed after the fix. Code-review M2 R2 approved the fix with no material findings.
+
+### code-review-m2-r2
+
+Review closeout: code-review-m2-r2
+
+No material findings; no resolution entry required.

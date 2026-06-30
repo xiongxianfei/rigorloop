@@ -45,6 +45,7 @@ changed_files:
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m1-r1.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m1-r2.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m2-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m2-r2.md
   - specs/review-fix-autoprogression.md
   - specs/review-fix-autoprogression.test.md
   - docs/architecture/system/architecture.md
@@ -61,7 +62,7 @@ changed_files:
   - docs/workflows.md
   - tests/fixtures/change-metadata/review-fix-valid/change.yaml
 review:
-  status: changes-requested
+  status: approved
   unresolved_items: 0
   location: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md
   material_findings: 8
@@ -72,7 +73,7 @@ review:
   architecture_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/architecture-review-r2.md
   plan_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/test-spec-review-r1.md
-  code_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m2-r1.md
+  code_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m2-r2.md
   review_log: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md
   review_resolution: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
 validation:
@@ -99,6 +100,20 @@ validation:
   - command: python scripts/test-artifact-lifecycle-validator.py -k autoprogression
     result: pass
   - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: code-review m2 r2
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/test-artifact-lifecycle-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py -k autoprogression
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: git diff --check
     result: pass
   - command: code-review m1 r1
     result: inconclusive_missing_tracked_governing_authority
