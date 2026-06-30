@@ -73,14 +73,14 @@ Relevant implementation areas:
 ## Current Handoff Summary
 
 - Current milestone: M2. Review-Fix Driver Routing, Preflight, and Target Bounds
-- Current milestone state: review-requested
-- Latest review evidence: review-resolution-cr-rfa-m2-1
-- Last reviewed milestone: M1. Review-Fix State Schema and Metadata Validation
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review
+- Current milestone state: closed
+- Latest review evidence: code-review-m2-r2
+- Last reviewed milestone: M2. Review-Fix Driver Routing, Preflight, and Target Bounds
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — CR-RFA-M2-1 is resolved and M2 is awaiting code-review rerun; M3-M5, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 is closed by code-review M2 R2; M3-M5, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -145,7 +145,7 @@ Relevant implementation areas:
 
 ### M2. Review-Fix Driver Routing, Preflight, and Target Bounds
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add route evaluation and lifecycle proof for `$workflow auto: <target-stage>`, activation gates, preflight, direct-review isolation, architecture assessment, and target-boundary stops.
 - Requirements: `R11`-`R22g`, `R37`, `R39`-`R40`, `R43`, `AC7`, `AC13`-`AC24`
 - Files/components likely touched:
@@ -196,6 +196,7 @@ Relevant implementation areas:
   - `python scripts/test-artifact-lifecycle-validator.py -k review_fix` passed after the fix.
   - `python scripts/test-artifact-lifecycle-validator.py -k autoprogression` passed after the fix.
   - `python scripts/test-artifact-lifecycle-validator.py` passed after the fix.
+  - `code-review-m2-r2` completed with `clean-with-notes` and no material findings.
 - Commit message: `M2: route bounded review-fix autoprogression`
 - Milestone closeout:
   - validation passed
@@ -408,6 +409,7 @@ Relevant implementation areas:
 - 2026-06-30: M1 implementation was approved by code-review M1 R2 and closed; M2 implementation added review-fix route evaluation, preflight proof, target-boundary stops, architecture-assessment routing, and workflow guidance; next stage is `code-review`.
 - 2026-06-30: Code-review M2 R1 requested changes for CR-RFA-M2-1; next stage is `review-resolution`.
 - 2026-06-30: Implemented the accepted CR-RFA-M2-1 fix so review-fix routing stops unless the current review status is `approved`; next stage is M2 code-review rerun.
+- 2026-06-30: Code-review M2 R2 approved the review-fix gate fix with no material findings; M2 is closed and the next stage is M3 implementation.
 
 ## Decision log
 
