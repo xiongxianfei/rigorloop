@@ -1,0 +1,8 @@
+schema_version: release-surface-inventory-v1
+change_id: 2026-06-29-release-transaction-automation
+surfaces:
+  - id: release-metadata
+    path: docs/releases/v0.3.5.md
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    manual_override: true

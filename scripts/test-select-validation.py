@@ -71,6 +71,7 @@ EXPECTED_CATALOG = {
     "change_metadata.validate": "python scripts/validate-change-metadata.py <change-yaml>...",
     "change_record_query.regression": "python scripts/test-query-change-record.py",
     "release.validate": "python scripts/validate-release-ci.py --version <version>",
+    "release_transaction.regression": "python scripts/test-release-transaction.py",
     "readme.validate": "python scripts/validate-readme.py README.md",
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
     "guide_system.regression": "python scripts/test-guide-system-validator.py",
@@ -1055,6 +1056,8 @@ raise SystemExit({exit_code})
             "docs/changes/2026-04-25-example/cold-read-proof.md",
             "docs/changes/2026-04-25-example/representative-project-map-outputs.md",
             "docs/changes/2026-04-25-example/broad-smoke-child-classification.md",
+            "docs/changes/2026-04-25-example/release-surface-inventory.yaml",
+            "docs/changes/2026-04-25-example/release-literal-audit-baseline.yaml",
         ]
         result = self.select(paths)
         payload = result.to_json_dict()
@@ -1421,6 +1424,7 @@ raise SystemExit({exit_code})
             "change_record_query.regression",
             "change_metadata.regression",
             "guide_system.regression",
+            "release_transaction.regression",
             "requirement_fidelity.spec_reads",
             "review_artifacts.regression",
             "selector.regression",
@@ -1706,6 +1710,33 @@ raise SystemExit({exit_code})
             {item["code"] for item in payload["blocking_results"]},
         )
         self.assertNotIn("release.validate", selected_ids(payload))
+
+    def test_release_transaction_scripts_and_fixtures_select_focused_regression(self) -> None:
+        result = self.select(
+            [
+                "scripts/release_transaction.py",
+                "scripts/test-release-transaction.py",
+                "scripts/prepare-release.py",
+                "scripts/release-preflight.py",
+                "scripts/close-release-publication.py",
+                "tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml",
+                "tests/fixtures/release-transaction/literal-audit/valid-baseline.yaml",
+                "tests/fixtures/release-transaction/surface-inventory/valid-inventory.yaml",
+            ]
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertNotIn(
+            "manual-routing-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+        self.assertIn("release_transaction.regression", selected_ids(payload))
+        check = next(
+            check for check in payload["selected_checks"] if check["id"] == "release_transaction.regression"
+        )
+        self.assertEqual(check["command"], "python scripts/test-release-transaction.py")
 
     def test_first_slice_representative_categories_route_or_block_safely(self) -> None:
         cases = [

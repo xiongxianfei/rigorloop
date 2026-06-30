@@ -1,0 +1,53 @@
+schema_version: release-surface-inventory-v1
+change_id: 2026-06-29-release-transaction-automation
+surfaces:
+  - id: release-metadata
+    path: docs/releases/v0.3.5.md
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Generated release metadata pointer."
+  - id: adapter-artifact-expectations
+    path: docs/reports/adapter-artifacts/releases/adapter-artifacts-v0.3.5.json
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Generated adapter artifact expectations."
+  - id: pending-npm-publication
+    path: docs/releases/v0.3.5/npm-publication.md
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Generated pending npm publication evidence."
+  - id: target-init-smoke
+    path: docs/releases/v0.3.5/release.yaml
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Generated target smoke rows."
+  - id: current-version-fixtures
+    path: tests/fixtures/release-transaction/current-version.json
+    classification: profile-owned-generated
+    expected_owner: release-profile
+    rationale: "Generated current-version fixture data."
+  - id: release-notes-narrative
+    path: docs/releases/v0.3.5/release-notes.md
+    classification: human-authored-profile-checked
+    expected_owner: maintainer
+    rationale: "Human-authored release notes narrative."
+  - id: migration-risk-notes
+    path: docs/releases/v0.3.5/release-notes.md
+    classification: human-authored-profile-checked
+    expected_owner: maintainer
+    rationale: "Human-authored migration and risk notes."
+  - id: prior-release-evidence
+    path: docs/releases/v0.3.4/release.yaml
+    classification: historical-immutable
+    expected_owner: historical-release
+    rationale: "Prior release evidence is not rewritten."
+  - id: prior-profile-snapshots
+    path: docs/releases/profiles/v*.yaml
+    classification: historical-immutable
+    expected_owner: historical-release
+    rationale: "Prior release transaction profiles are durable historical release evidence and are not rewritten by routine release prep."
+  - id: historical-fixture
+    path: tests/fixtures/release-transaction/history/v0.3.4.yaml
+    classification: historical-immutable
+    expected_owner: historical-fixture
+    rationale: "Historical fixture remains pinned."

@@ -1,0 +1,35 @@
+schema_version: release-profile-v1
+release_kind: routine
+release_tag: v0.3.5
+npm_package: "@xiongxianfei/rigorloop"
+
+targets:
+  - codex
+  - claude
+  - opencode
+
+adapter_artifacts:
+  required: true
+  metadata_file: adapter-artifacts-v0.3.5.json
+  archive_version: v0.3.5
+
+publication:
+  github_release_required: true
+  npm_publication_required: true
+  trusted_publishing_required: true
+  public_smoke_required: true
+
+evidence:
+  release_yaml: required
+  release_notes: required
+  npm_publication: required
+  public_target_init_smoke: required
+  archive_hashes: required
+  tree_hashes: required
+  file_counts: required
+  timing: required
+
+validation:
+  local_release_verify_required: true
+  ci_release_verify_required: true
+  security_scanning_required: true
