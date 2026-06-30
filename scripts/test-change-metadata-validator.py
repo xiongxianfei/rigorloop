@@ -312,6 +312,23 @@ review:
       change_id: 2026-06-24-policy-fixture
 """
 
+    def valid_review_fix_named_record_workflow(self, *, extra_review_fix: str = "") -> str:
+        extra = f"{extra_review_fix}\n" if extra_review_fix else ""
+        return f"""workflow:
+  autoprogression:
+    review_fix:
+      profile: bounded-review-fix
+      status: armed
+      target_stage: spec-review
+      armed_by: user
+      armed_at: 2026-06-24T12:05:00Z
+      current_stage: spec
+      current_review: spec-review-r1
+      stop_reason: none
+      last_updated_evidence: docs/changes/2026-06-24-policy-fixture/change.yaml
+      change_id: 2026-06-24-policy-fixture
+{extra}"""
+
     def test_valid_basic_fixture_passes(self) -> None:
         self.assertPathPasses(FIXTURES / "valid-basic" / "change.yaml")
 
@@ -335,6 +352,31 @@ review:
 """,
             )
             self.assertPathPasses(target)
+
+    def test_review_fix_autoprogression_policy_record_passes(self) -> None:
+        self.assertPathPasses(FIXTURES / "review-fix-valid" / "change.yaml")
+
+        with tempfile.TemporaryDirectory(prefix="change-metadata-review-fix-targets-") as temp_dir:
+            for target_stage in (
+                "proposal-review",
+                "spec",
+                "spec-review",
+                "architecture",
+                "architecture-review",
+                "plan",
+                "plan-review",
+                "test-spec",
+                "test-spec-review",
+            ):
+                with self.subTest(target_stage=target_stage):
+                    target = self.write_policy_fixture(
+                        Path(temp_dir),
+                        workflow_block=self.valid_review_fix_named_record_workflow().replace(
+                            "target_stage: spec-review",
+                            f"target_stage: {target_stage}",
+                        ),
+                    )
+                    self.assertPathPasses(target)
 
         with tempfile.TemporaryDirectory(prefix="change-metadata-policy-implementation-") as temp_dir:
             target = self.write_policy_fixture(
@@ -716,6 +758,113 @@ review:
                     target = self.write_policy_fixture(Path(temp_dir), workflow_block=workflow_block)
                     self.assertPathFails(target, expected)
 
+    def test_review_fix_autoprogression_unknown_values_fail_closed(self) -> None:
+        cases = [
+            (
+                "wrong-profile",
+                self.valid_review_fix_named_record_workflow().replace(
+                    "profile: bounded-review-fix",
+                    "profile: implementation-through-verify",
+                ),
+                "workflow.autoprogression.review_fix.profile: expected bounded-review-fix",
+            ),
+            (
+                "unsupported-status",
+                self.valid_review_fix_named_record_workflow().replace(
+                    "status: armed",
+                    "status: running",
+                ),
+                "workflow.autoprogression.review_fix.status: expected one of",
+            ),
+            (
+                "unsupported-target",
+                self.valid_review_fix_named_record_workflow().replace(
+                    "target_stage: spec-review",
+                    "target_stage: verify",
+                ),
+                "workflow.autoprogression.review_fix.target_stage: expected one of",
+            ),
+            (
+                "unsupported-stop-reason",
+                self.valid_review_fix_named_record_workflow().replace(
+                    "stop_reason: none",
+                    "stop_reason: unexpected",
+                ),
+                "workflow.autoprogression.review_fix.stop_reason: expected one of",
+            ),
+        ]
+        for name, workflow_block, expected in cases:
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory(prefix=f"change-metadata-review-fix-{name}-") as temp_dir:
+                    target = self.write_policy_fixture(Path(temp_dir), workflow_block=workflow_block)
+                    self.assertPathFails(target, expected)
+
+    def test_review_fix_autoprogression_required_fields_fail(self) -> None:
+        cases = [
+            ("profile", "workflow.autoprogression.review_fix.profile: missing required field"),
+            ("status", "workflow.autoprogression.review_fix.status: missing required field"),
+            ("target_stage", "workflow.autoprogression.review_fix.target_stage: missing required field"),
+            ("armed_by", "workflow.autoprogression.review_fix.armed_by: missing required field"),
+            ("armed_at", "workflow.autoprogression.review_fix.armed_at: missing required field"),
+            ("current_stage", "workflow.autoprogression.review_fix.current_stage: missing required field"),
+            ("current_review", "workflow.autoprogression.review_fix.current_review: missing required field"),
+            ("stop_reason", "workflow.autoprogression.review_fix.stop_reason: missing required field"),
+            (
+                "last_updated_evidence",
+                "workflow.autoprogression.review_fix.last_updated_evidence: missing required field",
+            ),
+            ("change_id", "workflow.autoprogression.review_fix.change_id: missing required field"),
+        ]
+        for missing_field, expected in cases:
+            with self.subTest(missing_field=missing_field):
+                workflow_block = "\n".join(
+                    line
+                    for line in self.valid_review_fix_named_record_workflow().splitlines()
+                    if not line.strip().startswith(f"{missing_field}:")
+                ) + "\n"
+                with tempfile.TemporaryDirectory(prefix=f"change-metadata-review-fix-missing-{missing_field}-") as temp_dir:
+                    target = self.write_policy_fixture(Path(temp_dir), workflow_block=workflow_block)
+                    self.assertPathFails(target, expected)
+
+    def test_review_fix_autoprogression_terminal_transitions_pass(self) -> None:
+        cases = [
+            ("off", "user-off"),
+            ("completed", "target-reached"),
+            ("cancelled", "cancelled"),
+            ("paused", "needs-decision"),
+        ]
+        for status, stop_reason in cases:
+            with self.subTest(status=status, stop_reason=stop_reason):
+                with tempfile.TemporaryDirectory(prefix=f"change-metadata-review-fix-{status}-") as temp_dir:
+                    target = self.write_policy_fixture(
+                        Path(temp_dir),
+                        workflow_block=self.valid_review_fix_named_record_workflow()
+                        .replace("status: armed", f"status: {status}")
+                        .replace("stop_reason: none", f"stop_reason: {stop_reason}"),
+                    )
+                    self.assertPathPasses(target)
+
+    def test_direct_review_only_metadata_does_not_create_review_fix_authorization(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-review-fix-direct-review-") as temp_dir:
+            repo_root = Path(temp_dir)
+            change_id = "2026-06-24-policy-fixture"
+            change_root = repo_root / "docs" / "changes" / change_id
+            change_root.mkdir(parents=True)
+            target = self.write_policy_fixture(
+                change_root,
+                workflow_block="""review:
+  status: clean
+  reviewed_artifact: docs/example.md
+  review_log: docs/changes/2026-06-24-policy-fixture/review-log.md
+  unresolved_items: 0
+""",
+            )
+            self.assertPathPasses(target)
+            result = run_query_change_record(repo_root, change_id, "summary")
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertIsNone(payload["profile_policy"])
+
     def test_named_records_reject_container_next_stage(self) -> None:
         self.assertPathFails(
             FIXTURES / "2026-06-24-separately-armed-implementation-autoprogression-through-verify" / "change.yaml",
@@ -920,6 +1069,17 @@ review:
       authorized_by: user
       authorized_at: 2026-06-24T12:05:00Z
       change_id: 2026-06-24-policy-fixture
+    review_fix:
+      profile: bounded-review-fix
+      status: armed
+      target_stage: spec-review
+      armed_by: user
+      armed_at: 2026-06-24T12:06:00Z
+      current_stage: spec
+      current_review: spec-review-r1
+      stop_reason: none
+      last_updated_evidence: docs/changes/2026-06-24-policy-fixture/change.yaml
+      change_id: 2026-06-24-policy-fixture
 """,
             )
 
@@ -939,6 +1099,10 @@ review:
             self.assertEqual(records["implementation_through_verify"]["state"], "armed")
             self.assertNotIn("next_stage", records["implementation_through_verify"])
             self.assertNotIn("current_stage", records["implementation_through_verify"])
+            self.assertEqual(records["review_fix"]["profile"], "bounded-review-fix")
+            self.assertEqual(records["review_fix"]["status"], "armed")
+            self.assertEqual(records["review_fix"]["target_stage"], "spec-review")
+            self.assertNotIn("next_stage", records["review_fix"])
 
     def test_compact_path_variable_helpers(self) -> None:
         validator = load_validator_module()

@@ -221,6 +221,83 @@
               },
               "additionalProperties": true
             },
+            "review_fix": {
+              "type": "object",
+              "required": [
+                "profile",
+                "status",
+                "target_stage",
+                "armed_by",
+                "armed_at",
+                "current_stage",
+                "current_review",
+                "stop_reason",
+                "last_updated_evidence",
+                "change_id"
+              ],
+              "properties": {
+                "profile": {
+                  "type": "string",
+                  "enum": [
+                    "bounded-review-fix"
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "off",
+                    "armed",
+                    "active",
+                    "paused",
+                    "completed",
+                    "cancelled"
+                  ]
+                },
+                "target_stage": {
+                  "type": "string",
+                  "enum": [
+                    "proposal-review",
+                    "spec",
+                    "spec-review",
+                    "architecture",
+                    "architecture-review",
+                    "plan",
+                    "plan-review",
+                    "test-spec",
+                    "test-spec-review"
+                  ]
+                },
+                "armed_by": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "armed_at": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "current_stage": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "current_review": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "stop_reason": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "last_updated_evidence": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "change_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": true
+            },
             "authorized_by": {
               "type": "string",
               "minLength": 1

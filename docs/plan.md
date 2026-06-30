@@ -17,6 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
+| [Bounded Review-Fix Autoprogression in Chat](plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md) | active | blocked | 2026-06-30-bounded-review-fix-autoprogression-in-chat |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
