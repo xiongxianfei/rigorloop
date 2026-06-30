@@ -73,14 +73,14 @@ Relevant implementation areas:
 ## Current Handoff Summary
 
 - Current milestone: M2. Review-Fix Driver Routing, Preflight, and Target Bounds
-- Current milestone state: resolution-needed
-- Latest review evidence: code-review-m2-r1
+- Current milestone state: review-requested
+- Latest review evidence: review-resolution-cr-rfa-m2-1
 - Last reviewed milestone: M1. Review-Fix State Schema and Metadata Validation
-- Review status: changes-requested; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: review-resolution
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 has code-review finding CR-RFA-M2-1 open; M3-M5, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — CR-RFA-M2-1 is resolved and M2 is awaiting code-review rerun; M3-M5, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -145,7 +145,7 @@ Relevant implementation areas:
 
 ### M2. Review-Fix Driver Routing, Preflight, and Target Bounds
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Add route evaluation and lifecycle proof for `$workflow auto: <target-stage>`, activation gates, preflight, direct-review isolation, architecture assessment, and target-boundary stops.
 - Requirements: `R11`-`R22g`, `R37`, `R39`-`R40`, `R43`, `AC7`, `AC13`-`AC24`
 - Files/components likely touched:
@@ -192,6 +192,10 @@ Relevant implementation areas:
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
   - `git diff --check` passed.
   - `code-review-m2-r1` requested changes for CR-RFA-M2-1.
+  - Added regression coverage for non-approved or missing `latest_review_status` values and fixed the review-fix route to require `approved` before continuation.
+  - `python scripts/test-artifact-lifecycle-validator.py -k review_fix` passed after the fix.
+  - `python scripts/test-artifact-lifecycle-validator.py -k autoprogression` passed after the fix.
+  - `python scripts/test-artifact-lifecycle-validator.py` passed after the fix.
 - Commit message: `M2: route bounded review-fix autoprogression`
 - Milestone closeout:
   - validation passed
@@ -403,6 +407,7 @@ Relevant implementation areas:
 - 2026-06-30: Test-spec-review R1 approved the active test spec with no material findings; next stage is `implement`.
 - 2026-06-30: M1 implementation was approved by code-review M1 R2 and closed; M2 implementation added review-fix route evaluation, preflight proof, target-boundary stops, architecture-assessment routing, and workflow guidance; next stage is `code-review`.
 - 2026-06-30: Code-review M2 R1 requested changes for CR-RFA-M2-1; next stage is `review-resolution`.
+- 2026-06-30: Implemented the accepted CR-RFA-M2-1 fix so review-fix routing stops unless the current review status is `approved`; next stage is M2 code-review rerun.
 
 ## Decision log
 
@@ -419,6 +424,7 @@ Relevant implementation areas:
 
 - 2026-06-30: Pre-plan validation already passed for review artifact closeout, change metadata, artifact lifecycle explicit paths, and diff whitespace after architecture-review R2.
 - 2026-06-30: M2 targeted validation passed: `python scripts/test-artifact-lifecycle-validator.py -k review_fix`, `python scripts/test-artifact-lifecycle-validator.py -k autoprogression`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path docs/workflows.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`, `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`, and `git diff --check`.
+- 2026-06-30: CR-RFA-M2-1 fix validation passed: `python scripts/test-artifact-lifecycle-validator.py -k review_fix`, `python scripts/test-artifact-lifecycle-validator.py -k autoprogression`, and `python scripts/test-artifact-lifecycle-validator.py`.
 
 ## Outcome and retrospective
 

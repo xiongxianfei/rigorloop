@@ -940,6 +940,8 @@ def evaluate_review_fix_autoprogression_route(data: dict[str, object]) -> Author
 
     if latest_review_status in AUTHORING_PROFILE_NONCLEAN_REVIEW_STATUSES:
         return _stop(profile_state, latest_review_status)
+    if latest_review_status != "approved":
+        return _stop(profile_state, "current-review-not-approved")
     if data.get("material_findings") is True:
         return _stop(profile_state, "material-finding")
     if data.get("transition_count") == len(REVIEW_FIX_PROFILE_TARGET_STAGES):
