@@ -47,6 +47,7 @@ changed_files:
   - docs/adr/ADR-20260629-release-transaction-profile.md
   - docs/plans/2026-06-29-release-transaction-automation.md
   - docs/plan.md
+  - docs/plan-archive.md
   - specs/release-transaction-automation.test.md
   - scripts/release_transaction.py
   - scripts/test-release-transaction.py
@@ -409,6 +410,16 @@ validation:
     result: pass
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/explain-change.md --path docs/changes/2026-06-29-release-transaction-automation/verify-report.md --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/plan.md --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md --path docs/changes/2026-06-29-release-transaction-automation/behavior-preservation.md --path docs/learn/sessions/2026-06-29-ci-maintenance-before-explain-change.md
     result: pass
+  - command: pr
+    result: opened_PR_117_next_human_PR_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/explain-change.md --path docs/changes/2026-06-29-release-transaction-automation/verify-report.md --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-06-29-release-transaction-automation.md --path docs/changes/2026-06-29-release-transaction-automation/review-log.md --path docs/changes/2026-06-29-release-transaction-automation/review-resolution.md --path docs/changes/2026-06-29-release-transaction-automation/behavior-preservation.md
+    result: pass
+  - command: git diff --check -- docs/changes/2026-06-29-release-transaction-automation/change.yaml docs/plans/2026-06-29-release-transaction-automation.md docs/plan.md docs/plan-archive.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-29-release-transaction-automation/change.yaml --path docs/changes/2026-06-29-release-transaction-automation/explain-change.md --path docs/changes/2026-06-29-release-transaction-automation/verify-report.md --path docs/learn/sessions/2026-06-29-ci-maintenance-before-explain-change.md --path docs/learn/sessions/2026-06-29-release-automation-review-findings.md --path docs/learn/sessions/2026-06-29-release-time-root-cause.md --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-06-29-release-transaction-automation.md --path scripts/test-select-validation.py --path scripts/validation_selection.py
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_guide_system_selector_regression
   - command: git diff --check -- docs/changes/2026-06-29-release-transaction-automation/reviews/test-spec-review-r1.md docs/changes/2026-06-29-release-transaction-automation/review-log.md docs/changes/2026-06-29-release-transaction-automation/review-resolution.md docs/changes/2026-06-29-release-transaction-automation/change.yaml docs/plans/2026-06-29-release-transaction-automation.md docs/plan.md
     result: pass
   - command: python scripts/validate-change-metadata.py docs/changes/2026-06-29-release-transaction-automation/change.yaml
