@@ -73,20 +73,20 @@ Relevant implementation areas:
 ## Current Handoff Summary
 
 - Current milestone: M1. Review-Fix State Schema and Metadata Validation
-- Current milestone state: review-requested
-- Latest review evidence: code-review-m1-r1
-- Last reviewed milestone: none
-- Review status: inconclusive; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: blocked
+- Current milestone state: closed
+- Latest review evidence: code-review-m1-r2
+- Last reviewed milestone: M1. Review-Fix State Schema and Metadata Validation
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M2, M3, M4, M5
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — code-review M1 R1 is inconclusive because governing artifacts are local-only/untracked; M1 remains open, and M2-M5, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed by code-review M1 R2; M2-M5, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
 ### M1. Review-Fix State Schema and Metadata Validation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add durable `workflow.autoprogression.review_fix` state support with closed profile, status, target-stage, cursor, stop-reason, and evidence fields.
 - Requirements: `R1`-`R10`, `R39`, `R42`, `AC1`-`AC6`, `AC15`-`AC19`
 - Files/components likely touched:
@@ -128,6 +128,7 @@ Relevant implementation areas:
   - `python scripts/test-change-metadata-validator.py -k autoprogression` passed.
   - `python scripts/test-change-metadata-validator.py` passed.
   - `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
+  - `code-review-m1-r2` completed with `clean-with-notes` and no material findings.
 - Commit message: `M1: add review-fix profile state validation`
 - Milestone closeout:
   - validation passed
