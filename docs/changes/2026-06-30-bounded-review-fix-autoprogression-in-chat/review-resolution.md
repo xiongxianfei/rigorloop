@@ -4,10 +4,10 @@
 
 Closeout status: closed
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: Proposal-review R2 approved the proposal, spec-review R2 approved the revised spec, architecture-review R2 approved the architecture package and ADR, plan-review R2 approved the revised execution plan, and test-spec-review R1 approved the active test spec with no material findings. Code-review M1 R1 is inconclusive with no material findings because governing artifacts are local-only/untracked, so M1 remains open.
+- Current result: Proposal-review R2 approved the proposal, spec-review R2 approved the revised spec, architecture-review R2 approved the architecture package and ADR, plan-review R2 approved the revised execution plan, and test-spec-review R1 approved the active test spec with no material findings. Code-review M1 R2 is clean-with-notes with no material findings, so M1 is closed and the next stage is M2 implementation.
 
 ## Resolution Entries
 
@@ -150,3 +150,9 @@ No material findings; no resolution entry required.
 Review closeout: code-review-m1-r1
 
 No material findings; no resolution entry required. The review is inconclusive because missing tracked governing authority blocks a clean branch-scoped code-review conclusion.
+
+### code-review-m1-r2
+
+Review closeout: code-review-m1-r2
+
+No material findings; no resolution entry required.
