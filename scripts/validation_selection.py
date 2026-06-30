@@ -119,6 +119,12 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-release-ci.py --version <version>",
         "release",
     ),
+    "release_transaction.regression": CheckCatalogEntry(
+        "release_transaction.regression",
+        "python scripts/test-release-transaction.py",
+        "release-transaction",
+        parallel_safe=True,
+    ),
     "readme.validate": CheckCatalogEntry(
         "readme.validate",
         "python scripts/validate-readme.py README.md",
@@ -1533,6 +1539,14 @@ def _apply_path_selection(
         )
         return
 
+    if category == "release-transaction":
+        _add_check(
+            selected,
+            "release_transaction.regression",
+            "Changed release transaction automation requires focused release transaction regression fixtures.",
+        )
+        return
+
     if category == "rigorloop-cli":
         _add_check(
             selected,
@@ -1801,6 +1815,8 @@ def _path_category(path: str) -> str | None:
         return "requirement-fidelity-spec-read"
     if path.startswith("tests/fixtures/adapters/"):
         return "adapters"
+    if path.startswith("tests/fixtures/release-transaction/"):
+        return "release-transaction"
     if path == "tests/fixtures/skills" or path.startswith("tests/fixtures/skills/"):
         return "validator-skills"
     if path.startswith("skills/"):
@@ -1964,6 +1980,14 @@ def _path_category(path: str) -> str | None:
         return "templates"
     if path.startswith("schemas/"):
         return "schemas"
+    if path in {
+        "scripts/close-release-publication.py",
+        "scripts/prepare-release.py",
+        "scripts/release-preflight.py",
+        "scripts/release_transaction.py",
+        "scripts/test-release-transaction.py",
+    }:
+        return "release-transaction"
     if path in {"scripts/validate-release.py", "scripts/validate-release-ci.py", "scripts/release-verify.sh"}:
         return "release-script"
     if path.startswith("scripts/"):
