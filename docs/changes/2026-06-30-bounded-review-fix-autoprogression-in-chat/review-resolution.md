@@ -2,12 +2,12 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`
-- Findings resolved: 9
-- Unresolved findings: 1
-- Current result: Proposal-review R2 approved the proposal, spec-review R2 approved the revised spec, architecture-review R2 approved the architecture package and ADR, plan-review R2 approved the revised execution plan, and test-spec-review R1 approved the active test spec with no material findings. Code-review M1 R2 and M2 R2 are clean-with-notes with no material findings. CR-RFA-M3-1 is closed, but code-review M3 R2 requested changes for CR-RFA-M3-2.
+- Findings resolved: 10
+- Unresolved findings: 0
+- Current result: Proposal-review R2 approved the proposal, spec-review R2 approved the revised spec, architecture-review R2 approved the architecture package and ADR, plan-review R2 approved the revised execution plan, and test-spec-review R1 approved the active test spec with no material findings. Code-review M1 R2 and M2 R2 are clean-with-notes with no material findings. CR-RFA-M3-2 has an accepted implemented disposition, so M3 is ready for code-review rerun.
 
 ## Resolution Entries
 
@@ -205,12 +205,12 @@ Review closeout: code-review-m3-r2
 
 Finding ID: CR-RFA-M3-2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: implementation owner
 Owning stage: review-resolution
-Chosen action: Pending implementation of the safe resolution path.
+Chosen action: Added a compatibility regression for a normal accepted disposition containing `Files changed:` and narrowed the review-fix validation trigger to unambiguous review-fix marker fields while preserving full review-fix block validation after activation.
 Rationale: Code-review M3 R2 found that the CR-RFA-M3-1 fix treats generic material-resolution fields such as `Files changed:` as review-fix-specific markers, causing an existing non-review-fix review-resolution artifact to fail validation.
 Required outcome: Review-fix validation must fail closed for review-fix-specific fields without treating generic material-resolution fields as review-fix markers.
 Safe resolution path: Narrow the trigger set used by `_validate_resolution_entry_structure` to unambiguous review-fix marker fields, or otherwise distinguish optional review-fix block fields from generic resolution fields before invoking `_validate_review_fix_auto_resolution_entry`. Add a regression test with a non-review-fix accepted disposition that includes `Files changed:` and must remain valid, while preserving the missing-marker and unsupported-marker review-fix tests added for CR-RFA-M3-1.
 Validation target: Rerun `python scripts/test-review-artifact-validator.py -k review_fix`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate`, current change review artifact validation, change metadata validation, explicit lifecycle validation, and `git diff --check` after the fix.
-Validation evidence: Pending.
+Validation evidence: `python scripts/test-review-artifact-validator.py -k review_fix`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate`, and `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat` passed after the fix. M3 is pending code-review rerun.

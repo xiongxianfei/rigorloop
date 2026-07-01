@@ -154,4 +154,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r2.md
 Resolution: review-resolution.md#code-review-m3-r2
 Material findings: CR-RFA-M3-2
-Open findings: CR-RFA-M3-2
+Open findings: None

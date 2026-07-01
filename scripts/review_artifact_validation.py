@@ -138,6 +138,21 @@ REVIEW_FIX_AUTO_RESOLUTION_FIELDS = frozenset(
         *REVIEW_FIX_SCOPE_CHANGE_FIELDS,
     }
 )
+REVIEW_FIX_AUTO_RESOLUTION_TRIGGER_FIELDS = frozenset(
+    {
+        "Review-fix auto-resolution",
+        "Review-fix auto-applied",
+        "Driver classification",
+        "Reason auto safe",
+        "Same-review rerun",
+        "Reviewed artifact current",
+        "Deterministic patch target",
+        "Review-fix cycle count",
+        "Findings auto-applied this cycle",
+        "Files changed this cycle",
+        "Files changed this invocation",
+    }
+)
 INDEPENDENCE_LEVELS = frozenset({"L0", "L1", "L2", "L3"})
 REVIEW_GATE_OUTCOMES = frozenset({"advance", "stop", "blocked", "inconclusive"})
 REVIEW_GATE_RISK_TIERS = frozenset({"standard", "elevated", "critical-internal", "irreversible-external-action"})
@@ -2833,7 +2848,7 @@ def _validate_resolution_entry_structure(
                 finding_id=entry.finding_id,
             )
         )
-    if _entry_has_any(entry, tuple(REVIEW_FIX_AUTO_RESOLUTION_FIELDS)):
+    if _entry_has_any(entry, tuple(REVIEW_FIX_AUTO_RESOLUTION_TRIGGER_FIELDS)):
         _validate_review_fix_auto_resolution_entry(entry, mode, findings)
 
 
