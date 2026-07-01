@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Change ID: 2026-06-30-bounded-review-fix-autoprogression-in-chat
 - Owner: agent
 - Start date: 2026-06-30
 - Last updated: 2026-06-30
-- Related issue or PR: none yet
+- Related issue or PR: PR #118, https://github.com/xiongxianfei/rigorloop/pull/118
 - Supersedes: none
 
 ## Purpose / big picture
@@ -72,15 +72,15 @@ Relevant implementation areas:
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Integration Proof, Generated Adapters, and Behavior Preservation
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: code-review-m5-r1
 - Last reviewed milestone: M5. Integration Proof, Generated Adapters, and Behavior Preservation
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, pr-handoff-pending — implementation milestones, review-resolution, code-review, explain-change, and verify are complete; PR handoff remains incomplete.
+- Next stage: human PR review
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — PR #118 is open for review; implementation milestones, review-resolution, code-review, explain-change, verify, and PR handoff are complete locally.
 
 ## Milestones
 
@@ -475,6 +475,7 @@ Relevant implementation areas:
 - 2026-07-01: Code-review M5 R1 recorded clean-with-notes with no material findings; M5 is closed and the next stage is `explain-change`.
 - 2026-07-01: Explain-change recorded durable rationale at `docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md`; next stage is `verify`.
 - 2026-07-01: Verify passed and recorded branch-ready evidence at `docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/verify-report.md`; next stage is `pr`.
+- 2026-07-01: PR #118 opened for review: https://github.com/xiongxianfei/rigorloop/pull/118
 
 ## Decision log
 
@@ -499,7 +500,7 @@ Relevant implementation areas:
 
 ## Outcome and retrospective
 
-- Not started. Fill after implementation, review-resolution when triggered, explain-change, verify, and PR handoff complete.
+- Done for this branch handoff. PR #118 is open for hosted CI and human review.
 
 ## Readiness
 
