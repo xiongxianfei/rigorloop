@@ -73,14 +73,14 @@ Relevant implementation areas:
 ## Current Handoff Summary
 
 - Current milestone: M5. Integration Proof, Generated Adapters, and Behavior Preservation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: code-review-m4-r1
 - Last reviewed milestone: M4. Workflow, Stage Skill, and Contributor Guidance Alignment
-- Review status: approved; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M5
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M4 is closed; M5, explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M5 is implemented and awaiting code-review; explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -361,7 +361,7 @@ Relevant implementation areas:
 
 ### M5. Integration Proof, Generated Adapters, and Behavior Preservation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove the integrated proposal-side feature through `test-spec-review`, generated guidance, behavior-preservation evidence, and final validation bundles before downstream closeout.
 - Requirements: `R44`-`R45`, all acceptance criteria `AC1`-`AC26`
 - Files/components likely touched:
@@ -397,6 +397,21 @@ Relevant implementation areas:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md`
   - `bash scripts/ci.sh --mode explicit --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path skills/workflow/SKILL.md --path docs/workflows.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`
 - Expected observable result: The full proposal-side review-fix profile is validated end to end, with behavior-preservation evidence and no partial user-visible enablement gap.
+- Implementation notes:
+  - Added behavior-preservation evidence covering direct-review isolation, formal review recording, same-review rereview, existing autoprogression profile preservation, proposal-side bounds, architecture conditional routing, generated-skill proof, and adapter support boundaries.
+  - Updated adapter release-test fixture generation so release notes can name current non-portable skill exclusions when validating release metadata generated from the canonical skill set.
+  - Adapter support surfaces `dist/adapters/README.md` and `dist/adapters/manifest.yaml` were intentionally unchanged because review-fix changes do not alter the public adapter install contract or supported skill list.
+- Validation notes:
+  - `python scripts/test-change-metadata-validator.py` passed.
+  - `python scripts/test-review-artifact-validator.py` passed.
+  - `python scripts/test-artifact-lifecycle-validator.py` passed.
+  - `python scripts/test-skill-validator.py` passed.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/test-build-skills.py` passed.
+  - `python scripts/test-adapter-distribution.py` passed.
+  - Focused adapter regression rerun passed for the four release-note non-portable exclusion fixture cases.
+  - `bash scripts/ci.sh --mode explicit --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path skills/workflow/SKILL.md --path docs/workflows.md --path scripts/test-adapter-distribution.py --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
 - Commit message: `M5: prove review-fix autoprogression integration`
 - Milestone closeout:
   - validation passed
@@ -454,6 +469,8 @@ Relevant implementation areas:
 - 2026-06-30: Code-review M2 R1 requested changes for CR-RFA-M2-1; next stage is `review-resolution`.
 - 2026-06-30: Implemented the accepted CR-RFA-M2-1 fix so review-fix routing stops unless the current review status is `approved`; next stage is M2 code-review rerun.
 - 2026-06-30: Code-review M2 R2 approved the review-fix gate fix with no material findings; M2 is closed and the next stage is M3 implementation.
+- 2026-07-01: M5 implementation started; added behavior-preservation evidence for direct-review isolation, existing autoprogression profiles, review recording, rereview, stop boundaries, generated-skill checks, and adapter support boundaries.
+- 2026-07-01: M5 implementation completed behavior-preservation evidence and adapter fixture alignment; next stage is `code-review`.
 
 ## Decision log
 
@@ -471,6 +488,8 @@ Relevant implementation areas:
 - 2026-06-30: Pre-plan validation already passed for review artifact closeout, change metadata, artifact lifecycle explicit paths, and diff whitespace after architecture-review R2.
 - 2026-06-30: M2 targeted validation passed: `python scripts/test-artifact-lifecycle-validator.py -k review_fix`, `python scripts/test-artifact-lifecycle-validator.py -k autoprogression`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path docs/workflows.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`, `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`, and `git diff --check`.
 - 2026-06-30: CR-RFA-M2-1 fix validation passed: `python scripts/test-artifact-lifecycle-validator.py -k review_fix`, `python scripts/test-artifact-lifecycle-validator.py -k autoprogression`, and `python scripts/test-artifact-lifecycle-validator.py`.
+- 2026-07-01: M5 targeted validation passed: `python scripts/test-change-metadata-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/test-build-skills.py`, and `python scripts/test-adapter-distribution.py`.
+- 2026-07-01: M5 selected CI passed for review-fix spec/test spec, workflow skill/docs, adapter test fixture, behavior-preservation evidence, plan/index, and change metadata paths.
 
 ## Outcome and retrospective
 
