@@ -1,0 +1,431 @@
+change_id: 2026-06-30-bounded-review-fix-autoprogression-in-chat
+title: Bounded Review-Fix Autoprogression in Chat
+pr: https://github.com/xiongxianfei/rigorloop/pull/118
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
+  spec: specs/review-fix-autoprogression.md
+  test_spec: specs/review-fix-autoprogression.test.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md
+  plan: docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
+  review_resolution: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
+  explain_change: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md
+  verify_report: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/verify-report.md
+requirements:
+  - Record a proposal for bounded review-fix autoprogression before downstream spec work.
+  - Review the proposal for scope, target-stage enum, loop budget, and readiness for spec.
+  - Resolve proposal-review material findings before downstream spec reliance.
+  - Author the review-fix autoprogression spec from the accepted proposal.
+  - Record the architecture decision and canonical architecture update for the bounded review-fix profile.
+  - Create an execution plan for implementation milestones, validation, recovery, and handoff.
+  - Create a matching test spec before implementation and before test-spec-review.
+tests:
+  - Proposal-review records material findings before proposal revision.
+  - Review-resolution records dispositions for material findings.
+  - Artifact lifecycle validation covers the revised proposal.
+  - Artifact lifecycle validation covers the approved spec.
+  - Architecture lifecycle validation covers the canonical package update and ADR.
+  - Plan lifecycle validation covers the active plan and plan index.
+  - Test-spec lifecycle validation covers the active test spec.
+  - Review-fix change metadata validation covers the nested profile state shape, closed vocabularies, required fields, terminal transitions, and direct-review isolation.
+  - Review-fix artifact lifecycle validation covers route evaluation, preflight stops, target bounds, direct-review isolation, architecture assessment, and terminal state transitions.
+  - Review-fix review artifact validation covers driver-owned classifications, auto-applied dispositions, same-review rerun linkage, stale evidence, generated-owner stops, exact reviewer wording, non-auto-safe blockers, and budget exhaustion.
+changed_files:
+  - docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r2.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r2.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/architecture-review-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/architecture-review-r2.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/plan-review-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/plan-review-r2.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/test-spec-review-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m1-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m1-r2.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m2-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m2-r2.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m3-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m3-r2.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m3-r3.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m4-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m5-r1.md
+  - specs/review-fix-autoprogression.md
+  - specs/review-fix-autoprogression.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md
+  - docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
+  - docs/plan.md
+  - docs/plan-archive.md
+  - schemas/change.schema.json
+  - scripts/validate-change-metadata.py
+  - scripts/query-change-record.py
+  - scripts/test-change-metadata-validator.py
+  - scripts/lifecycle_state_sync.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - scripts/review_artifact_validation.py
+  - scripts/test-review-artifact-validator.py
+  - scripts/test-skill-validator.py
+  - scripts/test-adapter-distribution.py
+  - skills/code-review/SKILL.md
+  - skills/test-spec-review/SKILL.md
+  - skills/workflow/SKILL.md
+  - docs/workflows.md
+  - templates/review-resolution.md
+  - tests/fixtures/change-metadata/review-fix-valid/change.yaml
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/verify-report.md
+review:
+  status: approved
+  unresolved_items: 0
+  location: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md
+  material_findings: 10
+  closed_findings: 10
+  open_findings: 0
+  proposal_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r2.md
+  spec_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r2.md
+  architecture_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/architecture-review-r2.md
+  plan_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/plan-review-r2.md
+  test_spec_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/test-spec-review-r1.md
+  code_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m5-r1.md
+  review_log: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md
+  review_resolution: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
+validation:
+  - command: proposal-review r1
+    result: changes_requested_AUTO-PR1_AUTO-PR2_AUTO-PR3
+  - command: proposal-review r2
+    result: approved_no_material_findings
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r1.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r2.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/test-spec-review-r1.md
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: code-review m3 r2
+    result: changes_requested_CR-RFA-M3-2
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate
+    result: fail_CR-RFA-M3-2_generic_files_changed_triggers_review_fix_validation
+  - command: review-resolution CR-RFA-M3-2
+    result: accepted_fix_implemented_pending_code_review_rerun
+  - command: python scripts/test-review-artifact-validator.py -k review_fix
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: code-review m3 r3
+    result: clean_with_notes_no_material_findings
+  - command: code-review m4 r1
+    result: clean_with_notes_no_material_findings
+  - command: implement M5
+    result: behavior_preservation_generated_adapter_and_final_integration_proof_complete_pending_code_review
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path skills/workflow/SKILL.md --path docs/workflows.md --path scripts/test-adapter-distribution.py --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: code-review m5 r1
+    result: clean_with_notes_no_material_findings
+  - command: explain-change
+    result: durable_rationale_recorded_pending_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
+    result: pass_after_explain_change
+  - command: git diff --check
+    result: pass_after_explain_change
+  - command: verify
+    result: branch_ready_for_stacked_pr_pending_pr_handoff
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_verify
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_verify
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_verify
+  - command: python scripts/test-skill-validator.py
+    result: pass_verify
+  - command: python scripts/validate-skills.py
+    result: pass_verify
+  - command: python scripts/build-skills.py --check
+    result: pass_verify
+  - command: python scripts/test-build-skills.py
+    result: pass_verify
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_verify
+  - command: bash scripts/ci.sh --mode explicit --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path skills/workflow/SKILL.md --path skills/code-review/SKILL.md --path skills/test-spec-review/SKILL.md --path docs/workflows.md --path scripts/validate-change-metadata.py --path scripts/query-change-record.py --path scripts/lifecycle_state_sync.py --path scripts/review_artifact_validation.py --path scripts/test-change-metadata-validator.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/test-review-artifact-validator.py --path scripts/test-skill-validator.py --path scripts/test-adapter-distribution.py --path schemas/change.schema.json --path templates/review-resolution.md --path tests/fixtures/change-metadata/review-fix-valid/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass_verify
+  - command: pr
+    result: opened_PR_118_next_human_PR_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass_after_pr_handoff
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/verify-report.md --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md
+    result: pass_after_pr_handoff
+  - command: git diff --check -- docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md docs/plan.md docs/plan-archive.md
+    result: pass_after_pr_handoff
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/verify-report.md --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
+    result: pass_after_pr_handoff_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_guide_system
+  - command: implement M4
+    result: review_fix_workflow_and_stage_guidance_alignment_complete_pending_code_review
+  - command: python scripts/test-skill-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-skill-validator.py -k formal_review_skills_share_isolation
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: code-review m2 r1
+    result: changes_requested_CR-RFA-M2-1
+  - command: review-resolution CR-RFA-M2-1
+    result: accepted_fix_implemented_pending_code_review_rerun
+  - command: python scripts/test-artifact-lifecycle-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py -k autoprogression
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: code-review m2 r2
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/test-artifact-lifecycle-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py -k autoprogression
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: implement M3
+    result: review_fix_auto_safe_classification_review_resolution_and_rereview_evidence_complete_pending_code_review
+  - command: python scripts/test-review-artifact-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path templates/review-resolution.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: code-review m3 r1
+    result: changes_requested_CR-RFA-M3-1
+  - command: review-resolution CR-RFA-M3-1
+    result: accepted_fix_implemented_pending_code_review_rerun
+  - command: python scripts/test-review-artifact-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py -k review_fix
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: code-review m1 r1
+    result: inconclusive_missing_tracked_governing_authority
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m1-r1.md
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: code-review m1 r2
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m1-r2.md
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: implement M1
+    result: review_fix_state_schema_and_metadata_validation_complete_pending_code_review
+  - command: python scripts/test-change-metadata-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py -k autoprogression
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: implement M2
+    result: review_fix_driver_routing_preflight_and_target_bounds_complete_pending_code_review
+  - command: python scripts/test-artifact-lifecycle-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py -k autoprogression
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path docs/workflows.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: plan-review r1
+    result: changes_requested_PR-RFA-1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: test-spec-review r1
+    result: approved_no_material_findings
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/review-fix-autoprogression.test.md --path specs/review-fix-autoprogression.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/test-spec-review-r1.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: test-spec
+    result: active_test_spec_created_pending_test_spec_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/review-fix-autoprogression.test.md --path specs/review-fix-autoprogression.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: plan-review r2
+    result: approved_no_material_findings
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/plan-review-r1.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/plan-review-r2.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: plan revision for PR-RFA-1
+    result: applied_pending_plan_review_rerun
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/plan-review-r1.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/plan-review-r1.md
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: architecture-review r1
+    result: changes_requested_AR-RFA-1
+  - command: architecture revision for AR-RFA-1
+    result: mechanical_renumbering_complete_pending_architecture_review_rerun
+  - command: architecture-review r2
+    result: approved_no_material_findings
+  - command: plan
+    result: active_plan_created_pending_plan_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r1.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r2.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r1.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r2.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/architecture-review-r1.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/architecture-review-r2.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: fail_expected_open_AR-RFA-1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: spec-review r1
+    result: changes_requested_SR-RFA-1_SR-RFA-2
+  - command: spec revision for SR-RFA-1 and SR-RFA-2
+    result: pending_spec_review_rerun
+  - command: spec-review r2
+    result: approved_no_material_findings
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r1.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r2.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r1.md
+    result: pass
+  - command: architecture
+    result: canonical_package_update_and_adr_recorded
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path specs/review-fix-autoprogression.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r1.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r2.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r1.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r2.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass

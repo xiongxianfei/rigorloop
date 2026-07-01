@@ -75,6 +75,84 @@ ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 FIELD_PATTERN = re.compile(r"^\s*(?P<label>[A-Za-z][A-Za-z0-9 _/-]*):\s*(?P<value>.*)$")
 REVIEW_RESOLUTION_HEADING_PATTERN = re.compile(r"^\s{0,3}###\s+(?P<review_id>[A-Za-z0-9][A-Za-z0-9._-]*)\s*$")
 AUTO_FIX_CLASSES = frozenset({"none", "mechanical", "declared-safe"})
+REVIEW_FIX_AUTO_RESOLUTION_CLASSES = frozenset(
+    {
+        "mechanical",
+        "format-preserving",
+        "exact-reviewer-wording",
+        "status-normalization-with-evidence",
+        "recording-repair",
+        "cross-reference-repair",
+        "validation-command-shape-repair",
+        "not-auto-safe",
+    }
+)
+REVIEW_FIX_BUDGET_LIMITS = {
+    "Review-fix cycle count": 2,
+    "Findings auto-applied this cycle": 5,
+    "Files changed this cycle": 3,
+    "Files changed this invocation": 10,
+}
+REVIEW_FIX_SCOPE_CHANGE_FIELDS = (
+    "Changes product direction",
+    "Changes scope",
+    "Changes requirements",
+    "Changes architecture",
+    "Changes milestone sequencing",
+    "Changes validation ownership",
+    "Changes public behavior",
+    "Changes release policy",
+    "Changes external state",
+    "Generated output ownership change",
+)
+REVIEW_FIX_AUTO_RESOLUTION_FIELDS = frozenset(
+    {
+        "Review-fix auto-resolution",
+        "Review-fix auto-applied",
+        "Driver classification",
+        "Reason auto safe",
+        "Files changed",
+        "Finding evidence",
+        "Deterministic required outcome",
+        "Review rerun",
+        "Same-review rerun",
+        "Reviewed artifact current",
+        "Deterministic patch target",
+        "Small diff",
+        "Stop reason",
+        "Target artifact",
+        "Target section",
+        "Target line range",
+        "Exact replacement text",
+        "Owner decision rationale",
+        "Semantic scope change",
+        "Review-fix cycle count",
+        "Findings auto-applied this cycle",
+        "Files changed this cycle",
+        "Files changed this invocation",
+        "Needs decision",
+        "Ambiguous alternatives",
+        "Missing evidence",
+        "Missing deterministic patch target",
+        "Reviewer downstream block",
+        *REVIEW_FIX_SCOPE_CHANGE_FIELDS,
+    }
+)
+REVIEW_FIX_AUTO_RESOLUTION_TRIGGER_FIELDS = frozenset(
+    {
+        "Review-fix auto-resolution",
+        "Review-fix auto-applied",
+        "Driver classification",
+        "Reason auto safe",
+        "Same-review rerun",
+        "Reviewed artifact current",
+        "Deterministic patch target",
+        "Review-fix cycle count",
+        "Findings auto-applied this cycle",
+        "Files changed this cycle",
+        "Files changed this invocation",
+    }
+)
 INDEPENDENCE_LEVELS = frozenset({"L0", "L1", "L2", "L3"})
 REVIEW_GATE_OUTCOMES = frozenset({"advance", "stop", "blocked", "inconclusive"})
 REVIEW_GATE_RISK_TIERS = frozenset({"standard", "elevated", "critical-internal", "irreversible-external-action"})
@@ -2770,6 +2848,286 @@ def _validate_resolution_entry_structure(
                 finding_id=entry.finding_id,
             )
         )
+    if _entry_has_any(entry, tuple(REVIEW_FIX_AUTO_RESOLUTION_TRIGGER_FIELDS)):
+        _validate_review_fix_auto_resolution_entry(entry, mode, findings)
+
+
+def _validate_review_fix_auto_resolution_entry(
+    entry: ResolutionRecord,
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    marker = _entry_value(entry, "Review-fix auto-resolution").lower()
+    if not marker:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="review-fix auto-resolution missing Review-fix auto-resolution marker",
+                finding_id=entry.finding_id,
+            )
+        )
+    elif marker != "yes":
+        marker_field = entry.fields["Review-fix auto-resolution"]
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=marker_field.line,
+                mode=mode,
+                message=f"unsupported review-fix auto-resolution marker '{marker_field.value}'",
+                finding_id=entry.finding_id,
+            )
+        )
+
+    classification = _entry_value(entry, "Driver classification")
+    if not classification:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="review-fix auto-resolution missing Driver classification",
+                finding_id=entry.finding_id,
+            )
+        )
+    elif classification not in REVIEW_FIX_AUTO_RESOLUTION_CLASSES:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.fields["Driver classification"].line,
+                mode=mode,
+                message=f"unsupported review-fix driver classification '{classification}'",
+                finding_id=entry.finding_id,
+            )
+        )
+
+    auto_applied = _entry_value(entry, "Review-fix auto-applied").lower()
+    if auto_applied not in {"yes", "no"}:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="review-fix auto-resolution missing Review-fix auto-applied yes/no",
+                finding_id=entry.finding_id,
+            )
+        )
+
+    if auto_applied == "yes":
+        if classification == "not-auto-safe":
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.fields["Driver classification"].line,
+                    mode=mode,
+                    message="not-auto-safe finding cannot be auto-applied",
+                    finding_id=entry.finding_id,
+                )
+            )
+        for label in (
+            "Reason auto safe",
+            "Files changed",
+            "Validation evidence",
+            "Finding evidence",
+            "Deterministic required outcome",
+            "Review rerun",
+            "Same-review rerun",
+            "Reviewed artifact current",
+            "Deterministic patch target",
+            "Small diff",
+        ):
+            if not _entry_has(entry, label):
+                findings.append(
+                    ValidationFinding(
+                        path=entry.path,
+                        line=entry.line,
+                        mode=mode,
+                        message=f"review-fix auto-applied disposition missing {label}",
+                    finding_id=entry.finding_id,
+                )
+            )
+        for label, message in (
+            ("Finding evidence", "review-fix auto-applied disposition missing finding evidence proof"),
+            (
+                "Deterministic required outcome",
+                "review-fix auto-applied disposition missing deterministic outcome proof",
+            ),
+            ("Reviewed artifact current", "review-fix auto-resolution uses stale review evidence"),
+            ("Deterministic patch target", "review-fix auto-applied disposition missing deterministic patch proof"),
+            ("Small diff", "review-fix auto-applied disposition missing small-diff proof"),
+        ):
+            if _entry_has(entry, label) and _entry_value(entry, label).lower() != "yes":
+                findings.append(
+                    ValidationFinding(
+                        path=entry.path,
+                        line=entry.fields.get(label, FieldValue("", entry.line)).line,
+                        mode=mode,
+                        message=message,
+                        finding_id=entry.finding_id,
+                    )
+                )
+        if _entry_value(entry, "Review rerun").lower() == "none":
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.fields["Review rerun"].line,
+                    mode=mode,
+                    message="review-fix auto-applied disposition missing Review rerun",
+                    finding_id=entry.finding_id,
+                )
+            )
+        if _entry_value(entry, "Same-review rerun").lower() != "yes":
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.fields.get("Same-review rerun", FieldValue("", entry.line)).line,
+                    mode=mode,
+                    message="review-fix auto-applied disposition missing same-review rerun proof",
+                    finding_id=entry.finding_id,
+                )
+            )
+        if _entry_value(entry, "Generated output ownership change").lower() == "yes":
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.fields["Generated output ownership change"].line,
+                    mode=mode,
+                    message="generated-owner change cannot be auto-applied",
+                    finding_id=entry.finding_id,
+                )
+            )
+
+    if auto_applied == "no" and classification != "not-auto-safe":
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="non-applied review-fix disposition must be not-auto-safe",
+                finding_id=entry.finding_id,
+            )
+        )
+    if auto_applied == "no" and not _entry_has(entry, "Stop reason"):
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="non-applied review-fix disposition missing Stop reason",
+                finding_id=entry.finding_id,
+            )
+        )
+
+    for label, limit in REVIEW_FIX_BUDGET_LIMITS.items():
+        value = _entry_value(entry, label)
+        if not value:
+            continue
+        try:
+            count = int(value)
+        except ValueError:
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.fields[label].line,
+                    mode=mode,
+                    message=f"review-fix budget field {label} must be an integer",
+                    finding_id=entry.finding_id,
+                )
+            )
+            continue
+        if count > limit:
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.fields[label].line,
+                    mode=mode,
+                    message=f"{_review_fix_budget_message(label)} budget exceeded",
+                    finding_id=entry.finding_id,
+                )
+            )
+
+    if classification == "exact-reviewer-wording":
+        for label in ("Target artifact", "Exact replacement text"):
+            if not _entry_has(entry, label):
+                findings.append(
+                    ValidationFinding(
+                        path=entry.path,
+                        line=entry.line,
+                        mode=mode,
+                        message=f"exact-reviewer-wording missing {label}",
+                        finding_id=entry.finding_id,
+                    )
+                )
+        if not _entry_has_any(entry, ("Target section", "Target line range")):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="exact-reviewer-wording missing target section or line range",
+                    finding_id=entry.finding_id,
+                )
+            )
+        if _entry_value(entry, "Owner decision rationale").lower() not in {"", "none"}:
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.fields["Owner decision rationale"].line,
+                    mode=mode,
+                    message="exact-reviewer-wording cannot require owner decision",
+                    finding_id=entry.finding_id,
+                )
+            )
+        if _entry_value(entry, "Semantic scope change").lower() == "yes":
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.fields["Semantic scope change"].line,
+                    mode=mode,
+                    message="exact-reviewer-wording cannot change semantic scope",
+                    finding_id=entry.finding_id,
+                )
+            )
+
+    for label, message in (
+        ("Needs decision", "needs-decision finding must be not-auto-safe"),
+        ("Ambiguous alternatives", "ambiguous review-fix finding must be not-auto-safe"),
+        ("Missing evidence", "missing-evidence review-fix finding must be not-auto-safe"),
+        ("Missing deterministic patch target", "missing-patch-target review-fix finding must be not-auto-safe"),
+        ("Reviewer downstream block", "reviewer-blocked review-fix finding must be not-auto-safe"),
+    ):
+        if _entry_value(entry, label).lower() == "yes" and classification != "not-auto-safe":
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.fields[label].line,
+                    mode=mode,
+                    message=message,
+                    finding_id=entry.finding_id,
+                )
+            )
+
+    for label in REVIEW_FIX_SCOPE_CHANGE_FIELDS:
+        if _entry_value(entry, label).lower() == "yes" and classification != "not-auto-safe":
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.fields[label].line,
+                    mode=mode,
+                    message="scope-changing review-fix finding must be not-auto-safe",
+                    finding_id=entry.finding_id,
+                )
+            )
+
+
+def _review_fix_budget_message(label: str) -> str:
+    return {
+        "Review-fix cycle count": "review-fix cycle",
+        "Findings auto-applied this cycle": "review-fix finding",
+        "Files changed this cycle": "review-fix per-cycle file",
+        "Files changed this invocation": "review-fix per-invocation file",
+    }[label]
 
 
 def _validate_review_relationships(
@@ -3497,6 +3855,13 @@ def _is_stable_identifier(value: str) -> bool:
 def _entry_has(entry: ResolutionRecord, label: str) -> bool:
     value = entry.fields.get(label)
     return value is not None and bool(value.value.strip())
+
+
+def _entry_value(entry: ResolutionRecord, label: str) -> str:
+    value = entry.fields.get(label)
+    if value is None:
+        return ""
+    return value.value.strip()
 
 
 def _entry_has_any(entry: ResolutionRecord, labels: tuple[str, ...]) -> bool:
