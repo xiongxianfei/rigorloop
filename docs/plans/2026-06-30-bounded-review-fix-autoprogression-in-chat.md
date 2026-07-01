@@ -78,9 +78,9 @@ Relevant implementation areas:
 - Last reviewed milestone: M5. Integration Proof, Generated Adapters, and Behavior Preservation
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — all implementation milestones are closed; explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, verify-pending, pr-handoff-pending — all implementation milestones, review-resolution, code-review, and explain-change are complete; verify and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -473,6 +473,7 @@ Relevant implementation areas:
 - 2026-07-01: M5 implementation started; added behavior-preservation evidence for direct-review isolation, existing autoprogression profiles, review recording, rereview, stop boundaries, generated-skill checks, and adapter support boundaries.
 - 2026-07-01: M5 implementation completed behavior-preservation evidence and adapter fixture alignment; next stage is `code-review`.
 - 2026-07-01: Code-review M5 R1 recorded clean-with-notes with no material findings; M5 is closed and the next stage is `explain-change`.
+- 2026-07-01: Explain-change recorded durable rationale at `docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md`; next stage is `verify`.
 
 ## Decision log
 
@@ -492,6 +493,7 @@ Relevant implementation areas:
 - 2026-06-30: CR-RFA-M2-1 fix validation passed: `python scripts/test-artifact-lifecycle-validator.py -k review_fix`, `python scripts/test-artifact-lifecycle-validator.py -k autoprogression`, and `python scripts/test-artifact-lifecycle-validator.py`.
 - 2026-07-01: M5 targeted validation passed: `python scripts/test-change-metadata-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/test-build-skills.py`, and `python scripts/test-adapter-distribution.py`.
 - 2026-07-01: M5 selected CI passed for review-fix spec/test spec, workflow skill/docs, adapter test fixture, behavior-preservation evidence, plan/index, and change metadata paths.
+- 2026-07-01: Explain-change closeout validation passed for change metadata, review artifact closeout, artifact lifecycle explicit paths, and diff whitespace.
 
 ## Outcome and retrospective
 
