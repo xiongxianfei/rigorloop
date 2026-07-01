@@ -436,6 +436,47 @@ def accepted_closed_resolution_without_validation_text() -> str:
     """
 
 
+def review_fix_resolution_text(
+    extra_fields: str = "",
+    *,
+    classification: str = "mechanical",
+    auto_applied: str = "yes",
+) -> str:
+    return f"""
+    # Review Resolution
+
+    Closeout status: open
+
+    ### code-review-r1
+
+    Finding ID: CR1-F1
+    Disposition: accepted
+    Owner: workflow driver
+    Owning stage: workflow
+    Chosen action: Record bounded review-fix auto-resolution evidence.
+    Rationale: The driver classified and applied a deterministic bounded fix.
+    Validation target: Run review-fix validator tests.
+    Validation evidence: `python scripts/test-review-artifact-validator.py -k review_fix` passed.
+    Review-fix auto-resolution: yes
+    Review-fix auto-applied: {auto_applied}
+    Driver classification: {classification}
+    Reason auto safe: Deterministic patch with no semantic change.
+    Files changed: docs/example.md
+    Finding evidence: yes
+    Deterministic required outcome: yes
+    Review rerun: code-review-r2
+    Same-review rerun: yes
+    Reviewed artifact current: yes
+    Deterministic patch target: yes
+    Small diff: yes
+    Review-fix cycle count: 1
+    Findings auto-applied this cycle: 1
+    Files changed this cycle: 1
+    Files changed this invocation: 1
+    {extra_fields}
+    """
+
+
 def accepted_closed_resolution_with_disposition_text(disposition: str | None, *, duplicate: bool = False) -> str:
     disposition_block = "" if disposition is None else f"Disposition: {disposition}\n"
     duplicate_block = "Disposition: accepted\n" if duplicate else ""
@@ -2253,6 +2294,123 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             ),
         )
         self.assertPasses(root)
+
+    def test_review_fix_auto_resolution_driver_classification_values_are_closed(self) -> None:
+        root = self.fixture()
+        write_text(root / "review-resolution.md", review_fix_resolution_text())
+        self.assertPasses(root)
+
+        root = self.fixture()
+        write_text(root / "review-resolution.md", review_fix_resolution_text(classification="obvious"))
+        self.assertFails(root, "unsupported review-fix driver classification 'obvious'")
+
+    def test_review_fix_auto_applied_disposition_requires_rerun_and_current_artifact(self) -> None:
+        root = self.fixture()
+        write_text(root / "review-resolution.md", review_fix_resolution_text().replace("Review rerun: code-review-r2\n", ""))
+        self.assertFails(root, "review-fix auto-applied disposition missing Review rerun")
+
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            review_fix_resolution_text().replace("Same-review rerun: yes", "Same-review rerun: no"),
+        )
+        self.assertFails(root, "review-fix auto-applied disposition missing same-review rerun proof")
+
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            review_fix_resolution_text().replace("Deterministic patch target: yes", "Deterministic patch target: no"),
+        )
+        self.assertFails(root, "review-fix auto-applied disposition missing deterministic patch proof")
+
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            review_fix_resolution_text().replace("Reviewed artifact current: yes", "Reviewed artifact current: no"),
+        )
+        self.assertFails(root, "review-fix auto-resolution uses stale review evidence")
+
+    def test_review_fix_exact_reviewer_wording_requires_deterministic_target(self) -> None:
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            review_fix_resolution_text(
+                """
+                Target artifact: specs/example.md
+                Target section: Requirements
+                Exact replacement text: Replace the heading with `## Requirements`.
+                Owner decision rationale: none
+                Semantic scope change: no
+                """,
+                classification="exact-reviewer-wording",
+            ),
+        )
+        self.assertPasses(root)
+
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            review_fix_resolution_text(
+                """
+                Target artifact: specs/example.md
+                Target section: Requirements
+                Owner decision rationale: none
+                Semantic scope change: no
+                """,
+                classification="exact-reviewer-wording",
+            ),
+        )
+        self.assertFails(root, "exact-reviewer-wording missing Exact replacement text")
+
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            review_fix_resolution_text(
+                """
+                Target artifact: specs/example.md
+                Exact replacement text: Replace the heading with `## Requirements`.
+                Owner decision rationale: none
+                Semantic scope change: no
+                """,
+                classification="exact-reviewer-wording",
+            ),
+        )
+        self.assertFails(root, "exact-reviewer-wording missing target section or line range")
+
+    def test_review_fix_not_auto_safe_blocks_owner_and_scope_changes(self) -> None:
+        root = self.fixture()
+        write_text(root / "review-resolution.md", review_fix_resolution_text("Needs decision: yes"))
+        self.assertFails(root, "needs-decision finding must be not-auto-safe")
+
+        root = self.fixture()
+        write_text(root / "review-resolution.md", review_fix_resolution_text("Changes architecture: yes"))
+        self.assertFails(root, "scope-changing review-fix finding must be not-auto-safe")
+
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            review_fix_resolution_text(
+                "Stop reason: owner-decision-required",
+                classification="not-auto-safe",
+                auto_applied="no",
+            ),
+        )
+        self.assertPasses(root)
+
+    def test_review_fix_auto_resolution_enforces_budgets(self) -> None:
+        for field, value, expected in (
+            ("Review-fix cycle count", "3", "review-fix cycle budget exceeded"),
+            ("Findings auto-applied this cycle", "6", "review-fix finding budget exceeded"),
+            ("Files changed this cycle", "4", "review-fix per-cycle file budget exceeded"),
+            ("Files changed this invocation", "11", "review-fix per-invocation file budget exceeded"),
+        ):
+            with self.subTest(field=field):
+                root = self.fixture()
+                write_text(
+                    root / "review-resolution.md",
+                    review_fix_resolution_text().replace(f"{field}: 1", f"{field}: {value}"),
+                )
+                self.assertFails(root, expected)
 
     def test_stage_owned_non_approval_closeout_includes_rethink_and_inconclusive(self) -> None:
         for status in ["rethink", "inconclusive"]:

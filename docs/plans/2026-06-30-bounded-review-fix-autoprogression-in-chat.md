@@ -72,15 +72,15 @@ Relevant implementation areas:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Review-Fix Driver Routing, Preflight, and Target Bounds
-- Current milestone state: closed
-- Latest review evidence: code-review-m2-r2
+- Current milestone: M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
+- Current milestone state: review-requested
+- Latest review evidence: implementation handoff M3
 - Last reviewed milestone: M2. Review-Fix Driver Routing, Preflight, and Target Bounds
-- Review status: approved; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 is closed by code-review M2 R2; M3-M5, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 is implemented and awaiting code-review; M4-M5, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -213,7 +213,7 @@ Relevant implementation areas:
 
 ### M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Enforce driver-owned auto-safe classification, budget limits, review-resolution disposition, stale-review protection, generated-owner stops, and mandatory same-review reruns.
 - Requirements: `R18`-`R20`, `R23`-`R38`, `R41`-`R43`, `AC7`-`AC13`, `AC21`-`AC23`, `AC26`
 - Files/components likely touched:
@@ -249,6 +249,20 @@ Relevant implementation areas:
   - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat`
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat`
 - Expected observable result: Review-fix mutations are accepted only when bounded, recorded, current, and followed by same-review rerun evidence.
+- Implementation notes:
+  - Added review-fix auto-resolution validation for driver-owned closed classifications, auto-applied versus not-auto-safe disposition shape, deterministic exact-reviewer-wording fields, non-auto-safe blocker fields, budget limits, stale reviewed artifacts, generated-owner stops, and same-review rerun proof.
+  - Added focused review artifact validator tests for review-fix classification, rereview linkage, current-artifact proof, exact reviewer wording, not-auto-safe blockers, and budget exhaustion.
+  - Updated the review-resolution template with optional review-fix auto-resolution fields while leaving existing generic material-finding disposition behavior unchanged.
+- Validation notes:
+  - `python scripts/test-review-artifact-validator.py -k review_fix` passed.
+  - `python scripts/test-artifact-lifecycle-validator.py -k review_fix` passed.
+  - `python scripts/test-review-artifact-validator.py` passed.
+  - `python scripts/test-artifact-lifecycle-validator.py` passed.
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat` passed.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path templates/review-resolution.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
+  - `git diff --check` passed.
 - Commit message: `M3: validate review-fix safe corrections`
 - Milestone closeout:
   - validation passed

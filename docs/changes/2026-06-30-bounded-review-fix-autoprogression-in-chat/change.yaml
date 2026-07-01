@@ -28,6 +28,7 @@ tests:
   - Test-spec lifecycle validation covers the active test spec.
   - Review-fix change metadata validation covers the nested profile state shape, closed vocabularies, required fields, terminal transitions, and direct-review isolation.
   - Review-fix artifact lifecycle validation covers route evaluation, preflight stops, target bounds, direct-review isolation, architecture assessment, and terminal state transitions.
+  - Review-fix review artifact validation covers driver-owned classifications, auto-applied dispositions, same-review rerun linkage, stale evidence, generated-owner stops, exact reviewer wording, non-auto-safe blockers, and budget exhaustion.
 changed_files:
   - docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
@@ -58,8 +59,11 @@ changed_files:
   - scripts/test-change-metadata-validator.py
   - scripts/lifecycle_state_sync.py
   - scripts/test-artifact-lifecycle-validator.py
+  - scripts/review_artifact_validation.py
+  - scripts/test-review-artifact-validator.py
   - skills/workflow/SKILL.md
   - docs/workflows.md
+  - templates/review-resolution.md
   - tests/fixtures/change-metadata/review-fix-valid/change.yaml
 review:
   status: approved
@@ -112,6 +116,26 @@ validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
     result: pass
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: git diff --check
+    result: pass
+  - command: implement M3
+    result: review_fix_auto_safe_classification_review_resolution_and_rereview_evidence_complete_pending_code_review
+  - command: python scripts/test-review-artifact-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path templates/review-resolution.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
     result: pass
   - command: git diff --check
     result: pass
