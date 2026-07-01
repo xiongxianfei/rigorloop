@@ -73,14 +73,14 @@ Relevant implementation areas:
 ## Current Handoff Summary
 
 - Current milestone: M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
-- Current milestone state: review-requested
-- Latest review evidence: review-resolution CR-RFA-M3-1
+- Current milestone state: resolution-needed
+- Latest review evidence: code-review-m3-r2
 - Last reviewed milestone: M2. Review-Fix Driver Routing, Preflight, and Target Bounds
-- Review status: review-requested; stage=code-review; round=r2
+- Review status: changes-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — CR-RFA-M3-1 is implemented and M3 is awaiting code-review rerun; M4-M5, explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — code-review M3 R2 requested changes for CR-RFA-M3-2; M4-M5, explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -213,7 +213,7 @@ Relevant implementation areas:
 
 ### M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Enforce driver-owned auto-safe classification, budget limits, review-resolution disposition, stale-review protection, generated-owner stops, and mandatory same-review reruns.
 - Requirements: `R18`-`R20`, `R23`-`R38`, `R41`-`R43`, `AC7`-`AC13`, `AC21`-`AC23`, `AC26`
 - Files/components likely touched:
@@ -273,6 +273,7 @@ Relevant implementation areas:
   - `python scripts/test-review-artifact-validator.py` passed after the fix.
   - `python scripts/test-artifact-lifecycle-validator.py` passed after the fix.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed after the fix.
+  - `code-review-m3-r2` requested changes for CR-RFA-M3-2 because the CR-RFA-M3-1 trigger repair treats generic material-resolution fields as review-fix-specific markers and breaks an existing non-review-fix review-resolution artifact.
   - `git diff --check` passed after the fix.
 - Commit message: `M3: validate review-fix safe corrections`
 - Milestone closeout:
