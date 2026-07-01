@@ -145,3 +145,13 @@ Detailed record: reviews/code-review-m3-r1.md
 Resolution: review-resolution.md#code-review-m3-r1
 Material findings: CR-RFA-M3-1
 Open findings: None
+
+### Review entry
+Review ID: code-review-m3-r2
+Stage: code-review
+Round: 2
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r2.md
+Resolution: review-resolution.md#code-review-m3-r2
+Material findings: CR-RFA-M3-2
+Open findings: CR-RFA-M3-2
