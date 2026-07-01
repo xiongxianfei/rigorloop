@@ -292,12 +292,16 @@ Rules:
 - Resume uses tracked artifact and review evidence. Do not rerun completed artifacts or clean reviews, do not infer completion from file existence alone, and pause when completion evidence is ambiguous.
 - A clean `plan-review` completes the profile, reports `test-spec` as next, and does not invoke `test-spec`, implementation, review-fix loops, verification, or PR.
 - The review-fix profile uses `$workflow auto: <target-stage>` and canonical profile `bounded-review-fix` under `workflow.autoprogression.review_fix`.
+- `$workflow auto: status` reports current review-fix state without mutating artifacts.
+- `$workflow auto: off` clears or terminally cancels review-fix authorization.
 - Valid review-fix targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, and `test-spec-review`; unknown targets fail closed.
 - Activate review-fix only in workflow-managed context with durable user authorization, accepted proposal, approved recorded `proposal-review`, no open findings, closed resolution, clean current gate evidence, fresh artifact state, and unambiguous artifact placement.
 - Direct review invocations do not activate, resume, or advance review-fix, even when persisted state exists.
 - After approved recorded `spec-review`, record exactly one architecture assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`. Required routes through architecture stages; not-required skips them; ambiguous pauses for owner decision.
 - If the user requested a skipped conditional target, stop with `target-not-applicable` rather than claiming the target was reached.
 - Review-fix never continues past the requested target and never invokes implementation, code-review, verify, PR, release, publication, network, destructive, or external-state operations.
+- Review-fix chat results report mode, target stage, current stage, review status, auto-applied fixes, human decisions required, artifacts changed, review rerun status, next stage run, and stop reason.
+- Existing `authoring-through-plan-review` and `implementation-through-verify` behavior remains unchanged unless a later approved spec explicitly changes those profiles.
 - The implementation profile is verify-bounded implementation autoprogression. User-facing `auto-through: verify` maps to canonical `implementation-through-verify` and requires separate change-local authorization from authoring autoprogression.
 - `implementation-through-verify` uses persisted phases. Phase `A` is audit-only. Phase `B` may run test-spec settlement, required test-spec-review, implementation milestones, independent code-review rounds, reviewer-declared correction loops, and final clean code-review; it must stop before `explain-change` or `verify`. Phase `C` may run `explain-change` and fresh `verify` only when promotion evidence is recorded, then stops before invoking `pr`.
 - Missing promotion evidence, unsupported phase values, unpersisted authorization, unrelated dirty state, owner decisions, new findings, non-shrinking correction loops, verify failure, or any attempt to cross the PR boundary pauses `implementation-through-verify`.

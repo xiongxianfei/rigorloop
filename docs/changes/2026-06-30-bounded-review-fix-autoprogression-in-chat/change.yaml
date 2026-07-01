@@ -64,6 +64,9 @@ changed_files:
   - scripts/test-artifact-lifecycle-validator.py
   - scripts/review_artifact_validation.py
   - scripts/test-review-artifact-validator.py
+  - scripts/test-skill-validator.py
+  - skills/code-review/SKILL.md
+  - skills/test-spec-review/SKILL.md
   - skills/workflow/SKILL.md
   - docs/workflows.md
   - templates/review-resolution.md
@@ -112,6 +115,18 @@ validation:
     result: pass
   - command: code-review m3 r3
     result: clean_with_notes_no_material_findings
+  - command: implement M4
+    result: review_fix_workflow_and_stage_guidance_alignment_complete_pending_code_review
+  - command: python scripts/test-skill-validator.py -k review_fix
+    result: pass
+  - command: python scripts/test-skill-validator.py -k formal_review_skills_share_isolation
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
   - command: code-review m2 r1
     result: changes_requested_CR-RFA-M2-1
   - command: review-resolution CR-RFA-M2-1
