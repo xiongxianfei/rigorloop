@@ -32,6 +32,7 @@ tests:
 changed_files:
   - docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r1.md
@@ -66,6 +67,7 @@ changed_files:
   - scripts/review_artifact_validation.py
   - scripts/test-review-artifact-validator.py
   - scripts/test-skill-validator.py
+  - scripts/test-adapter-distribution.py
   - skills/code-review/SKILL.md
   - skills/test-spec-review/SKILL.md
   - skills/workflow/SKILL.md
@@ -118,6 +120,26 @@ validation:
     result: clean_with_notes_no_material_findings
   - command: code-review m4 r1
     result: clean_with_notes_no_material_findings
+  - command: implement M5
+    result: behavior_preservation_generated_adapter_and_final_integration_proof_complete_pending_code_review
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path skills/workflow/SKILL.md --path docs/workflows.md --path scripts/test-adapter-distribution.py --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass
   - command: implement M4
     result: review_fix_workflow_and_stage_guidance_alignment_complete_pending_code_review
   - command: python scripts/test-skill-validator.py -k review_fix

@@ -111,6 +111,7 @@ class AdapterDistributionTests(unittest.TestCase):
         smoke_overrides: dict[str, dict[str, str]] | None = None,
         validation_overrides: dict[str, str] | None = None,
         notes_tools: tuple[str, ...] = SUPPORTED_ADAPTERS,
+        non_portable_skill_exclusions: tuple[str, ...] = (),
         notes_extra: str = "",
         release_extra: str = "",
     ) -> Path:
@@ -167,6 +168,19 @@ class AdapterDistributionTests(unittest.TestCase):
         lines.append("")
         (release_dir / "release.yaml").write_text("\n".join(lines), encoding="utf-8")
 
+        skill_support_lines = (
+            ["No current non-portable skill exclusions."]
+            if not non_portable_skill_exclusions
+            else [
+                "Non-portable skill exclusions:",
+                "",
+                *(
+                    f"- `{skill_name}` remains project-local and is not included in public adapter skill packages."
+                    for skill_name in non_portable_skill_exclusions
+                ),
+            ]
+        )
+
         notes_lines = [
             f"# RigorLoop {version}",
             "",
@@ -183,7 +197,7 @@ class AdapterDistributionTests(unittest.TestCase):
             "",
             "## Skill Support",
             "",
-            "No current non-portable skill exclusions.",
+            *skill_support_lines,
             "",
             "## Known Limitations",
             "",
@@ -1356,6 +1370,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
+                non_portable_skill_exclusions=("workflow",),
                 validation_overrides={
                     "adapter_archives": "pass",
                     "adapter_artifact_metadata": "pass",
@@ -2711,6 +2726,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=smoke,
+                non_portable_skill_exclusions=("workflow",),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -2737,6 +2753,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=smoke,
+                non_portable_skill_exclusions=("workflow",),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -2761,6 +2778,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
+                non_portable_skill_exclusions=("workflow",),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -2797,6 +2815,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
+                non_portable_skill_exclusions=("workflow",),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -2962,6 +2981,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
+                non_portable_skill_exclusions=("workflow",),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -2995,6 +3015,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
+                non_portable_skill_exclusions=("workflow",),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3086,6 +3107,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
+                non_portable_skill_exclusions=("workflow",),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3131,6 +3153,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
+                non_portable_skill_exclusions=("workflow",),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3273,6 +3296,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
+                non_portable_skill_exclusions=("workflow",),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
