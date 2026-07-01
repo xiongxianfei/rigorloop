@@ -52,6 +52,7 @@ changed_files:
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m3-r2.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m3-r3.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m4-r1.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m5-r1.md
   - specs/review-fix-autoprogression.md
   - specs/review-fix-autoprogression.test.md
   - docs/architecture/system/architecture.md
@@ -86,7 +87,7 @@ review:
   architecture_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/architecture-review-r2.md
   plan_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/test-spec-review-r1.md
-  code_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m4-r1.md
+  code_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m5-r1.md
   review_log: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md
   review_resolution: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
 validation:
@@ -140,6 +141,8 @@ validation:
     result: pass
   - command: bash scripts/ci.sh --mode explicit --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path skills/workflow/SKILL.md --path docs/workflows.md --path scripts/test-adapter-distribution.py --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
     result: pass
+  - command: code-review m5 r1
+    result: clean_with_notes_no_material_findings
   - command: implement M4
     result: review_fix_workflow_and_stage_guidance_alignment_complete_pending_code_review
   - command: python scripts/test-skill-validator.py -k review_fix
