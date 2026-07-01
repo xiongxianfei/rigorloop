@@ -73,14 +73,14 @@ Relevant implementation areas:
 ## Current Handoff Summary
 
 - Current milestone: M5. Integration Proof, Generated Adapters, and Behavior Preservation
-- Current milestone state: review-requested
-- Latest review evidence: code-review-m4-r1
-- Last reviewed milestone: M4. Workflow, Stage Skill, and Contributor Guidance Alignment
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M5
-- Next stage: code-review
+- Current milestone state: closed
+- Latest review evidence: code-review-m5-r1
+- Last reviewed milestone: M5. Integration Proof, Generated Adapters, and Behavior Preservation
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M5 is implemented and awaiting code-review; explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — all implementation milestones are closed; explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -361,7 +361,7 @@ Relevant implementation areas:
 
 ### M5. Integration Proof, Generated Adapters, and Behavior Preservation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Prove the integrated proposal-side feature through `test-spec-review`, generated guidance, behavior-preservation evidence, and final validation bundles before downstream closeout.
 - Requirements: `R44`-`R45`, all acceptance criteria `AC1`-`AC26`
 - Files/components likely touched:
@@ -412,6 +412,7 @@ Relevant implementation areas:
   - `python scripts/test-adapter-distribution.py` passed.
   - Focused adapter regression rerun passed for the four release-note non-portable exclusion fixture cases.
   - `bash scripts/ci.sh --mode explicit --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path skills/workflow/SKILL.md --path docs/workflows.md --path scripts/test-adapter-distribution.py --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
+  - `code-review-m5-r1` completed clean-with-notes with no material findings.
 - Commit message: `M5: prove review-fix autoprogression integration`
 - Milestone closeout:
   - validation passed
@@ -471,6 +472,7 @@ Relevant implementation areas:
 - 2026-06-30: Code-review M2 R2 approved the review-fix gate fix with no material findings; M2 is closed and the next stage is M3 implementation.
 - 2026-07-01: M5 implementation started; added behavior-preservation evidence for direct-review isolation, existing autoprogression profiles, review recording, rereview, stop boundaries, generated-skill checks, and adapter support boundaries.
 - 2026-07-01: M5 implementation completed behavior-preservation evidence and adapter fixture alignment; next stage is `code-review`.
+- 2026-07-01: Code-review M5 R1 recorded clean-with-notes with no material findings; M5 is closed and the next stage is `explain-change`.
 
 ## Decision log
 
