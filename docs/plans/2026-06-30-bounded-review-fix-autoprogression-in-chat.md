@@ -72,15 +72,15 @@ Relevant implementation areas:
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
-- Current milestone state: review-requested
-- Latest review evidence: review-resolution CR-RFA-M3-2
-- Last reviewed milestone: M2. Review-Fix Driver Routing, Preflight, and Target Bounds
-- Review status: review-requested; stage=code-review; round=r3
-- Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: code-review
+- Current milestone: M4. Workflow, Stage Skill, and Contributor Guidance Alignment
+- Current milestone state: planned
+- Latest review evidence: code-review-m3-r3
+- Last reviewed milestone: M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
+- Review status: approved; stage=code-review; round=r3
+- Remaining in-scope implementation milestones: M4, M5
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — CR-RFA-M3-2 is implemented and M3 is awaiting code-review rerun; M4-M5, explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 is closed; M4-M5, explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -213,7 +213,7 @@ Relevant implementation areas:
 
 ### M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Enforce driver-owned auto-safe classification, budget limits, review-resolution disposition, stale-review protection, generated-owner stops, and mandatory same-review reruns.
 - Requirements: `R18`-`R20`, `R23`-`R38`, `R41`-`R43`, `AC7`-`AC13`, `AC21`-`AC23`, `AC26`
 - Files/components likely touched:
@@ -280,6 +280,7 @@ Relevant implementation areas:
   - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-25-independent-test-spec-review-gate` passed after the CR-RFA-M3-2 fix.
   - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat` passed after the CR-RFA-M3-2 fix.
   - `git diff --check` passed after the fix.
+  - `code-review-m3-r3` completed clean-with-notes with no material findings.
 - Commit message: `M3: validate review-fix safe corrections`
 - Milestone closeout:
   - validation passed
