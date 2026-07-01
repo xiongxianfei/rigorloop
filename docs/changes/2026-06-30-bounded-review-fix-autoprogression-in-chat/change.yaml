@@ -10,6 +10,7 @@ artifacts:
   adr: docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md
   plan: docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
   review_resolution: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
+  explain_change: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md
 requirements:
   - Record a proposal for bounded review-fix autoprogression before downstream spec work.
   - Review the proposal for scope, target-stage enum, loop budget, and readiness for spec.
@@ -75,6 +76,7 @@ changed_files:
   - docs/workflows.md
   - templates/review-resolution.md
   - tests/fixtures/change-metadata/review-fix-valid/change.yaml
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md
 review:
   status: approved
   unresolved_items: 0
@@ -143,6 +145,16 @@ validation:
     result: pass
   - command: code-review m5 r1
     result: clean_with_notes_no_material_findings
+  - command: explain-change
+    result: durable_rationale_recorded_pending_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
+    result: pass_after_explain_change
+  - command: git diff --check
+    result: pass_after_explain_change
   - command: implement M4
     result: review_fix_workflow_and_stage_guidance_alignment_complete_pending_code_review
   - command: python scripts/test-skill-validator.py -k review_fix
