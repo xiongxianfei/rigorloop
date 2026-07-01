@@ -1,5 +1,6 @@
 change_id: 2026-06-30-bounded-review-fix-autoprogression-in-chat
 title: Bounded Review-Fix Autoprogression in Chat
+pr: https://github.com/xiongxianfei/rigorloop/pull/118
 classification: proposal
 risk: medium
 artifacts:
@@ -61,6 +62,7 @@ changed_files:
   - docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md
   - docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
   - docs/plan.md
+  - docs/plan-archive.md
   - schemas/change.schema.json
   - scripts/validate-change-metadata.py
   - scripts/query-change-record.py
@@ -177,6 +179,16 @@ validation:
     result: pass_verify
   - command: bash scripts/ci.sh --mode explicit --path specs/review-fix-autoprogression.md --path specs/review-fix-autoprogression.test.md --path skills/workflow/SKILL.md --path skills/code-review/SKILL.md --path skills/test-spec-review/SKILL.md --path docs/workflows.md --path scripts/validate-change-metadata.py --path scripts/query-change-record.py --path scripts/lifecycle_state_sync.py --path scripts/review_artifact_validation.py --path scripts/test-change-metadata-validator.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/test-review-artifact-validator.py --path scripts/test-skill-validator.py --path scripts/test-adapter-distribution.py --path schemas/change.schema.json --path templates/review-resolution.md --path tests/fixtures/change-metadata/review-fix-valid/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
     result: pass_verify
+  - command: pr
+    result: opened_PR_118_next_human_PR_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml
+    result: pass_after_pr_handoff
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/verify-report.md --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/behavior-preservation.md
+    result: pass_after_pr_handoff
+  - command: git diff --check -- docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md docs/plan.md docs/plan-archive.md
+    result: pass_after_pr_handoff
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/verify-report.md --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md
+    result: pass_after_pr_handoff_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_guide_system
   - command: implement M4
     result: review_fix_workflow_and_stage_guidance_alignment_complete_pending_code_review
   - command: python scripts/test-skill-validator.py -k review_fix

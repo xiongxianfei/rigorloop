@@ -17,7 +17,6 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Bounded Review-Fix Autoprogression in Chat](plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md) | active | pr | 2026-06-30-bounded-review-fix-autoprogression-in-chat |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
@@ -28,6 +27,7 @@ No blocked plans.
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-06-30 Bounded Review-Fix Autoprogression in Chat](plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md) - done; terminal state: closed; PR #118 opened for review.
 - [2026-06-29 Release Transaction Automation](plans/2026-06-29-release-transaction-automation.md) - done; terminal state: closed; PR #117 opened for review.
 - [2026-06-27 Broad-Smoke Safe Parallelism](plans/2026-06-27-broad-smoke-safe-parallelism.md) - done; terminal state: closed; PR #116 opened for review.
 - [2026-06-27 Selector-Regression Runtime Reduction](plans/2026-06-27-selector-regression-runtime-reduction.md) - done; terminal state: done; PR #115 opened for review.
@@ -37,7 +37,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-06-25 Independent Adversarial Review Gates](plans/2026-06-25-independent-adversarial-review-gates.md) - done; terminal state: done; PR #110 merged.
 - [2026-06-24 Implementation Autoprogression Through Verify](plans/2026-06-24-implementation-autoprogression-through-verify.md) - done; terminal state: done; PR #108 merged.
 - [2026-06-24 Proposal-Gated Authoring Autoprogression Through Plan Review](plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md) - done; terminal state: done; PR #106 opened for review.
-- [2026-06-23 Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) - done; terminal state: done; PR #101 merged.
 
 ## Superseded
 - none yet
