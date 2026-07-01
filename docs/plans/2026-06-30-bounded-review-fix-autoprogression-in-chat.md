@@ -72,15 +72,15 @@ Relevant implementation areas:
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Workflow, Stage Skill, and Contributor Guidance Alignment
-- Current milestone state: review-requested
-- Latest review evidence: code-review-m3-r3
-- Last reviewed milestone: M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review
+- Current milestone: M5. Integration Proof, Generated Adapters, and Behavior Preservation
+- Current milestone state: planned
+- Latest review evidence: code-review-m4-r1
+- Last reviewed milestone: M4. Workflow, Stage Skill, and Contributor Guidance Alignment
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M5
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M4 is implemented and awaiting code-review; M5, explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M4 is closed; M5, explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -297,7 +297,7 @@ Relevant implementation areas:
 
 ### M4. Workflow, Stage Skill, and Contributor Guidance Alignment
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Align user-facing workflow and affected stage skills with the approved review-fix profile while preserving isolated direct review behavior.
 - Requirements: `R1`-`R3`, `R10`-`R17`, `R39`-`R45`, `AC1`-`AC5`, `AC14`-`AC26`
 - Files/components likely touched:
@@ -344,6 +344,7 @@ Relevant implementation areas:
   - `python scripts/test-skill-validator.py` passed.
   - `python scripts/validate-skills.py` passed.
   - `python scripts/build-skills.py --check` passed.
+  - `code-review-m4-r1` completed clean-with-notes with no material findings.
 - Commit message: `M4: align review-fix workflow guidance`
 - Milestone closeout:
   - validation passed
