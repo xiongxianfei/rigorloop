@@ -105,6 +105,39 @@ REVIEW_FIX_SCOPE_CHANGE_FIELDS = (
     "Changes external state",
     "Generated output ownership change",
 )
+REVIEW_FIX_AUTO_RESOLUTION_FIELDS = frozenset(
+    {
+        "Review-fix auto-resolution",
+        "Review-fix auto-applied",
+        "Driver classification",
+        "Reason auto safe",
+        "Files changed",
+        "Finding evidence",
+        "Deterministic required outcome",
+        "Review rerun",
+        "Same-review rerun",
+        "Reviewed artifact current",
+        "Deterministic patch target",
+        "Small diff",
+        "Stop reason",
+        "Target artifact",
+        "Target section",
+        "Target line range",
+        "Exact replacement text",
+        "Owner decision rationale",
+        "Semantic scope change",
+        "Review-fix cycle count",
+        "Findings auto-applied this cycle",
+        "Files changed this cycle",
+        "Files changed this invocation",
+        "Needs decision",
+        "Ambiguous alternatives",
+        "Missing evidence",
+        "Missing deterministic patch target",
+        "Reviewer downstream block",
+        *REVIEW_FIX_SCOPE_CHANGE_FIELDS,
+    }
+)
 INDEPENDENCE_LEVELS = frozenset({"L0", "L1", "L2", "L3"})
 REVIEW_GATE_OUTCOMES = frozenset({"advance", "stop", "blocked", "inconclusive"})
 REVIEW_GATE_RISK_TIERS = frozenset({"standard", "elevated", "critical-internal", "irreversible-external-action"})
@@ -2800,7 +2833,7 @@ def _validate_resolution_entry_structure(
                 finding_id=entry.finding_id,
             )
         )
-    if _entry_value(entry, "Review-fix auto-resolution").lower() == "yes":
+    if _entry_has_any(entry, tuple(REVIEW_FIX_AUTO_RESOLUTION_FIELDS)):
         _validate_review_fix_auto_resolution_entry(entry, mode, findings)
 
 
@@ -2809,6 +2842,29 @@ def _validate_review_fix_auto_resolution_entry(
     mode: str,
     findings: list[ValidationFinding],
 ) -> None:
+    marker = _entry_value(entry, "Review-fix auto-resolution").lower()
+    if not marker:
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="review-fix auto-resolution missing Review-fix auto-resolution marker",
+                finding_id=entry.finding_id,
+            )
+        )
+    elif marker != "yes":
+        marker_field = entry.fields["Review-fix auto-resolution"]
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=marker_field.line,
+                mode=mode,
+                message=f"unsupported review-fix auto-resolution marker '{marker_field.value}'",
+                finding_id=entry.finding_id,
+            )
+        )
+
     classification = _entry_value(entry, "Driver classification")
     if not classification:
         findings.append(

@@ -73,14 +73,14 @@ Relevant implementation areas:
 ## Current Handoff Summary
 
 - Current milestone: M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
-- Current milestone state: resolution-needed
-- Latest review evidence: code-review-m3-r1
+- Current milestone state: review-requested
+- Latest review evidence: review-resolution CR-RFA-M3-1
 - Last reviewed milestone: M2. Review-Fix Driver Routing, Preflight, and Target Bounds
-- Review status: changes-requested; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: review-resolution
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — code-review M3 R1 requested changes for CR-RFA-M3-1; M3 needs review-resolution, fix implementation, and rerun code-review before M4 can start.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — CR-RFA-M3-1 is implemented and M3 is awaiting code-review rerun; M4-M5, explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -213,7 +213,7 @@ Relevant implementation areas:
 
 ### M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Enforce driver-owned auto-safe classification, budget limits, review-resolution disposition, stale-review protection, generated-owner stops, and mandatory same-review reruns.
 - Requirements: `R18`-`R20`, `R23`-`R38`, `R41`-`R43`, `AC7`-`AC13`, `AC21`-`AC23`, `AC26`
 - Files/components likely touched:
@@ -264,6 +264,16 @@ Relevant implementation areas:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path templates/review-resolution.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed.
   - `git diff --check` passed.
   - `code-review-m3-r1` requested changes for CR-RFA-M3-1.
+  - Implemented the accepted CR-RFA-M3-1 fix so review-fix validation runs when any review-fix-specific field is present and missing or unsupported `Review-fix auto-resolution` marker values fail deterministically.
+  - `python scripts/test-review-artifact-validator.py -k review_fix` passed after the fix.
+  - `python scripts/test-artifact-lifecycle-validator.py -k review_fix` passed after the fix.
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat` passed after the fix.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat` passed after the fix.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed after the fix.
+  - `python scripts/test-review-artifact-validator.py` passed after the fix.
+  - `python scripts/test-artifact-lifecycle-validator.py` passed after the fix.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml` passed after the fix.
+  - `git diff --check` passed after the fix.
 - Commit message: `M3: validate review-fix safe corrections`
 - Milestone closeout:
   - validation passed

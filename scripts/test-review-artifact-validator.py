@@ -2304,6 +2304,21 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         write_text(root / "review-resolution.md", review_fix_resolution_text(classification="obvious"))
         self.assertFails(root, "unsupported review-fix driver classification 'obvious'")
 
+    def test_review_fix_auto_resolution_marker_is_required_and_closed_when_review_fix_fields_exist(self) -> None:
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            review_fix_resolution_text().replace("Review-fix auto-resolution: yes\n", ""),
+        )
+        self.assertFails(root, "review-fix auto-resolution missing Review-fix auto-resolution marker")
+
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            review_fix_resolution_text().replace("Review-fix auto-resolution: yes", "Review-fix auto-resolution: maybe"),
+        )
+        self.assertFails(root, "unsupported review-fix auto-resolution marker 'maybe'")
+
     def test_review_fix_auto_applied_disposition_requires_rerun_and_current_artifact(self) -> None:
         root = self.fixture()
         write_text(root / "review-resolution.md", review_fix_resolution_text().replace("Review rerun: code-review-r2\n", ""))
