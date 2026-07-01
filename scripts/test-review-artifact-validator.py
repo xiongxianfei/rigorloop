@@ -436,6 +436,30 @@ def accepted_closed_resolution_without_validation_text() -> str:
     """
 
 
+def accepted_closed_resolution_with_files_changed_text() -> str:
+    return """
+    # Review Resolution
+
+    Closeout status: closed
+    Review closeout: code-review-r1
+
+    ### code-review-r1
+
+    Finding ID: CR1-F1
+    Disposition: accepted
+    Status: resolved
+    Owner: implementer
+    Owning stage: implement
+    Chosen action: Add focused validator coverage for the accepted finding.
+    Rationale: The review evidence identified a material finding with a deterministic implementation fix.
+    Required outcome: Keep non-review-fix dispositions valid when they include changed-file evidence.
+    Safe resolution path: Update the implementation and rerun focused validation.
+    Validation target: Run the focused review artifact validator tests.
+    Validation evidence: `python scripts/test-review-artifact-validator.py -k review_fix` passed.
+    Files changed: scripts/example.py; scripts/test-example.py
+    """
+
+
 def review_fix_resolution_text(
     extra_fields: str = "",
     *,
@@ -2318,6 +2342,11 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             review_fix_resolution_text().replace("Review-fix auto-resolution: yes", "Review-fix auto-resolution: maybe"),
         )
         self.assertFails(root, "unsupported review-fix auto-resolution marker 'maybe'")
+
+    def test_review_fix_trigger_does_not_reject_generic_files_changed_disposition(self) -> None:
+        root = self.fixture()
+        write_text(root / "review-resolution.md", accepted_closed_resolution_with_files_changed_text())
+        self.assertPasses(root)
 
     def test_review_fix_auto_applied_disposition_requires_rerun_and_current_artifact(self) -> None:
         root = self.fixture()
