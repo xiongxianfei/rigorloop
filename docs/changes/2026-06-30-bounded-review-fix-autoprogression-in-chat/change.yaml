@@ -47,6 +47,7 @@ changed_files:
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m1-r2.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m2-r1.md
   - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m2-r2.md
+  - docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m3-r1.md
   - specs/review-fix-autoprogression.md
   - specs/review-fix-autoprogression.test.md
   - docs/architecture/system/architecture.md
@@ -66,18 +67,18 @@ changed_files:
   - templates/review-resolution.md
   - tests/fixtures/change-metadata/review-fix-valid/change.yaml
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1
   location: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md
-  material_findings: 8
+  material_findings: 9
   closed_findings: 8
-  open_findings: 0
+  open_findings: 1
   proposal_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/proposal-review-r2.md
   spec_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r2.md
   architecture_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/architecture-review-r2.md
   plan_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/test-spec-review-r1.md
-  code_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m2-r2.md
+  code_review: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/code-review-m3-r1.md
   review_log: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-log.md
   review_resolution: docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/review-resolution.md
 validation:
@@ -139,6 +140,8 @@ validation:
     result: pass
   - command: git diff --check
     result: pass
+  - command: code-review m3 r1
+    result: changes_requested_CR-RFA-M3-1
   - command: code-review m1 r1
     result: inconclusive_missing_tracked_governing_authority
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat

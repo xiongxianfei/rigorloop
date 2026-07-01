@@ -2,12 +2,12 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
 - Findings resolved: 8
-- Unresolved findings: 0
-- Current result: Proposal-review R2 approved the proposal, spec-review R2 approved the revised spec, architecture-review R2 approved the architecture package and ADR, plan-review R2 approved the revised execution plan, and test-spec-review R1 approved the active test spec with no material findings. Code-review M1 R2 and M2 R2 are clean-with-notes with no material findings, so M1 and M2 are closed and the next stage is M3 implementation.
+- Unresolved findings: 1
+- Current result: Proposal-review R2 approved the proposal, spec-review R2 approved the revised spec, architecture-review R2 approved the architecture package and ADR, plan-review R2 approved the revised execution plan, and test-spec-review R1 approved the active test spec with no material findings. Code-review M1 R2 and M2 R2 are clean-with-notes with no material findings. Code-review M3 R1 requested changes for CR-RFA-M3-1, so M3 requires review-resolution before downstream implementation can continue.
 
 ## Resolution Entries
 
@@ -179,3 +179,19 @@ Validation evidence: `python scripts/test-artifact-lifecycle-validator.py -k rev
 Review closeout: code-review-m2-r2
 
 No material findings; no resolution entry required.
+
+### code-review-m3-r1
+
+Review closeout: code-review-m3-r1
+
+#### CR-RFA-M3-1 - Review-fix auto-applied evidence can bypass validation when the marker is missing or malformed
+
+Finding ID: CR-RFA-M3-1
+Disposition: accepted
+Status: open
+Owner: implementation owner
+Owning stage: implement
+Chosen action: Pending implementation of the safe resolution path from code-review M3 R1.
+Rationale: The finding identifies a real M3 validation gap. Review-fix auto-applied evidence must not bypass driver classification, evidence, budget, current-artifact, or same-review rerun checks because the marker field is missing or malformed.
+Required outcome: Review-fix disposition validation must fail closed whenever review-fix-specific fields indicate an auto-resolution attempt, even if `Review-fix auto-resolution` is missing or malformed.
+Validation target: Add targeted missing-marker and unsupported-marker tests, update the review-fix validation trigger, and rerun M3 validation.
