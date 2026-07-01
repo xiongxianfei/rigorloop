@@ -78,9 +78,9 @@ Relevant implementation areas:
 - Last reviewed milestone: M5. Integration Proof, Generated Adapters, and Behavior Preservation
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, verify-pending, pr-handoff-pending — all implementation milestones, review-resolution, code-review, and explain-change are complete; verify and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, pr-handoff-pending — implementation milestones, review-resolution, code-review, explain-change, and verify are complete; PR handoff remains incomplete.
 
 ## Milestones
 
@@ -474,6 +474,7 @@ Relevant implementation areas:
 - 2026-07-01: M5 implementation completed behavior-preservation evidence and adapter fixture alignment; next stage is `code-review`.
 - 2026-07-01: Code-review M5 R1 recorded clean-with-notes with no material findings; M5 is closed and the next stage is `explain-change`.
 - 2026-07-01: Explain-change recorded durable rationale at `docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md`; next stage is `verify`.
+- 2026-07-01: Verify passed and recorded branch-ready evidence at `docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/verify-report.md`; next stage is `pr`.
 
 ## Decision log
 
@@ -494,6 +495,7 @@ Relevant implementation areas:
 - 2026-07-01: M5 targeted validation passed: `python scripts/test-change-metadata-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/test-build-skills.py`, and `python scripts/test-adapter-distribution.py`.
 - 2026-07-01: M5 selected CI passed for review-fix spec/test spec, workflow skill/docs, adapter test fixture, behavior-preservation evidence, plan/index, and change metadata paths.
 - 2026-07-01: Explain-change closeout validation passed for change metadata, review artifact closeout, artifact lifecycle explicit paths, and diff whitespace.
+- 2026-07-01: Verify validation passed: change metadata tests, review artifact tests, artifact lifecycle tests, skill tests, generated-skill checks, adapter tests, change metadata validation, review artifact closeout validation, artifact lifecycle explicit-path validation, selected CI wrapper, and `git diff --check`.
 
 ## Outcome and retrospective
 
