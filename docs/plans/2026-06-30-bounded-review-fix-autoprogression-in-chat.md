@@ -73,14 +73,14 @@ Relevant implementation areas:
 ## Current Handoff Summary
 
 - Current milestone: M4. Workflow, Stage Skill, and Contributor Guidance Alignment
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: code-review-m3-r3
 - Last reviewed milestone: M3. Auto-Safe Classification, Review-Resolution, and Rereview Evidence
-- Review status: approved; stage=code-review; round=r3
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 is closed; M4-M5, explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M4 is implemented and awaiting code-review; M5, explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -297,7 +297,7 @@ Relevant implementation areas:
 
 ### M4. Workflow, Stage Skill, and Contributor Guidance Alignment
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Align user-facing workflow and affected stage skills with the approved review-fix profile while preserving isolated direct review behavior.
 - Requirements: `R1`-`R3`, `R10`-`R17`, `R39`-`R45`, `AC1`-`AC5`, `AC14`-`AC26`
 - Files/components likely touched:
@@ -333,6 +333,17 @@ Relevant implementation areas:
   - `python scripts/validate-skills.py`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path docs/workflows.md --path docs/plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md --path docs/plan.md --path docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`
 - Expected observable result: Users and agents see one consistent, explicit, bounded review-fix profile and direct reviews still remain isolated by default.
+- Implementation notes:
+  - Added focused `review_fix` skill-validator coverage for `$workflow auto: <target-stage>`, `$workflow auto: status`, `$workflow auto: off`, chat-result fields, direct-review isolation, proposal-side bounds, and existing-profile preservation.
+  - Updated workflow skill and workflow guide wording for status/off behavior, chat result shape, profile boundary preservation, and no routing beyond proposal-side review-fix targets.
+  - Added exact direct/review-only isolation wording for `test-spec-review` and `code-review` outside the shared review-recording block.
+  - Unchanged stage skills: proposal, spec, architecture, plan, proposal-review, spec-review, architecture-review, and plan-review already satisfied M4 alignment checks; no text changes were needed.
+- Validation notes:
+  - `python scripts/test-skill-validator.py -k review_fix` passed.
+  - `python scripts/test-skill-validator.py -k formal_review_skills_share_isolation` passed.
+  - `python scripts/test-skill-validator.py` passed.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/build-skills.py --check` passed.
 - Commit message: `M4: align review-fix workflow guidance`
 - Milestone closeout:
   - validation passed
