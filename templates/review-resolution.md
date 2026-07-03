@@ -43,6 +43,23 @@ Rationale: explain why the disposition and action are correct.
 Validation target: command, artifact, or proof expected.
 Validation evidence: command result, artifact link, or closeout proof.
 
+Optional review-fix auto-resolution fields, only when the workflow driver
+auto-applied or stopped on a review-fix finding:
+
+Review-fix auto-resolution: yes
+Review-fix auto-applied: yes or no
+Driver classification: mechanical | format-preserving | exact-reviewer-wording | status-normalization-with-evidence | recording-repair | cross-reference-repair | validation-command-shape-repair | not-auto-safe
+Reason auto safe: deterministic rationale, or omit when not-auto-safe.
+Files changed: changed paths, or omit when not-auto-safe.
+Finding evidence: yes or no
+Deterministic required outcome: yes or no
+Review rerun: same-review rerun ID after auto-application.
+Same-review rerun: yes or no
+Reviewed artifact current: yes or no
+Deterministic patch target: yes or no
+Small diff: yes or no
+Stop reason: required when not auto-applied.
+
 ## Shared Validation Evidence
 
 | Validation area | Result | Notes |
