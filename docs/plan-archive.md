@@ -4,6 +4,7 @@ Completed plan history moved out of the common-read plan index.
 
 ## Done (archive)
 
+- [2026-06-23 Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) - done; terminal state: done; PR #101 merged.
 - [2026-06-23 Evidence-Bound and Incremental Project Map Skill](plans/2026-06-23-evidence-bound-incremental-project-map.md) - done; terminal state: done; PR #102 merged.
 - [2026-06-23 Workflow-State Projection and Pre-Transition Synchronization Gate](plans/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md) - done; terminal state: done; PR #103 merged.
 - [2026-06-18 Workflow Skill Artifact-Location Map](plans/2026-06-18-workflow-skill-artifact-location-map.md) - done; terminal state: done; PR #99 merged.

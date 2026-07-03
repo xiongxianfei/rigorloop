@@ -5070,6 +5070,73 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
 
+    def test_review_fix_workflow_command_guidance(self) -> None:
+        """Workflow guidance exposes the bounded review-fix command contract."""
+
+        required_by_surface = {
+            "skills/workflow/SKILL.md": [
+                "$workflow auto: <target-stage>",
+                "$workflow auto: status",
+                "$workflow auto: off",
+                "canonical profile `bounded-review-fix` under `workflow.autoprogression.review_fix`",
+                "Valid review-fix targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, and `test-spec-review`",
+                "`$workflow auto: status` reports current review-fix state without mutating artifacts.",
+                "`$workflow auto: off` clears or terminally cancels review-fix authorization.",
+                "mode, target stage, current stage, review status, auto-applied fixes, human decisions required, artifacts changed, review rerun status, next stage run, and stop reason",
+            ],
+            "docs/workflows.md": [
+                "$workflow auto: <target-stage>",
+                "$workflow auto: status",
+                "$workflow auto: off",
+                "profile `bounded-review-fix`",
+                "Valid review-fix target stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, and `test-spec-review`",
+                "`$workflow auto: status` reports current review-fix state without mutating artifacts.",
+                "`$workflow auto: off` clears or terminally cancels review-fix authorization.",
+                "mode, target stage, current stage, review status, auto-applied fixes, human decisions required, artifacts changed, review rerun status, next stage run, and stop reason",
+            ],
+        }
+        for relative_path, terms in required_by_surface.items():
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in terms:
+                with self.subTest(surface=relative_path, term=term):
+                    self.assertIn(term, body)
+
+    def test_review_fix_direct_review_invocations_remain_isolated(self) -> None:
+        """Direct review skills do not activate or resume bounded review-fix state."""
+
+        required_by_skill = {
+            "proposal-review": "Direct or review-only `proposal-review` requests remain isolated by default.",
+            "spec-review": "Direct or review-only `spec-review` requests remain isolated by default.",
+            "architecture-review": "Direct or review-only `architecture-review` requests remain isolated by default.",
+            "plan-review": "Direct or review-only `plan-review` requests remain isolated by default.",
+            "test-spec-review": "Direct or review-only `test-spec-review` requests remain isolated by default.",
+            "code-review": "Direct or review-only `code-review` requests remain isolated by default.",
+        }
+        for skill_name, term in required_by_skill.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                self.assertIn(term, body)
+                self.assertNotIn("Direct review invocations activate `bounded-review-fix`", body)
+                self.assertNotIn("Direct review invocations resume `bounded-review-fix`", body)
+
+    def test_review_fix_profile_boundaries_preserve_existing_autoprogression(self) -> None:
+        """Review-fix guidance remains proposal-side and does not widen existing profiles."""
+
+        workflow_body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+        workflow_docs = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        required_terms = [
+            "Review-fix never continues past the requested target and never invokes implementation, code-review, verify, PR, release, publication, network, destructive, or external-state operations.",
+            "The implementation profile is verify-bounded implementation autoprogression.",
+            "Existing `authoring-through-plan-review` and `implementation-through-verify` behavior remains unchanged unless a later approved spec explicitly changes those profiles.",
+        ]
+        for surface_name, body in {
+            "skills/workflow/SKILL.md": workflow_body,
+            "docs/workflows.md": workflow_docs,
+        }.items():
+            for term in required_terms:
+                with self.subTest(surface=surface_name, term=term):
+                    self.assertIn(term, body)
+
     def test_review_independence_m3_code_review_pilot_guidance(self) -> None:
         """Automated code-review guidance includes the blind-first independent gate pilot."""
 

@@ -347,6 +347,31 @@ AUTHORING_PROFILE_STATES = {
     "paused",
     "completed",
 }
+REVIEW_FIX_PROFILE = "bounded-review-fix"
+REVIEW_FIX_PROFILE_TARGET_STAGES = (
+    "proposal-review",
+    "spec",
+    "spec-review",
+    "architecture",
+    "architecture-review",
+    "plan",
+    "plan-review",
+    "test-spec",
+    "test-spec-review",
+)
+REVIEW_FIX_PROFILE_STATES = {
+    "off",
+    "armed",
+    "active",
+    "paused",
+    "completed",
+    "cancelled",
+}
+REVIEW_FIX_ARCHITECTURE_ASSESSMENTS = {
+    "architecture-required",
+    "architecture-not-required",
+    "architecture-ambiguous",
+}
 IMPLEMENTATION_PROFILE = "implementation-through-verify"
 IMPLEMENTATION_PROFILE_STATES = {
     "off",
@@ -801,6 +826,146 @@ def evaluate_authoring_autoprogression_route(data: dict[str, object]) -> Authori
             return _continue("completed", "test-spec")
         return _stop(profile_state, "out-of-scope-stage")
 
+    return _continue("active", next_stage)
+
+
+def _review_fix_next_stage(current_stage: str, architecture_assessment: object) -> tuple[str | None, str | None]:
+    if current_stage == "proposal":
+        return "proposal-review", None
+    if current_stage == "proposal-review":
+        return "spec", None
+    if current_stage == "spec":
+        return "spec-review", None
+    if current_stage == "spec-review":
+        if architecture_assessment is None:
+            return None, "architecture-assessment-missing"
+        if architecture_assessment not in REVIEW_FIX_ARCHITECTURE_ASSESSMENTS:
+            return None, "architecture-assessment-invalid"
+        if architecture_assessment == "architecture-ambiguous":
+            return None, "architecture-ambiguous"
+        if architecture_assessment == "architecture-required":
+            return "architecture", None
+        return "plan", None
+    if current_stage == "architecture":
+        return "architecture-review", None
+    if current_stage == "architecture-review":
+        return "plan", None
+    if current_stage == "plan":
+        return "plan-review", None
+    if current_stage == "plan-review":
+        return "test-spec", None
+    if current_stage == "test-spec":
+        return "test-spec-review", None
+    return None, "ambiguous-workflow-state"
+
+
+def _review_fix_reaches_or_exceeds_target(current_stage: str, target_stage: str) -> bool:
+    if current_stage == target_stage:
+        return True
+    if current_stage not in REVIEW_FIX_PROFILE_TARGET_STAGES:
+        return False
+    return REVIEW_FIX_PROFILE_TARGET_STAGES.index(current_stage) > REVIEW_FIX_PROFILE_TARGET_STAGES.index(target_stage)
+
+
+def _review_fix_next_exceeds_target(next_stage: str, target_stage: str) -> bool:
+    return REVIEW_FIX_PROFILE_TARGET_STAGES.index(next_stage) > REVIEW_FIX_PROFILE_TARGET_STAGES.index(target_stage)
+
+
+def evaluate_review_fix_autoprogression_route(data: dict[str, object]) -> AuthoringAutoprogressionRoute:
+    """Evaluate bounded review-fix autoprogression routing for proposal-side fixtures."""
+
+    profile = data.get("profile")
+    profile_state = data.get("profile_state")
+    target_stage = data.get("target_stage")
+    current_stage = data.get("current_stage")
+    latest_review_status = data.get("latest_review_status")
+
+    if not isinstance(profile_state, str):
+        profile_state = "off"
+
+    if data.get("invocation_context") != "workflow-managed" or data.get("direct_review_invocation") is True:
+        return _stop(profile_state, "isolated-invocation")
+
+    if profile == "off":
+        return _continue("off", "explicit-user-action")
+    if profile != REVIEW_FIX_PROFILE:
+        return _stop(profile_state, "unknown-profile")
+    if target_stage not in REVIEW_FIX_PROFILE_TARGET_STAGES:
+        return _stop("paused", "unknown-target-stage")
+
+    if isinstance(data.get("cancellation_record"), dict):
+        return _continue("cancelled", "explicit-user-action")
+
+    if profile_state == "off":
+        return _continue("off", "explicit-user-action")
+    if profile_state == "completed":
+        return _stop("completed", "profile-completed")
+    if profile_state == "cancelled":
+        return _stop("cancelled", "profile-cancelled")
+    if profile_state == "paused":
+        if not isinstance(data.get("resume_record"), dict):
+            return _stop("paused", "explicit-resume-required")
+        if data.get("cursor_valid") is not True:
+            return _stop("paused", "resume-cursor-mismatch")
+        profile_state = "armed"
+    if profile_state not in REVIEW_FIX_PROFILE_STATES:
+        return _stop("paused", "unhandled-profile-state")
+
+    if data.get("durable_authorization") in AUTHORING_PROFILE_DURABLE_AUTHORIZATION_FAILURES:
+        return _stop(profile_state, "authorization-not-persisted")
+    if data.get("durable_authorization") != "persisted":
+        return _stop(profile_state, "authorization-not-persisted")
+
+    if data.get("change_id_resolved") is not True:
+        return _stop(profile_state, "missing-change-id")
+    if data.get("artifact_placement") != "resolved":
+        return _stop(profile_state, "artifact-placement-ambiguous")
+    if data.get("contradictory_workflow_state") is True:
+        return _stop(profile_state, "contradictory-workflow-state")
+    if data.get("user_paused") is True:
+        return _stop(profile_state, "user-paused")
+    if data.get("user_cancelled") is True:
+        return _stop(profile_state, "user-cancelled")
+    if data.get("needs_decision") is True:
+        return _stop(profile_state, "needs-decision")
+
+    if not _is_clean_proposal_gate(data.get("proposal_gate")):
+        return _stop(profile_state, "proposal-gate-incomplete")
+    if data.get("current_gate_clean") is not True:
+        return _stop(profile_state, "current-gate-not-clean")
+    if data.get("review_recording") != "recorded":
+        return _stop(profile_state, "missing-review-evidence")
+    if data.get("artifact_fresh") is not True:
+        return _stop(profile_state, "stale-review")
+
+    if latest_review_status in AUTHORING_PROFILE_NONCLEAN_REVIEW_STATUSES:
+        return _stop(profile_state, latest_review_status)
+    if latest_review_status != "approved":
+        return _stop(profile_state, "current-review-not-approved")
+    if data.get("material_findings") is True:
+        return _stop(profile_state, "material-finding")
+    if data.get("transition_count") == len(REVIEW_FIX_PROFILE_TARGET_STAGES):
+        return _stop(profile_state, "transition-budget-exhausted")
+    if not isinstance(current_stage, str):
+        return _stop(profile_state, "ambiguous-workflow-state")
+
+    if _review_fix_reaches_or_exceeds_target(current_stage, str(target_stage)):
+        return _stop("completed", "target-reached")
+
+    architecture_assessment = data.get("architecture_assessment")
+    next_stage, blocked_reason = _review_fix_next_stage(current_stage, architecture_assessment)
+    if blocked_reason is not None:
+        return _stop("paused" if blocked_reason.startswith("architecture") else profile_state, blocked_reason)
+    if next_stage is None:
+        return _stop(profile_state, "ambiguous-workflow-state")
+    if (
+        current_stage == "spec-review"
+        and architecture_assessment == "architecture-not-required"
+        and target_stage in {"architecture", "architecture-review"}
+    ):
+        return _stop("paused", "target-not-applicable")
+    if _review_fix_next_exceeds_target(next_stage, str(target_stage)):
+        return _stop("completed", "target-reached")
     return _continue("active", next_stage)
 
 
