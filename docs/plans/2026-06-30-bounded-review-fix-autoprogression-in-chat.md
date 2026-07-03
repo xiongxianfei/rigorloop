@@ -78,9 +78,9 @@ Relevant implementation areas:
 - Last reviewed milestone: M5. Integration Proof, Generated Adapters, and Behavior Preservation
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: human PR review
+- Next stage: none
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: ready — PR #118 is open for review; implementation milestones, review-resolution, code-review, explain-change, verify, and PR handoff are complete locally.
+- Reason final closeout is or is not ready: ready — PR #118 merged on 2026-07-03 after hosted CI passed; implementation milestones, review-resolution, code-review, explain-change, verify, PR handoff, and PR merge are complete.
 
 ## Milestones
 
@@ -476,6 +476,7 @@ Relevant implementation areas:
 - 2026-07-01: Explain-change recorded durable rationale at `docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/explain-change.md`; next stage is `verify`.
 - 2026-07-01: Verify passed and recorded branch-ready evidence at `docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/verify-report.md`; next stage is `pr`.
 - 2026-07-01: PR #118 opened for review: https://github.com/xiongxianfei/rigorloop/pull/118
+- 2026-07-03: PR #118 merged after hosted CI passed; merge commit `e1b9a5b2de77a779240ffbbb6add149eb7545fc7`.
 
 ## Decision log
 
@@ -500,7 +501,7 @@ Relevant implementation areas:
 
 ## Outcome and retrospective
 
-- Done for this branch handoff. PR #118 is open for hosted CI and human review.
+- Done. PR #118 merged on 2026-07-03 after hosted CI passed.
 
 ## Readiness
 
