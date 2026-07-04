@@ -298,6 +298,38 @@ SPEC_FAMILY_ASSET_APPROVED_ASSETS = {
         "assets/milestone-proof-row.md",
     },
 }
+TEST_SPEC_COMMAND_CLASSIFICATIONS = {
+    "existing/configured",
+    "planned-for-implementation",
+    "release-owned",
+    "ci-owned",
+    "external-owned",
+    "not-applicable",
+}
+TEST_SPEC_VALIDATION_COMMAND_COLUMNS = (
+    "Command ID",
+    "Command",
+    "Classification",
+    "Owner",
+    "Owning milestone",
+    "First required milestone",
+    "Failure behavior",
+    "Zero-test behavior",
+    "Evidence artifact",
+    "Safe mode / side-effect boundary",
+)
+TEST_SPEC_MILESTONE_PROOF_COLUMNS = (
+    "Milestone",
+    "Required test IDs",
+    "Manual proof IDs",
+    "Command IDs",
+    "Evidence artifacts",
+    "Required before",
+    "Notes",
+)
+TEST_SPEC_COMMAND_PATTERN = re.compile(
+    r"`(?P<command>(?:python|pytest|npm|pnpm|yarn|uv|ruff|mypy|make|bash|sh)\s+[^`]+)`"
+)
 SPEC_FAMILY_ASSET_REQUIRED_METADATA_FIELDS = {
     "Template",
     "Skill",
@@ -1058,6 +1090,173 @@ def _extract_markdown_section(body: str, heading: str) -> str | None:
             break
         section_lines.append(line)
     return "\n".join(section_lines).strip()
+
+
+def _clean_table_cell(cell: str) -> str:
+    value = cell.strip()
+    if len(value) >= 2 and value.startswith("`") and value.endswith("`"):
+        value = value[1:-1]
+    return value.strip()
+
+
+def _is_blank_or_placeholder(value: str) -> bool:
+    normalized = value.strip().lower()
+    return not normalized or normalized in {"none", "not applicable", "n/a", "-"}
+
+
+def _parse_markdown_table(section: str, expected_columns: tuple[str, ...]) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    lines = [line.strip() for line in section.splitlines() if line.strip().startswith("|")]
+    for index, line in enumerate(lines):
+        cells = [_clean_table_cell(cell) for cell in line.strip().strip("|").split("|")]
+        if tuple(cells) != expected_columns:
+            continue
+        if index + 2 > len(lines):
+            return rows
+        for row_line in lines[index + 2 :]:
+            row_cells = [
+                _clean_table_cell(cell)
+                for cell in row_line.strip().strip("|").split("|")
+            ]
+            if len(row_cells) != len(expected_columns):
+                continue
+            rows.append(dict(zip(expected_columns, row_cells)))
+        return rows
+    return rows
+
+
+def _split_ids(value: str, prefix: str) -> list[str]:
+    if _is_blank_or_placeholder(value):
+        return []
+    return re.findall(rf"\b{re.escape(prefix)}\d+\b", value)
+
+
+def _extract_test_case_blocks(section: str) -> list[tuple[str, str]]:
+    blocks: list[tuple[str, str]] = []
+    current_id: str | None = None
+    current_lines: list[str] = []
+    for line in section.splitlines():
+        match = re.match(r"^###\s+(?P<id>T\d+)\b", line.strip())
+        if match:
+            if current_id is not None:
+                blocks.append((current_id, "\n".join(current_lines)))
+            current_id = match.group("id")
+            current_lines = [line]
+            continue
+        if current_id is not None:
+            current_lines.append(line)
+    if current_id is not None:
+        blocks.append((current_id, "\n".join(current_lines)))
+    return blocks
+
+
+def _test_case_command_ids(block: str) -> list[str]:
+    for line in block.splitlines():
+        if line.strip().startswith("- Command IDs:"):
+            return _split_ids(line.split(":", 1)[1], "CMD")
+    return []
+
+
+def validate_test_spec_proof_contract_fixture(
+    body: str,
+    *,
+    milestone_based_plan: bool,
+) -> list[str]:
+    """Representative fixture validation for the test-spec proof contract.
+
+    This intentionally validates static representative outputs rather than every
+    historical test-spec artifact.
+    """
+
+    errors: list[str] = []
+    validation_section = _extract_markdown_section(body, "Validation commands")
+    if validation_section is None:
+        errors.append("missing Validation commands section")
+        command_rows: list[dict[str, str]] = []
+    else:
+        command_rows = _parse_markdown_table(
+            validation_section,
+            TEST_SPEC_VALIDATION_COMMAND_COLUMNS,
+        )
+
+    command_by_id: dict[str, dict[str, str]] = {}
+    command_values: set[str] = set()
+    if command_rows:
+        for row in command_rows:
+            command_id = row["Command ID"]
+            command = row["Command"]
+            classification = row["Classification"]
+            if _is_blank_or_placeholder(command_id):
+                errors.append("validation command row missing command ID")
+                continue
+            command_by_id[command_id] = row
+            if not _is_blank_or_placeholder(command):
+                command_values.add(command)
+            if _is_blank_or_placeholder(classification):
+                errors.append(f"command {command_id} missing classification")
+            elif classification not in TEST_SPEC_COMMAND_CLASSIFICATIONS:
+                errors.append(
+                    f"command {command_id} has unknown classification: {classification}"
+                )
+            for column in (
+                "Command",
+                "Owner",
+                "Owning milestone",
+                "First required milestone",
+                "Failure behavior",
+                "Zero-test behavior",
+                "Evidence artifact",
+                "Safe mode / side-effect boundary",
+            ):
+                if _is_blank_or_placeholder(row[column]):
+                    errors.append(f"command {command_id} missing {column.lower()}")
+            if classification == "planned-for-implementation":
+                if _is_blank_or_placeholder(row["Owner"]):
+                    errors.append(f"planned command {command_id} missing owner")
+                if _is_blank_or_placeholder(row["Owning milestone"]):
+                    errors.append(f"planned command {command_id} missing owning milestone")
+                if _is_blank_or_placeholder(row["First required milestone"]):
+                    errors.append(
+                        f"planned command {command_id} missing first required milestone"
+                    )
+    elif validation_section is not None and "No validation commands are part of this proof map" not in validation_section:
+        errors.append("Validation commands section missing command ledger or no-command rationale")
+
+    test_cases_section = _extract_markdown_section(body, "Test cases") or ""
+    for test_id, block in _extract_test_case_blocks(test_cases_section):
+        command_ids = _test_case_command_ids(block)
+        raw_commands = [match.group("command").strip() for match in TEST_SPEC_COMMAND_PATTERN.finditer(block)]
+        if raw_commands and not command_ids:
+            errors.append(f"test case {test_id} uses raw command without Command ID")
+        for command_id in command_ids:
+            if command_id not in command_by_id:
+                errors.append(f"test case {test_id} references unknown Command ID {command_id}")
+        for command in raw_commands:
+            if command not in command_values:
+                errors.append(f"named validation command missing from ledger: {command}")
+
+    milestone_section = _extract_markdown_section(body, "Milestone proof map")
+    if milestone_based_plan:
+        if milestone_section is None:
+            errors.append("milestone-based plan missing Milestone proof map")
+        else:
+            milestone_rows = _parse_markdown_table(
+                milestone_section,
+                TEST_SPEC_MILESTONE_PROOF_COLUMNS,
+            )
+            if not milestone_rows:
+                errors.append("milestone-based plan missing Milestone proof map")
+            for row in milestone_rows:
+                for command_id in _split_ids(row["Command IDs"], "CMD"):
+                    if command_id not in command_by_id:
+                        errors.append(
+                            f"milestone {row['Milestone']} references unknown Command ID {command_id}"
+                        )
+    elif milestone_section is not None and "Not applicable" not in milestone_section:
+        # Non-milestone fixtures may still include an explicit map; no error.
+        pass
+
+    return errors
 
 
 def _extract_first_fenced_block(section: str, language: str) -> str | None:

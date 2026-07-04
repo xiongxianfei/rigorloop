@@ -1674,6 +1674,173 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             self.assertIn("Resource map entry for 'assets/spec-skeleton.md' must use literal COPY", output)
             self.assertIn("Resource map entry for 'assets/spec-skeleton.md' must name fields or structures to fill", output)
 
+    def valid_test_spec_proof_contract_output(self) -> str:
+        return textwrap.dedent(
+            """\
+            # Representative Test Spec
+
+            ## Status
+
+            active
+
+            ## Validation commands
+
+            | Command ID | Command | Classification | Owner | Owning milestone | First required milestone | Failure behavior | Zero-test behavior | Evidence artifact | Safe mode / side-effect boundary |
+            | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+            | CMD1 | `python scripts/test-example.py` | existing/configured | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |
+            | CMD2 | `python scripts/planned-validator.py` | planned-for-implementation | implement | M2 | M2 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |
+
+            ## Milestone proof map
+
+            | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
+            | --- | --- | --- | --- | --- | --- | --- |
+            | M1 | T1 | none | CMD1 | `docs/changes/example/change.yaml` | code-review M1 | Existing validator proof. |
+            | M2 | T2 | none | CMD2 | `docs/changes/example/change.yaml` | code-review M2 | Planned command becomes required. |
+
+            ## Test cases
+
+            ### T1. Existing command-backed proof
+
+            - Covers: R1
+            - Level: unit
+            - Command IDs: CMD1
+            - Steps: Run `python scripts/test-example.py`.
+            - Expected result: passes.
+            - Evidence artifact: `docs/changes/example/change.yaml`
+            - Automation location: `python scripts/test-example.py`
+            - Required by milestone: M1
+
+            ### T2. Planned command proof
+
+            - Covers: R2
+            - Level: unit
+            - Command IDs: CMD2
+            - Steps: Run planned validator after M2 implementation.
+            - Expected result: passes.
+            - Evidence artifact: `docs/changes/example/change.yaml`
+            - Automation location: `python scripts/planned-validator.py`
+            - Required by milestone: M2
+            """
+        )
+
+    def test_test_spec_proof_contract_valid_command_ledger_passes(self) -> None:
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            self.valid_test_spec_proof_contract_output(),
+            milestone_based_plan=True,
+        )
+        self.assertEqual(errors, [])
+
+    def test_test_spec_proof_contract_named_command_missing_ledger_fails(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "| CMD1 | `python scripts/test-example.py` | existing/configured | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |\n",
+            "",
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("named validation command missing from ledger: python scripts/test-example.py", errors)
+
+    def test_test_spec_proof_contract_command_missing_classification_fails(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "| CMD1 | `python scripts/test-example.py` | existing/configured | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
+            "| CMD1 | `python scripts/test-example.py` |  | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("command CMD1 missing classification", errors)
+
+    def test_test_spec_proof_contract_unknown_classification_fails_closed(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "existing/configured",
+            "already-configured",
+            1,
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("command CMD1 has unknown classification: already-configured", errors)
+
+    def test_test_spec_proof_contract_planned_command_missing_owner_or_milestone_fails(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "| CMD2 | `python scripts/planned-validator.py` | planned-for-implementation | implement | M2 | M2 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
+            "| CMD2 | `python scripts/planned-validator.py` | planned-for-implementation |  |  |  | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("planned command CMD2 missing owner", errors)
+        self.assertIn("planned command CMD2 missing owning milestone", errors)
+        self.assertIn("planned command CMD2 missing first required milestone", errors)
+
+    def test_test_spec_proof_contract_milestone_plan_missing_milestone_map_fails(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "## Milestone proof map\n\n"
+            "| Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |\n"
+            "| --- | --- | --- | --- | --- | --- | --- |\n"
+            "| M1 | T1 | none | CMD1 | `docs/changes/example/change.yaml` | code-review M1 | Existing validator proof. |\n"
+            "| M2 | T2 | none | CMD2 | `docs/changes/example/change.yaml` | code-review M2 | Planned command becomes required. |\n\n",
+            "",
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("milestone-based plan missing Milestone proof map", errors)
+
+    def test_test_spec_proof_contract_raw_command_without_command_id_fails(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "- Command IDs: CMD1",
+            "- Command IDs: none",
+            1,
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("test case T1 uses raw command without Command ID", errors)
+
+    def test_test_spec_proof_contract_trivial_command_free_non_milestone_passes(self) -> None:
+        fixture = textwrap.dedent(
+            """\
+            # Trivial Test Spec
+
+            ## Status
+
+            active
+
+            ## Validation commands
+
+            No validation commands are part of this proof map because the change is documentation-only.
+
+            ## Milestone proof map
+
+            Not applicable because this is a one-shot non-milestone change.
+
+            ## Test cases
+
+            ### T1. Static documentation review
+
+            - Covers: R1
+            - Level: manual
+            - Command IDs: none
+            - Steps: Review the changed prose.
+            - Expected result: Approved wording is present.
+            - Evidence artifact: not applicable
+            - Automation location: manual
+            - Required by milestone: not applicable
+            """
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=False,
+        )
+        self.assertEqual(errors, [])
+
     def test_spec_family_asset_metadata_status_and_placeholder_required(self) -> None:
         cases = [
             (

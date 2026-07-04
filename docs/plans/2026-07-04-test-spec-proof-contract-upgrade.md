@@ -75,12 +75,12 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 ## Current Handoff Summary
 
 - Current milestone: M2. Validation and Representative Fixture Coverage
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: code-review-m1-r1
 - Last reviewed milestone: M1
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — plan-review, test-spec, test-spec-review, implementation milestones, code-review, explain-change, verify, and PR handoff have not completed.
 
@@ -113,7 +113,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 
 ### M2. Validation and Representative Fixture Coverage
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: add deterministic proof for command ledger, command classification, planned command ownership, milestone proof map, and command ID references.
 - Requirements: R7, R33, R34.
 - Likely files:
@@ -185,6 +185,9 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: M1 updated `test-spec` skill policy, skeleton, test-case asset, validation-command row asset, milestone-proof row asset, and the aligned spec-family asset allowlist needed for validation.
 - 2026-07-04: M1 targeted validation passed; milestone is ready for `code-review`.
 - 2026-07-04: code-review-m1-r1 completed clean-with-notes; M1 closed and next stage is implement M2.
+- 2026-07-04: M2 implementation started; scope is representative fixture validation for command ledger, command classifications, planned command metadata, milestone proof-map presence, and Command ID references.
+- 2026-07-04: M2 added representative proof-contract fixture validation for valid ledgers, missing ledger entries, missing and unknown classifications, incomplete planned commands, missing milestone proof maps, raw commands without Command IDs, and command-free non-milestone rationale.
+- 2026-07-04: M2 targeted validation passed; milestone is ready for `code-review`.
 
 ## Decision log
 
@@ -204,6 +207,10 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: `python scripts/test-skill-validator.py -k test_spec` passed.
 - 2026-07-04: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml` passed.
 - 2026-07-04: `code-review-m1-r1` found no material findings; no material review-resolution required for M1.
+- 2026-07-04: `python scripts/test-skill-validator.py -k test_spec_proof_contract` failed before implementation because `validate_test_spec_proof_contract_fixture` did not exist.
+- 2026-07-04: `python scripts/test-skill-validator.py -k test_spec_proof_contract` passed after adding the representative proof-contract fixture validator.
+- 2026-07-04: `python scripts/test-skill-validator.py -k test_spec` passed.
+- 2026-07-04: `python scripts/validate-skills.py skills/test-spec/SKILL.md` passed.
 
 ## Outcome and retrospective
 
