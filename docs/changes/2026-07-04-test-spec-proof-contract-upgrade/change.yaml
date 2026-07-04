@@ -92,6 +92,14 @@ validation:
     result: passed_m1
   - command: code-review-m1-r1
     result: clean_with_notes_no_material_findings_m1_closed
+  - command: python scripts/test-skill-validator.py -k test_spec_proof_contract
+    result: failed_before_m2_implementation_missing_representative_validator
+  - command: python scripts/test-skill-validator.py -k test_spec_proof_contract
+    result: passed_m2
+  - command: python scripts/test-skill-validator.py -k test_spec
+    result: passed_m2
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: passed_m2
 workflow:
   autoprogression:
     review_fix:

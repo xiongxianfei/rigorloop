@@ -23,3 +23,19 @@ Manual-proof contracts remain out of scope. No `assets/manual-proof.md` was adde
 - `python scripts/validate-skills.py skills/test-spec/SKILL.md`: passed.
 - `python scripts/test-skill-validator.py -k test_spec`: passed.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml`: passed.
+
+## M2 implementation notes
+
+M2 adds representative fixture validation for the new test-spec proof-contract shape without turning it into broad historical test-spec enforcement.
+
+Changed surfaces:
+
+- `scripts/skill_validation.py` now exposes `validate_test_spec_proof_contract_fixture`, a static representative-output helper that checks validation-command ledger structure, closed command classifications, planned-command owner and milestone metadata, raw command use without Command IDs, missing ledger entries, milestone proof-map presence for milestone-based plans, and command-free non-milestone rationale.
+- `scripts/test-skill-validator.py` now includes representative positive and negative fixture tests for the command ledger and milestone proof-map requirements approved for M2.
+
+## M2 validation
+
+- `python scripts/test-skill-validator.py -k test_spec_proof_contract`: failed before implementation because the representative validator did not exist.
+- `python scripts/test-skill-validator.py -k test_spec_proof_contract`: passed after implementation.
+- `python scripts/test-skill-validator.py -k test_spec`: passed.
+- `python scripts/validate-skills.py skills/test-spec/SKILL.md`: passed.
