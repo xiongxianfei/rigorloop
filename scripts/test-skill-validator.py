@@ -6236,6 +6236,44 @@ and result format.
             with self.subTest(term=term):
                 self.assertNotIn(term, defaults)
 
+    def test_workflow_change_root_creation_uses_dated_change_id_convention(self) -> None:
+        workflow_spec = SKILL_CONTRACT_WORKFLOW_SPEC.read_text(encoding="utf-8")
+        workflow_docs = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        workflow_skill = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        implement_skill = (ROOT / "skills" / "implement" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        for surface_name, surface_text in [
+            ("specs/rigorloop-workflow.md", workflow_spec),
+            ("docs/workflows.md", workflow_docs),
+            ("skills/workflow/SKILL.md", workflow_skill),
+        ]:
+            with self.subTest(surface=surface_name, term="YYYY-MM-DD-slug"):
+                self.assertIn("YYYY-MM-DD-slug", surface_text)
+            with self.subTest(surface=surface_name, term="legacy"):
+                self.assertIn("legacy", surface_text.lower())
+
+        required_workflow_terms = [
+            "select or confirm",
+            "before writing `docs/changes/<change-id>/`",
+            "project-local current date",
+            "lowercase hyphen-separated slug",
+        ]
+        for term in required_workflow_terms:
+            with self.subTest(surface="skills/workflow/SKILL.md", term=term):
+                self.assertIn(term, workflow_skill)
+
+        for term in [
+            "follow the project-local workflow guide's `<change-id>` convention",
+            "use `YYYY-MM-DD-slug` by default",
+            "select or confirm the dated ID",
+        ]:
+            with self.subTest(surface="skills/implement/SKILL.md", term=term):
+                self.assertIn(term, implement_skill)
+
     def test_workflow_map_m2_validator_accepts_current_registry_and_tables(self) -> None:
         workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
         workflow_skill = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
