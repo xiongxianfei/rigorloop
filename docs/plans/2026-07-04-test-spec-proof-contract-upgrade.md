@@ -80,9 +80,9 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - Last reviewed milestone: M3
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones and milestone code-review are closed; explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — implementation milestones, milestone code-review, and explain-change are closed; verify and PR handoff remain open.
 
 ## Milestones
 
@@ -194,6 +194,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: M3 implementation started; scope is behavior-preservation evidence and generated skill/adapter inclusion proof.
 - 2026-07-04: M3 recorded behavior-preservation evidence and generated-output validation passed; milestone is ready for `code-review`.
 - 2026-07-04: code-review-m3-r1 completed clean-with-notes; all implementation milestones are closed and next stage is explain-change.
+- 2026-07-04: explain-change completed durable rationale for the actual diff, review resolution, validation evidence, alternatives, scope control, and remaining risks; next stage is verify.
 
 ## Decision log
 
@@ -235,6 +236,9 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade` passed after recording code-review-m3-r1.
 - 2026-07-04: `python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml` passed after recording code-review-m3-r1.
 - 2026-07-04: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md` passed after recording code-review-m3-r1.
+- 2026-07-04: `python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml` passed after explain-change.
+- 2026-07-04: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade` passed after explain-change.
+- 2026-07-04: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md` passed after explain-change.
 
 ## Outcome and retrospective
 
