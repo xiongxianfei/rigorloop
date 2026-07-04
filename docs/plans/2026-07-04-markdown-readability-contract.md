@@ -67,9 +67,9 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 - Last reviewed milestone: M2
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones are closed; explain-change, final verify, and PR handoff remain pending.
+- Reason final closeout is or is not ready: lifecycle-gates-open, verify-pending, pr-handoff-pending — implementation milestones, code-review, review-resolution closeout, and explain-change are complete; final verify and PR handoff remain pending.
 
 ## Milestones
 
@@ -212,6 +212,7 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 - 2026-07-04: added selected skill readability guidance, skeleton readability metadata, focused regression coverage, and behavior-preservation proof.
 - 2026-07-04: M2 validation passed and implementation handed to code-review.
 - 2026-07-04: code-review M2 R1 completed clean-with-notes; all implementation milestones are closed and next stage moved to explain-change.
+- 2026-07-04: explain-change recorded durable rationale and review-resolution closeout moved to closed.
 
 ## Decision log
 
@@ -276,6 +277,11 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 - `python scripts/validate-change-metadata.py docs/changes/2026-07-04-markdown-readability-contract/change.yaml`: passed after code-review M2 R1.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-04-markdown-readability-contract.md --path specs/markdown-readability-contract.md --path specs/markdown-readability-contract.test.md --path docs/plans/2026-07-04-markdown-readability-contract.md --path docs/plan.md --path docs/changes/2026-07-04-markdown-readability-contract/change.yaml --path docs/changes/2026-07-04-markdown-readability-contract/review-log.md --path docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md --path docs/changes/2026-07-04-markdown-readability-contract/markdown-readability-behavior-preservation.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r2.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/spec-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/plan-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/test-spec-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r2.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r3.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m2-r1.md`: passed after code-review M2 R1.
 - `git diff --check -- docs/changes/2026-07-04-markdown-readability-contract docs/plans/2026-07-04-markdown-readability-contract.md docs/plan.md`: passed after code-review M2 R1.
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-markdown-readability-contract`: passed after explain-change with 9 reviews, 4 findings, 9 log entries, and 4 resolution entries.
+- `python scripts/validate-change-metadata.py docs/changes/2026-07-04-markdown-readability-contract/change.yaml`: passed after explain-change.
+- `python scripts/validate-markdown-readability.py docs/changes/2026-07-04-markdown-readability-contract/explain-change.md docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md`: passed after explain-change with audit-only warning summary `MDREAD-002=26, MDREAD-003=6`.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-04-markdown-readability-contract.md --path specs/markdown-readability-contract.md --path specs/markdown-readability-contract.test.md --path docs/plans/2026-07-04-markdown-readability-contract.md --path docs/plan.md --path docs/changes/2026-07-04-markdown-readability-contract/change.yaml --path docs/changes/2026-07-04-markdown-readability-contract/review-log.md --path docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md --path docs/changes/2026-07-04-markdown-readability-contract/explain-change.md --path docs/changes/2026-07-04-markdown-readability-contract/markdown-readability-behavior-preservation.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r2.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/spec-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/plan-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/test-spec-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r2.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r3.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m2-r1.md`: passed after explain-change.
+- `git diff --check -- docs/changes/2026-07-04-markdown-readability-contract docs/plans/2026-07-04-markdown-readability-contract.md docs/plan.md`: passed after explain-change.
 
 ## Outcome and retrospective
 
