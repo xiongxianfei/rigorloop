@@ -27,6 +27,7 @@ No blocked plans.
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-07-04 Markdown Readability Contract](plans/2026-07-04-markdown-readability-contract.md) - done; terminal state: closed; PR #120 opened for review.
 - [2026-07-04 Test-Spec Proof-Contract Upgrade](plans/2026-07-04-test-spec-proof-contract-upgrade.md) - done; terminal state: closed; PR #119 merged.
 - [2026-06-30 Bounded Review-Fix Autoprogression in Chat](plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md) - done; terminal state: closed; PR #118 merged.
 - [2026-06-29 Release Transaction Automation](plans/2026-06-29-release-transaction-automation.md) - done; terminal state: closed; PR #117 opened for review.
@@ -36,7 +37,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-06-26 Requirement-Fidelity Gate for Spec-Canonical Reviews](plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md) - done; terminal state: done; PR #113 merged.
 - [2026-06-26 Independent Test-Spec-Review Gate](plans/2026-06-25-independent-test-spec-review-gate.md) - done; terminal state: done; PR #111 merged.
 - [2026-06-25 Independent Adversarial Review Gates](plans/2026-06-25-independent-adversarial-review-gates.md) - done; terminal state: done; PR #110 merged.
-- [2026-06-24 Implementation Autoprogression Through Verify](plans/2026-06-24-implementation-autoprogression-through-verify.md) - done; terminal state: done; PR #108 merged.
 
 ## Superseded
 - none yet

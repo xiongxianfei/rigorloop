@@ -3,6 +3,7 @@
 <!-- Template status: normative -->
 <!-- Structural-fingerprint: sha256:029e3eb31b53356d2a57440ceefa3b404dc8184f7dc8629f13b10d4206caaba9 -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
+<!-- Readability contract: use semantic source lines; keep stable IDs and tables for repeated proof or mapping structures. -->
 
 ## Status
 

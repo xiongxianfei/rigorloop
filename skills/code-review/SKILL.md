@@ -97,6 +97,16 @@ Bounded discovery is not evidence expansion. Record a compact reason only when r
 
 Use bounded evidence first, but do not under-read. Read broader specs, docs, historical reviews, generated outputs, or related code only when the diff, finding, validation result, or user request names them, or when bounded evidence is missing, stale, contradictory, or insufficient for the review conclusion. Full-file reads remain allowed when the whole file is the target, relevant sections cannot be isolated safely, bounded evidence is contradictory or incomplete, or whole-file context can change the review conclusion.
 
+## Generated Markdown readability
+
+When this skill creates or updates generated or generator-shaped Markdown:
+
+- Use semantic source lines for human-facing prose; one sentence or natural clause per source line when practical.
+- Preserve stable IDs for requirements, findings, commands, milestones, and evidence; use tables for repeated mappings.
+- Keep commands fenced or table-owned when they carry proof.
+- Diagrams are optional. Use them only when they reduce cognitive load and map to real artifacts, stages, components, actors, or states.
+- Do not require manual-proof contracts from this readability guidance alone; use governing project rules when manual proof is otherwise required.
+
 ## Artifact placement
 
 Use the project workflow guide for artifact locations when placement matters.

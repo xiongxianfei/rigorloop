@@ -7379,5 +7379,51 @@ and result format.
             self.assertIn(cells[5], allowed_statuses, row)
 
 
+class MarkdownReadabilityGuidanceTests(unittest.TestCase):
+    def test_generated_markdown_skeletons_declare_readability_shape(self) -> None:
+        skeletons = [
+            ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md",
+            ROOT / "skills" / "spec" / "assets" / "spec-skeleton.md",
+            ROOT / "skills" / "plan" / "assets" / "plan-skeleton.md",
+            ROOT / "skills" / "test-spec" / "assets" / "test-spec-skeleton.md",
+        ]
+        required_terms = [
+            "Readability contract:",
+            "semantic source lines",
+            "stable IDs",
+            "tables",
+        ]
+
+        for skeleton in skeletons:
+            text = skeleton.read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skeleton=skeleton, term=term):
+                    self.assertIn(term, text)
+
+    def test_generated_markdown_skills_include_readability_guidance(self) -> None:
+        skill_paths = [
+            ROOT / "skills" / "proposal" / "SKILL.md",
+            ROOT / "skills" / "spec" / "SKILL.md",
+            ROOT / "skills" / "plan" / "SKILL.md",
+            ROOT / "skills" / "test-spec" / "SKILL.md",
+            ROOT / "skills" / "code-review" / "SKILL.md",
+            ROOT / "skills" / "explain-change" / "SKILL.md",
+            ROOT / "skills" / "verify" / "SKILL.md",
+        ]
+        required_terms = [
+            "## Generated Markdown readability",
+            "semantic source lines",
+            "stable IDs",
+            "Diagrams are optional",
+            "Do not require manual-proof contracts",
+        ]
+
+        for skill_path in skill_paths:
+            text = skill_path.read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_path, term=term):
+                    self.assertIn(term, text)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
