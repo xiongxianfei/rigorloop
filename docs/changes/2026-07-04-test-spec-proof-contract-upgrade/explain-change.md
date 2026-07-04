@@ -55,3 +55,22 @@ Validation:
 - `python scripts/test-skill-validator.py -k test_spec_proof_contract`: passed.
 - `python scripts/test-skill-validator.py -k test_spec`: passed.
 - `python scripts/validate-skills.py skills/test-spec/SKILL.md`: passed.
+
+## M3 implementation notes
+
+M3 records preservation and generated-output proof for the completed `test-spec` skill upgrade.
+
+Changed surfaces:
+
+- `docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md` records that the `test-spec` role, status model, review route, Manual QA behavior, no-manual-proof boundary, no historical migration boundary, and generated-output handling remain aligned with the approved spec.
+- `docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md`, `docs/plan.md`, and `change.yaml` now record M3 validation evidence and the handoff to `code-review M3`.
+
+## M3 validation
+
+- `python scripts/build-skills.py --check`: passed.
+- `python scripts/test-build-skills.py`: passed.
+- `python scripts/test-adapter-distribution.py`: passed.
+- `python scripts/validate-skills.py`: passed.
+- `python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml`: passed.
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade`: passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md`: passed.
