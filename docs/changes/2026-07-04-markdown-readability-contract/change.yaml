@@ -30,6 +30,7 @@ changed_files:
   - docs/changes/2026-07-04-markdown-readability-contract/change.yaml
   - docs/changes/2026-07-04-markdown-readability-contract/review-log.md
   - docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md
+  - docs/changes/2026-07-04-markdown-readability-contract/explain-change.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r1.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r2.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/spec-review-r1.md
@@ -134,6 +135,18 @@ validation:
   - command: code-review M2 R1 lifecycle validation
     result: pass_validated_3_artifact_files
   - command: code-review M2 R1 diff check
+    result: pass
+  - command: explain-change authoring
+    result: durable_rationale_recorded_review_resolution_closed
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-markdown-readability-contract
+    result: pass_reviews_9_findings_4_log_entries_9_resolution_entries_4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-markdown-readability-contract/change.yaml
+    result: pass
+  - command: python scripts/validate-markdown-readability.py docs/changes/2026-07-04-markdown-readability-contract/explain-change.md docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md
+    result: pass_with_audit_only_warnings_MDREAD-002_26_MDREAD-003_6
+  - command: explain-change lifecycle validation
+    result: pass_validated_3_artifact_files
+  - command: explain-change diff check
     result: pass
   - command: code-review M1 R2
     result: changes_requested_MDREAD-M1-CR2

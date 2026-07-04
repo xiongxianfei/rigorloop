@@ -4,7 +4,7 @@
 
 This record tracks review finding closeout for the Markdown readability contract change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
