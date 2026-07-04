@@ -8,6 +8,7 @@ artifacts:
   test_spec: specs/markdown-readability-contract.test.md
   plan: docs/plans/2026-07-04-markdown-readability-contract.md
   review_resolution: docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md
+  verify_report: docs/changes/2026-07-04-markdown-readability-contract/verify-report.md
 requirements:
   - Record a proposal for a Markdown readability contract before downstream spec work.
   - Review the proposal for problem clarity, option quality, scope control, risk honesty, vision fit, and readiness for spec.
@@ -31,6 +32,7 @@ changed_files:
   - docs/changes/2026-07-04-markdown-readability-contract/review-log.md
   - docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md
   - docs/changes/2026-07-04-markdown-readability-contract/explain-change.md
+  - docs/changes/2026-07-04-markdown-readability-contract/verify-report.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r1.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r2.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/spec-review-r1.md
@@ -148,6 +150,26 @@ validation:
     result: pass_validated_3_artifact_files
   - command: explain-change diff check
     result: pass
+  - command: final verify
+    result: branch_ready_local_validation_passed
+  - command: python scripts/test-markdown-readability-validator.py
+    result: pass_7_tests
+  - command: python scripts/test-select-validation.py
+    result: pass_125_tests
+  - command: python scripts/validate-markdown-readability.py
+    result: pass_with_audit_only_warnings_MDREAD-002_63_MDREAD-003_5
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass_7_tests
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_130_tests
+  - command: final verify metadata review lifecycle and diff checks
+    result: pass
+  - command: verify-report closeout checks
+    result: metadata_review_readability_lifecycle_and_diff_checks_passed
   - command: code-review M1 R2
     result: changes_requested_MDREAD-M1-CR2
   - command: review-resolution MDREAD-M1-CR2
