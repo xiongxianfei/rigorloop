@@ -74,13 +74,13 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Validation and Representative Fixture Coverage
-- Current milestone state: review-requested
-- Latest review evidence: code-review-m2-r1
+- Current milestone: M3. Generated Output and Behavior Preservation Proof
+- Current milestone state: planned
+- Latest review evidence: code-review-m2-r2
 - Last reviewed milestone: M2
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2 rerun
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — plan-review, test-spec, test-spec-review, implementation milestones, code-review, explain-change, verify, and PR handoff have not completed.
 
@@ -113,7 +113,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 
 ### M2. Validation and Representative Fixture Coverage
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: add deterministic proof for command ledger, command classification, planned command ownership, milestone proof map, and command ID references.
 - Requirements: R7, R33, R34.
 - Likely files:
@@ -190,6 +190,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: M2 targeted validation passed; milestone is ready for `code-review`.
 - 2026-07-04: code-review-m2-r1 requested changes for `TSP-M2-CR1`; M2 needs review-resolution and targeted fixture additions before rereview.
 - 2026-07-04: `TSP-M2-CR1` accepted and resolved by adding CI-owned and release-owned representative command fixture rows; M2 is ready for code-review rerun.
+- 2026-07-04: code-review-m2-r2 completed clean-with-notes; M2 closed and next stage is implement M3.
 
 ## Decision log
 
@@ -217,6 +218,8 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: `python scripts/test-skill-validator.py -k test_spec_proof_contract` passed after resolving `TSP-M2-CR1`.
 - 2026-07-04: `python scripts/test-skill-validator.py -k test_spec` passed after resolving `TSP-M2-CR1`.
 - 2026-07-04: `python scripts/validate-skills.py skills/test-spec/SKILL.md` passed after resolving `TSP-M2-CR1`.
+- 2026-07-04: `python scripts/test-skill-validator.py -k test_spec_proof_contract` passed during code-review-m2-r2.
+- 2026-07-04: `code-review-m2-r2` found no material findings; M2 closed.
 
 ## Outcome and retrospective
 

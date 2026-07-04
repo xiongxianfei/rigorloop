@@ -12,6 +12,7 @@ Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
 ## Resolution Entries
 
@@ -48,3 +49,7 @@ Chosen action: Add representative positive fixture coverage for CI-owned and rel
 Rationale: The approved test spec assigns T4, EC3, and EC4 proof to M2; the current fixture set lacks direct positive proof for those command classifications.
 Validation target: Rerun `python scripts/test-skill-validator.py -k test_spec_proof_contract`, `python scripts/test-skill-validator.py -k test_spec`, `python scripts/validate-skills.py skills/test-spec/SKILL.md`, change metadata validation, and artifact lifecycle validation.
 Validation evidence: `python scripts/test-skill-validator.py -k test_spec_proof_contract`, `python scripts/test-skill-validator.py -k test_spec`, and `python scripts/validate-skills.py skills/test-spec/SKILL.md` passed after adding CI-owned and release-owned fixture rows.
+
+### code-review-m2-r2
+
+No material findings.
