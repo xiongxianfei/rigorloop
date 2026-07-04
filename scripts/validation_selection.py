@@ -140,6 +140,12 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-markdown-readability.py <path>...",
         "markdown-readability",
     ),
+    "markdown_readability.regression": CheckCatalogEntry(
+        "markdown_readability.regression",
+        "python scripts/test-markdown-readability-validator.py",
+        "markdown-readability",
+        parallel_safe=True,
+    ),
     "guide_system.regression": CheckCatalogEntry(
         "guide_system.regression",
         "python scripts/test-guide-system-validator.py",
@@ -1610,6 +1616,14 @@ def _apply_path_selection(
         )
         return
 
+    if category == "markdown-readability-validator":
+        _add_check(
+            selected,
+            "markdown_readability.regression",
+            "Changed Markdown readability validator requires readability regression fixtures.",
+        )
+        return
+
     if category in {"ci-workflow", "templates"}:
         _add_check(
             selected,
@@ -1968,6 +1982,11 @@ def _path_category(path: str) -> str | None:
         "scripts/validate-readme.py",
     }:
         return "selector"
+    if path in {
+        "scripts/validate-markdown-readability.py",
+        "scripts/test-markdown-readability-validator.py",
+    }:
+        return "markdown-readability-validator"
     if path == "scripts/test-fidelity-gate-spec-reads.py":
         return "requirement-fidelity-spec-read"
     if path in {"scripts/validate-guide-system.py", "scripts/test-guide-system-validator.py"}:

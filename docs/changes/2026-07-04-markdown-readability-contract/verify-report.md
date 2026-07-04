@@ -61,11 +61,14 @@ All commands ran from `/home/xiongxianfei/data/20260419-rigorloop` on 2026-07-04
 | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` | pass | Explicit lifecycle validation passed before verify report recording. |
 | `git diff --check -- ...` | pass | No whitespace errors in the change-local and touched implementation surfaces. |
 | `python scripts/test-adapter-distribution.py` | pass | 130 adapter distribution tests passed. |
+| `bash scripts/ci.sh --mode pr --base 44b81c2da700d5bf8a5acbde998ed7d3edfe9643 --head 342a0782502a7dd97f8eb892d2129783a85eed91` | pass | Reproduced the PR selected-CI path after adding selector routing for Markdown readability validator scripts. |
 
 ## CI Status
 
-Hosted CI was not observed.
-This report claims local validation only.
+Hosted CI initially failed because selector preflight treated `scripts/validate-markdown-readability.py` and `scripts/test-markdown-readability-validator.py` as `script-unsupported`.
+The fix adds deterministic selector routing to `markdown_readability.regression`.
+Hosted CI rerun is pending after push.
+This report claims local validation only until the rerun completes.
 
 The change did not trigger `ci-maintenance`; no hosted workflow or validation automation file needed to be created or changed for this initiative.
 

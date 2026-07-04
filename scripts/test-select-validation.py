@@ -75,6 +75,7 @@ EXPECTED_CATALOG = {
     "readme.validate": "python scripts/validate-readme.py README.md",
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
     "markdown_readability.validate": "python scripts/validate-markdown-readability.py <path>...",
+    "markdown_readability.regression": "python scripts/test-markdown-readability-validator.py",
     "guide_system.regression": "python scripts/test-guide-system-validator.py",
     "guide_system.validate": "python scripts/validate-guide-system.py",
     "selector.regression": "python scripts/test-select-validation.py",
@@ -1425,6 +1426,7 @@ raise SystemExit({exit_code})
             "change_record_query.regression",
             "change_metadata.regression",
             "guide_system.regression",
+            "markdown_readability.regression",
             "release_transaction.regression",
             "requirement_fidelity.spec_reads",
             "review_artifacts.regression",
@@ -1738,6 +1740,27 @@ raise SystemExit({exit_code})
             check for check in payload["selected_checks"] if check["id"] == "release_transaction.regression"
         )
         self.assertEqual(check["command"], "python scripts/test-release-transaction.py")
+
+    def test_markdown_readability_validator_scripts_select_focused_regression(self) -> None:
+        result = self.select(
+            [
+                "scripts/validate-markdown-readability.py",
+                "scripts/test-markdown-readability-validator.py",
+            ]
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertNotIn(
+            "manual-routing-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+        self.assertIn("markdown_readability.regression", selected_ids(payload))
+        check = next(
+            check for check in payload["selected_checks"] if check["id"] == "markdown_readability.regression"
+        )
+        self.assertEqual(check["command"], "python scripts/test-markdown-readability-validator.py")
 
     def test_first_slice_representative_categories_route_or_block_safely(self) -> None:
         cases = [

@@ -175,6 +175,12 @@ validation:
     result: opened_stacked_pr_against_proposal_release_transaction_automation
   - command: PR handoff closeout checks
     result: metadata_review_lifecycle_and_diff_checks_passed
+  - command: hosted CI failure diagnosis
+    result: failed_selector_manual_routing_required_for_markdown_readability_scripts
+  - command: python scripts/test-select-validation.py -k markdown_readability_validator_scripts_select_focused_regression
+    result: pass_1_test
+  - command: bash scripts/ci.sh --mode pr --base 44b81c2da700d5bf8a5acbde998ed7d3edfe9643 --head 342a0782502a7dd97f8eb892d2129783a85eed91
+    result: pass_selected_ci_checks
   - command: code-review M1 R2
     result: changes_requested_MDREAD-M1-CR2
   - command: review-resolution MDREAD-M1-CR2

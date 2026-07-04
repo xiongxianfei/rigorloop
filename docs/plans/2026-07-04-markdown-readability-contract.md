@@ -215,6 +215,7 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 - 2026-07-04: explain-change recorded durable rationale and review-resolution closeout moved to closed.
 - 2026-07-04: final local verify passed and next stage moved to pr.
 - 2026-07-04: PR #120 opened as a stacked PR based on `proposal/release-transaction-automation`; plan lifecycle state is closed for review handoff.
+- 2026-07-04: PR #120 hosted CI failed because Markdown readability validator scripts lacked deterministic selector routing; added `markdown_readability.regression` routing and local PR-mode selected CI passed.
 
 ## Decision log
 
@@ -297,6 +298,7 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 - `git diff --check -- ...`: passed during final verify.
 - Verify-report closeout checks passed: change metadata, review artifacts, verify-report readability, artifact lifecycle with verify report included, and whitespace.
 - PR handoff closeout checks passed: change metadata, review artifacts, artifact lifecycle with plan archive included, and whitespace.
+- `bash scripts/ci.sh --mode pr --base 44b81c2da700d5bf8a5acbde998ed7d3edfe9643 --head 342a0782502a7dd97f8eb892d2129783a85eed91`: passed after adding selector routing for Markdown readability validator scripts.
 
 ## Outcome and retrospective
 
