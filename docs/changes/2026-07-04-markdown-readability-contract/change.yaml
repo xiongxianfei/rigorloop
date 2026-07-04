@@ -38,22 +38,27 @@ changed_files:
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/plan-review-r1.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/test-spec-review-r1.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r1.md
+  - docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r2.md
+  - docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r3.md
   - scripts/validate-markdown-readability.py
   - scripts/test-markdown-readability-validator.py
   - scripts/validation_selection.py
   - scripts/test-select-validation.py
 review:
-  status: review-requested
+  status: clean
   unresolved_items: 0
+  reviewed_artifact: commit 34d4aaf8
   location: docs/changes/2026-07-04-markdown-readability-contract/review-log.md
-  material_findings: 3
-  closed_findings: 3
+  material_findings: 4
+  closed_findings: 4
   open_findings: 0
   proposal_review: docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r2.md
   spec_review: docs/changes/2026-07-04-markdown-readability-contract/reviews/spec-review-r1.md
   plan_review: docs/changes/2026-07-04-markdown-readability-contract/reviews/plan-review-r1.md
   test_spec_review: docs/changes/2026-07-04-markdown-readability-contract/reviews/test-spec-review-r1.md
   code_review_m1: docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r1.md
+  code_review_m1_r2: docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r2.md
+  code_review_m1_r3: docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r3.md
   review_log: docs/changes/2026-07-04-markdown-readability-contract/review-log.md
   review_resolution: docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md
 validation:
@@ -83,6 +88,32 @@ validation:
     result: pass
   - command: python scripts/validate-markdown-readability.py
     result: pass_with_audit_only_warnings_MDREAD-002_63_MDREAD-003_5
+  - command: code-review M1 R2
+    result: changes_requested_MDREAD-M1-CR2
+  - command: review-resolution MDREAD-M1-CR2
+    result: rejected_resolved_direct_readme_vision_check
+  - command: python scripts/validate-markdown-readability.py README.md VISION.md --verbose
+    result: pass_with_audit_only_warnings_only
+  - command: rg README_VISION_known_hard_wrap_phrases
+    result: no_current_MDREAD-001_split_pattern_found
+  - command: code-review M1 R3
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-markdown-readability-contract
+    result: pass_reviews_8_findings_4_log_entries_8_resolution_entries_4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-markdown-readability-contract/change.yaml
+    result: pass
+  - command: code-review M1 R3 lifecycle validation
+    result: pass_validated_3_artifact_files
+  - command: code-review M1 R3 diff check
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-markdown-readability-contract
+    result: pass_reviews_7_findings_4_log_entries_7_resolution_entries_4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-markdown-readability-contract/change.yaml
+    result: pass
+  - command: code-review M1 R2 lifecycle validation
+    result: pass_validated_3_artifact_files
+  - command: code-review M1 R2 diff check
+    result: pass
   - command: python scripts/validate-markdown-readability.py --help
     result: pass
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-markdown-readability-contract
