@@ -37,21 +37,23 @@ changed_files:
   - docs/plan.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/plan-review-r1.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/test-spec-review-r1.md
+  - docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r1.md
   - scripts/validate-markdown-readability.py
   - scripts/test-markdown-readability-validator.py
   - scripts/validation_selection.py
   - scripts/test-select-validation.py
 review:
-  status: approved
+  status: review-requested
   unresolved_items: 0
   location: docs/changes/2026-07-04-markdown-readability-contract/review-log.md
-  material_findings: 2
-  closed_findings: 2
+  material_findings: 3
+  closed_findings: 3
   open_findings: 0
   proposal_review: docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r2.md
   spec_review: docs/changes/2026-07-04-markdown-readability-contract/reviews/spec-review-r1.md
   plan_review: docs/changes/2026-07-04-markdown-readability-contract/reviews/plan-review-r1.md
   test_spec_review: docs/changes/2026-07-04-markdown-readability-contract/reviews/test-spec-review-r1.md
+  code_review_m1: docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r1.md
   review_log: docs/changes/2026-07-04-markdown-readability-contract/review-log.md
   review_resolution: docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md
 validation:
@@ -81,10 +83,32 @@ validation:
     result: pass
   - command: python scripts/validate-markdown-readability.py
     result: pass_with_audit_only_warnings_MDREAD-002_63_MDREAD-003_5
+  - command: python scripts/validate-markdown-readability.py --help
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-markdown-readability-contract
+    result: pass_reviews_6_findings_3_log_entries_6_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-markdown-readability-contract/change.yaml
+    result: pass
+  - command: M1 review-resolution lifecycle validation
+    result: pass_validated_3_artifact_files
+  - command: M1 review-resolution diff check
+    result: pass
   - command: python scripts/test-select-validation.py
     result: pass
   - command: M1 implementation lifecycle validation
     result: change_metadata_artifact_lifecycle_and_diff_check_passed
+  - command: code-review M1 R1
+    result: changes_requested_MDREAD-M1-CR1
+  - command: review-resolution MDREAD-M1-CR1
+    result: accepted_resolved_selector_changed_sections
+  - command: python scripts/test-select-validation.py -k "ValidationSelectionTests.test_selector_selected_readability_command_fails_changed_readme_hard_wrap"
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass_125_tests
+  - command: python scripts/test-markdown-readability-validator.py
+    result: pass
+  - command: python scripts/validate-markdown-readability.py
+    result: pass_with_audit_only_warnings_MDREAD-002_63_MDREAD-003_5
 workflow:
   autoprogression:
     review_fix:
