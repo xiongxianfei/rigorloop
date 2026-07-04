@@ -294,6 +294,8 @@ SPEC_FAMILY_ASSET_APPROVED_ASSETS = {
         "assets/test-spec-skeleton.md",
         "assets/test-case.md",
         "assets/coverage-map-row.md",
+        "assets/validation-command-row.md",
+        "assets/milestone-proof-row.md",
     },
 }
 SPEC_FAMILY_ASSET_REQUIRED_METADATA_FIELDS = {

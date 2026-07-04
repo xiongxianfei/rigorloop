@@ -1545,6 +1545,14 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "assets/coverage-map-row.md": self.spec_family_asset_text(
                         template="test-spec-coverage-map-row-v1", skill="test-spec"
                     ),
+                    "assets/validation-command-row.md": self.spec_family_asset_text(
+                        template="test-spec-validation-command-row-v1",
+                        skill="test-spec",
+                    ),
+                    "assets/milestone-proof-row.md": self.spec_family_asset_text(
+                        template="test-spec-milestone-proof-row-v1",
+                        skill="test-spec",
+                    ),
                 },
             )
 
