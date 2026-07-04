@@ -1689,6 +1689,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
             | CMD1 | `python scripts/test-example.py` | existing/configured | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |
             | CMD2 | `python scripts/planned-validator.py` | planned-for-implementation | implement | M2 | M2 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |
+            | CMD3 | `python scripts/ci-validator.py` | ci-owned | ci | ci | CI required check | fail CI validation | zero tests fail | `docs/changes/example/change.yaml` | CI only; no local network |
+            | CMD4 | `python scripts/release-validator.py` | release-owned | release | release | release closeout | block release evidence | not applicable; release evidence command | `docs/changes/example/release-evidence.md` | release-owned; no publication during implementation |
 
             ## Milestone proof map
 
@@ -1696,6 +1698,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             | --- | --- | --- | --- | --- | --- | --- |
             | M1 | T1 | none | CMD1 | `docs/changes/example/change.yaml` | code-review M1 | Existing validator proof. |
             | M2 | T2 | none | CMD2 | `docs/changes/example/change.yaml` | code-review M2 | Planned command becomes required. |
+            | CI | T3 | none | CMD3 | `docs/changes/example/change.yaml` | CI required check | CI-owned command proof. |
+            | release | T4 | none | CMD4 | `docs/changes/example/release-evidence.md` | release closeout | Release-owned command proof. |
 
             ## Test cases
 
@@ -1720,6 +1724,28 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             - Evidence artifact: `docs/changes/example/change.yaml`
             - Automation location: `python scripts/planned-validator.py`
             - Required by milestone: M2
+
+            ### T3. CI-owned command proof
+
+            - Covers: EC3
+            - Level: smoke
+            - Command IDs: CMD3
+            - Steps: CI runs `python scripts/ci-validator.py`.
+            - Expected result: CI evidence is recorded.
+            - Evidence artifact: `docs/changes/example/change.yaml`
+            - Automation location: `python scripts/ci-validator.py`
+            - Required by milestone: CI required check
+
+            ### T4. Release-owned command proof
+
+            - Covers: EC4
+            - Level: smoke
+            - Command IDs: CMD4
+            - Steps: Release owner runs `python scripts/release-validator.py`.
+            - Expected result: Release evidence is recorded.
+            - Evidence artifact: `docs/changes/example/release-evidence.md`
+            - Automation location: `python scripts/release-validator.py`
+            - Required by milestone: release closeout
             """
         )
 
@@ -1778,13 +1804,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertIn("planned command CMD2 missing first required milestone", errors)
 
     def test_test_spec_proof_contract_milestone_plan_missing_milestone_map_fails(self) -> None:
-        fixture = self.valid_test_spec_proof_contract_output().replace(
-            "## Milestone proof map\n\n"
-            "| Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |\n"
-            "| --- | --- | --- | --- | --- | --- | --- |\n"
-            "| M1 | T1 | none | CMD1 | `docs/changes/example/change.yaml` | code-review M1 | Existing validator proof. |\n"
-            "| M2 | T2 | none | CMD2 | `docs/changes/example/change.yaml` | code-review M2 | Planned command becomes required. |\n\n",
+        fixture = re.sub(
+            r"## Milestone proof map\n\n(?:\|.*\n)+\n",
             "",
+            self.valid_test_spec_proof_contract_output(),
         )
         errors = skill_validation.validate_test_spec_proof_contract_fixture(
             fixture,
