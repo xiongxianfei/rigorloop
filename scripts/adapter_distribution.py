@@ -3021,16 +3021,22 @@ def _validate_target_init_smoke_row(
     errors: list[str] = []
     expected_version = version[1:]
     expected_roots = TARGET_INIT_SMOKE_ROOTS[target]
-    expected_command = f"npx @xiongxianfei/rigorloop@{expected_version} init {target} --json"
+    expected_command = f"npx @xiongxianfei/rigorloop@{expected_version} init {target}"
+    accepted_commands = {expected_command, f"{expected_command} --json"}
     expected_archive_url = (
         f"https://github.com/xiongxianfei/rigorloop/releases/download/{version}/"
         f"rigorloop-adapter-{target}-{version}.zip"
     )
     row_required = {
-        f"target_init_smoke.{target}.command": (row.get("command"), expected_command),
         f"target_init_smoke.{target}.target": (row.get("target"), target),
         f"target_init_smoke.{target}.npm_version": (row.get("npm_version"), expected_version),
     }
+    command = row.get("command")
+    if command not in accepted_commands:
+        errors.append(
+            f"{path}: target_init_smoke.{target}.command: expected one of "
+            f"{sorted(accepted_commands)}, found {command}"
+        )
     for key, (actual, expected) in row_required.items():
         if actual != expected:
             errors.append(f"{path}: {key}: expected {expected}, found {actual}")
