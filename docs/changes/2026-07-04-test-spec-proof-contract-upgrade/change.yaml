@@ -187,6 +187,8 @@ validation:
     result: passed_verify_report_recorded
   - command: pr handoff preparation
     result: branch_ready_pr_body_ready_pending_open
+  - command: gh pr create --base proposal/release-transaction-automation --head proposal/test-spec-proof-contract-upgrade
+    result: opened_pr_119
 workflow:
   autoprogression:
     review_fix:

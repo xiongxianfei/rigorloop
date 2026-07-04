@@ -9,7 +9,7 @@ Terminal disposition: closed
 - Change ID: 2026-07-04-test-spec-proof-contract-upgrade
 - Start date: 2026-07-04
 - Last updated: 2026-07-04
-- Related issue or PR: PR handoff prepared for stacked PR based on `proposal/release-transaction-automation`; URL pending opening.
+- Related issue or PR: PR #119, https://github.com/xiongxianfei/rigorloop/pull/119
 - Supersedes: none
 
 ## Goal
@@ -82,7 +82,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - Remaining in-scope implementation milestones: none
 - Next stage: none
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: ready — implementation milestones, milestone code-review, review-resolution, explain-change, verify, and PR handoff preparation are complete; PR opening follows this branch state.
+- Reason final closeout is or is not ready: ready — implementation milestones, milestone code-review, review-resolution, explain-change, verify, and PR #119 handoff are complete.
 
 ## Milestones
 
@@ -196,7 +196,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: code-review-m3-r1 completed clean-with-notes; all implementation milestones are closed and next stage is explain-change.
 - 2026-07-04: explain-change completed durable rationale for the actual diff, review resolution, validation evidence, alternatives, scope control, and remaining risks; next stage is verify.
 - 2026-07-04: verify completed branch-ready evidence for stacked PR handoff; next stage is pr.
-- 2026-07-04: PR handoff prepared for a stacked PR based on `proposal/release-transaction-automation`; plan lifecycle state is closed for review handoff.
+- 2026-07-04: PR #119 opened as a stacked PR based on `proposal/release-transaction-automation`; plan lifecycle state is closed for review handoff.
 
 ## Decision log
 
@@ -248,7 +248,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 
 ## Outcome and retrospective
 
-- PR handoff prepared. The change is branch-ready for stacked PR review based on `proposal/release-transaction-automation`.
+- PR #119 opened for stacked review based on `proposal/release-transaction-automation`.
 
 ## Readiness
 
