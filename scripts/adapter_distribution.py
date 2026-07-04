@@ -292,6 +292,7 @@ RELEASE_TARGETS = {
     "v0.3.2": ("final", "v0.1.5"),
     "v0.3.3": ("final", "v0.1.5"),
     "v0.3.4": ("final", "v0.1.5"),
+    "v0.3.5": ("final", "v0.1.5"),
 }
 REQUIRED_RELEASE_VALIDATION_KEYS = (
     "generated_sync",
@@ -300,10 +301,10 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "security",
 )
 TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
-ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4"})
-UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4"})
-NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4", "v0.1.5", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4"})
-TARGET_NATIVE_INIT_RELEASES = frozenset({"v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4"})
+ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4", "v0.3.5"})
+UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4", "v0.3.5"})
+NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4", "v0.1.5", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4", "v0.3.5"})
+TARGET_NATIVE_INIT_RELEASES = frozenset({"v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4", "v0.3.5"})
 TOKEN_COST_RUNTIME_V2 = "skill-token-runtime-v2"
 PLACEHOLDER_RELEASE_PATTERNS = (
     "Replace this script with repository-specific release checks",
@@ -2454,7 +2455,11 @@ def _prepare_local_cli_release_candidate(version: str, release_output_dir: Path)
     candidate_root = Path(tempfile.mkdtemp(prefix="rigorloop-clean-install-cli-"))
     candidate_dist = candidate_root / "dist"
     shutil.copytree(RIGORLOOP_CLI_DIST_ROOT, candidate_dist)
-    shutil.copy2(RIGORLOOP_CLI_DIST_ROOT.parent / "package.json", candidate_root / "package.json")
+    package_json_path = candidate_root / "package.json"
+    shutil.copy2(RIGORLOOP_CLI_DIST_ROOT.parent / "package.json", package_json_path)
+    package_data = json.loads(package_json_path.read_text(encoding="utf-8"))
+    package_data["version"] = version.removeprefix("v")
+    package_json_path.write_text(json.dumps(package_data, indent=2) + "\n", encoding="utf-8")
     metadata_dir = candidate_dist / "metadata"
     metadata_path = metadata_dir / f"adapter-artifacts-{version}.json"
     metadata = _local_release_candidate_metadata(version, release_output_dir)
