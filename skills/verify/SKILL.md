@@ -32,6 +32,16 @@ Use project-local artifacts when present and relevant, including feature specs, 
 
 Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists. Missing validation evidence must not be reported as passed.
 
+## Generated Markdown readability
+
+When this skill creates or updates generated or generator-shaped Markdown:
+
+- Use semantic source lines for human-facing prose; one sentence or natural clause per source line when practical.
+- Preserve stable IDs for requirements, findings, commands, milestones, and evidence; use tables for repeated mappings.
+- Keep commands fenced or table-owned when they carry proof.
+- Diagrams are optional. Use them only when they reduce cognitive load and map to real artifacts, stages, components, actors, or states.
+- Do not require manual-proof contracts from this readability guidance alone; use governing project rules when manual proof is otherwise required.
+
 ## When to use
 
 Use this skill after all in-scope implementation milestones are closed, code-review/review-resolution obligations are complete, `ci-maintenance` is complete when triggered, and `explain-change` exists and is current. Use it directly only when a user explicitly asks for an isolated verification gate.
