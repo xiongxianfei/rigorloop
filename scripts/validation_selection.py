@@ -545,6 +545,7 @@ class SelectedCheckDraft:
     id: str
     reasons: list[str] = field(default_factory=list)
     paths: set[str] = field(default_factory=set)
+    changed_sections: set[str] = field(default_factory=set)
     affected_roots: set[str] = field(default_factory=set)
     versions: set[str] = field(default_factory=set)
 
@@ -688,6 +689,7 @@ def catalog_command(
     check_id: str,
     *,
     paths: tuple[str, ...] = (),
+    changed_sections: tuple[str, ...] = (),
     affected_roots: tuple[str, ...] = (),
     versions: tuple[str, ...] = (),
     adapter_version: str = DEFAULT_ADAPTER_VERSION,
@@ -725,7 +727,10 @@ def catalog_command(
     if check_id == "markdown_readability.validate":
         if not paths:
             raise ValueError("markdown_readability.validate requires at least one path")
-        return _join("python", "scripts/validate-markdown-readability.py", *paths)
+        args = ["python", "scripts/validate-markdown-readability.py", *paths]
+        for changed_section in changed_sections:
+            args.extend(["--changed-section", changed_section])
+        return _join(*args)
     if check_id == "release.validate":
         if not versions:
             raise ValueError("release.validate requires at least one release version")
@@ -747,6 +752,11 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
         return error_result(request.mode, invalid)
 
     changed_paths, normalization_blocks = _resolve_changed_paths(request, repo_root=repo_root)
+    changed_sections_by_path = _resolve_changed_sections(
+        request,
+        changed_paths=tuple(changed_paths),
+        repo_root=repo_root,
+    )
     selected: dict[str, SelectedCheckDraft] = {}
     classified_paths: list[dict[str, str]] = []
     unclassified_paths: list[str] = []
@@ -788,6 +798,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             registration_debt=registration_debt,
             release_versions=release_versions,
             repo_root=repo_root,
+            changed_sections_by_path=changed_sections_by_path,
         )
 
     if _readme_marker_validation_required(tuple(changed_paths), repo_root=repo_root):
@@ -1009,6 +1020,92 @@ def _git_range_changed_paths(repo_root: Path, base: str, head: str) -> list[str]
     return _git_lines(repo_root, "diff", "--name-only", "--diff-filter=ACMRT", base, head, "--", ".")
 
 
+def _resolve_changed_sections(
+    request: SelectionRequest,
+    *,
+    changed_paths: tuple[str, ...],
+    repo_root: Path,
+) -> dict[str, tuple[str, ...]]:
+    sections: dict[str, tuple[str, ...]] = {}
+    for path in changed_paths:
+        if path not in {"README.md", ROOT_VISION_PATH}:
+            continue
+        path_sections = _git_changed_sections_for_path(request, path, repo_root=repo_root)
+        if not path_sections:
+            path_sections = _whole_file_section(path, repo_root=repo_root)
+        if path_sections:
+            sections[path] = path_sections
+    return sections
+
+
+def _git_changed_sections_for_path(
+    request: SelectionRequest,
+    path: str,
+    *,
+    repo_root: Path,
+) -> tuple[str, ...]:
+    if request.mode in {"pr", "main"}:
+        return _git_range_changed_sections(repo_root, path, request.base or "", request.head or "")
+    if request.mode in {"local", "explicit"}:
+        unstaged = _git_range_changed_sections(repo_root, path, "HEAD")
+        staged = _git_staged_changed_sections(repo_root, path)
+        return tuple(_dedupe([*unstaged, *staged]))
+    return ()
+
+
+def _git_range_changed_sections(repo_root: Path, path: str, *diff_args: str) -> tuple[str, ...]:
+    result = subprocess.run(
+        ["git", "diff", "--unified=0", "--diff-filter=ACMRT", *diff_args, "--", path],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return ()
+    return _diff_hunk_sections(path, result.stdout)
+
+
+def _git_staged_changed_sections(repo_root: Path, path: str) -> tuple[str, ...]:
+    result = subprocess.run(
+        ["git", "diff", "--cached", "--unified=0", "--diff-filter=ACMRT", "--", path],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return ()
+    return _diff_hunk_sections(path, result.stdout)
+
+
+def _diff_hunk_sections(path: str, diff_text: str) -> tuple[str, ...]:
+    sections: list[str] = []
+    for line in diff_text.splitlines():
+        if not line.startswith("@@"):
+            continue
+        match = re.search(r"\+(\d+)(?:,(\d+))?", line)
+        if not match:
+            continue
+        start = int(match.group(1))
+        length = int(match.group(2) or "1")
+        if length < 1:
+            continue
+        sections.append(f"{path}:{start}:{start + length - 1}")
+    return tuple(_dedupe(sections))
+
+
+def _whole_file_section(path: str, *, repo_root: Path) -> tuple[str, ...]:
+    file_path = repo_root / path
+    if not file_path.is_file():
+        return ()
+    try:
+        line_count = len(file_path.read_text(encoding="utf-8").splitlines())
+    except UnicodeDecodeError:
+        return ()
+    if line_count < 1:
+        return ()
+    return (f"{path}:1:{line_count}",)
+
+
 def _git_lines(repo_root: Path, *args: str) -> list[str]:
     result = subprocess.run(
         ["git", *args],
@@ -1032,6 +1129,7 @@ def _apply_path_selection(
     registration_debt: list[dict[str, Any]],
     release_versions: set[str],
     repo_root: Path,
+    changed_sections_by_path: dict[str, tuple[str, ...]],
 ) -> None:
     if category == "skills":
         root = _skill_root(path)
@@ -1299,6 +1397,7 @@ def _apply_path_selection(
             "markdown_readability.validate",
             "Changed README requires Markdown readability validation.",
             path=path,
+            changed_sections=changed_sections_by_path.get(path, ()),
         )
         _add_check(
             selected,
@@ -1348,6 +1447,7 @@ def _apply_path_selection(
             "markdown_readability.validate",
             "Changed root vision requires Markdown readability validation.",
             path=path,
+            changed_sections=changed_sections_by_path.get(path, ()),
         )
         _add_check(
             selected,
@@ -1598,12 +1698,15 @@ def _add_check(
     path: str | None = None,
     affected_root: str | None = None,
     version: str | None = None,
+    changed_sections: tuple[str, ...] = (),
 ) -> None:
     draft = selected.setdefault(check_id, SelectedCheckDraft(id=check_id))
     if reason not in draft.reasons:
         draft.reasons.append(reason)
     if path:
         draft.paths.add(path)
+    for changed_section in changed_sections:
+        draft.changed_sections.add(changed_section)
     if affected_root:
         draft.affected_roots.add(affected_root)
     if version:
@@ -1765,12 +1868,14 @@ def _build_result(
         if draft is None:
             continue
         paths = tuple(sorted(draft.paths))
+        changed_sections = tuple(sorted(draft.changed_sections))
         roots = tuple(sorted(draft.affected_roots))
         versions = tuple(sorted(draft.versions))
         try:
             command = catalog_command(
                 check_id,
                 paths=paths,
+                changed_sections=changed_sections,
                 affected_roots=roots,
                 versions=versions,
                 adapter_version=adapter_version,
@@ -1792,6 +1897,8 @@ def _build_result(
         }
         if paths:
             entry["paths"] = list(paths)
+        if changed_sections:
+            entry["changed_sections"] = list(changed_sections)
         if roots:
             entry["affected_roots"] = list(roots)
         if versions:

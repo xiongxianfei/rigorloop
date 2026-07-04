@@ -2526,7 +2526,63 @@ raise SystemExit({exit_code})
         self.assertIn("markdown_readability.validate", selected_ids(payload))
         self.assertIn("guide_system.validate", selected_ids(payload))
         self.assertNotIn("readme.vision_markers", selected_ids(payload))
+        readability_check = next(
+            check for check in payload["selected_checks"] if check["id"] == "markdown_readability.validate"
+        )
+        self.assertEqual(readability_check["changed_sections"], ["README.md:1:3"])
+        self.assertIn("--changed-section README.md:1:3", readability_check["command"])
         self.assertFalse(payload["blocking_results"])
+
+    def test_selector_selected_readability_command_fails_changed_readme_hard_wrap(self) -> None:
+        repo = self.make_git_repo()
+        (repo / "scripts").mkdir()
+        shutil.copy2(
+            ROOT / "scripts" / "validate-markdown-readability.py",
+            repo / "scripts" / "validate-markdown-readability.py",
+        )
+        (repo / "README.md").write_text(
+            "# Example\n\nRigorLoop preserves proposal to spec handoffs.\n",
+            encoding="utf-8",
+        )
+        subprocess.run(["git", "add", "README.md"], cwd=repo, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "add semantic readme"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        base = self.git_output(repo, "rev-parse", "HEAD")
+        (repo / "README.md").write_text(
+            "# Example\n\nRigorLoop preserves proposal to\nspec handoffs.\n",
+            encoding="utf-8",
+        )
+        subprocess.run(["git", "add", "README.md"], cwd=repo, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "hard wrap readme"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        head = self.git_output(repo, "rev-parse", "HEAD")
+
+        selector_result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
+        self.assertEqual(selector_result.returncode, 0, msg=selector_result.stderr)
+        payload = parse_stdout(selector_result)
+        readability_check = next(
+            check for check in payload["selected_checks"] if check["id"] == "markdown_readability.validate"
+        )
+
+        self.assertEqual(readability_check["changed_sections"], ["README.md:3:4"])
+        command_result = subprocess.run(
+            shlex.split(readability_check["command"]),
+            cwd=repo,
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(command_result.returncode, 0)
+        self.assertIn("ERROR MDREAD-001", command_result.stdout)
 
     def test_workflow_guidance_selects_composed_guide_system_validator(self) -> None:
         result = self.select(["docs/workflows.md"])
@@ -2564,7 +2620,13 @@ raise SystemExit({exit_code})
         self.assertFalse(scoped_payload["blocking_results"])
 
     def test_root_vision_path_selects_marker_validation_without_unclassified_block(self) -> None:
-        result = self.select(["VISION.md"])
+        temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-root-vision-"))
+        self.addCleanupTree(temp_root)
+        (temp_root / "VISION.md").write_text("# Project Vision\n\nExample vision.\n", encoding="utf-8")
+
+        result = select_validation(
+            SelectionRequest(mode="explicit", paths=("VISION.md",), repo_root=temp_root)
+        )
         payload = result.to_json_dict()
 
         self.assertEqual(result.status, "ok")
@@ -2572,6 +2634,11 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertIn("markdown_readability.validate", selected_ids(payload))
         self.assertIn("readme.vision_markers", selected_ids(payload))
+        readability_check = next(
+            check for check in payload["selected_checks"] if check["id"] == "markdown_readability.validate"
+        )
+        self.assertEqual(readability_check["changed_sections"], ["VISION.md:1:3"])
+        self.assertIn("--changed-section VISION.md:1:3", readability_check["command"])
         self.assertFalse(payload["blocking_results"])
 
     def test_vision_rationale_path_selects_lifecycle_validation_without_unclassified_block(self) -> None:
