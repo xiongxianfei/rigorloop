@@ -39,3 +39,19 @@ Changed surfaces:
 - `python scripts/test-skill-validator.py -k test_spec_proof_contract`: passed after implementation.
 - `python scripts/test-skill-validator.py -k test_spec`: passed.
 - `python scripts/validate-skills.py skills/test-spec/SKILL.md`: passed.
+
+## M2 review-resolution notes
+
+`code-review-m2-r1` found `TSP-M2-CR1`: the representative valid fixture did not directly prove CI-owned and release-owned command rows required by T4, EC3, and EC4.
+
+Resolution:
+
+- Added `ci-owned` and `release-owned` validation-command rows to the representative valid fixture.
+- Referenced those commands from milestone proof-map rows and test cases.
+- Updated the missing-milestone-map negative fixture to remove the complete milestone proof-map table structurally.
+
+Validation:
+
+- `python scripts/test-skill-validator.py -k test_spec_proof_contract`: passed.
+- `python scripts/test-skill-validator.py -k test_spec`: passed.
+- `python scripts/validate-skills.py skills/test-spec/SKILL.md`: passed.

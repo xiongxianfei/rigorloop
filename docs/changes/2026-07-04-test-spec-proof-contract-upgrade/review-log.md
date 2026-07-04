@@ -64,4 +64,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: TSP-M2-CR1
-Open findings: TSP-M2-CR1
+Open findings: None

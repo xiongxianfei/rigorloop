@@ -53,11 +53,11 @@ changed_files:
   - scripts/test-skill-validator.py
 review:
   status: changes-requested
-  unresolved_items: 1
+  unresolved_items: 0
   location: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-log.md
   material_findings: 1
-  closed_findings: 0
-  open_findings: 1
+  closed_findings: 1
+  open_findings: 0
   proposal_review: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/proposal-review-r1.md
   spec_review: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/spec-review-r1.md
   plan_review: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/plan-review-r1.md
@@ -103,6 +103,14 @@ validation:
     result: passed_m2
   - command: code-review-m2-r1
     result: changes_requested_TSP-M2-CR1
+  - command: review-resolution TSP-M2-CR1
+    result: accepted_resolved
+  - command: python scripts/test-skill-validator.py -k test_spec_proof_contract
+    result: passed_m2_rereview_ready
+  - command: python scripts/test-skill-validator.py -k test_spec
+    result: passed_m2_rereview_ready
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: passed_m2_rereview_ready
 workflow:
   autoprogression:
     review_fix:
