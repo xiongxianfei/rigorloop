@@ -75,14 +75,14 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 ## Current Handoff Summary
 
 - Current milestone: M3. Generated Output and Behavior Preservation Proof
-- Current milestone state: review-requested
-- Latest review evidence: code-review-m2-r2
-- Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review M3
+- Current milestone state: closed
+- Latest review evidence: code-review-m3-r1
+- Last reviewed milestone: M3
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — plan-review, test-spec, test-spec-review, implementation milestones, code-review, explain-change, verify, and PR handoff have not completed.
+- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones and milestone code-review are closed; explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
@@ -131,7 +131,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 
 ### M3. Generated Output and Behavior Preservation Proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: prove generated output includes the revised skill and assets and that protected behavior is preserved.
 - Requirements: R27-R32, R35, R36.
 - Likely files:
@@ -193,6 +193,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: code-review-m2-r2 completed clean-with-notes; M2 closed and next stage is implement M3.
 - 2026-07-04: M3 implementation started; scope is behavior-preservation evidence and generated skill/adapter inclusion proof.
 - 2026-07-04: M3 recorded behavior-preservation evidence and generated-output validation passed; milestone is ready for `code-review`.
+- 2026-07-04: code-review-m3-r1 completed clean-with-notes; all implementation milestones are closed and next stage is explain-change.
 
 ## Decision log
 
@@ -229,6 +230,11 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: `python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml` passed for M3 metadata.
 - 2026-07-04: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade` passed for M3 review artifact structure.
 - 2026-07-04: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md` passed for M3 state sync.
+- 2026-07-04: `git diff --check 82c7c049..HEAD` passed during code-review-m3-r1 final cross-milestone sanity check.
+- 2026-07-04: `code-review-m3-r1` found no material findings; M3 closed.
+- 2026-07-04: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade` passed after recording code-review-m3-r1.
+- 2026-07-04: `python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml` passed after recording code-review-m3-r1.
+- 2026-07-04: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md` passed after recording code-review-m3-r1.
 
 ## Outcome and retrospective
 
