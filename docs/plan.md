@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Test-Spec Proof-Contract Upgrade](plans/2026-07-04-test-spec-proof-contract-upgrade.md) | active | code-review M1 | 2026-07-04-test-spec-proof-contract-upgrade |
+| [Test-Spec Proof-Contract Upgrade](plans/2026-07-04-test-spec-proof-contract-upgrade.md) | active | implement M2 | 2026-07-04-test-spec-proof-contract-upgrade |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
