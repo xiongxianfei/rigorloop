@@ -17,12 +17,14 @@ requirements:
   - Review the execution plan before test-spec authoring.
   - Author and review a test spec before implementation.
   - Implement M1 readability validator and deterministic fixture coverage.
+  - Implement M2 generated artifact readability guidance and generated-output proof.
 tests:
   - Proposal-review records material findings before proposal revision.
   - Review-resolution records accepted dispositions for material findings.
   - Artifact lifecycle validation covers the proposal and review artifacts.
   - Test-spec-review confirms the proof map is ready for implementation.
   - M1 readability validator tests and selector regression pass.
+  - M2 generated artifact guidance checks and generated-output validation pass.
 changed_files:
   - docs/proposals/2026-07-04-markdown-readability-contract.md
   - docs/changes/2026-07-04-markdown-readability-contract/change.yaml
@@ -44,6 +46,19 @@ changed_files:
   - scripts/test-markdown-readability-validator.py
   - scripts/validation_selection.py
   - scripts/test-select-validation.py
+  - scripts/test-skill-validator.py
+  - skills/proposal/SKILL.md
+  - skills/spec/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/test-spec/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/explain-change/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/proposal/assets/proposal-skeleton.md
+  - skills/spec/assets/spec-skeleton.md
+  - skills/plan/assets/plan-skeleton.md
+  - skills/test-spec/assets/test-spec-skeleton.md
+  - docs/changes/2026-07-04-markdown-readability-contract/markdown-readability-behavior-preservation.md
 review:
   status: clean
   unresolved_items: 0
@@ -88,6 +103,26 @@ validation:
     result: pass
   - command: python scripts/validate-markdown-readability.py
     result: pass_with_audit_only_warnings_MDREAD-002_63_MDREAD-003_5
+  - command: python scripts/test-skill-validator.py MarkdownReadabilityGuidanceTests
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_130_tests
+  - command: python scripts/validate-markdown-readability.py
+    result: pass_with_audit_only_warnings_MDREAD-002_63_MDREAD-003_5
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-markdown-readability-contract
+    result: pass_reviews_8_findings_4_log_entries_8_resolution_entries_4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-markdown-readability-contract/change.yaml
+    result: pass
+  - command: M2 lifecycle validation
+    result: pass_validated_3_artifact_files
+  - command: M2 diff check
+    result: pass
   - command: code-review M1 R2
     result: changes_requested_MDREAD-M1-CR2
   - command: review-resolution MDREAD-M1-CR2

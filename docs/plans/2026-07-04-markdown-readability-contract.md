@@ -62,14 +62,14 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 ## Current Handoff Summary
 
 - Current milestone: M2. Generated Artifact Guidance and Integration Proof
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: code-review-m1-r3
 - Last reviewed milestone: M1
-- Review status: approved; stage=code-review; round=r3
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed, M2 has not started, and final validation has not run.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 is implemented and awaiting code-review before final closeout can continue.
 
 ## Milestones
 
@@ -121,7 +121,7 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 
 ### M2. Generated Artifact Guidance and Integration Proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Align high-value generated artifact guidance, skeletons, and generated-output proof with the readability contract.
 - Requirements: R11-R20, R45-R50
 - Files/components likely touched:
@@ -208,6 +208,9 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 - 2026-07-04: code-review M1 R2 requested changes for `MDREAD-M1-CR2`; M1 moved to resolution-needed.
 - 2026-07-04: maintainer rejected `MDREAD-M1-CR2` as not requiring implementation in this slice after direct current-state validation of `README.md` and `VISION.md`; M1 returned to `review-requested`.
 - 2026-07-04: code-review M1 R3 completed clean-with-notes; M1 closed and next stage moved to implement M2.
+- 2026-07-04: M2 implementation started.
+- 2026-07-04: added selected skill readability guidance, skeleton readability metadata, focused regression coverage, and behavior-preservation proof.
+- 2026-07-04: M2 validation passed and implementation handed to code-review.
 
 ## Decision log
 
@@ -258,6 +261,16 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 - `python scripts/validate-change-metadata.py docs/changes/2026-07-04-markdown-readability-contract/change.yaml`: passed after code-review M1 R3.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-04-markdown-readability-contract.md --path specs/markdown-readability-contract.md --path specs/markdown-readability-contract.test.md --path docs/plans/2026-07-04-markdown-readability-contract.md --path docs/plan.md --path docs/changes/2026-07-04-markdown-readability-contract/change.yaml --path docs/changes/2026-07-04-markdown-readability-contract/review-log.md --path docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r2.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/spec-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/plan-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/test-spec-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r2.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r3.md`: passed after code-review M1 R3.
 - `git diff --check -- docs/changes/2026-07-04-markdown-readability-contract docs/plans/2026-07-04-markdown-readability-contract.md docs/plan.md`: passed after code-review M1 R3.
+- `python scripts/test-skill-validator.py MarkdownReadabilityGuidanceTests`: passed after M2 guidance updates.
+- `python scripts/validate-skills.py`: passed after M2 guidance updates.
+- `python scripts/build-skills.py --check`: passed after M2 guidance updates.
+- `python scripts/test-build-skills.py`: passed after M2 guidance updates.
+- `python scripts/test-adapter-distribution.py`: passed after M2 guidance updates with 130 tests.
+- `python scripts/validate-markdown-readability.py`: passed after M2 guidance updates with audit-only warning summary `MDREAD-002=63, MDREAD-003=5`.
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-markdown-readability-contract`: passed after M2 guidance updates with 8 reviews, 4 findings, 8 log entries, and 4 resolution entries.
+- `python scripts/validate-change-metadata.py docs/changes/2026-07-04-markdown-readability-contract/change.yaml`: passed after M2 guidance updates.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-04-markdown-readability-contract.md --path specs/markdown-readability-contract.md --path specs/markdown-readability-contract.test.md --path docs/plans/2026-07-04-markdown-readability-contract.md --path docs/plan.md --path docs/changes/2026-07-04-markdown-readability-contract/change.yaml --path docs/changes/2026-07-04-markdown-readability-contract/review-log.md --path docs/changes/2026-07-04-markdown-readability-contract/review-resolution.md --path docs/changes/2026-07-04-markdown-readability-contract/markdown-readability-behavior-preservation.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/proposal-review-r2.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/spec-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/plan-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/test-spec-review-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r1.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r2.md --path docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r3.md`: passed after M2 handoff sync.
+- `git diff --check -- scripts/test-skill-validator.py skills/proposal/SKILL.md skills/spec/SKILL.md skills/plan/SKILL.md skills/test-spec/SKILL.md skills/code-review/SKILL.md skills/explain-change/SKILL.md skills/verify/SKILL.md skills/proposal/assets/proposal-skeleton.md skills/spec/assets/spec-skeleton.md skills/plan/assets/plan-skeleton.md skills/test-spec/assets/test-spec-skeleton.md docs/changes/2026-07-04-markdown-readability-contract docs/plans/2026-07-04-markdown-readability-contract.md docs/plan.md`: passed after M2 guidance updates.
 
 ## Outcome and retrospective
 

@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Markdown Readability Contract](plans/2026-07-04-markdown-readability-contract.md) | active | implement M2 | 2026-07-04-markdown-readability-contract |
+| [Markdown Readability Contract](plans/2026-07-04-markdown-readability-contract.md) | active | code-review M2 | 2026-07-04-markdown-readability-contract |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
