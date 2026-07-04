@@ -135,6 +135,11 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-readme.py README.md --vision-markers",
         "readme",
     ),
+    "markdown_readability.validate": CheckCatalogEntry(
+        "markdown_readability.validate",
+        "python scripts/validate-markdown-readability.py <path>...",
+        "markdown-readability",
+    ),
     "guide_system.regression": CheckCatalogEntry(
         "guide_system.regression",
         "python scripts/test-guide-system-validator.py",
@@ -717,6 +722,10 @@ def catalog_command(
         if not paths:
             raise ValueError("change_metadata.validate requires at least one change.yaml path")
         return _join("python", "scripts/validate-change-metadata.py", *paths)
+    if check_id == "markdown_readability.validate":
+        if not paths:
+            raise ValueError("markdown_readability.validate requires at least one path")
+        return _join("python", "scripts/validate-markdown-readability.py", *paths)
     if check_id == "release.validate":
         if not versions:
             raise ValueError("release.validate requires at least one release version")
@@ -1287,6 +1296,12 @@ def _apply_path_selection(
         _add_check(selected, "readme.validate", "Changed README requires lightweight README validation.")
         _add_check(
             selected,
+            "markdown_readability.validate",
+            "Changed README requires Markdown readability validation.",
+            path=path,
+        )
+        _add_check(
+            selected,
             "guide_system.validate",
             "Changed README requires cross-guide index validation.",
         )
@@ -1328,6 +1343,12 @@ def _apply_path_selection(
         return
 
     if category == "vision":
+        _add_check(
+            selected,
+            "markdown_readability.validate",
+            "Changed root vision requires Markdown readability validation.",
+            path=path,
+        )
         _add_check(
             selected,
             "readme.vision_markers",
