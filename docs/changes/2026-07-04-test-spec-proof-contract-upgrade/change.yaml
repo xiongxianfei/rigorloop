@@ -62,6 +62,7 @@ review:
   spec_review: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/spec-review-r1.md
   plan_review: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/plan-review-r1.md
   test_spec_review: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/test-spec-review-r1.md
+  code_review_m1: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m1-r1.md
   review_log: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-log.md
   review_resolution: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-resolution.md
 validation:
@@ -89,6 +90,8 @@ validation:
     result: passed_m1
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
     result: passed_m1
+  - command: code-review-m1-r1
+    result: clean_with_notes_no_material_findings_m1_closed
 workflow:
   autoprogression:
     review_fix:
