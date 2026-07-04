@@ -74,6 +74,7 @@ EXPECTED_CATALOG = {
     "release_transaction.regression": "python scripts/test-release-transaction.py",
     "readme.validate": "python scripts/validate-readme.py README.md",
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
+    "markdown_readability.validate": "python scripts/validate-markdown-readability.py <path>...",
     "guide_system.regression": "python scripts/test-guide-system-validator.py",
     "guide_system.validate": "python scripts/validate-guide-system.py",
     "selector.regression": "python scripts/test-select-validation.py",
@@ -2522,6 +2523,7 @@ raise SystemExit({exit_code})
         self.assertIn({"path": "README.md", "category": "readme"}, payload["classified_paths"])
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertIn("readme.validate", selected_ids(payload))
+        self.assertIn("markdown_readability.validate", selected_ids(payload))
         self.assertIn("guide_system.validate", selected_ids(payload))
         self.assertNotIn("readme.vision_markers", selected_ids(payload))
         self.assertFalse(payload["blocking_results"])
@@ -2568,6 +2570,7 @@ raise SystemExit({exit_code})
         self.assertEqual(result.status, "ok")
         self.assertIn({"path": "VISION.md", "category": "vision"}, payload["classified_paths"])
         self.assertEqual(payload["unclassified_paths"], [])
+        self.assertIn("markdown_readability.validate", selected_ids(payload))
         self.assertIn("readme.vision_markers", selected_ids(payload))
         self.assertFalse(payload["blocking_results"])
 
