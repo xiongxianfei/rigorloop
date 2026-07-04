@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Owner: maintainer
 - Change ID: 2026-07-04-test-spec-proof-contract-upgrade
 - Start date: 2026-07-04
 - Last updated: 2026-07-04
-- Related issue or PR: none yet
+- Related issue or PR: PR handoff prepared for stacked PR based on `proposal/release-transaction-automation`; URL pending opening.
 - Supersedes: none
 
 ## Goal
@@ -74,15 +74,15 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Generated Output and Behavior Preservation Proof
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: code-review-m3-r1
 - Last reviewed milestone: M3
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: pr-handoff-pending — implementation milestones, milestone code-review, explain-change, and verify are closed; PR handoff remains open.
+- Next stage: none
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — implementation milestones, milestone code-review, review-resolution, explain-change, verify, and PR handoff preparation are complete; PR opening follows this branch state.
 
 ## Milestones
 
@@ -196,6 +196,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: code-review-m3-r1 completed clean-with-notes; all implementation milestones are closed and next stage is explain-change.
 - 2026-07-04: explain-change completed durable rationale for the actual diff, review resolution, validation evidence, alternatives, scope control, and remaining risks; next stage is verify.
 - 2026-07-04: verify completed branch-ready evidence for stacked PR handoff; next stage is pr.
+- 2026-07-04: PR handoff prepared for a stacked PR based on `proposal/release-transaction-automation`; plan lifecycle state is closed for review handoff.
 
 ## Decision log
 
@@ -247,7 +248,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 
 ## Outcome and retrospective
 
-- Pending downstream lifecycle completion.
+- PR handoff prepared. The change is branch-ready for stacked PR review based on `proposal/release-transaction-automation`.
 
 ## Readiness
 
