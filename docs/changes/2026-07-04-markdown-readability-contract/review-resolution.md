@@ -14,6 +14,7 @@ Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
+Review closeout: code-review-m2-r1
 
 ## Resolution Entries
 
@@ -95,6 +96,12 @@ Validation evidence: `python scripts/validate-markdown-readability.py README.md 
 ### code-review-m1-r3
 
 Review closeout: code-review-m1-r3
+
+No material findings.
+
+### code-review-m2-r1
+
+Review closeout: code-review-m2-r1
 
 No material findings.
 
