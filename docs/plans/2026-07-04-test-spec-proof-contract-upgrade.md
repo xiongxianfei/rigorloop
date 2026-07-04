@@ -75,12 +75,12 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 ## Current Handoff Summary
 
 - Current milestone: M3. Generated Output and Behavior Preservation Proof
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: code-review-m2-r2
 - Last reviewed milestone: M2
-- Review status: approved; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — plan-review, test-spec, test-spec-review, implementation milestones, code-review, explain-change, verify, and PR handoff have not completed.
 
@@ -131,7 +131,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 
 ### M3. Generated Output and Behavior Preservation Proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: prove generated output includes the revised skill and assets and that protected behavior is preserved.
 - Requirements: R27-R32, R35, R36.
 - Likely files:
@@ -191,6 +191,8 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: code-review-m2-r1 requested changes for `TSP-M2-CR1`; M2 needs review-resolution and targeted fixture additions before rereview.
 - 2026-07-04: `TSP-M2-CR1` accepted and resolved by adding CI-owned and release-owned representative command fixture rows; M2 is ready for code-review rerun.
 - 2026-07-04: code-review-m2-r2 completed clean-with-notes; M2 closed and next stage is implement M3.
+- 2026-07-04: M3 implementation started; scope is behavior-preservation evidence and generated skill/adapter inclusion proof.
+- 2026-07-04: M3 recorded behavior-preservation evidence and generated-output validation passed; milestone is ready for `code-review`.
 
 ## Decision log
 
@@ -220,6 +222,13 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: `python scripts/validate-skills.py skills/test-spec/SKILL.md` passed after resolving `TSP-M2-CR1`.
 - 2026-07-04: `python scripts/test-skill-validator.py -k test_spec_proof_contract` passed during code-review-m2-r2.
 - 2026-07-04: `code-review-m2-r2` found no material findings; M2 closed.
+- 2026-07-04: `python scripts/build-skills.py --check` passed for M3 generated-skill inclusion proof.
+- 2026-07-04: `python scripts/test-build-skills.py` passed for M3 generated-skill test proof.
+- 2026-07-04: `python scripts/test-adapter-distribution.py` passed for M3 adapter inclusion proof.
+- 2026-07-04: `python scripts/validate-skills.py` passed for M3 canonical skill validation.
+- 2026-07-04: `python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml` passed for M3 metadata.
+- 2026-07-04: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade` passed for M3 review artifact structure.
+- 2026-07-04: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md` passed for M3 state sync.
 
 ## Outcome and retrospective
 
