@@ -80,9 +80,9 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - Last reviewed milestone: M3
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — implementation milestones, milestone code-review, and explain-change are closed; verify and PR handoff remain open.
+- Reason final closeout is or is not ready: pr-handoff-pending — implementation milestones, milestone code-review, explain-change, and verify are closed; PR handoff remains open.
 
 ## Milestones
 
@@ -195,6 +195,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: M3 recorded behavior-preservation evidence and generated-output validation passed; milestone is ready for `code-review`.
 - 2026-07-04: code-review-m3-r1 completed clean-with-notes; all implementation milestones are closed and next stage is explain-change.
 - 2026-07-04: explain-change completed durable rationale for the actual diff, review resolution, validation evidence, alternatives, scope control, and remaining risks; next stage is verify.
+- 2026-07-04: verify completed branch-ready evidence for stacked PR handoff; next stage is pr.
 
 ## Decision log
 
@@ -239,6 +240,10 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: `python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml` passed after explain-change.
 - 2026-07-04: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade` passed after explain-change.
 - 2026-07-04: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md` passed after explain-change.
+- 2026-07-04: verify reran `python scripts/validate-skills.py skills/test-spec/SKILL.md`, `python scripts/test-skill-validator.py -k test_spec_proof_contract`, `python scripts/test-skill-validator.py -k test_spec`, `python scripts/build-skills.py --check`, `python scripts/test-build-skills.py`, `python scripts/test-adapter-distribution.py`, `python scripts/validate-skills.py`, change metadata validation, review artifact validation, lifecycle validation, manual-proof absence check, historical test-spec migration check, and `git diff --check 82c7c049..HEAD`; all passed.
+- 2026-07-04: `python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml` passed after recording verify report.
+- 2026-07-04: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade` passed after recording verify report.
+- 2026-07-04: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/verify-report.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md` passed after recording verify report.
 
 ## Outcome and retrospective
 

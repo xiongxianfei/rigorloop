@@ -8,6 +8,7 @@ artifacts:
   test_spec: specs/test-spec-proof-contract-upgrade.test.md
   plan: docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md
   explain_change: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md
+  verify_report: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/verify-report.md
   review_resolution: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-resolution.md
 requirements:
   - Record a proposal for the test-spec proof-contract upgrade before downstream spec work.
@@ -44,6 +45,7 @@ changed_files:
   - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/plan-review-r1.md
   - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/test-spec-review-r1.md
   - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/verify-report.md
   - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md
   - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
   - skills/test-spec/SKILL.md
@@ -151,6 +153,38 @@ validation:
     result: passed_explain_change
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
     result: passed_explain_change
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: passed_verify
+  - command: python scripts/test-skill-validator.py -k test_spec_proof_contract
+    result: passed_verify
+  - command: python scripts/test-skill-validator.py -k test_spec
+    result: passed_verify
+  - command: python scripts/build-skills.py --check
+    result: passed_verify
+  - command: python scripts/test-build-skills.py
+    result: passed_verify
+  - command: python scripts/test-adapter-distribution.py
+    result: passed_verify
+  - command: python scripts/validate-skills.py
+    result: passed_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
+    result: passed_verify
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade
+    result: passed_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
+    result: passed_verify
+  - command: test ! -e skills/test-spec/assets/manual-proof.md
+    result: passed_verify
+  - command: git diff --name-only 82c7c049..HEAD -- 'specs/*.test.md'
+    result: passed_verify_only_change_test_spec_touched
+  - command: git diff --check 82c7c049..HEAD
+    result: passed_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
+    result: passed_verify_report_recorded
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade
+    result: passed_verify_report_recorded
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/verify-report.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
+    result: passed_verify_report_recorded
 workflow:
   autoprogression:
     review_fix:
