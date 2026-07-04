@@ -72,13 +72,19 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
   Fill: title, sections, coverage maps, test cases, artifacts, and readiness.
   Do not emit unfilled placeholders.
 - COPY `assets/test-case.md` when adding each test case.
-  Fill: test ID, title, covers, level, setup, steps, expected result, failure proof, and automation location.
+  Fill: test ID, title, covers, level, command IDs, setup, steps, expected result, failure proof, evidence artifact, automation location, and required milestone.
   Do not emit unfilled placeholders.
 - COPY `assets/coverage-map-row.md` when adding requirement or example coverage-map rows.
   Use the `Requirement coverage row` variant for the requirement coverage map.
   Use the `Example coverage row` variant for the example coverage map.
   Fill: fields exactly as shown by the selected variant.
   Do not add a `Level` column to the example coverage map.
+  Do not emit unfilled placeholders.
+- COPY `assets/validation-command-row.md` when adding each validation-command ledger row.
+  Fill: command ID, command, classification, owner, owning milestone, first required milestone, failure behavior, zero-test behavior, evidence artifact, and safe-mode or side-effect boundary.
+  Do not emit unfilled placeholders.
+- COPY `assets/milestone-proof-row.md` when adding each milestone proof-map row.
+  Fill: milestone, required test IDs, manual proof IDs or none, command IDs or none, evidence artifacts, required-before gate, and notes.
   Do not emit unfilled placeholders.
 
 ## Required sections
@@ -87,10 +93,13 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 | --- | --- |
 | Status | Use `<test spec status>`. |
 | Related spec and plan | Include the related spec and plan. |
+| Input artifact identities | Include when implementation or code-review will rely on the test spec. Record input kind, path, status or review state, and identity for the feature spec, relevant review records, plan, plan review, and architecture or ADR inputs when applicable. |
 | Testing strategy | Cover unit, integration, end-to-end, smoke, manual, contract, and migration strategy. |
 | Requirement coverage map | Every requirement ID maps to one or more tests or explicit manual verification. |
 | Example coverage map | Every example maps to a test when feasible. |
 | Edge case coverage | Include edge case coverage. |
+| Validation commands | Required whenever the test spec names, references, or depends on validation commands. If no commands are part of the proof map, say so explicitly with rationale. |
+| Milestone proof map | Required when the approved plan has milestones, staged validation, staged commands, or milestone-specific code-review boundaries. If not applicable, state `Not applicable` or equivalent rationale. |
 | Test cases | Include test cases with stable IDs. |
 | Fixtures and data | Include fixtures and data. |
 | Mocking/stubbing policy | Include mocking/stubbing policy. |
@@ -113,12 +122,69 @@ Use:
 T1. Title
 - Covers: R1, R3, E2
 - Level: <test case level>
+- Command IDs: <command IDs or none>
 - Fixture/setup:
 - Steps:
 - Expected result:
 - Failure proves:
+- Evidence artifact:
 - Automation location:
+- Required by milestone:
 ```
+
+If a test case uses or depends on a validation command, reference at least one Command ID from `Validation commands`. Do not rely only on raw command strings.
+
+## Validation command ledger
+
+Use `Validation commands` whenever the test spec names, references, or depends on validation commands. The section is optional only when no commands are part of the proof map, and then it must state that no validation commands are part of the proof map with rationale.
+
+Use stable Command IDs such as `CMD1`, `CMD2`, and `CMD3`. Reference those IDs from test cases, milestone proof-map rows, and evidence notes.
+
+Command classification is a closed enum:
+
+```text
+existing/configured
+planned-for-implementation
+release-owned
+ci-owned
+external-owned
+not-applicable
+```
+
+Each validation-command row must record:
+
+- Command ID;
+- command;
+- classification;
+- owner;
+- owning milestone;
+- first required milestone;
+- failure behavior;
+- zero-test behavior;
+- evidence artifact;
+- safe-mode or side-effect boundary.
+
+Command rules:
+
+- Every named, referenced, or depended-on validation command gets a stable Command ID.
+- A planned command must use `planned-for-implementation` and name an owner, owning milestone, and first required milestone.
+- A planned command is not required before its first required milestone.
+- A command expected to run tests must define zero-test behavior.
+- Commands with network, publication, destructive, or external side effects must state the safe-mode or side-effect boundary.
+- Missing required commands block implementation or milestone closeout according to the milestone proof map.
+- During authoring, inspect known manifests and existing scripts when feasible, but do not execute validation commands.
+
+## Milestone proof map
+
+Use `Milestone proof map` when the approved plan has milestones, staged validation, staged commands, or milestone-specific code-review boundaries.
+
+Each implementation milestone must map to test IDs, manual proof IDs or `none`, command IDs or `none`, evidence artifacts, and the gate where proof is required. A milestone may use an explicit not-applicable rationale only when no proof entry applies.
+
+Milestone proof-map rules:
+
+- Identify which proof is required before milestone code-review.
+- Identify proof deferred to later milestones, verify, release-owned evidence, or another explicitly named stage.
+- Do not let a milestone rely on a command whose ownership starts in a later milestone unless the row explicitly marks the command as planned and not yet required.
 
 ## Coverage rules
 
@@ -170,8 +236,9 @@ migration
 # <Test spec title>
 
 COPY `assets/test-spec-skeleton.md` for the full test-spec structure. Use
-`assets/test-case.md` and `assets/coverage-map-row.md` for repeated
-structures.
+`assets/test-case.md`, `assets/coverage-map-row.md`,
+`assets/validation-command-row.md`, and `assets/milestone-proof-row.md`
+for repeated structures.
 ```
 
 Required sections are listed above. Do not emit unfilled placeholders.

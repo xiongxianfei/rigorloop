@@ -7,8 +7,11 @@
 
 - Covers: <requirements, examples, and edge cases>
 - Level: <test case level>
+- Command IDs: <command IDs or none>
 - Fixture/setup: <fixture or setup>
 - Steps: <steps>
 - Expected result: <expected result>
 - Failure proves: <failure proof>
+- Evidence artifact: <artifact path or not applicable>
 - Automation location: <path, command, manual, or not applicable>
+- Required by milestone: <milestone, gate, or not applicable>
