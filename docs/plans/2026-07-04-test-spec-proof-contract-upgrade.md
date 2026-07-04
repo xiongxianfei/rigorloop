@@ -82,7 +82,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - Remaining in-scope implementation milestones: none
 - Next stage: none
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: ready — implementation milestones, milestone code-review, review-resolution, explain-change, verify, and PR #119 handoff are complete.
+- Reason final closeout is or is not ready: ready — implementation milestones, milestone code-review, review-resolution, explain-change, verify, PR #119 handoff, hosted CI, and PR merge are complete.
 
 ## Milestones
 
@@ -197,6 +197,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 - 2026-07-04: explain-change completed durable rationale for the actual diff, review resolution, validation evidence, alternatives, scope control, and remaining risks; next stage is verify.
 - 2026-07-04: verify completed branch-ready evidence for stacked PR handoff; next stage is pr.
 - 2026-07-04: PR #119 opened as a stacked PR based on `proposal/release-transaction-automation`; plan lifecycle state is closed for review handoff.
+- 2026-07-04: PR #119 hosted CI passed and PR #119 merged into `proposal/release-transaction-automation` at merge commit `85e0f19a6825d087a83300bcc03c37d8671328ae`.
 
 ## Decision log
 
@@ -248,7 +249,7 @@ The accepted proposal and approved spec identify a repeated proof-authoring gap:
 
 ## Outcome and retrospective
 
-- PR #119 opened for stacked review based on `proposal/release-transaction-automation`.
+- PR #119 merged into `proposal/release-transaction-automation` at `85e0f19a6825d087a83300bcc03c37d8671328ae`.
 
 ## Readiness
 
