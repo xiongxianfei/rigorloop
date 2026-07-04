@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Owner: maintainer
 - Change ID: 2026-07-04-markdown-readability-contract
 - Start date: 2026-07-04
 - Last updated: 2026-07-04
-- Related issue or PR: none
+- Related issue or PR: PR #120, https://github.com/xiongxianfei/rigorloop/pull/120
 - Supersedes: none
 
 ## Purpose / big picture
@@ -61,15 +61,15 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Generated Artifact Guidance and Integration Proof
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: code-review-m2-r1
 - Last reviewed milestone: M2
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: none
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: ready — local verify complete; PR handoff remains.
+- Reason final closeout is or is not ready: ready — implementation milestones, code-review, review-resolution, explain-change, verify, and PR #120 handoff are complete; hosted CI and human review are pending.
 
 ## Milestones
 
@@ -214,6 +214,7 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 - 2026-07-04: code-review M2 R1 completed clean-with-notes; all implementation milestones are closed and next stage moved to explain-change.
 - 2026-07-04: explain-change recorded durable rationale and review-resolution closeout moved to closed.
 - 2026-07-04: final local verify passed and next stage moved to pr.
+- 2026-07-04: PR #120 opened as a stacked PR based on `proposal/release-transaction-automation`; plan lifecycle state is closed for review handoff.
 
 ## Decision log
 
@@ -295,10 +296,12 @@ Likely related existing validation surfaces include `scripts/validate-readme.py`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`: passed during final verify.
 - `git diff --check -- ...`: passed during final verify.
 - Verify-report closeout checks passed: change metadata, review artifacts, verify-report readability, artifact lifecycle with verify report included, and whitespace.
+- PR handoff closeout checks passed: change metadata, review artifacts, artifact lifecycle with plan archive included, and whitespace.
 
 ## Outcome and retrospective
 
-- Pending final lifecycle closeout.
+- Plan closed after PR #120 handoff.
+- Hosted CI and human review remain external PR-review outcomes and are not claimed as passed.
 
 ## Readiness
 
