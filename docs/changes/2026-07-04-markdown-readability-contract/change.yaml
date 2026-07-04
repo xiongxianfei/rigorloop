@@ -40,6 +40,7 @@ changed_files:
   - specs/markdown-readability-contract.test.md
   - docs/plans/2026-07-04-markdown-readability-contract.md
   - docs/plan.md
+  - docs/plan-archive.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/plan-review-r1.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/test-spec-review-r1.md
   - docs/changes/2026-07-04-markdown-readability-contract/reviews/code-review-m1-r1.md
@@ -170,6 +171,10 @@ validation:
     result: pass
   - command: verify-report closeout checks
     result: metadata_review_readability_lifecycle_and_diff_checks_passed
+  - command: PR #120 opened
+    result: opened_stacked_pr_against_proposal_release_transaction_automation
+  - command: PR handoff closeout checks
+    result: metadata_review_lifecycle_and_diff_checks_passed
   - command: code-review M1 R2
     result: changes_requested_MDREAD-M1-CR2
   - command: review-resolution MDREAD-M1-CR2
