@@ -13,6 +13,7 @@ Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m3-r1
 
 ## Resolution Entries
 
@@ -51,5 +52,9 @@ Validation target: Rerun `python scripts/test-skill-validator.py -k test_spec_pr
 Validation evidence: `python scripts/test-skill-validator.py -k test_spec_proof_contract`, `python scripts/test-skill-validator.py -k test_spec`, and `python scripts/validate-skills.py skills/test-spec/SKILL.md` passed after adding CI-owned and release-owned fixture rows.
 
 ### code-review-m2-r2
+
+No material findings.
+
+### code-review-m3-r1
 
 No material findings.

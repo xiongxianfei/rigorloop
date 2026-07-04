@@ -45,6 +45,7 @@ changed_files:
   - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/test-spec-review-r1.md
   - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md
   - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
   - skills/test-spec/SKILL.md
   - skills/test-spec/assets/test-spec-skeleton.md
   - skills/test-spec/assets/test-case.md
@@ -66,6 +67,7 @@ review:
   code_review_m1: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m1-r1.md
   code_review_m2: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m2-r1.md
   code_review_m2_rerun: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m2-r2.md
+  code_review_m3: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
   review_log: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-log.md
   review_resolution: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-resolution.md
 validation:
@@ -131,6 +133,16 @@ validation:
     result: passed_m3
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md
     result: passed_m3
+  - command: git diff --check 82c7c049..HEAD
+    result: passed_code_review_m3_r1
+  - command: code-review-m3-r1
+    result: clean_with_notes_no_material_findings_m3_closed
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade
+    result: passed_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
+    result: passed_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
+    result: passed_code_review_m3_r1
 workflow:
   autoprogression:
     review_fix:
