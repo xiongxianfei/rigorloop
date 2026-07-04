@@ -284,7 +284,7 @@ artifact_locations:
   change_root:
     owner: current change lifecycle
     path: docs/changes/<change-id>/
-    required_when: workflow-managed formal lifecycle evidence exists
+    required_when: workflow-managed formal lifecycle evidence exists; new change-id defaults to YYYY-MM-DD-slug
   change_metadata:
     owner: relevant stage / workflow
     path: docs/changes/<change-id>/change.yaml
@@ -352,7 +352,7 @@ If this project customizes artifact locations, update the registry and this tabl
 | Plan index | `docs/plan.md` | `plan` / workflow bookkeeping | Planned initiatives exist. |
 | Plans | `docs/plans/YYYY-MM-DD-slug.md` | `plan` | Planned initiative. |
 | Plan archive | `docs/plan-archive.md` | lifecycle closeout / archive maintenance | Terminal plan history exceeds recent index window. |
-| Change root | `docs/changes/<change-id>/` | current change lifecycle | Workflow-managed formal lifecycle evidence exists. |
+| Change root | `docs/changes/<change-id>/` | current change lifecycle | Workflow-managed formal lifecycle evidence exists; new `<change-id>` defaults to `YYYY-MM-DD-slug`. |
 | Change metadata | `docs/changes/<change-id>/change.yaml` | relevant stage / workflow | Non-trivial workflow-managed change. |
 | Formal review records | `docs/changes/<change-id>/reviews/<stage>-r<n>.md`; default location only; exact receipt/root rules are owned by the formal review recording contract | review skills | Formal lifecycle review. |
 | Review log | `docs/changes/<change-id>/review-log.md` | review skills | Formal lifecycle review. |
@@ -407,6 +407,8 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 ## Change-Local Artifacts
 
 - Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
+- For new workflow-managed change roots, `<change-id>` defaults to `YYYY-MM-DD-slug`: use the project-local current date when the change root is first created, then a lowercase hyphen-separated slug from the accepted proposal, active plan title, or user-provided change topic. Select or confirm this ID before writing `docs/changes/<change-id>/`.
+- Existing historical, numbered, undated, or explicitly project-customized change roots remain valid legacy records until touched, migrated, or superseded.
 - For non-trivial work, the baseline change-local pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning.
 - For new non-trivial work, the default durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`.
 - PR text remains the reviewer-facing summary surface; it does not replace required durable reasoning for non-trivial work.

@@ -1,0 +1,39 @@
+change_id: 2026-07-04-dated-change-root-convention
+title: Dated change-root convention for workflow-managed changes
+classification: workflow
+risk: medium
+artifacts:
+  spec: specs/rigorloop-workflow.md
+  test_spec: specs/rigorloop-workflow.test.md
+  explain_change: docs/changes/2026-07-04-dated-change-root-convention/explain-change.md
+requirements:
+  - R25i
+tests:
+  - T39
+validation:
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-dated-change-root-convention/change.yaml
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path scripts/test-skill-validator.py --path docs/changes/2026-07-04-dated-change-root-convention/change.yaml --path docs/changes/2026-07-04-dated-change-root-convention/explain-change.md
+    result: pass
+    reason: "Passed with pre-existing lifecycle-language warnings in specs/rigorloop-workflow.md and specs/rigorloop-workflow.test.md."
+  - command: git diff --check --
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path scripts/test-skill-validator.py --path docs/changes/2026-07-04-dated-change-root-convention/change.yaml --path docs/changes/2026-07-04-dated-change-root-convention/explain-change.md
+    result: pass
+    reason: "Selected checks passed: skills.validate, skills.regression, skills.generation_regression, skills.drift, adapters.drift, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, guide_system.validate, selector.regression."
+changed_files:
+  - specs/rigorloop-workflow.md
+  - specs/rigorloop-workflow.test.md
+  - docs/workflows.md
+  - skills/workflow/SKILL.md
+  - skills/implement/SKILL.md
+  - scripts/test-skill-validator.py
+  - docs/changes/2026-07-04-dated-change-root-convention/change.yaml
+  - docs/changes/2026-07-04-dated-change-root-convention/explain-change.md
+review:
+  status: pending
+  unresolved_items: 0

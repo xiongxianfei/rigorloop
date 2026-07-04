@@ -965,6 +965,8 @@ R25g. Reviewer-facing summary for a change MUST live in PR text. `change.yaml` M
 
 R25h. Manual skill invocations MAY omit `change.yaml` when they are not used to claim complete workflow delivery for a change. Complete workflow delivery for non-trivial work requires the baseline change-local pack unless a higher-priority artifact defines a narrower requirement.
 
+R25i. New workflow-managed change-local roots SHOULD use a dated change ID in the form `YYYY-MM-DD-slug`, where the date is the project-local current date when the change root is first created and the slug is lowercase hyphen-separated text derived from the accepted proposal, active plan title, or user-provided change topic. Existing historical or explicitly project-customized change roots remain valid until touched, migrated, or superseded. When creating a missing change root, workflow guidance MUST select or confirm the dated change ID before writing `docs/changes/<change-id>/`.
+
 R26. The starter kit MUST support phased enforcement maturity:
 - early releases enforce structure and validation evidence first;
 - later releases may enforce artifact presence and traceability by change type.
@@ -1063,6 +1065,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Compatibility output for legacy or project-specific Codex setups MAY be generated, but generated compatibility directories remain derived output rather than authored source.
 - Later releases MAY add JSON compatibility or alternative export formats, but `docs/changes/<change-id>/change.yaml` remains the canonical first-release contract.
 - Existing repositories adopting RigorLoop MAY phase in the contract incrementally, beginning with documentation and structural checks before stricter enforcement.
+- Existing repositories with historical undated or numbered `docs/changes/` roots MAY keep those roots as legacy records. New workflow-managed change roots use `YYYY-MM-DD-slug` unless project-local guidance explicitly customizes the convention.
 - Repositories adopting lifecycle-managed artifact ownership MAY phase migration of unrelated stale baseline artifacts, but they MUST normalize stale touched or relied-on artifacts before downstream stages rely on them as current guidance.
 - Repositories that squash, rebase, or otherwise rewrite commit history MAY collapse milestone commit boundaries after merge. The first-release contract guarantees milestone visibility during branch and pull-request review, not preservation under every default-branch merge strategy.
 - For new non-trivial work, the default standalone durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`. Approved legacy top-level explain artifacts under `docs/explain/` remain valid until migrated or retired.
@@ -1133,6 +1136,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 12. An ordinary non-trivial change may satisfy the baseline change-local pack with `docs/changes/<change-id>/change.yaml` plus `docs/changes/<change-id>/explain-change.md` when standalone `review-resolution.md` and `verify-report.md` triggers do not apply.
 13. `docs/changes/0001-skill-validator/` may include more artifacts than an ordinary non-trivial change without making those additional artifacts universal requirements.
 14. Approved legacy top-level explain artifacts under `docs/explain/` remain valid for already-shipped work until they are migrated, superseded, archived, or otherwise retired.
+14a. Historical change roots such as `docs/changes/0001-skill-validator/` remain valid legacy records; new workflow-managed change roots should use `docs/changes/YYYY-MM-DD-slug/` unless a project-local guide explicitly customizes the convention.
 15. Successful `spec-review` may still report `Immediate next stage: architecture` while separately reporting `Eventual test-spec readiness: conditionally-ready`; `architecture` is a forward repository-stage handoff value.
 16. `inconclusive` `spec-review` uses `Immediate next stage: none`, `Eventual test-spec readiness: not-ready`, and a stop condition naming the missing input, blocker, or ambiguity. The `Immediate next stage` field is not omitted or left empty for inconclusive or missing-input cases.
 17. `plan-review` may mention implementation readiness only after preserving `test-spec` as the immediate next handoff.
