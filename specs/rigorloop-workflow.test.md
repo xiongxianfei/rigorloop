@@ -77,6 +77,7 @@
 | `R17`, `R23`, `R24` | `T11`, `T12` | integration | Generated-output determinism and drift failure |
 | `R25`, `R25a`-`R25e` | `T5`, `T6`, `T7`, `T15`, `T28` | integration | `change.yaml` schema, required fields, validation records, review state, and active change metadata |
 | `R25f`, `R25g` | `T15`, `T16`, `T28` | manual, integration | Narrative in Markdown and reviewer-facing summary in PR text |
+| `R25i` | `T39` | static, manual | New workflow-managed change roots select or confirm `YYYY-MM-DD-slug` before creation while preserving legacy roots |
 
 ## Example coverage map
 
@@ -118,6 +119,7 @@
 - Material upstream formal review findings open a review-record root before fixes proceed: `T27`
 - The `docs/changes/0001-skill-validator/` example remains richer than the universal minimum: `T15`
 - Approved legacy top-level explain artifacts remain valid until retired: `T3`, `T16`
+- Historical undated or numbered change roots remain valid legacy records, but new workflow-managed change roots use `YYYY-MM-DD-slug` unless project-local guidance explicitly customizes the convention: `T39`
 - `spec-review` and `plan-review` preserve immediate handoff versus downstream readiness: `T24`
 - `authoring-through-plan-review` requires durable authorization persistence before activation and pauses on missing, malformed, incomplete, or failed persistence: `T37`
 - `explore` and `research` are on-demand support and block only after trigger or dependency reliance: `T22`
@@ -981,6 +983,27 @@
 - Automation location:
   - `python scripts/test-review-artifact-validator.py`
   - `python scripts/validate-review-artifacts.py --mode structure <change-pack>`
+
+### T39. New workflow-managed change roots use dated change IDs
+
+- Covers: `R25i`
+- Level: static, manual
+- Fixture/setup:
+  - `specs/rigorloop-workflow.md`
+  - `docs/workflows.md`
+  - `skills/workflow/SKILL.md`
+  - `skills/implement/SKILL.md`
+  - `scripts/test-skill-validator.py`
+- Steps:
+  - Confirm the workflow spec defines `YYYY-MM-DD-slug` as the default new workflow-managed change ID convention.
+  - Confirm `docs/workflows.md` explains that `<change-id>` means `YYYY-MM-DD-slug` for new workflow-managed changes and preserves explicitly legacy roots.
+  - Confirm `skills/workflow/SKILL.md` instructs agents to select or confirm the dated change ID before creating a missing change root.
+  - Confirm `skills/implement/SKILL.md` points change-root creation to the workflow-guide convention instead of inventing an undated slug.
+  - Run `python scripts/test-skill-validator.py`.
+- Expected result:
+  - Skill-driven workflow usage has one visible creation-time rule for new change roots and cannot silently create an undated `docs/changes/<slug>/` root.
+- Failure proves:
+  - Agents may continue to infer plain slug roots from the placeholder syntax and create inconsistent change-local artifact paths.
 
 ## Fixtures and data
 
