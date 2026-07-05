@@ -1371,12 +1371,14 @@ for check in selected_checks:
     if not isinstance(check_id, str):
         fail(f"Selected check missing string id: {check}")
     paths = tuple(check.get("paths", []))
+    changed_sections = tuple(check.get("changed_sections", []))
     affected_roots = tuple(check.get("affected_roots", []))
     versions = tuple(check.get("versions", []))
     try:
         expected_command = catalog_command(
             check_id,
             paths=paths,
+            changed_sections=changed_sections,
             affected_roots=affected_roots,
             versions=versions,
             adapter_version=DEFAULT_ADAPTER_VERSION,

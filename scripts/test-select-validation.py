@@ -74,7 +74,7 @@ EXPECTED_CATALOG = {
     "release_transaction.regression": "python scripts/test-release-transaction.py",
     "readme.validate": "python scripts/validate-readme.py README.md",
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
-    "markdown_readability.validate": "python scripts/validate-markdown-readability.py <path>...",
+    "markdown_readability.validate": "python scripts/validate-markdown-readability.py <path>... [--changed-section PATH:START:END ...]",
     "markdown_readability.regression": "python scripts/test-markdown-readability-validator.py",
     "guide_system.regression": "python scripts/test-guide-system-validator.py",
     "guide_system.validate": "python scripts/validate-guide-system.py",

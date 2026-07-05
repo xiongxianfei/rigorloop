@@ -5,6 +5,7 @@ risk: medium
 artifacts:
   spec: specs/rigorloop-workflow.md
   test_spec: specs/rigorloop-workflow.test.md
+  plan: docs/plans/2026-07-04-dated-change-root-convention.md
   explain_change: docs/changes/2026-07-04-dated-change-root-convention/explain-change.md
 requirements:
   - R25i
@@ -26,6 +27,7 @@ validation:
     result: pass
     reason: "Selected checks passed: skills.validate, skills.regression, skills.generation_regression, skills.drift, adapters.drift, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, guide_system.validate, selector.regression."
 changed_files:
+  - docs/plans/2026-07-04-dated-change-root-convention.md
   - specs/rigorloop-workflow.md
   - specs/rigorloop-workflow.test.md
   - docs/workflows.md

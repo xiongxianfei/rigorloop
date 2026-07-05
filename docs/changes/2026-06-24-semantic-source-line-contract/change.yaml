@@ -51,7 +51,6 @@ workflow:
     authorized_by: user
     authorized_at: "2026-06-24T00:00:00Z"
     change_id: 2026-06-24-semantic-source-line-contract
-    target_stage: plan-review
     state: completed
 validation:
   - command: proposal-review r1
