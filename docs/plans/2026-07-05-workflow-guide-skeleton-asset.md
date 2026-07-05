@@ -57,9 +57,9 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - Last reviewed milestone: M3
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — all implementation milestones, code reviews, review-resolution, and explain-change are complete; verify and PR handoff remain open.
+- Reason final closeout is or is not ready: pr-handoff-pending — implementation milestones, code reviews, review-resolution, explain-change, and verify are complete; PR handoff remains open.
 
 ## Milestones
 
@@ -154,6 +154,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: M3 recorded behavior-preservation evidence and reached review-requested after targeted validation passed.
 - 2026-07-05: Code-review M3 R1 completed clean-with-notes, closed all implementation milestones, and handed off to explain-change.
 - 2026-07-05: Explain-change recorded durable change rationale and handed off to verify.
+- 2026-07-05: Verify recorded branch-ready local evidence and handed off to PR.
 
 ## Decision log
 
@@ -237,6 +238,23 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md` passed.
   - `git diff --check -- docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+- Verify validation:
+  - `python scripts/test-skill-validator.py -k workflow_guide_skeleton` passed.
+  - `python scripts/test-skill-validator.py -k workflow` passed.
+  - `python scripts/validate-guide-system.py` passed.
+  - `python scripts/test-build-skills.py` passed.
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_adapter_archives_include_workflow_skeleton_when_workflow_is_packaged` passed.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-05-workflow-guide-skeleton-asset` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md` passed.
+  - `python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/behavior-preservation.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md` passed.
+  - `git diff --check $(git merge-base HEAD main)..HEAD` passed.
+  - `python scripts/build-adapters.py --version v0.1.3 --output-dir "$tmp_adapters"` plus archive inspection passed; `workflow` skeleton was present when `workflow` was packaged: `codex`.
+  - `python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/verify-report.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/verify-report.md` passed.
+  - `git diff --check -- docs/changes/2026-07-05-workflow-guide-skeleton-asset/verify-report.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
 
 ## Outcome and retrospective
 
