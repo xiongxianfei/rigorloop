@@ -4,8 +4,8 @@
 
 - Change ID: 2026-07-05-workflow-guide-skeleton-asset
 - Stage: pr
-- PR status: prepared
-- PR URL: pending
+- PR status: opened
+- PR URL: https://github.com/xiongxianfei/rigorloop/pull/122
 - Last updated: 2026-07-05
 
 ## Title
