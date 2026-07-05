@@ -10,7 +10,7 @@ New workflow-managed change roots default to `docs/changes/YYYY-MM-DD-slug/`, wh
 
 The prior guidance used `docs/changes/<change-id>/` without defining how agents should choose `<change-id>`. Other workflow artifacts already use dated names, so agents could create undated change roots while still following the placeholder literally.
 
-The fix records the convention at the workflow-spec level, projects it into `docs/workflows.md`, and teaches `workflow` and `implement` to select or confirm the dated ID before writing a missing change root.
+The fix records the convention at the workflow-spec level and projects the operational wording into `docs/workflows.md`, the project-local workflow guide users and agents read when routing artifacts. The `workflow` and `implement` skills now point to that guide, with only a portable `YYYY-MM-DD-slug` fallback when no project-local guide exists, so the detailed rule is not duplicated across skill bodies.
 
 ## Validation
 
