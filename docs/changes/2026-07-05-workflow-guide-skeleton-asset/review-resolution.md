@@ -12,6 +12,7 @@ Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m2-r1
 
 ### proposal-review-r1
 
@@ -68,5 +69,9 @@ Validation target: Revise the stage-obligations scaffold, tighten M1 tests, reru
 Validation evidence: `python scripts/test-skill-validator.py -k workflow_guide_skeleton_m1` passed.
 
 ### code-review-m1-r2
+
+No material findings.
+
+### code-review-m2-r1
 
 No material findings.
