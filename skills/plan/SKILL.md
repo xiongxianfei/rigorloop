@@ -48,6 +48,16 @@ Do not require RigorLoop repository-internal specs, docs, reports, follow-up fil
   Fill: date, decision, reason, and rejected alternatives.
   Do not emit unfilled placeholders.
 
+## Generated Markdown readability
+
+When this skill creates or updates generated or generator-shaped Markdown:
+
+- Use semantic source lines for human-facing prose; one sentence or natural clause per source line when practical.
+- Preserve stable IDs for requirements, findings, commands, milestones, and evidence; use tables for repeated mappings.
+- Keep commands fenced or table-owned when they carry proof.
+- Diagrams are optional. Use them only when they reduce cognitive load and map to real artifacts, stages, components, actors, or states.
+- Do not require manual-proof contracts from this readability guidance alone; use governing project rules when manual proof is otherwise required.
+
 ## When to use
 
 Use after proposal, spec, and architecture are stable enough to sequence multi-file, risky, milestone-based, migration-heavy, or cross-component work.

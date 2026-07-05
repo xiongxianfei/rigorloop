@@ -87,6 +87,16 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
   Fill: milestone, required test IDs, manual proof IDs or none, command IDs or none, evidence artifacts, required-before gate, and notes.
   Do not emit unfilled placeholders.
 
+## Generated Markdown readability
+
+When this skill creates or updates generated or generator-shaped Markdown:
+
+- Use semantic source lines for human-facing prose; one sentence or natural clause per source line when practical.
+- Preserve stable IDs for requirements, findings, commands, milestones, and evidence; use tables for repeated mappings.
+- Keep commands fenced or table-owned when they carry proof.
+- Diagrams are optional. Use them only when they reduce cognitive load and map to real artifacts, stages, components, actors, or states.
+- Do not require manual-proof contracts from this readability guidance alone; use governing project rules when manual proof is otherwise required.
+
 ## Required sections
 
 | Section | Requirement |

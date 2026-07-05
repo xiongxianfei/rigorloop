@@ -2,6 +2,7 @@
 <!-- Skill: test-spec -->
 <!-- Template status: normative -->
 <!-- Maintained alongside: skills/test-spec/SKILL.md -->
+<!-- Readability contract: use semantic source lines; keep stable IDs and tables for repeated proof or mapping structures. -->
 
 # <Test spec title>
 
