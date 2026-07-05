@@ -21,9 +21,9 @@
 Use this order when deciding artifact placement:
 
 1. Explicit user path or change ID.
-2. Existing active artifact metadata.
-3. Existing change metadata, if workflow-managed.
-4. This workflow guide.
+2. Existing active artifact metadata, active plan metadata, or active change metadata.
+3. Approved specs or schemas.
+4. This workflow guide for artifact types it specifies.
 5. Stage-skill portable default.
 6. Block on ambiguity.
 
@@ -53,23 +53,10 @@ proposal
 
 | Stage | Obligation | Required input | Output artifact | Blocks downstream when |
 | --- | --- | --- | --- | --- |
-| proposal | mandatory for non-trivial changes | user problem or selected direction | proposal | missing or unreviewed |
-| proposal-review | mandatory when proposal is formal | proposal | review record | changes requested or blocked |
-| spec | mandatory when behavior contract is needed | approved proposal | spec | missing or unstable |
-| spec-review | mandatory for formal spec | spec | review record | changes requested or blocked |
-| architecture | conditional | architecture trigger | architecture record or ADR | required but missing |
-| architecture-review | conditional | architecture record or ADR | review record | changes requested or blocked |
-| plan | mandatory before implementation | approved upstream contract | plan | missing or unreviewed |
-| plan-review | mandatory before test-spec | plan | review record | changes requested or blocked |
-| test-spec | mandatory when proof map is required | approved plan | test spec | missing or unreviewed |
-| test-spec-review | conditional or project policy | active test spec | review record | required but not approved |
-| implement | mandatory for code changes | approved plan and proof map | changed files | milestone incomplete |
-| code-review | mandatory per implementation milestone | implementation diff | review record | changes requested or blocked |
-| review-resolution | conditional | material findings | disposition record | open findings |
-| ci-maintenance | conditional | CI workflow change or CI risk | CI artifact or review | triggered but incomplete |
-| explain-change | mandatory before verify when required | completed change | explanation | missing or stale |
-| verify | mandatory before PR | complete evidence | verify report | not branch ready |
-| pr | final handoff | verify report | PR body or handoff | verify not clean |
+| <stage> | <mandatory, conditional, on-demand, or project policy> | <required input> | <output artifact or none> | <blocking condition or none> |
+
+Fill this table from the approved workflow contract and project-local policy.
+Keep entries concise and do not redefine lifecycle approval rules or artifact schemas here.
 
 ## Artifact registry
 

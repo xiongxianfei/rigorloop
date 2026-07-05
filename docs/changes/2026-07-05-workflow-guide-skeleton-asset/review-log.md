@@ -73,5 +73,5 @@ Detailed record: reviews/code-review-m1-r1.md
 Record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: WGS-M1-CR1, WGS-M1-CR2, WGS-M1-CR3
-Open findings: WGS-M1-CR1, WGS-M1-CR2, WGS-M1-CR3
+Open findings: None
 Recording status: recorded
