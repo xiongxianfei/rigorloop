@@ -155,6 +155,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: Code-review M3 R1 completed clean-with-notes, closed all implementation milestones, and handed off to explain-change.
 - 2026-07-05: Explain-change recorded durable change rationale and handed off to verify.
 - 2026-07-05: Verify recorded branch-ready local evidence and handed off to PR.
+- 2026-07-05: PR handoff prepared title, body, requirement coverage, validation summary, risks, and reviewer notes.
 
 ## Decision log
 
