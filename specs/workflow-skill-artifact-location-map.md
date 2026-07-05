@@ -9,6 +9,9 @@ approved
 - Proposal: [Workflow Skill Artifact-Location Map](../docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md)
 - Proposal review R1: [proposal-review-r1](../docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r1.md)
 - Proposal review R2: [proposal-review-r2](../docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/proposal-review-r2.md)
+- Skeleton proposal: [Workflow Guide Skeleton Asset and Source-of-Truth Alignment](../docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md)
+- Skeleton proposal review R1: [proposal-review-r1](../docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/proposal-review-r1.md)
+- Skeleton spec review R1: [spec-review-r1](../docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/spec-review-r1.md)
 - Related spec: [Installed-Skill Artifact Placement Contract](installed-skill-artifact-placement-contract.md)
 - Related workflow spec: [RigorLoop Workflow](rigorloop-workflow.md)
 
@@ -26,6 +29,7 @@ This spec turns the accepted proposal into a contract for:
 - repository-standard workflow-managed plan-body placement;
 - formal review-record placement;
 - source-rank and ambiguity handling;
+- packaged workflow-guide skeleton creation and refresh support;
 - drift validation across workflow map, workflow skill, stage skills, and generated adapters when packaged.
 
 ## Glossary
@@ -39,6 +43,7 @@ This spec turns the accepted proposal into a contract for:
 - `portable default`: A default placement rule carried by a stage skill for projects that do not have a project-local workflow map.
 - `stage skill`: A specialized skill such as `proposal`, `spec`, `plan`, `proposal-review`, `spec-review`, `code-review`, `verify`, or `pr` that owns the content and stage rules for its artifact.
 - `workflow guide`: `docs/workflows.md`.
+- `workflow-guide skeleton`: The packaged structural asset at `skills/workflow/assets/workflows-skeleton.md` that the workflow skill copies and fills when creating a new project-local workflow guide or fully rewriting a stale one.
 - `workflow-managed change`: A change using the formal RigorLoop lifecycle and durable artifact chain.
 
 ## Examples first
@@ -46,56 +51,62 @@ This spec turns the accepted proposal into a contract for:
 Example E1: workflow guide contains a canonical registry
 Given a repository uses the workflow skill to create or refresh `docs/workflows.md`
 When a maintainer inspects the `Artifact registry` section
-Then the guide contains a fenced YAML block with `artifact_locations`
-And each repository-local artifact type has one canonical project-local path, owner skill, and required trigger.
+Then the guide contains a fenced YAML block with `artifact_locations`, and each repository-local artifact type has one canonical project-local path, owner skill, and required trigger.
 
 Example E2: human-readable table matches registry
 Given the artifact registry contains `change_plan.path: docs/plans/YYYY-MM-DD-slug.md`
 When the `Artifact location map` Markdown table is inspected
-Then the `Change plan` row shows `docs/plans/YYYY-MM-DD-slug.md`
-And validation fails if the table shows a conflicting path.
+Then the `Change plan` row shows `docs/plans/YYYY-MM-DD-slug.md`, and validation fails if the table shows a conflicting path.
 
 Example E3: new workflow-managed change plan
 Given a new workflow-managed change has change ID `2026-06-17-example`
 When the plan stage creates the detailed execution plan
-Then the plan is created at `docs/plans/2026-06-17-example.md`
-And `docs/plan.md` remains the global plan index.
+Then the plan is created at `docs/plans/2026-06-17-example.md`, and `docs/plan.md` remains the global plan index.
 
 Example E4: existing plan body
 Given an existing plan body exists at `docs/plans/2026-05-01-example.md`
 When this spec is implemented
-Then that file is not moved by this slice
-And `docs/plans/` remains the canonical location for detailed plan bodies.
+Then that file is not moved by this slice, and `docs/plans/` remains the canonical location for detailed plan bodies.
 
 Example E5: formal proposal-review record
 Given formal `proposal-review` records a review for change ID `2026-06-17-example`
 When the review result is recorded
-Then the detailed review record goes under `docs/changes/2026-06-17-example/reviews/`
-And the review log is `docs/changes/2026-06-17-example/review-log.md`.
+Then the detailed review record goes under `docs/changes/2026-06-17-example/reviews/`, and the review log is `docs/changes/2026-06-17-example/review-log.md`.
 
 Example E6: project without workflow guide
 Given a customer project has installed stage skills but lacks `docs/workflows.md`
 When a stage skill resolves artifact placement
-Then it uses explicit user paths, active metadata, governing constraints, and portable defaults where safe
-And it blocks when placement remains ambiguous.
+Then it uses explicit user paths, active metadata, governing constraints, and portable defaults where safe, and it blocks when placement remains ambiguous.
 
 Example E7: unknown artifact type
 Given the workflow guide has no registry entry for `release_attestation`
 When the workflow skill is asked to route that artifact type
-Then it does not infer a path from naming convention
-And it blocks or requests a workflow-map update.
+Then it does not infer a path from naming convention, and it blocks or requests a workflow-map update.
 
 Example E8: PR handoff uses a structured non-path registry entry
 Given the artifact registry includes `pr_handoff`
 When validators inspect the registry
-Then `pr_handoff` may use `external_surface: pull_request_body` or `policy: project_pr_process` instead of `path`
-And validators fail if the entry omits both a repository-local path and a structured non-path representation.
+Then `pr_handoff` may use `external_surface: pull_request_body` or `policy: project_pr_process` instead of `path`, and validators fail if the entry omits both a repository-local path and a structured non-path representation.
 
 Example E9: review customization stays change-local
 Given a project customizes proposal-review filenames
 When the customization is recorded in `docs/workflows.md`
-Then formal review records still route under `docs/changes/<change-id>/reviews/`
-And validation fails if the customization moves formal review records outside the change pack without a higher-priority explicit path, approved spec, schema, safety constraint, or user instruction.
+Then formal review records still route under `docs/changes/<change-id>/reviews/`, and validation fails if the customization moves formal review records outside the change pack without a higher-priority explicit path, approved spec, schema, safety constraint, or user instruction.
+
+Example E10: workflow skill packages a guide skeleton
+Given the workflow skill is packaged for users
+When a user project adopts RigorLoop and no `docs/workflows.md` exists
+Then the skill exposes `skills/workflow/assets/workflows-skeleton.md` as a copy-and-fill skeleton, and `skills/workflow/SKILL.md` maps that asset with a `COPY` resource-map entry.
+
+Example E11: skeleton stays structural
+Given the workflow-guide skeleton is inspected
+When it defines the guide shape
+Then it includes headings, metadata comments, registry shape, required tables, placeholders, and brief fill guidance, and it does not define lifecycle stage policy, review approval semantics, or artifact content schemas.
+
+Example E12: generated packages include mapped skeleton assets
+Given generated skill mirrors or public adapter archives include the workflow skill
+When repository-owned packaging validation runs
+Then the packaged workflow skill includes the skeleton asset referenced by its resource map, and validation fails if the mapped asset is missing from packaged output.
 
 ## Requirements
 
@@ -213,11 +224,32 @@ R52. The change MUST NOT hand-edit generated public adapter output.
 
 R53. The change MUST preserve customer-project portability by allowing stage-skill portable defaults when `docs/workflows.md` is absent or silent for an artifact type.
 
+R54. The workflow skill MUST package a workflow-guide skeleton asset at `skills/workflow/assets/workflows-skeleton.md`.
+
+R55. The workflow skill `Resource map` MUST include a `COPY` entry for `assets/workflows-skeleton.md` when creating a new project-local `docs/workflows.md` or fully rewriting a stale workflow guide.
+
+R56. The workflow-guide skeleton MUST include metadata comments naming the template, owning skill, template status, and maintained-alongside source.
+
+R57. The workflow-guide skeleton MUST include structural sections for status, source rank, lifecycle graph, stage obligations, artifact registry, artifact location table, review record placement, plan surfaces, guide ownership, customization rules, migration notes, and validation notes.
+
+R58. The workflow-guide skeleton MUST include a canonical `artifact_locations` YAML registry shape and a human-readable Markdown artifact-location table shape.
+
+R59. The workflow-guide skeleton MUST remain structural: headings, tables, registry shape, placeholders, and brief fill instructions. It MUST NOT own lifecycle stage policy, stage semantics, review approval rules, enum policy, or artifact content schemas.
+
+R60. `skills/workflow/SKILL.md` MUST keep guide creation and refresh behavior concise and MUST NOT inline the full skeleton body.
+
+R61. Stage skills MUST retain concise project workflow guide lookup wording and portable defaults. They MUST NOT duplicate the full workflow-guide artifact-location table unless a later accepted artifact explicitly changes stage-skill ownership.
+
+R62. Validation MUST prove that the skeleton exists, is mapped from `skills/workflow/SKILL.md`, contains the required structural sections, and stays aligned with required workflow-map registry coverage.
+
+R63. Generated skill mirrors and generated adapters MUST include the skeleton asset when they package the workflow skill, and generated public adapter output MUST NOT be hand-edited to satisfy that packaging proof.
+
 ## Inputs and outputs
 
 Inputs:
 
 - Accepted proposal `docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md`.
+- Accepted skeleton proposal `docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md`.
 - Existing workflow guide `docs/workflows.md`.
 - Existing governance guidance `CONSTITUTION.md` and `AGENTS.md`.
 - Canonical authored skill sources for `workflow`, `plan`, `proposal-review`, `spec-review`, and any directly contradictory stage skill.
@@ -227,10 +259,11 @@ Inputs:
 Outputs:
 
 - Updated workflow skill behavior text.
+- Added workflow-guide skeleton asset at `skills/workflow/assets/workflows-skeleton.md`.
 - Updated `docs/workflows.md` with canonical YAML registry and synchronized Markdown tables.
 - Updated `CONSTITUTION.md` and other affected guidance only if they are stale or inconsistent with the repository-standard `docs/plans/` plan-body contract.
 - Updated directly contradictory stage-skill placement text.
-- Validation checks or fixtures for registry shape, registry/table agreement, source-rank behavior, plan path drift, review path drift, unknown artifact blocking, and adapter packaging when relevant.
+- Validation checks or fixtures for registry shape, registry/table agreement, source-rank behavior, plan path drift, review path drift, unknown artifact blocking, skeleton/resource-map presence, skeleton section coverage, and adapter packaging when relevant.
 - Change-local evidence and cold-read proof for the implementation slice.
 
 ## State and invariants
@@ -246,6 +279,7 @@ Outputs:
 - Formal workflow-managed review records live under `docs/changes/<change-id>/reviews/`.
 - Learn sessions are history and rationale, not live routing authority.
 - Lifecycle stage order remains unchanged.
+- The skeleton is a guide-creation structure, not a hidden policy owner.
 
 ## Error and boundary behavior
 
@@ -271,6 +305,12 @@ EC10. A validator cannot parse the YAML registry: validation fails with a workfl
 
 EC11. A learn session contradicts the artifact registry: the registry, approved spec, schema, or owning stage-skill guidance is authoritative; the learn session remains historical rationale only.
 
+EC11a. `skills/workflow/SKILL.md` maps `assets/workflows-skeleton.md` but the file is missing: skill validation fails.
+
+EC11b. Generated adapter packaging includes `workflow` but omits the mapped skeleton asset: adapter validation fails.
+
+EC11c. The skeleton contains a registry entry that required workflow-map validation does not recognize: workflow-map validation fails or reports the registry contract mismatch.
+
 ## Compatibility and migration
 
 - Existing `docs/plans/*.md` files remain in place and are not migrated in this slice.
@@ -280,12 +320,14 @@ EC11. A learn session contradicts the artifact registry: the registry, approved 
 - `docs/workflows.md`, workflow skill defaults, and directly contradictory stage-skill placement text must be updated together in the implementation slice to avoid split authority.
 - Customer projects without `docs/workflows.md` remain supported through stage-skill portable defaults and clear blockers.
 - Generated adapter output must be refreshed through repository-owned generation when packaged; generated public adapter bodies must not be hand-edited.
+- New or fully refreshed customer-project workflow guides may use the skeleton as a starting point. Existing `docs/workflows.md` files are not automatically regenerated by this amendment.
 - Rollback must revert the workflow skill, `docs/workflows.md`, governance guidance, stage-skill placement edits, and validation expectations together.
 
 ## Observability
 
 - `docs/workflows.md` exposes the YAML registry and Markdown tables to maintainers.
 - Validation output reports registry parse failures, missing artifact fields, duplicate or conflicting placement representations, registry/table mismatches, workflow skill drift, directly contradictory stage-skill text, stale plan path text, formal review path drift, unknown artifact types, and stale generated adapter output when relevant.
+- Validation output reports missing skeleton assets, missing resource-map entries, missing required skeleton sections, and packaged-output skeleton omissions when relevant.
 - Change-local implementation evidence records cold-read answers for proposal-review placement, workflow-managed change plan placement, and `docs/plan.md` purpose.
 - Review logs and review-resolution artifacts expose formal review outcomes for this change.
 
@@ -328,6 +370,12 @@ EC19. The workflow guide conflicts with an approved spec: the approved spec wins
 
 EC20. Adapter validation is not relevant because the workflow skill is not packaged in the slice: the plan or change evidence records adapter proof as not applicable with rationale.
 
+EC21. The skeleton omits `Source rank`, `Artifact registry`, `Review record placement`, or another required structural section: validation fails with the missing section name.
+
+EC22. The skeleton embeds lifecycle approval policy or artifact content schema details beyond brief fill guidance: spec-review or validation requests revision before implementation reliance.
+
+EC23. A stage skill copies the full workflow-guide artifact-location table for stylistic consistency only: validation or review requests removal unless a directly contradictory stage-skill placement rule requires a scoped edit.
+
 ## Non-goals
 
 - Do not change lifecycle stage order.
@@ -339,6 +387,9 @@ EC20. Adapter validation is not relevant because the workflow skill is not packa
 - Do not treat learn sessions as live routing authority.
 - Do not hand-edit generated adapter output.
 - Do not bulk-edit stage skills for wording style alone.
+- Do not make the workflow-guide skeleton a hidden lifecycle policy source.
+- Do not automatically regenerate existing `docs/workflows.md` files from the skeleton.
+- Do not add a CLI scaffold for creating workflow guides in this amendment.
 
 ## Acceptance criteria
 
@@ -382,6 +433,28 @@ AC19. PR handoff has a deterministic registry representation through `path`, `ex
 
 AC20. Project-local formal review customization remains under `docs/changes/<change-id>/reviews/` unless a higher-priority source explicitly permits another path.
 
+AC21. `skills/workflow/assets/workflows-skeleton.md` exists.
+
+AC22. `skills/workflow/SKILL.md` maps `assets/workflows-skeleton.md` with a `COPY` resource-map entry.
+
+AC23. The skeleton contains required metadata comments.
+
+AC24. The skeleton contains source rank, lifecycle graph, stage obligations, artifact registry, artifact location table, review placement, plan surfaces, guide ownership, customization rules, migration notes, and validation notes.
+
+AC25. The skeleton is structural and does not hide lifecycle policy, review approval rules, enum policy, or artifact content schemas.
+
+AC26. Workflow-map validation checks skeleton registry/table coverage through the workflow-map validator or a composed validator call, not an inconsistent duplicate contract.
+
+AC27. Directly affected stage skills retain portable defaults and concise project-guide lookup wording.
+
+AC28. Generated skill output includes the skeleton when it includes the workflow skill.
+
+AC29. Generated adapters include the skeleton when they package the workflow skill.
+
+AC30. Existing `docs/workflows.md` is not automatically migrated or regenerated by this amendment.
+
+AC31. Unknown artifact types still block rather than being inferred.
+
 ## Open questions
 
 None.
@@ -390,9 +463,11 @@ None.
 
 ```text
 spec-review
-test-spec
+architecture assessment
 plan
 plan-review
+test-spec
+test-spec-review
 implementation
 code-review
 explain-change
@@ -405,7 +480,11 @@ pr
 - Spec review R2: [spec-review-r2](../docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md)
 - Plan: [Workflow Skill Artifact-Location Map Plan](../docs/plans/2026-06-18-workflow-skill-artifact-location-map.md)
 - Test spec: [Workflow Skill Artifact-Location Map Test Spec](workflow-skill-artifact-location-map.test.md)
+- Skeleton proposal review R1: [proposal-review-r1](../docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/proposal-review-r1.md)
+- Skeleton plan: [Workflow Guide Skeleton Asset Plan](../docs/plans/2026-07-05-workflow-guide-skeleton-asset.md)
+- Skeleton test-spec-review R1: [test-spec-review-r1](../docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/test-spec-review-r1.md)
 
 ## Readiness
 
-Approved by spec-review R2 and ready for execution planning.
+Approved by skeleton spec-review R1.
+Downstream implementation routing is tracked by the active skeleton plan.
