@@ -6885,6 +6885,18 @@ and result format.
             with self.subTest(term=term):
                 self.assertIn(term, skeleton)
 
+        source_rank_terms = [
+            "Explicit user path or change ID.",
+            "Existing active artifact metadata, active plan metadata, or active change metadata.",
+            "Approved specs or schemas.",
+            "This workflow guide for artifact types it specifies.",
+            "Stage-skill portable default.",
+            "Block on ambiguity.",
+        ]
+        for term in source_rank_terms:
+            with self.subTest(source_rank=term):
+                self.assertIn(term, skeleton)
+
     def test_workflow_guide_skeleton_m1_stays_structural(self) -> None:
         workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
         skeleton = (
@@ -6899,6 +6911,11 @@ and result format.
             "code-review is approved only when",
             "enum policy",
             "artifact content schema",
+            "| proposal | mandatory",
+            "| spec | mandatory",
+            "| code-review | mandatory",
+            "mandatory before implementation",
+            "changes requested or blocked",
         ]
         for term in forbidden_terms:
             with self.subTest(term=term):
