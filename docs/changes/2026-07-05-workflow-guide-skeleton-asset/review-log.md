@@ -75,3 +75,17 @@ Resolution: review-resolution.md#code-review-m1-r1
 Material findings: WGS-M1-CR1, WGS-M1-CR2, WGS-M1-CR3
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit bf832d98
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r2.md
+Record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: None
+Open findings: None
+Recording status: recorded

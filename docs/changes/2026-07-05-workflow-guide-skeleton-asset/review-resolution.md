@@ -11,6 +11,7 @@ Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
 ### proposal-review-r1
 
@@ -65,3 +66,7 @@ Chosen action: Replaced the fully populated stage-obligations table with a singl
 Rationale: First-pass code-review found policy-filled stage-obligation content in a skeleton that must remain structural under R59/AC25. The fix preserves the required section shape without embedding lifecycle policy.
 Validation target: Revise the stage-obligations scaffold, tighten M1 tests, rerun M1 validation, and rerun code-review.
 Validation evidence: `python scripts/test-skill-validator.py -k workflow_guide_skeleton_m1` passed.
+
+### code-review-m1-r2
+
+No material findings.
