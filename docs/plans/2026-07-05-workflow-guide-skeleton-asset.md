@@ -52,14 +52,14 @@ That leaves agents to recreate a substantial structured guide from memory and in
 ## Current Handoff Summary
 
 - Current milestone: M3. Generated output proof and lifecycle closeout
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: code-review-m2-r1
 - Last reviewed milestone: M2
-- Review status: approved; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 is implemented and awaiting code-review; explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
@@ -108,7 +108,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 
 ### M3. Generated output proof and lifecycle closeout
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Deliverable: generated-skill and adapter packaging proof plus behavior-preservation and explanation evidence.
 - Requirements: R62-R63, AC28-AC30.
 - Files: generated-skill proof outputs only when repository-owned scripts update tracked generated support surfaces; `dist/adapters/README.md` or `dist/adapters/manifest.yaml` only if canonical packaging metadata changes; change-local evidence.
@@ -119,8 +119,8 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - `python scripts/validate-skills.py`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml`
 - Implementation handoff:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M3
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M3
 - Review closeout:
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
@@ -149,6 +149,9 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: M2 added a workflow-guide skeleton validator that composes the existing workflow-map registry/table contract, wired it into guide-system validation, added missing-section, missing-registry-entry, and table-drift regression tests, and aligned the skeleton registry/table projection with canonical workflow-map labels.
 - 2026-07-05: M2 reached review-requested after targeted validation passed.
 - 2026-07-05: Code-review M2 R1 recorded clean-with-notes, closed M2, and handed off to implement M3.
+- 2026-07-05: M3 added explicit generated skill mirror and adapter archive regression assertions for the workflow skeleton asset.
+- 2026-07-05: M3 confirmed adapter archive proof is conditional: `workflow` is currently packaged for Codex and excluded from Claude/opencode by existing Codex-specific invocation portability rules.
+- 2026-07-05: M3 recorded behavior-preservation evidence and reached review-requested after targeted validation passed.
 
 ## Decision log
 
@@ -158,10 +161,12 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: Use `docs/plans/YYYY-MM-DD-<slug>.md` for the skeleton change-plan path -> the approved workflow-map spec's plan-body contract outranks the older proposal draft path.
 - 2026-07-05: Defer changing `<slug>` placeholders in the skeleton -> owner clarified that this placeholder is intentionally used for now and needs a later alignment task.
 - 2026-07-05: Compose skeleton registry/table validation through the workflow-map validator -> avoids a second guide-system-owned registry contract while allowing the explicitly deferred `<slug>` placeholder spelling to remain in the skeleton.
+- 2026-07-05: Treat non-Codex workflow adapter archives as not applicable for skeleton inclusion while the workflow skill is excluded from those adapters -> R63 and AC29 require skeleton packaging when the workflow skill is packaged, not forced inclusion of a non-portable skill.
 
 ## Surprises and discoveries
 
 - The proposal draft skeleton used `docs/changes/<change-id>/plan.md` for `change_plan`, but the approved workflow-map spec requires `docs/plans/YYYY-MM-DD-slug.md`. M1 follows the approved spec.
+- The initial broad adapter archive proof expected the workflow skeleton in every adapter archive. Inspecting adapter decisions showed the current contract is conditional: only Codex packages `workflow`; Claude and opencode exclude it because the skill contains Codex-specific `$skill` invocation syntax.
 
 ## Validation notes
 
@@ -209,6 +214,16 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m2-r1.md` passed.
   - `python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m2-r1.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md` passed.
+- M3 implementation validation:
+  - `python scripts/test-build-skills.py` passed.
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_adapter_archives_include_workflow_skeleton_when_workflow_is_packaged` passed.
+  - `python scripts/build-skills.py --output-dir "$tmp_skills"; test -f "$tmp_skills/workflow/assets/workflows-skeleton.md"` passed using temporary output.
+  - `python scripts/build-adapters.py --version v0.1.3 --output-dir "$tmp_adapters"` plus archive inspection passed; `workflow` skeleton was present when `workflow` was packaged: `codex`.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+  - `python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/behavior-preservation.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+  - `git diff --check -- scripts/test-build-skills.py scripts/test-adapter-distribution.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/behavior-preservation.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
 
 ## Outcome and retrospective
 
