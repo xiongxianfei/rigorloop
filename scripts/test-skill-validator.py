@@ -6843,6 +6843,67 @@ and result format.
             with self.subTest(term=term):
                 self.assertIn(term, workflow)
 
+    def test_workflow_guide_skeleton_m1_asset_and_resource_map_exist(self) -> None:
+        workflow_dir = ROOT / "skills" / "workflow"
+        workflow = (workflow_dir / "SKILL.md").read_text(encoding="utf-8")
+        skeleton = workflow_dir / "assets" / "workflows-skeleton.md"
+
+        self.assertTrue(skeleton.is_file())
+
+        resource_map = extract_markdown_block(workflow, "Resource map")
+        self.assertIn("- COPY `assets/workflows-skeleton.md`", resource_map)
+        self.assertIn("creating a new project-local", resource_map)
+        self.assertIn("`docs/workflows.md`", resource_map)
+        self.assertIn("fully rewriting a stale workflow guide", resource_map)
+        self.assertIn("Do not emit unfilled placeholders.", resource_map)
+
+    def test_workflow_guide_skeleton_m1_contains_required_structure(self) -> None:
+        skeleton = (
+            ROOT / "skills" / "workflow" / "assets" / "workflows-skeleton.md"
+        ).read_text(encoding="utf-8")
+
+        required_terms = [
+            "<!-- Template: workflows-skeleton -->",
+            "<!-- Skill: workflow -->",
+            "<!-- Template status: normative -->",
+            "<!-- Maintained alongside: skills/workflow/SKILL.md -->",
+            "## Status",
+            "## Source rank",
+            "## Lifecycle graph",
+            "## Stage obligations",
+            "## Artifact registry",
+            "artifact_locations:",
+            "## Artifact location table",
+            "## Review record placement",
+            "## Plan surfaces",
+            "## Guide ownership",
+            "## Customization rules",
+            "## Migration notes",
+            "## Validation notes",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, skeleton)
+
+    def test_workflow_guide_skeleton_m1_stays_structural(self) -> None:
+        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+        skeleton = (
+            ROOT / "skills" / "workflow" / "assets" / "workflows-skeleton.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertNotIn("| Artifact type       | Canonical path", workflow)
+
+        forbidden_terms = [
+            "proposal-review is approved only when",
+            "spec-review is approved only when",
+            "code-review is approved only when",
+            "enum policy",
+            "artifact content schema",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, skeleton)
+
     def test_project_artifact_location_m1_retained_fixture_has_durable_rationale(self) -> None:
         rationale = SKILL_VALIDATOR_FIXTURE_README.read_text(encoding="utf-8")
 
