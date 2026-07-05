@@ -219,13 +219,9 @@ Historical `docs/workflows.md` files should not be rewritten as part of rollback
 
 ## Open Questions
 
-| Question | Candidate decision |
-| --- | --- |
-| Should the asset be named `workflows-skeleton.md` or `workflow-guide-skeleton.md`? | Use `assets/workflows-skeleton.md` because it mirrors the target artifact name `docs/workflows.md`. |
-| Should the skeleton include both YAML registry and Markdown table? | Yes. YAML is the validator-oriented registry shape; Markdown is the human-readable projection. |
-| Should existing `docs/workflows.md` be regenerated from the skeleton? | No. Use the skeleton for new or fully refreshed customer-project guides; migrate existing guides only through an explicit future task. |
-| Should stage skills be edited in the same change? | Only when they directly duplicate or contradict the workflow-guide lookup model. |
-| Should this require a new workflow-map spec or an amendment? | Prefer amending the existing workflow artifact-location map spec if it can cleanly own packaged skeleton requirements. |
+None.
+
+The authoring questions raised during proposal drafting are resolved in the decision log.
 
 ## Decision Log
 
@@ -236,6 +232,9 @@ Historical `docs/workflows.md` files should not be rewritten as part of rollback
 | 2026-07-05 | Keep stage skills concise. | Detailed project-local placement belongs in `docs/workflows.md`; stage skills own content and portable defaults. | Duplicate path tables across skills. |
 | 2026-07-05 | Validate skeleton/package parity. | Packaged public skills must include referenced assets. | Trust packaging implicitly. |
 | 2026-07-05 | Do not migrate existing guides automatically. | Historical migration is separate from adding a skeleton. | Reflow all existing workflow guides. |
+| 2026-07-05 | Name the asset `assets/workflows-skeleton.md`. | The name mirrors the target artifact `docs/workflows.md`. | `assets/workflow-guide-skeleton.md`. |
+| 2026-07-05 | Include both YAML registry and Markdown table structure. | YAML is the validator-oriented registry shape; Markdown is the human-readable projection. | YAML-only or Markdown-only skeleton. |
+| 2026-07-05 | Amend the existing workflow artifact-location map spec if it can own the skeleton contract cleanly. | The existing spec already owns `docs/workflows.md` structure and registry behavior. | Create a new spec by default. |
 
 ## Initial Intent Preservation
 
