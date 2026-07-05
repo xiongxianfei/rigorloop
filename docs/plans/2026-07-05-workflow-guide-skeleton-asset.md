@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Owner: maintainer
 - Change ID: 2026-07-05-workflow-guide-skeleton-asset
 - Start date: 2026-07-05
 - Last updated: 2026-07-05
-- Related issue or PR: none yet
+- Related issue or PR: PR #122
 - Supersedes: none
 
 ## Goal
@@ -51,15 +51,15 @@ That leaves agents to recreate a substantial structured guide from memory and in
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Generated output proof and lifecycle closeout
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: code-review-m3-r1
 - Last reviewed milestone: M3
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: pr-handoff-pending — implementation milestones, code reviews, review-resolution, explain-change, and verify are complete; PR handoff remains open.
+- Next stage: none
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — implementation milestones, code reviews, review-resolution, explain-change, verify, and PR #122 handoff are complete; hosted CI and human review are pending.
 
 ## Milestones
 
@@ -156,6 +156,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: Explain-change recorded durable change rationale and handed off to verify.
 - 2026-07-05: Verify recorded branch-ready local evidence and handed off to PR.
 - 2026-07-05: PR handoff prepared title, body, requirement coverage, validation summary, risks, and reviewer notes.
+- 2026-07-05: PR #122 opened for review.
 
 ## Decision log
 
@@ -259,7 +260,9 @@ That leaves agents to recreate a substantial structured guide from memory and in
 
 ## Outcome and retrospective
 
-Pending. Keep this section historical until implementation, review, verification, and PR handoff complete.
+Closed for PR review handoff.
+The workflow guide skeleton asset, validation coverage, generated-output proof, behavior-preservation evidence, explanation, verification report, and PR handoff are complete.
+Hosted CI and human review remain external to this local lifecycle closeout.
 
 ## Readiness
 
