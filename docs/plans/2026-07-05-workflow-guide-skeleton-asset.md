@@ -51,21 +51,21 @@ That leaves agents to recreate a substantial structured guide from memory and in
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Canonical skeleton asset and workflow skill mapping
-- Current milestone state: review-requested
-- Latest review evidence: code-review-m1-r1
-- Last reviewed milestone: none
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review
+- Current milestone: M2. Validation coverage and fixtures
+- Current milestone state: planned
+- Latest review evidence: code-review-m1-r2
+- Last reviewed milestone: M1
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 re-review, remaining implementation milestones, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 and M3 remain open; explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
 ### M1. Canonical skeleton asset and workflow skill mapping
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Deliverable: `skills/workflow/assets/workflows-skeleton.md` and `skills/workflow/SKILL.md` resource-map guidance.
 - Requirements: R54-R61, AC21-AC25, AC27, AC30, AC31.
 - Files: `skills/workflow/assets/workflows-skeleton.md`, `skills/workflow/SKILL.md`, focused directly contradictory stage-skill text only if found.
@@ -80,7 +80,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - Review closeout:
   - [x] code-review completed
   - [x] material findings resolved or explicitly dispositioned
-  - [ ] current milestone projection updated before starting M2
+  - [x] current milestone projection updated before starting M2
 - Milestone commit message: `M1: add workflow guide skeleton asset`
 - Rollback: remove the resource-map entry and skeleton asset together.
 
@@ -145,6 +145,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: M1 fixed WGS-M1-CR3 by replacing the populated stage-obligations policy table with a compact scaffold and adding regression assertions against the full policy table.
 - 2026-07-05: M1 deferred WGS-M1-CR2 by owner direction; `<slug>` remains in the skeleton for this pass and path-literal normalization is a later validator/spec alignment task.
 - 2026-07-05: M1 returned to review-requested for code-review R2 after targeted validation passed.
+- 2026-07-05: Code-review M1 R2 recorded clean-with-notes, closed M1, and handed off to implement M2.
 
 ## Decision log
 
@@ -184,6 +185,11 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - `python scripts/validate-documentation-prose.py --path skills/workflow/assets/workflows-skeleton.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md` passed.
   - `git diff --check -- skills/workflow/assets/workflows-skeleton.md scripts/test-skill-validator.py` passed.
   - `git diff --check -- skills/workflow/assets/workflows-skeleton.md scripts/test-skill-validator.py docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md` passed.
+- M1 code-review R2 validation:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-05-workflow-guide-skeleton-asset` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m1-r2.md` passed.
+  - `python scripts/test-skill-validator.py -k workflow_guide_skeleton_m1` passed.
 
 ## Outcome and retrospective
 
