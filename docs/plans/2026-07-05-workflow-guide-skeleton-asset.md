@@ -51,15 +51,15 @@ That leaves agents to recreate a substantial structured guide from memory and in
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Validation coverage and fixtures
-- Current milestone state: review-requested
-- Latest review evidence: code-review-m1-r2
-- Last reviewed milestone: M1
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review
+- Current milestone: M3. Generated output proof and lifecycle closeout
+- Current milestone state: planned
+- Latest review evidence: code-review-m2-r1
+- Last reviewed milestone: M2
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 code-review, M3, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
@@ -86,7 +86,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 
 ### M2. Validation coverage and fixtures
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Deliverable: repository-owned checks proving skeleton/resource-map presence, required section coverage, registry/table alignment, and stage-skill boundary preservation.
 - Requirements: R58-R63, AC26-AC31.
 - Files: `scripts/skill_validation.py`, `scripts/test-skill-validator.py`, related fixtures if needed, and only directly relevant validation docs.
@@ -100,9 +100,9 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - [x] targeted validation passed
   - [x] hand off to code-review for M2
 - Review closeout:
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] current milestone projection updated before starting M3
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] current milestone projection updated before starting M3
 - Milestone commit message: `M2: validate workflow guide skeleton packaging`
 - Rollback: remove skeleton-specific checks while preserving independently valid workflow-map registry validation.
 
@@ -148,6 +148,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: Code-review M1 R2 recorded clean-with-notes, closed M1, and handed off to implement M2.
 - 2026-07-05: M2 added a workflow-guide skeleton validator that composes the existing workflow-map registry/table contract, wired it into guide-system validation, added missing-section, missing-registry-entry, and table-drift regression tests, and aligned the skeleton registry/table projection with canonical workflow-map labels.
 - 2026-07-05: M2 reached review-requested after targeted validation passed.
+- 2026-07-05: Code-review M2 R1 recorded clean-with-notes, closed M2, and handed off to implement M3.
 
 ## Decision log
 
@@ -203,6 +204,11 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
   - `python scripts/validate-documentation-prose.py --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path skills/workflow/assets/workflows-skeleton.md` passed.
   - `git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py scripts/validate-guide-system.py skills/workflow/assets/workflows-skeleton.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+- M2 code-review R1 validation:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-05-workflow-guide-skeleton-asset` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m2-r1.md` passed.
+  - `python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m2-r1.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md` passed.
 
 ## Outcome and retrospective
 
