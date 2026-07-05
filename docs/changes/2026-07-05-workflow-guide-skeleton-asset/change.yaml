@@ -11,11 +11,13 @@ requirements:
   - Keep the proposed skeleton structural and avoid hidden lifecycle policy.
   - Preserve stage-skill portable defaults and customer-project portability.
   - Record proposal-review R1 before downstream spec reliance.
+  - Normalize the proposal status to accepted after clean recorded proposal-review.
 tests:
   - Proposal includes Vision fit and matches the current project vision.
   - Proposal preserves the user's initial goals and scope constraints.
   - Proposal classifies broad workflow, validation, packaging, generated-output, and migration work through a scope budget.
   - Proposal-review R1 approved the proposal with no material findings.
+  - Proposal status is normalized from draft to accepted before downstream spec reliance.
 changed_files:
   - docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md
   - docs/learn/sessions/2026-07-05-workflow-guide-skeleton.md

@@ -2,7 +2,7 @@
 
 ## Status
 
-draft
+accepted
 
 ## Problem
 
@@ -285,8 +285,11 @@ pr
 
 ## Follow-on Artifacts
 
-None yet
+- Proposal review R1: [proposal-review-r1](../changes/2026-07-05-workflow-guide-skeleton-asset/reviews/proposal-review-r1.md)
+- Review log: [review-log](../changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md)
+- Review closeout: [review-resolution](../changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md)
 
 ## Readiness
 
-Ready for `proposal-review`.
+Accepted after clean recorded `proposal-review`.
+Ready for a focused spec amendment to `specs/workflow-skill-artifact-location-map.md` before downstream implementation planning.
