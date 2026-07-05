@@ -70,6 +70,15 @@ Read:
 
 Produce a routing decision, current stage assessment, blockers or assumptions, and the next valid skill or stop condition. Do not replace the downstream artifact owned by that next skill.
 
+## Resource map
+
+- COPY `assets/workflows-skeleton.md` when creating a new project-local
+  `docs/workflows.md` or fully rewriting a stale workflow guide.
+  Fill metadata, source rank, lifecycle graph, stage obligations, artifact
+  registry, artifact-location table, review placement, plan surfaces,
+  customization rules, migration notes, and validation notes.
+  Do not emit unfilled placeholders.
+
 ## Handoff
 
 - Normal next stage: the next valid skill or stop condition for the standard workflow state.

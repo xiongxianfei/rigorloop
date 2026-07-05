@@ -52,20 +52,20 @@ That leaves agents to recreate a substantial structured guide from memory and in
 ## Current Handoff Summary
 
 - Current milestone: M1. Canonical skeleton asset and workflow skill mapping
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: test-spec-review-r1
 - Last reviewed milestone: none
-- Review status: approved; stage=test-spec-review; round=r1
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — implementation, code-review, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — code-review, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
 ### M1. Canonical skeleton asset and workflow skill mapping
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Deliverable: `skills/workflow/assets/workflows-skeleton.md` and `skills/workflow/SKILL.md` resource-map guidance.
 - Requirements: R54-R61, AC21-AC25, AC27, AC30, AC31.
 - Files: `skills/workflow/assets/workflows-skeleton.md`, `skills/workflow/SKILL.md`, focused directly contradictory stage-skill text only if found.
@@ -75,8 +75,8 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - `python scripts/test-skill-validator.py -k workflow`
   - `git diff --check -- skills/workflow/SKILL.md skills/workflow/assets/workflows-skeleton.md`
 - Implementation handoff:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M1
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M1
 - Review closeout:
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
@@ -137,16 +137,20 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: Plan-review R1 approved the plan with no material findings.
 - 2026-07-05: Test spec amended with skeleton asset proof cases and routed to test-spec-review.
 - 2026-07-05: Test-spec-review R1 approved the proof map with no material findings.
+- 2026-07-05: M1 added workflow guide skeleton tests, `skills/workflow/assets/workflows-skeleton.md`, and the workflow skill resource-map entry.
+- 2026-07-05: M1 left existing `docs/workflows.md` and stage-skill placement text unchanged. Rationale: M1 only packages the structural skeleton and workflow skill map; no directly contradictory stage-skill placement text or existing guide migration is in scope for this milestone.
+- 2026-07-05: M1 implementation reached review-requested after targeted validation passed.
 
 ## Decision log
 
 - 2026-07-05: Use `skills/workflow/assets/workflows-skeleton.md` as the asset path -> mirrors target artifact `docs/workflows.md`.
 - 2026-07-05: Amend existing workflow-map spec -> it already owns guide registry and placement behavior.
 - 2026-07-05: Split implementation into asset, validation, and packaging-proof milestones -> keeps diffs reviewable and preserves generated-output boundaries.
+- 2026-07-05: Use `docs/plans/YYYY-MM-DD-<slug>.md` for the skeleton change-plan path -> the approved workflow-map spec's plan-body contract outranks the older proposal draft path.
 
 ## Surprises and discoveries
 
-- none yet
+- The proposal draft skeleton used `docs/changes/<change-id>/plan.md` for `change_plan`, but the approved workflow-map spec requires `docs/plans/YYYY-MM-DD-slug.md`. M1 follows the approved spec.
 
 ## Validation notes
 
@@ -155,6 +159,14 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md --path specs/workflow-skill-artifact-location-map.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/proposal-review-r1.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/spec-review-r1.md`
   - `python scripts/validate-documentation-prose.py --path specs/workflow-skill-artifact-location-map.md`
+- M1 implementation validation:
+  - `python scripts/test-skill-validator.py -k workflow_guide_skeleton_m1` passed.
+  - `python scripts/test-skill-validator.py -k workflow` passed.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/validate-skills.py skills/workflow/SKILL.md` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+  - `git diff --check -- skills/workflow/SKILL.md skills/workflow/assets/workflows-skeleton.md scripts/test-skill-validator.py` passed.
 
 ## Outcome and retrospective
 
