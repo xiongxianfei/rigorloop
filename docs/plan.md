@@ -27,6 +27,7 @@ No blocked plans.
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-07-04 Markdown Readability Contract](plans/2026-07-04-markdown-readability-contract.md) - done; terminal state: closed; PR #120 opened for review.
 - [2026-07-04 Test-Spec Proof-Contract Upgrade](plans/2026-07-04-test-spec-proof-contract-upgrade.md) - done; terminal state: closed; PR #119 merged.
 - [2026-06-30 Bounded Review-Fix Autoprogression in Chat](plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md) - done; terminal state: closed; PR #118 merged.
 - [2026-06-29 Release Transaction Automation](plans/2026-06-29-release-transaction-automation.md) - done; terminal state: closed; PR #117 opened for review.
