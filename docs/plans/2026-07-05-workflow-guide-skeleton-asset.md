@@ -52,14 +52,14 @@ That leaves agents to recreate a substantial structured guide from memory and in
 ## Current Handoff Summary
 
 - Current milestone: M3. Generated output proof and lifecycle closeout
-- Current milestone state: review-requested
-- Latest review evidence: code-review-m2-r1
-- Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review
+- Current milestone state: closed
+- Latest review evidence: code-review-m3-r1
+- Last reviewed milestone: M3
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 is implemented and awaiting code-review; explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — all implementation milestones are closed, but explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
@@ -108,7 +108,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 
 ### M3. Generated output proof and lifecycle closeout
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Deliverable: generated-skill and adapter packaging proof plus behavior-preservation and explanation evidence.
 - Requirements: R62-R63, AC28-AC30.
 - Files: generated-skill proof outputs only when repository-owned scripts update tracked generated support surfaces; `dist/adapters/README.md` or `dist/adapters/manifest.yaml` only if canonical packaging metadata changes; change-local evidence.
@@ -122,9 +122,9 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - [x] targeted validation passed
   - [x] hand off to code-review for M3
 - Review closeout:
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] final closeout gates can begin only after all implementation milestones are closed
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] final closeout gates can begin only after all implementation milestones are closed
 - Milestone commit message: `M3: prove workflow skeleton package output`
 - Rollback: revert generated proof updates by regenerating from canonical sources or removing skeleton-specific generated-output checks.
 
@@ -152,6 +152,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: M3 added explicit generated skill mirror and adapter archive regression assertions for the workflow skeleton asset.
 - 2026-07-05: M3 confirmed adapter archive proof is conditional: `workflow` is currently packaged for Codex and excluded from Claude/opencode by existing Codex-specific invocation portability rules.
 - 2026-07-05: M3 recorded behavior-preservation evidence and reached review-requested after targeted validation passed.
+- 2026-07-05: Code-review M3 R1 completed clean-with-notes, closed all implementation milestones, and handed off to explain-change.
 
 ## Decision log
 
@@ -224,6 +225,12 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - `python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/behavior-preservation.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
   - `git diff --check -- scripts/test-build-skills.py scripts/test-adapter-distribution.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/behavior-preservation.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+- M3 code-review R1 validation:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-05-workflow-guide-skeleton-asset` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+  - `python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m3-r1.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m3-r1.md` passed.
+  - `git diff --check -- docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m3-r1.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
 
 ## Outcome and retrospective
 
