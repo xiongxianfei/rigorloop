@@ -10,13 +10,10 @@ Who it is for: RigorLoop is for individual contributors, maintainers, and teams 
 See [VISION.md](VISION.md) for goals, non-goals, and falsifiability.
 <!-- vision:end -->
 
-RigorLoop makes AI-assisted delivery inspectable after the chat ends. The chain
-runs from proposal to spec, plan, test spec, implementation, review,
-verification, and PR handoff.
+RigorLoop makes AI-assisted delivery inspectable after the chat ends.
+The chain runs from proposal to spec, plan, test spec, implementation, review, verification, and PR handoff.
 
-It is for contributors and maintainers who want AI agents to help with serious
-software work without losing the reasoning, proof, and review trail that make a
-change safe to continue.
+It is for contributors and maintainers who want AI agents to help with serious software work without losing the reasoning, proof, and review trail that make a change safe to continue.
 
 ## Quick Start
 
@@ -84,7 +81,12 @@ For smaller focused tasks, you can invoke an individual skill directly. Treat th
 
 ## Starting a new repository
 
-Use `init` to install agent support. It does not replace the standing guide artifacts that make a repository understandable.
+Use `init` to install agent support.
+It does not replace the standing guide artifacts that make a repository understandable.
+
+```bash
+npx @xiongxianfei/rigorloop@latest init codex
+```
 
 For a new repository, use this order:
 
@@ -97,7 +99,8 @@ For a new repository, use this order:
    - `docs/plan.md` starts as the small active/blocked/recent-work index.
 3. Start the first real change with the per-change lifecycle described above.
 
-For an existing repository, do the same bootstrap only for missing or stale standing guidance. Do not rewrite durable guides just for symmetry.
+For an existing repository, do the same bootstrap only for missing or stale standing guidance.
+Do not rewrite durable guides just for symmetry.
 
 ## Where to go next
 
@@ -128,9 +131,8 @@ flowchart LR
   L --> M[PR]
 ```
 
-This is the recommended full chain for complete AI-assisted delivery. Individual
-skills can also be used in isolation when the project does not need the full
-lifecycle.
+This is the recommended full chain for complete AI-assisted delivery.
+Individual skills can also be used in isolation when the project does not need the full lifecycle.
 
 ## Automatic Workflow
 
@@ -207,8 +209,7 @@ A RigorLoop change leaves a traceable artifact chain:
 | Explain change | `docs/changes/<change>/explain-change.md` |
 | PR handoff | linked from change records or release notes |
 
-For a concrete repository example, inspect the shipped proof-of-value pack:
-[docs/changes/0001-skill-validator/](docs/changes/0001-skill-validator/).
+For a concrete repository example, inspect the shipped proof-of-value pack: [docs/changes/0001-skill-validator/](docs/changes/0001-skill-validator/).
 
 ## When to use / When not to use
 
@@ -226,16 +227,11 @@ Do not use RigorLoop when:
 
 ## Why RigorLoop Is Built This Way
 
-- **Reviewable artifacts.** Important decisions become files in your repository,
-  not lost chat logs.
-- **Human-understandable AI work.** Reviewers can see what changed, why it
-  changed, and what evidence supports it.
-- **Resumable across sessions and agents.** Work can continue because state
-  lives in Git, not one model session.
-- **Traceable from idea to PR.** A change has a visible chain from proposal to
-  verification and handoff.
-- **Durable lessons.** Mistakes become reusable guidance and checks, improving
-  reliability over time.
+- **Reviewable artifacts.** Important decisions become files in your repository, not lost chat logs.
+- **Human-understandable AI work.** Reviewers can see what changed, why it changed, and what evidence supports it.
+- **Resumable across sessions and agents.** Work can continue because state lives in Git, not one model session.
+- **Traceable from idea to PR.** A change has a visible chain from proposal to verification and handoff.
+- **Durable lessons.** Mistakes become reusable guidance and checks, improving reliability over time.
 
 ## npm Usage
 
