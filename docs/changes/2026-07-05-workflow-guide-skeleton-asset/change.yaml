@@ -57,7 +57,7 @@ changed_files:
   - scripts/test-skill-validator.py
 review:
   status: clean
-  unresolved_items: 0
+  unresolved_items: 3
   reviewed_artifact: specs/workflow-skill-artifact-location-map.test.md
   review_log: docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md
 workflow:

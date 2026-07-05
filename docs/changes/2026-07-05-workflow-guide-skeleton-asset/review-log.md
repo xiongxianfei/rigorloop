@@ -61,3 +61,17 @@ Resolution: review-resolution.md#test-spec-review-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 56107196
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: WGS-M1-CR1, WGS-M1-CR2, WGS-M1-CR3
+Open findings: WGS-M1-CR1, WGS-M1-CR2, WGS-M1-CR3
+Recording status: recorded
