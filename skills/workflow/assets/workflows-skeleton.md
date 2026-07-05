@@ -116,7 +116,7 @@ artifact_locations:
     required_when: formal workflow-managed lifecycle recording begins
     notes: metadata and validation ledger
 
-  review_record:
+  formal_review_record:
     owner: review skills
     path: docs/changes/<change-id>/reviews/<stage>-r<n>.md
     required_when: formal review is recorded
@@ -148,9 +148,9 @@ artifact_locations:
 
   pr_handoff:
     owner: pr
-    path: docs/changes/<change-id>/pr.md
+    external_surface: pull_request_body
     required_when: PR stage is reached
-    notes: local PR handoff artifact; external PR URL is metadata
+    notes: PR body or project PR process; local handoff file only when project policy requires it
 
   learn_session:
     owner: learn
@@ -164,20 +164,20 @@ artifact_locations:
 | Artifact type | Canonical path | Owner skill | Required when | Notes |
 | --- | --- | --- | --- | --- |
 | Workflow guide | `docs/workflows.md` | `workflow` | RigorLoop is adopted or routing needs local guide | This file |
-| Proposal | `docs/proposals/<change-id>.md` | `proposal` | Proposal stage | Decision artifact |
-| Spec | `specs/<slug>.md` | `spec` | Spec stage | Behavior contract |
-| Test spec | `specs/<slug>.test.md` | `test-spec` | Test-spec stage | Active proof map |
-| Architecture record | `docs/architecture/<scope>/architecture.md` | `architecture` | Architecture required | Architecture package |
-| ADR | `docs/adr/ADR-YYYYMMDD-<slug>.md` | `architecture` | Durable architecture decision | ADR |
+| Proposals | `docs/proposals/<change-id>.md` | `proposal` | Proposal stage | Decision artifact |
+| Specs | `specs/<slug>.md` | `spec` | Spec stage | Behavior contract |
+| Test specs | `specs/<slug>.test.md` | `test-spec` | Test-spec stage | Active proof map |
+| Architecture | `docs/architecture/<scope>/architecture.md` | `architecture` | Architecture required | Architecture package |
+| ADRs | `docs/adr/ADR-YYYYMMDD-<slug>.md` | `architecture` | Durable architecture decision | ADR |
 | Plan index | `docs/plan.md` | `plan` / `workflow` | Planning exists | Global index |
-| Change plan | `docs/plans/YYYY-MM-DD-<slug>.md` | `plan` | Workflow-managed change | Detailed plan |
+| Plans | `docs/plans/YYYY-MM-DD-<slug>.md` | `plan` | Workflow-managed change | Detailed plan |
 | Change metadata | `docs/changes/<change-id>/change.yaml` | `workflow` | Formal change lifecycle | Metadata ledger |
-| Review record | `docs/changes/<change-id>/reviews/<stage>-r<n>.md` | review skill | Formal review | Review evidence |
+| Formal review records | `docs/changes/<change-id>/reviews/<stage>-r<n>.md` | review skill | Formal review | Review evidence |
 | Review log | `docs/changes/<change-id>/review-log.md` | review skills | Formal review exists | Review index |
 | Review resolution | `docs/changes/<change-id>/review-resolution.md` | review-resolution | Findings require disposition | Resolution evidence |
 | Explain change | `docs/changes/<change-id>/explain-change.md` | `explain-change` | Final explanation | Change rationale |
 | Verify report | `docs/changes/<change-id>/verify-report.md` | `verify` | Verify stage | Branch-readiness proof |
-| PR handoff | `docs/changes/<change-id>/pr.md` | `pr` | PR stage | Local handoff |
+| PR handoff | Pull request body | `pr` | PR stage | Local handoff only when project policy requires it |
 | Learn session | `docs/learn/sessions/YYYY-MM-DD-<slug>.md` | `learn` | Learn trigger | Historical rationale |
 
 ## Review record placement

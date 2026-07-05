@@ -6873,6 +6873,8 @@ and result format.
             "## Stage obligations",
             "## Artifact registry",
             "artifact_locations:",
+            "formal_review_record:",
+            "external_surface: pull_request_body",
             "## Artifact location table",
             "## Review record placement",
             "## Plan surfaces",
@@ -6920,6 +6922,58 @@ and result format.
         for term in forbidden_terms:
             with self.subTest(term=term):
                 self.assertNotIn(term, skeleton)
+
+    def test_workflow_guide_skeleton_m2_composes_workflow_map_validation(self) -> None:
+        path = ROOT / "skills" / "workflow" / "assets" / "workflows-skeleton.md"
+        skeleton = path.read_text(encoding="utf-8")
+
+        self.assertEqual(
+            skill_validation.validate_workflow_guide_skeleton_contract(path, skeleton),
+            [],
+        )
+
+        without_migration_notes = skeleton.replace("## Migration notes", "## Legacy notes", 1)
+        missing_section_errors = skill_validation.validate_workflow_guide_skeleton_contract(
+            path,
+            without_migration_notes,
+        )
+        self.assertIn(
+            f"{path}: workflow-guide skeleton missing required section Migration notes",
+            missing_section_errors,
+        )
+
+        without_formal_review = re.sub(
+            r"\n  formal_review_record:\n"
+            r"    owner: review skills\n"
+            r"    path: docs/changes/<change-id>/reviews/<stage>-r<n>\.md\n"
+            r"    required_when: formal review is recorded\n"
+            r"    notes: formal review artifact\n",
+            "\n",
+            skeleton,
+            count=1,
+        )
+        missing_registry_errors = skill_validation.validate_workflow_guide_skeleton_contract(
+            path,
+            without_formal_review,
+        )
+        self.assertIn(
+            f"{path}: artifact registry missing required entry formal_review_record",
+            missing_registry_errors,
+        )
+
+        mismatched_table = skeleton.replace(
+            "| Proposals | `docs/proposals/<change-id>.md` |",
+            "| Proposals | `docs/proposals/other.md` |",
+            1,
+        )
+        mismatch_errors = skill_validation.validate_workflow_guide_skeleton_contract(
+            path,
+            mismatched_table,
+        )
+        self.assertIn(
+            f"{path}: artifact table row Proposals placement docs/proposals/other.md does not match registry entry proposal placement docs/proposals/<change-id>.md",
+            mismatch_errors,
+        )
 
     def test_project_artifact_location_m1_retained_fixture_has_durable_rationale(self) -> None:
         rationale = SKILL_VALIDATOR_FIXTURE_README.read_text(encoding="utf-8")
