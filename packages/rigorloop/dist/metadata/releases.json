@@ -1,11 +1,17 @@
 {
-  "schema_version": 1,
   "releases": {
     "v0.3.4": {
-      "source_repository": "xiongxianfei/rigorloop",
-      "release_tag": "v0.3.4",
       "bundled_metadata": "adapter-artifacts-v0.3.4.json",
-      "bundled_metadata_sha256": "230793a413e19f29b39a0b42677b6ea432a7f0c93b61beb8dc6c2d4d243abb1b"
+      "bundled_metadata_sha256": "230793a413e19f29b39a0b42677b6ea432a7f0c93b61beb8dc6c2d4d243abb1b",
+      "release_tag": "v0.3.4",
+      "source_repository": "xiongxianfei/rigorloop"
+    },
+    "v0.3.5": {
+      "bundled_metadata": "adapter-artifacts-v0.3.5.json",
+      "bundled_metadata_sha256": "e0ad291b0c9082074d7441761c4d7f7a610538177f7d8629782e4c9ebb2893dc",
+      "release_tag": "v0.3.5",
+      "source_repository": "xiongxianfei/rigorloop"
     }
-  }
+  },
+  "schema_version": 1
 }

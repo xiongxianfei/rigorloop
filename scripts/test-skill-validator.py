@@ -1545,6 +1545,14 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "assets/coverage-map-row.md": self.spec_family_asset_text(
                         template="test-spec-coverage-map-row-v1", skill="test-spec"
                     ),
+                    "assets/validation-command-row.md": self.spec_family_asset_text(
+                        template="test-spec-validation-command-row-v1",
+                        skill="test-spec",
+                    ),
+                    "assets/milestone-proof-row.md": self.spec_family_asset_text(
+                        template="test-spec-milestone-proof-row-v1",
+                        skill="test-spec",
+                    ),
                 },
             )
 
@@ -1665,6 +1673,196 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("Resource map entry for 'assets/spec-skeleton.md' must use literal COPY", output)
             self.assertIn("Resource map entry for 'assets/spec-skeleton.md' must name fields or structures to fill", output)
+
+    def valid_test_spec_proof_contract_output(self) -> str:
+        return textwrap.dedent(
+            """\
+            # Representative Test Spec
+
+            ## Status
+
+            active
+
+            ## Validation commands
+
+            | Command ID | Command | Classification | Owner | Owning milestone | First required milestone | Failure behavior | Zero-test behavior | Evidence artifact | Safe mode / side-effect boundary |
+            | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+            | CMD1 | `python scripts/test-example.py` | existing/configured | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |
+            | CMD2 | `python scripts/planned-validator.py` | planned-for-implementation | implement | M2 | M2 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |
+            | CMD3 | `python scripts/ci-validator.py` | ci-owned | ci | ci | CI required check | fail CI validation | zero tests fail | `docs/changes/example/change.yaml` | CI only; no local network |
+            | CMD4 | `python scripts/release-validator.py` | release-owned | release | release | release closeout | block release evidence | not applicable; release evidence command | `docs/changes/example/release-evidence.md` | release-owned; no publication during implementation |
+
+            ## Milestone proof map
+
+            | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
+            | --- | --- | --- | --- | --- | --- | --- |
+            | M1 | T1 | none | CMD1 | `docs/changes/example/change.yaml` | code-review M1 | Existing validator proof. |
+            | M2 | T2 | none | CMD2 | `docs/changes/example/change.yaml` | code-review M2 | Planned command becomes required. |
+            | CI | T3 | none | CMD3 | `docs/changes/example/change.yaml` | CI required check | CI-owned command proof. |
+            | release | T4 | none | CMD4 | `docs/changes/example/release-evidence.md` | release closeout | Release-owned command proof. |
+
+            ## Test cases
+
+            ### T1. Existing command-backed proof
+
+            - Covers: R1
+            - Level: unit
+            - Command IDs: CMD1
+            - Steps: Run `python scripts/test-example.py`.
+            - Expected result: passes.
+            - Evidence artifact: `docs/changes/example/change.yaml`
+            - Automation location: `python scripts/test-example.py`
+            - Required by milestone: M1
+
+            ### T2. Planned command proof
+
+            - Covers: R2
+            - Level: unit
+            - Command IDs: CMD2
+            - Steps: Run planned validator after M2 implementation.
+            - Expected result: passes.
+            - Evidence artifact: `docs/changes/example/change.yaml`
+            - Automation location: `python scripts/planned-validator.py`
+            - Required by milestone: M2
+
+            ### T3. CI-owned command proof
+
+            - Covers: EC3
+            - Level: smoke
+            - Command IDs: CMD3
+            - Steps: CI runs `python scripts/ci-validator.py`.
+            - Expected result: CI evidence is recorded.
+            - Evidence artifact: `docs/changes/example/change.yaml`
+            - Automation location: `python scripts/ci-validator.py`
+            - Required by milestone: CI required check
+
+            ### T4. Release-owned command proof
+
+            - Covers: EC4
+            - Level: smoke
+            - Command IDs: CMD4
+            - Steps: Release owner runs `python scripts/release-validator.py`.
+            - Expected result: Release evidence is recorded.
+            - Evidence artifact: `docs/changes/example/release-evidence.md`
+            - Automation location: `python scripts/release-validator.py`
+            - Required by milestone: release closeout
+            """
+        )
+
+    def test_test_spec_proof_contract_valid_command_ledger_passes(self) -> None:
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            self.valid_test_spec_proof_contract_output(),
+            milestone_based_plan=True,
+        )
+        self.assertEqual(errors, [])
+
+    def test_test_spec_proof_contract_named_command_missing_ledger_fails(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "| CMD1 | `python scripts/test-example.py` | existing/configured | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |\n",
+            "",
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("named validation command missing from ledger: python scripts/test-example.py", errors)
+
+    def test_test_spec_proof_contract_command_missing_classification_fails(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "| CMD1 | `python scripts/test-example.py` | existing/configured | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
+            "| CMD1 | `python scripts/test-example.py` |  | implement | M1 | M1 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("command CMD1 missing classification", errors)
+
+    def test_test_spec_proof_contract_unknown_classification_fails_closed(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "existing/configured",
+            "already-configured",
+            1,
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("command CMD1 has unknown classification: already-configured", errors)
+
+    def test_test_spec_proof_contract_planned_command_missing_owner_or_milestone_fails(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "| CMD2 | `python scripts/planned-validator.py` | planned-for-implementation | implement | M2 | M2 closeout | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
+            "| CMD2 | `python scripts/planned-validator.py` | planned-for-implementation |  |  |  | fail milestone validation | zero tests fail | `docs/changes/example/change.yaml` | local only; no network |",
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("planned command CMD2 missing owner", errors)
+        self.assertIn("planned command CMD2 missing owning milestone", errors)
+        self.assertIn("planned command CMD2 missing first required milestone", errors)
+
+    def test_test_spec_proof_contract_milestone_plan_missing_milestone_map_fails(self) -> None:
+        fixture = re.sub(
+            r"## Milestone proof map\n\n(?:\|.*\n)+\n",
+            "",
+            self.valid_test_spec_proof_contract_output(),
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("milestone-based plan missing Milestone proof map", errors)
+
+    def test_test_spec_proof_contract_raw_command_without_command_id_fails(self) -> None:
+        fixture = self.valid_test_spec_proof_contract_output().replace(
+            "- Command IDs: CMD1",
+            "- Command IDs: none",
+            1,
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=True,
+        )
+        self.assertIn("test case T1 uses raw command without Command ID", errors)
+
+    def test_test_spec_proof_contract_trivial_command_free_non_milestone_passes(self) -> None:
+        fixture = textwrap.dedent(
+            """\
+            # Trivial Test Spec
+
+            ## Status
+
+            active
+
+            ## Validation commands
+
+            No validation commands are part of this proof map because the change is documentation-only.
+
+            ## Milestone proof map
+
+            Not applicable because this is a one-shot non-milestone change.
+
+            ## Test cases
+
+            ### T1. Static documentation review
+
+            - Covers: R1
+            - Level: manual
+            - Command IDs: none
+            - Steps: Review the changed prose.
+            - Expected result: Approved wording is present.
+            - Evidence artifact: not applicable
+            - Automation location: manual
+            - Required by milestone: not applicable
+            """
+        )
+        errors = skill_validation.validate_test_spec_proof_contract_fixture(
+            fixture,
+            milestone_based_plan=False,
+        )
+        self.assertEqual(errors, [])
 
     def test_spec_family_asset_metadata_status_and_placeholder_required(self) -> None:
         cases = [
@@ -5068,6 +5266,73 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_review_fix_workflow_command_guidance(self) -> None:
+        """Workflow guidance exposes the bounded review-fix command contract."""
+
+        required_by_surface = {
+            "skills/workflow/SKILL.md": [
+                "$workflow auto: <target-stage>",
+                "$workflow auto: status",
+                "$workflow auto: off",
+                "canonical profile `bounded-review-fix` under `workflow.autoprogression.review_fix`",
+                "Valid review-fix targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, and `test-spec-review`",
+                "`$workflow auto: status` reports current review-fix state without mutating artifacts.",
+                "`$workflow auto: off` clears or terminally cancels review-fix authorization.",
+                "mode, target stage, current stage, review status, auto-applied fixes, human decisions required, artifacts changed, review rerun status, next stage run, and stop reason",
+            ],
+            "docs/workflows.md": [
+                "$workflow auto: <target-stage>",
+                "$workflow auto: status",
+                "$workflow auto: off",
+                "profile `bounded-review-fix`",
+                "Valid review-fix target stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, and `test-spec-review`",
+                "`$workflow auto: status` reports current review-fix state without mutating artifacts.",
+                "`$workflow auto: off` clears or terminally cancels review-fix authorization.",
+                "mode, target stage, current stage, review status, auto-applied fixes, human decisions required, artifacts changed, review rerun status, next stage run, and stop reason",
+            ],
+        }
+        for relative_path, terms in required_by_surface.items():
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in terms:
+                with self.subTest(surface=relative_path, term=term):
+                    self.assertIn(term, body)
+
+    def test_review_fix_direct_review_invocations_remain_isolated(self) -> None:
+        """Direct review skills do not activate or resume bounded review-fix state."""
+
+        required_by_skill = {
+            "proposal-review": "Direct or review-only `proposal-review` requests remain isolated by default.",
+            "spec-review": "Direct or review-only `spec-review` requests remain isolated by default.",
+            "architecture-review": "Direct or review-only `architecture-review` requests remain isolated by default.",
+            "plan-review": "Direct or review-only `plan-review` requests remain isolated by default.",
+            "test-spec-review": "Direct or review-only `test-spec-review` requests remain isolated by default.",
+            "code-review": "Direct or review-only `code-review` requests remain isolated by default.",
+        }
+        for skill_name, term in required_by_skill.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                self.assertIn(term, body)
+                self.assertNotIn("Direct review invocations activate `bounded-review-fix`", body)
+                self.assertNotIn("Direct review invocations resume `bounded-review-fix`", body)
+
+    def test_review_fix_profile_boundaries_preserve_existing_autoprogression(self) -> None:
+        """Review-fix guidance remains proposal-side and does not widen existing profiles."""
+
+        workflow_body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+        workflow_docs = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        required_terms = [
+            "Review-fix never continues past the requested target and never invokes implementation, code-review, verify, PR, release, publication, network, destructive, or external-state operations.",
+            "The implementation profile is verify-bounded implementation autoprogression.",
+            "Existing `authoring-through-plan-review` and `implementation-through-verify` behavior remains unchanged unless a later approved spec explicitly changes those profiles.",
+        ]
+        for surface_name, body in {
+            "skills/workflow/SKILL.md": workflow_body,
+            "docs/workflows.md": workflow_docs,
+        }.items():
+            for term in required_terms:
+                with self.subTest(surface=surface_name, term=term):
                     self.assertIn(term, body)
 
     def test_review_independence_m3_code_review_pilot_guidance(self) -> None:

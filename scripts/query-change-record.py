@@ -29,6 +29,7 @@ COMPACT_ARTIFACT_PATH_VAR_KEYS = {
 AUTOPROGRESSION_NAMED_RECORDS = (
     "authoring_through_plan_review",
     "implementation_through_verify",
+    "review_fix",
 )
 
 
@@ -355,7 +356,18 @@ def profile_policy(
                 f"#workflow.autoprogression.{record_key}"
             )
         }
-        for field in ("profile", "phase", "state", "authorized_by", "authorized_at", "change_id"):
+        for field in (
+            "profile",
+            "phase",
+            "state",
+            "status",
+            "target_stage",
+            "authorized_by",
+            "authorized_at",
+            "armed_by",
+            "armed_at",
+            "change_id",
+        ):
             value = record.get(field)
             if isinstance(value, str):
                 record_policy[field] = value
