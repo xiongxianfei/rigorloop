@@ -9,8 +9,12 @@ active
 - Spec: `specs/workflow-skill-artifact-location-map.md`
 - Plan: `docs/plans/2026-06-18-workflow-skill-artifact-location-map.md`
 - Proposal: `docs/proposals/2026-06-17-workflow-skill-artifact-location-map.md`
+- Skeleton proposal: `docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md`
+- Skeleton plan: `docs/plans/2026-07-05-workflow-guide-skeleton-asset.md`
 - Spec review: `docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/spec-review-r2.md`
+- Skeleton spec review: `docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/spec-review-r1.md`
 - Plan review: `docs/changes/2026-06-17-workflow-skill-artifact-location-map/reviews/plan-review-r1.md`
+- Skeleton plan review: `docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/plan-review-r1.md`
 - Owner approval: approved for implementation on 2026-06-18.
 - Architecture/ADRs: not applicable; the approved spec and plan classify this as workflow-governance, skill text, and validation work rather than runtime architecture work.
 
@@ -45,6 +49,11 @@ active
 | `R48`, `R52` | `T16` | integration, smoke | Adapter output proof uses repository-owned generation/checks and generated public adapter output is not hand-edited. |
 | `R49` | `T14` | manual | Cold-read proof answers proposal-review placement, workflow-managed plan placement, and `docs/plan.md` purpose. |
 | `R50`, `R51` | `T14`, `T15` | manual, smoke | Lifecycle order and artifact content schemas are preserved. |
+| `R54`, `R55`, `R60` | `T17` | integration | Workflow skill packages the skeleton, maps it with `COPY`, and keeps the full skeleton body out of `SKILL.md`. |
+| `R56`, `R57`, `R58` | `T18` | unit, integration | Skeleton metadata, required structural sections, YAML registry shape, and Markdown table shape are present. |
+| `R59`, `R61` | `T19` | integration, manual | Skeleton remains structural and stage skills do not copy the full workflow-guide table. |
+| `R62` | `T20` | unit, integration | Validator coverage proves skeleton existence, resource-map mapping, required sections, and workflow-map registry alignment. |
+| `R63` | `T21` | smoke | Generated skill mirrors and generated adapters include the mapped skeleton asset when the workflow skill is packaged. |
 
 ## Example coverage map
 
@@ -59,6 +68,9 @@ active
 | `E7` | `T11` | Unknown artifact type blocks instead of path inference. |
 | `E8` | `T8` | PR handoff can use `external_surface` or `policy` instead of `path`, but not zero or multiple placement representations. |
 | `E9` | `T13` | Review customization stays under `docs/changes/<change-id>/reviews/` unless higher-priority authority permits otherwise. |
+| `E10` | `T17`, `T18` | Workflow skill exposes and maps `assets/workflows-skeleton.md` for new project-local guides. |
+| `E11` | `T18`, `T19` | Skeleton structure is present without lifecycle policy or artifact schemas. |
+| `E12` | `T21` | Generated skill mirrors and adapter packages include mapped skeleton assets. |
 
 ## Edge case coverage
 
@@ -84,6 +96,12 @@ active
 - `EC18`: material review finding before change pack requires creating or requesting the change pack: `T12`, `T13`
 - `EC19`: approved spec wins over stale workflow guide: `T11`
 - `EC20`: adapter validation not relevant is recorded as not applicable with rationale: `T16`
+- `EC11a`: workflow skill maps `assets/workflows-skeleton.md` but the file is missing: `T17`, `T20`
+- `EC11b`: generated adapter packaging includes workflow but omits the skeleton: `T21`
+- `EC11c`: skeleton registry entry is not recognized by workflow-map validation: `T20`
+- `EC21`: skeleton omits a required structural section: `T18`, `T20`
+- `EC22`: skeleton embeds hidden policy or artifact schema details: `T19`
+- `EC23`: stage skill copies the full workflow-guide table for style-only consistency: `T19`
 
 ## Test cases
 
@@ -331,6 +349,88 @@ active
 - Failure proves: Installed-skill behavior can drift from canonical workflow skill text or generated output was edited outside repository-owned generation.
 - Automation location: `scripts/build-skills.py`; `scripts/test-build-skills.py`; `scripts/test-adapter-distribution.py`; manual diff inspection for generated-output boundaries.
 
+### T17. Workflow skill packages and maps the workflow-guide skeleton
+
+- Covers: `R54`, `R55`, `R60`, `E10`, `EC11a`, `AC21`, `AC22`
+- Level: integration
+- Fixture/setup: `skills/workflow/SKILL.md`, `skills/workflow/assets/workflows-skeleton.md`, `scripts/test-skill-validator.py`
+- Steps:
+  - Add or update validator coverage that asserts `skills/workflow/assets/workflows-skeleton.md` exists.
+  - Assert `skills/workflow/SKILL.md` contains a `Resource map` entry that uses `COPY` for `assets/workflows-skeleton.md`.
+  - Assert the resource-map entry says the skeleton is used for creating a new project-local `docs/workflows.md` or fully rewriting a stale guide.
+  - Assert `skills/workflow/SKILL.md` does not inline the full skeleton body.
+  - Add a negative fixture or temporary missing-file check for a mapped but absent skeleton asset.
+  - Run `python scripts/test-skill-validator.py -k workflow`.
+- Expected result: The workflow skill maps the skeleton asset deterministically and validation fails if the mapped asset is missing.
+- Failure proves: The skill can claim guide-creation behavior without shipping the copy-and-fill structure.
+- Automation location: `scripts/test-skill-validator.py`
+
+### T18. Workflow-guide skeleton has required structural content
+
+- Covers: `R56`, `R57`, `R58`, `E10`, `E11`, `EC21`, `AC23`, `AC24`
+- Level: unit
+- Fixture/setup: `skills/workflow/assets/workflows-skeleton.md`, skeleton-content fixtures when needed
+- Steps:
+  - Assert the skeleton includes metadata comments for template name, owning skill, template status, and maintained-alongside source.
+  - Assert required headings exist: `Status`, `Source rank`, `Lifecycle graph`, `Stage obligations`, `Artifact registry`, `Artifact location table`, `Review record placement`, `Plan surfaces`, `Guide ownership`, `Customization rules`, `Migration notes`, and `Validation notes`.
+  - Assert the skeleton includes a fenced YAML block with top-level `artifact_locations`.
+  - Assert the skeleton includes a human-readable Markdown artifact-location table.
+  - Add missing-section negative fixtures or direct parser tests for required section omissions.
+  - Run `python scripts/test-skill-validator.py -k workflow`.
+- Expected result: The skeleton contains the full structural guide shape and missing required sections fail with the section name.
+- Failure proves: Agents could still create partial workflow guides from memory.
+- Automation location: `scripts/test-skill-validator.py`
+
+### T19. Skeleton and stage skills preserve source-of-truth boundaries
+
+- Covers: `R59`, `R61`, `E11`, `EC22`, `EC23`, `AC25`, `AC27`, `AC30`, `AC31`
+- Level: integration
+- Fixture/setup: `skills/workflow/assets/workflows-skeleton.md`, directly affected stage skills, `docs/workflows.md`
+- Steps:
+  - Inspect the skeleton for hidden lifecycle approval policy, enum policy, review approval rules, or artifact content schemas beyond brief fill guidance.
+  - Assert directly affected stage skills retain concise workflow-guide lookup wording and portable defaults.
+  - Assert directly affected stage skills do not copy the full workflow-guide artifact-location table for style-only consistency.
+  - Confirm this slice does not regenerate or migrate existing `docs/workflows.md`.
+  - Reuse `T11` unknown-artifact blocking proof for `AC31`.
+  - Run `python scripts/validate-skills.py`.
+  - Run `git diff --name-status -- docs/workflows.md skills`.
+- Expected result: The skeleton is structural, stage skills remain portable and concise, and existing workflow guides are not automatically regenerated.
+- Failure proves: The skeleton became a hidden policy source or the change expanded into broad stage-skill churn.
+- Automation location: `scripts/validate-skills.py`; manual bounded diff inspection
+
+### T20. Workflow-map validation covers skeleton registry and table alignment
+
+- Covers: `R62`, `EC11c`, `EC21`, `AC26`
+- Level: unit
+- Fixture/setup: skeleton registry fixtures, workflow-map validator fixtures, `scripts/test-skill-validator.py`
+- Steps:
+  - Extend or compose workflow-map validation so skeleton registry/table coverage uses the same registry contract as `docs/workflows.md`.
+  - Add positive coverage for required artifact types in the skeleton registry and Markdown projection.
+  - Add negative coverage for missing required artifact types, missing skeleton sections, and registry/table mismatch.
+  - Assert guide-system validation composes or invokes workflow-map validation instead of duplicating an inconsistent registry contract.
+  - Run `python scripts/test-skill-validator.py -k workflow_map`.
+  - Run `python scripts/validate-guide-system.py`.
+- Expected result: Registry/table consistency and required artifact coverage fail through the workflow-map validator or a composed validator call.
+- Failure proves: Skeleton validation can drift from the approved workflow-map registry contract.
+- Automation location: `scripts/test-skill-validator.py`; `scripts/validate-guide-system.py`
+
+### T21. Generated skill and adapter packaging include the skeleton
+
+- Covers: `R63`, `E12`, `EC11b`, `AC28`, `AC29`
+- Level: smoke
+- Fixture/setup: canonical workflow skill source, generated skill mirror checks, adapter archive build checks
+- Steps:
+  - Run generated skill build checks that include the workflow skill.
+  - Assert generated skill output contains `assets/workflows-skeleton.md` whenever it includes the workflow skill.
+  - Run adapter archive packaging validation when the workflow skill is packaged.
+  - Assert adapter archives include `assets/workflows-skeleton.md` with the workflow skill.
+  - Confirm generated public adapter output is not hand-edited to satisfy the check.
+  - Run `python scripts/test-build-skills.py`.
+  - Run `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives`.
+- Expected result: Generated skill mirrors and adapter archives include the mapped skeleton asset or fail packaging validation.
+- Failure proves: Installed users can receive a workflow skill that references an asset not included in the package.
+- Automation location: `scripts/test-build-skills.py`; `scripts/test-adapter-distribution.py`
+
 ## Fixtures and data
 
 - Real repository surfaces:
@@ -340,6 +440,7 @@ active
   - `specs/rigorloop-workflow.md`
   - `specs/installed-skill-artifact-placement-contract.md`
   - `skills/workflow/SKILL.md`
+  - `skills/workflow/assets/workflows-skeleton.md`
   - `skills/plan/SKILL.md`
   - `skills/proposal-review/SKILL.md`
   - `skills/spec-review/SKILL.md`
@@ -352,6 +453,10 @@ active
   - Missing Markdown projection and missing YAML entry fixtures.
   - Stale `docs/changes/<change-id>/plan.md` canonical plan-body fixture.
   - Unknown artifact type fixture such as `release_attestation`.
+  - Missing workflow-guide skeleton asset fixture.
+  - Missing skeleton required-section fixture.
+  - Skeleton registry/table mismatch fixture.
+  - Generated package missing mapped skeleton asset fixture or archive proof.
   - Formal review outside-change-pack fixture such as `docs/reviews/proposal-review-r1.md`.
   - Valid customized review filename under `docs/changes/<change-id>/reviews/`.
   - PR handoff `external_surface` and `policy` fixtures.
@@ -369,10 +474,13 @@ Do not mock repository artifacts or generated outputs. Use real files for integr
 - `T7` rejects the stale `docs/changes/<change-id>/plan.md` canonical plan-body contract.
 - `T11` and `T13` preserve project-local customization only within the approved source-rank and review-placement boundaries.
 - `T16` preserves generated-output boundaries and adapter compatibility when packaging is in scope.
+- `T19` proves existing `docs/workflows.md` is not automatically regenerated from the skeleton.
+- `T21` proves generated skill and adapter packaging include the skeleton when packaging is in scope.
 
 ## Observability verification
 
 - Validator failures must name the failing artifact type and cause for registry parse errors, missing fields, duplicate placement representation, registry/table mismatch, stale plan path, invalid formal review path, unknown artifact type, and adapter drift.
+- Validator failures must name missing skeleton assets, missing resource-map entries, missing skeleton sections, skeleton registry/table mismatches, and packaged-output skeleton omissions.
 - Cold-read proof must be recorded in change-local evidence and answer the three required placement questions without relying on chat history.
 - Review and lifecycle validation must continue to expose this change's formal review outcomes through `review-log.md`, `review-resolution.md`, and clean review receipts.
 
@@ -406,6 +514,7 @@ Do not mock repository artifacts or generated outputs. Use real files for integr
 - Do not test migration of existing `docs/plans/*.md` files into change packs because migration is explicitly out of scope.
 - Do not assert a universal repository-local `pr.md` file because PR handoff may use `external_surface` or `policy`.
 - Do not snapshot the entire `docs/workflows.md` file as the primary proof; validate the stable registry and table contracts instead.
+- Do not snapshot the entire workflow-guide skeleton as the primary proof; validate required metadata, sections, registry shape, table shape, and packaging boundaries.
 
 ## Uncovered gaps
 
@@ -414,6 +523,7 @@ None. Requirements that are guidance-only are covered by manual contract review 
 ## Next artifacts
 
 ```text
+test-spec-review
 implementation
 code-review
 review-resolution when triggered
@@ -429,4 +539,4 @@ None yet.
 
 ## Readiness
 
-This test spec is the active proof-planning surface for M1 through M3 in `docs/plans/2026-06-18-workflow-skill-artifact-location-map.md`. The M1 execution slice should add or update the tests named here before changing production validation logic or canonical workflow/skill behavior.
+This test spec is the active proof-planning surface for the workflow-map contract and the skeleton asset amendment. It is ready for `test-spec-review` before implementing M1 through M3 in `docs/plans/2026-07-05-workflow-guide-skeleton-asset.md`.

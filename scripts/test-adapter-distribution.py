@@ -979,6 +979,33 @@ release_gate:
 
             self.assertEqual([], validate_adapter_archives("v0.1.5", output_dir, skills_root=root / "skills"))
 
+    def test_adapter_archives_include_workflow_skeleton_when_workflow_is_packaged(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+            build_adapter_archives("v0.1.3", output_dir, skills_root=ROOT / "skills")
+
+            packaged_adapters: list[str] = []
+            expected_text = (ROOT / "skills" / "workflow" / "assets" / "workflows-skeleton.md").read_text(
+                encoding="utf-8"
+            )
+            for adapter in SUPPORTED_ADAPTERS:
+                config = ADAPTERS[adapter]
+                skill_entry = config.skill_path("workflow").as_posix()
+                asset_entry = (
+                    config.skill_root / "workflow" / "assets" / "workflows-skeleton.md"
+                ).as_posix()
+                archive_path = output_dir / adapter_archive_name(adapter, "v0.1.3")
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = set(archive.namelist())
+                    if skill_entry not in names:
+                        continue
+                    packaged_adapters.append(adapter)
+                    self.assertIn(asset_entry, names)
+                    self.assertEqual(archive.read(asset_entry).decode("utf-8"), expected_text)
+
+            self.assertTrue(packaged_adapters)
+            self.assertEqual([], validate_adapter_archives("v0.1.3", output_dir, skills_root=ROOT / "skills"))
+
     def test_validate_adapter_output_rejects_stale_mapped_resource_hashes(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

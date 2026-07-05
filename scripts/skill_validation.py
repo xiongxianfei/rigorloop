@@ -894,6 +894,26 @@ WORKFLOW_ARTIFACT_CANONICAL_PLAN_PATH = "docs/plans/YYYY-MM-DD-slug.md"
 WORKFLOW_ARTIFACT_STALE_CHANGE_PLAN_PATH = "docs/changes/<change-id>/plan.md"
 WORKFLOW_ARTIFACT_REVIEW_ROOT_PATH = "docs/changes/<change-id>/reviews/"
 WORKFLOW_ARTIFACT_REVIEW_PATH = "docs/changes/<change-id>/reviews/<stage>-r<n>.md"
+WORKFLOW_GUIDE_SKELETON_REQUIRED_METADATA = (
+    "<!-- Template: workflows-skeleton -->",
+    "<!-- Skill: workflow -->",
+    "<!-- Template status: normative -->",
+    "<!-- Maintained alongside: skills/workflow/SKILL.md -->",
+)
+WORKFLOW_GUIDE_SKELETON_REQUIRED_SECTIONS = (
+    "Status",
+    "Source rank",
+    "Lifecycle graph",
+    "Stage obligations",
+    "Artifact registry",
+    "Artifact location table",
+    "Review record placement",
+    "Plan surfaces",
+    "Guide ownership",
+    "Customization rules",
+    "Migration notes",
+    "Validation notes",
+)
 
 
 @dataclass(frozen=True)
@@ -1512,6 +1532,39 @@ def validate_workflow_artifact_map_contract(
                 errors.append(
                     f"{skill_path}: stage skill routes formal reviews outside {WORKFLOW_ARTIFACT_REVIEW_ROOT_PATH}"
                 )
+
+    return errors
+
+
+def validate_workflow_guide_skeleton_contract(path: Path, skeleton_text: str) -> list[str]:
+    """Validate the workflow-guide skeleton through the workflow-map contract."""
+
+    errors: list[str] = []
+    for metadata in WORKFLOW_GUIDE_SKELETON_REQUIRED_METADATA:
+        if metadata not in skeleton_text:
+            errors.append(f"{path}: workflow-guide skeleton missing metadata {metadata}")
+
+    for section in WORKFLOW_GUIDE_SKELETON_REQUIRED_SECTIONS:
+        if _extract_markdown_section(skeleton_text, section) is None:
+            errors.append(f"{path}: workflow-guide skeleton missing required section {section}")
+
+    # The skeleton labels the human projection as a table. Reuse the workflow-map
+    # validator by projecting that heading to the live guide heading it already owns.
+    workflow_map_text = skeleton_text.replace(
+        "## Artifact location table",
+        "## Artifact locations",
+        1,
+    )
+    # Customer-project skeleton placeholders intentionally use <slug> until the
+    # follow-up placeholder-literal alignment task settles that spelling.
+    workflow_map_text = workflow_map_text.replace(
+        "docs/plans/YYYY-MM-DD-<slug>.md",
+        WORKFLOW_ARTIFACT_CANONICAL_PLAN_PATH,
+    ).replace(
+        "docs/learn/sessions/YYYY-MM-DD-<slug>.md",
+        "docs/learn/sessions/YYYY-MM-DD-slug.md",
+    )
+    errors.extend(validate_workflow_artifact_map_contract(path, workflow_map_text))
 
     return errors
 
