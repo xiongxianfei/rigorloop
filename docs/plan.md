@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Workflow Guide Skeleton Asset](plans/2026-07-05-workflow-guide-skeleton-asset.md) | active | implement | 2026-07-05-workflow-guide-skeleton-asset |
+| [Workflow Guide Skeleton Asset](plans/2026-07-05-workflow-guide-skeleton-asset.md) | active | code-review | 2026-07-05-workflow-guide-skeleton-asset |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked

@@ -42,6 +42,7 @@ class BuildSkillsTests(unittest.TestCase):
         self.assertEqual(result, 0)
         self.assertTrue((output_dir / "proposal" / "SKILL.md").is_file())
         self.assertTrue((output_dir / "workflow" / "SKILL.md").is_file())
+        self.assertTrue((output_dir / "workflow" / "assets" / "workflows-skeleton.md").is_file())
         self.assertFalse(self.build_skills.collect_drift(self.build_skills.CANONICAL_SKILLS_DIR, output_dir))
 
     def test_check_with_output_dir_generates_and_validates_non_tracked_output(self) -> None:
