@@ -9,7 +9,10 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from skill_validation import validate_workflow_artifact_map_contract
+from skill_validation import (
+    validate_workflow_artifact_map_contract,
+    validate_workflow_guide_skeleton_contract,
+)
 
 
 PRIMARY_GUIDE_LINKS = (
@@ -116,6 +119,13 @@ def _validate_workflow_guide(repo: Path, messages: list[str]) -> None:
     workflow_errors = validate_workflow_artifact_map_contract(repo / "docs/workflows.md", text)
     for error in workflow_errors:
         messages.append(f"GUIDE-008: workflow map contract failed: {error}")
+
+
+def _validate_workflow_guide_skeleton(repo: Path, messages: list[str]) -> None:
+    path = repo / "skills/workflow/assets/workflows-skeleton.md"
+    text = _read(path)
+    for error in validate_workflow_guide_skeleton_contract(path, text):
+        messages.append(f"GUIDE-009: workflow skeleton contract failed: {error}")
 
 
 def _validate_project_map(repo: Path, messages: list[str]) -> None:
@@ -225,6 +235,7 @@ def validate(repo: Path) -> ValidationResult:
     repo = repo.resolve()
     _validate_readme(repo, messages)
     _validate_workflow_guide(repo, messages)
+    _validate_workflow_guide_skeleton(repo, messages)
     _validate_project_map(repo, messages)
     _validate_plan_index(repo, messages)
     _validate_learn_sessions(repo, messages)
