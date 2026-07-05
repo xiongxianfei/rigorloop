@@ -299,6 +299,22 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("behavior preservation evidence is recorded",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="architecture-assessment",
+        patterns=("architecture-assessment.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="architecture",
+        allowed_when=("architecture assessment evidence is recorded before downstream planning or implementation",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="pr-handoff",
+        patterns=("pr.md",),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="pr",
+        allowed_when=("change-local PR handoff evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="adoption-surface-review",
         patterns=("adoption-surface-review.md",),
         selector_routes=("artifact_lifecycle.validate",),

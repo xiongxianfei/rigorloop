@@ -157,6 +157,8 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: Verify recorded branch-ready local evidence and handed off to PR.
 - 2026-07-05: PR handoff prepared title, body, requirement coverage, validation summary, risks, and reviewer notes.
 - 2026-07-05: PR #122 opened for review.
+- 2026-07-05: PR #122 hosted CI failed on selector manual-routing debt for `architecture-assessment.md` and `pr.md`.
+- 2026-07-05: Registered architecture-assessment and PR handoff change-local evidence classes, updated guide-system fixture coverage, and reproduced PR-mode CI locally.
 
 ## Decision log
 
@@ -257,6 +259,10 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md --path docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/verify-report.md` passed.
   - `git diff --check -- docs/changes/2026-07-05-workflow-guide-skeleton-asset/verify-report.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+- CI repair validation:
+  - `python scripts/test-select-validation.py -k lifecycle_closeout_evidence_files_route_without_manual_debt` passed.
+  - `python scripts/test-guide-system-validator.py` passed.
+  - `bash scripts/ci.sh --mode pr --base f72b64930153e4ea4df41f5a098f6f9467944115 --head 09401e6f96c13faf7fef3f701bcfa52d7a7e3ae0` passed.
 
 ## Outcome and retrospective
 
