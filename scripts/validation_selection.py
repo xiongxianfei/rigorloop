@@ -137,7 +137,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "markdown_readability.validate": CheckCatalogEntry(
         "markdown_readability.validate",
-        "python scripts/validate-markdown-readability.py <path>...",
+        "python scripts/validate-markdown-readability.py <path>... [--changed-section PATH:START:END ...]",
         "markdown-readability",
     ),
     "markdown_readability.regression": CheckCatalogEntry(

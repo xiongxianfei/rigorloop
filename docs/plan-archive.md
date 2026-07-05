@@ -4,6 +4,8 @@ Completed plan history moved out of the common-read plan index.
 
 ## Done (archive)
 
+- [2026-07-04 Dated Change-Root Convention](plans/2026-07-04-dated-change-root-convention.md) - done; terminal state: closed; PR #121 merged.
+- [2026-06-24 Semantic Source-Line Contract](plans/2026-06-24-semantic-source-line-contract.md) - done; terminal state: done; PR #107 opened for review.
 - [2026-06-24 Implementation Autoprogression Through Verify](plans/2026-06-24-implementation-autoprogression-through-verify.md) - done; terminal state: done; PR #108 merged.
 - [2026-06-24 Proposal-Gated Authoring Autoprogression Through Plan Review](plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md) - done; terminal state: done; PR #106 opened for review.
 - [2026-06-23 Published Skill Resource Integrity Architecture Pilot](plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md) - done; terminal state: done; PR #101 merged.
