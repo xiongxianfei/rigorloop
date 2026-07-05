@@ -70,6 +70,7 @@ Notes:
 - `explore` and `research` are on-demand support, not default prerequisites.
 - `learn` is periodic or explicitly invoked, not a default final per-change stage. It uses tracked session records after Frame and review-visible no-record closeout only before a session runs.
 - `ci-maintenance` means creating or updating hosted CI workflow files, validation automation, or platform configuration. It does not mean running validation, designing tests, specifying validation commands, or waiting for existing CI checks.
+- Contributor-facing Markdown source-line guidance lives in `CONTRIBUTING.md`; the normative contract lives in `specs/documentation-source-formatting.md`.
 - After `spec-review`, the immediate next stage is still `architecture` when needed, otherwise `plan`. Any mention of eventual `test-spec` readiness is downstream readiness, not a stage skip.
 - `plan-review` remains the normal immediate handoff into `test-spec`. If implementation readiness is mentioned there, it is downstream readiness rather than the handoff itself.
 - Formal workflow-managed test specs route from `test-spec` to `test-spec-review` before `implement`; the test spec remains `active`, and approval lives in the review record.

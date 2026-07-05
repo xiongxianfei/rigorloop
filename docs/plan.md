@@ -37,6 +37,7 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-06-26 Independent Test-Spec-Review Gate](plans/2026-06-25-independent-test-spec-review-gate.md) - done; terminal state: done; PR #111 merged.
 - [2026-06-25 Independent Adversarial Review Gates](plans/2026-06-25-independent-adversarial-review-gates.md) - done; terminal state: done; PR #110 merged.
 - [2026-06-24 Implementation Autoprogression Through Verify](plans/2026-06-24-implementation-autoprogression-through-verify.md) - done; terminal state: done; PR #108 merged.
+- [2026-06-24 Semantic Source-Line Contract](plans/2026-06-24-semantic-source-line-contract.md) - done; terminal state: done; PR #107 opened for review.
 
 ## Superseded
 - none yet

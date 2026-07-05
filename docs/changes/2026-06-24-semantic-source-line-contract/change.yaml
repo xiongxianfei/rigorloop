@@ -1,0 +1,245 @@
+change_id: 2026-06-24-semantic-source-line-contract
+title: Semantic source-line contract for review-critical Markdown
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-06-24-semantic-source-line-contract.md
+  spec: specs/documentation-source-formatting.md
+  test_spec: specs/documentation-source-formatting.test.md
+  plan: docs/plans/2026-06-24-semantic-source-line-contract.md
+requirements:
+  - Review the semantic source-line contract proposal before spec.
+  - Confirm the proposal fits the project vision and source-of-truth rules.
+  - Confirm scope preservation for the initial request and follow-up routing.
+  - Record proposal-review R1 as durable formal review evidence.
+  - Keep the review isolated; do not automatically start spec.
+  - Persist owner authorization for workflow-managed authoring through plan-review.
+  - Settle the accepted proposal status before downstream spec reliance.
+  - Settle the approved spec status before planning reliance.
+  - Record architecture assessment before planning.
+  - Create a reviewed execution plan before test-spec and implementation.
+  - Create an active test spec before implementation.
+  - Record owner approval of the active test spec before implementation.
+  - Implement M1 documentation prose validation fixtures and non-mutating validator behavior.
+tests:
+  - Proposal-review R1 approves or records material findings for the proposal.
+  - Review-log indexes proposal-review R1 with zero material findings when clean.
+  - Proposal status is normalized from draft to accepted before downstream spec reliance.
+  - Spec-review R1 approves or records material findings for the documentation source-formatting spec.
+  - Review-log indexes spec-review R1 with zero material findings when clean.
+  - Architecture assessment records whether architecture is required before planning.
+  - Plan maps approved requirements to reviewable implementation milestones and validation commands.
+  - Plan-review R1 approves or records material findings for the execution plan.
+  - Review-log indexes plan-review R1 with zero material findings when clean.
+  - Test spec maps documentation source-formatting requirements, examples, and edge cases to concrete tests.
+  - Owner approval confirms the active test spec may be used for M1 implementation.
+  - Documentation prose validator fixtures exercise pass, fail, warning, CLI, and non-mutation behavior.
+  - Code-review M1 R1 records material findings for explicit hard-break handling and mechanically continued list-item handling.
+  - Review-resolution fixes explicit hard-break handling and mechanically continued list-item handling before rerun code-review.
+  - Code-review M1 R2 confirms review-resolution and closes M1.
+  - M2 adds concise contributor guidance, formatter guardrails, and Tier A source-line cleanup.
+  - Code-review M2 R1 confirms contributor guidance, formatter guardrails, and Tier A cleanup before M3.
+  - M3 routes documentation prose validation through selected validation and records behavior preservation.
+  - Code-review M3 R1 confirms selected-validation routing and behavior-preservation evidence before final closeout.
+  - Explain-change records durable rationale before final verify.
+  - Verify confirms local branch-ready evidence for the semantic change slice and records stacked-base PR targeting constraints.
+  - PR handoff opens PR #107 against the stacked predecessor base.
+  - CI failure resolution registers documentation prose validator, fixture, formatter, and contributor-guidance paths in selected validation.
+workflow:
+  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: "2026-06-24T00:00:00Z"
+    change_id: 2026-06-24-semantic-source-line-contract
+    target_stage: plan-review
+    state: completed
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted
+  - command: spec-review r1
+    result: approved_no_material_findings_recorded
+  - command: upstream status settlement
+    result: documentation_source_formatting_spec_status_approved
+  - command: architecture assessment
+    result: architecture-not-required_existing_repo_owned_validation_pattern_no_shared_markdown_parser_or_generated_ownership_change
+  - command: plan
+    result: active_plan_created_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings_recorded_profile_completed_next_test_spec
+  - command: test-spec
+    result: active_test_spec_created_ready_for_implement_m1
+  - command: user approval
+    result: active_test_spec_approved_for_implement_m1
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_8_tests
+  - command: python scripts/validate-documentation-prose.py --mode audit --path README.md --path VISION.md
+    result: pass_audit_mode_0_errors_10_warnings
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
+    result: pass
+  - command: git diff --check -- scripts/validate-documentation-prose.py scripts/test-documentation-prose-validator.py tests/fixtures/documentation-prose docs/changes/2026-06-24-semantic-source-line-contract
+    result: pass
+  - command: code-review-m1-r1
+    result: changes_requested_PROSE-M1-CR1_PROSE-M1-CR2
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_13_tests_after_review_resolution
+  - command: python scripts/validate-documentation-prose.py --mode enforce --path tests/fixtures/documentation-prose/pass/explicit-hard-break.md
+    result: pass_0_errors_0_warnings
+  - command: python scripts/validate-documentation-prose.py --mode enforce --path tests/fixtures/documentation-prose/fail/list-item-mechanical-continuation.md
+    result: expected_fail_1_mechanically_continued_list_item_error
+  - command: python scripts/validate-documentation-prose.py --mode audit --path README.md --path VISION.md
+    result: pass_audit_mode_6_errors_10_warnings_warning_delta_0
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
+    result: pass_structure_reviews_4_findings_2_log_entries_4_resolution_entries_2_after_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
+    result: pass_after_review_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-24-semantic-source-line-contract/change.yaml --path docs/changes/2026-06-24-semantic-source-line-contract/review-log.md --path docs/changes/2026-06-24-semantic-source-line-contract/review-resolution.md --path docs/plans/2026-06-24-semantic-source-line-contract.md --path docs/plan.md
+    result: pass_after_review_resolution
+  - command: git diff --check -- scripts/validate-documentation-prose.py scripts/test-documentation-prose-validator.py tests/fixtures/documentation-prose docs/changes/2026-06-24-semantic-source-line-contract docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md
+    result: pass_after_review_resolution
+  - command: code-review-m1-r2
+    result: clean_with_notes_no_material_findings_m1_closed
+  - command: code-review-m2-r1
+    result: clean_with_notes_no_material_findings_m2_closed
+  - command: python scripts/test-select-validation.py
+    result: pass_103_tests_after_m3_documentation_prose_routing
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_14_tests_after_m3
+  - command: python scripts/select-validation.py --mode explicit --changed-file README.md --changed-file VISION.md
+    result: pass_selects_documentation_prose_enforce_readme_validate_readme_vision_markers_guide_system_validate
+  - command: code-review-m3-r1
+    result: clean_with_notes_no_material_findings_m3_closed
+  - command: explain-change
+    result: durable_rationale_recorded
+  - command: verify
+    result: local_verify_passed_for_semantic_change_slice_next_stage_pr_target_predecessor_base_f51ec5ab
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_14_tests_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_103_tests_verify
+  - command: python scripts/validate-documentation-prose.py --mode enforce --path README.md --path VISION.md
+    result: pass_0_errors_0_warnings_verify
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md
+    result: pass_0_errors_0_warnings_verify
+  - command: python scripts/select-validation.py --mode explicit --path <semantic-change-paths>
+    result: manual_routing_required_for_validator_scripts_contributor_guidance_and_formatter_configs_resolved_by_direct_plan_test_spec_validation_broad_smoke_not_required
+  - command: python scripts/validate-readme.py && python scripts/validate-readme.py README.md --vision-markers && python scripts/validate-guide-system.py
+    result: pass_verify
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_verify_stacked_branch_predecessor_check
+  - command: python scripts/test-skill-validator.py
+    result: pass_231_tests_verify_stacked_branch_predecessor_check
+  - command: python scripts/test-build-skills.py
+    result: pass_7_tests_verify_stacked_branch_predecessor_check
+  - command: python scripts/build-skills.py --check
+    result: pass_verify_stacked_branch_predecessor_check
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: pass_1_test_verify_stacked_branch_predecessor_check
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
+    result: pass_structure_reviews_7_findings_2_log_entries_7_resolution_entries_2_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <semantic-authoritative-surfaces>
+    result: pass_verify
+  - command: git diff --check -- .
+    result: pass_verify
+  - command: pr
+    result: opened_pr_107_against_feature_proposal_gated_authoring_autoprogression
+  - command: plan index archive update
+    result: moved_oldest_recent_done_entry_to_docs_plan_archive_to_preserve_recent_done_cap
+  - command: ci failure diagnosis
+    result: hosted_ci_failed_because_pr_selector_blocked_unclassified_documentation_prose_validator_fixture_formatter_and_contributor_guidance_paths
+  - command: python scripts/test-select-validation.py
+    result: pass_105_tests_after_ci_selector_fix
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_14_tests_after_ci_selector_fix
+  - command: bash scripts/ci.sh --mode pr --base f51ec5ab593415fb0e6ecdcb0cb0a1af39e92d85 --head HEAD
+    result: pass_selected_ci_checks_after_selector_fix
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md
+    result: pass_explain_change_audit
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
+    result: pass_structure_reviews_5_findings_2_log_entries_5_resolution_entries_2_after_code_review_m1_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
+    result: pass_after_code_review_m1_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-24-semantic-source-line-contract/change.yaml --path docs/changes/2026-06-24-semantic-source-line-contract/review-log.md --path docs/changes/2026-06-24-semantic-source-line-contract/review-resolution.md --path docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r2.md --path docs/plans/2026-06-24-semantic-source-line-contract.md --path docs/plan.md
+    result: pass_after_code_review_m1_r2
+  - command: git diff --check -- docs/changes/2026-06-24-semantic-source-line-contract docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md
+    result: pass_after_code_review_m1_r2
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_14_tests_after_m2_guardrail_coverage
+  - command: python scripts/validate-documentation-prose.py --mode enforce --path README.md --path VISION.md
+    result: pass_0_errors_0_warnings_after_tier_a_cleanup
+  - command: python scripts/validate-readme.py
+    result: pass
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_one_standalone_marker_block_present
+  - command: python scripts/validate-guide-system.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/documentation-source-formatting.md --path docs/workflows.md --path docs/plans/2026-06-24-semantic-source-line-contract.md --path docs/plan.md --path docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
+    result: pass_after_m2
+  - command: git diff --check -- CONTRIBUTING.md docs/workflows.md README.md VISION.md .prettierrc.json .markdownlint.json scripts/test-documentation-prose-validator.py docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md docs/changes/2026-06-24-semantic-source-line-contract
+    result: pass_after_m2
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
+    result: pass_structure_reviews_4_findings_2_log_entries_4_resolution_entries_2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-06-24-semantic-source-line-contract/change.yaml --path docs/changes/2026-06-24-semantic-source-line-contract/review-log.md --path docs/changes/2026-06-24-semantic-source-line-contract/review-resolution.md --path docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r1.md --path docs/plans/2026-06-24-semantic-source-line-contract.md --path docs/plan.md
+    result: pass_after_code_review_m1_r1
+  - command: git diff --check -- docs/changes/2026-06-24-semantic-source-line-contract docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-06-24-semantic-source-line-contract/
+    result: pass_structure_reviews_3_findings_0_log_entries_3_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-06-24-semantic-source-line-contract.md --path specs/documentation-source-formatting.md --path specs/documentation-source-formatting.test.md --path docs/plans/2026-06-24-semantic-source-line-contract.md --path docs/plan.md --path docs/changes/2026-06-24-semantic-source-line-contract/change.yaml --path docs/changes/2026-06-24-semantic-source-line-contract/review-log.md --path docs/changes/2026-06-24-semantic-source-line-contract/reviews/proposal-review-r1.md --path docs/changes/2026-06-24-semantic-source-line-contract/reviews/spec-review-r1.md --path docs/changes/2026-06-24-semantic-source-line-contract/reviews/plan-review-r1.md
+    result: pass_validated_3_artifact_files
+  - command: git diff --check -- docs/proposals/2026-06-24-semantic-source-line-contract.md specs/documentation-source-formatting.md specs/documentation-source-formatting.test.md docs/plans/2026-06-24-semantic-source-line-contract.md docs/plan.md docs/changes/2026-06-24-semantic-source-line-contract
+    result: pass
+review:
+  status: clean_after_code_review_m3_r1
+  unresolved_items: 0
+  material_findings: 2
+  closed_findings: 2
+  open_findings: 0
+changed_files:
+  - docs/proposals/2026-06-24-semantic-source-line-contract.md
+  - specs/documentation-source-formatting.md
+  - specs/documentation-source-formatting.test.md
+  - docs/plans/2026-06-24-semantic-source-line-contract.md
+  - docs/plan.md
+  - docs/plan-archive.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/change.yaml
+  - docs/changes/2026-06-24-semantic-source-line-contract/review-log.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/reviews/proposal-review-r1.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/reviews/spec-review-r1.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/reviews/plan-review-r1.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r1.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m1-r2.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m2-r1.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/reviews/code-review-m3-r1.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/review-resolution.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/explain-change.md
+  - .prettierrc.json
+  - .markdownlint.json
+  - CONTRIBUTING.md
+  - docs/workflows.md
+  - README.md
+  - VISION.md
+  - docs/changes/2026-06-24-semantic-source-line-contract/behavior-preservation.md
+  - scripts/select-validation.py
+  - scripts/validation_selection.py
+  - scripts/validate-documentation-prose.py
+  - scripts/test-documentation-prose-validator.py
+  - scripts/test-select-validation.py
+  - tests/fixtures/documentation-prose/pass/semantic-lines.md
+  - tests/fixtures/documentation-prose/pass/structural-exclusions.md
+  - tests/fixtures/documentation-prose/pass/explicit-hard-break.md
+  - tests/fixtures/documentation-prose/pass/explicit-hard-break-backslash.md
+  - tests/fixtures/documentation-prose/pass/list-item-nested-structure.md
+  - tests/fixtures/documentation-prose/pass/list-item-single-line.md
+  - tests/fixtures/documentation-prose/pass/list-item-with-fenced-code.md
+  - tests/fixtures/documentation-prose/fail/mechanical-wrap.md
+  - tests/fixtures/documentation-prose/fail/named-regressions.md
+  - tests/fixtures/documentation-prose/fail/command-and-lifecycle.md
+  - tests/fixtures/documentation-prose/fail/no-hard-break-mechanical-wrap.md
+  - tests/fixtures/documentation-prose/fail/list-item-mechanical-continuation.md
+  - tests/fixtures/documentation-prose/warn/ambiguous-clause.md
