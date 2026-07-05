@@ -57,9 +57,9 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - Last reviewed milestone: M3
 - Review status: approved; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — all implementation milestones are closed, but explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — all implementation milestones, code reviews, review-resolution, and explain-change are complete; verify and PR handoff remain open.
 
 ## Milestones
 
@@ -153,6 +153,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: M3 confirmed adapter archive proof is conditional: `workflow` is currently packaged for Codex and excluded from Claude/opencode by existing Codex-specific invocation portability rules.
 - 2026-07-05: M3 recorded behavior-preservation evidence and reached review-requested after targeted validation passed.
 - 2026-07-05: Code-review M3 R1 completed clean-with-notes, closed all implementation milestones, and handed off to explain-change.
+- 2026-07-05: Explain-change recorded durable change rationale and handed off to verify.
 
 ## Decision log
 
@@ -231,6 +232,11 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - `python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m3-r1.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m3-r1.md` passed.
   - `git diff --check -- docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m3-r1.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+- Explain-change validation:
+  - `python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md` passed.
+  - `git diff --check -- docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml` passed.
 
 ## Outcome and retrospective
 

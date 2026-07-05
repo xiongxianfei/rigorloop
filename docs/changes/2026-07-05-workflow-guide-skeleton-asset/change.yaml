@@ -28,6 +28,7 @@ requirements:
   - Implement M3 generated skill and adapter packaging proof for the workflow skeleton asset.
   - Record behavior-preservation evidence before final verification.
   - Record code-review M3 R1 before final closeout stages.
+  - Record explain-change rationale before verify.
 tests:
   - Proposal includes Vision fit and matches the current project vision.
   - Proposal preserves the user's initial goals and scope constraints.
@@ -51,6 +52,7 @@ tests:
   - M3 adapter tests prove adapter archives include workflow/assets/workflows-skeleton.md whenever the workflow skill is packaged.
   - M3 records non-Codex workflow adapter packaging as not applicable while existing portability rules exclude workflow from those adapters.
   - Code-review M3 R1 closed M3 with no material findings.
+  - Explain-change records the diff rationale, tests, validation evidence, review resolution summary, alternatives, and remaining risks.
 changed_files:
   - docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md
   - docs/learn/sessions/2026-07-05-workflow-guide-skeleton.md
@@ -63,6 +65,7 @@ changed_files:
   - docs/changes/2026-07-05-workflow-guide-skeleton-asset/behavior-preservation.md
   - docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md
   - docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md
+  - docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md
   - docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/proposal-review-r1.md
   - docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/spec-review-r1.md
   - docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/plan-review-r1.md
@@ -134,6 +137,14 @@ validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m3-r1.md
     result: pass_validated_2_artifact_files
   - command: git diff --check -- docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/code-review-m3-r1.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml
+    result: pass
+  - command: python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path docs/plan.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md
+    result: pass_validated_2_artifact_files
+  - command: git diff --check -- docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml
     result: pass
   - command: python scripts/test-skill-validator.py -k workflow_guide_skeleton
     result: pass
