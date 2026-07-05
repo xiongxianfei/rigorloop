@@ -33,6 +33,7 @@ requirements:
   - Record verify branch-readiness evidence before PR handoff.
   - Record PR handoff before opening the pull request.
   - Open PR #122 for review.
+  - Resolve PR #122 selector-routing CI failure.
 tests:
   - Proposal includes Vision fit and matches the current project vision.
   - Proposal preserves the user's initial goals and scope constraints.
@@ -60,6 +61,7 @@ tests:
   - Verify confirms branch-ready local evidence and records hosted CI as not observed.
   - PR handoff records the title, body, validation evidence, requirement coverage, review-resolution summary, risks, and follow-ups.
   - PR #122 opened for review.
+  - Selector routing registers architecture-assessment and PR handoff evidence and local PR-mode CI reproduction passes.
 changed_files:
   - docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md
   - docs/learn/sessions/2026-07-05-workflow-guide-skeleton.md
@@ -89,7 +91,10 @@ changed_files:
   - scripts/test-skill-validator.py
   - scripts/test-adapter-distribution.py
   - scripts/test-build-skills.py
+  - scripts/test-guide-system-validator.py
+  - scripts/test-select-validation.py
   - scripts/validate-guide-system.py
+  - scripts/validation_selection.py
 review:
   status: clean
   unresolved_items: 0
@@ -187,6 +192,12 @@ validation:
     result: pass_validated_3_artifact_files
   - command: git diff --check -- docs/changes/2026-07-05-workflow-guide-skeleton-asset/verify-report.md docs/plans/2026-07-05-workflow-guide-skeleton-asset.md docs/plan.md docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml
     result: pass
+  - command: python scripts/test-select-validation.py -k lifecycle_closeout_evidence_files_route_without_manual_debt
+    result: pass_ran_1_test
+  - command: python scripts/test-guide-system-validator.py
+    result: pass_ran_10_tests
+  - command: bash scripts/ci.sh --mode pr --base f72b64930153e4ea4df41f5a098f6f9467944115 --head 09401e6f96c13faf7fef3f701bcfa52d7a7e3ae0
+    result: pass_selected_ci_checks
   - command: python scripts/test-skill-validator.py -k workflow_guide_skeleton
     result: pass
   - command: python scripts/test-skill-validator.py -k workflow

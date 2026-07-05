@@ -14,6 +14,7 @@
 
 The branch is ready for PR handoff.
 All implementation milestones are closed, code-review M3 R1 is clean, review-resolution is closed, explain-change exists, and fresh final validation passed.
+After PR #122 CI failed on selector routing for deterministic change-local evidence, the selector registration was repaired and the PR-mode CI command was reproduced locally.
 
 Hosted CI was not observed during this local verification.
 This report claims local branch readiness only.
@@ -29,6 +30,7 @@ This report claims local branch readiness only.
 | R62: validation proves skeleton presence, mapping, sections, and registry alignment | T20 | `scripts/skill_validation.py`; `scripts/validate-guide-system.py`; `scripts/test-skill-validator.py` | guide-system and workflow skeleton validators passed | pass |
 | R63: generated mirrors and adapters include skeleton when workflow is packaged | T21 | `scripts/test-build-skills.py`; `scripts/test-adapter-distribution.py` | generated skill and adapter archive tests passed; direct archive inspection found the skeleton when `workflow` was packaged for Codex | pass |
 | AC30: existing `docs/workflows.md` is not automatically migrated | T19 | no `docs/workflows.md` diff | final branch diff does not modify `docs/workflows.md` | pass |
+| Selector evidence registration | CI selector contract | `scripts/validation_selection.py`; `scripts/test-select-validation.py`; `scripts/test-guide-system-validator.py` | PR-mode CI reproduction passed after registering architecture assessment and PR handoff evidence classes | pass |
 
 ## Validation Commands
 
@@ -46,11 +48,14 @@ This report claims local branch readiness only.
 | `python scripts/validate-documentation-prose.py --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/explain-change.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/behavior-preservation.md --path docs/plans/2026-07-05-workflow-guide-skeleton-asset.md --path specs/workflow-skill-artifact-location-map.md --path specs/workflow-skill-artifact-location-map.test.md` | repository root | pass | errors=0 warnings=0 paths=5 |
 | `git diff --check $(git merge-base HEAD main)..HEAD` | repository root | pass | no whitespace errors |
 | `python scripts/build-adapters.py --version v0.1.3 --output-dir "$tmp_adapters"` plus archive inspection | repository root | pass | workflow skeleton present when workflow packaged: codex |
+| `python scripts/test-select-validation.py -k lifecycle_closeout_evidence_files_route_without_manual_debt` | repository root | pass | 1 test passed |
+| `python scripts/test-guide-system-validator.py` | repository root | pass | 10 tests OK |
+| `bash scripts/ci.sh --mode pr --base f72b64930153e4ea4df41f5a098f6f9467944115 --head 09401e6f96c13faf7fef3f701bcfa52d7a7e3ae0` | repository root | pass | selected CI checks passed |
 
 ## CI Status
 
-Hosted CI was not checked in this local verification pass.
-No CI success is claimed.
+Hosted CI failed before the selector-routing repair and has not yet been observed passing after the repair.
+No hosted CI success is claimed.
 
 ## Drift Assessment
 
@@ -60,6 +65,7 @@ No CI success is claimed.
 | Spec and test spec | Updated and validated against the implemented skeleton, validator, and packaging proof. |
 | Review artifacts | `review-resolution.md` is closed; `review-log.md` has no open findings. |
 | Generated outputs | Tracked generated public adapter bodies were not hand-edited; generated skill and archive proof used temporary outputs. |
+| Selector routing | Deterministic architecture-assessment and PR handoff evidence now route to lifecycle validation instead of manual-routing blockers. |
 | Existing workflow guide | `docs/workflows.md` is unchanged, preserving the non-migration requirement. |
 
 ## Risk Closure
@@ -77,7 +83,7 @@ No CI success is claimed.
 | Risk | Status |
 | --- | --- |
 | `<slug>` placeholder normalization | Deferred by owner direction from M1 review; not a blocker for this verified scope. |
-| Hosted CI | Not observed locally; PR stage should rely on hosted checks after handoff. |
+| Hosted CI | Failed before the selector-routing repair; local PR-mode CI reproduction now passes and hosted CI should rerun on the pushed repair. |
 | PR body readiness | Not claimed by verify; next stage owns PR handoff. |
 
 ## Readiness

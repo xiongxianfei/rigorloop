@@ -52,6 +52,7 @@ Without a skeleton, agents could recreate the guide from memory, omit required s
 | Validator tests | `scripts/test-skill-validator.py` | Adds positive and negative coverage for missing sections, missing required registry entries, registry/table drift, source-rank terms, and full policy table regression. | Test spec T19-T20 | `python scripts/test-skill-validator.py -k workflow` |
 | Generated skill proof | `scripts/test-build-skills.py` | Asserts generated local skill mirror output includes `workflow/assets/workflows-skeleton.md`. | Spec R63; test spec T21 | `python scripts/test-build-skills.py` |
 | Adapter packaging proof | `scripts/test-adapter-distribution.py` | Asserts every adapter archive that actually packages `workflow` also packages the skeleton asset with canonical text. | Spec R63; test spec T21 | targeted adapter archive tests |
+| Selector routing repair | `scripts/validation_selection.py`; `scripts/test-select-validation.py`; `scripts/test-guide-system-validator.py` | Registers deterministic architecture-assessment and PR handoff evidence so PR-mode CI does not block on manual routing, and updates the guide-system fixture to include the canonical workflow skeleton. | CI failure from PR #122; selector registration contract | `python scripts/test-select-validation.py -k lifecycle_closeout_evidence_files_route_without_manual_debt`; `python scripts/test-guide-system-validator.py`; `bash scripts/ci.sh --mode pr ...` |
 | Lifecycle evidence | `docs/changes/2026-07-05-workflow-guide-skeleton-asset/` | Records proposal, reviews, behavior preservation, review resolution, and change metadata. | Repository workflow contract | review artifact and lifecycle validators |
 | Planning state | `docs/plans/2026-07-05-workflow-guide-skeleton-asset.md`; `docs/plan.md` | Tracks milestone progression from planning through code-review and now explain-change handoff. | Active plan policy | lifecycle explicit-path validation |
 | Learn evidence | `docs/learn/sessions/2026-07-05-workflow-guide-skeleton.md` | Captures the related lesson that motivated the skeleton/source-of-truth alignment. | User request to commit related learn file | tracked in change metadata |
@@ -66,6 +67,8 @@ Without a skeleton, agents could recreate the guide from memory, omit required s
 | `test_workflow_guide_skeleton_m2_composes_workflow_map_validation` | The skeleton validator composes workflow-map registry/table checks and rejects missing sections, missing entries, and table drift. | Integration-style validator test proves layering without duplicating a second registry contract. |
 | `test_output_dir_generates_complete_skill_mirror` | Generated local skill mirror output includes `workflow/assets/workflows-skeleton.md`. | Smoke-level generated-output proof matches T21 and avoids tracked generated output edits. |
 | `test_adapter_archives_include_workflow_skeleton_when_workflow_is_packaged` | Adapter archives include the skeleton whenever they package `workflow`. | Smoke-level archive proof covers the packaging failure mode from R63/EC11b. |
+| `test_lifecycle_closeout_evidence_files_route_without_manual_debt` | `architecture-assessment.md` and change-local `pr.md` route through lifecycle validation instead of selector manual-routing blockers. | Regression coverage matches the hosted CI failure mode. |
+| `test_valid_fixture_passes` in `scripts/test-guide-system-validator.py` | The guide-system valid fixture includes the workflow skeleton expected by the new skeleton validator. | Regression coverage keeps guide-system tests aligned with the new validator contract. |
 
 ## Validation Evidence Available Before Final Verify
 
@@ -87,6 +90,9 @@ Key evidence recorded in the plan and change metadata includes:
 | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` | pass |
 | `python scripts/validate-documentation-prose.py ...` | pass |
 | `git diff --check ...` | pass |
+| `python scripts/test-select-validation.py -k lifecycle_closeout_evidence_files_route_without_manual_debt` | pass |
+| `python scripts/test-guide-system-validator.py` | pass |
+| `bash scripts/ci.sh --mode pr --base f72b64930153e4ea4df41f5a098f6f9467944115 --head 09401e6f96c13faf7fef3f701bcfa52d7a7e3ae0` | pass |
 
 No hosted CI result is claimed by this explanation.
 Final `verify` still owns branch-readiness and final validation conclusions.

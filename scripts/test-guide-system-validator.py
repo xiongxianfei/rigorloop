@@ -106,6 +106,12 @@ workflow-map contract changes the path.
 """,
         )
         self.write(
+            "skills/workflow/assets/workflows-skeleton.md",
+            (ROOT / "skills" / "workflow" / "assets" / "workflows-skeleton.md").read_text(
+                encoding="utf-8"
+            ),
+        )
+        self.write(
             "skills/plan/SKILL.md",
             """# Plan
 

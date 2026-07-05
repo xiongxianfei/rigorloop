@@ -60,7 +60,10 @@ feat: add workflow guide skeleton asset
 - [x] `python scripts/validate-documentation-prose.py ...` — errors=0 warnings=0
 - [x] `git diff --check $(git merge-base HEAD main)..HEAD` — no whitespace errors
 - [x] `python scripts/build-adapters.py --version v0.1.3 --output-dir "$tmp_adapters"` plus archive inspection — workflow skeleton present when workflow packaged: `codex`
-- [ ] CI — not observed locally; hosted checks should run on the PR
+- [x] `python scripts/test-select-validation.py -k lifecycle_closeout_evidence_files_route_without_manual_debt` — 1 test passed
+- [x] `python scripts/test-guide-system-validator.py` — 10 tests OK
+- [x] `bash scripts/ci.sh --mode pr --base f72b64930153e4ea4df41f5a098f6f9467944115 --head 09401e6f96c13faf7fef3f701bcfa52d7a7e3ae0` — selected CI checks passed locally
+- [ ] CI — failed before selector-routing repair; hosted rerun pending after the repair is pushed
 
 ### Requirement coverage
 
@@ -93,6 +96,7 @@ feat: add workflow guide skeleton asset
 - The adapter packaging assertion is intentionally conditional: it checks archives that actually package `workflow`. Current portability rules package `workflow` for Codex and exclude it from Claude/opencode because of existing Codex-specific `$skill` invocation syntax.
 - Existing `docs/workflows.md` is intentionally untouched.
 - `<slug>` placeholder normalization was deferred by owner direction from M1 review and is not part of this scope.
+- PR #122 hosted CI initially failed because `architecture-assessment.md` and `pr.md` lacked deterministic change-local evidence routing. The repair registers those evidence classes and updates the guide-system validator fixture.
 
 ### Follow-ups
 
