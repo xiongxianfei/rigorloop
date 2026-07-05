@@ -1,0 +1,39 @@
+change_id: 2026-07-05-workflow-guide-skeleton-asset
+title: Workflow Guide Skeleton Asset and Source-of-Truth Alignment
+classification: workflow-governance
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md
+  review_resolution: docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md
+requirements:
+  - Record the workflow guide skeleton asset proposal before proposal-review.
+  - Preserve source-of-truth layering between approved specs, the workflow skill, the project workflow guide, and stage skills.
+  - Keep the proposed skeleton structural and avoid hidden lifecycle policy.
+  - Preserve stage-skill portable defaults and customer-project portability.
+  - Record proposal-review R1 before downstream spec reliance.
+tests:
+  - Proposal includes Vision fit and matches the current project vision.
+  - Proposal preserves the user's initial goals and scope constraints.
+  - Proposal classifies broad workflow, validation, packaging, generated-output, and migration work through a scope budget.
+  - Proposal-review R1 approved the proposal with no material findings.
+changed_files:
+  - docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md
+  - docs/learn/sessions/2026-07-05-workflow-guide-skeleton.md
+  - docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml
+  - docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md
+  - docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md
+  - docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/proposal-review-r1.md
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md
+  review_log: docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-05-workflow-guide-skeleton-asset
+    result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-05-workflow-guide-skeleton-asset
+    result: pass_reviews_1_findings_0_log_entries_1_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-05-workflow-guide-skeleton-asset.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/change.yaml --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-log.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/review-resolution.md --path docs/changes/2026-07-05-workflow-guide-skeleton-asset/reviews/proposal-review-r1.md
+    result: pass_validated_1_artifact_file
