@@ -1,0 +1,206 @@
+change_id: 2026-07-04-test-spec-proof-contract-upgrade
+title: Test-Spec Proof-Contract Upgrade
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-07-04-test-spec-proof-contract-upgrade.md
+  spec: specs/test-spec-proof-contract-upgrade.md
+  test_spec: specs/test-spec-proof-contract-upgrade.test.md
+  plan: docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md
+  explain_change: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md
+  verify_report: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/verify-report.md
+  review_resolution: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-resolution.md
+requirements:
+  - Record a proposal for the test-spec proof-contract upgrade before downstream spec work.
+  - Review the proposal for problem clarity, option quality, scope control, risk honesty, vision fit, and readiness for spec.
+  - Preserve manual-proof contract work as out of scope for this proposal.
+  - Normalize proposal status to accepted before downstream spec reliance.
+  - Author the test-spec proof-contract upgrade spec from the accepted proposal.
+  - Review the spec before planning relies on it.
+  - Record architecture as not required unless planning expands into new runtime boundaries, persistence, security boundaries, or cross-process protocols.
+  - Create a living execution plan before plan-review.
+  - Review the execution plan before test-spec authoring.
+  - Author a traceable test specification after plan-review and before implementation.
+  - Review the active test specification before implementation.
+tests:
+  - Proposal-review approves the proposal or records material findings before downstream spec reliance.
+  - Review-log indexes proposal-review receipts with zero material findings when clean.
+  - Artifact lifecycle validation covers the proposal and review artifacts.
+  - Spec-review approves the spec or records material findings before planning relies on it.
+  - The execution plan records milestones, validation commands, recovery paths, dependencies, current handoff state, and readiness before plan-review.
+  - Plan-review approves the execution plan or records material findings before test-spec authoring.
+  - The test specification maps requirements, examples, edge cases, validation commands, and milestones to concrete proof before implementation.
+  - Test-spec-review approves the active test spec or records material findings before implementation.
+changed_files:
+  - docs/proposals/2026-07-04-test-spec-proof-contract-upgrade.md
+  - specs/test-spec-proof-contract-upgrade.md
+  - specs/test-spec-proof-contract-upgrade.test.md
+  - docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md
+  - docs/plan.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-log.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-resolution.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/proposal-review-r1.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/spec-review-r1.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/plan-review-r1.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/test-spec-review-r1.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/verify-report.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md
+  - docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
+  - skills/test-spec/SKILL.md
+  - skills/test-spec/assets/test-spec-skeleton.md
+  - skills/test-spec/assets/test-case.md
+  - skills/test-spec/assets/validation-command-row.md
+  - skills/test-spec/assets/milestone-proof-row.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+review:
+  status: approved
+  unresolved_items: 0
+  location: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-log.md
+  material_findings: 1
+  closed_findings: 1
+  open_findings: 0
+  proposal_review: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/proposal-review-r1.md
+  spec_review: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/spec-review-r1.md
+  plan_review: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/plan-review-r1.md
+  test_spec_review: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/test-spec-review-r1.md
+  code_review_m1: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m1-r1.md
+  code_review_m2: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m2-r1.md
+  code_review_m2_rerun: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m2-r2.md
+  code_review_m3: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
+  review_log: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-log.md
+  review_resolution: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/review-resolution.md
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted
+  - command: spec authoring
+    result: test_spec_proof_contract_upgrade_spec_draft_ready_for_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: architecture assessment
+    result: architecture_not_required
+  - command: plan authoring
+    result: active_plan_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: test-spec authoring
+    result: test_spec_proof_contract_upgrade_test_spec_active_ready_for_test_spec_review
+  - command: test-spec-review r1
+    result: approved_no_material_findings_implementation_handoff_allowed
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: passed_m1
+  - command: python scripts/test-skill-validator.py -k test_spec
+    result: passed_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
+    result: passed_m1
+  - command: code-review-m1-r1
+    result: clean_with_notes_no_material_findings_m1_closed
+  - command: python scripts/test-skill-validator.py -k test_spec_proof_contract
+    result: failed_before_m2_implementation_missing_representative_validator
+  - command: python scripts/test-skill-validator.py -k test_spec_proof_contract
+    result: passed_m2
+  - command: python scripts/test-skill-validator.py -k test_spec
+    result: passed_m2
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: passed_m2
+  - command: code-review-m2-r1
+    result: changes_requested_TSP-M2-CR1
+  - command: review-resolution TSP-M2-CR1
+    result: accepted_resolved
+  - command: python scripts/test-skill-validator.py -k test_spec_proof_contract
+    result: passed_m2_rereview_ready
+  - command: python scripts/test-skill-validator.py -k test_spec
+    result: passed_m2_rereview_ready
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: passed_m2_rereview_ready
+  - command: code-review-m2-r2
+    result: clean_with_notes_no_material_findings_m2_closed
+  - command: python scripts/test-skill-validator.py -k test_spec_proof_contract
+    result: passed_code_review_m2_r2
+  - command: python scripts/build-skills.py --check
+    result: passed_m3
+  - command: python scripts/test-build-skills.py
+    result: passed_m3
+  - command: python scripts/test-adapter-distribution.py
+    result: passed_m3
+  - command: python scripts/validate-skills.py
+    result: passed_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
+    result: passed_m3
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade
+    result: passed_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md
+    result: passed_m3
+  - command: git diff --check 82c7c049..HEAD
+    result: passed_code_review_m3_r1
+  - command: code-review-m3-r1
+    result: clean_with_notes_no_material_findings_m3_closed
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade
+    result: passed_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
+    result: passed_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
+    result: passed_code_review_m3_r1
+  - command: explain-change
+    result: completed_ready_for_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
+    result: passed_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade
+    result: passed_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
+    result: passed_explain_change
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: passed_verify
+  - command: python scripts/test-skill-validator.py -k test_spec_proof_contract
+    result: passed_verify
+  - command: python scripts/test-skill-validator.py -k test_spec
+    result: passed_verify
+  - command: python scripts/build-skills.py --check
+    result: passed_verify
+  - command: python scripts/test-build-skills.py
+    result: passed_verify
+  - command: python scripts/test-adapter-distribution.py
+    result: passed_verify
+  - command: python scripts/validate-skills.py
+    result: passed_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
+    result: passed_verify
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade
+    result: passed_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
+    result: passed_verify
+  - command: test ! -e skills/test-spec/assets/manual-proof.md
+    result: passed_verify
+  - command: git diff --name-only 82c7c049..HEAD -- 'specs/*.test.md'
+    result: passed_verify_only_change_test_spec_touched
+  - command: git diff --check 82c7c049..HEAD
+    result: passed_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml
+    result: passed_verify_report_recorded
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-04-test-spec-proof-contract-upgrade
+    result: passed_verify_report_recorded
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-spec-proof-contract-upgrade.md --path specs/test-spec-proof-contract-upgrade.test.md --path docs/plans/2026-07-04-test-spec-proof-contract-upgrade.md --path docs/plan.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/change.yaml --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/explain-change.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/verify-report.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/behavior-preservation.md --path docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/code-review-m3-r1.md
+    result: passed_verify_report_recorded
+  - command: pr handoff preparation
+    result: branch_ready_pr_body_ready_pending_open
+  - command: gh pr create --base proposal/release-transaction-automation --head proposal/test-spec-proof-contract-upgrade
+    result: opened_pr_119
+  - command: gh pr view 119 --json state,mergedAt,mergeCommit,statusCheckRollup
+    result: merged_pr_119_ci_success_merge_commit_85e0f19a6825d087a83300bcc03c37d8671328ae
+workflow:
+  autoprogression:
+    review_fix:
+      profile: bounded-review-fix
+      status: completed
+      target_stage: test-spec-review
+      armed_by: user
+      armed_at: 2026-07-04T14:33:12Z
+      current_stage: test-spec-review
+      current_review: test-spec-review-r1
+      stop_reason: target-reached
+      last_updated_evidence: docs/changes/2026-07-04-test-spec-proof-contract-upgrade/reviews/test-spec-review-r1.md
+      change_id: 2026-07-04-test-spec-proof-contract-upgrade

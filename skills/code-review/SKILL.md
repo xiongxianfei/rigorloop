@@ -304,7 +304,8 @@ must state:
 - In a workflow-managed standard workflow, `blocked` stops and reports the blocker.
 - In a workflow-managed standard workflow, `inconclusive` stops and reports the missing evidence. It does not enter `review-resolution`.
 - Stop instead of auto-entering `review-resolution` when the request is review-only, the request is isolated `code-review`, a finding requires a product/spec/architecture/ADR/scope decision, a higher-priority repository policy requires human review, the actual diff/tests/upstream artifacts are unavailable, or the user explicitly asked to stop after review.
-- Direct `code-review` requests remain isolated by default unless the user explicitly asks to continue beyond the review result.
+- Direct or review-only `code-review` requests remain isolated by default.
+- Continue beyond the review result only when the user explicitly asks for it or a workflow-managed context authorizes it.
 
 ## Stop conditions
 

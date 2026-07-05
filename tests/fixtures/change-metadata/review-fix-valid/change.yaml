@@ -1,0 +1,30 @@
+change_id: 2026-06-24-policy-fixture
+title: Review-fix policy fixture
+classification: spec
+risk: low
+artifacts: {}
+requirements:
+  - fixture
+tests:
+  - fixture
+validation:
+  - command: fixture
+    result: pass
+changed_files:
+  - docs/example.md
+review:
+  status: pending
+  unresolved_items: 0
+workflow:
+  autoprogression:
+    review_fix:
+      profile: bounded-review-fix
+      status: armed
+      target_stage: spec-review
+      armed_by: user
+      armed_at: 2026-06-24T12:05:00Z
+      current_stage: spec
+      current_review: spec-review-r1
+      stop_reason: none
+      last_updated_evidence: docs/changes/2026-06-24-policy-fixture/change.yaml
+      change_id: 2026-06-24-policy-fixture

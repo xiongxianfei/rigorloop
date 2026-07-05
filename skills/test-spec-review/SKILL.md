@@ -308,6 +308,7 @@ must state:
 - Do not lower the finding threshold because implementation is waiting.
 - Do not add a `conditionally-approved` result.
 - Do not auto-start implementation from an isolated review invocation.
+- Direct or review-only `test-spec-review` requests remain isolated by default.
 - Require re-review after substantive test-spec changes.
 - Preserve code-review and verify as downstream backstops.
 

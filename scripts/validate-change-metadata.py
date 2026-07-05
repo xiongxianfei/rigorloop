@@ -142,6 +142,7 @@ AUTOPROGRESSION_PROFILES = {"off", "authoring-through-plan-review", "implementat
 AUTOPROGRESSION_NAMED_RECORDS = {
     "authoring_through_plan_review": "authoring-through-plan-review",
     "implementation_through_verify": "implementation-through-verify",
+    "review_fix": "bounded-review-fix",
 }
 AUTOPROGRESSION_REQUIRED_FIELDS = {
     "profile",
@@ -155,6 +156,50 @@ AUTOPROGRESSION_IMPLEMENTATION_REQUIRED_FIELDS = AUTOPROGRESSION_REQUIRED_FIELDS
 }
 AUTOPROGRESSION_PHASES = {"A", "B", "C"}
 AUTOPROGRESSION_STATES = {"off", "armed", "active", "paused", "completed", "cancelled"}
+REVIEW_FIX_PROFILE = "bounded-review-fix"
+REVIEW_FIX_REQUIRED_FIELDS = {
+    "profile",
+    "status",
+    "target_stage",
+    "armed_by",
+    "armed_at",
+    "current_stage",
+    "current_review",
+    "stop_reason",
+    "last_updated_evidence",
+    "change_id",
+}
+REVIEW_FIX_TARGET_STAGES = {
+    "proposal-review",
+    "spec",
+    "spec-review",
+    "architecture",
+    "architecture-review",
+    "plan",
+    "plan-review",
+    "test-spec",
+    "test-spec-review",
+}
+REVIEW_FIX_CURRENT_STAGES = REVIEW_FIX_TARGET_STAGES | {"proposal"}
+REVIEW_FIX_STOP_REASONS = {
+    "none",
+    "target-reached",
+    "user-off",
+    "cancelled",
+    "non-auto-safe-finding",
+    "needs-decision",
+    "ambiguous-state",
+    "missing-change-id",
+    "missing-artifact-path",
+    "missing-review-evidence",
+    "blocked-recording",
+    "architecture-ambiguous",
+    "target-not-applicable",
+    "stale-review",
+    "budget-exhausted",
+    "contradictory-state",
+    "generated-owner-required",
+}
 AUTOPROGRESSION_FORBIDDEN_LIVE_STATE_FIELDS = {
     "current_stage",
     "next_stage",
@@ -526,12 +571,20 @@ def validate_autoprogression_policy(data: dict[str, Any]) -> list[str]:
                 errors.append(f"{path}: expected object")
                 continue
             errors.extend(
-                validate_autoprogression_record(
-                    record,
-                    path=path,
-                    top_level_change_id=data.get("change_id"),
-                    expected_profile=expected_profile,
-                    require_implementation_fields=expected_profile == "implementation-through-verify",
+                (
+                    validate_review_fix_autoprogression_record(
+                        record,
+                        path=path,
+                        top_level_change_id=data.get("change_id"),
+                    )
+                    if expected_profile == REVIEW_FIX_PROFILE
+                    else validate_autoprogression_record(
+                        record,
+                        path=path,
+                        top_level_change_id=data.get("change_id"),
+                        expected_profile=expected_profile,
+                        require_implementation_fields=expected_profile == "implementation-through-verify",
+                    )
                 )
             )
         return errors
@@ -555,6 +608,82 @@ def reject_autoprogression_live_state_fields(
             errors.append(
                 f"{path}.{field}: profile policy must not own live workflow state"
             )
+    return errors
+
+
+def validate_review_fix_autoprogression_record(
+    record: dict[str, Any],
+    *,
+    path: str,
+    top_level_change_id: Any,
+) -> list[str]:
+    errors: list[str] = []
+    for field in sorted(REVIEW_FIX_REQUIRED_FIELDS):
+        if field not in record:
+            errors.append(f"{path}.{field}: missing required field")
+
+    profile = record.get("profile")
+    if "profile" in record and profile != REVIEW_FIX_PROFILE:
+        errors.append(f"{path}.profile: expected {REVIEW_FIX_PROFILE}")
+
+    status = record.get("status")
+    if "status" in record and status not in AUTOPROGRESSION_STATES:
+        allowed = ", ".join(sorted(AUTOPROGRESSION_STATES))
+        errors.append(f"{path}.status: expected one of: {allowed}")
+
+    target_stage = record.get("target_stage")
+    if "target_stage" in record and target_stage not in REVIEW_FIX_TARGET_STAGES:
+        allowed = ", ".join(sorted(REVIEW_FIX_TARGET_STAGES))
+        errors.append(f"{path}.target_stage: expected one of: {allowed}")
+
+    current_stage = record.get("current_stage")
+    if "current_stage" in record and current_stage not in REVIEW_FIX_CURRENT_STAGES:
+        allowed = ", ".join(sorted(REVIEW_FIX_CURRENT_STAGES))
+        errors.append(f"{path}.current_stage: expected one of: {allowed}")
+
+    stop_reason = record.get("stop_reason")
+    if "stop_reason" in record and stop_reason not in REVIEW_FIX_STOP_REASONS:
+        allowed = ", ".join(sorted(REVIEW_FIX_STOP_REASONS))
+        errors.append(f"{path}.stop_reason: expected one of: {allowed}")
+
+    for field in ("armed_by", "change_id", "current_review", "last_updated_evidence"):
+        if field in record and not is_nonempty_string(record[field]):
+            errors.append(f"{path}.{field}: expected string")
+
+    armed_at = record.get("armed_at")
+    if "armed_at" in record and (
+        not isinstance(armed_at, str) or RFC3339_UTC_RE.fullmatch(armed_at) is None
+    ):
+        errors.append(f"{path}.armed_at: expected RFC3339 UTC timestamp")
+
+    policy_change_id = record.get("change_id")
+    if (
+        isinstance(top_level_change_id, str)
+        and isinstance(policy_change_id, str)
+        and policy_change_id != top_level_change_id
+    ):
+        errors.append(f"{path}.change_id: must match top-level change_id")
+
+    if record.get("session_intent") is True:
+        errors.append(
+            f"{path}.session_intent: session-only arming is not durable authorization"
+        )
+
+    persistence_status = record.get("persistence_status")
+    if persistence_status is not None and persistence_status != "persisted":
+        errors.append(f"{path}.persistence_status: authorization-not-persisted")
+
+    if "fallback_policy_path" in record:
+        errors.append(
+            f"{path}.fallback_policy_path: fallback is only valid when change metadata rejects policy data"
+        )
+
+    for field in sorted(AUTOPROGRESSION_FORBIDDEN_LIVE_STATE_FIELDS - {"current_stage"}):
+        if field in record:
+            errors.append(
+                f"{path}.{field}: profile policy must not own live workflow state"
+            )
+
     return errors
 
 
