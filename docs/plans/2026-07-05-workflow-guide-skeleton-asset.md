@@ -52,20 +52,20 @@ That leaves agents to recreate a substantial structured guide from memory and in
 ## Current Handoff Summary
 
 - Current milestone: M1. Canonical skeleton asset and workflow skill mapping
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Latest review evidence: test-spec-review-r1
 - Last reviewed milestone: none
-- Review status: review-requested; stage=code-review; round=r1
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — code-review, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-resolution, implementation fixes, re-review, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
 ### M1. Canonical skeleton asset and workflow skill mapping
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Deliverable: `skills/workflow/assets/workflows-skeleton.md` and `skills/workflow/SKILL.md` resource-map guidance.
 - Requirements: R54-R61, AC21-AC25, AC27, AC30, AC31.
 - Files: `skills/workflow/assets/workflows-skeleton.md`, `skills/workflow/SKILL.md`, focused directly contradictory stage-skill text only if found.
@@ -78,7 +78,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
   - [x] targeted validation passed
   - [x] hand off to code-review for M1
 - Review closeout:
-  - [ ] code-review completed
+  - [x] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
   - [ ] current milestone projection updated before starting M2
 - Milestone commit message: `M1: add workflow guide skeleton asset`
@@ -140,6 +140,7 @@ That leaves agents to recreate a substantial structured guide from memory and in
 - 2026-07-05: M1 added workflow guide skeleton tests, `skills/workflow/assets/workflows-skeleton.md`, and the workflow skill resource-map entry.
 - 2026-07-05: M1 left existing `docs/workflows.md` and stage-skill placement text unchanged. Rationale: M1 only packages the structural skeleton and workflow skill map; no directly contradictory stage-skill placement text or existing guide migration is in scope for this milestone.
 - 2026-07-05: M1 implementation reached review-requested after targeted validation passed.
+- 2026-07-05: Code-review M1 R1 requested changes for WGS-M1-CR1, WGS-M1-CR2, and WGS-M1-CR3.
 
 ## Decision log
 
