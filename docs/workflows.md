@@ -407,7 +407,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 ## Change-Local Artifacts
 
 - Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
-- For new workflow-managed change roots, `<change-id>` defaults to `YYYY-MM-DD-slug`: use the project-local current date when the change root is first created, then a lowercase hyphen-separated slug from the accepted proposal, active plan title, or user-provided change topic. Select or confirm this ID before writing `docs/changes/<change-id>/`.
+- Change ID convention: for new workflow-managed change roots, `<change-id>` defaults to `YYYY-MM-DD-slug`. Use the project-local current date when the change root is first created, then a lowercase hyphen-separated slug from the accepted proposal, active plan title, or user-provided change topic. Select or confirm this ID before writing `docs/changes/<change-id>/`.
 - Existing historical, numbered, undated, or explicitly project-customized change roots remain valid legacy records until touched, migrated, or superseded.
 - For non-trivial work, the baseline change-local pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning.
 - For new non-trivial work, the default durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`.

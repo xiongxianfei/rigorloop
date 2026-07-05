@@ -6249,27 +6249,32 @@ and result format.
         for surface_name, surface_text in [
             ("specs/rigorloop-workflow.md", workflow_spec),
             ("docs/workflows.md", workflow_docs),
-            ("skills/workflow/SKILL.md", workflow_skill),
         ]:
             with self.subTest(surface=surface_name, term="YYYY-MM-DD-slug"):
                 self.assertIn("YYYY-MM-DD-slug", surface_text)
             with self.subTest(surface=surface_name, term="legacy"):
                 self.assertIn("legacy", surface_text.lower())
 
-        required_workflow_terms = [
-            "select or confirm",
-            "before writing `docs/changes/<change-id>/`",
+        required_workflows_doc_terms = [
+            "Change ID convention",
+            "Select or confirm this ID before writing `docs/changes/<change-id>/`",
             "project-local current date",
             "lowercase hyphen-separated slug",
         ]
-        for term in required_workflow_terms:
+        for term in required_workflows_doc_terms:
+            with self.subTest(surface="docs/workflows.md", term=term):
+                self.assertIn(term, workflow_docs)
+
+        for term in [
+            "follow the `<change-id>` convention in `docs/workflows.md`",
+            "if no project-local workflow guide exists, use `YYYY-MM-DD-slug`",
+        ]:
             with self.subTest(surface="skills/workflow/SKILL.md", term=term):
                 self.assertIn(term, workflow_skill)
 
         for term in [
-            "follow the project-local workflow guide's `<change-id>` convention",
-            "use `YYYY-MM-DD-slug` by default",
-            "select or confirm the dated ID",
+            "follow the `<change-id>` convention in `docs/workflows.md`",
+            "if no project-local workflow guide exists, use `YYYY-MM-DD-slug`",
         ]:
             with self.subTest(surface="skills/implement/SKILL.md", term=term):
                 self.assertIn(term, implement_skill)

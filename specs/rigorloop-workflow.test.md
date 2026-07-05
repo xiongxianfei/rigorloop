@@ -997,7 +997,7 @@
 - Steps:
   - Confirm the workflow spec defines `YYYY-MM-DD-slug` as the default new workflow-managed change ID convention.
   - Confirm `docs/workflows.md` explains that `<change-id>` means `YYYY-MM-DD-slug` for new workflow-managed changes and preserves explicitly legacy roots.
-  - Confirm `skills/workflow/SKILL.md` instructs agents to select or confirm the dated change ID before creating a missing change root.
+  - Confirm `skills/workflow/SKILL.md` points change-root creation to the workflow-guide convention instead of duplicating the detailed rule.
   - Confirm `skills/implement/SKILL.md` points change-root creation to the workflow-guide convention instead of inventing an undated slug.
   - Run `python scripts/test-skill-validator.py`.
 - Expected result:

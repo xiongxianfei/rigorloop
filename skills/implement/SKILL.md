@@ -150,7 +150,7 @@ For ordinary non-trivial work, implementation scope includes the baseline change
 
 Rules:
 
-- When creating a missing change root, follow the project-local workflow guide's `<change-id>` convention. If no project-local guide exists, use `YYYY-MM-DD-slug` by default and select or confirm the dated ID before writing `docs/changes/<change-id>/`.
+- When creating a missing change root, follow the `<change-id>` convention in `docs/workflows.md`; if no project-local workflow guide exists, use `YYYY-MM-DD-slug`.
 - Treat creating or updating that baseline pack as part of the milestone, not as optional follow-up.
 - Do not treat PR text alone as the durable reasoning surface for ordinary non-trivial work.
 - Do not broaden the docs-changes requirement into isolated manual skill invocations that are not claiming complete workflow delivery.
