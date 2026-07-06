@@ -80,15 +80,15 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Validation and fixtures
-- Current milestone state: review-requested
-- Latest review evidence: review-resolution SUBCR-M2-CR1
+- Current milestone: M3. Generated output and adapter proof
+- Current milestone state: planned
+- Latest review evidence: code-review-m2-r2
 - Last reviewed milestone: M2. Validation and fixtures
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2 rerun
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 awaits code-review rerun, M3 remains open, and final holistic review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 remains open, and final holistic review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -111,7 +111,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 ### M2. Validation and fixtures
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Deliverable: add repository-owned validation and fixtures for role vocabulary, packet schema, unknown values, malformed packets, missing coverage, dedupe, conflict decisions, low-evidence non-promotion, coverage records, and advisory import summaries.
 - Requirements: R3-R14, AC3-AC14.
 - Expected files: validator scripts, validator tests, fixtures, and review-artifact validation tests as identified by the test spec.
@@ -186,6 +186,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: M2 targeted validation passed and the milestone is ready for `code-review`.
 - 2026-07-06: code-review M2 R1 requested changes for SUBCR-M2-CR1; M2 remains open and workflow routes to `review-resolution`.
 - 2026-07-06: SUBCR-M2-CR1 accepted and fixed by validating packets inside aggregation before processing; M2 returned to `code-review` for rerun.
+- 2026-07-06: code-review M2 R2 completed clean-with-notes; M2 closed and workflow routed to `implement M3`.
 
 ## Decision log
 
@@ -221,6 +222,8 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - M2 validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review`.
 - Code-review M2 R1 proof: `validate_subagent_review_packet` rejected an invalid packet with unknown schema and unknown role, but `aggregate_subagent_review_packets` accepted a high-confidence finding from that same packet.
 - Review-resolution validation passed: `python scripts/test-skill-validator.py -k subagent_code_review`.
+- Code-review M2 R2 reviewer rerun passed: `python scripts/test-skill-validator.py -k subagent_code_review`.
+- Code-review M2 R2 direct proof passed: malformed packet aggregation returned `accepted_findings=()` and a malformed-packet rejection.
 
 ## Outcome and retrospective
 
