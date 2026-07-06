@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Subagent-Assisted Code Review](plans/2026-07-06-subagent-assisted-code-review.md) | active | review-resolution | 2026-07-06-subagent-assisted-code-review |
+| [Subagent-Assisted Code Review](plans/2026-07-06-subagent-assisted-code-review.md) | active | code-review | 2026-07-06-subagent-assisted-code-review |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked

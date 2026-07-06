@@ -903,6 +903,8 @@ def _validate_subagent_code_review_sections(
         )
         return
 
+    required = _first_nonempty(fields, "Required subagent coverage")
+    required_roles = set(_parse_id_list(required.value)) if required is not None else set()
     observed_roles: dict[str, str] = {}
     expected_header = (
         "Subagent",
@@ -987,7 +989,11 @@ def _validate_subagent_code_review_sections(
                         review_id=review_id,
                     )
                 )
-        if advisory_status == "inconclusive" and status_value not in {"blocked", "inconclusive"}:
+        if (
+            advisory_status == "inconclusive"
+            and role in required_roles
+            and status_value not in {"blocked", "inconclusive"}
+        ):
             findings.append(
                 ValidationFinding(
                     path=path,
@@ -998,9 +1004,7 @@ def _validate_subagent_code_review_sections(
                 )
             )
 
-    required = _first_nonempty(fields, "Required subagent coverage")
     if required is not None:
-        required_roles = set(_parse_id_list(required.value))
         missing = sorted(role for role in required_roles if role not in observed_roles)
         if missing and status_value not in {"blocked", "inconclusive"}:
             findings.append(

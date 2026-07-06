@@ -1,6 +1,6 @@
 # Subagent-Assisted Code Review Resolution
 
-Closeout status: open
+Closeout status: closed
 
 ### proposal-review-r1
 
@@ -47,9 +47,13 @@ No material findings.
 ### code-review-final-r1
 
 Finding ID: SUBCR-FINAL-CR1
-Disposition: needs-decision
-Decision owner: implement
-Decision needed: Apply the validator boundary fix for optional inconclusive subagent coverage before final holistic code-review can close.
+Disposition: accepted
+Status: resolved
+Owner: implement
 Owning stage: review-resolution
-Stop state: Final holistic code-review cannot close and explain-change cannot start until this finding is resolved or explicitly dispositioned.
+Chosen action: Updated review-artifact validation to parse `Required subagent coverage` before evaluating coverage rows and to apply the inconclusive clean-status block only when the inconclusive role is required.
+Rationale: Optional advisory subagents can be inconclusive without creating missing required specialist coverage; only required inconclusive coverage affects canonical clean-status validity under R11b and R12b.
+Required outcome: Review-artifact validation must force blocked or inconclusive canonical status only for missing, malformed, or inconclusive required specialist coverage, or explicitly material missing coverage under the changed surface.
+Safe resolution path: Parse required roles before evaluating coverage rows; block clean status only when an inconclusive row role is required. Add regression coverage where required coverage is satisfied, optional extra subagent coverage is inconclusive, and the clean review record remains valid while required inconclusive coverage still blocks clean status.
 Validation target: Add regression coverage proving optional inconclusive subagent coverage does not block a clean review when required coverage is satisfied, while inconclusive required coverage still blocks clean status.
+Validation evidence: `python scripts/test-review-artifact-validator.py -k subagent_code_review_record` passed after the fix.

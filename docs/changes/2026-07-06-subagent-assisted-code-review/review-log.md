@@ -129,5 +129,5 @@ Detailed record: reviews/code-review-final-r1.md
 Record: reviews/code-review-final-r1.md
 Resolution: review-resolution.md#code-review-final-r1
 Material findings: SUBCR-FINAL-CR1
-Open findings: SUBCR-FINAL-CR1
+Open findings: None
 Recording status: recorded

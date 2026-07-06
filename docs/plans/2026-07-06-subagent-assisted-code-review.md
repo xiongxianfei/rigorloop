@@ -81,14 +81,14 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 ## Current Handoff Summary
 
 - Current milestone: final holistic cross-milestone review
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: code-review-final-r1
 - Last reviewed milestone: final holistic cross-milestone review
 - Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: review-resolution
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — SUBCR-FINAL-CR1 is open, final holistic code-review must rerun, and explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — SUBCR-FINAL-CR1 is resolved in review-resolution, but final holistic code-review must rerun before explain-change, verify, and PR handoff.
 
 ## Milestones
 
@@ -146,14 +146,15 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 ### final holistic cross-milestone review
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Deliverable: review the complete cross-milestone diff against the governing proposal, spec, test spec, plan, review-resolution records, generated-output evidence, and lifecycle state before `explain-change`.
 - Requirements: R1-R18, AC1-AC16.
 - Expected files: final holistic code-review record and affected lifecycle evidence.
 - Validation: review-artifact validation, change metadata validation, artifact lifecycle validation, and targeted proof for any review-resolution changes.
 - Review closeout:
   - [x] final holistic code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
+  - [x] material findings resolved or explicitly dispositioned
+  - [ ] final holistic code-review rerun completed
   - [ ] current handoff updated before explain-change
 
 ## Validation plan
@@ -202,6 +203,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: M3 recorded behavior-preservation evidence for generated skill mirror and adapter archive boundaries, with no runtime code or generated public adapter package edits.
 - 2026-07-06: code-review M3 R1 completed clean-with-notes; all implementation milestones are closed and workflow routed to final holistic code-review before explain-change.
 - 2026-07-06: final holistic code-review R1 requested changes for SUBCR-FINAL-CR1; workflow routed to review-resolution.
+- 2026-07-06: SUBCR-FINAL-CR1 accepted and fixed by scoping inconclusive clean-status blocking to required subagent roles; final holistic review returned to `code-review` for rerun.
 
 ## Decision log
 
@@ -249,6 +251,8 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Code-review M3 R1 reviewer rerun passed: `python scripts/test-build-skills.py`.
 - Code-review M3 R1 reviewer rerun passed: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives`.
 - Final holistic code-review R1 proof: a review artifact with required `correctness-reviewer` coverage satisfied and optional `docs-ops-reviewer` inconclusive coverage failed structure validation, exposing SUBCR-FINAL-CR1.
+- Review-resolution validation passed: `python scripts/test-review-artifact-validator.py -k subagent_code_review_record`.
+- Review-resolution validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review`.
 
 ## Outcome and retrospective
 
@@ -258,7 +262,6 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 - See `Current Handoff Summary`.
 - Lifecycle routing is owned by `Current Handoff Summary`.
-- M2 implementation may begin after clean M1 code-review.
 
 ## Risks and follow-ups
 

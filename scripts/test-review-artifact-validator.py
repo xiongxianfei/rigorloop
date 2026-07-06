@@ -813,6 +813,14 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             "inconclusive required subagent coverage requires blocked or inconclusive review status",
         )
 
+    def test_subagent_code_review_record_optional_inconclusive_coverage_allows_clean_status(self) -> None:
+        text = code_review_subagent_record_text().replace(
+            "| generated-output-reviewer | no-findings | generated-output policy | 0 | 0 | fixture only |\n",
+            "| generated-output-reviewer | no-findings | generated-output policy | 0 | 0 | fixture only |\n"
+            "    | docs-ops-reviewer | inconclusive | optional docs check | 0 | 0 | fixture only |\n",
+        )
+        self.assertPasses(self.subagent_review_fixture(text))
+
     def test_subagent_code_review_record_malformed_conflict_and_advisory_sections_fail(self) -> None:
         malformed_conflict = code_review_subagent_record_text().replace(
             "| generated-output risk vs no-findings packet | skills/code-review/SKILL.md | no material risk | fixture evidence resolves the conflict |",
