@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import os
 import subprocess
 import tempfile
 import urllib.error
@@ -1340,8 +1341,14 @@ def discover_changed_files(root: Path | str = Path(".")) -> tuple[str, ...]:
 
 
 def _read_json_url(url: str, unavailable_message: str) -> dict[str, Any]:
+    headers = {}
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    if token and urllib.parse.urlparse(url).netloc == "api.github.com":
+        headers["Authorization"] = f"Bearer {token}"
+        headers["Accept"] = "application/vnd.github+json"
+    request = urllib.request.Request(url, headers=headers)
     try:
-        with urllib.request.urlopen(url, timeout=30) as response:
+        with urllib.request.urlopen(request, timeout=30) as response:
             data = json.loads(response.read().decode("utf-8"))
     except (OSError, urllib.error.URLError, json.JSONDecodeError) as exc:
         raise PublicEvidenceUnavailable(f"{unavailable_message}: {exc}") from exc

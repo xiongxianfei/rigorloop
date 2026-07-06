@@ -1,6 +1,6 @@
 version: v0.3.6
 release_type: final
-publication_status: pending-publication
+publication_status: published
 manifest_version: v0.1.5
 
 supported_tools:
