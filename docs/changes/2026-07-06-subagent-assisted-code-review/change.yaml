@@ -63,13 +63,15 @@ changed_files:
   - docs/changes/2026-07-06-subagent-assisted-code-review/review-resolution.md
   - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m2-r2.md
   - docs/changes/2026-07-06-subagent-assisted-code-review/behavior-preservation.md
+  - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m3-r1.md
 review:
-  status: review-requested
+  status: clean-with-notes
   unresolved_items: 0
   proposal_review: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/proposal-review-r1.md
   code_review_m1: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m1-r1.md
   code_review_m2: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m2-r1.md
   code_review_m2_rerun: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m2-r2.md
+  code_review_m3: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m3-r1.md
   review_log: docs/changes/2026-07-06-subagent-assisted-code-review/review-log.md
 workflow:
   autoprogression:
@@ -147,3 +149,13 @@ validation:
     result: passed_for_M3
   - command: bash scripts/ci.sh --mode explicit --path skills/code-review/SKILL.md --path docs/changes/2026-07-06-subagent-assisted-code-review/behavior-preservation.md --path docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml --path docs/plans/2026-07-06-subagent-assisted-code-review.md --path docs/plan.md
     result: passed_selected_checks_for_M3
+  - command: code-review-m3-r1
+    result: clean_with_notes_no_material_findings_m3_closed
+  - command: reviewer rerun python scripts/validate-skills.py skills/code-review/SKILL.md
+    result: passed
+  - command: reviewer rerun python scripts/build-skills.py --check
+    result: passed
+  - command: reviewer rerun python scripts/test-build-skills.py
+    result: passed
+  - command: reviewer rerun python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: passed

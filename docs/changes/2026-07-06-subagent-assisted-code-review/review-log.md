@@ -103,3 +103,17 @@ Resolution: review-resolution.md#code-review-m2-r2
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m3-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit de3bcb0e
+Status: clean-with-notes
+Detailed record: reviews/code-review-m3-r1.md
+Record: reviews/code-review-m3-r1.md
+Resolution: review-resolution.md#code-review-m3-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
