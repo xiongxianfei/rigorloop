@@ -82,13 +82,13 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 - Current milestone: M2. Validation and fixtures
 - Current milestone state: review-requested
-- Latest review evidence: code-review-m1-r1
-- Last reviewed milestone: M1. Code-review contract and assets
-- Review status: review-requested; stage=code-review; round=r1
+- Latest review evidence: review-resolution SUBCR-M2-CR1
+- Last reviewed milestone: M2. Validation and fixtures
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2
+- Next stage: code-review M2 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones M2-M3, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 awaits code-review rerun, M3 remains open, and final holistic review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -121,9 +121,9 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
   - [x] plan progress and validation notes updated
   - [x] hand off to code-review for M2
 - Review closeout:
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] current handoff updated before starting M3
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] current handoff updated before code-review rerun
 - Milestone commit message: `M2: validate subagent review packets and coverage`
 
 ### M3. Generated output and adapter proof
@@ -184,6 +184,8 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: M2 implementation started; adding validator and fixture coverage for subagent roles, packets, aggregation, coverage records, conflicts, and advisory imports.
 - 2026-07-06: M2 implementation added subagent review helper validation in `scripts/skill_validation.py`, review-record section validation in `scripts/review_artifact_validation.py`, and focused regression coverage in `scripts/test-skill-validator.py` and `scripts/test-review-artifact-validator.py`.
 - 2026-07-06: M2 targeted validation passed and the milestone is ready for `code-review`.
+- 2026-07-06: code-review M2 R1 requested changes for SUBCR-M2-CR1; M2 remains open and workflow routes to `review-resolution`.
+- 2026-07-06: SUBCR-M2-CR1 accepted and fixed by validating packets inside aggregation before processing; M2 returned to `code-review` for rerun.
 
 ## Decision log
 
@@ -217,6 +219,8 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - M2 validation passed: `python scripts/test-review-artifact-validator.py -k subagent_code_review`.
 - M2 validation passed: `python scripts/validate-skills.py skills/code-review/SKILL.md`.
 - M2 validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review`.
+- Code-review M2 R1 proof: `validate_subagent_review_packet` rejected an invalid packet with unknown schema and unknown role, but `aggregate_subagent_review_packets` accepted a high-confidence finding from that same packet.
+- Review-resolution validation passed: `python scripts/test-skill-validator.py -k subagent_code_review`.
 
 ## Outcome and retrospective
 

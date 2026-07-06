@@ -58,11 +58,14 @@ changed_files:
   - scripts/skill_validation.py
   - scripts/review_artifact_validation.py
   - scripts/test-review-artifact-validator.py
+  - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m2-r1.md
+  - docs/changes/2026-07-06-subagent-assisted-code-review/review-resolution.md
 review:
-  status: approved
+  status: review-requested
   unresolved_items: 0
   proposal_review: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/proposal-review-r1.md
   code_review_m1: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m1-r1.md
+  code_review_m2: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m2-r1.md
   review_log: docs/changes/2026-07-06-subagent-assisted-code-review/review-log.md
 workflow:
   autoprogression:
@@ -118,3 +121,9 @@ validation:
     result: failed_before_m2_review_artifact_validation_then_passed_after_update
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review
     result: passed
+  - command: code-review-m2-r1
+    result: changes_requested_SUBCR-M2-CR1
+  - command: review-resolution SUBCR-M2-CR1
+    result: accepted_resolved_packet_validation_added_to_aggregation
+  - command: python scripts/test-skill-validator.py -k subagent_code_review
+    result: passed_after_SUBCR-M2-CR1_fix
