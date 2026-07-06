@@ -1,0 +1,99 @@
+change_id: 2026-07-06-subagent-assisted-code-review
+title: Subagent-Assisted Code Review
+classification: workflow-governance
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-07-06-subagent-assisted-code-review.md
+  spec: specs/subagent-assisted-code-review.md
+  test_spec: specs/subagent-assisted-code-review.test.md
+  plan: docs/plans/2026-07-06-subagent-assisted-code-review.md
+requirements:
+  - Record a proposal for subagent-assisted code review before downstream spec work.
+  - Review the proposal for problem clarity, user value, option diversity, scope control, architecture awareness, testability, rollout realism, risk honesty, vision fit, and readiness for spec.
+  - Preserve `code-review` as the reviewer of record.
+  - Preserve subagents as read-only specialist evidence collectors.
+  - Preserve review-resolution, verify, and PR readiness boundaries.
+  - Normalize proposal status to accepted before downstream spec reliance.
+  - Author the subagent-assisted code review spec from the accepted proposal.
+  - Record architecture assessment before downstream plan reliance.
+  - Create an execution plan before plan-review.
+  - Review the execution plan before test-spec authoring.
+  - Author a traceable test specification before test-spec-review.
+  - Review the active test specification before implementation reliance.
+tests:
+  - Proposal includes Vision fit and matches the current project vision.
+  - Proposal preserves the user's initial goals and scope constraints.
+  - Proposal classifies broad workflow, validation, adapter, target-native, and deferred execution work through a scope budget.
+  - Proposal-review R1 approves the proposal or records material findings before downstream spec reliance.
+  - Review log indexes proposal-review R1 with zero material findings when clean.
+  - Proposal status is normalized from draft to accepted after clean recorded proposal-review.
+  - Spec defines role vocabulary, selection, packet shape, aggregation, coverage recording, advisory import behavior, and first-slice non-goals.
+  - Spec-review R1 approves the spec or records material findings before downstream architecture or planning reliance.
+  - Spec status is normalized from draft to approved after clean recorded spec-review.
+  - Architecture assessment records architecture-not-required.
+  - Plan sequences reviewable implementation milestones and validation commands before plan-review.
+  - Plan-review R1 approves the plan or records material findings before test-spec reliance.
+  - Test spec maps requirements, examples, edge cases, validation commands, and milestones to concrete proof.
+  - Test-spec-review R1 approves the proof map or records material findings before implementation reliance.
+  - M1 static proof covers the subagent-assisted code-review guidance required for reviewer-of-record authority, role selection, packet boundaries, aggregation, coverage recording, advisory import behavior, and first-slice non-goals.
+  - M1 skill validation proves `skills/code-review/SKILL.md` remains structurally valid after the contract update.
+changed_files:
+  - docs/proposals/2026-07-06-subagent-assisted-code-review.md
+  - docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml
+  - docs/changes/2026-07-06-subagent-assisted-code-review/review-log.md
+  - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/proposal-review-r1.md
+  - specs/subagent-assisted-code-review.md
+  - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/spec-review-r1.md
+  - docs/changes/2026-07-06-subagent-assisted-code-review/architecture-assessment.md
+  - docs/plans/2026-07-06-subagent-assisted-code-review.md
+  - docs/plan.md
+  - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/plan-review-r1.md
+  - specs/subagent-assisted-code-review.test.md
+  - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/test-spec-review-r1.md
+  - skills/code-review/SKILL.md
+  - scripts/test-skill-validator.py
+review:
+  status: approved
+  unresolved_items: 0
+  proposal_review: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/proposal-review-r1.md
+  review_log: docs/changes/2026-07-06-subagent-assisted-code-review/review-log.md
+workflow:
+  autoprogression:
+    review_fix:
+      profile: bounded-review-fix
+      status: completed
+      target_stage: test-spec-review
+      armed_by: user
+      armed_at: 2026-07-06T00:00:00Z
+      current_stage: test-spec-review
+      current_review: test-spec-review-r1
+      stop_reason: target-reached
+      last_updated_evidence: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/test-spec-review-r1.md
+      change_id: 2026-07-06-subagent-assisted-code-review
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted
+  - command: workflow auto test-spec-review authorization
+    result: active_target_test_spec_review
+  - command: spec authoring
+    result: subagent_assisted_code_review_spec_draft_ready_for_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: spec_status_approved
+  - command: architecture assessment
+    result: architecture_not_required
+  - command: plan authoring
+    result: active_plan_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: test-spec authoring
+    result: subagent_assisted_code_review_test_spec_active_ready_for_test_spec_review
+  - command: test-spec-review r1
+    result: approved_no_material_findings_implementation_handoff_allowed_target_reached
+  - command: python scripts/test-skill-validator.py -k subagent_code_review
+    result: failed_before_m1_skill_contract_update_then_passed_after_update
+  - command: python scripts/validate-skills.py skills/code-review/SKILL.md
+    result: passed

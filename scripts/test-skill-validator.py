@@ -2450,6 +2450,38 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertIn("- Milestone closeout:", result_skeleton)
         self.assertNotIn("approved | changes-requested", result_skeleton)
 
+    def test_subagent_code_review_m1_contract_guidance(self) -> None:
+        skill_text = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        required_terms = [
+            "## Subagent-Assisted Review",
+            "Subagents are specialist evidence collectors, not reviewers of record.",
+            "Direct code review without subagents remains supported.",
+            "correctness-reviewer",
+            "test-evidence-reviewer",
+            "security-privacy-reviewer",
+            "generated-output-reviewer",
+            "migration-compatibility-reviewer",
+            "performance-concurrency-reviewer",
+            "docs-ops-reviewer",
+            "Unknown specialist role values fail closed.",
+            "Select specialists from changed surfaces and risk markers.",
+            "bounded default specialist count",
+            "subagent-review-packet-v1",
+            "findings | no-findings | inconclusive",
+            "read-only by default",
+            "The aggregator verifies evidence before promotion.",
+            "One verified specialist finding can become canonical without consensus.",
+            "## Subagent Coverage Recording",
+            "## Subagent comments not promoted",
+            "Codex GitHub review output, GitHub comment streams, Claude subagent output, and other target-native review output are advisory unless imported into the canonical review record.",
+            "The first implementation does not require persistent packet files, packaged Claude custom subagents, mandatory Codex review, parallel subagent execution, or auto-fix behavior.",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, skill_text)
+
     def test_proposal_review_family_assets_preserve_gate_status_vocabulary(self) -> None:
         skills_dir = ROOT / "skills"
         skill_text = (skills_dir / "proposal-review" / "SKILL.md").read_text(encoding="utf-8")
