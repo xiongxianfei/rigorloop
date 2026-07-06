@@ -35,3 +35,7 @@ Required outcome: Aggregation must reject malformed subagent packets before any 
 Safe resolution path: Validate each packet inside `aggregate_subagent_review_packets` before processing and add a regression proving malformed or unknown-role packets cannot produce `accepted_findings`.
 Validation target: Malformed or unknown-role packets cannot produce accepted aggregation findings, while schema-valid low-confidence findings are still downgraded by materiality policy.
 Validation evidence: `python scripts/test-skill-validator.py -k subagent_code_review` passed after the fix.
+
+### code-review-m2-r2
+
+No material findings.
