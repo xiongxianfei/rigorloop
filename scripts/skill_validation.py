@@ -8,6 +8,7 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +16,54 @@ CANONICAL_SKILLS_DIR = ROOT / "skills"
 GENERATED_SKILLS_DIR = ROOT / ".codex" / "skills"
 SKILL_SCHEMA_PATH = ROOT / "schemas" / "skill.schema.json"
 WORKFLOWS_DOC_PATH = ROOT / "docs" / "workflows.md"
+
+SUBAGENT_REVIEW_ROLES = frozenset(
+    {
+        "correctness-reviewer",
+        "test-evidence-reviewer",
+        "security-privacy-reviewer",
+        "generated-output-reviewer",
+        "migration-compatibility-reviewer",
+        "performance-concurrency-reviewer",
+        "docs-ops-reviewer",
+    }
+)
+SUBAGENT_PACKET_STATUSES = frozenset({"findings", "no-findings", "inconclusive"})
+SUBAGENT_FINDING_REQUIRED_FIELDS = (
+    "title",
+    "severity",
+    "location",
+    "evidence",
+    "required_outcome",
+    "safe_resolution_path",
+    "confidence",
+)
+SUBAGENT_PACKET_REQUIRED_FIELDS = (
+    "schema_version",
+    "review_id",
+    "subagent",
+    "status",
+    "scope_reviewed",
+    "coverage",
+    "findings",
+    "no_finding_rationale",
+    "limitations",
+)
+
+
+@dataclass(frozen=True)
+class SubagentSelection:
+    selected: tuple[str, ...]
+    omitted: dict[str, str]
+    triggered: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class SubagentAggregation:
+    accepted_findings: tuple[dict[str, Any], ...]
+    rejected_comments: tuple[dict[str, str], ...]
+    deduplicated_findings: int
+    conflicts: tuple[dict[str, str], ...]
 
 
 @dataclass(frozen=True)
@@ -42,6 +91,162 @@ class MappedResourceIdentity:
     relative_path: str
     path: Path
     sha256: str
+
+
+def select_subagent_reviewers(
+    changed_surfaces: list[str] | tuple[str, ...],
+    *,
+    max_subagents: int = 4,
+) -> SubagentSelection:
+    """Return deterministic specialist coverage from changed paths or risk markers."""
+    triggered: list[str] = []
+
+    def add(role: str) -> None:
+        if role not in triggered:
+            triggered.append(role)
+
+    for raw_surface in changed_surfaces:
+        surface = raw_surface.casefold()
+        if any(marker in surface for marker in ("validate", "validator", "workflow", "algorithm", "production", "scripts/")):
+            add("correctness-reviewer")
+        if any(marker in surface for marker in ("test", "fixture", "evidence", "validation command", "review-log", "review")):
+            add("test-evidence-reviewer")
+        if any(marker in surface for marker in ("secret", "auth", "permission", "network", "publish", "token", "unsafe")):
+            add("security-privacy-reviewer")
+        if any(marker in surface for marker in ("generated", "adapter", "archive", "release", "dist/adapters")):
+            add("generated-output-reviewer")
+        if any(marker in surface for marker in ("schema", "api", "cli", "migration", "compat", "manifest")):
+            add("migration-compatibility-reviewer")
+        if any(marker in surface for marker in ("parallel", "cache", "async", "subprocess", "performance", "concurrency")):
+            add("performance-concurrency-reviewer")
+        if any(marker in surface for marker in ("readme", "docs/", "guide", "runbook", "release-notes")):
+            add("docs-ops-reviewer")
+
+    selected = tuple(triggered[:max_subagents])
+    omitted = {
+        role: "triggered but omitted by bounded default specialist count"
+        for role in triggered[max_subagents:]
+    }
+    return SubagentSelection(selected=selected, omitted=omitted, triggered=tuple(triggered))
+
+
+def validate_subagent_review_packet(packet: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    for field in SUBAGENT_PACKET_REQUIRED_FIELDS:
+        if field not in packet:
+            errors.append(f"missing required packet field: {field}")
+    if errors:
+        return errors
+
+    if packet.get("schema_version") != "subagent-review-packet-v1":
+        errors.append(f"unknown packet schema version: {packet.get('schema_version')}")
+    role = packet.get("subagent")
+    if role not in SUBAGENT_REVIEW_ROLES:
+        errors.append(f"unknown specialist role: {role}")
+    status = packet.get("status")
+    if status not in SUBAGENT_PACKET_STATUSES:
+        errors.append(f"unknown advisory status: {status}")
+    if not isinstance(packet.get("scope_reviewed"), list) or not packet["scope_reviewed"]:
+        errors.append("scope_reviewed must be a non-empty list")
+
+    coverage = packet.get("coverage")
+    if not isinstance(coverage, dict):
+        errors.append("coverage must be a mapping")
+    else:
+        for label in ("checked", "not_checked"):
+            if not isinstance(coverage.get(label), list):
+                errors.append(f"coverage.{label} must be a list")
+
+    findings = packet.get("findings")
+    if not isinstance(findings, list):
+        errors.append("findings must be a list")
+    elif status == "findings" and not findings:
+        errors.append("findings status requires at least one finding")
+    elif status != "findings" and findings:
+        errors.append("non-findings status must not include findings")
+    else:
+        for index, finding in enumerate(findings):
+            if not isinstance(finding, dict):
+                errors.append(f"finding {index} must be a mapping")
+                continue
+            for field in SUBAGENT_FINDING_REQUIRED_FIELDS:
+                if not str(finding.get(field, "")).strip():
+                    errors.append(f"finding {index} missing required field: {field}")
+
+    if status == "no-findings" and not str(packet.get("no_finding_rationale") or "").strip():
+        errors.append("no-findings status requires no_finding_rationale")
+    if not isinstance(packet.get("limitations"), list):
+        errors.append("limitations must be a list")
+    return errors
+
+
+def aggregate_subagent_review_packets(packets: list[dict[str, Any]]) -> SubagentAggregation:
+    accepted: list[dict[str, Any]] = []
+    rejected: list[dict[str, str]] = []
+    evidence_to_index: dict[str, int] = {}
+    deduplicated = 0
+    finding_roles: set[str] = set()
+    no_finding_roles: set[str] = set()
+
+    for packet in packets:
+        role = str(packet.get("subagent", "unknown"))
+        if packet.get("status") == "no-findings":
+            no_finding_roles.add(role)
+        for finding in packet.get("findings", []):
+            confidence = str(finding.get("confidence", "")).casefold()
+            evidence = str(finding.get("evidence", "")).strip()
+            severity = str(finding.get("severity", "")).casefold()
+            if confidence == "low" or not evidence or severity in {"nit", "minor"}:
+                rejected.append(
+                    {
+                        "subagent": role,
+                        "comment": str(finding.get("title", "")),
+                        "reason": "low-confidence or missing material evidence",
+                    }
+                )
+                continue
+            key = evidence.casefold()
+            finding_roles.add(role)
+            if key in evidence_to_index:
+                existing = accepted[evidence_to_index[key]]
+                existing["source_subagents"] = (*existing["source_subagents"], role)
+                deduplicated += 1
+                continue
+            promoted = dict(finding)
+            promoted["source_subagents"] = (role,)
+            evidence_to_index[key] = len(accepted)
+            accepted.append(promoted)
+
+    conflicts: list[dict[str, str]] = []
+    if accepted and no_finding_roles:
+        conflicts.append(
+            {
+                "conflict": "finding packet vs no-findings packet",
+                "evidence_inspected": str(accepted[0].get("evidence", "")),
+                "final_decision": "material-risk-wins",
+                "reason": "verified material evidence overrides silence",
+            }
+        )
+
+    return SubagentAggregation(
+        accepted_findings=tuple(accepted),
+        rejected_comments=tuple(rejected),
+        deduplicated_findings=deduplicated,
+        conflicts=tuple(conflicts),
+    )
+
+
+def validate_advisory_review_import(import_record: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    for field in ("source", "scope", "limitations", "promoted_findings", "rejected_comments", "canonical_status_owner"):
+        if field not in import_record or import_record[field] in ("", None):
+            errors.append(f"missing advisory import field: {field}")
+    if import_record.get("canonical_status_owner") != "code-review":
+        errors.append("external advisory output must not own canonical status")
+    for field in ("promoted_findings", "rejected_comments"):
+        if field in import_record and not isinstance(import_record[field], list):
+            errors.append(f"{field} must be a list")
+    return errors
 
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD)\b")

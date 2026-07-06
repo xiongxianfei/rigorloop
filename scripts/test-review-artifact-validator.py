@@ -237,6 +237,53 @@ def valid_automated_review_text(extra_fields: str = "") -> str:
     """
 
 
+def code_review_subagent_record_text(extra: str = "") -> str:
+    extra_block = f"\n{extra.strip()}\n" if extra.strip() else ""
+    return f"""
+    # Code Review M2 R1
+
+    Review ID: code-review-m2-r1
+    Stage: code-review
+    Round: 1
+    Reviewer: Codex code-review skill
+    Target: M2 subagent validation fixture
+    Status: clean-with-notes
+    Subagent-assisted review: yes
+    Required subagent coverage: correctness-reviewer, test-evidence-reviewer, generated-output-reviewer
+
+    ## Findings
+
+    No material findings.
+
+    ## Subagent coverage
+
+    | Subagent | Status | Scope | Findings accepted | Findings rejected | Limitations |
+    | --- | --- | --- | ---: | ---: | --- |
+    | correctness-reviewer | no-findings | validator logic | 0 | 0 | fixture only |
+    | test-evidence-reviewer | no-findings | tests and fixtures | 0 | 0 | fixture only |
+    | generated-output-reviewer | no-findings | generated-output policy | 0 | 0 | fixture only |
+
+    ## Subagent conflict decisions
+
+    | Conflict | Evidence inspected | Final decision | Reason |
+    | --- | --- | --- | --- |
+    | generated-output risk vs no-findings packet | skills/code-review/SKILL.md | no material risk | fixture evidence resolves the conflict |
+
+    ## Subagent comments not promoted
+
+    | Subagent | Comment | Reason not material |
+    | --- | --- | --- |
+    | docs-ops-reviewer | Prefer shorter wording | low-evidence suggestion |
+
+    ## Advisory review imports
+
+    | Source | Scope | Limitations | Promoted findings | Rejected comments |
+    | --- | --- | --- | --- | --- |
+    | Codex GitHub review | PR diff | comment stream only | none | style-only suggestion |
+    {extra_block}
+    """
+
+
 def valid_calibration_record_fields(extra_fields: str = "") -> str:
     extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
     return f"""
@@ -698,6 +745,92 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         root = copy_fixture()
         self.addCleanupTree(root)
         return root
+
+    def subagent_review_fixture(self, review_text_value: str | None = None) -> Path:
+        root = Path(tempfile.mkdtemp(prefix="subagent-review-artifact-"))
+        self.addCleanupTree(root)
+        write_text(root / "reviews" / "code-review-m2-r1.md", review_text_value or code_review_subagent_record_text())
+        write_text(
+            root / "review-log.md",
+            """
+            # Review Log
+
+            ### Review entry
+            Review ID: code-review-m2-r1
+            Stage: code-review
+            Round: 1
+            Status: clean-with-notes
+            Detailed record: reviews/code-review-m2-r1.md
+            Resolution: review-resolution.md#code-review-m2-r1
+            Material findings: None
+            Open findings: None
+            """,
+        )
+        return root
+
+    def test_subagent_code_review_record_valid_coverage_conflict_and_advisory_sections_pass(self) -> None:
+        self.assertPasses(self.subagent_review_fixture())
+
+    def test_subagent_code_review_record_unknown_role_fails_closed(self) -> None:
+        self.assertFails(
+            self.subagent_review_fixture(
+                code_review_subagent_record_text().replace(
+                    "generated-output-reviewer | no-findings",
+                    "style-reviewer | no-findings",
+                )
+            ),
+            "unknown subagent role: style-reviewer",
+        )
+
+    def test_subagent_code_review_record_unknown_status_fails_closed(self) -> None:
+        self.assertFails(
+            self.subagent_review_fixture(
+                code_review_subagent_record_text().replace(
+                    "generated-output-reviewer | no-findings",
+                    "generated-output-reviewer | approved",
+                )
+            ),
+            "unknown subagent advisory status: approved",
+        )
+
+    def test_subagent_code_review_record_missing_required_coverage_blocks_clean_status(self) -> None:
+        text = code_review_subagent_record_text().replace(
+            "| generated-output-reviewer | no-findings | generated-output policy | 0 | 0 | fixture only |\n",
+            "",
+        )
+        self.assertFails(
+            self.subagent_review_fixture(text),
+            "missing required subagent coverage: generated-output-reviewer",
+        )
+
+    def test_subagent_code_review_record_inconclusive_required_coverage_blocks_clean_status(self) -> None:
+        text = code_review_subagent_record_text().replace(
+            "generated-output-reviewer | no-findings",
+            "generated-output-reviewer | inconclusive",
+        )
+        self.assertFails(
+            self.subagent_review_fixture(text),
+            "inconclusive required subagent coverage requires blocked or inconclusive review status",
+        )
+
+    def test_subagent_code_review_record_malformed_conflict_and_advisory_sections_fail(self) -> None:
+        malformed_conflict = code_review_subagent_record_text().replace(
+            "| generated-output risk vs no-findings packet | skills/code-review/SKILL.md | no material risk | fixture evidence resolves the conflict |",
+            "| generated-output risk vs no-findings packet | skills/code-review/SKILL.md |  | fixture evidence resolves the conflict |",
+        )
+        self.assertFails(
+            self.subagent_review_fixture(malformed_conflict),
+            "subagent conflict decision missing final decision",
+        )
+
+        malformed_advisory = code_review_subagent_record_text().replace(
+            "| Codex GitHub review | PR diff | comment stream only | none | style-only suggestion |",
+            "| Codex GitHub review | PR diff |  | none | style-only suggestion |",
+        )
+        self.assertFails(
+            self.subagent_review_fixture(malformed_advisory),
+            "advisory review import missing limitations",
+        )
 
     def clean_receipt_fixture(self) -> Path:
         root = copy_fixture("valid-clean-receipt-root")

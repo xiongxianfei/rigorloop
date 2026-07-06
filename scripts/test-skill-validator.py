@@ -2482,6 +2482,142 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, skill_text)
 
+    def test_subagent_code_review_m2_role_selection_packet_and_aggregation_validation(self) -> None:
+        selection = skill_validation.select_subagent_reviewers(
+            [
+                "scripts/validate-review-artifacts.py",
+                "specs/subagent-assisted-code-review.test.md",
+                "dist/adapters/manifest.yaml",
+                "docs/workflows.md",
+                "scripts/adapter_distribution.py",
+            ],
+            max_subagents=3,
+        )
+        self.assertEqual(
+            selection.selected,
+            (
+                "correctness-reviewer",
+                "test-evidence-reviewer",
+                "generated-output-reviewer",
+            ),
+        )
+        self.assertIn("docs-ops-reviewer", selection.omitted)
+        self.assertIn("migration-compatibility-reviewer", selection.omitted)
+
+        valid_packet = {
+            "schema_version": "subagent-review-packet-v1",
+            "review_id": "code-review-m2-r1",
+            "subagent": "security-privacy-reviewer",
+            "status": "findings",
+            "scope_reviewed": ["skills/code-review/SKILL.md"],
+            "coverage": {
+                "checked": ["secret exclusion"],
+                "not_checked": ["live GitHub review"],
+            },
+            "findings": [
+                {
+                    "title": "Unsafe token exposure",
+                    "severity": "major",
+                    "location": "skills/code-review/SKILL.md",
+                    "evidence": "Packet guidance omitted secret exclusion.",
+                    "required_outcome": "Subagent packets must exclude secrets.",
+                    "safe_resolution_path": "Add explicit secret exclusion to packet guidance.",
+                    "confidence": "high",
+                }
+            ],
+            "no_finding_rationale": None,
+            "limitations": ["fixture packet"],
+        }
+        self.assertEqual(skill_validation.validate_subagent_review_packet(valid_packet), [])
+
+        invalid_packet = dict(valid_packet)
+        invalid_packet["subagent"] = "style-reviewer"
+        self.assertIn(
+            "unknown specialist role: style-reviewer",
+            skill_validation.validate_subagent_review_packet(invalid_packet),
+        )
+
+        invalid_status_packet = dict(valid_packet)
+        invalid_status_packet["status"] = "approved"
+        self.assertIn(
+            "unknown advisory status: approved",
+            skill_validation.validate_subagent_review_packet(invalid_status_packet),
+        )
+
+        missing_field_packet = dict(valid_packet)
+        missing_field_packet.pop("scope_reviewed")
+        self.assertIn(
+            "missing required packet field: scope_reviewed",
+            skill_validation.validate_subagent_review_packet(missing_field_packet),
+        )
+
+        duplicate_packet = dict(valid_packet)
+        duplicate_packet["subagent"] = "correctness-reviewer"
+        duplicate_packet["findings"] = [dict(valid_packet["findings"][0])]
+        duplicate_packet["findings"][0]["title"] = "Same unsafe token exposure"
+        duplicate_packet["findings"][0]["evidence"] = valid_packet["findings"][0]["evidence"]
+
+        aggregate = skill_validation.aggregate_subagent_review_packets(
+            [valid_packet, duplicate_packet]
+        )
+        self.assertEqual(len(aggregate.accepted_findings), 1)
+        self.assertEqual(aggregate.deduplicated_findings, 1)
+        self.assertEqual(aggregate.accepted_findings[0]["source_subagents"], ("security-privacy-reviewer", "correctness-reviewer"))
+
+        low_evidence_packet = {
+            **valid_packet,
+            "subagent": "docs-ops-reviewer",
+            "findings": [
+                {
+                    "title": "Prefer shorter wording",
+                    "severity": "minor",
+                    "location": "skills/code-review/SKILL.md",
+                    "evidence": "",
+                    "required_outcome": "Optional wording cleanup.",
+                    "safe_resolution_path": "Reword if desired.",
+                    "confidence": "low",
+                }
+            ],
+        }
+        aggregate = skill_validation.aggregate_subagent_review_packets([low_evidence_packet])
+        self.assertEqual(aggregate.accepted_findings, ())
+        self.assertEqual(aggregate.rejected_comments[0]["reason"], "low-confidence or missing material evidence")
+
+        no_findings_packet = {
+            **valid_packet,
+            "subagent": "generated-output-reviewer",
+            "status": "no-findings",
+            "findings": [],
+            "no_finding_rationale": "Generated output is not touched in this fixture.",
+        }
+        conflict = skill_validation.aggregate_subagent_review_packets([valid_packet, no_findings_packet])
+        self.assertEqual(conflict.conflicts[0]["final_decision"], "material-risk-wins")
+
+        advisory_errors = skill_validation.validate_advisory_review_import(
+            {
+                "source": "Codex GitHub review",
+                "scope": "PR diff",
+                "limitations": "comments only",
+                "promoted_findings": [],
+                "rejected_comments": ["style-only suggestion"],
+                "canonical_status_owner": "code-review",
+            }
+        )
+        self.assertEqual(advisory_errors, [])
+        self.assertIn(
+            "external advisory output must not own canonical status",
+            skill_validation.validate_advisory_review_import(
+                {
+                    "source": "Codex GitHub review",
+                    "scope": "PR diff",
+                    "limitations": "comments only",
+                    "promoted_findings": [],
+                    "rejected_comments": [],
+                    "canonical_status_owner": "github",
+                }
+            ),
+        )
+
     def test_proposal_review_family_assets_preserve_gate_status_vocabulary(self) -> None:
         skills_dir = ROOT / "skills"
         skill_text = (skills_dir / "proposal-review" / "SKILL.md").read_text(encoding="utf-8")

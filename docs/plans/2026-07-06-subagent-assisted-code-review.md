@@ -81,14 +81,14 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 ## Current Handoff Summary
 
 - Current milestone: M2. Validation and fixtures
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: code-review-m1-r1
 - Last reviewed milestone: M1. Code-review contract and assets
-- Review status: approved; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones M1-M3, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones M2-M3, code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -111,15 +111,15 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 ### M2. Validation and fixtures
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Deliverable: add repository-owned validation and fixtures for role vocabulary, packet schema, unknown values, malformed packets, missing coverage, dedupe, conflict decisions, low-evidence non-promotion, coverage records, and advisory import summaries.
 - Requirements: R3-R14, AC3-AC14.
 - Expected files: validator scripts, validator tests, fixtures, and review-artifact validation tests as identified by the test spec.
 - Validation: targeted validator regression commands named by the test spec; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review` when review artifacts change.
 - Implementation handoff:
-  - [ ] targeted validation passed
-  - [ ] plan progress and validation notes updated
-  - [ ] hand off to code-review for M2
+  - [x] targeted validation passed
+  - [x] plan progress and validation notes updated
+  - [x] hand off to code-review for M2
 - Review closeout:
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
@@ -181,6 +181,9 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: M1 implementation added the subagent-assisted code-review contract to `skills/code-review/SKILL.md` and focused static proof in `scripts/test-skill-validator.py`.
 - 2026-07-06: M1 targeted validation passed and the milestone is ready for `code-review`.
 - 2026-07-06: code-review M1 R1 completed clean-with-notes with no material findings; M1 closed and workflow routed to `implement M2`.
+- 2026-07-06: M2 implementation started; adding validator and fixture coverage for subagent roles, packets, aggregation, coverage records, conflicts, and advisory imports.
+- 2026-07-06: M2 implementation added subagent review helper validation in `scripts/skill_validation.py`, review-record section validation in `scripts/review_artifact_validation.py`, and focused regression coverage in `scripts/test-skill-validator.py` and `scripts/test-review-artifact-validator.py`.
+- 2026-07-06: M2 targeted validation passed and the milestone is ready for `code-review`.
 
 ## Decision log
 
@@ -189,11 +192,13 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 | 2026-07-06 | Split implementation into code-review contract, validation fixtures, and generated-output proof. | This keeps behavior, validation, and packaging reviewable while preserving direct review. | One large implementation milestone. |
 | 2026-07-06 | Defer persistent packet files and parallel execution. | The approved first slice records summarized coverage and needs deterministic validation first. | Building storage or parallel orchestration immediately. |
 | 2026-07-06 | Keep code-review result assets unchanged in M1. | The new coverage table is optional review-record guidance for subagent-assisted mode, not a parser-owned result field. | Adding new skeleton fields before review-artifact validation exists. |
+| 2026-07-06 | Keep M2 fixtures inline in validator tests. | The M2 contract is parser behavior and packet semantics; inline fixtures keep the first validation slice compact while still exercising positive and negative cases. | Creating a separate fixture tree before persistent packet storage exists. |
 
 ## Surprises and discoveries
 
 - None yet.
 - No new `skills/code-review/assets/` file was needed for M1; the existing parser-owned result and material-finding assets remain valid.
+- No persistent packet fixture files were needed for M2; packet and review-record snippets are inline test fixtures because separate packet storage is out of scope.
 
 ## Validation notes
 
@@ -206,6 +211,12 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Code-review M1 R1 reviewer rerun passed: `python scripts/test-skill-validator.py -k subagent_code_review`.
 - Code-review M1 R1 reviewer rerun passed: `python scripts/validate-skills.py skills/code-review/SKILL.md`.
 - Code-review M1 R1 reviewer rerun passed: `python scripts/validate-change-metadata.py docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml`.
+- M2 failing proof before implementation: `python scripts/test-skill-validator.py -k subagent_code_review` failed because subagent selection, packet validation, aggregation, and advisory import helpers were absent.
+- M2 failing proof before implementation: `python scripts/test-review-artifact-validator.py -k subagent_code_review` failed because subagent coverage, missing coverage, conflict, and advisory import review-record checks were absent.
+- M2 validation passed: `python scripts/test-skill-validator.py -k subagent_code_review`.
+- M2 validation passed: `python scripts/test-review-artifact-validator.py -k subagent_code_review`.
+- M2 validation passed: `python scripts/validate-skills.py skills/code-review/SKILL.md`.
+- M2 validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review`.
 
 ## Outcome and retrospective
 
