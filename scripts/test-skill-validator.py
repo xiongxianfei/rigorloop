@@ -2550,6 +2550,15 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "missing required packet field: scope_reviewed",
             skill_validation.validate_subagent_review_packet(missing_field_packet),
         )
+        malformed_aggregate = skill_validation.aggregate_subagent_review_packets(
+            [invalid_packet, invalid_status_packet, missing_field_packet]
+        )
+        self.assertEqual(malformed_aggregate.accepted_findings, ())
+        self.assertEqual(len(malformed_aggregate.rejected_comments), 3)
+        self.assertEqual(
+            {comment["reason"] for comment in malformed_aggregate.rejected_comments},
+            {"malformed subagent review packet"},
+        )
 
         duplicate_packet = dict(valid_packet)
         duplicate_packet["subagent"] = "correctness-reviewer"
@@ -2572,7 +2581,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "title": "Prefer shorter wording",
                     "severity": "minor",
                     "location": "skills/code-review/SKILL.md",
-                    "evidence": "",
+                    "evidence": "The wording could be shorter, but no material contract risk is identified.",
                     "required_outcome": "Optional wording cleanup.",
                     "safe_resolution_path": "Reword if desired.",
                     "confidence": "low",

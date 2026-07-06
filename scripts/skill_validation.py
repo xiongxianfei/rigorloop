@@ -190,6 +190,16 @@ def aggregate_subagent_review_packets(packets: list[dict[str, Any]]) -> Subagent
 
     for packet in packets:
         role = str(packet.get("subagent", "unknown"))
+        packet_errors = validate_subagent_review_packet(packet)
+        if packet_errors:
+            rejected.append(
+                {
+                    "subagent": role,
+                    "comment": "; ".join(packet_errors),
+                    "reason": "malformed subagent review packet",
+                }
+            )
+            continue
         if packet.get("status") == "no-findings":
             no_finding_roles.add(role)
         for finding in packet.get("findings", []):
