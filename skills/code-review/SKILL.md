@@ -385,6 +385,111 @@ Requirement compression is a material finding when an implementation, validator,
 
 Direct or profile-off review behavior remains isolated and does not require requirement-fidelity manifests unless the result is used as a workflow-managed automated handoff gate.
 
+## Subagent-Assisted Review
+
+Subagents are specialist evidence collectors, not reviewers of record.
+The canonical `code-review` invocation remains the reviewer of record for formal review status, material findings, review-log entries, review-resolution routing, milestone closeout, and downstream handoff.
+Direct code review without subagents remains supported.
+
+Use subagent-assisted review only to widen specialist coverage for broad or risky review surfaces.
+Subagents must not approve, block, close, or mark milestones directly.
+Subagents must not write canonical review records, review-log entries, review-resolution entries, verify results, or PR readiness claims.
+Subagent output is advisory until the code-review aggregator verifies and promotes it into the canonical review record.
+
+The specialist role vocabulary is closed:
+
+| Role | Review focus |
+| --- | --- |
+| `correctness-reviewer` | Contract compliance, algorithms, validators, workflow logic, and production behavior. |
+| `test-evidence-reviewer` | Tests, test specs, validation commands, fixtures, evidence ownership, and proof sufficiency. |
+| `security-privacy-reviewer` | Secrets, auth, authorization, permissions, trust boundaries, external services, publication, and unsafe inputs. |
+| `generated-output-reviewer` | Generated skills, adapter output, archives, release artifacts, and source-derived parity. |
+| `migration-compatibility-reviewer` | Schemas, storage, public APIs, CLI behavior, release/package compatibility, and migrations. |
+| `performance-concurrency-reviewer` | Hot paths, parallelism, caching, async behavior, subprocess behavior, cost, and determinism. |
+| `docs-ops-reviewer` | README, docs, release notes, guides, runbooks, user-facing commands, and operational accuracy. |
+
+Unknown specialist role values fail closed.
+Do not infer a new role name because the review surface seems specialized.
+
+Select specialists from changed surfaces and risk markers.
+Use a bounded default specialist count and record any triggered specialist that did not run, was folded into another review, or was replaced by safe substitute coverage.
+Full-specialist mode may exceed the default cap only when the review record says full-specialist mode was used.
+
+Use these default selection rules:
+
+| Changed surface or risk marker | Required specialist coverage |
+| --- | --- |
+| Validators, algorithms, workflow logic, production behavior | `correctness-reviewer` |
+| Tests, test specs, fixtures, validation commands, evidence records | `test-evidence-reviewer` |
+| Secrets, auth, authorization, permissions, file-system trust boundaries, external services, network behavior, package publication, unsafe external input | `security-privacy-reviewer` |
+| Generated skills, adapters, archives, release artifacts, generated-output validation | `generated-output-reviewer` |
+| Schemas, storage, public APIs, CLI behavior, release/package compatibility, migrations | `migration-compatibility-reviewer` |
+| Hot paths, parallel execution, caching, async behavior, subprocess orchestration, deterministic aggregation | `performance-concurrency-reviewer` |
+| README, docs, release notes, guides, operational runbooks, user-facing commands | `docs-ops-reviewer` |
+
+Each subagent input packet is bounded and read-only by default.
+The packet includes review ID, change ID when present, milestone when present, specialist role, changed files or review scope, governing artifacts, must-check items, must-not actions, known non-goals when relevant, and expected output format.
+The packet excludes secrets, credentials, private keys, unrelated private data, and unrelated review surfaces.
+The packet tells the specialist not to edit files, approve milestones, claim verify readiness, claim PR readiness, or review unrelated code.
+
+Default allowed operations are reading files, searching files, inspecting diffs, inspecting validation logs, and running explicitly allowed safe read-only diagnostics.
+Default disallowed operations are editing files, writing review records, committing, pushing, publishing, modifying generated outputs, running destructive commands, running publication commands, accessing secrets, and using external network access.
+If an environment cannot preserve the read-only review boundary, record that subagent-assisted mode is unavailable there.
+
+Subagent review packets use `subagent-review-packet-v1`.
+Packet status is `findings | no-findings | inconclusive`.
+Each packet identifies review ID, subagent role, advisory status, reviewed scope, checked coverage, not-checked coverage, findings, no-finding rationale when status is `no-findings`, and limitations.
+Reject unknown schema versions, unknown roles, unknown statuses, missing required fields, malformed findings, or unverifiable reviewed scope.
+
+Each subagent finding includes title, severity recommendation, location or review surface, evidence, required outcome, safe resolution path or needs-decision rationale, and confidence.
+The aggregator verifies evidence before promotion.
+The aggregator deduplicates overlapping findings, resolves conflicts by inspecting evidence instead of counting votes, decides final canonical severity, and records conflict decisions when they affect review outcome.
+One verified specialist finding can become canonical without consensus.
+Low-confidence suggestions are not promoted to material findings without independent inspectable evidence.
+
+Missing, malformed, or materially inconclusive required specialist coverage makes canonical review `blocked` or `inconclusive` unless the coordinator records safe substitute coverage.
+Material findings promoted from subagent packets still use the standard material-finding contract and still trigger review-resolution according to the normal workflow.
+Subagent output never proves verify readiness, PR-body readiness, PR-open readiness, or branch readiness.
+
+Codex GitHub review output, GitHub comment streams, Claude subagent output, and other target-native review output are advisory unless imported into the canonical review record.
+Imported advisory output identifies source, scope, limitations, promoted findings, and rejected or downgraded comments when relevant.
+Target-native comments do not replace the canonical RigorLoop code-review artifact.
+
+The first implementation does not require persistent packet files, packaged Claude custom subagents, mandatory Codex review, parallel subagent execution, or auto-fix behavior.
+If later work adds any of those behaviors, require the governing spec, architecture, validation, and privacy boundaries before implementation.
+
+## Subagent Coverage Recording
+
+When subagent-assisted mode runs, include a `## Subagent coverage` section in the canonical review record.
+
+```md
+## Subagent coverage
+
+| Subagent | Status | Scope | Findings accepted | Findings rejected | Limitations |
+| --- | --- | --- | ---: | ---: | --- |
+| <specialist role> | <findings, no-findings, inconclusive> | <reviewed scope> | <count> | <count> | <limitations or none> |
+```
+
+Record selected specialists and the changed surfaces or risk markers that triggered them.
+Record non-selected high-value specialists with omission rationale when their omission could otherwise look like under-review.
+Identify missing or inconclusive required specialist coverage when it affects canonical review status.
+Do not embed raw subagent transcripts unless they are needed as evidence.
+
+## Subagent comments not promoted
+
+Summarize rejected or downgraded subagent comments only when that helps later reviewers understand the materiality decision.
+
+```md
+## Subagent comments not promoted
+
+| Subagent | Comment | Reason not material |
+| --- | --- | --- |
+| <specialist role> | <summary> | <reason> |
+```
+
+Do not let non-material observations flood the review record.
+The canonical review should record material, evidence-bound findings and concise coverage evidence, not raw suggestion streams.
+
 ## Plan closeout check
 
 For milestone-based plans, the review output must include or require a current handoff summary with:
