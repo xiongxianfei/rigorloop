@@ -81,12 +81,12 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 ## Current Handoff Summary
 
 - Current milestone: M3. Generated output and adapter proof
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Latest review evidence: code-review-m2-r2
 - Last reviewed milestone: M2. Validation and fixtures
-- Review status: approved; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 remains open, and final holistic review, explain-change, verify, and PR handoff remain.
 
@@ -128,16 +128,16 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 ### M3. Generated output and adapter proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Deliverable: prove generated skills and adapter artifacts include the updated canonical code-review skill and assets through repository-owned generation and validation, without hand-editing generated output.
 - Requirements: R13-R18, AC12-AC16.
 - Expected files: generated-output tests or adapter distribution tests when needed; change-local behavior-preservation evidence.
 - Validation: `python scripts/build-skills.py --check`; relevant adapter generation or distribution tests named by the test spec; `python scripts/validate-skills.py`.
 - Implementation handoff:
-  - [ ] targeted validation passed
-  - [ ] behavior-preservation evidence recorded when needed
-  - [ ] plan progress and validation notes updated
-  - [ ] hand off to code-review for M3
+  - [x] targeted validation passed
+  - [x] behavior-preservation evidence recorded when needed
+  - [x] plan progress and validation notes updated
+  - [x] hand off to code-review for M3
 - Review closeout:
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
@@ -187,6 +187,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: code-review M2 R1 requested changes for SUBCR-M2-CR1; M2 remains open and workflow routes to `review-resolution`.
 - 2026-07-06: SUBCR-M2-CR1 accepted and fixed by validating packets inside aggregation before processing; M2 returned to `code-review` for rerun.
 - 2026-07-06: code-review M2 R2 completed clean-with-notes; M2 closed and workflow routed to `implement M3`.
+- 2026-07-06: M3 recorded behavior-preservation evidence for generated skill mirror and adapter archive boundaries, with no runtime code or generated public adapter package edits.
 
 ## Decision log
 
@@ -224,6 +225,11 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Review-resolution validation passed: `python scripts/test-skill-validator.py -k subagent_code_review`.
 - Code-review M2 R2 reviewer rerun passed: `python scripts/test-skill-validator.py -k subagent_code_review`.
 - Code-review M2 R2 direct proof passed: malformed packet aggregation returned `accepted_findings=()` and a malformed-packet rejection.
+- M3 validation passed: `python scripts/validate-skills.py skills/code-review/SKILL.md`.
+- M3 validation passed: `python scripts/build-skills.py --check`.
+- M3 validation passed: `python scripts/test-build-skills.py`.
+- M3 validation passed: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives`.
+- M3 explicit CI passed: `bash scripts/ci.sh --mode explicit --path skills/code-review/SKILL.md --path docs/changes/2026-07-06-subagent-assisted-code-review/behavior-preservation.md --path docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml --path docs/plans/2026-07-06-subagent-assisted-code-review.md --path docs/plan.md`; selected checks included `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `guide_system.validate`, and `documentation_prose.audit`.
 
 ## Outcome and retrospective
 
