@@ -81,14 +81,14 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 ## Current Handoff Summary
 
 - Current milestone: final holistic cross-milestone review
-- Current milestone state: review-requested
-- Latest review evidence: code-review-final-r1
+- Current milestone state: closed
+- Latest review evidence: code-review-final-r2
 - Last reviewed milestone: final holistic cross-milestone review
-- Review status: changes-requested; stage=code-review; round=r1
+- Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: code-review
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — SUBCR-FINAL-CR1 is resolved in review-resolution, but final holistic code-review must rerun before explain-change, verify, and PR handoff.
+- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones and final holistic code-review are closed, but explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -146,7 +146,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 ### final holistic cross-milestone review
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Deliverable: review the complete cross-milestone diff against the governing proposal, spec, test spec, plan, review-resolution records, generated-output evidence, and lifecycle state before `explain-change`.
 - Requirements: R1-R18, AC1-AC16.
 - Expected files: final holistic code-review record and affected lifecycle evidence.
@@ -154,8 +154,8 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Review closeout:
   - [x] final holistic code-review completed
   - [x] material findings resolved or explicitly dispositioned
-  - [ ] final holistic code-review rerun completed
-  - [ ] current handoff updated before explain-change
+  - [x] final holistic code-review rerun completed
+  - [x] current handoff updated before explain-change
 
 ## Validation plan
 
@@ -204,6 +204,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: code-review M3 R1 completed clean-with-notes; all implementation milestones are closed and workflow routed to final holistic code-review before explain-change.
 - 2026-07-06: final holistic code-review R1 requested changes for SUBCR-FINAL-CR1; workflow routed to review-resolution.
 - 2026-07-06: SUBCR-FINAL-CR1 accepted and fixed by scoping inconclusive clean-status blocking to required subagent roles; final holistic review returned to `code-review` for rerun.
+- 2026-07-06: final holistic code-review R2 completed clean-with-notes; workflow routed to `explain-change`.
 
 ## Decision log
 
@@ -253,6 +254,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Final holistic code-review R1 proof: a review artifact with required `correctness-reviewer` coverage satisfied and optional `docs-ops-reviewer` inconclusive coverage failed structure validation, exposing SUBCR-FINAL-CR1.
 - Review-resolution validation passed: `python scripts/test-review-artifact-validator.py -k subagent_code_review_record`.
 - Review-resolution validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review`.
+- Code-review final R2 reviewer inspected branch diff `52bdcbb3..01b9d459` and accepted `SUBCR-FINAL-CR1` as resolved with no material findings.
 
 ## Outcome and retrospective
 
