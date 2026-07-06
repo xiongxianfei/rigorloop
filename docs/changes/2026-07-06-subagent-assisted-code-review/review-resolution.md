@@ -1,6 +1,6 @@
 # Subagent-Assisted Code Review Resolution
 
-Closeout status: closed
+Closeout status: open
 
 ### proposal-review-r1
 
@@ -43,3 +43,13 @@ No material findings.
 ### code-review-m3-r1
 
 No material findings.
+
+### code-review-final-r1
+
+Finding ID: SUBCR-FINAL-CR1
+Disposition: needs-decision
+Decision owner: implement
+Decision needed: Apply the validator boundary fix for optional inconclusive subagent coverage before final holistic code-review can close.
+Owning stage: review-resolution
+Stop state: Final holistic code-review cannot close and explain-change cannot start until this finding is resolved or explicitly dispositioned.
+Validation target: Add regression coverage proving optional inconclusive subagent coverage does not block a clean review when required coverage is satisfied, while inconclusive required coverage still blocks clean status.

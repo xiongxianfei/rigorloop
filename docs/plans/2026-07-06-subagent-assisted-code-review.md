@@ -80,15 +80,15 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Generated output and adapter proof
-- Current milestone state: closed
-- Latest review evidence: code-review-m3-r1
-- Last reviewed milestone: M3. Generated output and adapter proof
-- Review status: approved; stage=code-review; round=r1
+- Current milestone: final holistic cross-milestone review
+- Current milestone state: resolution-needed
+- Latest review evidence: code-review-final-r1
+- Last reviewed milestone: final holistic cross-milestone review
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: none
-- Next stage: final holistic code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — all implementation milestones are closed, but final holistic code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — SUBCR-FINAL-CR1 is open, final holistic code-review must rerun, and explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -144,6 +144,18 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
   - [x] current handoff updated before final closeout
 - Milestone commit message: `M3: prove subagent review packaging alignment`
 
+### final holistic cross-milestone review
+
+- Milestone state: resolution-needed
+- Deliverable: review the complete cross-milestone diff against the governing proposal, spec, test spec, plan, review-resolution records, generated-output evidence, and lifecycle state before `explain-change`.
+- Requirements: R1-R18, AC1-AC16.
+- Expected files: final holistic code-review record and affected lifecycle evidence.
+- Validation: review-artifact validation, change metadata validation, artifact lifecycle validation, and targeted proof for any review-resolution changes.
+- Review closeout:
+  - [x] final holistic code-review completed
+  - [ ] material findings resolved or explicitly dispositioned
+  - [ ] current handoff updated before explain-change
+
 ## Validation plan
 
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-06-subagent-assisted-code-review.md --path specs/subagent-assisted-code-review.md --path docs/plans/2026-07-06-subagent-assisted-code-review.md --path docs/plan.md --path docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml`: lifecycle artifact status and readiness.
@@ -189,6 +201,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: code-review M2 R2 completed clean-with-notes; M2 closed and workflow routed to `implement M3`.
 - 2026-07-06: M3 recorded behavior-preservation evidence for generated skill mirror and adapter archive boundaries, with no runtime code or generated public adapter package edits.
 - 2026-07-06: code-review M3 R1 completed clean-with-notes; all implementation milestones are closed and workflow routed to final holistic code-review before explain-change.
+- 2026-07-06: final holistic code-review R1 requested changes for SUBCR-FINAL-CR1; workflow routed to review-resolution.
 
 ## Decision log
 
@@ -235,6 +248,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Code-review M3 R1 reviewer rerun passed: `python scripts/build-skills.py --check`.
 - Code-review M3 R1 reviewer rerun passed: `python scripts/test-build-skills.py`.
 - Code-review M3 R1 reviewer rerun passed: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives`.
+- Final holistic code-review R1 proof: a review artifact with required `correctness-reviewer` coverage satisfied and optional `docs-ops-reviewer` inconclusive coverage failed structure validation, exposing SUBCR-FINAL-CR1.
 
 ## Outcome and retrospective
 

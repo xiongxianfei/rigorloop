@@ -117,3 +117,17 @@ Resolution: review-resolution.md#code-review-m3-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-final-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: branch diff 52bdcbb3..a6220d08
+Status: changes-requested
+Detailed record: reviews/code-review-final-r1.md
+Record: reviews/code-review-final-r1.md
+Resolution: review-resolution.md#code-review-final-r1
+Material findings: SUBCR-FINAL-CR1
+Open findings: SUBCR-FINAL-CR1
+Recording status: recorded
