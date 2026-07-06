@@ -54,6 +54,18 @@ TEST_SPEC_REVIEW_IMMEDIATE_NEXT_STAGES = frozenset(
     }
 )
 TEST_SPEC_REVIEW_IMPLEMENTATION_HANDOFFS = frozenset({"allowed", "not-allowed"})
+SUBAGENT_REVIEW_ROLES = frozenset(
+    {
+        "correctness-reviewer",
+        "test-evidence-reviewer",
+        "security-privacy-reviewer",
+        "generated-output-reviewer",
+        "migration-compatibility-reviewer",
+        "performance-concurrency-reviewer",
+        "docs-ops-reviewer",
+    }
+)
+SUBAGENT_PACKET_STATUSES = frozenset({"findings", "no-findings", "inconclusive"})
 VALIDATION_MODES = frozenset({"structure", "closeout"})
 REVIEW_LOG_REQUIRED_FIELDS = (
     "Review ID",
@@ -772,6 +784,8 @@ def _parse_review_file(
     _validate_calibration_record_fields(path, review_id, fields, mode, findings)
     if stage is not None and stage.value == "test-spec-review":
         _validate_test_spec_review_result_fields(path, review_id, fields, mode, findings)
+    if stage is not None and stage.value == "code-review":
+        _validate_subagent_code_review_sections(path, review_id, fields, lines, mode, findings)
     _validate_implementation_profile_finding_fields(path, review_id, fields, finding_records, mode, findings)
 
     if record_mode == "reconstructed":
@@ -859,6 +873,260 @@ def _parse_finding_records(
             )
         )
     return records
+
+
+def _validate_subagent_code_review_sections(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    lines: list[str],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    assisted = _first_nonempty(fields, "Subagent-assisted review")
+    has_coverage_section = _section_table(lines, "Subagent coverage")
+    if (assisted is None or assisted.value.casefold() != "yes") and not has_coverage_section:
+        return
+
+    review_status = _first_nonempty(fields, "Status")
+    status_value = review_status.value if review_status else ""
+    coverage_rows = _section_table(lines, "Subagent coverage")
+    if not coverage_rows:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=assisted.line if assisted else None,
+                mode=mode,
+                message="subagent-assisted review missing Subagent coverage section",
+                review_id=review_id,
+            )
+        )
+        return
+
+    observed_roles: dict[str, str] = {}
+    expected_header = (
+        "Subagent",
+        "Status",
+        "Scope",
+        "Findings accepted",
+        "Findings rejected",
+        "Limitations",
+    )
+    header = tuple(coverage_rows[0][1])
+    if header != expected_header:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=coverage_rows[0][0],
+                mode=mode,
+                message="Subagent coverage header must be Subagent, Status, Scope, Findings accepted, Findings rejected, Limitations",
+                review_id=review_id,
+            )
+        )
+        return
+
+    for line_number, cells in coverage_rows[1:]:
+        if len(cells) != 6:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=line_number,
+                    mode=mode,
+                    message="subagent coverage row must have six cells",
+                    review_id=review_id,
+                )
+            )
+            continue
+        role = _strip_code(cells[0])
+        advisory_status = _strip_code(cells[1])
+        observed_roles[role] = advisory_status
+        if role not in SUBAGENT_REVIEW_ROLES:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=line_number,
+                    mode=mode,
+                    message=f"unknown subagent role: {role}",
+                    review_id=review_id,
+                )
+            )
+        if advisory_status not in SUBAGENT_PACKET_STATUSES:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=line_number,
+                    mode=mode,
+                    message=f"unknown subagent advisory status: {advisory_status}",
+                    review_id=review_id,
+                )
+            )
+        for label, cell in (
+            ("scope", cells[2]),
+            ("findings accepted", cells[3]),
+            ("findings rejected", cells[4]),
+            ("limitations", cells[5]),
+        ):
+            if not cell.strip():
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=line_number,
+                        mode=mode,
+                        message=f"subagent coverage row missing {label}",
+                        review_id=review_id,
+                    )
+                )
+        for label, cell in (("findings accepted", cells[3]), ("findings rejected", cells[4])):
+            if cell.strip() and _parse_int(cell) is None:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=line_number,
+                        mode=mode,
+                        message=f"subagent coverage {label} must be an integer",
+                        review_id=review_id,
+                    )
+                )
+        if advisory_status == "inconclusive" and status_value not in {"blocked", "inconclusive"}:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=line_number,
+                    mode=mode,
+                    message="inconclusive required subagent coverage requires blocked or inconclusive review status",
+                    review_id=review_id,
+                )
+            )
+
+    required = _first_nonempty(fields, "Required subagent coverage")
+    if required is not None:
+        required_roles = set(_parse_id_list(required.value))
+        missing = sorted(role for role in required_roles if role not in observed_roles)
+        if missing and status_value not in {"blocked", "inconclusive"}:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=required.line,
+                    mode=mode,
+                    message=f"missing required subagent coverage: {', '.join(missing)}",
+                    review_id=review_id,
+                )
+            )
+
+    omitted = _first_nonempty(fields, "Omitted subagents")
+    omission_rationale = _first_nonempty(fields, "Omission rationale")
+    if omitted is not None and omitted.value.casefold() != "none" and omission_rationale is None:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=omitted.line,
+                mode=mode,
+                message="omitted subagents require Omission rationale",
+                review_id=review_id,
+            )
+        )
+
+    _validate_subagent_conflict_section(path, review_id, lines, mode, findings)
+    _validate_advisory_import_section(path, review_id, lines, mode, findings)
+
+
+def _validate_subagent_conflict_section(
+    path: Path,
+    review_id: str,
+    lines: list[str],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    rows = _section_table(lines, "Subagent conflict decisions")
+    if not rows:
+        return
+    expected_header = ("Conflict", "Evidence inspected", "Final decision", "Reason")
+    if tuple(rows[0][1]) != expected_header:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=rows[0][0],
+                mode=mode,
+                message="Subagent conflict decisions header must be Conflict, Evidence inspected, Final decision, Reason",
+                review_id=review_id,
+            )
+        )
+        return
+    for line_number, cells in rows[1:]:
+        if len(cells) != 4:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=line_number,
+                    mode=mode,
+                    message="subagent conflict decision row must have four cells",
+                    review_id=review_id,
+                )
+            )
+            continue
+        for label, index in (
+            ("conflict", 0),
+            ("evidence inspected", 1),
+            ("final decision", 2),
+            ("reason", 3),
+        ):
+            if not cells[index].strip():
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=line_number,
+                        mode=mode,
+                        message=f"subagent conflict decision missing {label}",
+                        review_id=review_id,
+                    )
+                )
+
+
+def _validate_advisory_import_section(
+    path: Path,
+    review_id: str,
+    lines: list[str],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    rows = _section_table(lines, "Advisory review imports")
+    if not rows:
+        return
+    expected_header = ("Source", "Scope", "Limitations", "Promoted findings", "Rejected comments")
+    if tuple(rows[0][1]) != expected_header:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=rows[0][0],
+                mode=mode,
+                message="Advisory review imports header must be Source, Scope, Limitations, Promoted findings, Rejected comments",
+                review_id=review_id,
+            )
+        )
+        return
+    for line_number, cells in rows[1:]:
+        if len(cells) != 5:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=line_number,
+                    mode=mode,
+                    message="advisory review import row must have five cells",
+                    review_id=review_id,
+                )
+            )
+            continue
+        for label, index in (("source", 0), ("scope", 1), ("limitations", 2)):
+            if not cells[index].strip():
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=line_number,
+                        mode=mode,
+                        message=f"advisory review import missing {label}",
+                        review_id=review_id,
+                    )
+                )
 
 
 def _validate_implementation_profile_finding_fields(
@@ -3839,6 +4107,27 @@ def _markdown_table_cells(line: str) -> list[str]:
     if all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells):
         return []
     return cells
+
+
+def _section_table(lines: list[str], heading: str) -> list[tuple[int, list[str]]]:
+    heading_line = f"## {heading}"
+    start: int | None = None
+    for index, line in enumerate(lines):
+        if line.strip().casefold() == heading_line.casefold():
+            start = index + 1
+            break
+    if start is None:
+        return []
+
+    rows: list[tuple[int, list[str]]] = []
+    for index in range(start, len(lines)):
+        line = lines[index]
+        if line.startswith("## "):
+            break
+        cells = _markdown_table_cells(line)
+        if cells:
+            rows.append((index + 1, cells))
+    return rows
 
 
 def _strip_code(value: str) -> str:
