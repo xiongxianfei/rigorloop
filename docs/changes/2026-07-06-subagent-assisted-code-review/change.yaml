@@ -50,12 +50,14 @@ changed_files:
   - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/plan-review-r1.md
   - specs/subagent-assisted-code-review.test.md
   - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/test-spec-review-r1.md
+  - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m1-r1.md
   - skills/code-review/SKILL.md
   - scripts/test-skill-validator.py
 review:
   status: approved
   unresolved_items: 0
   proposal_review: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/proposal-review-r1.md
+  code_review_m1: docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m1-r1.md
   review_log: docs/changes/2026-07-06-subagent-assisted-code-review/review-log.md
 workflow:
   autoprogression:
@@ -96,4 +98,12 @@ validation:
   - command: python scripts/test-skill-validator.py -k subagent_code_review
     result: failed_before_m1_skill_contract_update_then_passed_after_update
   - command: python scripts/validate-skills.py skills/code-review/SKILL.md
+    result: passed
+  - command: code-review-m1-r1
+    result: clean_with_notes_no_material_findings_m1_closed
+  - command: reviewer rerun python scripts/test-skill-validator.py -k subagent_code_review
+    result: passed
+  - command: reviewer rerun python scripts/validate-skills.py skills/code-review/SKILL.md
+    result: passed
+  - command: reviewer rerun python scripts/validate-change-metadata.py docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml
     result: passed

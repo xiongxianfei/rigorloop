@@ -80,13 +80,13 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Code-review contract and assets
-- Current milestone state: review-requested
-- Latest review evidence: test-spec-review-r1
-- Last reviewed milestone: none
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review M1
+- Current milestone: M2. Validation and fixtures
+- Current milestone state: planned
+- Latest review evidence: code-review-m1-r1
+- Last reviewed milestone: M1. Code-review contract and assets
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones M1-M3, code-review, explain-change, verify, and PR handoff remain.
 
@@ -94,7 +94,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 ### M1. Code-review contract and assets
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Deliverable: update `code-review` guidance and assets for reviewer-of-record invariants, specialist selection, bounded input packets, structured advisory packets, aggregation, coverage recording, advisory external review import, and first-slice non-goals.
 - Requirements: R1-R18, AC1-AC16.
 - Expected files: `skills/code-review/SKILL.md`, `skills/code-review/assets/` when needed, affected docs when required.
@@ -104,9 +104,9 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
   - [x] plan progress and validation notes updated
   - [x] hand off to code-review for M1
 - Review closeout:
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] current handoff updated before starting M2
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] current handoff updated before starting M2
 - Milestone commit message: `M1: add subagent-assisted code-review contract`
 
 ### M2. Validation and fixtures
@@ -180,6 +180,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: M1 implementation started; focused static proof for subagent-assisted code-review guidance now fails before the skill contract update.
 - 2026-07-06: M1 implementation added the subagent-assisted code-review contract to `skills/code-review/SKILL.md` and focused static proof in `scripts/test-skill-validator.py`.
 - 2026-07-06: M1 targeted validation passed and the milestone is ready for `code-review`.
+- 2026-07-06: code-review M1 R1 completed clean-with-notes with no material findings; M1 closed and workflow routed to `implement M2`.
 
 ## Decision log
 
@@ -202,6 +203,9 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - M1 failing proof before implementation: `python scripts/test-skill-validator.py -k subagent_code_review` failed because the code-review skill lacked the new subagent-assisted contract terms.
 - M1 validation passed: `python scripts/test-skill-validator.py -k subagent_code_review`.
 - M1 validation passed: `python scripts/validate-skills.py skills/code-review/SKILL.md`.
+- Code-review M1 R1 reviewer rerun passed: `python scripts/test-skill-validator.py -k subagent_code_review`.
+- Code-review M1 R1 reviewer rerun passed: `python scripts/validate-skills.py skills/code-review/SKILL.md`.
+- Code-review M1 R1 reviewer rerun passed: `python scripts/validate-change-metadata.py docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml`.
 
 ## Outcome and retrospective
 
@@ -211,7 +215,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 - See `Current Handoff Summary`.
 - Lifecycle routing is owned by `Current Handoff Summary`.
-- Implementation is not allowed until the required review gates are recorded.
+- M2 implementation may begin after clean M1 code-review.
 
 ## Risks and follow-ups
 
