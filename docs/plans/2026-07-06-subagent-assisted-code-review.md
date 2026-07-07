@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Owner: maintainers
 - Change ID: 2026-07-06-subagent-assisted-code-review
 - Start date: 2026-07-06
 - Last updated: 2026-07-06
-- Related issue or PR: none yet
+- Related issue or PR: PR #123, https://github.com/xiongxianfei/rigorloop/pull/123
 - Supersedes: none
 
 ## Goal
@@ -80,15 +80,15 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 
 ## Current Handoff Summary
 
-- Current milestone: final holistic cross-milestone review
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: code-review-final-r2
 - Last reviewed milestone: final holistic cross-milestone review
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: pr-handoff-pending — implementation milestones, final holistic code-review, explain-change, and verify are closed; PR handoff remains.
+- Next stage: none
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — implementation milestones, final holistic code-review, explain-change, verify, and PR #123 handoff are complete locally; hosted CI and human review are pending.
 
 ## Milestones
 
@@ -207,6 +207,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: final holistic code-review R2 completed clean-with-notes; workflow routed to `explain-change`.
 - 2026-07-06: explain-change recorded durable rationale in `docs/changes/2026-07-06-subagent-assisted-code-review/explain-change.md`; workflow routed to `verify`.
 - 2026-07-06: verify recorded branch-ready local validation in `docs/changes/2026-07-06-subagent-assisted-code-review/verify-report.md`; workflow routed to `pr`.
+- 2026-07-06: PR #123 opened for review: https://github.com/xiongxianfei/rigorloop/pull/123.
 
 ## Decision log
 
@@ -268,10 +269,18 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Verify passed: `python scripts/validate-change-metadata.py docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml`.
 - Verify passed: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-07-06-subagent-assisted-code-review/behavior-preservation.md --path docs/proposals/2026-07-06-subagent-assisted-code-review.md --path specs/subagent-assisted-code-review.md --path specs/subagent-assisted-code-review.test.md --path docs/plans/2026-07-06-subagent-assisted-code-review.md --path docs/plan.md --path docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml`.
 - Verify passed: `bash scripts/ci.sh --mode explicit --broad-smoke --path skills/code-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path specs/subagent-assisted-code-review.md --path specs/subagent-assisted-code-review.test.md --path docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml --path docs/changes/2026-07-06-subagent-assisted-code-review/explain-change.md --path docs/changes/2026-07-06-subagent-assisted-code-review/behavior-preservation.md --path docs/plans/2026-07-06-subagent-assisted-code-review.md --path docs/plan.md`.
+- PR handoff opened PR #123 as draft, recorded `docs/changes/2026-07-06-subagent-assisted-code-review/pr.md`, and synchronized this plan for PR review handoff.
+- PR handoff validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml`.
+- PR handoff validation passed: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-07-06-subagent-assisted-code-review/behavior-preservation.md --path docs/changes/2026-07-06-subagent-assisted-code-review/explain-change.md --path docs/changes/2026-07-06-subagent-assisted-code-review/verify-report.md --path docs/changes/2026-07-06-subagent-assisted-code-review/pr.md --path docs/proposals/2026-07-06-subagent-assisted-code-review.md --path specs/subagent-assisted-code-review.md --path specs/subagent-assisted-code-review.test.md --path docs/plans/2026-07-06-subagent-assisted-code-review.md --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml --pr-body-file docs/changes/2026-07-06-subagent-assisted-code-review/pr.md`.
+- PR handoff validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review`.
+- PR handoff validation passed: `git diff --check -- docs/changes/2026-07-06-subagent-assisted-code-review docs/plans/2026-07-06-subagent-assisted-code-review.md docs/plan.md docs/plan-archive.md`.
+- PR handoff validation passed: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-07-06-subagent-assisted-code-review/pr.md --path docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml --path docs/plans/2026-07-06-subagent-assisted-code-review.md --path docs/plan.md --path docs/plan-archive.md`.
 
 ## Outcome and retrospective
 
-- Pending.
+Closed for PR review handoff.
+The subagent-assisted code-review contract, validation coverage, generated-output proof, behavior-preservation evidence, explanation, verification report, and PR handoff are complete locally.
+Hosted CI and human review remain external to this local lifecycle closeout.
 
 ## Readiness
 
