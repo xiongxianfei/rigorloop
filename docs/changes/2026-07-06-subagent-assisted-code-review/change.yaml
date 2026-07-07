@@ -66,6 +66,7 @@ changed_files:
   - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-m3-r1.md
   - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-final-r1.md
   - docs/changes/2026-07-06-subagent-assisted-code-review/reviews/code-review-final-r2.md
+  - docs/changes/2026-07-06-subagent-assisted-code-review/explain-change.md
 review:
   status: clean-with-notes
   unresolved_items: 0
@@ -175,3 +176,5 @@ validation:
     result: passed_after_SUBCR-FINAL-CR1_fix
   - command: code-review-final-r2
     result: clean_with_notes_no_material_findings_final_holistic_review_closed
+  - command: explain-change
+    result: durable_rationale_recorded_verify_next
