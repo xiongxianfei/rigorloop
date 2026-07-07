@@ -86,9 +86,9 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Last reviewed milestone: final holistic cross-milestone review
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — implementation milestones, final holistic code-review, and explain-change are closed, but verify and PR handoff remain.
+- Reason final closeout is or is not ready: pr-handoff-pending — implementation milestones, final holistic code-review, explain-change, and verify are closed; PR handoff remains.
 
 ## Milestones
 
@@ -206,6 +206,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: SUBCR-FINAL-CR1 accepted and fixed by scoping inconclusive clean-status blocking to required subagent roles; final holistic review returned to `code-review` for rerun.
 - 2026-07-06: final holistic code-review R2 completed clean-with-notes; workflow routed to `explain-change`.
 - 2026-07-06: explain-change recorded durable rationale in `docs/changes/2026-07-06-subagent-assisted-code-review/explain-change.md`; workflow routed to `verify`.
+- 2026-07-06: verify recorded branch-ready local validation in `docs/changes/2026-07-06-subagent-assisted-code-review/verify-report.md`; workflow routed to `pr`.
 
 ## Decision log
 
@@ -257,6 +258,16 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Review-resolution validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review`.
 - Code-review final R2 reviewer inspected branch diff `52bdcbb3..01b9d459` and accepted `SUBCR-FINAL-CR1` as resolved with no material findings.
 - Explain-change recorded rationale for the final reviewed diff and preserved verify/PR readiness as not claimed.
+- Verify passed: `python scripts/test-skill-validator.py -k subagent_code_review`.
+- Verify passed: `python scripts/test-review-artifact-validator.py`.
+- Verify passed: `python scripts/validate-skills.py skills/code-review/SKILL.md`.
+- Verify passed: `python scripts/build-skills.py --check`.
+- Verify passed: `python scripts/test-build-skills.py`.
+- Verify passed: `python scripts/test-adapter-distribution.py`.
+- Verify passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review`.
+- Verify passed: `python scripts/validate-change-metadata.py docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml`.
+- Verify passed: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-07-06-subagent-assisted-code-review/behavior-preservation.md --path docs/proposals/2026-07-06-subagent-assisted-code-review.md --path specs/subagent-assisted-code-review.md --path specs/subagent-assisted-code-review.test.md --path docs/plans/2026-07-06-subagent-assisted-code-review.md --path docs/plan.md --path docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml`.
+- Verify passed: `bash scripts/ci.sh --mode explicit --broad-smoke --path skills/code-review/SKILL.md --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path specs/subagent-assisted-code-review.md --path specs/subagent-assisted-code-review.test.md --path docs/changes/2026-07-06-subagent-assisted-code-review/change.yaml --path docs/changes/2026-07-06-subagent-assisted-code-review/explain-change.md --path docs/changes/2026-07-06-subagent-assisted-code-review/behavior-preservation.md --path docs/plans/2026-07-06-subagent-assisted-code-review.md --path docs/plan.md`.
 
 ## Outcome and retrospective
 
