@@ -86,9 +86,9 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Last reviewed milestone: final holistic cross-milestone review
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change-pending, verify-pending, pr-handoff-pending — implementation milestones and final holistic code-review are closed, but explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: verify-pending, pr-handoff-pending — implementation milestones, final holistic code-review, and explain-change are closed, but verify and PR handoff remain.
 
 ## Milestones
 
@@ -205,6 +205,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - 2026-07-06: final holistic code-review R1 requested changes for SUBCR-FINAL-CR1; workflow routed to review-resolution.
 - 2026-07-06: SUBCR-FINAL-CR1 accepted and fixed by scoping inconclusive clean-status blocking to required subagent roles; final holistic review returned to `code-review` for rerun.
 - 2026-07-06: final holistic code-review R2 completed clean-with-notes; workflow routed to `explain-change`.
+- 2026-07-06: explain-change recorded durable rationale in `docs/changes/2026-07-06-subagent-assisted-code-review/explain-change.md`; workflow routed to `verify`.
 
 ## Decision log
 
@@ -255,6 +256,7 @@ It does not introduce a persistent packet store, new runtime orchestrator, exter
 - Review-resolution validation passed: `python scripts/test-review-artifact-validator.py -k subagent_code_review_record`.
 - Review-resolution validation passed: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-06-subagent-assisted-code-review`.
 - Code-review final R2 reviewer inspected branch diff `52bdcbb3..01b9d459` and accepted `SUBCR-FINAL-CR1` as resolved with no material findings.
+- Explain-change recorded rationale for the final reviewed diff and preserved verify/PR readiness as not claimed.
 
 ## Outcome and retrospective
 
