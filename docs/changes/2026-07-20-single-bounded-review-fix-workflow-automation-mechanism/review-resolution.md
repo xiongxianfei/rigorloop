@@ -10,11 +10,12 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 Review closeout: test-spec-review-r4
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`
-- Findings resolved: 22
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`
+- Findings resolved: 26
 - Unresolved findings: 0
-- Current result: Test-spec-review R4 approved the active proof map with no material findings and confirmed `BRF-TSR1` through `BRF-TSR4` resolved. M1 implementation handoff is allowed; this direct review does not automatically start implementation.
+- Current result: All four code-review M1 R1 findings are resolved with targeted and broad-smoke evidence. M1 is ready for fresh code review; M2 remains blocked until that review approves and closes M1.
 
 ## Resolution Overview
 
@@ -42,6 +43,10 @@ Review closeout: test-spec-review-r4
 | BRF-TSR2 | accepted | resolved | Replaced CMD30 with a pipe-free executable command and normalized CMD18's first required milestone; R2 confirmed resolution. |
 | BRF-TSR3 | accepted | resolved | Added deterministic fixture controls and repeat/order-independence case T29; R2 confirmed resolution. |
 | BRF-TSR4 | accepted | resolved | T29/T30 remain split and T26 has an explicit M4/M6 activation and deferral mapping; R4 confirmed resolution. |
+| BRF-M1-CR1 | accepted | resolved | Capability occurrence validation now derives from the immutable registry for public and internal stages and requires milestone identity. |
+| BRF-M1-CR2 | accepted | resolved | Stage basis and invalidation records now require concrete values and closed trigger/action behavior. |
+| BRF-M1-CR3 | accepted | resolved | Receipts now validate structured targets and complete run/change/policy/capability/evidence bindings. |
+| BRF-M1-CR4 | accepted | resolved | Direct proof now covers every policy enum, durable vocabularies, all capability kinds, and malformed authority/receipt records. |
 
 ## Common Resolution Metadata
 
@@ -471,6 +476,9 @@ No material findings. Architecture-review R3 confirmed `BRF-AR1` through `BRF-AR
 | Final `BRF-TSR4` test-spec revision | pass pending rereview | T26 now binds M4/CMD17 and M6/CMD25 with explicit deferral; static authoring checks cover 30 tests, 32 commands, and all 15 progressive entries. |
 | Formal test-spec-review R4 | approved | R4 confirmed all four test-spec findings resolved with no new material findings and allowed M1 implementation handoff. |
 | Test-spec-review R4 recording validation | pass | Review structure and closeout passed with 18 reviews and 22 resolved findings; metadata and scoped diff checks passed. |
+| Formal code-review M1 R1 | changes-requested | R1 opened `BRF-M1-CR1` through `BRF-M1-CR4`; M1 is resolution-needed and M2 remains blocked. |
+| Code-review M1 R1 recording validation | pass with baseline warning | Review structure passed with 19 reviews and 26 findings, metadata and guide checks passed, lifecycle validation retained the existing lifecycle-language warning, and diff checks passed. |
+| Code-review M1 R1 resolution implementation | pass pending rereview | The policy and state validators now enforce the four required outcomes; 9 policy tests, 5 selected vocabulary tests, 25 validator tests, 4 focused metadata tests, 52 metadata regressions, and 11 broad-smoke checks pass. |
 
 ## Closeout Checklist
 
@@ -492,3 +500,61 @@ No material findings. Architecture-review R3 confirmed `BRF-AR1` through `BRF-AR
 - [x] Architecture-review R3 approves the revised package.
 - [x] No review-log findings remain open.
 - [x] Closeout status is closed with final dispositions and validation evidence.
+
+### code-review-m1-r1
+
+#### BRF-M1-CR1 - Effective-capability occurrence validation
+
+Finding ID: BRF-M1-CR1
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: The validator must enforce the approved occurrence rule for every capability stage, including internal and milestone-bound stages.
+Required outcome: Use the immutable policy projection for all capability occurrence checks and require exact milestone occurrence identity where applicable.
+Chosen action: Replaced the partial occurrence map with immutable-policy lookup, validated all internal occurrences, and required milestone identity for milestone capabilities.
+Safe resolution path: Derive capability occurrence validation from `STAGE_POLICIES` and add internal and repeated-stage negative tests.
+Validation target: Add internal-stage wrong-occurrence, missing-milestone, and changed-occurrence regressions; rerun the M1 command set and code-review.
+Validation evidence: Policy tests pass 9 cases; validator tests directly reject wrong internal occurrence and missing milestone identity; all M1 commands and the 11-check broad smoke pass.
+
+#### BRF-M1-CR2 - Concrete basis and invalidation validation
+
+Finding ID: BRF-M1-CR2
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: Key presence does not establish a concrete authority basis or deterministic invalidation behavior.
+Required outcome: Validate stage-relative basis values and closed, non-empty parent/capability invalidation rules.
+Chosen action: Added stage-relative concrete identity validation, non-empty scope/budget checks, and closed parent/capability invalidation trigger and action validation.
+Safe resolution path: Add stage-relative concrete-value validation and closed invalidation rules with direct negative tests.
+Validation target: Add null, empty, wrong-type, and unknown-invalidation-action regressions for all parent classes and capability kinds; rerun the M1 command set and code-review.
+Validation evidence: Validator tests reject null basis identities, empty invalidation objects, unknown triggers/actions, cross-risk parent kinds, and validate complete records for all six capability kinds; all M1 commands and broad smoke pass.
+
+#### BRF-M1-CR3 - Complete receipt binding validation
+
+Finding ID: BRF-M1-CR3
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: Prepared receipts are the durable mutation boundary and cannot remain structurally valid when their target or authority binding is inconsistent.
+Required outcome: Validate receipt target structure and run/change/policy/effective-capability/evidence consistency.
+Chosen action: Composed structured target validation into receipts and added run, change, policy, active capability, stage occurrence, input identity, postcondition, outputs, and canonical-sync validation.
+Safe resolution path: Reuse structured target validation and cross-check every receipt identity and evidence shape against its run and effective capability.
+Validation target: Add incompatible-target, wrong-ID, stale-capability, and empty-evidence regressions; rerun the M1 command set and code-review.
+Validation evidence: Receipt regressions reject incompatible targets, mismatched IDs, inactive or mismatched capabilities, and empty/wrong evidence shapes; the full validator suite and broad smoke pass.
+
+#### BRF-M1-CR4 - Exhaustive negative proof matrix
+
+Finding ID: BRF-M1-CR4
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: The approved test specification and repository governance require direct fail-closed proof for every new closed vocabulary and named mutation family.
+Required outcome: Complete the table-driven policy, vocabulary, authorization, capability, and receipt negative proof matrix.
+Chosen action: Expanded table-driven unknown-value, incomplete-policy, occurrence, parent, capability, and receipt proof while preserving the planned vocabulary selector.
+Safe resolution path: Expand table-driven unknown-value, incomplete-policy, and stage-relative authority fixtures while preserving the planned test selector.
+Validation target: Add explicitly named unknown-value and incomplete-record tests while preserving the planned vocabulary selector; rerun the M1 command set and code-review.
+Validation evidence: 9 policy tests, 5 selected vocabulary tests, 25 full validator tests, 4 focused metadata tests, 52 metadata regressions, and 11 broad-smoke checks pass.

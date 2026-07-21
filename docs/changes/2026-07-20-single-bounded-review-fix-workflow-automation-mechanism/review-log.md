@@ -199,3 +199,15 @@ Detailed record: reviews/test-spec-review-r4.md
 Resolution: review-resolution.md#test-spec-review-r4
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: M1 R1
+Reviewed artifact: M1 commit `22b57232`
+Reviewed milestone: M1. Unified State Model and Complete Policy Registry
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: BRF-M1-CR1, BRF-M1-CR2, BRF-M1-CR3, BRF-M1-CR4
+Open findings: None

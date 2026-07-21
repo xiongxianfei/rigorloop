@@ -103,13 +103,13 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 - Current milestone: M1. Unified State Model and Complete Policy Registry
 - Current milestone state: review-requested
-- Last reviewed milestone: none
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md`
-- Review status: approved; stage=test-spec-review; round=r4
+- Last reviewed milestone: M1. Unified State Model and Complete Policy Registry
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r1.md`
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5, M6
 - Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 implementation and targeted validation are complete, but M1 remains open pending independent code review and M2-M6 have not started.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — all four M1 R1 findings are resolved with validation evidence, but M1 requires fresh independent code review and M2-M6 have not started.
 
 ## Milestones
 
@@ -506,6 +506,9 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-21: Test-spec-review R4 approved the 30-case proof map, confirmed all four test-spec findings resolved, and allowed M1 implementation handoff; this isolated review did not start implementation.
 - 2026-07-21: M1 implementation started from the approved R4 handoff; scope is limited to the unified state model, immutable policy projection, and fail-closed structural validation, with public routing intentionally unchanged.
 - 2026-07-21: M1 added the canonical unified schema, immutable eighteen-stage policy projection, closed state/authority vocabularies, stage-relative capability validation, and metadata integration. All five M1 commands passed; the milestone is review-requested and no writer or public route was enabled.
+- 2026-07-21: Code-review M1 R1 requested changes in `BRF-M1-CR1` through `BRF-M1-CR4`: internal and milestone capability occurrences, concrete basis/invalidation validation, complete receipt bindings, and exhaustive negative proof remain incomplete. M1 is resolution-needed; M2 is blocked.
+- 2026-07-21: M1 review resolution implementation started for the four accepted R1 findings. The correction remains limited to policy/state validation and direct M1 proof; M2 writer and routing work remain out of scope.
+- 2026-07-21: Resolved `BRF-M1-CR1` through `BRF-M1-CR4` by deriving occurrence validation from the immutable policy registry, enforcing concrete authority/invalidation evidence, validating complete capability-bound receipts, and expanding the negative proof matrix. M1 is review-requested; M2 remains blocked pending M1 rereview.
 
 ## Decision log
 
@@ -548,6 +551,10 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Test-spec-review R4 approved the active test specification with no material findings; planned commands were not executed by the review, and M1 is now the next implementation stage.
 - Test-spec-review R4 recording checks passed in structure and closeout modes with 18 reviews and 22 resolved findings; change metadata and scoped diff checks also passed.
 - M1 proof-first failures were observed before implementation: both new unit modules were missing and three unified metadata rejection cases incorrectly passed.
+- Code-review M1 R1 reran the focused M1 suites successfully, then directly reproduced four malformed states that returned no validation errors: null required basis identity, wrong internal-stage occurrence, incompatible receipt target occurrence, and empty invalidation behavior. Review resolution and M1 rereview are required before M2.
+- Review-resolution proof-first tests failed on all four reproduced gaps before the production validator changed. After correction, each reproduction returns an actionable validation error and valid records for all six capability kinds pass.
+- M1 rereview validation passed: 9 policy tests, 5 selected vocabulary tests, 25 full automation-validator tests, 4 focused metadata tests, 52 full metadata regressions, and 11 repository broad-smoke checks. The validation selector reported manual-routing-required for the four new unsupported script paths; the plan-owned explicit M1 commands covered those paths and selected lifecycle/review/metadata/guide checks were executed directly.
+- Final post-correction broad smoke passed all 11 checks in 376 seconds after adding explicit prepared/active, completed/consumed, and parent-revocation consistency proof.
 - `python scripts/test-workflow-automation-policy.py` passed 7 tests.
 - `python scripts/test-validate-workflow-automation.py -k vocabulary` passed 3 selected tests.
 - `python scripts/test-change-metadata-validator.py -k workflow_automation` passed 4 selected tests.

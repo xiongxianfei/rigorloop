@@ -19,6 +19,7 @@ from workflow_automation_policy import (
     OccurrenceKind,
     PUBLIC_TARGET_STAGES,
     RetryPolicy,
+    STAGE_POLICY_BY_STAGE,
     WorkflowStage,
 )
 
@@ -36,6 +37,27 @@ ROUTING_ACTIONS = frozenset({"continue", "correction-loop", "stop-at-target", "p
 CANONICAL_SYNC_STATUSES = frozenset({"pending", "synchronized", "failed"})
 EXTERNAL_ACTION_VALUES = frozenset({"prohibited"})
 INVALIDATION_ACTIONS = frozenset({"pause", "invalidate"})
+PARENT_INVALIDATION_TRIGGERS = frozenset(
+    {
+        "on_change_identity_mismatch",
+        "on_policy_change",
+        "on_scope_expansion",
+        "on_scope_narrowing",
+        "on_supersession",
+    }
+)
+CAPABILITY_INVALIDATION_TRIGGERS = frozenset(
+    {
+        "on_parent_revocation",
+        "on_basis_change",
+        "on_proposal_identity_change",
+        "on_review_staleness",
+        "on_scope_expansion",
+        "on_policy_change",
+        "on_occurrence_change",
+        "on_validation_command_change",
+    }
+)
 RUN_STATUS_TRANSITIONS = {
     "active": frozenset({"paused", "completed", "cancelled"}),
     "paused": frozenset({"active", "cancelled"}),
@@ -68,13 +90,6 @@ AUTHORIZATION_CLASS_VALUES = frozenset(value.value for value in AuthorizationCla
 CAPABILITY_KIND_VALUES = frozenset(value.value for value in CapabilityKind)
 MUTATION_CATEGORY_VALUES = frozenset(value.value for value in MutationCategory)
 RETRY_POLICY_VALUES = frozenset(value.value for value in RetryPolicy)
-
-STAGE_OCCURRENCES = {
-    **{stage.value: OccurrenceKind.SINGLETON.value for stage in PUBLIC_TARGET_STAGES},
-    WorkflowStage.IMPLEMENT.value: OccurrenceKind.MILESTONE.value,
-    WorkflowStage.CODE_REVIEW.value: OccurrenceKind.MILESTONE.value,
-    WorkflowStage.VERIFY.value: OccurrenceKind.FINAL.value,
-}
 
 CAPABILITY_AUTHORIZATION_CLASSES = {
     CapabilityKind.PROPOSAL_REVIEW.value: AuthorizationClass.AUTHORING.value,
@@ -175,9 +190,21 @@ CAPABILITY_BASIS_FIELDS = {
     ),
 }
 
+CAPABILITY_BASIS_LIST_FIELDS = frozenset(
+    {
+        "review_evidence_roots",
+        "affected_proposal_roots",
+    }
+)
+
 
 def _enum_values(enum: type[Enum]) -> frozenset[str]:
     return frozenset(str(member.value) for member in enum)
+
+
+def _expected_occurrence(stage: Any) -> str | None:
+    policy = STAGE_POLICY_BY_STAGE.get(stage) if isinstance(stage, str) else None
+    return policy.occurrence_rule.value if policy is not None else None
 
 
 def _required(record: Any, fields: Iterable[str], path: str) -> list[str]:
@@ -194,14 +221,65 @@ def _unknown_value(path: str, value: Any, allowed: Iterable[Any]) -> str | None:
     return f"{path}: unknown value {value!r}; expected one of: {expected}"
 
 
-def _validate_string_list(value: Any, path: str) -> list[str]:
+def _validate_string_list(value: Any, path: str, *, allow_empty: bool = False) -> list[str]:
     if not isinstance(value, list):
         return [f"{path}: expected array"]
-    return [
+    errors = [] if value or allow_empty else [f"{path}: expected non-empty array"]
+    errors.extend(
         f"{path}[{index}]: expected non-empty string"
         for index, item in enumerate(value)
         if not isinstance(item, str) or not item
-    ]
+    )
+    return errors
+
+
+def _validate_non_empty_object(value: Any, path: str) -> list[str]:
+    if not isinstance(value, dict) or not value:
+        return [f"{path}: expected non-empty object"]
+    return []
+
+
+def _validate_invalidation(
+    value: Any,
+    path: str,
+    allowed_triggers: frozenset[str],
+    *,
+    require_non_empty: bool = True,
+) -> list[str]:
+    errors = _validate_non_empty_object(value, path) if require_non_empty else []
+    if not isinstance(value, dict):
+        return errors
+    for trigger, action in value.items():
+        trigger_error = _unknown_value(f"{path}.{trigger}", trigger, allowed_triggers)
+        if trigger_error:
+            errors.append(trigger_error)
+            continue
+        action_error = _unknown_value(f"{path}.{trigger}", action, INVALIDATION_ACTIONS)
+        if action_error:
+            errors.append(action_error)
+    return errors
+
+
+def _validate_identity_value(value: Any, path: str, *, list_value: bool = False) -> list[str]:
+    if list_value:
+        return _validate_string_list(value, path)
+    if not isinstance(value, str) or not value:
+        return [f"{path}: expected non-empty identity string"]
+    return []
+
+
+def _validate_evidence_object(value: Any, path: str) -> list[str]:
+    errors = _validate_non_empty_object(value, path)
+    if not isinstance(value, dict):
+        return errors
+    for key, item in value.items():
+        if not isinstance(key, str) or not key:
+            errors.append(f"{path}: expected non-empty string keys")
+        if isinstance(item, list):
+            errors.extend(_validate_string_list(item, f"{path}.{key}"))
+        elif not isinstance(item, str) or not item:
+            errors.append(f"{path}.{key}: expected non-empty identity string")
+    return errors
 
 
 def _is_sequence_subset(candidate: Any, maximum: Any) -> bool:
@@ -282,6 +360,16 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
                     error = _unknown_value(f"{path}.maximum_mutation_categories[{index}]", value, MUTATION_CATEGORY_VALUES)
                     if error:
                         errors.append(error)
+            invalidation = parent.get("invalidation")
+            if isinstance(invalidation, dict):
+                errors.extend(
+                    _validate_invalidation(
+                        invalidation,
+                        f"{path}.invalidation",
+                        PARENT_INVALIDATION_TRIGGERS,
+                        require_non_empty=False,
+                    )
+                )
 
     capabilities = automation.get("effective_capabilities")
     if isinstance(capabilities, dict):
@@ -321,6 +409,16 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
                     error = _unknown_value(f"{path}.scope.mutation_categories[{index}]", value, MUTATION_CATEGORY_VALUES)
                     if error:
                         errors.append(error)
+            invalidation = capability.get("invalidation")
+            if isinstance(invalidation, dict):
+                errors.extend(
+                    _validate_invalidation(
+                        invalidation,
+                        f"{path}.invalidation",
+                        CAPABILITY_INVALIDATION_TRIGGERS,
+                        require_non_empty=False,
+                    )
+                )
 
     receipts = automation.get("transition_receipts")
     if isinstance(receipts, dict):
@@ -375,7 +473,7 @@ def _validate_target(target: Any, path: str) -> list[str]:
     errors.extend(_required(occurrence, {"kind"}, f"{path}.occurrence"))
     stage = target.get("stage")
     kind = occurrence.get("kind") if isinstance(occurrence, dict) else None
-    expected = STAGE_OCCURRENCES.get(stage)
+    expected = _expected_occurrence(stage)
     if expected is not None and kind != expected:
         errors.append(f"{path}.occurrence.kind: incompatible with {stage}; expected {expected}")
     if stage in {WorkflowStage.IMPLEMENT.value, WorkflowStage.CODE_REVIEW.value}:
@@ -431,11 +529,21 @@ def _validate_parent(parent_id: str, parent: Any, top_change_id: Any, path: str)
     )
     if not isinstance(parent.get("revocation"), dict):
         errors.append(f"{path}.revocation: expected object")
-    if not isinstance(parent.get("invalidation"), dict):
-        errors.append(f"{path}.invalidation: expected object")
+    errors.extend(
+        _validate_invalidation(
+            parent.get("invalidation"),
+            f"{path}.invalidation",
+            PARENT_INVALIDATION_TRIGGERS,
+        )
+    )
     revocation = parent.get("revocation")
     if isinstance(revocation, dict) and not isinstance(revocation.get("revoked"), bool):
         errors.append(f"{path}.revocation.revoked: expected boolean")
+    if isinstance(revocation, dict) and isinstance(revocation.get("revoked"), bool):
+        if parent.get("status") == "revoked" and not revocation["revoked"]:
+            errors.append(f"{path}.revocation.revoked: must be true when parent status is revoked")
+        if parent.get("status") == "active" and revocation["revoked"]:
+            errors.append(f"{path}.revocation.revoked: active parent cannot be revoked")
     for field in ("authorization_id", "change_id", "authorized_by"):
         if not isinstance(parent.get(field), str) or not parent.get(field):
             errors.append(f"{path}.{field}: expected non-empty string")
@@ -448,10 +556,10 @@ def _validate_parent(parent_id: str, parent: Any, top_change_id: Any, path: str)
         if "stage" not in maximum_target:
             errors.append(f"{path}.maximum_target.stage: missing required field")
         occurrence = maximum_target.get("occurrence")
+        expected = _expected_occurrence(maximum_target.get("stage"))
         if not isinstance(occurrence, dict) or "kind" not in occurrence:
             errors.append(f"{path}.maximum_target.occurrence.kind: missing required field")
-        elif maximum_target.get("stage") in STAGE_OCCURRENCES:
-            expected = STAGE_OCCURRENCES[maximum_target["stage"]]
+        if isinstance(occurrence, dict) and expected is not None:
             if occurrence.get("kind") != expected:
                 errors.append(
                     f"{path}.maximum_target.occurrence.kind: expected {expected} "
@@ -460,14 +568,29 @@ def _validate_parent(parent_id: str, parent: Any, top_change_id: Any, path: str)
     else:
         errors.append(f"{path}.maximum_target: expected object")
     allowed_kinds = parent.get("allowed_capability_kinds")
+    authorization_class = parent.get("authorization_class")
+    if isinstance(allowed_kinds, list):
+        for kind in allowed_kinds:
+            expected_class = CAPABILITY_AUTHORIZATION_CLASSES.get(kind)
+            if expected_class and expected_class != authorization_class:
+                errors.append(
+                    f"{path}.allowed_capability_kinds: {kind} crosses parent authorization class"
+                )
     if isinstance(allowed_kinds, list) and any(
         kind in {
             CapabilityKind.PROPOSAL_CORRECTION.value,
             CapabilityKind.IMPLEMENTATION_CORRECTION.value,
         }
         for kind in allowed_kinds
-    ) and not isinstance(parent.get("correction_budget"), dict):
-        errors.append(f"{path}.correction_budget: required for correction authority")
+    ):
+        budget = parent.get("correction_budget")
+        if not isinstance(budget, dict) or not budget:
+            errors.append(f"{path}.correction_budget: required non-empty object for correction authority")
+        elif any(
+            not isinstance(value, int) or isinstance(value, bool) or value < 0
+            for value in budget.values()
+        ):
+            errors.append(f"{path}.correction_budget: expected non-negative integer limits")
     return errors
 
 
@@ -510,6 +633,8 @@ def _validate_capability(
         parent = None
     elif parent.get("status") != "active":
         errors.append(f"{path}.parent_authorization_id: parent authorization is not active")
+    elif isinstance(parent.get("revocation"), dict) and parent["revocation"].get("revoked") is True:
+        errors.append(f"{path}.parent_authorization_id: parent authorization is revoked")
 
     stage = capability.get("stage")
     if not isinstance(stage, dict):
@@ -523,10 +648,15 @@ def _validate_capability(
         errors.extend(_required(occurrence, {"kind"}, f"{path}.stage.occurrence"))
     if kind in CAPABILITY_STAGES and stage_name not in CAPABILITY_STAGES[kind]:
         errors.append(f"{path}.stage.name: incompatible with capability kind {kind}")
-    if stage_name in STAGE_OCCURRENCES and isinstance(occurrence, dict):
-        expected = STAGE_OCCURRENCES[stage_name]
+    policy = STAGE_POLICY_BY_STAGE.get(stage_name) if isinstance(stage_name, str) else None
+    if policy is not None and isinstance(occurrence, dict):
+        expected = policy.occurrence_rule.value
         if occurrence.get("kind") != expected:
             errors.append(f"{path}.stage.occurrence.kind: expected {expected} for {stage_name}")
+        if expected == OccurrenceKind.MILESTONE.value and not occurrence.get("milestone_id"):
+            errors.append(f"{path}.stage.occurrence.milestone_id: required for milestone capability")
+        if expected != OccurrenceKind.MILESTONE.value and "milestone_id" in occurrence:
+            errors.append(f"{path}.stage.occurrence.milestone_id: forbidden for {expected} capability")
 
     basis = capability.get("basis")
     if not isinstance(basis, dict):
@@ -535,6 +665,14 @@ def _validate_capability(
         for field in sorted(CAPABILITY_BASIS_FIELDS[kind]):
             if field not in basis:
                 errors.append(f"{path}.basis.{field}: missing stage-appropriate basis identity")
+            else:
+                errors.extend(
+                    _validate_identity_value(
+                        basis[field],
+                        f"{path}.basis.{field}",
+                        list_value=field in CAPABILITY_BASIS_LIST_FIELDS,
+                    )
+                )
 
     scope = capability.get("scope")
     if not isinstance(scope, dict):
@@ -547,6 +685,14 @@ def _validate_capability(
         errors.extend(
             _validate_string_list(scope.get("mutation_categories"), f"{path}.scope.mutation_categories")
         )
+
+    errors.extend(
+        _validate_invalidation(
+            capability.get("invalidation"),
+            f"{path}.invalidation",
+            CAPABILITY_INVALIDATION_TRIGGERS,
+        )
+    )
 
     if parent is not None:
         if capability.get("policy_version") != parent.get("policy_version"):
@@ -690,8 +836,17 @@ def validate_workflow_automation(
         capability_id = run["effective_capability_id"]
         if not isinstance(capability_id, str) or capability_id not in capabilities:
             errors.append("run.effective_capability_id: must reference an effective capability")
-        elif capabilities[capability_id].get("status") != "active":
-            errors.append("run.effective_capability_id: capability must be active")
+        else:
+            capability_status = capabilities[capability_id].get("status")
+            expected_status = {
+                "active": "active",
+                "completed": "consumed",
+            }.get(run.get("status"))
+            if expected_status is not None and capability_status != expected_status:
+                errors.append(
+                    f"run.effective_capability_id: capability must be {expected_status} "
+                    f"when run is {run.get('status')}"
+                )
 
     receipts = automation.get("transition_receipts")
     if not isinstance(receipts, dict):
@@ -719,9 +874,61 @@ def validate_workflow_automation(
                 continue
             if receipt.get("transition_id") != receipt_id:
                 errors.append(f"{path}.transition_id: must match mapping key")
+            for field in ("transition_id", "transition_key", "run_id", "change_id", "from_position"):
+                if not isinstance(receipt.get(field), str) or not receipt.get(field):
+                    errors.append(f"{path}.{field}: expected non-empty string")
+            errors.extend(_validate_target(receipt.get("target"), f"{path}.target"))
+            if isinstance(run, dict):
+                if receipt.get("run_id") != run.get("run_id"):
+                    errors.append(f"{path}.run_id: must match automation run")
+                if receipt.get("change_id") != run.get("change_id"):
+                    errors.append(f"{path}.change_id: must match automation run")
+                if receipt.get("policy_version") != run.get("policy_version"):
+                    errors.append(f"{path}.policy_version: must match automation run")
+            errors.extend(
+                _validate_evidence_object(receipt.get("input_identities"), f"{path}.input_identities")
+            )
+            errors.extend(
+                _validate_non_empty_object(
+                    receipt.get("expected_postcondition"), f"{path}.expected_postcondition"
+                )
+            )
+            if not isinstance(receipt.get("outputs"), list):
+                errors.append(f"{path}.outputs: expected array")
+            errors.extend(
+                _required(receipt.get("canonical_sync"), {"status"}, f"{path}.canonical_sync")
+            )
             capability_id = receipt.get("effective_capability_id")
             if not isinstance(capability_id, str) or capability_id not in capabilities:
                 errors.append(f"{path}.effective_capability_id: active capability not found")
+            else:
+                capability = capabilities[capability_id]
+                if not isinstance(capability, dict):
+                    errors.append(f"{path}.effective_capability_id: capability record must be an object")
+                else:
+                    expected_capability_status = {
+                        "prepared": "active",
+                        "completed": "consumed",
+                    }.get(receipt.get("status"))
+                    if (
+                        expected_capability_status is not None
+                        and capability.get("status") != expected_capability_status
+                    ):
+                        errors.append(
+                            f"{path}.effective_capability_id: capability must be "
+                            f"{expected_capability_status} for {receipt.get('status')} receipt"
+                        )
+                    if receipt.get("policy_version") != capability.get("policy_version"):
+                        errors.append(f"{path}.policy_version: must match effective capability")
+                    target = receipt.get("target")
+                    capability_stage = capability.get("stage")
+                    if isinstance(target, dict) and isinstance(capability_stage, dict):
+                        if target.get("stage") != capability_stage.get("name") or target.get(
+                            "occurrence"
+                        ) != capability_stage.get("occurrence"):
+                            errors.append(
+                                f"{path}.effective_capability_id: stage occurrence does not match receipt target"
+                            )
     return errors
 
 
