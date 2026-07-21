@@ -104,12 +104,12 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Current milestone: M1. Unified State Model and Complete Policy Registry
 - Current milestone state: review-requested
 - Last reviewed milestone: M1. Unified State Model and Complete Policy Registry
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r4.md`
-- Review status: changes-requested; stage=code-review; round=r4
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r5.md`
+- Review status: changes-requested; stage=code-review; round=r5
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5, M6
 - Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — `BRF-M1-CR10` is resolved with validation evidence, but fresh M1 code review is required and M2-M6 have not started.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — `BRF-M1-CR11` is resolved with validation evidence, but fresh M1 code review is required and M2-M6 have not started.
 
 ## Milestones
 
@@ -515,6 +515,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-21: Resolved `BRF-M1-CR8` and `BRF-M1-CR9` by moving canonical predecessor/next-stage relations into the frozen policy projection, validating receipt transitions through that graph, and rejecting recursively non-deterministic evidence. M1 is review-requested; M2 remains blocked pending M1 R4.
 - 2026-07-21: Code-review M1 R4 confirmed `BRF-M1-CR9` resolved but classified `BRF-M1-CR8` as failed remediation and opened `BRF-M1-CR10`: cyclic reachability permits code review after exact implement targets and proposal correction after exact proposal-review targets. M1 is resolution-needed; M2 remains blocked.
 - 2026-07-21: Resolved `BRF-M1-CR10` by replacing cyclic stage-name reachability with immutable target-aware transition rules bound to predecessor, operation, target frontier, guard, and occurrence constraint. Exact implement and proposal-review stopping regressions pass; M1 is review-requested and M2 remains blocked pending M1 R5.
+- 2026-07-21: Code-review M1 R5 confirmed the exact-target fixtures but classified `BRF-M1-CR10` as failed remediation and opened `BRF-M1-CR11`: transition selectors ignore their declared guards and occurrence constraints, so missing architecture-applicability evidence and arbitrary next-milestone context still pass. M1 is resolution-needed; M2 remains blocked.
+- 2026-07-21: Resolved `BRF-M1-CR11` with one typed transition evaluator that enforces target frontier, all guarded branches, plan-bound same/next milestone identities, and missing-context rejection from identity-bound receipt evidence. M1 is review-requested; M2 remains blocked pending M1 R6.
 
 ## Decision log
 
@@ -528,6 +530,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-21 | Treat receipt target as the run destination and effective-capability stage as the concrete operation. | Target selection and executable authority are independent; direct equality rejects valid earlier transitions toward later targets. | Reusing one field for both concepts or adding an unapproved receipt schema field. |
 | 2026-07-21 | Represent predecessor and next-stage relations as an immutable typed graph in the policy projection. | Conditional stages, correction loops, and repeated milestones cannot be modeled safely by a mutable linear rank table. | Validator-local frontier/rank maps and free-form predecessor strings. |
 | 2026-07-21 | Bind transition permission to an immutable edge-specific target frontier. | Generic reachability over a cyclic graph cannot preserve exact structured targets as stopping boundaries. | Unqualified breadth-first reachability and validator-local cycle exceptions. |
+| 2026-07-21 | Make `evaluate_transition` the only executable transition-permission decision. | Immutable guard and occurrence metadata is not a policy unless every selected rule evaluates it against concrete evidence. | Decorative predicate fields and boolean helpers whose names imply executable permission. |
 
 ## Surprises and discoveries
 
@@ -572,6 +575,10 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Code-review M1 R4 reran 11 policy tests, 35 automation-validator tests, and 4 focused metadata tests successfully, then directly reproduced two complete post-target receipts that returned no validation errors. Existing coverage is insufficient for exact-target stopping across cycles.
 - M1 R4 proof-first regressions reproduced both complete post-target paths before the production correction. The final resolution passed 13 policy tests, 37 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, metadata validation, Python compilation, diff checks, and 12 repository broad-smoke checks in 216 seconds.
 - Review structure and closeout validation passed with 22 reviews, 32 resolved findings, and no open findings. Explicit lifecycle validation passed for the five managed handoff artifacts with the existing merge-language warning, and guide-system validation passed after plan-index synchronization.
+- Code-review M1 R5 reran 13 policy tests, 37 automation-validator tests, 4 focused metadata tests, metadata validation, and diff checks successfully, then directly reproduced two complete predicate-context gaps that returned no validation errors. Passing suites do not establish guard or occurrence-constraint enforcement.
+- Code-review M1 R5 recording passed review-structure validation with 23 reviews, 33 findings, and 1 open finding; lifecycle validation passed for five managed artifacts with the existing merge-language warning; guide-system, change-metadata, and diff checks passed after handoff synchronization.
+- M1 R5 proof-first tests failed on the missing evaluator and both complete predicate-context gaps before production changes. The final correction passed 15 policy tests, 41 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, metadata validation, Python compilation, diff checks, and 12 repository broad-smoke checks in the final 231-second run after plan and milestone identity binding was tightened.
+- Review structure and closeout validation passed with 23 reviews, 33 resolved findings, and no open findings. Explicit lifecycle validation passed for the five managed handoff artifacts with the existing merge-language warning, and guide-system validation passed after the M1 R6 plan-index synchronization.
 - `python scripts/test-workflow-automation-policy.py` passed 7 tests.
 - `python scripts/test-validate-workflow-automation.py -k vocabulary` passed 3 selected tests.
 - `python scripts/test-change-metadata-validator.py -k workflow_automation` passed 4 selected tests.

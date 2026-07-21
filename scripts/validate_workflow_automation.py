@@ -21,11 +21,12 @@ from workflow_automation_policy import (
     PUBLIC_TARGET_STAGES,
     RetryPolicy,
     STAGE_POLICY_BY_STAGE,
+    TransitionContext,
     WorkflowPosition,
     WorkflowStage,
-    can_operation_toward_target,
-    can_transition,
-    can_transition_toward_target,
+    can_operation_fit_target,
+    evaluate_transition,
+    is_immediate_predecessor,
 )
 
 
@@ -368,6 +369,7 @@ def _validate_operation_within_target(
     path: str,
     target_label: str,
     from_position: Any = None,
+    transition_evidence: Any = None,
 ) -> list[str]:
     stage = capability.get("stage")
     if not isinstance(stage, dict) or not isinstance(target, dict):
@@ -381,19 +383,56 @@ def _validate_operation_within_target(
         return []
     errors: list[str] = []
     if from_position is None:
-        permitted = can_operation_toward_target(operation_stage, destination_stage)
+        permitted = can_operation_fit_target(operation_stage, destination_stage)
     else:
         try:
             canonical_from_position = WorkflowPosition(from_position)
         except (TypeError, ValueError):
             return errors
-        permitted = can_transition_toward_target(
-            canonical_from_position,
-            operation_stage,
-            destination_stage,
+        operation_occurrence = stage.get("occurrence")
+        target_occurrence = target.get("occurrence")
+        basis = capability.get("basis")
+        context = TransitionContext(
+            from_position=canonical_from_position,
+            operation=operation_stage,
+            target=destination_stage,
+            operation_milestone_id=(
+                operation_occurrence.get("milestone_id")
+                if isinstance(operation_occurrence, dict)
+                else None
+            ),
+            operation_milestone_identity=(
+                basis.get("milestone_identity")
+                if isinstance(basis, dict)
+                else None
+            ),
+            target_milestone_id=(
+                target_occurrence.get("milestone_id")
+                if isinstance(target_occurrence, dict)
+                else None
+            ),
+            plan_identity=(
+                basis.get("plan_identity")
+                if isinstance(basis, dict)
+                else None
+            ),
+            evidence=(
+                transition_evidence
+                if isinstance(transition_evidence, dict)
+                else {}
+            ),
         )
-    if not permitted:
+        evaluation = evaluate_transition(context)
+        permitted = evaluation.allowed
+        if not permitted:
+            errors.extend(
+                f"{path}.{error}; operation exceeds {target_label}"
+                for error in evaluation.errors
+            )
+    if not permitted and not errors:
         errors.append(f"{path}.stage.name: operation exceeds {target_label}")
+        return errors
+    if not permitted:
         return errors
     if operation in {WorkflowStage.IMPLEMENT.value, WorkflowStage.CODE_REVIEW.value} and destination in {
         WorkflowStage.IMPLEMENT.value,
@@ -1060,7 +1099,7 @@ def validate_workflow_automation(
                     except (TypeError, ValueError):
                         pass
                     else:
-                        if not can_transition(from_position, operation_stage):
+                        if not is_immediate_predecessor(from_position, operation_stage):
                             errors.append(
                                 f"{path}.from_position: {from_position.value} cannot transition "
                                 f"to {operation_stage.value}"
@@ -1072,6 +1111,7 @@ def validate_workflow_automation(
                             f"{path}.effective_capability",
                             "run target",
                             receipt.get("from_position"),
+                            receipt.get("input_identities"),
                         )
                     )
     return errors

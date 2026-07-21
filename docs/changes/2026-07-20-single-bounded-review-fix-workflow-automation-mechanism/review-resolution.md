@@ -14,11 +14,12 @@ Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
+Review closeout: code-review-m1-r5
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`
-- Findings resolved: 32
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`
+- Findings resolved: 33
 - Unresolved findings: 0
-- Current result: `BRF-M1-CR10` is resolved with immutable target-aware transition rules, exact-target regressions, the full M1 command set, and repository broad smoke. M1 is ready for fresh code review; M2 remains blocked pending approval.
+- Current result: `BRF-M1-CR11` is resolved with one typed fail-closed transition evaluator, complete guard and occurrence contrasts, the full M1 command set, and repository broad smoke. M1 is ready for fresh code review; M2 remains blocked pending approval.
 
 ## Resolution Overview
 
@@ -55,7 +56,8 @@ Review closeout: code-review-m1-r4
 | BRF-M1-CR7 | accepted | resolved | Parent maximum targets now reuse the complete structured-target validator. |
 | BRF-M1-CR8 | accepted | resolved | Canonical predecessor and graph reachability now come from the immutable typed stage-policy projection; validator-local rank/frontier policy was removed. |
 | BRF-M1-CR9 | accepted | resolved | Recursive evidence validation now rejects stripped-empty strings, non-finite numbers, cycles, and excessive nesting while accepting finite values. |
-| BRF-M1-CR10 | accepted | resolved | Transition permission now binds the receipt predecessor, concrete operation, target frontier, guard, and occurrence constraint instead of traversing a cyclic stage-name graph. |
+| BRF-M1-CR10 | accepted | resolved | Exact-target frontier checks replaced cyclic reachability; R5 classified the broader predicate-enforcement remediation as failed and records the remaining defect separately in `BRF-M1-CR11`. |
+| BRF-M1-CR11 | accepted | resolved | One typed evaluator now enforces target frontier, guard evidence, and occurrence constraints; structural helpers cannot authorize execution. |
 
 ## Common Resolution Metadata
 
@@ -657,3 +659,19 @@ Chosen action: Replaced generic graph reachability with immutable target-aware t
 Safe resolution path: Replace unqualified reachability with immutable branch- and occurrence-aware transition rules evaluated from the receipt predecessor, concrete operation, and structured target; fail closed when required context is absent.
 Validation target: Add complete exact-target negative fixtures, retain valid conditional/correction/repeated paths, run the full M1 command set and broad smoke, then rerun code-review M1.
 Validation evidence: Both proof-first complete-state regressions failed before the correction and now pass. Valid immediate review and later-target proposal-correction paths remain accepted by policy tests. The final validation passed 13 policy tests, 37 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, metadata validation, Python compilation, diff checks, and 12 repository broad-smoke checks in 216 seconds.
+
+### code-review-m1-r5
+
+#### BRF-M1-CR11 - Transition predicates are recorded but never enforced
+
+Finding ID: BRF-M1-CR11
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: R5 directly reproduced complete architecture-skip and next-milestone receipts that validate without the evidence required by their declared guard and occurrence constraint.
+Required outcome: Every selected transition rule must enforce its guard and occurrence constraint against concrete identity-bound evidence and fail closed when required context is absent, mismatched, or ambiguous.
+Chosen action: Added an immutable `TransitionContext` and typed `TransitionEvaluation`, centralized all guard and occurrence enforcement in `evaluate_transition`, and renamed the remaining boolean helpers to make their non-authorizing structural purpose explicit. Receipt validation now supplies concrete input evidence, plan identity, and source/destination milestone identities to the evaluator.
+Safe resolution path: Add typed predicate-evaluation inputs, require identity-bound branch and source-occurrence evidence, evaluate the selected rule before accepting the transition, and add complete positive and negative fixtures for architecture applicability and milestone ordering.
+Validation target: Targeted proof-first predicate-context tests, the full M1 command set, broad smoke, and code-review M1 R6.
+Validation evidence: Proof-first policy tests initially failed because the typed evaluator did not exist, and both complete-state validator regressions reproduced zero-error acceptance. After correction, all eight guarded paths have positive and missing-evidence contrasts; proposal correction, architecture applicability, identity-bound same-milestone review, unique next-milestone progression, wrong occurrence, and absent context are covered directly. The final validation passed 15 policy tests, 41 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, metadata validation, Python compilation, diff checks, and 12 repository broad-smoke checks in the final 231-second run.

@@ -109,6 +109,73 @@ def add_valid_receipt(state: dict[str, object]) -> dict[str, object]:
     return receipt
 
 
+def configure_post_proposal_transition(
+    state: dict[str, object],
+    *,
+    stage_name: str,
+    target_stage: str,
+) -> dict[str, object]:
+    target = {
+        "stage": target_stage,
+        "occurrence": {"kind": "singleton"},
+        "bound_at": "2026-07-20T00:00:00Z",
+        "completion": {"target": "reached"},
+    }
+    state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
+    parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
+    parent["maximum_target"] = copy.deepcopy(target)  # type: ignore[index]
+    parent["allowed_capability_kinds"] = ["post-proposal-authoring"]  # type: ignore[index]
+    parent["maximum_mutation_categories"] = ["downstream-authoring-artifacts"]  # type: ignore[index]
+    capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+    capability["capability_kind"] = "post-proposal-authoring"  # type: ignore[index]
+    capability["stage"] = {"name": stage_name, "occurrence": {"kind": "singleton"}}  # type: ignore[index]
+    capability["basis"] = {  # type: ignore[index]
+        "proposal_identity": "sha256:proposal",
+        "approved_proposal_review_identity": "sha256:proposal-review",
+        "closed_review_resolution_identity": "sha256:resolution",
+        "stage_scope_identity": "sha256:scope",
+    }
+    capability["scope"]["mutation_categories"] = ["downstream-authoring-artifacts"]  # type: ignore[index]
+    return add_valid_receipt(state)
+
+
+def configure_next_milestone_transition(
+    state: dict[str, object],
+    *,
+    milestone_id: str,
+) -> dict[str, object]:
+    target = {
+        "stage": "verify",
+        "occurrence": {"kind": "final"},
+        "bound_at": "2026-07-20T00:00:00Z",
+        "completion": {"target": "reached"},
+    }
+    state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
+    parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
+    parent["authorization_class"] = "implementation"  # type: ignore[index]
+    parent["maximum_target"] = copy.deepcopy(target)  # type: ignore[index]
+    parent["allowed_capability_kinds"] = ["implementation"]  # type: ignore[index]
+    parent["maximum_mutation_categories"] = ["production-code"]  # type: ignore[index]
+    capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+    capability["capability_kind"] = "implementation"  # type: ignore[index]
+    capability["stage"] = {  # type: ignore[index]
+        "name": "implement",
+        "occurrence": {"kind": "milestone", "milestone_id": milestone_id},
+    }
+    capability["basis"] = {  # type: ignore[index]
+        "plan_identity": "sha256:plan",
+        "plan_review_identity": "sha256:plan-review",
+        "test_spec_identity": "sha256:test-spec",
+        "test_spec_review_identity": "sha256:test-spec-review",
+        "milestone_identity": f"sha256:{milestone_id}",
+        "affected_paths_identity": "sha256:paths",
+        "mutation_categories_identity": "sha256:categories",
+        "validation_commands_identity": "sha256:commands",
+    }
+    capability["scope"]["mutation_categories"] = ["production-code"]  # type: ignore[index]
+    return add_valid_receipt(state)
+
+
 class WorkflowAutomationVocabularyTests(unittest.TestCase):
     def test_valid_unified_state_passes(self) -> None:
         self.assertEqual(validate_workflow_automation(valid_automation()), [])
@@ -681,6 +748,126 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         receipt["from_position"] = "proposal-review"
         errors = validate_workflow_automation(state)
         self.assertTrue(any("run target" in error for error in errors), errors)
+
+    def test_proposal_correction_toward_later_target_requires_review_context(self) -> None:
+        state = valid_automation()
+        target = {
+            "stage": "spec",
+            "occurrence": {"kind": "singleton"},
+            "bound_at": "2026-07-20T00:00:00Z",
+            "completion": {"spec": "authored"},
+        }
+        state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
+        parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
+        parent["maximum_target"] = copy.deepcopy(target)  # type: ignore[index]
+        parent["allowed_capability_kinds"] = ["proposal-correction"]  # type: ignore[index]
+        parent["maximum_mutation_categories"] = ["proposal-content"]  # type: ignore[index]
+        parent["correction_budget"] = {"max_cycles": 1}  # type: ignore[index]
+        capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+        capability["capability_kind"] = "proposal-correction"  # type: ignore[index]
+        capability["stage"] = {"name": "proposal", "occurrence": {"kind": "singleton"}}  # type: ignore[index]
+        capability["basis"] = {  # type: ignore[index]
+            "reviewed_proposal_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "accepted_finding_set_identity": "sha256:findings",
+            "classifier_policy_identity": "sha256:classifier",
+            "correction_budget_identity": "sha256:budget",
+            "affected_proposal_roots": ["docs/proposals/"],
+        }
+        capability["scope"]["mutation_categories"] = ["proposal-content"]  # type: ignore[index]
+        receipt = add_valid_receipt(state)
+        receipt["from_position"] = "proposal-review"
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("review_outcome" in error for error in errors), errors)
+
+        receipt["input_identities"] = {
+            "review_outcome": "changes-requested",
+            "review_identity": "sha256:review",
+            "accepted_finding_set_identity": "sha256:findings",
+            "correction_budget_state": "remaining",
+            "correction_budget_identity": "sha256:budget",
+        }
+        self.assertEqual(validate_workflow_automation(state), [])
+
+    def test_architecture_skip_requires_matching_applicability_evidence(self) -> None:
+        state = valid_automation()
+        receipt = configure_post_proposal_transition(
+            state,
+            stage_name="plan",
+            target_stage="plan",
+        )
+        receipt["from_position"] = "architecture-assessment"
+        receipt["input_identities"] = {"proposal": "sha256:proposal"}
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("architecture_applicability" in error for error in errors), errors)
+
+        receipt["input_identities"].update(  # type: ignore[union-attr]
+            {
+                "architecture_applicability": "not-applicable",
+                "architecture_applicability_identity": "sha256:assessment",
+            }
+        )
+        self.assertEqual(validate_workflow_automation(state), [])
+
+    def test_next_milestone_requires_ordered_source_and_destination_evidence(self) -> None:
+        state = valid_automation()
+        receipt = configure_next_milestone_transition(state, milestone_id="M99")
+        receipt["from_position"] = "code-review"
+        receipt["input_identities"] = {"plan": "sha256:plan"}
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("source_milestone_id" in error for error in errors), errors)
+
+        receipt["input_identities"].update(  # type: ignore[union-attr]
+            {
+                "source_milestone_id": "M1",
+                "source_milestone_identity": "sha256:M1",
+                "next_milestone_id": "M2",
+                "next_milestone_identity": "sha256:M2",
+                "milestone_order_identity": "sha256:order",
+                "plan_identity": "sha256:plan",
+            }
+        )
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("next_milestone_id" in error for error in errors), errors)
+
+        capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+        capability["stage"]["occurrence"]["milestone_id"] = "M2"  # type: ignore[index]
+        capability["basis"]["milestone_identity"] = "sha256:M2"  # type: ignore[index]
+        self.assertEqual(validate_workflow_automation(state), [])
+
+    def test_milestone_code_review_requires_same_source_occurrence(self) -> None:
+        state = valid_automation()
+        receipt = configure_next_milestone_transition(state, milestone_id="M1")
+        target = {
+            "stage": "code-review",
+            "occurrence": {"kind": "milestone", "milestone_id": "M1"},
+            "plan_identity": "sha256:plan",
+            "bound_at": "2026-07-20T00:00:00Z",
+            "completion": {"review": "approved"},
+        }
+        state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
+        parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
+        parent["maximum_target"] = copy.deepcopy(target)  # type: ignore[index]
+        capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+        capability["stage"]["name"] = "code-review"  # type: ignore[index]
+        capability["scope"]["mutation_categories"] = ["change-local-review-evidence"]  # type: ignore[index]
+        parent["maximum_mutation_categories"] = ["change-local-review-evidence"]  # type: ignore[index]
+        receipt["target"] = copy.deepcopy(target)
+        receipt["from_position"] = "implement"
+        receipt["input_identities"] = {
+            "source_milestone_id": "M0",
+            "source_milestone_identity": "sha256:M0",
+            "plan_identity": "sha256:plan",
+        }
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("source_milestone_id" in error for error in errors), errors)
+
+        receipt["input_identities"] = {
+            "source_milestone_id": "M1",
+            "source_milestone_identity": "sha256:M1",
+            "plan_identity": "sha256:plan",
+        }
+        self.assertEqual(validate_workflow_automation(state), [])
 
     def test_capability_operation_cannot_exceed_run_or_parent_target(self) -> None:
         for boundary in ("run", "parent"):

@@ -8,10 +8,10 @@ and mechanically checkable.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, field, fields
 from enum import Enum
 from types import MappingProxyType
-from typing import Iterable
+from typing import Any, Iterable, Mapping
 
 
 class ClosedStringEnum(str, Enum):
@@ -196,6 +196,33 @@ class TransitionRule:
     allowed_targets: frozenset[WorkflowStage]
     guard: TransitionGuard
     occurrence_constraint: OccurrenceConstraint = OccurrenceConstraint.STAGE_POLICY
+
+
+@dataclass(frozen=True)
+class TransitionContext:
+    from_position: WorkflowPosition
+    operation: WorkflowStage
+    target: WorkflowStage
+    operation_milestone_id: str | None = None
+    operation_milestone_identity: str | None = None
+    target_milestone_id: str | None = None
+    plan_identity: str | None = None
+    evidence: Mapping[str, Any] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "evidence", MappingProxyType(dict(self.evidence)))
+
+
+@dataclass(frozen=True)
+class TransitionEvaluation:
+    rule: TransitionRule | None
+    errors: tuple[str, ...]
+
+    @property
+    def allowed(self) -> bool:
+        return not self.errors and self.rule is not None
 
 
 def _transition(
@@ -620,8 +647,11 @@ TRANSITION_RULES_BY_OPERATION = MappingProxyType(
 )
 
 
-def can_transition(from_position: WorkflowPosition, to_stage: WorkflowStage) -> bool:
-    """Return whether the canonical position is an immediate predecessor."""
+def is_immediate_predecessor(
+    from_position: WorkflowPosition,
+    to_stage: WorkflowStage,
+) -> bool:
+    """Check structural adjacency without granting transition permission."""
 
     return any(
         rule.from_position == from_position
@@ -629,23 +659,196 @@ def can_transition(from_position: WorkflowPosition, to_stage: WorkflowStage) -> 
     )
 
 
-def can_transition_toward_target(
-    from_position: WorkflowPosition,
-    operation: WorkflowStage,
-    target: WorkflowStage,
-) -> bool:
-    """Return whether one concrete edge remains before or at the target."""
+def can_operation_fit_target(operation: WorkflowStage, target: WorkflowStage) -> bool:
+    """Return whether an operation can fit a parent target structurally.
 
-    return any(
-        rule.from_position == from_position and target in rule.allowed_targets
-        for rule in TRANSITION_RULES_BY_OPERATION[operation]
-    )
-
-
-def can_operation_toward_target(operation: WorkflowStage, target: WorkflowStage) -> bool:
-    """Return whether any valid predecessor edge can perform the operation."""
+    Parent authorization validation has no concrete transition predecessor and
+    therefore cannot evaluate a transition guard.  Receipt validation must use
+    ``evaluate_transition`` instead.
+    """
 
     return any(
         target in rule.allowed_targets
         for rule in TRANSITION_RULES_BY_OPERATION[operation]
     )
+
+
+def _required_evidence(
+    evidence: Mapping[str, Any],
+    field_name: str,
+    expected: str | None = None,
+) -> tuple[str, ...]:
+    value = evidence.get(field_name)
+    if not isinstance(value, str) or not value.strip():
+        return (f"transition evidence.{field_name}: required non-empty value",)
+    if expected is not None and value != expected:
+        return (f"transition evidence.{field_name}: expected {expected}",)
+    return ()
+
+
+def _evaluate_guard(
+    rule: TransitionRule,
+    evidence: Mapping[str, Any],
+) -> tuple[str, ...]:
+    guard = rule.guard
+    if guard == TransitionGuard.ALWAYS:
+        return ()
+    if guard == TransitionGuard.PROPOSAL_CORRECTION:
+        requirements = (
+            ("review_outcome", "changes-requested"),
+            ("review_identity", None),
+            ("accepted_finding_set_identity", None),
+            ("correction_budget_state", "remaining"),
+            ("correction_budget_identity", None),
+        )
+    elif guard == TransitionGuard.ARCHITECTURE_REQUIRED:
+        requirements = (
+            ("architecture_applicability", "required"),
+            ("architecture_applicability_identity", None),
+        )
+    elif guard == TransitionGuard.ARCHITECTURE_NOT_REQUIRED:
+        requirements = (
+            ("architecture_applicability", "not-applicable"),
+            ("architecture_applicability_identity", None),
+        )
+    elif guard == TransitionGuard.IMPLEMENTATION_FINDINGS:
+        requirements = (
+            ("review_outcome", "changes-requested"),
+            ("review_identity", None),
+            ("accepted_finding_set_identity", None),
+        )
+    elif guard == TransitionGuard.NEXT_MILESTONE:
+        requirements = (
+            ("source_milestone_id", None),
+            ("next_milestone_id", None),
+            ("milestone_order_identity", None),
+        )
+    elif guard == TransitionGuard.CI_TRIGGERED:
+        requirements = (("ci_trigger_identity", None),)
+    elif guard == TransitionGuard.ALL_MILESTONES_CLOSED:
+        requirements = (
+            ("milestone_state", "all-closed"),
+            ("closed_milestones_identity", None),
+        )
+    elif guard == TransitionGuard.FINAL_REVIEW_FINDINGS:
+        requirements = (
+            ("final_review_outcome", "changes-requested"),
+            ("final_review_identity", None),
+            ("accepted_finding_set_identity", None),
+        )
+    else:
+        return (f"transition guard: unsupported value {guard!r}",)
+
+    return tuple(
+        error
+        for field_name, expected in requirements
+        for error in _required_evidence(evidence, field_name, expected)
+    )
+
+
+def _evaluate_occurrence(
+    rule: TransitionRule,
+    context: TransitionContext,
+) -> tuple[str, ...]:
+    constraint = rule.occurrence_constraint
+    if constraint == OccurrenceConstraint.STAGE_POLICY:
+        return ()
+
+    errors: list[str] = []
+    source_errors = _required_evidence(context.evidence, "source_milestone_id")
+    errors.extend(source_errors)
+    errors.extend(_required_evidence(context.evidence, "source_milestone_identity"))
+    plan_errors = _required_evidence(context.evidence, "plan_identity")
+    errors.extend(plan_errors)
+    source_milestone_id = context.evidence.get("source_milestone_id")
+    if not isinstance(context.operation_milestone_id, str) or not context.operation_milestone_id:
+        errors.append("transition operation milestone_id: required non-empty value")
+
+    if constraint == OccurrenceConstraint.SAME_MILESTONE:
+        if (
+            not source_errors
+            and context.operation_milestone_id != source_milestone_id
+        ):
+            errors.append(
+                "transition operation milestone_id: must match source_milestone_id"
+            )
+        if context.operation_milestone_identity != context.evidence.get(
+            "source_milestone_identity"
+        ):
+            errors.append(
+                "transition operation milestone identity: must match source_milestone_identity"
+            )
+        if (
+            context.target == WorkflowStage.CODE_REVIEW
+            and context.target_milestone_id != context.operation_milestone_id
+        ):
+            errors.append(
+                "transition target milestone_id: must match operation milestone_id"
+            )
+    elif constraint == OccurrenceConstraint.NEXT_MILESTONE:
+        next_errors = _required_evidence(context.evidence, "next_milestone_id")
+        errors.extend(next_errors)
+        errors.extend(_required_evidence(context.evidence, "next_milestone_identity"))
+        errors.extend(
+            _required_evidence(context.evidence, "milestone_order_identity")
+        )
+        next_milestone_id = context.evidence.get("next_milestone_id")
+        if (
+            not next_errors
+            and context.operation_milestone_id != next_milestone_id
+        ):
+            errors.append(
+                "transition operation milestone_id: must match next_milestone_id"
+            )
+        if context.operation_milestone_identity != context.evidence.get(
+            "next_milestone_identity"
+        ):
+            errors.append(
+                "transition operation milestone identity: must match next_milestone_identity"
+            )
+        if (
+            not source_errors
+            and not next_errors
+            and source_milestone_id == next_milestone_id
+        ):
+            errors.append(
+                "transition next_milestone_id: must differ from source_milestone_id"
+            )
+    if not plan_errors and context.plan_identity != context.evidence.get("plan_identity"):
+        errors.append("transition plan identity: must match evidence plan_identity")
+    if constraint in {
+        OccurrenceConstraint.SAME_MILESTONE,
+        OccurrenceConstraint.NEXT_MILESTONE,
+    }:
+        return tuple(errors)
+
+    return (f"transition occurrence constraint: unsupported value {constraint!r}",)
+
+
+def evaluate_transition(context: TransitionContext) -> TransitionEvaluation:
+    """Evaluate one exact transition rule against target and predicate context."""
+
+    candidates = tuple(
+        rule
+        for rule in TRANSITION_RULES_BY_OPERATION[context.operation]
+        if rule.from_position == context.from_position
+        and context.target in rule.allowed_targets
+    )
+    if not candidates:
+        return TransitionEvaluation(
+            rule=None,
+            errors=("transition: no rule permits operation toward target",),
+        )
+
+    candidate_errors: list[str] = []
+    for rule in candidates:
+        errors = (
+            *_evaluate_guard(rule, context.evidence),
+            *_evaluate_occurrence(rule, context),
+        )
+        if not errors:
+            return TransitionEvaluation(rule=rule, errors=())
+        for error in errors:
+            if error not in candidate_errors:
+                candidate_errors.append(error)
+    return TransitionEvaluation(rule=candidates[0], errors=tuple(candidate_errors))
