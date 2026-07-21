@@ -12,11 +12,12 @@ Review closeout: test-spec-review-r3
 Review closeout: test-spec-review-r4
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m1-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`
-- Findings resolved: 29
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`
+- Findings resolved: 31
 - Unresolved findings: 0
-- Current result: All code-review M1 R2 findings are resolved with proof-first regressions, the full M1 command set, and repository broad smoke. M1 is ready for fresh code review; M2 remains blocked pending approval.
+- Current result: All code-review M1 R3 findings are resolved with proof-first regressions, the full M1 command set, and repository broad smoke. M1 is ready for fresh code review; M2 remains blocked pending approval.
 
 ## Resolution Overview
 
@@ -51,6 +52,8 @@ Review closeout: code-review-m1-r2
 | BRF-M1-CR5 | accepted | resolved | Receipt destinations now match the run while capability operations are independently bounded by the run and parent targets; evidence values are concrete. |
 | BRF-M1-CR6 | accepted | resolved | Contrast tests now cover later destinations, operation bounds, complete parent targets, and placeholder evidence. |
 | BRF-M1-CR7 | accepted | resolved | Parent maximum targets now reuse the complete structured-target validator. |
+| BRF-M1-CR8 | accepted | resolved | Canonical predecessor and graph reachability now come from the immutable typed stage-policy projection; validator-local rank/frontier policy was removed. |
+| BRF-M1-CR9 | accepted | resolved | Recursive evidence validation now rejects stripped-empty strings, non-finite numbers, cycles, and excessive nesting while accepting finite values. |
 
 ## Common Resolution Metadata
 
@@ -606,3 +609,33 @@ Chosen action: Reused `_validate_target` for parent maximum targets and required
 Safe resolution path: Reuse structured-target validation and add complete parent positives plus missing-field negatives.
 Validation target: Targeted parent regressions, full M1 command set, and code-review M1 R3.
 Validation evidence: Four missing-field parent-target cases fail as required; complete authoring, implementation, and verification parent/capability fixtures pass.
+
+### code-review-m1-r3
+
+#### BRF-M1-CR8 - Canonical transition reachability and policy ownership
+
+Finding ID: BRF-M1-CR8
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: R3 reproduced arbitrary and backward from-positions and demonstrated that mutable validator-local reachability tables change validation behavior.
+Required outcome: One immutable executable policy projection must validate canonical predecessor, operation, and destination reachability.
+Chosen action: Added typed workflow positions and immutable predecessor/successor relations to the policy projection; receipt validation now rejects unknown or invalid predecessor transitions and uses graph reachability for target bounds.
+Safe resolution path: Move typed read-only transition relations into the policy projection and add unknown, backward, conditional, correction, repeated-stage, drift, and mutation regressions.
+Validation target: Targeted transition-policy proof, full M1 command set, broad smoke, and code-review M1 R4.
+Validation evidence: Proof-first tests failed before implementation. After correction, 11 policy tests, 35 automation-validator tests, 4 focused metadata tests, all 52 metadata regressions, and 12 broad-smoke checks pass.
+
+#### BRF-M1-CR9 - Durable concrete evidence values
+
+Finding ID: BRF-M1-CR9
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: R3 reproduced whitespace-only and NaN postconditions passing the concrete-evidence validator.
+Required outcome: Nested evidence values must be meaningful, finite, serializable, and deterministic.
+Chosen action: Strengthened recursive concrete-value and identity validation to require stripped non-empty strings, finite numbers, non-empty containers, acyclic structures, and bounded nesting.
+Safe resolution path: Reject stripped-empty strings and non-finite numbers recursively while retaining valid finite values and identity strings.
+Validation target: Targeted evidence regressions, full M1 command set, broad smoke, and code-review M1 R4.
+Validation evidence: Whitespace, NaN, positive/negative infinity, nested invalid values, and cyclic evidence regressions pass; finite integer and float evidence remains accepted. The full M1 and 12-check broad-smoke suites pass.

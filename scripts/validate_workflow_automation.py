@@ -7,6 +7,7 @@ the sole-writer transaction boundary is introduced by the next milestone.
 
 from __future__ import annotations
 
+import math
 import re
 from enum import Enum
 from typing import Any, Iterable
@@ -20,7 +21,10 @@ from workflow_automation_policy import (
     PUBLIC_TARGET_STAGES,
     RetryPolicy,
     STAGE_POLICY_BY_STAGE,
+    WorkflowPosition,
     WorkflowStage,
+    can_reach_target,
+    can_transition,
 )
 
 
@@ -90,42 +94,6 @@ AUTHORIZATION_CLASS_VALUES = frozenset(value.value for value in AuthorizationCla
 CAPABILITY_KIND_VALUES = frozenset(value.value for value in CapabilityKind)
 MUTATION_CATEGORY_VALUES = frozenset(value.value for value in MutationCategory)
 RETRY_POLICY_VALUES = frozenset(value.value for value in RetryPolicy)
-
-PUBLIC_TARGET_ORDER = (
-    WorkflowStage.PROPOSAL_REVIEW.value,
-    WorkflowStage.SPEC.value,
-    WorkflowStage.SPEC_REVIEW.value,
-    WorkflowStage.ARCHITECTURE.value,
-    WorkflowStage.ARCHITECTURE_REVIEW.value,
-    WorkflowStage.PLAN.value,
-    WorkflowStage.PLAN_REVIEW.value,
-    WorkflowStage.TEST_SPEC.value,
-    WorkflowStage.TEST_SPEC_REVIEW.value,
-    WorkflowStage.IMPLEMENT.value,
-    WorkflowStage.CODE_REVIEW.value,
-    WorkflowStage.VERIFY.value,
-)
-PUBLIC_TARGET_RANK = {stage: index for index, stage in enumerate(PUBLIC_TARGET_ORDER)}
-STAGE_TARGET_FRONTIER = {
-    WorkflowStage.PROPOSAL.value: WorkflowStage.PROPOSAL_REVIEW.value,
-    WorkflowStage.PROPOSAL_REVIEW.value: WorkflowStage.PROPOSAL_REVIEW.value,
-    WorkflowStage.SPEC.value: WorkflowStage.SPEC.value,
-    WorkflowStage.SPEC_REVIEW.value: WorkflowStage.SPEC_REVIEW.value,
-    WorkflowStage.ARCHITECTURE_ASSESSMENT.value: WorkflowStage.ARCHITECTURE.value,
-    WorkflowStage.ARCHITECTURE.value: WorkflowStage.ARCHITECTURE.value,
-    WorkflowStage.ARCHITECTURE_REVIEW.value: WorkflowStage.ARCHITECTURE_REVIEW.value,
-    WorkflowStage.PLAN.value: WorkflowStage.PLAN.value,
-    WorkflowStage.PLAN_REVIEW.value: WorkflowStage.PLAN_REVIEW.value,
-    WorkflowStage.TEST_SPEC.value: WorkflowStage.TEST_SPEC.value,
-    WorkflowStage.TEST_SPEC_REVIEW.value: WorkflowStage.TEST_SPEC_REVIEW.value,
-    WorkflowStage.IMPLEMENT.value: WorkflowStage.IMPLEMENT.value,
-    WorkflowStage.CODE_REVIEW.value: WorkflowStage.CODE_REVIEW.value,
-    WorkflowStage.REVIEW_RESOLUTION.value: WorkflowStage.CODE_REVIEW.value,
-    WorkflowStage.CI_MAINTENANCE.value: WorkflowStage.CODE_REVIEW.value,
-    WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW.value: WorkflowStage.VERIFY.value,
-    WorkflowStage.EXPLAIN_CHANGE.value: WorkflowStage.VERIFY.value,
-    WorkflowStage.VERIFY.value: WorkflowStage.VERIFY.value,
-}
 
 CAPABILITY_AUTHORIZATION_CLASSES = {
     CapabilityKind.PROPOSAL_REVIEW.value: AuthorizationClass.AUTHORING.value,
@@ -264,7 +232,7 @@ def _validate_string_list(value: Any, path: str, *, allow_empty: bool = False) -
     errors.extend(
         f"{path}[{index}]: expected non-empty string"
         for index, item in enumerate(value)
-        if not isinstance(item, str) or not item
+        if not isinstance(item, str) or not item.strip()
     )
     return errors
 
@@ -275,29 +243,59 @@ def _validate_non_empty_object(value: Any, path: str) -> list[str]:
     return []
 
 
-def _validate_concrete_value(value: Any, path: str) -> list[str]:
+def _validate_concrete_value(
+    value: Any,
+    path: str,
+    *,
+    ancestors: frozenset[int] = frozenset(),
+    depth: int = 0,
+) -> list[str]:
+    if depth > 32:
+        return [f"{path}: concrete evidence exceeds maximum nesting depth"]
     if isinstance(value, str):
-        return [] if value else [f"{path}: expected concrete non-empty value"]
+        return [] if value.strip() else [f"{path}: expected concrete non-empty value"]
     if isinstance(value, bool) or value is None:
         return [f"{path}: expected concrete non-empty value"]
-    if isinstance(value, (int, float)):
+    if isinstance(value, int):
         return []
+    if isinstance(value, float):
+        return [] if math.isfinite(value) else [f"{path}: expected finite numeric value"]
     if isinstance(value, dict):
         if not value:
             return [f"{path}: expected concrete non-empty object"]
+        if id(value) in ancestors:
+            return [f"{path}: cyclic concrete evidence is not allowed"]
+        child_ancestors = ancestors | {id(value)}
         errors: list[str] = []
         for key, item in value.items():
-            if not isinstance(key, str) or not key:
+            if not isinstance(key, str) or not key.strip():
                 errors.append(f"{path}: expected non-empty string keys")
                 continue
-            errors.extend(_validate_concrete_value(item, f"{path}.{key}"))
+            errors.extend(
+                _validate_concrete_value(
+                    item,
+                    f"{path}.{key}",
+                    ancestors=child_ancestors,
+                    depth=depth + 1,
+                )
+            )
         return errors
     if isinstance(value, list):
         if not value:
             return [f"{path}: expected concrete non-empty array"]
+        if id(value) in ancestors:
+            return [f"{path}: cyclic concrete evidence is not allowed"]
+        child_ancestors = ancestors | {id(value)}
         errors = []
         for index, item in enumerate(value):
-            errors.extend(_validate_concrete_value(item, f"{path}[{index}]"))
+            errors.extend(
+                _validate_concrete_value(
+                    item,
+                    f"{path}[{index}]",
+                    ancestors=child_ancestors,
+                    depth=depth + 1,
+                )
+            )
         return errors
     return [f"{path}: expected concrete non-empty value"]
 
@@ -307,7 +305,7 @@ def _validate_concrete_object(value: Any, path: str) -> list[str]:
     if not isinstance(value, dict):
         return errors
     for key, item in value.items():
-        if not isinstance(key, str) or not key:
+        if not isinstance(key, str) or not key.strip():
             errors.append(f"{path}: expected non-empty string keys")
             continue
         errors.extend(_validate_concrete_value(item, f"{path}.{key}"))
@@ -338,7 +336,7 @@ def _validate_invalidation(
 def _validate_identity_value(value: Any, path: str, *, list_value: bool = False) -> list[str]:
     if list_value:
         return _validate_string_list(value, path)
-    if not isinstance(value, str) or not value:
+    if not isinstance(value, str) or not value.strip():
         return [f"{path}: expected non-empty identity string"]
     return []
 
@@ -348,11 +346,11 @@ def _validate_evidence_object(value: Any, path: str) -> list[str]:
     if not isinstance(value, dict):
         return errors
     for key, item in value.items():
-        if not isinstance(key, str) or not key:
+        if not isinstance(key, str) or not key.strip():
             errors.append(f"{path}: expected non-empty string keys")
         if isinstance(item, list):
             errors.extend(_validate_string_list(item, f"{path}.{key}"))
-        elif not isinstance(item, str) or not item:
+        elif not isinstance(item, str) or not item.strip():
             errors.append(f"{path}.{key}: expected non-empty identity string")
     return errors
 
@@ -374,13 +372,13 @@ def _validate_operation_within_target(
         return []
     operation = stage.get("name")
     destination = target.get("stage")
-    frontier = STAGE_TARGET_FRONTIER.get(operation)
-    operation_rank = PUBLIC_TARGET_RANK.get(frontier)
-    destination_rank = PUBLIC_TARGET_RANK.get(destination)
-    if operation_rank is None or destination_rank is None:
+    try:
+        operation_stage = WorkflowStage(operation)
+        destination_stage = WorkflowStage(destination)
+    except (TypeError, ValueError):
         return []
     errors: list[str] = []
-    if operation_rank > destination_rank:
+    if not can_reach_target(operation_stage, destination_stage):
         errors.append(f"{path}.stage.name: operation exceeds {target_label}")
         return errors
     if operation in {WorkflowStage.IMPLEMENT.value, WorkflowStage.CODE_REVIEW.value} and destination in {
@@ -548,6 +546,14 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
                     errors.append(error)
             if "retry_policy" in receipt:
                 error = _unknown_value(f"{path}.retry_policy", receipt["retry_policy"], RETRY_POLICY_VALUES)
+                if error:
+                    errors.append(error)
+            if "from_position" in receipt:
+                error = _unknown_value(
+                    f"{path}.from_position",
+                    receipt["from_position"],
+                    _enum_values(WorkflowPosition),
+                )
                 if error:
                     errors.append(error)
             errors.extend(_validate_target_vocabulary(receipt.get("target"), f"{path}.target"))
@@ -1032,6 +1038,19 @@ def validate_workflow_automation(
                         )
                     if receipt.get("policy_version") != capability.get("policy_version"):
                         errors.append(f"{path}.policy_version: must match effective capability")
+                    stage = capability.get("stage")
+                    stage_name = stage.get("name") if isinstance(stage, dict) else None
+                    try:
+                        from_position = WorkflowPosition(receipt.get("from_position"))
+                        operation_stage = WorkflowStage(stage_name)
+                    except (TypeError, ValueError):
+                        pass
+                    else:
+                        if not can_transition(from_position, operation_stage):
+                            errors.append(
+                                f"{path}.from_position: {from_position.value} cannot transition "
+                                f"to {operation_stage.value}"
+                            )
                     errors.extend(
                         _validate_operation_within_target(
                             capability,

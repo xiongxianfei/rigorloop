@@ -223,3 +223,15 @@ Detailed record: reviews/code-review-m1-r2.md
 Resolution: review-resolution.md#code-review-m1-r2
 Material findings: BRF-M1-CR5, BRF-M1-CR6, BRF-M1-CR7
 Open findings: None
+
+### Review entry
+Review ID: code-review-m1-r3
+Stage: code-review
+Round: M1 R3
+Reviewed artifact: M1 correction commit `7e20333b`
+Reviewed milestone: M1. Unified State Model and Complete Policy Registry
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r3.md
+Resolution: review-resolution.md#code-review-m1-r3
+Material findings: BRF-M1-CR8, BRF-M1-CR9
+Open findings: None

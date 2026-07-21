@@ -4,18 +4,17 @@
 from __future__ import annotations
 
 import copy
+import math
 import unittest
 
 from validate_workflow_automation import validate_workflow_automation
 from validate_workflow_automation import (
     CAPABILITY_STATUS_TRANSITIONS,
     PARENT_STATUS_TRANSITIONS,
-    PUBLIC_TARGET_ORDER,
     RUN_STATUS_TRANSITIONS,
-    STAGE_TARGET_FRONTIER,
     validate_status_transition,
 )
-from workflow_automation_policy import PUBLIC_TARGET_STAGES, WorkflowStage
+from workflow_automation_policy import PUBLIC_TARGET_STAGES, STAGE_POLICY_BY_STAGE, WorkflowStage
 
 
 def valid_automation() -> dict[str, object]:
@@ -262,10 +261,8 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             },
         )
 
-    def test_operation_target_frontier_covers_every_stage_and_public_target(self) -> None:
-        self.assertEqual(set(STAGE_TARGET_FRONTIER), {stage.value for stage in WorkflowStage})
-        self.assertEqual(set(PUBLIC_TARGET_ORDER), {stage.value for stage in PUBLIC_TARGET_STAGES})
-        self.assertEqual(len(PUBLIC_TARGET_ORDER), len(set(PUBLIC_TARGET_ORDER)))
+    def test_transition_policy_covers_every_stage_without_validator_local_policy(self) -> None:
+        self.assertEqual(set(STAGE_POLICY_BY_STAGE), {stage.value for stage in WorkflowStage})
 
     def test_parent_authorization_is_not_executable(self) -> None:
         state = valid_automation()
@@ -580,6 +577,30 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         add_valid_receipt(state)
         self.assertEqual(validate_workflow_automation(state), [])
 
+    def test_receipt_from_position_must_be_canonical_and_reach_operation(self) -> None:
+        cases = (
+            ("unknown", "not-a-canonical-position"),
+            ("backward", "verify"),
+        )
+        for label, from_position in cases:
+            with self.subTest(case=label):
+                state = valid_automation()
+                receipt = add_valid_receipt(state)
+                receipt["from_position"] = from_position
+                errors = validate_workflow_automation(state)
+                self.assertTrue(any("from_position" in error for error in errors), errors)
+
+    def test_receipt_accepts_conditional_skip_and_review_resolution_edges(self) -> None:
+        cases = (
+            ("architecture-assessment", "plan", "post-proposal-authoring"),
+            ("review-resolution", "code-review", "implementation"),
+        )
+        for from_position, stage_name, capability_kind in cases:
+            with self.subTest(stage=stage_name):
+                policy = STAGE_POLICY_BY_STAGE[stage_name]
+                self.assertIn(from_position, {position.value for position in policy.predecessor_rule})
+                self.assertEqual(policy.capability_kind.value, capability_kind)
+
     def test_capability_operation_cannot_exceed_run_or_parent_target(self) -> None:
         for boundary in ("run", "parent"):
             with self.subTest(boundary=boundary):
@@ -635,6 +656,48 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 receipt[field] = value
                 errors = validate_workflow_automation(state)
                 self.assertTrue(any(field in error for error in errors), errors)
+
+    def test_receipt_rejects_non_deterministic_concrete_evidence(self) -> None:
+        cases = (
+            ("whitespace", {"review_occurrence": "   "}),
+            ("nan", {"review_occurrence": math.nan}),
+            ("positive-infinity", {"review_occurrence": math.inf}),
+            ("negative-infinity", {"review_occurrence": -math.inf}),
+            ("nested-whitespace", {"nested": ["valid", {"value": "\t"}]}),
+            ("nested-nan", {"nested": [{"value": math.nan}]}),
+        )
+        for label, postcondition in cases:
+            with self.subTest(case=label):
+                state = valid_automation()
+                receipt = add_valid_receipt(state)
+                receipt["expected_postcondition"] = postcondition
+                errors = validate_workflow_automation(state)
+                self.assertTrue(any("expected_postcondition" in error for error in errors), errors)
+
+        state = valid_automation()
+        receipt = add_valid_receipt(state)
+        receipt["input_identities"] = {"proposal": "   "}
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("input_identities.proposal" in error for error in errors), errors)
+
+    def test_receipt_rejects_cyclic_concrete_evidence(self) -> None:
+        state = valid_automation()
+        receipt = add_valid_receipt(state)
+        postcondition: dict[str, object] = {"review_occurrence": "recorded"}
+        postcondition["cycle"] = postcondition
+        receipt["expected_postcondition"] = postcondition
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("cyclic concrete evidence" in error for error in errors), errors)
+
+    def test_receipt_accepts_finite_numeric_evidence(self) -> None:
+        state = valid_automation()
+        receipt = add_valid_receipt(state)
+        receipt["expected_postcondition"] = {
+            "attempt": 1,
+            "ratio": 0.5,
+            "large_counter": 10**1000,
+        }
+        self.assertEqual(validate_workflow_automation(state), [])
 
     def test_prepared_receipt_requires_active_capability(self) -> None:
         state = valid_automation()
