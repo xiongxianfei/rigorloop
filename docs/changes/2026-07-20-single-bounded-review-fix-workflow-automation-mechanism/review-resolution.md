@@ -13,11 +13,12 @@ Review closeout: test-spec-review-r4
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
+Review closeout: code-review-m1-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`
-- Findings resolved: 31
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`
+- Findings resolved: 32
 - Unresolved findings: 0
-- Current result: All code-review M1 R3 findings are resolved with proof-first regressions, the full M1 command set, and repository broad smoke. M1 is ready for fresh code review; M2 remains blocked pending approval.
+- Current result: `BRF-M1-CR10` is resolved with immutable target-aware transition rules, exact-target regressions, the full M1 command set, and repository broad smoke. M1 is ready for fresh code review; M2 remains blocked pending approval.
 
 ## Resolution Overview
 
@@ -54,6 +55,7 @@ Review closeout: code-review-m1-r3
 | BRF-M1-CR7 | accepted | resolved | Parent maximum targets now reuse the complete structured-target validator. |
 | BRF-M1-CR8 | accepted | resolved | Canonical predecessor and graph reachability now come from the immutable typed stage-policy projection; validator-local rank/frontier policy was removed. |
 | BRF-M1-CR9 | accepted | resolved | Recursive evidence validation now rejects stripped-empty strings, non-finite numbers, cycles, and excessive nesting while accepting finite values. |
+| BRF-M1-CR10 | accepted | resolved | Transition permission now binds the receipt predecessor, concrete operation, target frontier, guard, and occurrence constraint instead of traversing a cyclic stage-name graph. |
 
 ## Common Resolution Metadata
 
@@ -639,3 +641,19 @@ Chosen action: Strengthened recursive concrete-value and identity validation to 
 Safe resolution path: Reject stripped-empty strings and non-finite numbers recursively while retaining valid finite values and identity strings.
 Validation target: Targeted evidence regressions, full M1 command set, broad smoke, and code-review M1 R4.
 Validation evidence: Whitespace, NaN, positive/negative infinity, nested invalid values, and cyclic evidence regressions pass; finite integer and float evidence remains accepted. The full M1 and 12-check broad-smoke suites pass.
+
+### code-review-m1-r4
+
+#### BRF-M1-CR10 - Exact target boundary under cyclic transitions
+
+Finding ID: BRF-M1-CR10
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: R4 directly reproduced complete code-review and proposal-correction receipts that occur after their exact targets but pass because generic graph search can cycle back to the target stage name.
+Required outcome: Transition validation must preserve the exact structured target as a stopping boundary across correction loops and repeated milestone stages.
+Chosen action: Replaced generic graph reachability with immutable target-aware transition rules projected into each stage policy. Receipt validation now evaluates the exact predecessor, concrete operation, and persisted target; correction and repeated-stage cycle edges declare explicit later-target frontiers and occurrence constraints.
+Safe resolution path: Replace unqualified reachability with immutable branch- and occurrence-aware transition rules evaluated from the receipt predecessor, concrete operation, and structured target; fail closed when required context is absent.
+Validation target: Add complete exact-target negative fixtures, retain valid conditional/correction/repeated paths, run the full M1 command set and broad smoke, then rerun code-review M1.
+Validation evidence: Both proof-first complete-state regressions failed before the correction and now pass. Valid immediate review and later-target proposal-correction paths remain accepted by policy tests. The final validation passed 13 policy tests, 37 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, metadata validation, Python compilation, diff checks, and 12 repository broad-smoke checks in 216 seconds.

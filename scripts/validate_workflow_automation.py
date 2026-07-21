@@ -23,8 +23,9 @@ from workflow_automation_policy import (
     STAGE_POLICY_BY_STAGE,
     WorkflowPosition,
     WorkflowStage,
-    can_reach_target,
+    can_operation_toward_target,
     can_transition,
+    can_transition_toward_target,
 )
 
 
@@ -366,6 +367,7 @@ def _validate_operation_within_target(
     target: Any,
     path: str,
     target_label: str,
+    from_position: Any = None,
 ) -> list[str]:
     stage = capability.get("stage")
     if not isinstance(stage, dict) or not isinstance(target, dict):
@@ -378,7 +380,19 @@ def _validate_operation_within_target(
     except (TypeError, ValueError):
         return []
     errors: list[str] = []
-    if not can_reach_target(operation_stage, destination_stage):
+    if from_position is None:
+        permitted = can_operation_toward_target(operation_stage, destination_stage)
+    else:
+        try:
+            canonical_from_position = WorkflowPosition(from_position)
+        except (TypeError, ValueError):
+            return errors
+        permitted = can_transition_toward_target(
+            canonical_from_position,
+            operation_stage,
+            destination_stage,
+        )
+    if not permitted:
         errors.append(f"{path}.stage.name: operation exceeds {target_label}")
         return errors
     if operation in {WorkflowStage.IMPLEMENT.value, WorkflowStage.CODE_REVIEW.value} and destination in {
@@ -1057,6 +1071,7 @@ def validate_workflow_automation(
                             receipt.get("target"),
                             f"{path}.effective_capability",
                             "run target",
+                            receipt.get("from_position"),
                         )
                     )
     return errors

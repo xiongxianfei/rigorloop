@@ -120,6 +120,24 @@ class StopBehavior(ClosedStringEnum):
     STOP_BEFORE_PR = "stop-before-pr"
 
 
+class TransitionGuard(ClosedStringEnum):
+    ALWAYS = "always"
+    PROPOSAL_CORRECTION = "proposal-correction"
+    ARCHITECTURE_REQUIRED = "architecture-required"
+    ARCHITECTURE_NOT_REQUIRED = "architecture-not-required"
+    IMPLEMENTATION_FINDINGS = "implementation-findings"
+    NEXT_MILESTONE = "next-milestone"
+    CI_TRIGGERED = "ci-triggered"
+    ALL_MILESTONES_CLOSED = "all-milestones-closed"
+    FINAL_REVIEW_FINDINGS = "final-review-findings"
+
+
+class OccurrenceConstraint(ClosedStringEnum):
+    STAGE_POLICY = "stage-policy"
+    SAME_MILESTONE = "same-milestone"
+    NEXT_MILESTONE = "next-milestone"
+
+
 PUBLIC_TARGET_STAGES = frozenset(
     {
         WorkflowStage.PROPOSAL_REVIEW,
@@ -149,10 +167,182 @@ INTERNAL_STAGES = frozenset(
 )
 
 
+PUBLIC_TARGET_SEQUENCE = (
+    WorkflowStage.PROPOSAL_REVIEW,
+    WorkflowStage.SPEC,
+    WorkflowStage.SPEC_REVIEW,
+    WorkflowStage.ARCHITECTURE,
+    WorkflowStage.ARCHITECTURE_REVIEW,
+    WorkflowStage.PLAN,
+    WorkflowStage.PLAN_REVIEW,
+    WorkflowStage.TEST_SPEC,
+    WorkflowStage.TEST_SPEC_REVIEW,
+    WorkflowStage.IMPLEMENT,
+    WorkflowStage.CODE_REVIEW,
+    WorkflowStage.VERIFY,
+)
+
+
+def _targets_from(stage: WorkflowStage) -> frozenset[WorkflowStage]:
+    index = PUBLIC_TARGET_SEQUENCE.index(stage)
+    return frozenset(PUBLIC_TARGET_SEQUENCE[index:])
+
+
+@dataclass(frozen=True)
+class TransitionRule:
+    from_position: WorkflowPosition
+    to_position: WorkflowPosition
+    operation: WorkflowStage | None
+    allowed_targets: frozenset[WorkflowStage]
+    guard: TransitionGuard
+    occurrence_constraint: OccurrenceConstraint = OccurrenceConstraint.STAGE_POLICY
+
+
+def _transition(
+    from_position: WorkflowPosition,
+    operation: WorkflowStage,
+    target_frontier: WorkflowStage,
+    guard: TransitionGuard = TransitionGuard.ALWAYS,
+    occurrence: OccurrenceConstraint = OccurrenceConstraint.STAGE_POLICY,
+) -> TransitionRule:
+    return TransitionRule(
+        from_position=from_position,
+        to_position=WorkflowPosition(operation.value),
+        operation=operation,
+        allowed_targets=_targets_from(target_frontier),
+        guard=guard,
+        occurrence_constraint=occurrence,
+    )
+
+
+def _terminal_transition(
+    from_position: WorkflowPosition,
+    to_position: WorkflowPosition,
+) -> TransitionRule:
+    return TransitionRule(
+        from_position=from_position,
+        to_position=to_position,
+        operation=None,
+        allowed_targets=frozenset(),
+        guard=TransitionGuard.ALWAYS,
+    )
+
+
+T = TransitionGuard
+Q = OccurrenceConstraint
+
+# Target permission belongs to the concrete edge, not to generic graph
+# reachability.  Cycle edges deliberately use a later target frontier.
+TRANSITION_RULES: tuple[TransitionRule, ...] = (
+    _transition(
+        WorkflowPosition.CHANGE_CREATED,
+        WorkflowStage.PROPOSAL,
+        WorkflowStage.PROPOSAL_REVIEW,
+    ),
+    _transition(
+        WorkflowPosition.PROPOSAL_REVIEW,
+        WorkflowStage.PROPOSAL,
+        WorkflowStage.SPEC,
+        T.PROPOSAL_CORRECTION,
+    ),
+    _transition(
+        WorkflowPosition.PROPOSAL,
+        WorkflowStage.PROPOSAL_REVIEW,
+        WorkflowStage.PROPOSAL_REVIEW,
+    ),
+    _transition(WorkflowPosition.PROPOSAL_REVIEW, WorkflowStage.SPEC, WorkflowStage.SPEC),
+    _transition(WorkflowPosition.SPEC, WorkflowStage.SPEC_REVIEW, WorkflowStage.SPEC_REVIEW),
+    _transition(
+        WorkflowPosition.SPEC_REVIEW,
+        WorkflowStage.ARCHITECTURE_ASSESSMENT,
+        WorkflowStage.ARCHITECTURE,
+    ),
+    _transition(
+        WorkflowPosition.ARCHITECTURE_ASSESSMENT,
+        WorkflowStage.ARCHITECTURE,
+        WorkflowStage.ARCHITECTURE,
+        T.ARCHITECTURE_REQUIRED,
+    ),
+    _transition(
+        WorkflowPosition.ARCHITECTURE_ASSESSMENT,
+        WorkflowStage.PLAN,
+        WorkflowStage.PLAN,
+        T.ARCHITECTURE_NOT_REQUIRED,
+    ),
+    _transition(
+        WorkflowPosition.ARCHITECTURE,
+        WorkflowStage.ARCHITECTURE_REVIEW,
+        WorkflowStage.ARCHITECTURE_REVIEW,
+    ),
+    _transition(WorkflowPosition.ARCHITECTURE_REVIEW, WorkflowStage.PLAN, WorkflowStage.PLAN),
+    _transition(WorkflowPosition.PLAN, WorkflowStage.PLAN_REVIEW, WorkflowStage.PLAN_REVIEW),
+    _transition(WorkflowPosition.PLAN_REVIEW, WorkflowStage.TEST_SPEC, WorkflowStage.TEST_SPEC),
+    _transition(WorkflowPosition.TEST_SPEC, WorkflowStage.TEST_SPEC_REVIEW, WorkflowStage.TEST_SPEC_REVIEW),
+    _transition(WorkflowPosition.TEST_SPEC_REVIEW, WorkflowStage.IMPLEMENT, WorkflowStage.IMPLEMENT),
+    _transition(
+        WorkflowPosition.IMPLEMENT,
+        WorkflowStage.CODE_REVIEW,
+        WorkflowStage.CODE_REVIEW,
+        occurrence=Q.SAME_MILESTONE,
+    ),
+    _transition(
+        WorkflowPosition.CODE_REVIEW,
+        WorkflowStage.IMPLEMENT,
+        WorkflowStage.VERIFY,
+        T.NEXT_MILESTONE,
+        Q.NEXT_MILESTONE,
+    ),
+    _transition(
+        WorkflowPosition.CODE_REVIEW,
+        WorkflowStage.REVIEW_RESOLUTION,
+        WorkflowStage.CODE_REVIEW,
+        T.IMPLEMENTATION_FINDINGS,
+    ),
+    _transition(
+        WorkflowPosition.REVIEW_RESOLUTION,
+        WorkflowStage.CODE_REVIEW,
+        WorkflowStage.CODE_REVIEW,
+        T.IMPLEMENTATION_FINDINGS,
+    ),
+    _transition(WorkflowPosition.CODE_REVIEW, WorkflowStage.CI_MAINTENANCE, WorkflowStage.VERIFY, T.CI_TRIGGERED),
+    _transition(
+        WorkflowPosition.CODE_REVIEW,
+        WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW,
+        WorkflowStage.VERIFY,
+        T.ALL_MILESTONES_CLOSED,
+    ),
+    _transition(
+        WorkflowPosition.CI_MAINTENANCE,
+        WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW,
+        WorkflowStage.VERIFY,
+        T.ALL_MILESTONES_CLOSED,
+    ),
+    _transition(
+        WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW,
+        WorkflowStage.REVIEW_RESOLUTION,
+        WorkflowStage.VERIFY,
+        T.FINAL_REVIEW_FINDINGS,
+    ),
+    _transition(
+        WorkflowPosition.REVIEW_RESOLUTION,
+        WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW,
+        WorkflowStage.VERIFY,
+        T.FINAL_REVIEW_FINDINGS,
+    ),
+    _transition(
+        WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW,
+        WorkflowStage.EXPLAIN_CHANGE,
+        WorkflowStage.VERIFY,
+    ),
+    _transition(WorkflowPosition.EXPLAIN_CHANGE, WorkflowStage.VERIFY, WorkflowStage.VERIFY),
+    _terminal_transition(WorkflowPosition.VERIFY, WorkflowPosition.PR),
+)
+
+
 @dataclass(frozen=True)
 class StagePolicy:
     stage: WorkflowStage
-    predecessor_rule: frozenset[WorkflowPosition]
+    predecessor_rule: frozenset[TransitionRule]
     owning_skill: str
     occurrence_rule: OccurrenceKind
     required_authorization_class: AuthorizationClass
@@ -163,7 +353,7 @@ class StagePolicy:
     required_input_identities: frozenset[str]
     completion_rule: str
     completion_evidence: frozenset[str]
-    next_stage_calculation: frozenset[WorkflowPosition]
+    next_stage_calculation: frozenset[TransitionRule]
     retry_policy: RetryPolicy
     correction_policy: CorrectionPolicy
     stop_behavior: StopBehavior
@@ -187,9 +377,23 @@ def _policy(
     correction: CorrectionPolicy,
     stop: StopBehavior,
 ) -> StagePolicy:
+    incoming_rules = frozenset(rule for rule in TRANSITION_RULES if rule.operation == stage)
+    outgoing_rules = frozenset(
+        rule
+        for rule in TRANSITION_RULES
+        if rule.from_position == WorkflowPosition(stage.value)
+    )
+    declared_predecessors = frozenset(predecessor)
+    projected_predecessors = frozenset(rule.from_position for rule in incoming_rules)
+    declared_successors = frozenset(next_stage)
+    projected_successors = frozenset(rule.to_position for rule in outgoing_rules)
+    if declared_predecessors != projected_predecessors:
+        raise ValueError(f"{stage.value}: predecessor projection does not match transition rules")
+    if declared_successors != projected_successors:
+        raise ValueError(f"{stage.value}: next-stage projection does not match transition rules")
     return StagePolicy(
         stage=stage,
-        predecessor_rule=frozenset(predecessor),
+        predecessor_rule=incoming_rules,
         owning_skill=skill,
         occurrence_rule=occurrence,
         required_authorization_class=authorization,
@@ -200,7 +404,7 @@ def _policy(
         required_input_identities=frozenset(inputs),
         completion_rule=completion,
         completion_evidence=frozenset(evidence),
-        next_stage_calculation=frozenset(next_stage),
+        next_stage_calculation=outgoing_rules,
         retry_policy=retry,
         correction_policy=correction,
         stop_behavior=stop,
@@ -303,10 +507,45 @@ def validate_policy_registry(policies: Iterable[StagePolicy]) -> list[str]:
                     f"policy[{index}].{field_name}: expected immutable workflow-position set"
                 )
                 continue
-            for position in value:
-                error = _unknown_enum_error(index, field_name, position, WorkflowPosition)
-                if error:
-                    vocabulary_errors.append(error)
+            for rule in value:
+                if not isinstance(rule, TransitionRule):
+                    vocabulary_errors.append(
+                        f"policy[{index}].{field_name}: unknown transition rule: {rule}"
+                    )
+                    continue
+                for nested_field, nested_value, nested_enum in (
+                    ("from_position", rule.from_position, WorkflowPosition),
+                    ("to_position", rule.to_position, WorkflowPosition),
+                    ("guard", rule.guard, TransitionGuard),
+                    ("occurrence_constraint", rule.occurrence_constraint, OccurrenceConstraint),
+                ):
+                    error = _unknown_enum_error(
+                        index,
+                        f"{field_name}.{nested_field}",
+                        nested_value,
+                        nested_enum,
+                    )
+                    if error:
+                        vocabulary_errors.append(error)
+                if rule.operation is not None:
+                    error = _unknown_enum_error(
+                        index,
+                        f"{field_name}.operation",
+                        rule.operation,
+                        WorkflowStage,
+                    )
+                    if error:
+                        vocabulary_errors.append(error)
+                if not isinstance(rule.allowed_targets, frozenset):
+                    vocabulary_errors.append(
+                        f"policy[{index}].{field_name}.allowed_targets: expected immutable target set"
+                    )
+                else:
+                    for target in rule.allowed_targets:
+                        if target not in PUBLIC_TARGET_STAGES:
+                            vocabulary_errors.append(
+                                f"policy[{index}].{field_name}.allowed_targets: unknown public target: {target}"
+                            )
     if vocabulary_errors:
         return vocabulary_errors
 
@@ -352,20 +591,19 @@ def validate_policy_registry(policies: Iterable[StagePolicy]) -> list[str]:
                 f"{policy.permitted_mutation_category.value} exceeds {policy.capability_kind.value} capability"
             )
 
-    policy_by_stage = {policy.stage: policy for policy in records}
     for policy in records:
-        current_position = WorkflowPosition(policy.stage.value)
-        for successor in policy.next_stage_calculation:
-            try:
-                successor_stage = WorkflowStage(successor.value)
-            except ValueError:
-                continue
-            successor_policy = policy_by_stage.get(successor_stage)
-            if successor_policy is not None and current_position not in successor_policy.predecessor_rule:
-                errors.append(
-                    f"{policy.stage.value}.next_stage_calculation: {successor.value} "
-                    "does not accept the stage as a predecessor"
-                )
+        expected_incoming = frozenset(
+            rule for rule in TRANSITION_RULES if rule.operation == policy.stage
+        )
+        expected_outgoing = frozenset(
+            rule
+            for rule in TRANSITION_RULES
+            if rule.from_position == WorkflowPosition(policy.stage.value)
+        )
+        if policy.predecessor_rule != expected_incoming:
+            errors.append(f"{policy.stage.value}.predecessor_rule: transition projection drift")
+        if policy.next_stage_calculation != expected_outgoing:
+            errors.append(f"{policy.stage.value}.next_stage_calculation: transition projection drift")
     return errors
 
 
@@ -374,10 +612,10 @@ if POLICY_VALIDATION_ERRORS:
     raise RuntimeError("invalid workflow automation policy registry: " + "; ".join(POLICY_VALIDATION_ERRORS))
 
 STAGE_POLICY_BY_STAGE = MappingProxyType({policy.stage.value: policy for policy in STAGE_POLICIES})
-TRANSITION_SUCCESSORS = MappingProxyType(
+TRANSITION_RULES_BY_OPERATION = MappingProxyType(
     {
-        WorkflowPosition(policy.stage.value): policy.next_stage_calculation
-        for policy in STAGE_POLICIES
+        stage: frozenset(rule for rule in TRANSITION_RULES if rule.operation == stage)
+        for stage in WorkflowStage
     }
 )
 
@@ -385,21 +623,29 @@ TRANSITION_SUCCESSORS = MappingProxyType(
 def can_transition(from_position: WorkflowPosition, to_stage: WorkflowStage) -> bool:
     """Return whether the canonical position is an immediate predecessor."""
 
-    return from_position in STAGE_POLICY_BY_STAGE[to_stage.value].predecessor_rule
+    return any(
+        rule.from_position == from_position
+        for rule in TRANSITION_RULES_BY_OPERATION[to_stage]
+    )
 
 
-def can_reach_target(operation: WorkflowStage, target: WorkflowStage) -> bool:
-    """Return whether the immutable transition graph can reach a public target."""
+def can_transition_toward_target(
+    from_position: WorkflowPosition,
+    operation: WorkflowStage,
+    target: WorkflowStage,
+) -> bool:
+    """Return whether one concrete edge remains before or at the target."""
 
-    target_position = WorkflowPosition(target.value)
-    pending = [WorkflowPosition(operation.value)]
-    visited: set[WorkflowPosition] = set()
-    while pending:
-        position = pending.pop()
-        if position == target_position:
-            return True
-        if position in visited:
-            continue
-        visited.add(position)
-        pending.extend(TRANSITION_SUCCESSORS.get(position, frozenset()) - visited)
-    return False
+    return any(
+        rule.from_position == from_position and target in rule.allowed_targets
+        for rule in TRANSITION_RULES_BY_OPERATION[operation]
+    )
+
+
+def can_operation_toward_target(operation: WorkflowStage, target: WorkflowStage) -> bool:
+    """Return whether any valid predecessor edge can perform the operation."""
+
+    return any(
+        target in rule.allowed_targets
+        for rule in TRANSITION_RULES_BY_OPERATION[operation]
+    )

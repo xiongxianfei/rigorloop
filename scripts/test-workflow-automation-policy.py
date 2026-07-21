@@ -13,16 +13,20 @@ from workflow_automation_policy import (
     CorrectionPolicy,
     INTERNAL_STAGES,
     MutationCategory,
+    OccurrenceConstraint,
     PUBLIC_TARGET_STAGES,
+    PUBLIC_TARGET_SEQUENCE,
     RetryPolicy,
     STAGE_POLICIES,
     OccurrenceKind,
     StopBehavior,
-    TRANSITION_SUCCESSORS,
+    TRANSITION_RULES,
+    TRANSITION_RULES_BY_OPERATION,
+    TransitionGuard,
     WorkflowPosition,
     WorkflowStage,
-    can_reach_target,
     can_transition,
+    can_transition_toward_target,
     validate_policy_registry,
 )
 
@@ -43,9 +47,11 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
             STAGE_POLICIES[0].owning_skill = "other"  # type: ignore[misc]
 
         with self.assertRaises(TypeError):
-            TRANSITION_SUCCESSORS[WorkflowPosition.PROPOSAL] = frozenset()  # type: ignore[index]
+            TRANSITION_RULES_BY_OPERATION[WorkflowStage.PROPOSAL] = (  # type: ignore[index]
+                frozenset()
+            )
 
-    def test_transition_graph_owns_predecessor_and_target_reachability(self) -> None:
+    def test_transition_rules_own_predecessor_and_target_boundaries(self) -> None:
         self.assertTrue(
             can_transition(WorkflowPosition.PROPOSAL, WorkflowStage.PROPOSAL_REVIEW)
         )
@@ -62,11 +68,48 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
             can_transition(WorkflowPosition.REVIEW_RESOLUTION, WorkflowStage.CODE_REVIEW)
         )
         self.assertTrue(can_transition(WorkflowPosition.CODE_REVIEW, WorkflowStage.IMPLEMENT))
-        self.assertTrue(can_reach_target(WorkflowStage.PROPOSAL_REVIEW, WorkflowStage.SPEC))
         self.assertTrue(
-            can_reach_target(WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW, WorkflowStage.VERIFY)
+            can_transition_toward_target(
+                WorkflowPosition.IMPLEMENT,
+                WorkflowStage.CODE_REVIEW,
+                WorkflowStage.CODE_REVIEW,
+            )
         )
-        self.assertFalse(can_reach_target(WorkflowStage.VERIFY, WorkflowStage.PROPOSAL_REVIEW))
+        self.assertFalse(
+            can_transition_toward_target(
+                WorkflowPosition.IMPLEMENT,
+                WorkflowStage.CODE_REVIEW,
+                WorkflowStage.IMPLEMENT,
+            )
+        )
+        self.assertTrue(
+            can_transition_toward_target(
+                WorkflowPosition.PROPOSAL_REVIEW,
+                WorkflowStage.PROPOSAL,
+                WorkflowStage.SPEC,
+            )
+        )
+        self.assertFalse(
+            can_transition_toward_target(
+                WorkflowPosition.PROPOSAL_REVIEW,
+                WorkflowStage.PROPOSAL,
+                WorkflowStage.PROPOSAL_REVIEW,
+            )
+        )
+
+    def test_transition_rules_use_closed_guards_and_occurrence_constraints(self) -> None:
+        self.assertTrue(TRANSITION_RULES)
+        self.assertEqual(set(PUBLIC_TARGET_SEQUENCE), set(PUBLIC_TARGET_STAGES))
+        self.assertEqual(len(PUBLIC_TARGET_SEQUENCE), len(PUBLIC_TARGET_STAGES))
+        self.assertTrue(
+            all(isinstance(rule.guard, TransitionGuard) for rule in TRANSITION_RULES)
+        )
+        self.assertTrue(
+            all(
+                isinstance(rule.occurrence_constraint, OccurrenceConstraint)
+                for rule in TRANSITION_RULES
+            )
+        )
 
     def test_public_stage_occurrence_vocabulary_matches_spec(self) -> None:
         occurrences = {
@@ -133,6 +176,29 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
                 )
                 errors = validate_policy_registry((unknown,))
                 self.assertTrue(any(field_name in error and "unknown" in error for error in errors), errors)
+
+    def test_unknown_transition_rule_vocabulary_fails_closed(self) -> None:
+        policy = STAGE_POLICIES[0]
+        original_rule = next(iter(policy.predecessor_rule))
+        cases = (
+            ("guard", "future-guard"),
+            ("occurrence_constraint", "future-occurrence"),
+        )
+        for field_name, unknown_value in cases:
+            with self.subTest(field=field_name):
+                unknown_rule = dataclasses.replace(
+                    original_rule,
+                    **{field_name: unknown_value},  # type: ignore[arg-type]
+                )
+                unknown_policy = dataclasses.replace(
+                    policy,
+                    predecessor_rule=frozenset({unknown_rule}),
+                )
+                errors = validate_policy_registry((unknown_policy,))
+                self.assertTrue(
+                    any(field_name in error and "unknown" in error for error in errors),
+                    errors,
+                )
 
     def test_incomplete_policy_field_fails_closed(self) -> None:
         for field_name in (

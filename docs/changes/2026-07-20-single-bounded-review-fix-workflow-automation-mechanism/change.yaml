@@ -397,6 +397,50 @@ validation:
     result: passed_52_tests_after_code_review_m1_r3_resolution
   - command: bash scripts/ci.sh --mode broad-smoke
     result: passed_12_checks_in_final_230_second_run_after_code_review_m1_r3_resolution
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_11_tests_during_code_review_m1_r4
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_35_tests_during_code_review_m1_r4_but_direct_target_boundary_checks_found_semantic_gap
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_during_code_review_m1_r4
+  - command: direct complete-state contrast checks during code-review M1 R4
+    result: found_code_review_after_exact_implement_target_and_proposal_correction_after_exact_proposal_review_target_accepted
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_22_findings_32_open_findings_1_after_code_review_m1_r4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R4 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r4_sync
+  - command: git diff --check
+    result: passed_after_code_review_m1_r4_recording
+  - command: proof-first complete-state exact-target regressions
+    result: failed_before_correction_code_review_after_implement_target_and_proposal_correction_after_proposal_review_target
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_13_tests_after_code_review_m1_r4_resolution
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_37_tests_after_code_review_m1_r4_resolution
+  - command: python scripts/test-validate-workflow-automation.py -k vocabulary
+    result: passed_5_selected_tests_after_code_review_m1_r4_resolution
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_after_code_review_m1_r4_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_after_code_review_m1_r4_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_code_review_m1_r4_resolution
+  - command: python -m py_compile scripts/workflow_automation_policy.py scripts/validate_workflow_automation.py scripts/test-workflow-automation-policy.py scripts/test-validate-workflow-automation.py
+    result: passed_after_code_review_m1_r4_resolution
+  - command: git diff --check
+    result: passed_after_code_review_m1_r4_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_216_seconds_after_code_review_m1_r4_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_22_findings_32_open_findings_0_after_code_review_m1_r4_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_closeout_reviews_22_findings_32_after_code_review_m1_r4_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R4 resolution evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r4_resolution_sync
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md
@@ -440,6 +484,7 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r1.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r2.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r4.md
   - schemas/change.schema.json
   - scripts/workflow_automation_policy.py
   - scripts/validate_workflow_automation.py
@@ -451,14 +496,14 @@ review:
   status: changes-requested
   unresolved_items: 0
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
-  material_findings: 31
-  closed_findings: 31
+  material_findings: 32
+  closed_findings: 32
   open_findings: 0
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
   plan_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
-  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r3.md
+  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r4.md
   review_log: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md
