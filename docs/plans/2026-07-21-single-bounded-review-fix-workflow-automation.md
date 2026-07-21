@@ -104,12 +104,12 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Current milestone: M1. Unified State Model and Complete Policy Registry
 - Current milestone state: review-requested
 - Last reviewed milestone: M1. Unified State Model and Complete Policy Registry
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r3.md`
-- Review status: changes-requested; stage=code-review; round=r3
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r4.md`
+- Review status: changes-requested; stage=code-review; round=r4
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5, M6
 - Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — all M1 R3 findings are resolved with validation evidence, but fresh code review is required and M2-M6 have not started.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — `BRF-M1-CR10` is resolved with validation evidence, but fresh M1 code review is required and M2-M6 have not started.
 
 ## Milestones
 
@@ -513,6 +513,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-21: Resolved `BRF-M1-CR5` through `BRF-M1-CR7` with destination/operation separation, operation-to-target bounds, recursive concrete evidence validation, complete parent structured targets, and corrected contrast fixtures. M1 is review-requested; M2 remains blocked pending M1 R3.
 - 2026-07-21: Code-review M1 R3 resolved `BRF-M1-CR7` but opened `BRF-M1-CR8` and `BRF-M1-CR9` after direct proof showed arbitrary/backward from-positions, mutable validator-local reachability policy, whitespace evidence, and non-finite evidence still pass. M1 is resolution-needed; M2 remains blocked.
 - 2026-07-21: Resolved `BRF-M1-CR8` and `BRF-M1-CR9` by moving canonical predecessor/next-stage relations into the frozen policy projection, validating receipt transitions through that graph, and rejecting recursively non-deterministic evidence. M1 is review-requested; M2 remains blocked pending M1 R4.
+- 2026-07-21: Code-review M1 R4 confirmed `BRF-M1-CR9` resolved but classified `BRF-M1-CR8` as failed remediation and opened `BRF-M1-CR10`: cyclic reachability permits code review after exact implement targets and proposal correction after exact proposal-review targets. M1 is resolution-needed; M2 remains blocked.
+- 2026-07-21: Resolved `BRF-M1-CR10` by replacing cyclic stage-name reachability with immutable target-aware transition rules bound to predecessor, operation, target frontier, guard, and occurrence constraint. Exact implement and proposal-review stopping regressions pass; M1 is review-requested and M2 remains blocked pending M1 R5.
 
 ## Decision log
 
@@ -525,6 +527,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-21 | Require generated release-output adapter proof and executed selected CI at cutover. | The active adapter contract is archive-based and selection output alone is not validation execution. | Bare tracked-tree adapter checks and selection-only output are not reliable milestone gates. |
 | 2026-07-21 | Treat receipt target as the run destination and effective-capability stage as the concrete operation. | Target selection and executable authority are independent; direct equality rejects valid earlier transitions toward later targets. | Reusing one field for both concepts or adding an unapproved receipt schema field. |
 | 2026-07-21 | Represent predecessor and next-stage relations as an immutable typed graph in the policy projection. | Conditional stages, correction loops, and repeated milestones cannot be modeled safely by a mutable linear rank table. | Validator-local frontier/rank maps and free-form predecessor strings. |
+| 2026-07-21 | Bind transition permission to an immutable edge-specific target frontier. | Generic reachability over a cyclic graph cannot preserve exact structured targets as stopping boundaries. | Unqualified breadth-first reachability and validator-local cycle exceptions. |
 
 ## Surprises and discoveries
 
@@ -566,6 +569,9 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - M1 R2 resolution passed 30 automation-validator tests, 9 policy tests, 4 focused metadata tests, all 52 metadata-validator tests, and 11 repository broad-smoke checks in 346 seconds.
 - M1 R3 proof-first tests failed because the typed transition graph exports did not yet exist; the prior validator also accepted the direct unknown/backward-position and non-deterministic-evidence cases.
 - M1 R3 resolution passed 11 policy tests, 35 automation-validator tests, 4 focused metadata tests, all 52 metadata-validator tests, metadata validation, Python compilation, diff checks, and 12 repository broad-smoke checks in the final 230-second run.
+- Code-review M1 R4 reran 11 policy tests, 35 automation-validator tests, and 4 focused metadata tests successfully, then directly reproduced two complete post-target receipts that returned no validation errors. Existing coverage is insufficient for exact-target stopping across cycles.
+- M1 R4 proof-first regressions reproduced both complete post-target paths before the production correction. The final resolution passed 13 policy tests, 37 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, metadata validation, Python compilation, diff checks, and 12 repository broad-smoke checks in 216 seconds.
+- Review structure and closeout validation passed with 22 reviews, 32 resolved findings, and no open findings. Explicit lifecycle validation passed for the five managed handoff artifacts with the existing merge-language warning, and guide-system validation passed after plan-index synchronization.
 - `python scripts/test-workflow-automation-policy.py` passed 7 tests.
 - `python scripts/test-validate-workflow-automation.py -k vocabulary` passed 3 selected tests.
 - `python scripts/test-change-metadata-validator.py -k workflow_automation` passed 4 selected tests.

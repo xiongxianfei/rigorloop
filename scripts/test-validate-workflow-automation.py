@@ -598,8 +598,89 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         for from_position, stage_name, capability_kind in cases:
             with self.subTest(stage=stage_name):
                 policy = STAGE_POLICY_BY_STAGE[stage_name]
-                self.assertIn(from_position, {position.value for position in policy.predecessor_rule})
+                self.assertIn(
+                    from_position,
+                    {rule.from_position.value for rule in policy.predecessor_rule},
+                )
                 self.assertEqual(policy.capability_kind.value, capability_kind)
+
+    def test_exact_implement_target_rejects_code_review_for_same_milestone(self) -> None:
+        state = valid_automation()
+        target = {
+            "stage": "implement",
+            "occurrence": {"kind": "milestone", "milestone_id": "M1"},
+            "plan_identity": "sha256:plan",
+            "bound_at": "2026-07-20T00:00:00Z",
+            "completion": {"milestone_state": "review-requested"},
+        }
+        state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
+        parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
+        parent.update(  # type: ignore[union-attr]
+            {
+                "authorization_class": "implementation",
+                "maximum_target": copy.deepcopy(target),
+                "allowed_capability_kinds": ["implementation"],
+                "maximum_mutation_categories": ["change-local-review-evidence"],
+            }
+        )
+        capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+        capability.update(  # type: ignore[union-attr]
+            {
+                "capability_kind": "implementation",
+                "stage": {
+                    "name": "code-review",
+                    "occurrence": {"kind": "milestone", "milestone_id": "M1"},
+                },
+                "basis": {
+                    "plan_identity": "sha256:plan",
+                    "plan_review_identity": "sha256:plan-review",
+                    "test_spec_identity": "sha256:test-spec",
+                    "test_spec_review_identity": "sha256:test-spec-review",
+                    "milestone_identity": "sha256:M1",
+                    "affected_paths_identity": "sha256:paths",
+                    "mutation_categories_identity": "sha256:categories",
+                    "validation_commands_identity": "sha256:commands",
+                },
+                "scope": {
+                    "affected_path_roots": ["docs/changes/2026-07-20-example/"],
+                    "mutation_categories": ["change-local-review-evidence"],
+                },
+            }
+        )
+        receipt = add_valid_receipt(state)
+        receipt["from_position"] = "implement"
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("run target" in error for error in errors), errors)
+
+    def test_exact_proposal_review_target_rejects_post_review_correction(self) -> None:
+        state = valid_automation()
+        parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
+        parent["allowed_capability_kinds"] = ["proposal-correction"]  # type: ignore[index]
+        parent["maximum_mutation_categories"] = ["proposal-content"]  # type: ignore[index]
+        parent["correction_budget"] = {"max_cycles": 1}  # type: ignore[index]
+        capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+        capability.update(  # type: ignore[union-attr]
+            {
+                "capability_kind": "proposal-correction",
+                "stage": {"name": "proposal", "occurrence": {"kind": "singleton"}},
+                "basis": {
+                    "reviewed_proposal_identity": "sha256:proposal",
+                    "review_record_identity": "sha256:review",
+                    "accepted_finding_set_identity": "sha256:findings",
+                    "classifier_policy_identity": "sha256:classifier",
+                    "correction_budget_identity": "sha256:budget",
+                    "affected_proposal_roots": ["docs/proposals/"],
+                },
+                "scope": {
+                    "affected_path_roots": ["docs/changes/2026-07-20-example/"],
+                    "mutation_categories": ["proposal-content"],
+                },
+            }
+        )
+        receipt = add_valid_receipt(state)
+        receipt["from_position"] = "proposal-review"
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("run target" in error for error in errors), errors)
 
     def test_capability_operation_cannot_exceed_run_or_parent_target(self) -> None:
         for boundary in ("run", "parent"):
