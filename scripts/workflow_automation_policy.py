@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, fields
 from enum import Enum
+from types import MappingProxyType
 from typing import Iterable
 
 
@@ -291,15 +292,21 @@ def validate_policy_registry(policies: Iterable[StagePolicy]) -> list[str]:
     for missing in sorted(expected - seen, key=lambda stage: stage.value):
         errors.append(f"stage policy missing: {missing.value}")
 
-    expected_occurrences = {
-        **{stage: OccurrenceKind.SINGLETON for stage in PUBLIC_TARGET_STAGES},
-        WorkflowStage.IMPLEMENT: OccurrenceKind.MILESTONE,
-        WorkflowStage.CODE_REVIEW: OccurrenceKind.MILESTONE,
-        WorkflowStage.VERIFY: OccurrenceKind.FINAL,
+    milestone_stages = {WorkflowStage.IMPLEMENT, WorkflowStage.CODE_REVIEW}
+    final_stages = {
+        WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW,
+        WorkflowStage.EXPLAIN_CHANGE,
+        WorkflowStage.VERIFY,
     }
     for policy in records:
-        expected_occurrence = expected_occurrences.get(policy.stage)
-        if expected_occurrence and policy.occurrence_rule != expected_occurrence:
+        expected_occurrence = (
+            OccurrenceKind.MILESTONE
+            if policy.stage in milestone_stages
+            else OccurrenceKind.FINAL
+            if policy.stage in final_stages
+            else OccurrenceKind.SINGLETON
+        )
+        if policy.occurrence_rule != expected_occurrence:
             errors.append(
                 f"{policy.stage.value}.occurrence_rule: expected {expected_occurrence.value}"
             )
@@ -315,3 +322,5 @@ def validate_policy_registry(policies: Iterable[StagePolicy]) -> list[str]:
 POLICY_VALIDATION_ERRORS = tuple(validate_policy_registry(STAGE_POLICIES))
 if POLICY_VALIDATION_ERRORS:
     raise RuntimeError("invalid workflow automation policy registry: " + "; ".join(POLICY_VALIDATION_ERRORS))
+
+STAGE_POLICY_BY_STAGE = MappingProxyType({policy.stage.value: policy for policy in STAGE_POLICIES})

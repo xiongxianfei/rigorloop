@@ -7,10 +7,17 @@ import dataclasses
 import unittest
 
 from workflow_automation_policy import (
+    ApplicabilityRule,
+    AuthorizationClass,
+    CapabilityKind,
+    CorrectionPolicy,
     INTERNAL_STAGES,
+    MutationCategory,
     PUBLIC_TARGET_STAGES,
+    RetryPolicy,
     STAGE_POLICIES,
     OccurrenceKind,
+    StopBehavior,
     WorkflowStage,
     validate_policy_registry,
 )
@@ -47,23 +54,80 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
         self.assertEqual(occurrences[WorkflowStage.CODE_REVIEW], OccurrenceKind.MILESTONE)
         self.assertEqual(occurrences[WorkflowStage.VERIFY], OccurrenceKind.FINAL)
 
+    def test_internal_stage_occurrence_vocabulary_matches_spec(self) -> None:
+        occurrences = {policy.stage: policy.occurrence_rule for policy in STAGE_POLICIES}
+        for stage in {
+            WorkflowStage.PROPOSAL,
+            WorkflowStage.ARCHITECTURE_ASSESSMENT,
+            WorkflowStage.REVIEW_RESOLUTION,
+            WorkflowStage.CI_MAINTENANCE,
+        }:
+            self.assertEqual(occurrences[stage], OccurrenceKind.SINGLETON)
+        for stage in {
+            WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW,
+            WorkflowStage.EXPLAIN_CHANGE,
+        }:
+            self.assertEqual(occurrences[stage], OccurrenceKind.FINAL)
+
     def test_duplicate_policy_fails_closed(self) -> None:
         errors = validate_policy_registry((*STAGE_POLICIES, STAGE_POLICIES[0]))
         self.assertTrue(any("duplicate stage policy" in error for error in errors), errors)
 
-    def test_unknown_stage_fails_before_consistency(self) -> None:
-        unknown = dataclasses.replace(STAGE_POLICIES[0], stage="future-stage")  # type: ignore[arg-type]
-        errors = validate_policy_registry((unknown,))
-        self.assertEqual(errors, ["policy[0].stage: unknown workflow stage: future-stage"])
+    def test_unknown_value_for_each_policy_vocabulary_fails_before_consistency(self) -> None:
+        cases = (
+            ("stage", "future-stage", WorkflowStage),
+            ("occurrence_rule", "iteration", OccurrenceKind),
+            ("required_authorization_class", "external", AuthorizationClass),
+            ("capability_kind", "deploy", CapabilityKind),
+            ("permitted_mutation_category", "secrets", MutationCategory),
+            ("applicability_rule", "sometimes", ApplicabilityRule),
+            ("retry_policy", "retry-forever", RetryPolicy),
+            ("correction_policy", "author-guesses", CorrectionPolicy),
+            ("stop_behavior", "continue-always", StopBehavior),
+        )
+        for field_name, unknown_value, enum in cases:
+            with self.subTest(field=field_name):
+                unknown = dataclasses.replace(  # type: ignore[arg-type]
+                    STAGE_POLICIES[0], **{field_name: unknown_value}
+                )
+                errors = validate_policy_registry((unknown,))
+                self.assertEqual(len(errors), 1, errors)
+                self.assertIn(f"policy[0].{field_name}: unknown", errors[0])
+                self.assertNotIn(unknown_value, {member.value for member in enum})
 
-    def test_unknown_retry_policy_fails_closed(self) -> None:
-        unknown = dataclasses.replace(STAGE_POLICIES[0], retry_policy="retry-forever")  # type: ignore[arg-type]
-        errors = validate_policy_registry((unknown,))
-        self.assertEqual(errors, ["policy[0].retry_policy: unknown retry policy: retry-forever"])
+    def test_incomplete_policy_field_fails_closed(self) -> None:
+        for field_name in (
+            "predecessor_rule",
+            "owning_skill",
+            "prerequisite_rule",
+            "required_input_identities",
+            "completion_rule",
+            "completion_evidence",
+            "next_stage_calculation",
+        ):
+            with self.subTest(field=field_name):
+                value = frozenset() if isinstance(getattr(STAGE_POLICIES[0], field_name), frozenset) else ""
+                incomplete = dataclasses.replace(STAGE_POLICIES[0], **{field_name: value})
+                errors = validate_policy_registry(
+                    tuple(incomplete if policy.stage == incomplete.stage else policy for policy in STAGE_POLICIES)
+                )
+                self.assertIn(f"policy[0].{field_name}: incomplete stage policy", errors)
+
+    def test_changed_internal_occurrence_fails_closed(self) -> None:
+        original = next(
+            policy for policy in STAGE_POLICIES
+            if policy.stage == WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW
+        )
+        changed = dataclasses.replace(original, occurrence_rule=OccurrenceKind.SINGLETON)
+        errors = validate_policy_registry(
+            tuple(changed if policy.stage == changed.stage else policy for policy in STAGE_POLICIES)
+        )
+        self.assertIn(
+            "final-holistic-code-review.occurrence_rule: expected final",
+            errors,
+        )
 
     def test_policy_mutation_scope_cannot_exceed_capability(self) -> None:
-        from workflow_automation_policy import MutationCategory
-
         widened = dataclasses.replace(
             STAGE_POLICIES[1],
             permitted_mutation_category=MutationCategory.PRODUCTION_CODE,
