@@ -1,0 +1,364 @@
+change_id: 2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+title: Single Bounded Review-Fix Workflow Automation Mechanism
+classification: proposal
+risk: high
+artifacts:
+  proposal: docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
+  spec: specs/single-bounded-review-fix-workflow-automation.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md
+  plan: docs/plans/2026-07-21-single-bounded-review-fix-workflow-automation.md
+  test_spec: specs/single-bounded-review-fix-workflow-automation.test.md
+  review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md
+requirements:
+  - Record one decision-oriented proposal for bounded-review-fix as the only writable automation mechanism.
+  - Preserve formal proposal-review findings before review-driven proposal revision.
+  - Resolve canonical workflow position, identity-bound grants, interrupted-transition recovery, and repeated-stage target identity before specification.
+  - Include proposal-review through a non-circular identity-bound review capability without weakening review independence or later authorization boundaries.
+  - Separate bounded parent authorization from executable effective capability and use stage-appropriate basis identities.
+  - Separate proposal-review occurrence recording from clean-gate satisfaction and route every closed review outcome deterministically.
+  - Define one contract for structured targets, canonical workflow-position ownership, authorization and capability boundaries, transition recovery, stage routing, and legacy migration.
+  - Define closed target-occurrence, durable-state, verification-authorization, legacy-adapter, and exact cross-spec precedence contracts.
+  - Consolidate persisted automation authority into one canonical spec while preserving lifecycle ordering and reviewer-owned finding semantics in their existing contracts.
+  - Define the component boundaries, runtime recovery flow, deployment boundary, quality scenarios, migration risks, and durable ADR supersession for the unified mechanism.
+tests:
+  - Proposal lifecycle validation covers the revised proposal.
+  - Review artifact validation covers proposal-review R1 through R4, spec-review R1 through R3, and all thirteen recorded material findings.
+  - Change metadata validation covers the change-local review evidence pack.
+  - Proposal-review R4 rechecks the two-level authorization invariant and complete proposal-review outcome routing.
+  - Spec-review must challenge the unified mechanism contract before it becomes approved or supersedes conflicting legacy requirements.
+  - Spec-review R2 must recheck BRF-SR1 through BRF-SR5 against the revised spec and co-amended legacy specs.
+  - Spec-review R4 must recheck unique source selectors, the closed affected-selector registry, and sole automation-spec ownership.
+  - Architecture-review must challenge component ownership, canonical-state boundaries, authority separation, receipt recovery, migration, and external-action containment before planning.
+  - Architecture-review R2 must confirm complete stage-policy projection, one executable and persistence ownership boundary, and effective-capability receipt binding.
+  - Plan-review must challenge milestone sequencing, requirement coverage, migration safety, validation commands, and recovery before test-spec authoring.
+  - Test-spec-review must challenge the requirement, example, edge-case, command, fixture, and milestone proof maps before M1 implementation.
+  - M1 policy tests prove one immutable sixteen-field policy per public and internal automatable stage, including closed target occurrences and bounded mutation categories.
+  - M1 automation-state tests prove closed vocabularies, legal status transitions, non-executable parent authority, stage-relative capability basis, and parent-scope containment.
+  - Change-metadata regressions prove the unified namespace accepts only bounded-review-fix state, rejects live workflow ownership, and rejects mixed unified and legacy writable state.
+validation:
+  - command: proposal-review r1
+    result: changes_requested_BRF-PR1_BRF-PR2_BRF-PR3_BRF-PR4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_proposal_review_r4_closeout
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_after_proposal_review_r4_closeout
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_after_proposal_review_r4_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r1.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r2.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r3.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
+    result: passed_after_proposal_review_r4_closeout
+  - command: git diff --check
+    result: passed_after_proposal_review_r4_closeout
+  - command: proposal-review r2
+    result: changes_requested_BRF-PR5_prior_findings_resolved
+  - command: proposal-review r3
+    result: changes_requested_BRF-PR6_BRF-PR7_prior_findings_resolved
+  - command: proposal-review r4
+    result: approved_no_material_findings_all_prior_findings_resolved
+  - command: spec
+    result: completed_draft_pending_spec_review
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md --path specs/single-bounded-review-fix-workflow-automation.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
+    result: passed_selected_four_focused_checks_no_broad_smoke
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_4_findings_7
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md --path docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md --path specs/single-bounded-review-fix-workflow-automation.md
+    result: passed_spec_draft_lifecycle
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_spec_draft
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_draft
+  - command: git diff --check -- docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md specs/single-bounded-review-fix-workflow-automation.md docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_after_spec_draft
+  - command: spec-review r1
+    result: changes_requested_BRF-SR1_BRF-SR2_BRF-SR3_BRF-SR4_BRF-SR5
+  - command: python scripts/select-validation.py --mode explicit --path specs/single-bounded-review-fix-workflow-automation.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r1.md
+    result: passed_selected_four_focused_checks_no_broad_smoke_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_5_findings_12_open_findings_5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r1.md --path specs/single-bounded-review-fix-workflow-automation.md
+    result: passed_after_spec_review_r1_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_spec_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_review_r1_recording
+  - command: git diff --check -- specs/single-bounded-review-fix-workflow-automation.md docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_after_spec_review_r1_recording
+  - command: spec revision for BRF-SR1 through BRF-SR5
+    result: completed_pending_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_5_findings_12_open_findings_5_after_spec_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r1.md --path specs/review-finding-resolution-contract.md --path specs/review-fix-autoprogression.md --path specs/rigorloop-workflow.md --path specs/single-bounded-review-fix-workflow-automation.md --path specs/workflow-stage-autoprogression.md
+    result: passed_six_artifacts_with_existing_rigorloop_merge_language_warning
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_spec_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_revision
+  - command: git diff --check
+    result: passed_after_spec_revision
+  - command: spec-review r2
+    result: changes_requested_BRF-SR6_BRF-SR1_through_BRF-SR4_resolved_BRF-SR5_open
+  - command: spec-review r3
+    result: inconclusive_no_review_input_change_BRF-SR5_BRF-SR6_remain_open
+  - command: spec revision for BRF-SR5 and BRF-SR6
+    result: completed_pending_spec_review_r4
+  - command: source selector uniqueness audit across four affected specs
+    result: passed_no_duplicate_requirement_selectors
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_7_findings_13_after_consolidation_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for consolidation revision artifacts
+    result: passed_ten_artifacts_with_existing_merge_language_warnings
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_consolidation_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_consolidation_revision
+  - command: git diff --check --cached
+    result: passed_after_consolidation_revision
+  - command: spec-review r4
+    result: approved_no_material_findings_all_BRF-SR_findings_resolved
+  - command: spec lifecycle settlement after spec-review r4
+    result: unified_spec_approved_review_fix_spec_superseded
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_closeout_reviews_8_findings_13
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for settled spec artifacts
+    result: passed_ten_artifacts_with_existing_merge_language_warnings
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_review_r4_settlement
+  - command: git diff --check --cached
+    result: passed_after_spec_review_r4_settlement
+  - command: spec-review r5
+    result: approved_settlement_only_no_material_findings
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_9_findings_13_after_spec_review_r5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_closeout_reviews_9_findings_13_after_spec_review_r5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_review_r5
+  - command: git diff --check --cached
+    result: passed_after_spec_review_r5
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_7_findings_13_after_spec_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_review_r3
+  - command: git diff --check --cached
+    result: passed_after_spec_review_r3
+  - command: architecture
+    result: completed_draft_canonical_update_component_diagram_and_superseding_adr_pending_architecture_review
+  - command: architecture-review r1
+    result: changes_requested_BRF-AR1_BRF-AR2_BRF-AR3
+  - command: architecture-review r2
+    result: inconclusive_no_architecture_input_change_BRF-AR1_BRF-AR2_BRF-AR3_remain_open
+  - command: architecture revision for BRF-AR1 through BRF-AR3
+    result: completed_pending_architecture_review_r3
+  - command: architecture-review r3
+    result: approved_no_material_findings_BRF-AR1_BRF-AR2_BRF-AR3_resolved_lifecycle_settlement_next
+  - command: architecture lifecycle settlement after architecture-review r3
+    result: canonical_architecture_approved_unified_ADR_accepted_three_predecessor_ADRs_superseded
+  - command: plan
+    result: created_five_milestones_pending_plan_review
+  - command: plan-review r1
+    result: changes_requested_BRF-PL1_BRF-PL2
+  - command: plan revision for BRF-PL1 and BRF-PL2
+    result: completed_six_milestones_atomic_M6_cutover_runnable_adapter_and_selected_CI_proof_pending_plan_review_r2
+  - command: bash scripts/ci.sh --mode explicit for revised plan and change-local plan-review evidence
+    result: passed_six_selected_checks_including_broad_smoke_377_30_seconds_after_plan_revision
+  - command: plan-review r2
+    result: approved_no_material_findings_BRF-PL1_BRF-PL2_resolved_plan_handoff_sync_next
+  - command: test-spec authoring
+    result: active_28_test_cases_32_command_ids_six_milestone_proof_rows_pending_test_spec_review
+  - command: test-spec-review r1
+    result: changes_requested_BRF-TSR1_BRF-TSR2_BRF-TSR3_implementation_handoff_not_allowed
+  - command: test-spec revision for BRF-TSR1 through BRF-TSR3
+    result: completed_29_test_cases_complete_MP1_MP3_pipe_free_CMD30_deterministic_fixture_contract_pending_test_spec_review_r2
+  - command: test-spec-review r2
+    result: changes_requested_BRF-TSR4_BRF-TSR1_through_BRF-TSR3_resolved_implementation_handoff_not_allowed
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_16_findings_22_open_findings_1_after_test_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_test_spec_review_r2_recording
+  - command: git diff --check for test-spec-review-r2 recording and lifecycle state
+    result: passed_after_test_spec_review_r2_recording
+  - command: test-spec revision for BRF-TSR4
+    result: completed_30_test_cases_split_M2_M6_determinism_explicit_progressive_activation_pending_test_spec_review_r3
+  - command: static test-spec authoring audit for BRF-TSR4
+    result: passed_30_tests_32_commands_14_progressive_entries_no_T29_CMD25_cross_boundary_mapping
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_16_findings_22_open_findings_1_after_BRF_TSR4_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_BRF_TSR4_revision
+  - command: git diff --check for BRF-TSR4 test-spec revision and lifecycle state
+    result: passed_after_BRF_TSR4_revision
+  - command: test-spec-review r3
+    result: changes_requested_existing_BRF_TSR4_remains_open_T26_M4_M6_activation_missing_no_new_finding
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_17_findings_22_open_findings_1_after_test_spec_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_test_spec_review_r3_recording
+  - command: git diff --check for test-spec-review-r3 recording and lifecycle state
+    result: passed_after_test_spec_review_r3_recording
+  - command: test-spec revision completing BRF-TSR4 after test-spec-review r3
+    result: completed_T26_M4_CMD17_M6_CMD25_progressive_activation_explicit_deferral_pending_test_spec_review_r4
+  - command: static test-spec authoring audit completing BRF-TSR4
+    result: passed_30_tests_32_commands_15_progressive_entries_T26_M4_M6_activation_current_plan_identity
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_17_findings_22_open_findings_1_after_final_BRF_TSR4_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_final_BRF_TSR4_revision
+  - command: git diff --check for final BRF-TSR4 test-spec revision and lifecycle state
+    result: passed_after_final_BRF_TSR4_revision
+  - command: test-spec-review r4
+    result: approved_no_material_findings_BRF_TSR1_through_BRF_TSR4_resolved_implementation_handoff_allowed
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_18_findings_22_open_findings_0_after_test_spec_review_r4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_closeout_reviews_18_findings_22_after_test_spec_review_r4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_test_spec_review_r4_recording
+  - command: git diff --check for test-spec-review-r4 recording and implementation handoff state
+    result: passed_after_test_spec_review_r4_recording
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_15_findings_21_open_findings_3_after_test_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_test_spec_review_r1_recording
+  - command: git diff --check for test-spec-review-r1 recording and lifecycle state
+    result: passed_after_test_spec_review_r1_recording
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_14_findings_18_after_plan_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_closeout_reviews_14_findings_18_after_plan_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_plan_review_r2_recording
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_13_findings_18_open_findings_2_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_plan_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for plan and upstream lifecycle settlement
+    result: passed_seven_artifact_files_after_plan_creation
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_plan_creation
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_plan_index_update
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_12_findings_16_after_architecture_review_r3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_closeout_reviews_12_findings_16_after_architecture_review_r3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for architecture-review-r3 artifacts
+    result: passed_four_artifact_files_with_existing_merge_language_warning_after_architecture_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_architecture_review_r3
+  - command: git diff --check --cached
+    result: passed_after_architecture_review_r3
+  - command: python scripts/select-validation.py --mode explicit for revised architecture package and change-local evidence
+    result: passed_selected_four_focused_checks_no_broad_smoke_after_architecture_revision
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_11_findings_16_resolved_pending_rereview_3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for revised architecture artifacts
+    result: passed_four_artifact_files_with_existing_merge_language_warning_after_architecture_revision
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_architecture_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_architecture_revision
+  - command: git diff --check for revised architecture package and change-local evidence
+    result: passed_after_architecture_revision
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_11_findings_16_open_findings_3_after_architecture_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for architecture-review-r2 artifacts
+    result: passed_four_artifact_files_with_existing_merge_language_warning_after_architecture_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_architecture_review_r2
+  - command: git diff --check --cached
+    result: passed_after_architecture_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_10_findings_16_open_findings_3_after_architecture_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for architecture-review-r1 artifacts
+    result: passed_four_artifact_files_with_existing_merge_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_architecture_review_r1
+  - command: git diff --check --cached
+    result: passed_after_architecture_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/architecture/system/diagrams/component-workflow-automation.mmd --path docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_selected_three_focused_checks_no_broad_smoke_after_architecture
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_four_artifact_files_after_architecture
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_architecture
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_architecture
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_7_tests_M1
+  - command: python scripts/test-validate-workflow-automation.py -k vocabulary
+    result: passed_3_selected_tests_M1
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_M1
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_M1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_M1_after_handoff_sync
+  - command: git diff --check
+    result: passed_M1_after_handoff_sync
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_11_tests_M1
+  - command: python scripts/validate-guide-system.py
+    result: passed_M1_handoff_sync
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for M1 handoff artifacts
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+changed_files:
+  - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
+  - specs/single-bounded-review-fix-workflow-automation.md
+  - specs/workflow-stage-autoprogression.md
+  - specs/rigorloop-workflow.md
+  - specs/review-fix-autoprogression.md
+  - specs/review-finding-resolution-contract.md
+  - specs/workflow-stage-autoprogression.test.md
+  - specs/single-bounded-review-fix-workflow-automation.test.md
+  - docs/plans/2026-04-21-workflow-stage-autoprogression.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/architecture/system/diagrams/component-workflow-automation.mmd
+  - docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md
+  - docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md
+  - docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md
+  - docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md
+  - docs/plans/2026-07-21-single-bounded-review-fix-workflow-automation.md
+  - docs/plan.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r4.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
+  - schemas/change.schema.json
+  - scripts/workflow_automation_policy.py
+  - scripts/validate_workflow_automation.py
+  - scripts/validate-change-metadata.py
+  - scripts/test-workflow-automation-policy.py
+  - scripts/test-validate-workflow-automation.py
+  - scripts/test-change-metadata-validator.py
+review:
+  status: approved
+  unresolved_items: 0
+  location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
+  material_findings: 22
+  closed_findings: 22
+  open_findings: 0
+  proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
+  spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
+  architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
+  plan_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
+  test_spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
+  review_log: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
+  review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md

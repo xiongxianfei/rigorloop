@@ -4,6 +4,12 @@
 
 - approved
 
+## Unified automation amendment
+
+Upon approval of [Single Bounded Review-Fix Workflow Automation](single-bounded-review-fix-workflow-automation.md), requirement `R1e` and its implementation-profile acceptance surfaces are `preserved-rebound` to the unified implementation and implementation-correction capabilities.
+The `auto_fix_class` vocabulary and requirements `R1f` through `R1l` remain preserved unchanged.
+This amendment does not keep `implementation-through-verify` writable.
+
 ## Related proposal
 
 - [Review Finding Resolution Contract](../docs/proposals/2026-04-24-review-finding-resolution-contract.md)
@@ -449,8 +455,8 @@ R11. Repository-owned structural validation MUST detect the following conditions
 - `review-resolution.md` uses an unsupported disposition value;
 - `review-resolution.md` lacks top-level closeout status or uses a closeout status other than `open` or `closed`;
 - a closeout-gated validation mode sees `Closeout status: open`, unresolved `needs-decision`, or a finding counted toward `closed` without its disposition-specific closeout requirements.
-- an implementation-profile code-review finding with `auto_fix_class=mechanical` lacks `auto_fix_kind`, affected paths, deterministic authority, or required validation;
-- an implementation-profile code-review finding with `auto_fix_class=declared-safe` lacks affected paths, resolution recipe, named inputs, named outputs, forbidden paths, acceptance criteria, required validation commands, or scope-preservation rule;
+- `RFR-AC-IMPLEMENTATION-1`: an implementation-profile code-review finding with `auto_fix_class=mechanical` lacks `auto_fix_kind`, affected paths, deterministic authority, or required validation;
+- `RFR-AC-IMPLEMENTATION-2`: an implementation-profile code-review finding with `auto_fix_class=declared-safe` lacks affected paths, resolution recipe, named inputs, named outputs, forbidden paths, acceptance criteria, required validation commands, or scope-preservation rule;
 - an implementation-profile code-review finding uses an unsupported `auto_fix_class` or `auto_fix_kind`.
 
 R11a. Structural validation MUST NOT attempt semantic review-quality automation in this version.

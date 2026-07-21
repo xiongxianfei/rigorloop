@@ -55,7 +55,7 @@
 
 | Requirement IDs | Covered by | Level | Notes |
 | --- | --- | --- | --- |
-| `R1`, `R1a`, `R1b`, `R1c`, `R2`, `R2a`, `R2b`, `R2ba`, `R10`, `R10a` | `T1`, `T5`, `T9` | manual | Core scope boundary, isolated-stage behavior, and preservation of standard workflow structure |
+| `R1`, `R1a`, `R1b`, `R1c`, `R2`, `R2a`, `R2b`, `R2b1`, `R10`, `R10a` | `T1`, `T5`, `T9` | manual | Core scope boundary, isolated-stage behavior, and preservation of standard workflow structure |
 | `R1d`, `R6`, `R6a`, `R6b`, `R6c` | `T4`, `T8` | manual, smoke | Direct-`pr` behavior, readiness blockers, and truthful hosted-CI wording |
 | `R2c`, `R2d`, `R2e`, `R2f`, `R2g`, `R7`, `R7a` | `T3` | manual | Authoring-to-review handoffs and explicit non-expansion into review-to-authoring transitions |
 | `R2h`-`R2q` | `T11`, `T13`, `T14`, `T15`, `T17` | manual, integration | Closed profile values, user-facing mapping, activation, bounded sequence, completion boundary, and no-test-spec/no-implementation rule |
@@ -120,7 +120,7 @@
 
 ### T1. Workflow contract surfaces expose the bounded v1 scope
 
-- Covers: `R1`, `R2`, `R2a`, `R2b`, `R2ba`, `R10`, `R10a`
+- Covers: `R1`, `R2`, `R2a`, `R2b`, `R2b1`, `R10`, `R10a`
 - Level: manual
 - Fixture/setup:
   - `specs/workflow-stage-autoprogression.md`
