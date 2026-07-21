@@ -2,7 +2,11 @@
 
 ## Status
 
-accepted
+superseded
+
+## Superseded by
+
+superseded_by: `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`
 
 ## Context
 
@@ -92,3 +96,7 @@ Rejected because hosted PR creation can trigger CI cost, reviewer notifications,
 - Plan implementation of profile persistence, phase gating, test-spec settlement, reviewer-owned classification fields, correction-loop enforcement, audit records, final fresh verify rules, and PR-boundary stop behavior.
 - Update canonical skills, validators, schemas, test specs, and generated adapters after implementation changes authored guidance.
 - Use Phase B dogfood and synthetic stop-condition fixture evidence before enabling Phase C.
+
+## Closeout
+
+Superseded by `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`. This ADR remains historical compatibility context and no longer authorizes an independently writable automation profile.

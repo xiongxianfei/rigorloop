@@ -1,0 +1,568 @@
+# Single Bounded Review-Fix Workflow Automation Plan
+
+## Status
+
+Plan lifecycle state: active
+Terminal disposition: none
+
+- Change ID: 2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+- Owner: agent
+- Start date: 2026-07-21
+- Last updated: 2026-07-21
+- Related issue or PR: none yet
+- Supersedes: none
+- broad_smoke_required: true
+- broad_smoke_reason: The final cutover changes workflow routing, schemas, validators, canonical skills, compatibility adapters, and generated public behavior.
+
+## Purpose / big picture
+
+Implement the approved single `bounded-review-fix` workflow-automation mechanism across proposal review, authoring, milestone implementation and code review, final verification, and legacy compatibility.
+
+The implementation replaces three independently writable automation profiles with one target-driven engine, one immutable stage-policy projection, one state-write boundary, and one canonical `change.yaml#workflow.automation` record.
+
+The work must preserve stage-owned artifacts, formal review independence, active-plan live-state ownership, separate authoring/implementation/verification authority, bounded correction policies, evidence-first recovery, dual-read/single-write migration, and the stop before PR or any other external action.
+
+## Source artifacts
+
+- Proposal: [Single Bounded Review-Fix Workflow Automation Mechanism](../proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md)
+- Spec: [Single Bounded Review-Fix Workflow Automation](../../specs/single-bounded-review-fix-workflow-automation.md)
+- Architecture: [RigorLoop Canonical System Architecture](../architecture/system/architecture.md)
+- ADR: [ADR-20260721 Single Bounded Review-Fix Workflow Automation Mechanism](../adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md)
+- Test spec: [Single Bounded Review-Fix Workflow Automation Test Specification](../../specs/single-bounded-review-fix-workflow-automation.test.md)
+- Change metadata: [change.yaml](../changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml)
+- Review log: [review-log.md](../changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md)
+- Review resolution: [review-resolution.md](../changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md)
+- Latest proposal review: [proposal-review-r4](../changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md)
+- Latest spec review: [spec-review-r5](../changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md)
+- Latest architecture review: [architecture-review-r3](../changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md)
+- Latest plan review: [plan-review-r2](../changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md)
+
+## Upstream status settlement
+
+- Upstream artifact: `docs/architecture/system/architecture.md`, `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`, and its three predecessor ADRs
+- Review evidence: `architecture-review-r3` approved the canonical package and ADR with no material findings; `review-resolution.md` is closed and `review-log.md` has no open findings
+- Previous status: architecture `draft`; unified ADR `proposed`; three predecessor ADRs `accepted`
+- New status: architecture `approved`; unified ADR `accepted`; three predecessor ADRs `superseded` with replacement links
+- Settlement result: updated
+- Settlement blocker: none
+
+## Context and orientation
+
+The current repository still implements the three retired writable models separately:
+
+- `schemas/change.schema.json` and `scripts/validate-change-metadata.py` validate `workflow.autoprogression`, its authoring and implementation profiles, and nested `review_fix` state.
+- `scripts/lifecycle_state_sync.py` contains separate authoring, implementation, and review-fix route evaluators and closed vocabularies.
+- `scripts/artifact_lifecycle_validation.py` and `scripts/validate-artifact-lifecycle.py` compose lifecycle and state-sync proof.
+- `scripts/review_artifact_validation.py` and `scripts/validate-review-artifacts.py` validate review correction and closeout evidence.
+- `skills/workflow/SKILL.md` still teaches three public automation mechanisms and their independent continuation boundaries.
+- `scripts/test-change-metadata-validator.py`, `scripts/test-artifact-lifecycle-validator.py`, `scripts/test-review-artifact-validator.py`, and `scripts/test-skill-validator.py` preserve existing profile behavior.
+
+The approved architecture adds these executable owners:
+
+- `scripts/workflow_automation_policy.py`: immutable stage policies and closed enums.
+- `scripts/workflow_automation_state.py`: sole `workflow.automation` reader/writer and receipt reconciler.
+- `scripts/workflow_automation.py`: command adaptation, target and canonical-position resolution, capability evaluation, and transition coordination.
+- `scripts/validate_workflow_automation.py`: policy, state, migration, and canonical-evidence validation.
+
+The implementation must reuse existing lifecycle and review parsers where they already own canonical evidence. It must not create parallel artifact-status, plan-state, or review-verdict parsers inside the automation engine.
+
+Until the final public-cutover milestone, the unified engine is reachable only through tests or an explicitly non-public internal harness. Earlier milestones must not advertise, activate, or route public commands into the incomplete mechanism.
+
+## Non-goals
+
+- Do not change the approved public target vocabulary or occurrence rules.
+- Do not add a second YAML/JSON policy registry or a separate automation-state file.
+- Do not make automation metadata own active-plan milestone state, current next stage, review verdicts, branch readiness, or PR readiness.
+- Do not weaken independent formal review or let a review skill edit the artifact it reviews.
+- Do not infer correction authority beyond driver-owned proposal classification and reviewer-owned implementation classification.
+- Do not automatically repair verification failures.
+- Do not remove legacy command adapters during the migration window.
+- Do not restore a retired profile writer as rollback behavior.
+- Do not open PRs, push, publish, release, deploy, merge, use credentials, perform destructive Git operations, or mutate external systems.
+- Do not hand-edit generated public adapter output.
+- Do not expose `$workflow auto: <stage>` or redirect a compatibility alias to the unified writer before the final cutover milestone passes its prerequisite integration reviews.
+
+## Requirements covered
+
+| Requirement group | Plan coverage |
+| --- | --- |
+| `BRF-R001`-`BRF-R017f` | M1 defines the unified schema, closed durable vocabularies, structured target records, and complete target/occurrence policy projection; M3 implements command binding. |
+| `BRF-R018`-`BRF-R023` | M3 implements evidence-derived pre-plan position and active-plan ownership handoff without a competing cursor. |
+| `BRF-R024`-`BRF-R046` | M1 defines parent/capability records and validation; M3 implements derivation, boundary pauses, and invalidation. |
+| `BRF-R047`-`BRF-R062` | M4 implements proposal-review occurrence/gate separation, proposal correction, and post-proposal authoring routing through a non-public harness. |
+| `BRF-R060`-`BRF-R067` | M5 implements independent implementation review, reviewer-owned correction, and verification-failure routing through a non-public harness. |
+| `BRF-R068`-`BRF-R077` | M2 implements prepared receipts, the sole write boundary, evidence-first reconciliation, cancellation, and failure recovery. |
+| `BRF-R078`-`BRF-R086` | M1 defines complete policies; M3-M5 integrate authoring and implementation stage owners, repeated milestones, final holistic review, explanation, and verify completion. |
+| `BRF-R087`-`BRF-R090` | M4 and M5 prove isolation and external-action containment internally; M6 preserves them at public activation. |
+| `BRF-R091`-`BRF-R098d` | M2 implements one-way state migration; M6 implements and proves mandatory command adapters and rollback behavior. |
+| `BRF-R098e`-`BRF-R098i` | M6 implements exact cross-spec disposition and retired-writer contradiction validation. |
+| `BRF-R099`-`BRF-R102` | M1 and M6 implement observable results, tracked resume evidence, fail-closed validators, and unknown-value regressions. |
+| `BRF-AC001`-`BRF-AC026` and `AC-BRF-SR1-*`-`AC-BRF-SR6-*` | The active test spec maps each acceptance family to M1-M6 automated and bounded manual proof before implementation begins. |
+
+## Current Handoff Summary
+
+- Current milestone: M1. Unified State Model and Complete Policy Registry
+- Current milestone state: review-requested
+- Last reviewed milestone: none
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md`
+- Review status: approved; stage=test-spec-review; round=r4
+- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5, M6
+- Next stage: code-review
+- Final closeout readiness: not ready
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 implementation and targeted validation are complete, but M1 remains open pending independent code review and M2-M6 have not started.
+
+## Milestones
+
+### M1. Unified State Model and Complete Policy Registry
+
+- Milestone state: review-requested
+- Goal: Establish the canonical `workflow.automation` schema, typed durable records, closed enums, complete immutable stage-policy registry, and fail-closed structural validation before any new routing becomes writable.
+- Requirements: `BRF-R001`-`BRF-R017a`, `BRF-R024`-`BRF-R046`, `BRF-R069`-`BRF-R071`, `BRF-R079`-`BRF-R080`, `BRF-R099`-`BRF-R102`
+- Files/components likely touched:
+  - `schemas/change.schema.json`
+  - `scripts/workflow_automation_policy.py`
+  - `scripts/validate_workflow_automation.py`
+  - `scripts/validate-change-metadata.py`
+  - `scripts/change_metadata_semantics.py`
+  - `scripts/test-workflow-automation-policy.py`
+  - `scripts/test-validate-workflow-automation.py`
+  - `scripts/test-change-metadata-validator.py`
+  - change-metadata fixtures under `tests/fixtures/`
+- Dependencies:
+  - Clean plan-review and approved test spec.
+  - Approved spec and accepted ADR remain unchanged.
+- Tests to add/update:
+  - Exactly one complete immutable policy exists for every public and internal automatable stage.
+  - Missing, duplicate, unknown, incomplete, and spec-inconsistent policies fail before consistency evaluation.
+  - Run, parent-authorization, capability, capability-kind, target, occurrence, receipt, routing, retry, and stop vocabularies reject unknown values.
+  - Parent records are non-executable; capabilities require a valid parent, stage basis, occurrence, and subset scope.
+  - Structured repeated targets require plan and milestone identity before persistence.
+  - `workflow.automation` rejects a legacy mechanism value and forbidden live-state ownership fields.
+- Implementation steps:
+  - Add the unified schema subsection and schema version without removing legacy read compatibility.
+  - Implement frozen enums and `StagePolicy` records with all sixteen approved fields.
+  - Encode each automatable public and internal stage exactly once.
+  - Add structural and semantic validators that reject unknown values before cross-field checks.
+  - Keep new writers disabled until M2 establishes the prepared-receipt state boundary.
+- Validation commands:
+  - `python scripts/test-workflow-automation-policy.py`
+  - `python scripts/test-validate-workflow-automation.py -k vocabulary`
+  - `python scripts/test-change-metadata-validator.py -k workflow_automation`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml`
+- Expected observable result: Unified state and every stage policy can be represented and exhaustively validated, but no transition is yet executed through the new writer.
+- Commit message: `M1: define unified automation state and policies`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone handed to code-review
+  - material findings resolved or explicitly dispositioned before M2 starts
+  - milestone committed
+- Risks:
+  - A permissive compatibility shape could let malformed unified state bypass closed-vocabulary validation.
+  - Hand-copied policy fields could drift from the approved spec.
+- Rollback/recovery:
+  - Remove the new unified schema and policy projection together while leaving all existing legacy readers and manual workflow behavior intact.
+
+### M2. Sole State Writer, Prepared Receipts, and Recovery
+
+- Milestone state: planned
+- Goal: Implement atomic-file state updates, the sole automation-state write boundary, prepared/finalized receipts, reconciliation, cancellation, and one-way legacy-state migration without invoking stage work through the new engine yet.
+- Requirements: `BRF-R006`-`BRF-R008f`, `BRF-R030`, `BRF-R044`-`BRF-R046`, `BRF-R068`-`BRF-R077`, `BRF-R091`-`BRF-R098`
+- Files/components likely touched:
+  - `scripts/workflow_automation_state.py`
+  - `scripts/validate_workflow_automation.py`
+  - `scripts/validate-change-metadata.py`
+  - `scripts/query-change-record.py`
+  - `scripts/test-workflow-automation-state.py`
+  - `scripts/test-validate-workflow-automation.py`
+  - `scripts/test-query-change-record.py`
+  - state and migration fixtures under `tests/fixtures/`
+- Dependencies:
+  - M1 unified model and policy registry.
+- Tests to add/update:
+  - A prepared receipt is durable before a stage invocation can begin.
+  - Receipts carry the original `effective_capability_id` and never bind directly to parent authorization.
+  - Resume reconciles valid completion evidence, retries only `idempotent-retry`, and pauses manual/reconcile-only cases.
+  - Invalidated capability, changed output identity, partial output, unknown receipt state/policy version, or multiple in-flight transitions fails closed or pauses as specified.
+  - Cancellation reconciles prepared work, cancels the run, revokes parents, invalidates capabilities, and preserves receipts.
+  - Legacy projection is read-only; first mutating resume writes one unified migration receipt; mixed writers fail closed.
+  - State replacement preserves unrelated valid change metadata and does not leave a truncated `change.yaml`.
+- Implementation steps:
+  - Implement typed load/validate/update operations for `change.yaml#workflow.automation`.
+  - Use a repository-safe temporary-file and replace strategy for each complete YAML update while retaining logical write-ahead receipt ordering.
+  - Implement prepared-receipt creation, finalization, reconciliation, and one-in-flight enforcement.
+  - Implement legacy read projection and one-way migration receipts without writing retired records.
+  - Extend bounded change-record queries to report unified status without treating it as live next-stage ownership.
+- Validation commands:
+  - `python scripts/test-workflow-automation-state.py`
+  - `python scripts/test-validate-workflow-automation.py -k receipt`
+  - `python scripts/test-validate-workflow-automation.py -k migration`
+  - `python scripts/test-query-change-record.py`
+  - `python scripts/test-change-metadata-validator.py`
+- Expected observable result: Unified state updates and interrupted transitions are recoverable and auditable through one writer, while current command behavior remains unchanged.
+- Commit message: `M2: add unified automation state recovery`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone handed to code-review
+  - material findings resolved or explicitly dispositioned before M3 starts
+  - milestone committed
+- Risks:
+  - YAML replacement could overwrite unrelated concurrent edits.
+  - A migration retry could duplicate unified runs or receipts.
+- Rollback/recovery:
+  - Disable unified mutation entrypoints, retain read-only legacy interpretation and recorded evidence, and return affected work to explicit manual stage invocation.
+
+### M3. Target Binding, Canonical Position, and Capability Evaluation
+
+- Milestone state: planned
+- Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
+- Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
+- Files/components likely touched:
+  - `scripts/workflow_automation.py`
+  - `scripts/workflow_automation_policy.py`
+  - `scripts/workflow_automation_state.py`
+  - `scripts/lifecycle_state_sync.py`
+  - `scripts/artifact_lifecycle_validation.py`
+  - `scripts/test-workflow-automation.py`
+  - `scripts/test-artifact-lifecycle-validator.py`
+  - engine and active-plan fixtures under `tests/fixtures/`
+- Dependencies:
+  - M1 policies and M2 state/recovery boundary.
+- Tests to add/update:
+  - Current and legacy commands normalize to a structured target before persistence.
+  - Bare `implement` and `code-review` bind exactly one current nonterminal milestone and current plan identity; missing or ambiguous state produces the exact required diagnostic.
+  - Resume never rebinds a repeated target to a later milestone.
+  - Pre-plan position derives from current artifacts, reviews, resolution, architecture applicability, and transition evidence; ambiguity and staleness pause.
+  - Valid plan creation records the ownership handoff; afterward the plan summary owns live state.
+  - Authoring, implementation, and verification parents remain separate; target selection never widens consent.
+  - Capability derivation rejects stale basis, parent mismatch, cross-risk derivation, expanded paths/categories/budget, and conflicting active authority.
+  - A run targeting verify pauses at the verification boundary until concrete verification authorization exists.
+- Implementation steps:
+  - Implement command parsing and compatibility normalization without exposing a second dispatcher state.
+  - Implement structured target and occurrence binding from the closed policy registry.
+  - Reuse lifecycle parsers for authoritative artifacts, review evidence, and active-plan handoff state.
+  - Implement parent authorization and effective capability creation, invalidation, and single-use checks.
+  - Coordinate one stage invocation through the M2 prepared-receipt boundary.
+- Validation commands:
+  - `python scripts/test-workflow-automation.py -k target`
+  - `python scripts/test-workflow-automation.py -k position`
+  - `python scripts/test-workflow-automation.py -k capability`
+  - `python scripts/test-artifact-lifecycle-validator.py -k automation`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+- Expected observable result: The engine can deterministically select and authorize one next stage without becoming a second workflow cursor or crossing a risk boundary.
+- Commit message: `M3: coordinate target-bound workflow stages`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone handed to code-review
+  - material findings resolved or explicitly dispositioned before M4 starts
+  - milestone committed
+- Risks:
+  - Reimplemented artifact parsing could disagree with lifecycle validators.
+  - A target binder could silently select the wrong milestone.
+- Rollback/recovery:
+  - Disable engine command entrypoints while keeping unified state validation and recovery tooling available for recorded runs.
+
+### M4. Authoring, Proposal Review, and Correction Integration
+
+- Milestone state: planned
+- Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
+- Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
+- Files/components likely touched:
+  - `scripts/workflow_automation.py`
+  - `scripts/workflow_automation_policy.py`
+  - `scripts/review_artifact_validation.py`
+  - `scripts/lifecycle_state_sync.py`
+  - proposal, proposal-review, authoring, and review-resolution stage skills under `skills/` only when their non-public invocation contract must change
+  - `scripts/test-workflow-automation.py`
+  - `scripts/test-review-artifact-validator.py`
+  - `scripts/test-artifact-lifecycle-validator.py`
+  - authoring and proposal-review fixtures under `tests/fixtures/`
+- Dependencies:
+  - M3 one-stage engine and authority evaluation.
+  - The public workflow skill and compatibility aliases remain unchanged.
+- Tests to add/update:
+  - Proposal review records all four outcomes separately from clean-gate satisfaction; only approval continues to a later target.
+  - Exact proposal-review targets stop after recording the occurrence regardless of gate outcome.
+  - Proposal correction requires driver-owned deterministic classification and remaining budget; mutation makes the prior review stale and forces rereview.
+  - Blocked and inconclusive review outcomes pause, and inconclusive review cannot spin without material evidence change.
+  - Post-proposal authoring uses a separate effective capability and stops at every authorization or review boundary through `test-spec-review`.
+  - Review skills cannot edit the reviewed artifact in the same pass, and isolated invocations do not activate or advance automation.
+  - No current or legacy public command can route into the M4 integration harness.
+- Implementation steps:
+  - Connect proposal-review, proposal-correction, and post-proposal-authoring policies to stage-native completion evidence.
+  - Implement review occurrence, clean-gate, exact-target, and later-target routing.
+  - Enforce driver-owned proposal correction through existing review-resolution evidence and budgets.
+  - Integrate singleton authoring stages and conditional architecture behavior through `test-spec-review`.
+  - Exercise the stage chain only through an explicitly non-public test harness; do not edit `skills/workflow/SKILL.md` public command semantics.
+- Validation commands:
+  - `python scripts/test-workflow-automation.py -k proposal_review`
+  - `python scripts/test-workflow-automation.py -k proposal_correction`
+  - `python scripts/test-workflow-automation.py -k authoring`
+  - `python scripts/test-workflow-automation.py -k non_public`
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-skill-validator.py`
+- Expected observable result: The internal engine can traverse proposal review and authoring safely through `test-spec-review`, but no public command or legacy alias can enter the incomplete unified mechanism.
+- Commit message: `M4: integrate bounded authoring review stages`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone handed to code-review
+  - material findings resolved or explicitly dispositioned before M5 starts
+  - milestone committed
+- Risks:
+  - Consecutive authoring stages could collapse author/reviewer independence.
+  - Proposal correction could accidentally inherit post-proposal authority.
+- Rollback/recovery:
+  - Remove or disable the internal authoring harness, preserve stage evidence, and leave all public workflow behavior unchanged.
+
+### M5. Implementation Review, Correction, and Verification Integration
+
+- Milestone state: planned
+- Goal: Integrate ordered milestone implementation and code review, reviewer-owned correction, final holistic review, explanation, and verification behind the same non-public boundary.
+- Requirements: `BRF-R060`-`BRF-R067`, `BRF-R078`-`BRF-R090`, `BRF-R099`-`BRF-R100`
+- Files/components likely touched:
+  - `scripts/workflow_automation.py`
+  - `scripts/workflow_automation_policy.py`
+  - `scripts/review_artifact_validation.py`
+  - `scripts/lifecycle_state_sync.py`
+  - implementation, code-review, review-resolution, ci-maintenance, explain-change, and verify stage skills under `skills/` only when their non-public invocation contract must change
+  - `scripts/test-workflow-automation.py`
+  - `scripts/test-review-artifact-validator.py`
+  - `scripts/test-artifact-lifecycle-validator.py`
+  - implementation and verification fixtures under `tests/fixtures/`
+- Dependencies:
+  - M4 authoring and proposal-review integration is closed and independently reviewed.
+  - The public workflow skill and compatibility aliases remain unchanged.
+- Tests to add/update:
+  - Implementation correction requires reviewer-owned `auto_fix_class`; missing classification is `none`; new/non-shrinking findings and scope expansion pause.
+  - `implement@M<n>` reaches `review-requested` only after milestone validation; `code-review@M<n>` closes only the bound milestone after approved review and resolution.
+  - Milestones execute in plan order and every milestone receives independent local code review.
+  - Final holistic review remains distinct from milestone review.
+  - Verification authorization cannot exist before its complete concrete basis; explanation and verification do not run without it.
+  - Verification failure pauses without repair; successful verify reports `pr` next but performs no external action.
+  - No current or legacy public command can route into the M5 integration harness.
+- Implementation steps:
+  - Connect implementation, implementation-correction, milestone review, CI-maintenance, final holistic review, explanation, and verification policies to stage-native completion evidence.
+  - Enforce reviewer-owned correction classifications and bounded convergence through existing review-resolution evidence.
+  - Enforce ordered milestone implementation/review loops and final holistic review.
+  - Implement verification authorization timing, explanation/verification completion checks, and the hard stop before PR.
+  - Exercise the stage chain only through the non-public harness; do not edit `skills/workflow/SKILL.md` public command semantics.
+- Validation commands:
+  - `python scripts/test-workflow-automation.py -k implementation`
+  - `python scripts/test-workflow-automation.py -k correction`
+  - `python scripts/test-workflow-automation.py -k milestone`
+  - `python scripts/test-workflow-automation.py -k verify`
+  - `python scripts/test-workflow-automation.py -k non_public`
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-skill-validator.py`
+- Expected observable result: The internal engine can traverse implementation through final verify while preserving milestone review, authority, recovery, and external-action boundaries, but remains unreachable from public commands.
+- Commit message: `M5: integrate bounded implementation verification stages`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone handed to code-review
+  - material findings resolved or explicitly dispositioned before M6 starts
+  - milestone committed
+- Risks:
+  - Reusing legacy implementation loops could preserve obsolete profile authority.
+  - Final holistic review could be confused with milestone-local review.
+- Rollback/recovery:
+  - Remove or disable the internal implementation harness, preserve unified evidence and explicit stage behavior, and leave public routing unchanged.
+
+### M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
+
+- Milestone state: planned
+- Goal: Atomically activate unified public commands, map compatibility aliases, prohibit every legacy writer, implement cross-spec contradiction checks, regenerate derived guidance, and prove the complete mechanism.
+- Requirements: `BRF-R002`-`BRF-R005`, `BRF-R087`-`BRF-R102`, including `BRF-R098a`-`BRF-R098i`
+- Files/components likely touched:
+  - `skills/workflow/SKILL.md`
+  - affected review, implementation, verification, and planning skills under `skills/`
+  - `docs/workflows.md`
+  - `scripts/workflow_automation.py`
+  - `scripts/validate_workflow_automation.py`
+  - `scripts/validate-change-metadata.py`
+  - `scripts/lifecycle_state_sync.py`
+  - `scripts/query-change-record.py`
+  - `scripts/test-skill-validator.py`
+  - `scripts/test-workflow-automation.py`
+  - `scripts/test-validate-workflow-automation.py`
+  - adapter generation and validation fixtures
+- Dependencies:
+  - M1-M5 are complete and independently reviewed.
+  - Internal end-to-end authoring and implementation integration proof is clean before any public routing edit is made.
+- Tests to add/update:
+  - `$workflow auto: <stage>`, status, and off use only unified state.
+  - `auto-through: plan-review` and `auto-through: verify` preserve historical target meaning without future-contingent authority or legacy writes.
+  - Legacy status is side-effect free; legacy off migrates once and produces a unified cancelled run.
+  - Terminal legacy records remain readable; active migration is one-way; mixed writable state fails closed.
+  - Unknown aliases report allowed forms; alias removal remains blocked without a separate approved compatibility change.
+  - Every affected legacy selector has one disposition, no retained rule exclusively names a retired writer, and duplicate/unknown selectors fail before consistency checks.
+  - Run output reports target, position source, parent boundary, capability kind, outcome, gate, transition, fixes, decisions, artifacts, stop reason, and next action.
+  - Generated adapters and installed skill projections match canonical guidance; no generated output is hand-edited.
+  - No public routing state exists in which unified commands are active while a legacy writer remains enabled.
+- Implementation steps:
+  - Replace user-facing three-profile routing language with the unified target-driven mechanism and explicit risk-boundary authorization behavior.
+  - Activate current commands and legacy adapters in the same reviewed slice that removes every legacy write path.
+  - Implement the static affected-selector/disposition validator and retired-writer contradiction checks.
+  - Update query/status output and compatibility diagnostics.
+  - Regenerate public adapters into temporary release output and validate them with the version recorded in `dist/adapters/manifest.yaml`.
+  - Run integration fixtures for proposal-review through verify, interruption recovery, cancellation, migration, isolated review, and stop-before-PR.
+- Validation commands:
+  - `python scripts/test-workflow-automation.py`
+  - `python scripts/test-validate-workflow-automation.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py`
+  - `adapter_version="$(sed -n 's/^version: //p' dist/adapters/manifest.yaml | head -1)"; adapter_output="$(mktemp -d)"; trap 'rm -rf "$adapter_output"' EXIT; python scripts/build-adapters.py --version "$adapter_version" --output-dir "$adapter_output" && python scripts/validate-adapters.py --root "$adapter_output" --version "$adapter_version"`
+  - `bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path schemas/change.schema.json --path scripts/workflow_automation.py --path scripts/workflow_automation_policy.py --path scripts/workflow_automation_state.py --path scripts/validate_workflow_automation.py`
+  - `bash scripts/ci.sh --mode broad-smoke`
+- Expected observable result: All supported public commands converge atomically on one writable mechanism, legacy meaning remains readable, no retired writer survives, derived guidance is current, and broad integration proof passes without crossing the PR boundary.
+- Commit message: `M6: activate bounded review-fix workflow automation`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone handed to code-review
+  - material findings resolved or explicitly dispositioned before final closeout
+  - milestone committed
+- Risks:
+  - Generated guidance could retain stale profile terminology after canonical code changes.
+  - A compatibility adapter could accidentally remain a legacy writer.
+  - Public activation could occur before all internal integration proof is current.
+- Rollback/recovery:
+  - Stop creation and automatic continuation of unified runs, preserve all recorded evidence, retain legacy reads and aliases, and return users to explicit manual stages without restoring legacy writers.
+
+## Validation plan
+
+- Start each milestone with the matching test-spec cases and focused unit commands before broad suites.
+- Run every command named by the approved test spec; the test spec may strengthen but not weaken the commands above.
+- Run `python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml` whenever change metadata is updated.
+- Run `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/` after formal review evidence changes.
+- Run `python scripts/validate-review-artifacts.py --mode closeout ...` only when no material finding remains open.
+- Run `python scripts/validate-artifact-lifecycle.py --mode explicit-paths` over the active plan, plan index, spec, architecture, ADRs, change metadata, and current review evidence before downstream handoffs.
+- Run `git diff --check` for every milestone.
+- This plan sets `broad_smoke_required: true`; run `bash scripts/ci.sh --mode broad-smoke` during M6 and final verification in addition to focused and selected checks.
+- Before `explain-change` or verify, require final holistic code-review evidence across all six milestones and the complete final diff.
+
+## Risks and recovery
+
+- Risk: The migration changes multiple validators and workflow surfaces at once.
+  - Recovery: Keep milestones independently reviewable and prevent public routing changes until M6 after the model, state, engine, authoring integration, and implementation integration are separately proven.
+- Risk: `change.yaml` is both general metadata and the automation transaction store.
+  - Recovery: Centralize writes in one adapter, use complete-file replacement, preserve unrelated fields, reject concurrent identity drift, and test interrupted writes.
+- Risk: Current lifecycle parsers and the new engine could become competing sources of canonical position.
+  - Recovery: Reuse existing parsers and compare observed identities; do not persist an engine-owned cursor.
+- Risk: Legacy compatibility can prolong duplicate semantics.
+  - Recovery: Make adapters read-only inputs, validate no legacy write path, and require a later audited compatibility proposal before removal.
+- Risk: Automated review integration can weaken independence through shared context.
+  - Recovery: Keep formal review invocation, manifests, evidence staging, and verdict ownership outside the transition coordinator and test isolated review behavior directly.
+- Risk: A partially integrated engine could become publicly reachable before legacy writers are disabled.
+  - Recovery: Keep M1-M5 behind a non-public harness and make M6 the only milestone that changes public command routing and legacy-writer availability.
+
+## Dependencies
+
+- Plan-review approval is required before test-spec authoring.
+- An active matching test spec and clean test-spec-review are required before M1 implementation.
+- M1-M6 execute in order, and each milestone receives independent code review before the next begins.
+- M1-M5 must remain unreachable through public workflow commands; M6 may activate public routing only after current internal integration evidence for all earlier milestones passes.
+- Any material review finding must be recorded and resolved or explicitly dispositioned before milestone closure.
+- Verification authorization remains absent until its complete post-implementation basis exists.
+- No PR or external action is authorized by this plan.
+
+## Progress
+
+- 2026-07-21: Architecture-review R3 approved the design; lifecycle statuses were normalized for planning reliance.
+- 2026-07-21: Initial five-milestone execution plan created; plan-review pending.
+- 2026-07-21: Plan-review R1 requested executable final-cutover validation and one atomic public activation boundary.
+- 2026-07-21: Plan revised to six milestones, split authoring from implementation integration, reserve public activation for M6, and use versioned generated-adapter plus executed selected-CI proof; plan-review R2 pending.
+- 2026-07-21: Plan-review R2 approved the six-milestone plan with no material findings; the lifecycle handoff was synchronized to test-spec authoring.
+- 2026-07-21: The matching test specification was authored as the active M1-M6 proof map; formal test-spec-review is pending before implementation.
+- 2026-07-21: Test-spec-review R1 requested correction of manual-proof contracts, CMD30 executability, and deterministic fixture controls; implementation remains blocked.
+- 2026-07-21: Test spec revised with complete MP1-MP3 contracts, a directly executable pipe-free CMD30, normalized CMD18 ownership, deterministic fixture controls, and repeat/order-independence case T29; rereview pending.
+- 2026-07-21: Test-spec-review R2 confirmed the three R1 findings resolved and opened `BRF-TSR4`; implementation remains blocked until multi-milestone proof activation is explicit and rereviewed.
+- 2026-07-21: Test spec revised for `BRF-TSR4`: T29 now owns independently executable M2 determinism, T30 owns M6 composed-engine determinism, and every progressive case names milestone-local assertions, commands, and deferrals; R3 pending.
+- 2026-07-21: Test-spec-review R3 confirmed the determinism split but kept `BRF-TSR4` open because T26 remains listed at M6 without a matching case-level or progressive activation contract.
+- 2026-07-21: Test spec revised to complete `BRF-TSR4`: T26 now proves non-public routing at M4/CMD17 and public composition at M6/CMD25 with explicit deferral; R4 pending.
+- 2026-07-21: Test-spec-review R4 approved the 30-case proof map, confirmed all four test-spec findings resolved, and allowed M1 implementation handoff; this isolated review did not start implementation.
+- 2026-07-21: M1 implementation started from the approved R4 handoff; scope is limited to the unified state model, immutable policy projection, and fail-closed structural validation, with public routing intentionally unchanged.
+- 2026-07-21: M1 added the canonical unified schema, immutable eighteen-stage policy projection, closed state/authority vocabularies, stage-relative capability validation, and metadata integration. All five M1 commands passed; the milestone is review-requested and no writer or public route was enabled.
+
+## Decision log
+
+| Date | Decision | Reason | Alternatives rejected |
+| --- | --- | --- | --- |
+| 2026-07-21 | Build the immutable model before enabling any new writer. | Closed policy and state contracts provide a safe base for transactional and routing behavior. | Editing public workflow guidance first would expose an unimplemented contract. |
+| 2026-07-21 | Establish the sole state writer before the transition engine. | Prepared receipts and recovery must exist before a coordinator can safely invoke stages. | Letting the engine write YAML directly would duplicate persistence and recovery logic. |
+| 2026-07-21 | Reserve public and legacy command cutover for M6. | Compatibility, retired-writer removal, and public guidance must activate atomically after internal behavior is proven. | Editing public routing during M4 or M5 could expose a partially migrated engine. |
+| 2026-07-21 | Use six independently reviewed implementation milestones. | Authoring/review correction and implementation/verification have different authority, evidence, and recovery risks. | One combined stage-integration milestone would be too broad; per-stage milestones would create excessive coupling and overhead. |
+| 2026-07-21 | Require generated release-output adapter proof and executed selected CI at cutover. | The active adapter contract is archive-based and selection output alone is not validation execution. | Bare tracked-tree adapter checks and selection-only output are not reliable milestone gates. |
+
+## Surprises and discoveries
+
+- Existing automation behavior is implemented primarily as schema validation, lifecycle route evaluators, review validation, and skill guidance rather than one executable engine.
+- The current change schema permits three legacy state families, so migration must preserve reads while proving that every new write uses only `workflow.automation`.
+- The repository has no dedicated Mermaid renderer; architecture diagram changes route through canonical package lifecycle validation and manual review.
+
+## Validation notes
+
+- `architecture-review-r3` approved the architecture package with no material findings.
+- Review structure and closeout validation passed with 12 reviews and 16 resolved findings before planning.
+- `python scripts/test-change-metadata-validator.py` passed 48 tests for the updated metadata contract.
+- `python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml` passed.
+- `python scripts/validate-guide-system.py` passed for the updated plan index.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` validated the plan, plan indexes, architecture, ADR settlement, and change metadata after contract-shape corrections.
+- Plan-review R1 recorded `BRF-PL1` and `BRF-PL2`; this revision applies both bounded corrections and awaits plan-review R2.
+- `bash scripts/ci.sh --mode explicit ...` passed all six selected checks for the revised plan, including repository broad smoke in 377.30 seconds.
+- Plan-review R2 approved the revised plan with no material findings; `BRF-PL1` and `BRF-PL2` are resolved and review closeout is closed.
+- `specs/single-bounded-review-fix-workflow-automation.test.md` records 30 test cases, 32 validation-command IDs, all six milestone proof gates, and upstream artifact identities for formal review.
+- Test-spec-review R1 recorded `BRF-TSR1`, `BRF-TSR2`, and `BRF-TSR3`; no implementation validation was claimed or executed by the review.
+- The bounded test-spec revision addresses all three R1 findings without changing approved feature, architecture, or milestone semantics; implementation remains blocked pending test-spec-review R2.
+- Test-spec-review R2 confirmed `BRF-TSR1` through `BRF-TSR3` resolved and recorded `BRF-TSR4` for ambiguous command/assertion activation in multi-milestone proof cases; no implementation validation was run.
+- Test-spec-review R2 recording checks passed with 16 reviews, 22 findings, and 1 open finding; change metadata and scoped diff checks also passed.
+- The `BRF-TSR4` revision adds one M6-only composed determinism case and an exhaustive progressive activation map without changing the approved feature, architecture, or milestone sequence; no planned implementation command was executed during authoring.
+- Static authoring checks confirmed 30 test cases, 32 command records, all 14 progressive activation entries, removal of the T29/CMD25 cross-boundary mapping, and the current plan identity recorded by the test spec.
+- Test-spec-review R3 recorded no new finding ID and kept `BRF-TSR4` open for the remaining T26 M4/M6 mapping omission; no implementation validation was run.
+- Test-spec-review R3 recording checks passed with 17 reviews, 22 findings, and 1 open finding; change metadata and scoped diff checks also passed.
+- The final `BRF-TSR4` revision adds T26 as the fifteenth progressive activation entry without changing requirements, commands, milestones, or implementation scope; no planned implementation command was executed.
+- Static authoring and lifecycle checks confirmed 30 tests, 32 commands, all 15 progressive entries, T26 M4/M6 ownership, current plan identity, valid review structure and change metadata, and a clean scoped diff.
+- Test-spec-review R4 approved the active test specification with no material findings; planned commands were not executed by the review, and M1 is now the next implementation stage.
+- Test-spec-review R4 recording checks passed in structure and closeout modes with 18 reviews and 22 resolved findings; change metadata and scoped diff checks also passed.
+- M1 proof-first failures were observed before implementation: both new unit modules were missing and three unified metadata rejection cases incorrectly passed.
+- `python scripts/test-workflow-automation-policy.py` passed 7 tests.
+- `python scripts/test-validate-workflow-automation.py -k vocabulary` passed 3 selected tests.
+- `python scripts/test-change-metadata-validator.py -k workflow_automation` passed 4 selected tests.
+- `python scripts/test-change-metadata-validator.py` passed 52 tests.
+- `python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml` passed after handoff synchronization.
+- `python scripts/test-validate-workflow-automation.py` passed all 11 tests in addition to the required vocabulary selection.
+- `python scripts/validate-guide-system.py` passed for the synchronized plan index.
+- Explicit-path artifact lifecycle validation passed for 5 lifecycle-managed artifacts and retained the existing non-blocking lifecycle-language warning in `review-resolution.md` line 444.
+- `git diff --check` passed after handoff synchronization.
+- M1 intentionally adds no `workflow.automation` writer, command adapter, stage invocation, or public skill change; those boundaries remain assigned to M2-M6.
+
+## Outcome and retrospective
+
+- Pending implementation, milestone reviews, final holistic review, explanation, verification, and PR handoff.
+
+## Readiness
+
+See `Current Handoff Summary` for the authoritative live workflow state and downstream readiness.

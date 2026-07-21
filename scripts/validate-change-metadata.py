@@ -16,6 +16,7 @@ from change_metadata_semantics import validate_requirement_fidelity_metadata
 from change_metadata_semantics import validate_review_gate_metadata
 from review_artifact_validation import summarize_review_evidence
 from review_artifact_validation import validate_change_root as validate_review_artifact_root
+from validate_workflow_automation import validate_workflow_automation
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -501,6 +502,20 @@ def validate_metadata_semantics(data: Any, metadata_path: Path | None = None) ->
         return []
 
     errors: list[str] = []
+    workflow = data.get("workflow")
+    if isinstance(workflow, dict):
+        automation = workflow.get("automation")
+        if automation is not None:
+            errors.extend(
+                validate_workflow_automation(
+                    automation,
+                    top_level_change_id=data.get("change_id"),
+                )
+            )
+            if workflow.get("autoprogression") is not None:
+                errors.append(
+                    "workflow: mixed writable workflow.automation and legacy workflow.autoprogression state"
+                )
     errors.extend(validate_autoprogression_policy(data))
     validation = data.get("validation")
     if isinstance(validation, list):

@@ -1,0 +1,47 @@
+flowchart LR
+  actor["Contributor or agent"]:::person
+  workflow["Workflow skill<br/>[Markdown: skills/workflow/SKILL.md]"]:::container
+  stage_skills["Stage-owning skills and formal reviewers<br/>[Markdown workflow components]"]:::container
+  lifecycle["Lifecycle artifacts and reviews<br/>[Markdown and YAML]"]:::container
+  plan["Active plan Current Handoff Summary<br/>[Markdown live-state owner]"]:::container
+  evidence["Change-local evidence<br/>[YAML: change.yaml#workflow.automation]"]:::container
+
+  subgraph automation["Automation tooling<br/>[Python: scripts/workflow_automation*.py]"]
+    adapter["Command and compatibility adapter"]:::component
+    position["Target binder and canonical position resolver"]:::component
+    coordinator["Transition coordinator"]:::component
+    policy["Typed stage-policy registry"]:::component
+    authority["Authorization and capability evaluator"]:::component
+    state["State store adapter"]:::component
+    reconcile["Transition reconciler"]:::component
+    compatibility["Legacy compatibility projector"]:::component
+    validator["Automation validator"]:::component
+  end
+
+  actor -->|starts, resumes, queries, or cancels through| workflow
+  workflow -->|invokes normalized command| adapter
+  adapter -->|normalizes current and legacy forms with| compatibility
+  adapter -->|requests target and position| position
+  position -->|derives pre-plan position from| lifecycle
+  position -->|reads post-plan position from| plan
+  adapter -->|submits structured target to| coordinator
+  coordinator -->|selects complete immutable policy from| policy
+  coordinator -->|requests executable authority from| authority
+  authority -->|checks basis against| lifecycle
+  authority -->|checks scope against| policy
+  coordinator -->|persists through sole write boundary| state
+  state -->|reads and writes| evidence
+  coordinator -->|reconciles prepared transition through| reconcile
+  reconcile -->|reads original effective capability and completion evidence from| evidence
+  coordinator -->|invokes one stage operation through| stage_skills
+  stage_skills -->|write stage-owned evidence to| lifecycle
+  validator -->|checks complete policies in| policy
+  validator -->|checks automation state through| state
+  validator -->|checks canonical evidence in| lifecycle
+  validator -->|checks active-plan synchronization in| plan
+
+  classDef person fill:#08427b,stroke:#073b6f,color:#fff
+  classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+  classDef external fill:#999,stroke:#666,color:#fff
+  classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
+  classDef component fill:#85bbf0,stroke:#3c7fc0,color:#111
