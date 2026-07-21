@@ -10,9 +10,12 @@ from validate_workflow_automation import validate_workflow_automation
 from validate_workflow_automation import (
     CAPABILITY_STATUS_TRANSITIONS,
     PARENT_STATUS_TRANSITIONS,
+    PUBLIC_TARGET_ORDER,
     RUN_STATUS_TRANSITIONS,
+    STAGE_TARGET_FRONTIER,
     validate_status_transition,
 )
+from workflow_automation_policy import PUBLIC_TARGET_STAGES, WorkflowStage
 
 
 def valid_automation() -> dict[str, object]:
@@ -42,6 +45,8 @@ def valid_automation() -> dict[str, object]:
                 "maximum_target": {
                     "stage": "proposal-review",
                     "occurrence": {"kind": "singleton"},
+                    "bound_at": "2026-07-20T00:00:00Z",
+                    "completion": {"review_occurrence": "recorded"},
                 },
                 "allowed_capability_kinds": ["proposal-review"],
                 "maximum_path_roots": ["docs/changes/2026-07-20-example/"],
@@ -257,6 +262,11 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             },
         )
 
+    def test_operation_target_frontier_covers_every_stage_and_public_target(self) -> None:
+        self.assertEqual(set(STAGE_TARGET_FRONTIER), {stage.value for stage in WorkflowStage})
+        self.assertEqual(set(PUBLIC_TARGET_ORDER), {stage.value for stage in PUBLIC_TARGET_STAGES})
+        self.assertEqual(len(PUBLIC_TARGET_ORDER), len(set(PUBLIC_TARGET_ORDER)))
+
     def test_parent_authorization_is_not_executable(self) -> None:
         state = valid_automation()
         state["run"]["effective_capability_id"] = "authorization-authoring-001"  # type: ignore[index]
@@ -383,6 +393,8 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 maximum_stage = (
                     "verify"
                     if authorization_class == "verification"
+                    else "code-review"
+                    if kind == "implementation-correction"
                     else "implement"
                     if authorization_class == "implementation"
                     else "spec"
@@ -397,7 +409,12 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 parent["maximum_target"] = {  # type: ignore[index]
                     "stage": maximum_stage,
                     "occurrence": {"kind": maximum_occurrence},
+                    "bound_at": "2026-07-20T00:00:00Z",
+                    "completion": {"target": "reached"},
                 }
+                if maximum_occurrence == "milestone":
+                    parent["maximum_target"]["occurrence"]["milestone_id"] = "M1"  # type: ignore[index]
+                    parent["maximum_target"]["plan_identity"] = "sha256:plan"  # type: ignore[index]
                 if kind in {"proposal-correction", "implementation-correction"}:
                     parent["correction_budget"] = {"max_cycles": 1}  # type: ignore[index]
                 capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
@@ -435,6 +452,35 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "workflow.automation.run.target.plan_identity: required for repeated-stage target",
             errors,
         )
+
+    def test_parent_maximum_target_uses_complete_structured_target(self) -> None:
+        required_cases = (
+            ("milestone", ("occurrence", "milestone_id")),
+            ("plan", ("plan_identity",)),
+            ("binding-time", ("bound_at",)),
+            ("completion", ("completion",)),
+        )
+        for label, path in required_cases:
+            with self.subTest(case=label):
+                state = valid_automation()
+                parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
+                parent["authorization_class"] = "implementation"  # type: ignore[index]
+                parent["allowed_capability_kinds"] = ["implementation"]  # type: ignore[index]
+                parent["maximum_mutation_categories"] = ["production-code"]  # type: ignore[index]
+                parent["maximum_target"] = {  # type: ignore[index]
+                    "stage": "implement",
+                    "occurrence": {"kind": "milestone", "milestone_id": "M1"},
+                    "plan_identity": "sha256:plan",
+                    "bound_at": "2026-07-20T00:00:00Z",
+                    "completion": {"milestone_state": "review-requested"},
+                }
+                state["effective_capabilities"] = {}
+                cursor = parent["maximum_target"]  # type: ignore[index]
+                for key in path[:-1]:
+                    cursor = cursor[key]
+                del cursor[path[-1]]
+                errors = validate_workflow_automation(state)
+                self.assertTrue(any("maximum_target" in error for error in errors), errors)
 
     def test_internal_stage_wrong_occurrence_is_rejected(self) -> None:
         state = valid_automation()
@@ -523,7 +569,47 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 errors = validate_workflow_automation(state)
                 self.assertTrue(any(expected in error for error in errors), errors)
 
-    def test_receipt_capability_stage_occurrence_must_match(self) -> None:
+    def test_receipt_later_target_allows_current_earlier_stage_capability(self) -> None:
+        state = valid_automation()
+        state["run"]["target"] = {  # type: ignore[index]
+            "stage": "spec",
+            "occurrence": {"kind": "singleton"},
+            "bound_at": "2026-07-20T00:00:00Z",
+            "completion": {"spec": "authored"},
+        }
+        add_valid_receipt(state)
+        self.assertEqual(validate_workflow_automation(state), [])
+
+    def test_capability_operation_cannot_exceed_run_or_parent_target(self) -> None:
+        for boundary in ("run", "parent"):
+            with self.subTest(boundary=boundary):
+                state = valid_automation()
+                parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
+                parent["allowed_capability_kinds"] = ["post-proposal-authoring"]  # type: ignore[index]
+                parent["maximum_mutation_categories"] = ["downstream-authoring-artifacts"]  # type: ignore[index]
+                capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+                capability["capability_kind"] = "post-proposal-authoring"  # type: ignore[index]
+                capability["stage"] = {"name": "spec", "occurrence": {"kind": "singleton"}}  # type: ignore[index]
+                capability["basis"] = {  # type: ignore[index]
+                    "proposal_identity": "sha256:proposal",
+                    "approved_proposal_review_identity": "sha256:proposal-review",
+                    "closed_review_resolution_identity": "sha256:resolution",
+                    "stage_scope_identity": "sha256:scope",
+                }
+                capability["scope"]["mutation_categories"] = ["downstream-authoring-artifacts"]  # type: ignore[index]
+                if boundary == "run":
+                    parent["maximum_target"] = {  # type: ignore[index]
+                        "stage": "spec",
+                        "occurrence": {"kind": "singleton"},
+                        "bound_at": "2026-07-20T00:00:00Z",
+                        "completion": {"spec": "authored"},
+                    }
+                add_valid_receipt(state)
+                errors = validate_workflow_automation(state)
+                expected = "run target" if boundary == "run" else "parent maximum target"
+                self.assertTrue(any(expected in error for error in errors), errors)
+
+    def test_receipt_target_must_match_run_destination(self) -> None:
         state = valid_automation()
         receipt = add_valid_receipt(state)
         receipt["target"] = {
@@ -533,7 +619,22 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "completion": {"spec": "authored"},
         }
         errors = validate_workflow_automation(state)
-        self.assertTrue(any("effective_capability_id" in error for error in errors), errors)
+        self.assertTrue(any("must match automation run target" in error for error in errors), errors)
+
+    def test_receipt_rejects_placeholder_postcondition_and_output_evidence(self) -> None:
+        cases = (
+            ("null-postcondition", "expected_postcondition", {"review_occurrence": None}),
+            ("empty-postcondition-value", "expected_postcondition", {"review_occurrence": ""}),
+            ("null-output", "outputs", [None]),
+            ("empty-output", "outputs", [""]),
+        )
+        for label, field, value in cases:
+            with self.subTest(case=label):
+                state = valid_automation()
+                receipt = add_valid_receipt(state)
+                receipt[field] = value
+                errors = validate_workflow_automation(state)
+                self.assertTrue(any(field in error for error in errors), errors)
 
     def test_prepared_receipt_requires_active_capability(self) -> None:
         state = valid_automation()
@@ -550,6 +651,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         state = valid_automation()
         receipt = add_valid_receipt(state)
         receipt["status"] = "completed"
+        receipt["outputs"] = ["sha256:proposal-review"]
         receipt["canonical_sync"] = {"status": "synchronized"}
         capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
         capability["status"] = "consumed"  # type: ignore[index]

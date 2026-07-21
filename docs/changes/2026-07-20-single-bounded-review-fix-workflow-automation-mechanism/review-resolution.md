@@ -11,11 +11,12 @@ Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 Review closeout: test-spec-review-r4
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`
-- Findings resolved: 26
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`
+- Findings resolved: 29
 - Unresolved findings: 0
-- Current result: All four code-review M1 R1 findings are resolved with targeted and broad-smoke evidence. M1 is ready for fresh code review; M2 remains blocked until that review approves and closes M1.
+- Current result: All code-review M1 R2 findings are resolved with proof-first regressions, the full M1 command set, and repository broad smoke. M1 is ready for fresh code review; M2 remains blocked pending approval.
 
 ## Resolution Overview
 
@@ -45,8 +46,11 @@ Review closeout: code-review-m1-r1
 | BRF-TSR4 | accepted | resolved | T29/T30 remain split and T26 has an explicit M4/M6 activation and deferral mapping; R4 confirmed resolution. |
 | BRF-M1-CR1 | accepted | resolved | Capability occurrence validation now derives from the immutable registry for public and internal stages and requires milestone identity. |
 | BRF-M1-CR2 | accepted | resolved | Stage basis and invalidation records now require concrete values and closed trigger/action behavior. |
-| BRF-M1-CR3 | accepted | resolved | Receipts now validate structured targets and complete run/change/policy/capability/evidence bindings. |
-| BRF-M1-CR4 | accepted | resolved | Direct proof now covers every policy enum, durable vocabularies, all capability kinds, and malformed authority/receipt records. |
+| BRF-M1-CR3 | accepted | resolved | Receipts now validate the requested structural run/change/policy/capability bindings; R2 records distinct semantic gaps separately. |
+| BRF-M1-CR4 | accepted | resolved | The requested matrix expansion is present; R2 records incorrect contrast semantics and remaining gaps separately. |
+| BRF-M1-CR5 | accepted | resolved | Receipt destinations now match the run while capability operations are independently bounded by the run and parent targets; evidence values are concrete. |
+| BRF-M1-CR6 | accepted | resolved | Contrast tests now cover later destinations, operation bounds, complete parent targets, and placeholder evidence. |
+| BRF-M1-CR7 | accepted | resolved | Parent maximum targets now reuse the complete structured-target validator. |
 
 ## Common Resolution Metadata
 
@@ -558,3 +562,47 @@ Chosen action: Expanded table-driven unknown-value, incomplete-policy, occurrenc
 Safe resolution path: Expand table-driven unknown-value, incomplete-policy, and stage-relative authority fixtures while preserving the planned test selector.
 Validation target: Add explicitly named unknown-value and incomplete-record tests while preserving the planned vocabulary selector; rerun the M1 command set and code-review.
 Validation evidence: 9 policy tests, 5 selected vocabulary tests, 25 full validator tests, 4 focused metadata tests, 52 metadata regressions, and 11 broad-smoke checks pass.
+
+### code-review-m1-r2
+
+#### BRF-M1-CR5 - Receipt operation, target, and concrete evidence semantics
+
+Finding ID: BRF-M1-CR5
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: R2 reproduced a valid later destination rejected by direct capability/target equality and placeholder postcondition/output evidence accepted as recoverable evidence.
+Required outcome: Separate the run destination from the concrete capability-bound operation and require concrete receipt evidence.
+Chosen action: Removed destination/capability equality, required receipt target equality with the run destination, bounded capability operations by both run and parent targets, and added recursive concrete postcondition/output validation.
+Safe resolution path: Validate policy reachability and capability-bound operation independently of the destination; reject null/empty postcondition and output evidence while preserving empty prepared outputs.
+Validation target: Targeted regressions, full M1 command set, and code-review M1 R3.
+Validation evidence: Proof-first contrast tests failed before implementation and now pass; 30 validator tests, 9 policy tests, 52 metadata tests, and 11 broad-smoke checks pass.
+
+#### BRF-M1-CR6 - Corrected negative proof matrix
+
+Finding ID: BRF-M1-CR6
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: R2 demonstrated that passing positive and negative fixtures encode contract-invalid semantics.
+Required outcome: Correct parent, receipt-operation, destination, and concrete-evidence contrast fixtures.
+Chosen action: Replaced the misleading stage-equality test and reduced parent positives with contract-valid destination/operation, target-completeness, and concrete-evidence contrast fixtures.
+Safe resolution path: Replace invalid positives and misleading negatives with contract-derived table cases.
+Validation target: Full policy, validator, metadata, and broad-smoke proof followed by code-review M1 R3.
+Validation evidence: The full 30-test validator suite includes direct positive and negative coverage for every reproduced R2 case and passes.
+
+#### BRF-M1-CR7 - Structured parent maximum target
+
+Finding ID: BRF-M1-CR7
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: A repeated-stage parent authorization can currently be persisted without the occurrence identity required before authorization persistence.
+Required outcome: Validate parent maximum targets as complete structured targets, including milestone and plan identity where repeated.
+Chosen action: Reused `_validate_target` for parent maximum targets and required milestone, plan, binding-time, and completion identity for repeated targets.
+Safe resolution path: Reuse structured-target validation and add complete parent positives plus missing-field negatives.
+Validation target: Targeted parent regressions, full M1 command set, and code-review M1 R3.
+Validation evidence: Four missing-field parent-target cases fail as required; complete authoring, implementation, and verification parent/capability fixtures pass.

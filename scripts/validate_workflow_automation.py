@@ -91,6 +91,42 @@ CAPABILITY_KIND_VALUES = frozenset(value.value for value in CapabilityKind)
 MUTATION_CATEGORY_VALUES = frozenset(value.value for value in MutationCategory)
 RETRY_POLICY_VALUES = frozenset(value.value for value in RetryPolicy)
 
+PUBLIC_TARGET_ORDER = (
+    WorkflowStage.PROPOSAL_REVIEW.value,
+    WorkflowStage.SPEC.value,
+    WorkflowStage.SPEC_REVIEW.value,
+    WorkflowStage.ARCHITECTURE.value,
+    WorkflowStage.ARCHITECTURE_REVIEW.value,
+    WorkflowStage.PLAN.value,
+    WorkflowStage.PLAN_REVIEW.value,
+    WorkflowStage.TEST_SPEC.value,
+    WorkflowStage.TEST_SPEC_REVIEW.value,
+    WorkflowStage.IMPLEMENT.value,
+    WorkflowStage.CODE_REVIEW.value,
+    WorkflowStage.VERIFY.value,
+)
+PUBLIC_TARGET_RANK = {stage: index for index, stage in enumerate(PUBLIC_TARGET_ORDER)}
+STAGE_TARGET_FRONTIER = {
+    WorkflowStage.PROPOSAL.value: WorkflowStage.PROPOSAL_REVIEW.value,
+    WorkflowStage.PROPOSAL_REVIEW.value: WorkflowStage.PROPOSAL_REVIEW.value,
+    WorkflowStage.SPEC.value: WorkflowStage.SPEC.value,
+    WorkflowStage.SPEC_REVIEW.value: WorkflowStage.SPEC_REVIEW.value,
+    WorkflowStage.ARCHITECTURE_ASSESSMENT.value: WorkflowStage.ARCHITECTURE.value,
+    WorkflowStage.ARCHITECTURE.value: WorkflowStage.ARCHITECTURE.value,
+    WorkflowStage.ARCHITECTURE_REVIEW.value: WorkflowStage.ARCHITECTURE_REVIEW.value,
+    WorkflowStage.PLAN.value: WorkflowStage.PLAN.value,
+    WorkflowStage.PLAN_REVIEW.value: WorkflowStage.PLAN_REVIEW.value,
+    WorkflowStage.TEST_SPEC.value: WorkflowStage.TEST_SPEC.value,
+    WorkflowStage.TEST_SPEC_REVIEW.value: WorkflowStage.TEST_SPEC_REVIEW.value,
+    WorkflowStage.IMPLEMENT.value: WorkflowStage.IMPLEMENT.value,
+    WorkflowStage.CODE_REVIEW.value: WorkflowStage.CODE_REVIEW.value,
+    WorkflowStage.REVIEW_RESOLUTION.value: WorkflowStage.CODE_REVIEW.value,
+    WorkflowStage.CI_MAINTENANCE.value: WorkflowStage.CODE_REVIEW.value,
+    WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW.value: WorkflowStage.VERIFY.value,
+    WorkflowStage.EXPLAIN_CHANGE.value: WorkflowStage.VERIFY.value,
+    WorkflowStage.VERIFY.value: WorkflowStage.VERIFY.value,
+}
+
 CAPABILITY_AUTHORIZATION_CLASSES = {
     CapabilityKind.PROPOSAL_REVIEW.value: AuthorizationClass.AUTHORING.value,
     CapabilityKind.PROPOSAL_CORRECTION.value: AuthorizationClass.AUTHORING.value,
@@ -239,6 +275,45 @@ def _validate_non_empty_object(value: Any, path: str) -> list[str]:
     return []
 
 
+def _validate_concrete_value(value: Any, path: str) -> list[str]:
+    if isinstance(value, str):
+        return [] if value else [f"{path}: expected concrete non-empty value"]
+    if isinstance(value, bool) or value is None:
+        return [f"{path}: expected concrete non-empty value"]
+    if isinstance(value, (int, float)):
+        return []
+    if isinstance(value, dict):
+        if not value:
+            return [f"{path}: expected concrete non-empty object"]
+        errors: list[str] = []
+        for key, item in value.items():
+            if not isinstance(key, str) or not key:
+                errors.append(f"{path}: expected non-empty string keys")
+                continue
+            errors.extend(_validate_concrete_value(item, f"{path}.{key}"))
+        return errors
+    if isinstance(value, list):
+        if not value:
+            return [f"{path}: expected concrete non-empty array"]
+        errors = []
+        for index, item in enumerate(value):
+            errors.extend(_validate_concrete_value(item, f"{path}[{index}]"))
+        return errors
+    return [f"{path}: expected concrete non-empty value"]
+
+
+def _validate_concrete_object(value: Any, path: str) -> list[str]:
+    errors = _validate_non_empty_object(value, path)
+    if not isinstance(value, dict):
+        return errors
+    for key, item in value.items():
+        if not isinstance(key, str) or not key:
+            errors.append(f"{path}: expected non-empty string keys")
+            continue
+        errors.extend(_validate_concrete_value(item, f"{path}.{key}"))
+    return errors
+
+
 def _validate_invalidation(
     value: Any,
     path: str,
@@ -286,6 +361,41 @@ def _is_sequence_subset(candidate: Any, maximum: Any) -> bool:
     if not isinstance(candidate, list) or not isinstance(maximum, list):
         return False
     return all(any(item == allowed for allowed in maximum) for item in candidate)
+
+
+def _validate_operation_within_target(
+    capability: dict[str, Any],
+    target: Any,
+    path: str,
+    target_label: str,
+) -> list[str]:
+    stage = capability.get("stage")
+    if not isinstance(stage, dict) or not isinstance(target, dict):
+        return []
+    operation = stage.get("name")
+    destination = target.get("stage")
+    frontier = STAGE_TARGET_FRONTIER.get(operation)
+    operation_rank = PUBLIC_TARGET_RANK.get(frontier)
+    destination_rank = PUBLIC_TARGET_RANK.get(destination)
+    if operation_rank is None or destination_rank is None:
+        return []
+    errors: list[str] = []
+    if operation_rank > destination_rank:
+        errors.append(f"{path}.stage.name: operation exceeds {target_label}")
+        return errors
+    if operation in {WorkflowStage.IMPLEMENT.value, WorkflowStage.CODE_REVIEW.value} and destination in {
+        WorkflowStage.IMPLEMENT.value,
+        WorkflowStage.CODE_REVIEW.value,
+    }:
+        operation_occurrence = stage.get("occurrence")
+        target_occurrence = target.get("occurrence")
+        if isinstance(operation_occurrence, dict) and isinstance(target_occurrence, dict):
+            if operation_occurrence.get("milestone_id") != target_occurrence.get("milestone_id"):
+                errors.append(f"{path}.stage.occurrence.milestone_id: exceeds {target_label}")
+        basis = capability.get("basis")
+        if isinstance(basis, dict) and basis.get("plan_identity") != target.get("plan_identity"):
+            errors.append(f"{path}.basis.plan_identity: does not match {target_label}")
+    return errors
 
 
 def _validate_target_vocabulary(target: Any, path: str) -> list[str]:
@@ -484,9 +594,7 @@ def _validate_target(target: Any, path: str) -> list[str]:
     bound_at = target.get("bound_at")
     if not isinstance(bound_at, str) or RFC3339_UTC_RE.fullmatch(bound_at) is None:
         errors.append(f"{path}.bound_at: expected RFC3339 UTC timestamp")
-    completion = target.get("completion")
-    if not isinstance(completion, dict) or not completion:
-        errors.append(f"{path}.completion: expected non-empty object")
+    errors.extend(_validate_concrete_object(target.get("completion"), f"{path}.completion"))
     return errors
 
 
@@ -550,21 +658,9 @@ def _validate_parent(parent_id: str, parent: Any, top_change_id: Any, path: str)
     authorized_at = parent.get("authorized_at")
     if not isinstance(authorized_at, str) or RFC3339_UTC_RE.fullmatch(authorized_at) is None:
         errors.append(f"{path}.authorized_at: expected RFC3339 UTC timestamp")
-    # Maximum targets omit binding time and completion because they are consent envelopes.
     maximum_target = parent.get("maximum_target")
     if isinstance(maximum_target, dict):
-        if "stage" not in maximum_target:
-            errors.append(f"{path}.maximum_target.stage: missing required field")
-        occurrence = maximum_target.get("occurrence")
-        expected = _expected_occurrence(maximum_target.get("stage"))
-        if not isinstance(occurrence, dict) or "kind" not in occurrence:
-            errors.append(f"{path}.maximum_target.occurrence.kind: missing required field")
-        if isinstance(occurrence, dict) and expected is not None:
-            if occurrence.get("kind") != expected:
-                errors.append(
-                    f"{path}.maximum_target.occurrence.kind: expected {expected} "
-                    f"for {maximum_target['stage']}"
-                )
+        errors.extend(_validate_target(maximum_target, f"{path}.maximum_target"))
     else:
         errors.append(f"{path}.maximum_target: expected object")
     allowed_kinds = parent.get("allowed_capability_kinds")
@@ -723,6 +819,14 @@ def _validate_capability(
                 categories, parent.get("maximum_mutation_categories")
             ):
                 errors.append(f"{path}.scope.mutation_categories: exceeds parent maximum")
+        errors.extend(
+            _validate_operation_within_target(
+                capability,
+                parent.get("maximum_target"),
+                path,
+                "parent maximum target",
+            )
+        )
     return errors
 
 
@@ -885,16 +989,24 @@ def validate_workflow_automation(
                     errors.append(f"{path}.change_id: must match automation run")
                 if receipt.get("policy_version") != run.get("policy_version"):
                     errors.append(f"{path}.policy_version: must match automation run")
+                if receipt.get("target") != run.get("target"):
+                    errors.append(f"{path}.target: must match automation run target")
             errors.extend(
                 _validate_evidence_object(receipt.get("input_identities"), f"{path}.input_identities")
             )
             errors.extend(
-                _validate_non_empty_object(
+                _validate_concrete_object(
                     receipt.get("expected_postcondition"), f"{path}.expected_postcondition"
                 )
             )
-            if not isinstance(receipt.get("outputs"), list):
+            outputs = receipt.get("outputs")
+            if not isinstance(outputs, list):
                 errors.append(f"{path}.outputs: expected array")
+            else:
+                if receipt.get("status") == "completed" and not outputs:
+                    errors.append(f"{path}.outputs: completed receipt requires concrete output evidence")
+                for index, output in enumerate(outputs):
+                    errors.extend(_validate_concrete_value(output, f"{path}.outputs[{index}]"))
             errors.extend(
                 _required(receipt.get("canonical_sync"), {"status"}, f"{path}.canonical_sync")
             )
@@ -920,15 +1032,14 @@ def validate_workflow_automation(
                         )
                     if receipt.get("policy_version") != capability.get("policy_version"):
                         errors.append(f"{path}.policy_version: must match effective capability")
-                    target = receipt.get("target")
-                    capability_stage = capability.get("stage")
-                    if isinstance(target, dict) and isinstance(capability_stage, dict):
-                        if target.get("stage") != capability_stage.get("name") or target.get(
-                            "occurrence"
-                        ) != capability_stage.get("occurrence"):
-                            errors.append(
-                                f"{path}.effective_capability_id: stage occurrence does not match receipt target"
-                            )
+                    errors.extend(
+                        _validate_operation_within_target(
+                            capability,
+                            receipt.get("target"),
+                            f"{path}.effective_capability",
+                            "run target",
+                        )
+                    )
     return errors
 
 

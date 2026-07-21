@@ -104,12 +104,12 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Current milestone: M1. Unified State Model and Complete Policy Registry
 - Current milestone state: review-requested
 - Last reviewed milestone: M1. Unified State Model and Complete Policy Registry
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r1.md`
-- Review status: changes-requested; stage=code-review; round=r1
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r2.md`
+- Review status: changes-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5, M6
 - Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — all four M1 R1 findings are resolved with validation evidence, but M1 requires fresh independent code review and M2-M6 have not started.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — all M1 R2 findings are resolved with validation evidence, but fresh code review is required and M2-M6 have not started.
 
 ## Milestones
 
@@ -509,6 +509,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-21: Code-review M1 R1 requested changes in `BRF-M1-CR1` through `BRF-M1-CR4`: internal and milestone capability occurrences, concrete basis/invalidation validation, complete receipt bindings, and exhaustive negative proof remain incomplete. M1 is resolution-needed; M2 is blocked.
 - 2026-07-21: M1 review resolution implementation started for the four accepted R1 findings. The correction remains limited to policy/state validation and direct M1 proof; M2 writer and routing work remain out of scope.
 - 2026-07-21: Resolved `BRF-M1-CR1` through `BRF-M1-CR4` by deriving occurrence validation from the immutable policy registry, enforcing concrete authority/invalidation evidence, validating complete capability-bound receipts, and expanding the negative proof matrix. M1 is review-requested; M2 remains blocked pending M1 rereview.
+- 2026-07-21: Code-review M1 R2 confirmed all four R1 findings resolved and opened `BRF-M1-CR5` through `BRF-M1-CR7` for receipt destination/operation conflation, incorrect proof contrasts, placeholder evidence acceptance, and incomplete parent maximum targets. M1 is resolution-needed; M2 remains blocked.
+- 2026-07-21: Resolved `BRF-M1-CR5` through `BRF-M1-CR7` with destination/operation separation, operation-to-target bounds, recursive concrete evidence validation, complete parent structured targets, and corrected contrast fixtures. M1 is review-requested; M2 remains blocked pending M1 R3.
 
 ## Decision log
 
@@ -519,12 +521,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-21 | Reserve public and legacy command cutover for M6. | Compatibility, retired-writer removal, and public guidance must activate atomically after internal behavior is proven. | Editing public routing during M4 or M5 could expose a partially migrated engine. |
 | 2026-07-21 | Use six independently reviewed implementation milestones. | Authoring/review correction and implementation/verification have different authority, evidence, and recovery risks. | One combined stage-integration milestone would be too broad; per-stage milestones would create excessive coupling and overhead. |
 | 2026-07-21 | Require generated release-output adapter proof and executed selected CI at cutover. | The active adapter contract is archive-based and selection output alone is not validation execution. | Bare tracked-tree adapter checks and selection-only output are not reliable milestone gates. |
+| 2026-07-21 | Treat receipt target as the run destination and effective-capability stage as the concrete operation. | Target selection and executable authority are independent; direct equality rejects valid earlier transitions toward later targets. | Reusing one field for both concepts or adding an unapproved receipt schema field. |
 
 ## Surprises and discoveries
 
 - Existing automation behavior is implemented primarily as schema validation, lifecycle route evaluators, review validation, and skill guidance rather than one executable engine.
 - The current change schema permits three legacy state families, so migration must preserve reads while proving that every new write uses only `workflow.automation`.
 - The repository has no dedicated Mermaid renderer; architecture diagram changes route through canonical package lifecycle validation and manual review.
+- A parent consent envelope still carries a complete structured target; reducing it to stage and occurrence kind silently loses repeated-stage identity before authorization persistence.
 
 ## Validation notes
 
@@ -555,6 +559,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Review-resolution proof-first tests failed on all four reproduced gaps before the production validator changed. After correction, each reproduction returns an actionable validation error and valid records for all six capability kinds pass.
 - M1 rereview validation passed: 9 policy tests, 5 selected vocabulary tests, 25 full automation-validator tests, 4 focused metadata tests, 52 full metadata regressions, and 11 repository broad-smoke checks. The validation selector reported manual-routing-required for the four new unsupported script paths; the plan-owned explicit M1 commands covered those paths and selected lifecycle/review/metadata/guide checks were executed directly.
 - Final post-correction broad smoke passed all 11 checks in 376 seconds after adding explicit prepared/active, completed/consumed, and parent-revocation consistency proof.
+- M1 R2 proof-first regressions failed for later-target/current-operation separation, four incomplete parent-target variants, and null/empty receipt evidence before production changes.
+- M1 R2 resolution passed 30 automation-validator tests, 9 policy tests, 4 focused metadata tests, all 52 metadata-validator tests, and 11 repository broad-smoke checks in 346 seconds.
 - `python scripts/test-workflow-automation-policy.py` passed 7 tests.
 - `python scripts/test-validate-workflow-automation.py -k vocabulary` passed 3 selected tests.
 - `python scripts/test-change-metadata-validator.py -k workflow_automation` passed 4 selected tests.
