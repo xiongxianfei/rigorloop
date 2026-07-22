@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r7.md`
-- Review status: changes-requested; stage=code-review; round=r7
-- Remaining in-scope implementation milestones: M3 rereview, M4, M5, M6
-- Next stage: code-review M3 R8
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r8.md`
+- Review status: changes-requested; stage=code-review; round=r8
+- Remaining in-scope implementation milestones: M3 resolution needed, M4, M5, M6
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 R8 rereview and later lifecycle gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M3-CR15; M3 R8 requires resolution; later lifecycle gates remain.
 
 ## Milestones
 
@@ -220,7 +220,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M3. Target Binding, Canonical Position, and Capability Evaluation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
 - Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
 - Files/components likely touched:
@@ -548,6 +548,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: Code-review M3 R7 classified both R6 corrections as failed remediations and opened `BRF-M3-CR13` plus `BRF-M3-CR14`. A symlink earlier than the derived repository root still redirects ownership, and a second structured review-state claim can contradict the validated detail prefix. M3 is resolution-needed; M4 remains blocked.
 - 2026-07-22: M3 R7 review-resolution implementation added proof-first earlier-ancestor symlink and duplicate/unstructured state-field regressions; each reproduced the reported bypass before production correction.
 - 2026-07-22: Resolved `BRF-M3-CR13` and `BRF-M3-CR14` by checking the entire absolute lexical metadata chain before resolution and rejecting all additional structured fields outside the single review-state projection. M3 is review-requested for R8; M4 remains blocked.
+- 2026-07-22: Code-review M3 R8 confirmed the full-chain symlink correction, classified the R7 review-state correction as failed remediation, and opened `BRF-M3-CR15`. Alternate structured keys and plain contradictory prose remain accepted in the authoritative detail. M3 is resolution-needed; M4 remains blocked.
 
 ## Decision log
 
@@ -584,6 +585,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - A stage-only frontier cannot represent stopping order across repeated milestone occurrences; the target milestone must participate in next-edge permission.
 
 ## Validation notes
+
+- Code-review M3 R8 independently reran 48 state and 154 lifecycle tests, confirmed the earlier-ancestor symlink is rejected, and reproduced three review-state remainder bypasses despite those suites passing.
 
 - M3 R7 proof-first tests failed for a symlink above the derived repository root, a second `review-state`, and zero formal state with unstructured state fields before production changes.
 - The correction passes 48 state/recovery tests, 23 engine tests, CMD10-CMD14 including 154 lifecycle tests, 52 automation-validator tests, 103 review-parser tests, and Python compilation.

@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -27,11 +27,12 @@ Review closeout: code-review-m3-r4
 Review closeout: code-review-m3-r5
 Review closeout: code-review-m3-r6
 Review closeout: code-review-m3-r7
+Review closeout: code-review-m3-r8
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`
 - Findings resolved: 54
-- Unresolved findings: 0
-- Current result: `BRF-M3-CR13` and `BRF-M3-CR14` are resolved by checking the complete absolute lexical metadata chain before resolution and reserving structured fields to the single leading review-state projection. M3 is review-requested for code-review R8 and M4 remains blocked.
+- Unresolved findings: 1
+- Current result: Code-review M3 R8 confirmed `BRF-M3-CR13` resolved and classified `BRF-M3-CR14` as failed remediation. Alternate structured keys and plain contradictory state prose still pass through the unrestricted remainder; `BRF-M3-CR15` is open. M3 is resolution-needed and M4 remains blocked.
 
 ## Resolution Overview
 
@@ -91,6 +92,7 @@ Review closeout: code-review-m3-r7
 | BRF-M3-CR12 | accepted | resolved | Live open-review detail now carries an exact count/ID projection and forbids independent finding claims in its remainder. |
 | BRF-M3-CR13 | accepted | resolved | Canonical construction now checks every absolute lexical component through `change.yaml` before resolution, including ancestors above the derived root. |
 | BRF-M3-CR14 | accepted | resolved | The review-state remainder now rejects every additional structured field as well as independent finding claims and IDs. |
+| BRF-M3-CR15 | needs-decision | open | R8 failed-remediation: the remainder denylist still accepts alternate structured keys and plain contradictory review-state prose. |
 
 ## Common Resolution Metadata
 
@@ -100,6 +102,24 @@ Review closeout: code-review-m3-r7
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m3-r8
+
+#### BRF-M3-CR15 - Review-state remainder remains an open vocabulary
+
+Finding ID: BRF-M3-CR15
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Accept the exact full-detail projection already required by the R7 outcome instead of another vocabulary-denylist expansion.
+Rationale: Restricted key matching and selected prose tokens cannot prove that an unrestricted authoritative remainder contains no equivalent review-state assertion.
+Required outcome: The complete live review-state detail must use one closed representation for both open and closed formal state, with no unrestricted remainder.
+Chosen action: Pending review-resolution.
+Safe resolution path: Make the text after the em dash exactly `review-state=<open|closed>; open-count=<n>; open-findings=<none|sorted IDs>`; require it in both states, remove the remainder scanners, update active-plan and fixture defaults, and add exact open/closed plus alternate-key/prose negative regressions.
+Validation target: Focused state-sync contrasts, full lifecycle regressions, artifact validation, broad smoke when selected, and code-review M3 R9.
+Validation evidence: R8 full-validator probes returned zero blockers for a valid open projection followed by plain `nothing remains open`, `review_state=closed`, or `_review-state=closed`, while all 154 lifecycle tests passed.
 
 ### code-review-m3-r7
 
@@ -898,8 +918,8 @@ No material findings. Architecture-review R3 confirmed `BRF-AR1` through `BRF-AR
 - [x] `BRF-AR1` through `BRF-AR3` are incorporated in the architecture package.
 - [x] A changed architecture package is ready for architecture-review R3.
 - [x] Architecture-review R3 approves the revised package.
-- [x] No review-log findings remain open.
-- [x] Closeout status is closed with final dispositions and validation evidence.
+- [ ] No review-log findings remain open.
+- [ ] Closeout status is closed with final dispositions and validation evidence.
 
 ### code-review-m1-r1
 
