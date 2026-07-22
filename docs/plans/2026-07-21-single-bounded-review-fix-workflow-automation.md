@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Sole State Writer, Prepared Receipts, and Recovery
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r3.md`
-- Review status: approved; stage=code-review; round=r3
-- Remaining in-scope implementation milestones: M3, M4, M5, M6
-- Next stage: code-review
+- Current milestone state: resolution-needed
+- Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r1.md`
+- Review status: changes-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M3 resolution needed, M4, M5, M6
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 awaits independent code review; M4-M6, final holistic review, explanation, verification, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 has four open R1 findings; M4-M6, final holistic review, explanation, verification, and PR handoff remain.
 
 ## Milestones
 
@@ -220,7 +220,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M3. Target Binding, Canonical Position, and Capability Evaluation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
 - Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
 - Files/components likely touched:
@@ -530,6 +530,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: Code-review M2 R3 independently confirmed `BRF-M2-CR5` and `BRF-M2-CR6` resolved with no new material findings. M2 is closed and the next stage is implement M3.
 - 2026-07-22: M3 implementation started with T4-T9 and T14 as the same-slice proof boundary. Public workflow skill commands, legacy public adapters, stage-native authoring/review behavior, and M4-M6 integration remain intentionally unaffected until their approved milestones.
 - 2026-07-22: M3 added closed current/legacy command normalization, structured occurrence binding, immutable repeated-target resume, pre-plan and active-plan canonical-position resolution, risk-scoped parent/capability evaluation, and one-stage prepared-receipt coordination. All M3 commands and repository broad smoke pass; M3 is review-requested while public routing remains unchanged.
+- 2026-07-22: Code-review M3 R1 requested changes in `BRF-M3-CR1` through `BRF-M3-CR4`: canonical evidence is not bound to invocation, target completion is mutable, correction budgets are not enforced during derivation, and arbitrary output is finalized as synchronized. M3 is resolution-needed; M4 remains blocked.
 
 ## Decision log
 
@@ -621,6 +622,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - M3 proof-first execution failed because `workflow_automation.py` did not exist, and the lifecycle `-k automation` selection initially contained no tests. The completed slice passes 5 target-selected tests, 4 position-selected tests, 7 capability-selected tests, all 15 engine tests, 2 lifecycle automation tests, all 149 lifecycle regressions, 30 state-writer tests, 49 automation-validator tests, Python compilation, and diff checks.
 - M3 keeps the coordinator non-public until M6. Candidate authority/receipt state is validated before persistence, prepared receipts exist before stage invocation, failed invocations remain failed without consuming authority, and an existing prepared transition prevents any new capability mutation.
 - Validation selection required manual routing for the two new unsupported Python paths; the plan-owned CMD10-CMD14 commands covered them directly. The selected lifecycle regression and lifecycle validation passed, and repository broad smoke passed all 11 checks in 401 seconds.
+- Code-review M3 R1 reran and inspected the M3 proof after a blind-first pass, then directly reproduced completion-predicate tampering, unknown/missing canonical evidence acceptance, mismatched basis/input invocation, exhausted correction-budget derivation, and false completed synchronization. Passing CMD10-CMD14 does not close the four recorded findings.
 
 ## Outcome and retrospective
 

@@ -319,3 +319,15 @@ Detailed record: reviews/code-review-m2-r3.md
 Resolution: review-resolution.md#code-review-m2-r3
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-m3-r1
+Stage: code-review
+Round: M3 R1
+Reviewed artifact: M3 commit `b9a661c0`
+Reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r1.md
+Resolution: review-resolution.md#code-review-m3-r1
+Material findings: BRF-M3-CR1, BRF-M3-CR2, BRF-M3-CR3, BRF-M3-CR4
+Open findings: BRF-M3-CR1, BRF-M3-CR2, BRF-M3-CR3, BRF-M3-CR4
