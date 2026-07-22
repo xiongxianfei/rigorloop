@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -25,11 +25,12 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m3-r4
 Review closeout: code-review-m3-r5
+Review closeout: code-review-m3-r6
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`
 - Findings resolved: 50
-- Unresolved findings: 0
-- Current result: `BRF-M3-CR9` and `BRF-M3-CR10` are resolved with store-bound repository ownership and semantic review-state synchronization. M3 is review-requested for code-review R6 and M4 remains blocked.
+- Unresolved findings: 2
+- Current result: Code-review M3 R6 classified both R5 corrections as failed remediations and opened `BRF-M3-CR11` plus `BRF-M3-CR12`. Constructor-time canonical-root rebinding and contradictory live reason detail remain possible. M3 is resolution-needed and M4 remains blocked.
 
 ## Resolution Overview
 
@@ -85,6 +86,8 @@ Review closeout: code-review-m3-r5
 | BRF-M3-CR8 | accepted | resolved | Canonical completion paths reject symlinks and bind log identity; R5 records the remaining repository-root binding gap separately as `BRF-M3-CR9`. |
 | BRF-M3-CR9 | accepted | resolved | The state store now owns one immutable canonical repository root and rejects foreign-root coordination or finalization before mutation. |
 | BRF-M3-CR10 | accepted | resolved | Lifecycle state sync now requires `review-findings-open` exactly when structured formal review evidence has open accepted findings. |
+| BRF-M3-CR11 | needs-decision | open | R6 failed-remediation: state-store construction accepts ancestor roots and resolves canonical metadata symlinks into foreign ownership. |
+| BRF-M3-CR12 | needs-decision | open | R6 failed-remediation: reason codes are synchronized, but contradictory bounded detail remains accepted. |
 
 ## Common Resolution Metadata
 
@@ -198,6 +201,40 @@ Chosen action: Added a bidirectional lifecycle state-sync rule: open accepted ma
 Safe resolution path: Synchronize the plan from the actual R5 state, add a semantic state-sync regression for reason tokens and open-finding prose, and rerun lifecycle validation before rereview.
 Validation target: lifecycle state-sync selection, full lifecycle regressions, review/metadata validation, and code-review M3 R6.
 Validation evidence: Both proof-first semantic drift fixtures passed incorrectly before the correction and now fail with explicit `review-findings-open` diagnostics. The valid resolution-needed control and all 151 lifecycle regressions pass. Review, metadata, guide, and lifecycle artifact validation are rerun for final handoff.
+
+### code-review-m3-r6
+
+#### BRF-M3-CR11 - Canonical store construction permits root rebinding
+
+Finding ID: BRF-M3-CR11
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Accept the deterministic exact-root and no-symlink construction correction already required by the approved canonical persistence boundary.
+Rationale: Post-construction root comparison is insufficient when construction itself can bind the store to an arbitrary ancestor or to a foreign metadata symlink target.
+Required outcome: Canonical metadata must bind to exactly its lexical repository root and matching change directory before any read or mutation.
+Chosen action: Pending review-resolution.
+Safe resolution path: Validate the lexical canonical metadata path and every component before resolving, reject symlinks, derive the exact repository root from the canonical layout, require explicit-root equality, enforce change-directory identity, and add constructor-level adversarial regressions.
+Validation target: Full state/engine regressions, direct ancestor/common-root and metadata-symlink contrasts, CMD10-CMD14, and code-review M3 R7.
+Validation evidence: R6 directly constructed the tracked canonical store with the repository parent as root and read it successfully. A separate canonical Repo A symlink bound the store to and read Repo B. Existing focused root tests still pass because they begin from an already correctly constructed store.
+
+#### BRF-M3-CR12 - Authoritative reason detail can contradict review state
+
+Finding ID: BRF-M3-CR12
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Accept a bounded machine-checkable review-state detail projection rather than broad natural-language interpretation.
+Rationale: The new validator checks only reason codes before the em dash, while the same authoritative field's detail can assert the opposite open-finding state.
+Required outcome: Both the structured reason code and bounded detail must agree deterministically with formal open-finding evidence.
+Chosen action: Pending review-resolution.
+Safe resolution path: Define and validate an exact review-state clause containing current open count or IDs, or prohibit review-state claims outside that clause; add open-evidence/closed-detail and closed-evidence/open-detail regressions without scanning historical prose.
+Validation target: Focused lifecycle state-sync contrasts, full lifecycle regressions, artifact lifecycle validation, and code-review M3 R7.
+Validation evidence: R6 used zero formal open findings with a valid code list and detail saying `WSS-F1 remains open`; lifecycle validation returned zero blockers. Existing tests cover only code presence with matching detail.
 
 ### code-review-m3-r1
 
@@ -824,8 +861,8 @@ No material findings. Architecture-review R3 confirmed `BRF-AR1` through `BRF-AR
 - [x] `BRF-AR1` through `BRF-AR3` are incorporated in the architecture package.
 - [x] A changed architecture package is ready for architecture-review R3.
 - [x] Architecture-review R3 approves the revised package.
-- [x] No review-log findings remain open.
-- [x] Closeout status is closed with final dispositions and validation evidence.
+- [ ] No review-log findings remain open.
+- [ ] Closeout status is closed with final dispositions and validation evidence.
 
 ### code-review-m1-r1
 
