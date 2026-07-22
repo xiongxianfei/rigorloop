@@ -769,6 +769,20 @@ validation:
     result: passed_after_M3_R1_resolution_handoff_sync
   - command: bash scripts/ci.sh --mode broad-smoke
     result: passed_12_checks_in_230_seconds_after_final_M3_R1_basis_binding
+  - command: python scripts/test-workflow-automation.py -k target; -k position; -k capability; full suite during code-review M3 R2
+    result: passed_5_target_4_position_10_capability_selected_and_18_full_tests_but_direct_reproductions_found_two_failed_remediations
+  - command: python scripts/test-validate-workflow-automation.py during code-review M3 R2
+    result: passed_50_tests_but_completed_receipt_fixture_accepts_missing_sync_evidence
+  - command: direct M3 R2 budget-identity and completion/synchronization reproductions
+    result: changes_requested_BRF-M3-CR5_BRF-M3-CR6
+  - command: git diff --check 1f36c0aa..a2b5f224
+    result: passed_during_code_review_M3_R2
+  - command: python scripts/validate-review-artifacts.py --mode structure after code-review M3 R2
+    result: passed_reviews_30_findings_46_open_findings_2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M3 R2 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml; python scripts/validate-guide-system.py
+    result: passed_after_code_review_M3_R2_handoff_sync
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md
@@ -834,18 +848,19 @@ changed_files:
   - scripts/test-workflow-automation.py
   - scripts/test-artifact-lifecycle-validator.py
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r2.md
 review:
-  status: resolved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 2
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
-  material_findings: 44
+  material_findings: 46
   closed_findings: 44
-  open_findings: 0
+  open_findings: 2
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
   plan_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
-  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r1.md
+  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r2.md
   review_log: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md
