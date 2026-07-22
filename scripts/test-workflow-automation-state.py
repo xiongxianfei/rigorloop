@@ -483,6 +483,196 @@ Open findings: None
         self.assertEqual(decision.action, "pause")
         self.assertEqual(decision.reason, "canonical-review-log-missing")
 
+    def test_prepared_recovery_rejects_external_canonical_review_log_symlink(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        review_log = (
+            store.repository_root
+            / "docs/changes/2026-07-20-example/review-log.md"
+        )
+        with tempfile.TemporaryDirectory() as external_name:
+            external_log = Path(external_name) / "review-log.md"
+            external_log.write_bytes(review_log.read_bytes())
+            review_log.unlink()
+            review_log.symlink_to(external_log)
+
+            decision = evaluate_receipt_recovery(
+                store.read().automation,
+                "transition-001",
+                completion_evidence=evidence,
+                repository_root=store.repository_root,
+            )
+
+        self.assertEqual(decision.action, "pause")
+        self.assertEqual(decision.reason, "canonical-review-log-path-invalid")
+
+    def test_cancel_does_not_consume_external_review_log_symlink(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        review_log = (
+            store.repository_root
+            / "docs/changes/2026-07-20-example/review-log.md"
+        )
+        with tempfile.TemporaryDirectory() as external_name:
+            external_log = Path(external_name) / "review-log.md"
+            external_log.write_bytes(review_log.read_bytes())
+            review_log.unlink()
+            review_log.symlink_to(external_log)
+
+            result = store.cancel(
+                cancelled_by="user",
+                cancelled_at="2026-07-22T00:00:00Z",
+                completion_evidence=evidence,
+                expected_document_identity=store.read().document_identity,
+            )
+
+        persisted = store.read().automation
+        self.assertEqual(result.status, "reconciliation-required")
+        self.assertEqual(
+            persisted["transition_receipts"]["transition-001"]["status"],
+            "prepared",
+        )
+        self.assertEqual(
+            persisted["effective_capabilities"]["capability-proposal-review-001"][
+                "status"
+            ],
+            "active",
+        )
+
+    def test_prepared_recovery_rejects_in_repository_review_log_symlink(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        review_log = (
+            store.repository_root
+            / "docs/changes/2026-07-20-example/review-log.md"
+        )
+        alternate = store.repository_root / "docs/changes/alternate/review-log.md"
+        alternate.parent.mkdir(parents=True)
+        alternate.write_bytes(review_log.read_bytes())
+        review_log.unlink()
+        review_log.symlink_to(alternate)
+
+        decision = evaluate_receipt_recovery(
+            store.read().automation,
+            "transition-001",
+            completion_evidence=evidence,
+            repository_root=store.repository_root,
+        )
+
+        self.assertEqual(decision.action, "pause")
+        self.assertEqual(decision.reason, "canonical-review-log-path-invalid")
+
+    def test_prepared_recovery_rejects_mismatched_review_occurrence_round(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        review_log = (
+            store.repository_root
+            / "docs/changes/2026-07-20-example/review-log.md"
+        )
+        review_log.write_text(
+            review_log.read_text(encoding="utf-8").replace(
+                "Round: r1", "Round: r2"
+            ),
+            encoding="utf-8",
+        )
+
+        decision = evaluate_receipt_recovery(
+            store.read().automation,
+            "transition-001",
+            completion_evidence=evidence,
+            repository_root=store.repository_root,
+        )
+
+        self.assertEqual(decision.action, "pause")
+        self.assertEqual(decision.reason, "canonical-review-occurrence-mismatch")
+
+    def test_completed_recovery_pauses_on_canonical_review_log_identity_drift(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
+        review_log = (
+            store.repository_root
+            / "docs/changes/2026-07-20-example/review-log.md"
+        )
+        review_log.write_text(
+            review_log.read_text(encoding="utf-8") + "\n<!-- audit note -->\n",
+            encoding="utf-8",
+        )
+        snapshot = store.read()
+        completed = snapshot.automation["transition_receipts"]["transition-001"]
+
+        decision = evaluate_receipt_recovery(
+            snapshot.automation,
+            "transition-001",
+            completion_evidence={
+                "outputs": copy.deepcopy(completed["outputs"]),
+                "canonical_sync": copy.deepcopy(completed["canonical_sync"]),
+            },
+            repository_root=store.repository_root,
+        )
+
+        self.assertEqual(decision.action, "pause")
+        self.assertEqual(decision.reason, "canonical-review-log-identity-drift")
+
+    def test_completed_recovery_continues_with_current_engine_derived_proof(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
+        snapshot = store.read()
+        completed = snapshot.automation["transition_receipts"]["transition-001"]
+
+        decision = evaluate_receipt_recovery(
+            snapshot.automation,
+            "transition-001",
+            completion_evidence={
+                "outputs": copy.deepcopy(completed["outputs"]),
+                "canonical_sync": copy.deepcopy(completed["canonical_sync"]),
+            },
+            repository_root=store.repository_root,
+        )
+
+        self.assertEqual(decision.action, "continue")
+        self.assertEqual(decision.reason, "completed-evidence-current")
+        self.assertIsNotNone(decision.verified_completion)
+
     def test_finalize_consumes_capability_only_with_completed_receipt(self) -> None:
         state = valid_automation()
         receipt = valid_receipt(state)
@@ -508,6 +698,39 @@ Open findings: None
             persisted["effective_capabilities"]["capability-proposal-review-001"]["status"],
             "consumed",
         )
+
+    def test_finalize_persists_engine_derived_canonical_review_log_identity(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        evidence["canonical_sync"]["observed_identities"][
+            "proposal-review-log"
+        ] = "sha256:caller-fabricated"
+
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
+
+        persisted = store.read().automation
+        observed = persisted["transition_receipts"]["transition-001"][
+            "canonical_sync"
+        ]["observed_identities"]
+        review_log = (
+            store.repository_root
+            / "docs/changes/2026-07-20-example/review-log.md"
+        )
+        expected = "sha256:" + hashlib.sha256(review_log.read_bytes()).hexdigest()
+        self.assertEqual(observed["proposal-review-log"], expected)
 
     def test_cancel_revokes_authority_and_preserves_receipts(self) -> None:
         state = valid_automation()
@@ -606,6 +829,12 @@ Open findings: None
         self.assertEqual(
             persisted["effective_capabilities"]["capability-proposal-review-001"]["status"],
             "consumed",
+        )
+        self.assertIn(
+            "proposal-review-log",
+            persisted["transition_receipts"]["transition-001"]["canonical_sync"][
+                "observed_identities"
+            ],
         )
 
     def test_cancel_does_not_consume_nonexistent_stage_evidence(self) -> None:
