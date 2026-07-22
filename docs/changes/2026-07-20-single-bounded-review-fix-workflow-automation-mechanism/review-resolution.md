@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -17,11 +17,12 @@ Review closeout: code-review-m1-r4
 Review closeout: code-review-m1-r5
 Review closeout: code-review-m1-r6
 Review closeout: code-review-m1-r7
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`
 - Findings resolved: 34
-- Unresolved findings: 0
-- Current result: code-review M1 R7 confirmed `BRF-M1-CR12` resolved with no new material findings. M1 is closed and the next stage is implement M2.
+- Unresolved findings: 4
+- Current result: code-review M2 R1 requested changes in `BRF-M2-CR1` through `BRF-M2-CR4`. M2 is resolution-needed and M3 remains blocked.
 
 ## Resolution Overview
 
@@ -61,6 +62,10 @@ Review closeout: code-review-m1-r7
 | BRF-M1-CR10 | accepted | resolved | Exact-target frontier checks replaced cyclic reachability; R5 classified the broader predicate-enforcement remediation as failed and records the remaining defect separately in `BRF-M1-CR11`. |
 | BRF-M1-CR11 | accepted | resolved | One typed evaluator now enforces target frontier, guard evidence, and occurrence constraints; structural helpers cannot authorize execution. |
 | BRF-M1-CR12 | accepted | resolved | The next-milestone edge admits repeated targets only when their persisted occurrence equals the identity-bound next milestone. |
+| BRF-M2-CR1 | accepted | open | Bind recovery to the exact unique persisted prepared receipt rather than caller-supplied receipt data. |
+| BRF-M2-CR2 | accepted | open | Derive retry authority from the immutable stage policy and reject or bind any receipt projection. |
+| BRF-M2-CR3 | accepted | open | Implement T29's complete repeated and reverse-order deterministic state proof. |
+| BRF-M2-CR4 | accepted | open | Validate unified automation state before returning a successful status projection. |
 
 ## Common Resolution Metadata
 
@@ -70,6 +75,64 @@ Review closeout: code-review-m1-r7
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m2-r1
+
+#### BRF-M2-CR1 - Recovery is not bound to the persisted prepared receipt
+
+Finding ID: BRF-M2-CR1
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: Resume authority must come from the durable write-ahead record, but the evaluator currently accepts a separate caller-supplied receipt and can retry when no receipt is persisted.
+Required outcome: Resolve and evaluate exactly the unique persisted prepared receipt by transition identity; reject absence, substitution, mismatch, or duplication before retry or reconciliation.
+Chosen action: Change recovery to resolve the receipt from canonical automation state and add direct persisted-versus-supplied identity contrasts.
+Safe resolution path: Accept a transition ID, retrieve the canonical receipt, bind its mapping key and immutable identity, and fail closed before evaluating policy or evidence when the binding is not exact.
+Validation target: CMD6-CMD7, direct unpersisted/mismatched receipt regressions, and code-review M2 R2.
+Validation evidence: Pending implementation and rereview.
+
+#### BRF-M2-CR2 - Retry authority is controlled by receipt data instead of stage policy
+
+Finding ID: BRF-M2-CR2
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: The approved immutable registry owns retry policy; a mutable receipt value cannot widen a reconcile-only or manual stage into idempotent retry.
+Required outcome: Derive retry behavior from the effective capability's immutable stage policy and reject any persisted projection that disagrees.
+Chosen action: Make stage policy authoritative, validate any receipt projection against it, and bind a retained projection into the transition key.
+Safe resolution path: Resolve capability stage to `STAGE_POLICY_BY_STAGE`, use its retry policy for recovery, reject mismatch/missing required projection, and add all-family contrasts.
+Validation target: CMD6-CMD7, direct policy-mismatch/key-binding regressions, and code-review M2 R2.
+Validation evidence: Pending implementation and rereview.
+
+#### BRF-M2-CR3 - T29 deterministic proof is incomplete
+
+Finding ID: BRF-M2-CR3
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: Dictionary-order and duplicate migration checks do not prove the approved transactional subset is repeatable and order-independent across canonical files and fresh roots.
+Required outcome: Execute T29's complete fixed-input repeated and reverse-order scenario and compare normalized receipt, key, migration, canonical-file, and teardown evidence.
+Chosen action: Add a deterministic fresh-root scenario runner and explicit normal/repeated/reverse comparisons.
+Safe resolution path: Keep M2 scope to state/receipt/migration operations, inject fixed IDs and time, sanitize inputs, compare canonical outputs, and assert no shared temporary state remains.
+Validation target: CMD6-CMD8 and code-review M2 R2.
+Validation evidence: Pending implementation and rereview.
+
+#### BRF-M2-CR4 - Status bypasses canonical automation validation
+
+Finding ID: BRF-M2-CR4
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: Operator status must not report unknown or malformed durable automation state as successful current state.
+Required outcome: Validate the unified automation subsection before projection and return a stable read-only error diagnostic on invalid state.
+Chosen action: Route unified query status through the canonical validated read boundary and add malformed-state byte-stability regressions.
+Safe resolution path: Reuse `validate_workflow_automation` or `WorkflowAutomationStateStore.status`, convert failures to the query error envelope, and cover unknown run/receipt/policy/migration values.
+Validation target: CMD8-CMD9, direct unknown-status regression, and code-review M2 R2.
+Validation evidence: Pending implementation and rereview.
 
 ### code-review-m1-r7
 
@@ -534,8 +597,8 @@ No material findings. Architecture-review R3 confirmed `BRF-AR1` through `BRF-AR
 - [x] `BRF-AR1` through `BRF-AR3` are incorporated in the architecture package.
 - [x] A changed architecture package is ready for architecture-review R3.
 - [x] Architecture-review R3 approves the revised package.
-- [x] No review-log findings remain open.
-- [x] Closeout status is closed with final dispositions and validation evidence.
+- [ ] No review-log findings remain open.
+- [ ] Closeout status is closed with final dispositions and validation evidence.
 
 ### code-review-m1-r1
 

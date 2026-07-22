@@ -283,3 +283,15 @@ Detailed record: reviews/code-review-m1-r7.md
 Resolution: review-resolution.md#code-review-m1-r7
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Reviewed artifact: M2 commit `56a3f62a`
+Reviewed milestone: M2. Sole State Writer, Prepared Receipts, and Recovery
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: BRF-M2-CR1, BRF-M2-CR2, BRF-M2-CR3, BRF-M2-CR4
+Open findings: BRF-M2-CR1, BRF-M2-CR2, BRF-M2-CR3, BRF-M2-CR4
