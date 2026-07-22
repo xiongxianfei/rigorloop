@@ -306,4 +306,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r2.md
 Resolution: review-resolution.md#code-review-m2-r2
 Material findings: BRF-M2-CR5, BRF-M2-CR6
-Open findings: BRF-M2-CR5, BRF-M2-CR6
+Open findings: None
