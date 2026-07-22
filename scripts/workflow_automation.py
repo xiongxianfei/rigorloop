@@ -33,6 +33,7 @@ from workflow_automation_policy import (
     WorkflowPosition,
     WorkflowStage,
     can_operation_fit_target,
+    target_completion_predicate,
 )
 from workflow_automation_state import (
     WorkflowAutomationStateStore,
@@ -62,6 +63,16 @@ PRE_PLAN_SEQUENCE = (
     "plan",
 )
 REVIEW_POSITIONS = frozenset({"proposal-review", "spec-review", "architecture-review"})
+REVIEW_OUTCOMES = frozenset({"approved", "changes-requested", "blocked", "inconclusive"})
+TRANSITION_EVIDENCE_POSITIONS = frozenset(PRE_PLAN_SEQUENCE[1:])
+CANONICAL_BASIS_FIELDS = {
+    "proposal": ("proposal_identity", "reviewed_proposal_identity"),
+    "proposal-review": ("approved_proposal_review_identity", "review_record_identity"),
+    "plan": ("plan_identity",),
+    "plan-review": ("plan_review_identity",),
+    "test-spec": ("test_spec_identity",),
+    "test-spec-review": ("test_spec_review_identity",),
+}
 
 
 class AutomationContractError(RuntimeError):
@@ -154,7 +165,7 @@ class PrePlanEvidence:
     review_resolution_closed: bool
     architecture_applicability: str
     stale_identities: frozenset[str] = field(default_factory=frozenset)
-    transition_identities: tuple[str, ...] = ()
+    transition_identities: Mapping[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -171,6 +182,19 @@ class CoordinationResult:
     transition_id: str
     capability_id: str
     outputs: tuple[Any, ...]
+
+
+@dataclass(frozen=True)
+class StageExecutionResult:
+    outputs: tuple[Any, ...]
+    completion_evidence: Mapping[str, Any]
+
+
+@dataclass(frozen=True)
+class CanonicalSyncResult:
+    status: str
+    evidence: Mapping[str, Any]
+    observed_identities: Mapping[str, str]
 
 
 def normalize_command(command: str) -> NormalizedCommand:
@@ -235,7 +259,7 @@ def bind_target(
         "stage": parsed.value,
         "occurrence": occurrence,
         "bound_at": bound_at,
-        "completion": {"rule": policy.completion_rule},
+        "completion": target_completion_predicate(parsed),
     }
     if expected == OccurrenceKind.MILESTONE.value:
         if plan is None:
@@ -283,8 +307,8 @@ def resume_target(
     if not isinstance(bound_at, str) or not RFC3339_UTC_RE.fullmatch(bound_at):
         raise AutomationContractError("persisted target binding time is invalid")
     completion = persisted_target.get("completion")
-    if not isinstance(completion, Mapping) or not completion:
-        raise AutomationContractError("persisted target completion predicate is missing")
+    if completion != target_completion_predicate(parsed):
+        raise AutomationContractError("persisted target completion predicate is incompatible")
     if policy.occurrence_rule == OccurrenceKind.MILESTONE:
         if not occurrence.get("milestone_id") or not persisted_target.get("plan_identity"):
             raise AutomationContractError("persisted repeated target identity is incomplete")
@@ -308,10 +332,32 @@ def _resolve_pre_plan(evidence: PrePlanEvidence) -> CanonicalPosition:
         )
     if evidence.architecture_applicability not in {"required", "not-required"}:
         raise AutomationContractError("architecture applicability is ambiguous")
+    unknown_review_positions = set(evidence.review_outcomes) - REVIEW_POSITIONS
+    if unknown_review_positions:
+        raise AutomationContractError(
+            "unknown review position: " + ", ".join(sorted(unknown_review_positions))
+        )
+    unknown_outcomes = set(evidence.review_outcomes.values()) - REVIEW_OUTCOMES
+    if unknown_outcomes:
+        raise AutomationContractError(
+            "unknown review outcome: " + ", ".join(sorted(unknown_outcomes))
+        )
+    unknown_transitions = set(evidence.transition_identities) - TRANSITION_EVIDENCE_POSITIONS
+    if unknown_transitions:
+        raise AutomationContractError(
+            "unknown transition evidence: " + ", ".join(sorted(unknown_transitions))
+        )
+    if any(
+        not isinstance(identity, str) or not identity.strip()
+        for identity in evidence.transition_identities.values()
+    ):
+        raise AutomationContractError("transition evidence requires concrete identities")
     observed = {
         position: _one_identity(position, identities)
         for position, identities in evidence.positions.items()
     }
+    for position, identity in evidence.transition_identities.items():
+        observed[f"transition:{position}"] = identity
     if set(observed.values()) & set(evidence.stale_identities):
         raise AutomationContractError("stale canonical workflow evidence")
 
@@ -332,7 +378,7 @@ def _resolve_pre_plan(evidence: PrePlanEvidence) -> CanonicalPosition:
     if evidence.architecture_applicability == "not-required":
         applicable_sequence.remove("architecture")
         applicable_sequence.remove("architecture-review")
-    positions = [position for position in applicable_sequence if position in observed]
+    positions = [position for position in applicable_sequence if position in evidence.positions]
     if not positions:
         return CanonicalPosition(
             WorkflowPosition.CHANGE_CREATED.value,
@@ -403,7 +449,7 @@ def resolve_canonical_position(
     if previously_observed is not None:
         for name, identity in previously_observed.items():
             current = result.observed_identities.get(name)
-            if current is not None and current != identity:
+            if current is None or current != identity:
                 raise AutomationContractError(f"canonical-state-mismatch: {name}")
     return result
 
@@ -422,7 +468,7 @@ def record_plan_ownership_handoff(
     }
     return {
         "pre_plan_evidence": observed,
-        "transition_identities": list(pre_plan.transition_identities),
+        "transition_identities": dict(pre_plan.transition_identities),
         "plan_identity": active_plan.plan_identity,
     }
 
@@ -588,6 +634,8 @@ def derive_effective_capability(
     affected_path_roots: Iterable[str],
     mutation_categories: Iterable[str],
     derived_at: str,
+    correction_budget: Mapping[str, int] | None = None,
+    correction_budget_identity: str | None = None,
     basis_current: bool = True,
     existing_capabilities: Iterable[Mapping[str, Any]] = (),
 ) -> dict[str, Any]:
@@ -645,6 +693,42 @@ def derive_effective_capability(
     }
     if not set(categories).issubset(permitted):
         raise AutomationContractError("capability mutation categories exceed stage policy")
+    correction_kinds = {
+        CapabilityKind.PROPOSAL_CORRECTION.value,
+        CapabilityKind.IMPLEMENTATION_CORRECTION.value,
+    }
+    bounded_budget: dict[str, int] | None = None
+    if kind in correction_kinds:
+        parent_budget = parent.get("correction_budget")
+        if not isinstance(parent_budget, Mapping) or not parent_budget:
+            raise AutomationContractError("correction parent budget is missing")
+        if any(
+            not isinstance(value, int)
+            or isinstance(value, bool)
+            or value <= 0
+            for value in parent_budget.values()
+        ):
+            raise AutomationContractError("correction parent budget is invalid or exhausted")
+        if not isinstance(correction_budget, Mapping) or not correction_budget:
+            raise AutomationContractError("correction capability budget is required")
+        if set(correction_budget) != set(parent_budget):
+            raise AutomationContractError("correction capability budget dimensions mismatch")
+        if any(
+            not isinstance(value, int)
+            or isinstance(value, bool)
+            or value <= 0
+            or value > parent_budget[name]
+            for name, value in correction_budget.items()
+        ):
+            raise AutomationContractError("correction capability budget is exhausted or expanded")
+        if not isinstance(correction_budget_identity, str) or not correction_budget_identity.strip():
+            raise AutomationContractError("correction budget identity is required")
+        basis_budget_identity = basis.get("correction_budget_identity")
+        if basis_budget_identity is not None and basis_budget_identity != correction_budget_identity:
+            raise AutomationContractError("correction budget identity is stale")
+        bounded_budget = dict(correction_budget)
+    elif correction_budget is not None or correction_budget_identity is not None:
+        raise AutomationContractError("non-correction capability cannot carry correction budget")
     for existing in existing_capabilities:
         if existing.get("capability_id") == capability_id:
             raise AutomationContractError("capability identity already exists")
@@ -657,7 +741,7 @@ def derive_effective_capability(
             and existing_stage.get("occurrence") == occurrence
         ):
             raise AutomationContractError("conflicting active capability for stage occurrence")
-    return {
+    capability = {
         "capability_id": capability_id,
         "capability_kind": kind,
         "parent_authorization_id": parent["authorization_id"],
@@ -673,6 +757,10 @@ def derive_effective_capability(
         "status": "active",
         "invalidation": {"on_parent_revocation": "invalidate"},
     }
+    if bounded_budget is not None:
+        capability["scope"]["correction_budget"] = bounded_budget
+        capability["scope"]["correction_budget_identity"] = correction_budget_identity
+    return capability
 
 
 def persist_target(
@@ -703,6 +791,52 @@ def persist_target(
     )
 
 
+def _bind_canonical_evidence(
+    canonical: CanonicalPosition,
+    *,
+    basis: Mapping[str, Any],
+    input_identities: Mapping[str, Any],
+) -> None:
+    for name, identity in basis.items():
+        if input_identities.get(name) != identity:
+            raise AutomationContractError(f"capability basis input mismatch: {name}")
+    for name, identity in canonical.observed_identities.items():
+        if input_identities.get(name) != identity:
+            raise AutomationContractError(f"canonical identity mismatch: {name}")
+        for basis_field in CANONICAL_BASIS_FIELDS.get(name, ()):
+            if basis_field in basis and basis[basis_field] != identity:
+                raise AutomationContractError(
+                    f"canonical identity mismatch: {name} versus {basis_field}"
+                )
+
+
+def _validate_stage_result(
+    result: Any,
+    expected_postcondition: Mapping[str, Any],
+) -> StageExecutionResult:
+    if not isinstance(result, StageExecutionResult):
+        raise AutomationContractError("stage invocation requires a typed execution result")
+    if not result.outputs:
+        raise AutomationContractError("stage invocation requires concrete outputs")
+    if dict(result.completion_evidence) != dict(expected_postcondition):
+        raise AutomationContractError("stage completion evidence does not satisfy postcondition")
+    return result
+
+
+def _validate_sync_result(
+    result: Any,
+    canonical: CanonicalPosition,
+) -> CanonicalSyncResult:
+    if not isinstance(result, CanonicalSyncResult):
+        raise AutomationContractError("canonical synchronization requires a typed result")
+    if result.status != "synchronized" or not result.evidence:
+        raise AutomationContractError("canonical synchronization did not complete")
+    for name, identity in canonical.observed_identities.items():
+        if result.observed_identities.get(name) != identity:
+            raise AutomationContractError(f"canonical synchronization identity mismatch: {name}")
+    return result
+
+
 def coordinate_one_stage(
     *,
     store: WorkflowAutomationStateStore | None = None,
@@ -713,12 +847,17 @@ def coordinate_one_stage(
     basis: Mapping[str, Any] | None = None,
     affected_path_roots: Iterable[str] = (),
     mutation_categories: Iterable[str] = (),
+    correction_budget: Mapping[str, int] | None = None,
+    correction_budget_identity: str | None = None,
     derived_at: str | None = None,
     transition_id: str | None = None,
-    from_position: str | None = None,
     input_identities: Mapping[str, Any] | None = None,
     expected_postcondition: Mapping[str, Any] | None = None,
-    invoke_stage: Callable[[], list[Any]] | None = None,
+    invoke_stage: Callable[[], StageExecutionResult] | None = None,
+    synchronize_canonical_state: Callable[[StageExecutionResult], CanonicalSyncResult] | None = None,
+    pre_plan: PrePlanEvidence | None = None,
+    active_plan: ActivePlanContext | None = None,
+    previously_observed: Mapping[str, str] | None = None,
     parent_authorization: Mapping[str, Any] | None = None,
 ) -> CoordinationResult:
     """Coordinate exactly one non-public stage operation through the M2 writer."""
@@ -734,10 +873,10 @@ def coordinate_one_stage(
         "basis": basis,
         "derived_at": derived_at,
         "transition_id": transition_id,
-        "from_position": from_position,
         "input_identities": input_identities,
         "expected_postcondition": expected_postcondition,
         "invoke_stage": invoke_stage,
+        "synchronize_canonical_state": synchronize_canonical_state,
     }
     missing = [name for name, value in required.items() if value is None]
     if missing:
@@ -752,10 +891,21 @@ def coordinate_one_stage(
     assert basis is not None
     assert derived_at is not None
     assert transition_id is not None
-    assert from_position is not None
     assert input_identities is not None
     assert expected_postcondition is not None
     assert invoke_stage is not None
+    assert synchronize_canonical_state is not None
+
+    canonical = resolve_canonical_position(
+        pre_plan=pre_plan,
+        active_plan=active_plan,
+        previously_observed=previously_observed,
+    )
+    _bind_canonical_evidence(
+        canonical,
+        basis=basis,
+        input_identities=input_identities,
+    )
 
     snapshot = store.read()
     if snapshot.automation is None:
@@ -781,6 +931,8 @@ def coordinate_one_stage(
         basis=basis,
         affected_path_roots=affected_path_roots,
         mutation_categories=mutation_categories,
+        correction_budget=correction_budget,
+        correction_budget_identity=correction_budget_identity,
         derived_at=derived_at,
         existing_capabilities=existing,
     )
@@ -791,7 +943,7 @@ def coordinate_one_stage(
         "policy_version": capability["policy_version"],
         "run_id": snapshot.automation["run"]["run_id"],
         "change_id": capability["change_id"],
-        "from_position": from_position,
+        "from_position": canonical.position,
         "target": copy.deepcopy(snapshot.automation["run"]["target"]),
         "effective_capability_id": capability_id,
         "retry_policy": policy.retry_policy.value,
@@ -824,9 +976,7 @@ def coordinate_one_stage(
         receipt, expected_document_identity=prepared_snapshot.document_identity
     )
     try:
-        outputs = invoke_stage()
-        if not isinstance(outputs, list) or not outputs:
-            raise AutomationContractError("stage invocation requires concrete outputs")
+        stage_result = invoke_stage()
     except Exception:
         failed_snapshot = store.read()
         store.finalize_transition(
@@ -837,25 +987,47 @@ def coordinate_one_stage(
             expected_document_identity=failed_snapshot.document_identity,
         )
         raise
+    try:
+        stage_result = _validate_stage_result(stage_result, expected_postcondition)
+        sync_result = _validate_sync_result(
+            synchronize_canonical_state(stage_result), canonical
+        )
+    except Exception:
+        paused_snapshot = store.read()
+        outputs = list(stage_result.outputs) if isinstance(stage_result, StageExecutionResult) else []
+        store.finalize_transition(
+            transition_id,
+            status="paused",
+            outputs=outputs,
+            canonical_sync_status="failed",
+            expected_document_identity=paused_snapshot.document_identity,
+        )
+        raise
     completed_snapshot = store.read()
     store.finalize_transition(
         transition_id,
         status="completed",
-        outputs=outputs,
+        outputs=list(stage_result.outputs),
         canonical_sync_status="synchronized",
+        canonical_sync_evidence=dict(sync_result.evidence),
+        canonical_sync_observed_identities=dict(sync_result.observed_identities),
         expected_document_identity=completed_snapshot.document_identity,
     )
-    return CoordinationResult("completed", transition_id, capability_id, tuple(outputs))
+    return CoordinationResult(
+        "completed", transition_id, capability_id, tuple(stage_result.outputs)
+    )
 
 
 __all__ = [
     "ActivePlanContext",
     "AutomationContractError",
     "CanonicalPosition",
+    "CanonicalSyncResult",
     "CoordinationResult",
     "MilestoneRecord",
     "NormalizedCommand",
     "PrePlanEvidence",
+    "StageExecutionResult",
     "bind_target",
     "coordinate_one_stage",
     "create_parent_authorization",

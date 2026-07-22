@@ -29,6 +29,7 @@ from workflow_automation_policy import (
     can_operation_fit_target,
     evaluate_transition,
     is_immediate_predecessor,
+    target_completion_predicate,
 )
 
 
@@ -712,6 +713,9 @@ def _validate_target(target: Any, path: str) -> list[str]:
     if not isinstance(bound_at, str) or RFC3339_UTC_RE.fullmatch(bound_at) is None:
         errors.append(f"{path}.bound_at: expected RFC3339 UTC timestamp")
     errors.extend(_validate_concrete_object(target.get("completion"), f"{path}.completion"))
+    if isinstance(stage, str) and stage in {item.value for item in PUBLIC_TARGET_STAGES}:
+        if target.get("completion") != target_completion_predicate(stage):
+            errors.append(f"{path}.completion: must match immutable stage policy")
     return errors
 
 
@@ -902,6 +906,35 @@ def _validate_capability(
         errors.extend(
             _validate_string_list(scope.get("mutation_categories"), f"{path}.scope.mutation_categories")
         )
+        if kind in {
+            CapabilityKind.PROPOSAL_CORRECTION.value,
+            CapabilityKind.IMPLEMENTATION_CORRECTION.value,
+        }:
+            budget = scope.get("correction_budget")
+            budget_identity = scope.get("correction_budget_identity")
+            if not isinstance(budget, dict) or not budget:
+                errors.append(f"{path}.scope.correction_budget: required for correction capability")
+            elif any(
+                not isinstance(value, int)
+                or isinstance(value, bool)
+                or value <= 0
+                for value in budget.values()
+            ):
+                errors.append(
+                    f"{path}.scope.correction_budget: expected positive remaining limits"
+                )
+            if not isinstance(budget_identity, str) or not budget_identity.strip():
+                errors.append(
+                    f"{path}.scope.correction_budget_identity: required concrete identity"
+                )
+            if (
+                isinstance(basis, dict)
+                and "correction_budget_identity" in basis
+                and basis.get("correction_budget_identity") != budget_identity
+            ):
+                errors.append(
+                    f"{path}.scope.correction_budget_identity: must match capability basis"
+                )
 
     errors.extend(
         _validate_invalidation(
@@ -940,6 +973,22 @@ def _validate_capability(
                 categories, parent.get("maximum_mutation_categories")
             ):
                 errors.append(f"{path}.scope.mutation_categories: exceeds parent maximum")
+            if kind in {
+                CapabilityKind.PROPOSAL_CORRECTION.value,
+                CapabilityKind.IMPLEMENTATION_CORRECTION.value,
+            }:
+                budget = scope.get("correction_budget")
+                parent_budget = parent.get("correction_budget")
+                if isinstance(budget, dict) and isinstance(parent_budget, dict):
+                    if set(budget) != set(parent_budget) or any(
+                        not isinstance(parent_budget.get(name), int)
+                        or value > parent_budget[name]
+                        for name, value in budget.items()
+                        if isinstance(value, int) and not isinstance(value, bool)
+                    ):
+                        errors.append(
+                            f"{path}.scope.correction_budget: exceeds parent maximum"
+                        )
         errors.extend(
             _validate_operation_within_target(
                 capability,

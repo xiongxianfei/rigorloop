@@ -673,6 +673,16 @@ def can_operation_fit_target(operation: WorkflowStage, target: WorkflowStage) ->
     )
 
 
+def target_completion_predicate(stage: WorkflowStage | str) -> dict[str, str]:
+    """Project the one canonical public-target completion predicate."""
+
+    stage_name = stage.value if isinstance(stage, WorkflowStage) else stage
+    policy = STAGE_POLICY_BY_STAGE.get(stage_name)
+    if policy is None or policy.stage not in PUBLIC_TARGET_STAGES:
+        raise ValueError(f"stage is not a public target: {stage_name}")
+    return {"rule": policy.completion_rule}
+
+
 def _required_evidence(
     evidence: Mapping[str, Any],
     field_name: str,

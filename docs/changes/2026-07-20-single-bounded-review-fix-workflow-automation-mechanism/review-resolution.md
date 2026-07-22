@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -23,9 +23,9 @@ Review closeout: code-review-m2-r3
 Review closeout: code-review-m3-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`
-- Findings resolved: 40
-- Unresolved findings: 4
-- Current result: Code-review M3 R1 requested changes in `BRF-M3-CR1` through `BRF-M3-CR4`. M3 is resolution-needed and M4 remains blocked.
+- Findings resolved: 44
+- Unresolved findings: 0
+- Current result: `BRF-M3-CR1` through `BRF-M3-CR4` are resolved with canonical invocation binding, policy-owned target completion, bounded correction authority, and typed completion/synchronization proof. M3 is review-requested for code-review R2; M4 remains blocked pending rereview.
 
 ## Resolution Overview
 
@@ -71,10 +71,10 @@ Review closeout: code-review-m3-r1
 | BRF-M2-CR4 | accepted | resolved | Unified status queries use the canonical validated read boundary and return stable read-only errors for malformed state. |
 | BRF-M2-CR5 | accepted | resolved | Canonical validation owns deterministic key computation; read, recovery, cancellation, and query reject stale prepared or completed receipts. |
 | BRF-M2-CR6 | accepted | resolved | All retry families now use complete persisted states that pass canonical read before decision evaluation, with mismatch rejection per family. |
-| BRF-M3-CR1 | accepted | open | Bind canonical position, transition evidence, capability basis, and receipt inputs before stage invocation. |
-| BRF-M3-CR2 | accepted | open | Validate every target completion predicate against the immutable stage policy. |
-| BRF-M3-CR3 | accepted | open | Bind correction capability derivation to current budget scope and reject exhausted or expanded authority. |
-| BRF-M3-CR4 | accepted | open | Require stage-owned completion and actual canonical synchronization before finalizing completion. |
+| BRF-M3-CR1 | accepted | resolved | Coordination now derives canonical position, binds complete observed identities to basis and receipt inputs, and rejects unknown, missing, stale, or contradictory evidence before invocation. |
+| BRF-M3-CR2 | accepted | resolved | One policy projection now supplies target completion for binding, resume, and durable validation; every public-stage tamper fails closed. |
+| BRF-M3-CR3 | accepted | resolved | Proposal and implementation correction capabilities now require current positive budget scope and identity within the parent maximum. |
+| BRF-M3-CR4 | accepted | resolved | Typed stage completion and canonical synchronization results are validated before completion; unsafe outcomes pause without consuming authority. |
 
 ## Common Resolution Metadata
 
@@ -91,7 +91,7 @@ Review closeout: code-review-m3-r1
 
 Finding ID: BRF-M3-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Rationale: The resolver accepts unknown or missing evidence relationships, while the coordinator accepts caller-supplied predecessor and input identities that may disagree with capability basis and still invokes the stage.
@@ -99,13 +99,13 @@ Required outcome: Resolve and bind complete current canonical evidence, transiti
 Chosen action: Connect canonical resolution to one-stage coordination, compare complete observed identities with capability basis and receipt inputs, and reject unknown, missing, stale, or contradictory evidence before callback invocation.
 Safe resolution path: Introduce a typed canonical evaluation input, reject identity-set disappearance and mismatch, validate closed review/transition evidence, and add callback-not-invoked contrasts.
 Validation target: CMD11-CMD14, direct identity/transition/outcome regressions, and code-review M3 R2.
-Validation evidence: Pending implementation and rereview.
+Validation evidence: CMD11-CMD14 pass; direct unknown, missing, stale, contradictory, and callback-not-invoked contrasts pass. Awaiting code-review M3 R2.
 
 #### BRF-M3-CR2 - Target completion predicates are not policy-bound
 
 Finding ID: BRF-M3-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Rationale: A non-empty but attacker-chosen completion mapping passes resume and durable validation, allowing target stop semantics to drift from the approved policy.
@@ -113,13 +113,13 @@ Required outcome: Bind every target completion predicate exactly to the immutabl
 Chosen action: Centralize expected completion projection and enforce exact equality in binding, resume, and durable target validation.
 Safe resolution path: Reuse one policy-derived helper across engine and validator and add one-field target-completion mutation tests for every public stage.
 Validation target: CMD10, full automation-validator regressions, direct completion-tamper contrasts, and code-review M3 R2.
-Validation evidence: Pending implementation and rereview.
+Validation evidence: CMD10 and all 50 automation-validator tests pass; every public target rejects one-field completion tampering. Awaiting code-review M3 R2.
 
 #### BRF-M3-CR3 - Correction budget is absent from effective capability evaluation
 
 Finding ID: BRF-M3-CR3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Rationale: A parent with zero remaining correction cycles and findings can derive an active correction capability because derivation neither receives nor compares current budget scope.
@@ -127,13 +127,13 @@ Required outcome: Correction capabilities must bind current budget state within 
 Chosen action: Add typed correction-budget state to capability derivation and persist or bind the deterministic constraint needed for evaluation.
 Safe resolution path: Compare requested/current limits to the parent, require current budget identity, and add proposal- and implementation-correction budget matrices.
 Validation target: CMD12, expanded/exhausted/changed-budget direct regressions, and code-review M3 R2.
-Validation evidence: Pending implementation and rereview.
+Validation evidence: CMD12 passes proposal- and implementation-correction matrices for valid, exhausted, expanded, dimension-mismatched, and stale-identity budgets. Awaiting code-review M3 R2.
 
 #### BRF-M3-CR4 - Coordinator fabricates completed canonical synchronization
 
 Finding ID: BRF-M3-CR4
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Rationale: Any non-empty callback output is finalized as completed and synchronized without checking stage-owned evidence, expected postcondition, or canonical state.
@@ -141,7 +141,7 @@ Required outcome: Finalize completion only after typed stage-owned evidence sati
 Chosen action: Separate output evidence from canonical-sync evidence, validate both, and leave unsafe outcomes paused or failed without consuming the capability.
 Safe resolution path: Return a typed stage result, validate policy completion evidence and postcondition, perform canonical synchronization through the owning boundary, and add failure-ordering contrasts.
 Validation target: CMD12-CMD14, arbitrary-output/postcondition/sync failure regressions, and code-review M3 R2.
-Validation evidence: Pending implementation and rereview.
+Validation evidence: CMD12-CMD14 pass; arbitrary output, mismatched postcondition, and failed synchronization contrasts pause without capability consumption. Awaiting code-review M3 R2.
 
 ### code-review-m2-r3
 

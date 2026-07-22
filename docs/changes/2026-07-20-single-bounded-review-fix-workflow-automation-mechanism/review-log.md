@@ -330,4 +330,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r1.md
 Resolution: review-resolution.md#code-review-m3-r1
 Material findings: BRF-M3-CR1, BRF-M3-CR2, BRF-M3-CR3, BRF-M3-CR4
-Open findings: BRF-M3-CR1, BRF-M3-CR2, BRF-M3-CR3, BRF-M3-CR4
+Open findings: None

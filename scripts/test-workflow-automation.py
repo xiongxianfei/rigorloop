@@ -14,7 +14,9 @@ from pathlib import Path
 from workflow_automation import (
     ActivePlanContext,
     AutomationContractError,
+    CanonicalSyncResult,
     PrePlanEvidence,
+    StageExecutionResult,
     bind_target,
     coordinate_one_stage,
     create_parent_authorization,
@@ -153,6 +155,13 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
                     self.assertEqual(target["occurrence"]["milestone_id"], "M2")
                     self.assertEqual(target["plan_identity"], "sha256:plan-v1")
 
+                tampered = copy.deepcopy(target)
+                tampered["completion"] = {"rule": "attacker-chosen"}
+                with self.assertRaisesRegex(
+                    AutomationContractError, "completion predicate"
+                ):
+                    resume_target(tampered)
+
         invalid_pairs = (("implement", "singleton"), ("code-review", "final"), ("verify", "milestone"), ("spec", "final"))
         for stage, occurrence in invalid_pairs:
             with self.subTest(stage=stage, occurrence=occurrence), self.assertRaises(AutomationContractError):
@@ -233,6 +242,11 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             PrePlanEvidence(**base, stale_identities=frozenset({"sha256:review"})),
             PrePlanEvidence(**{**base, "positions": {**base["positions"], "spec": ("sha256:spec",)}, "review_outcomes": {"proposal-review": "changes-requested"}}),
             PrePlanEvidence(**{**base, "architecture_applicability": "ambiguous"}),
+            PrePlanEvidence(**{**base, "review_outcomes": {"proposal-review": "unknown"}}),
+            PrePlanEvidence(
+                **base,
+                transition_identities={"unknown-stage": "sha256:transition"},
+            ),
         )
         for evidence in cases:
             with self.subTest(evidence=evidence), self.assertRaises(AutomationContractError):
@@ -284,6 +298,22 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(AutomationContractError, "active plan next stage"):
             resolve_canonical_position(active_plan=inconsistent)
+
+        pre_plan = PrePlanEvidence(
+            positions={
+                "proposal": ("sha256:proposal",),
+                "proposal-review": ("sha256:proposal-review",),
+            },
+            review_outcomes={"proposal-review": "approved"},
+            review_resolution_closed=True,
+            architecture_applicability="not-required",
+            transition_identities={"proposal-review": "sha256:transition"},
+        )
+        with self.assertRaisesRegex(AutomationContractError, "canonical-state-mismatch"):
+            resolve_canonical_position(
+                pre_plan=pre_plan,
+                previously_observed={"spec": "sha256:spec"},
+            )
 
     def test_capability_parent_is_non_executable_and_risk_scoped(self) -> None:
         target = bind_target("verify", bound_at="2026-07-22T00:00:00Z")
@@ -483,6 +513,129 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         self.assertEqual(invalidated[0]["invalidation_reason"], "basis-changed")
         self.assertEqual(existing["status"], "active")
 
+    def test_capability_correction_budget_must_be_current_remaining_and_bounded(self) -> None:
+        parent = create_parent_authorization(
+            authorization_id="auth-correction",
+            authorization_class="authoring",
+            change_id="2026-07-20-example",
+            authorized_by="user",
+            authorized_at="2026-07-22T00:00:00Z",
+            maximum_target=bind_target("spec", bound_at="2026-07-22T00:00:00Z"),
+            allowed_capability_kinds=("proposal-correction",),
+            maximum_path_roots=("docs/proposals/",),
+            maximum_mutation_categories=("proposal-content",),
+            correction_budget={"cycles": 2, "findings": 4},
+        )
+        basis = {
+            "reviewed_proposal_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "accepted_finding_set_identity": "sha256:findings",
+            "classifier_policy_identity": "sha256:classifier",
+            "correction_budget_identity": "sha256:budget-v1",
+            "affected_proposal_roots": ["docs/proposals/"],
+        }
+
+        capability = derive_effective_capability(
+            capability_id="cap-correction",
+            parent=parent,
+            stage="proposal",
+            occurrence={"kind": "singleton"},
+            basis=basis,
+            affected_path_roots=("docs/proposals/",),
+            mutation_categories=("proposal-content",),
+            correction_budget={"cycles": 1, "findings": 2},
+            correction_budget_identity="sha256:budget-v1",
+            derived_at="2026-07-22T00:01:00Z",
+        )
+        self.assertEqual(capability["scope"]["correction_budget"]["cycles"], 1)
+
+        invalid_budgets = (
+            {"cycles": 0, "findings": 2},
+            {"cycles": 3, "findings": 2},
+            {"cycles": 1},
+        )
+        for index, budget in enumerate(invalid_budgets):
+            with self.subTest(budget=budget), self.assertRaises(AutomationContractError):
+                derive_effective_capability(
+                    capability_id=f"cap-invalid-budget-{index}",
+                    parent=parent,
+                    stage="proposal",
+                    occurrence={"kind": "singleton"},
+                    basis=basis,
+                    affected_path_roots=("docs/proposals/",),
+                    mutation_categories=("proposal-content",),
+                    correction_budget=budget,
+                    correction_budget_identity="sha256:budget-v1",
+                    derived_at="2026-07-22T00:01:00Z",
+                )
+        with self.assertRaisesRegex(AutomationContractError, "budget identity"):
+            derive_effective_capability(
+                capability_id="cap-stale-budget",
+                parent=parent,
+                stage="proposal",
+                occurrence={"kind": "singleton"},
+                basis=basis,
+                affected_path_roots=("docs/proposals/",),
+                mutation_categories=("proposal-content",),
+                correction_budget={"cycles": 1, "findings": 2},
+                correction_budget_identity="sha256:budget-v2",
+                derived_at="2026-07-22T00:01:00Z",
+            )
+
+        implementation_parent = create_parent_authorization(
+            authorization_id="auth-implementation-correction",
+            authorization_class="implementation",
+            change_id="2026-07-20-example",
+            authorized_by="user",
+            authorized_at="2026-07-22T00:00:00Z",
+            maximum_target=bind_target(
+                "code-review",
+                bound_at="2026-07-22T00:00:00Z",
+                plan=ActivePlanContext.from_text(
+                    plan_text(), plan_identity="sha256:plan-v1"
+                ),
+            ),
+            allowed_capability_kinds=("implementation-correction",),
+            maximum_path_roots=("docs/changes/2026-07-20-example/",),
+            maximum_mutation_categories=("change-local-evidence",),
+            correction_budget={"cycles": 1},
+        )
+        implementation_basis = {
+            "code_review_identity": "sha256:implementation-review",
+            "accepted_finding_set_identity": "sha256:implementation-findings",
+            "reviewer_classification_identity": "sha256:reviewer-classification",
+            "correction_budget_identity": "sha256:implementation-budget",
+            "affected_paths_identity": "sha256:paths",
+        }
+        implementation_capability = derive_effective_capability(
+            capability_id="cap-implementation-correction",
+            parent=implementation_parent,
+            stage="review-resolution",
+            occurrence={"kind": "singleton"},
+            basis=implementation_basis,
+            affected_path_roots=("docs/changes/2026-07-20-example/",),
+            mutation_categories=("change-local-evidence",),
+            correction_budget={"cycles": 1},
+            correction_budget_identity="sha256:implementation-budget",
+            derived_at="2026-07-22T00:01:00Z",
+        )
+        self.assertEqual(
+            implementation_capability["scope"]["correction_budget"], {"cycles": 1}
+        )
+        with self.assertRaisesRegex(AutomationContractError, "exhausted"):
+            derive_effective_capability(
+                capability_id="cap-implementation-correction-exhausted",
+                parent=implementation_parent,
+                stage="review-resolution",
+                occurrence={"kind": "singleton"},
+                basis=implementation_basis,
+                affected_path_roots=("docs/changes/2026-07-20-example/",),
+                mutation_categories=("change-local-evidence",),
+                correction_budget={"cycles": 0},
+                correction_budget_identity="sha256:implementation-budget",
+                derived_at="2026-07-22T00:01:00Z",
+            )
+
     def test_capability_verify_target_persists_without_future_authority(self) -> None:
         state = copy.deepcopy(FIXTURES.valid_automation())
         store = self.make_store(state)
@@ -505,13 +658,16 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         store = self.make_store(state)
         observed: list[str] = []
 
-        def invoke() -> list[str]:
+        def invoke() -> StageExecutionResult:
             snapshot = store.read().automation
             receipt = snapshot["transition_receipts"]["transition-engine-001"]
             self.assertEqual(receipt["status"], "prepared")
             self.assertEqual(receipt["effective_capability_id"], "capability-engine-001")
             observed.append("invoked")
-            return ["sha256:review-output"]
+            return StageExecutionResult(
+                outputs=("sha256:review-output",),
+                completion_evidence={"review_occurrence": "recorded"},
+            )
 
         result = coordinate_one_stage(
             store=store,
@@ -530,10 +686,15 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             mutation_categories=("change-local-review-evidence",),
             derived_at="2026-07-22T00:01:00Z",
             transition_id="transition-engine-001",
-            from_position="proposal",
-            input_identities={"proposal": "sha256:proposal"},
+            input_identities=self.proposal_input_identities(),
             expected_postcondition={"review_occurrence": "recorded"},
             invoke_stage=invoke,
+            pre_plan=self.proposal_pre_plan(),
+            synchronize_canonical_state=lambda result: CanonicalSyncResult(
+                status="synchronized",
+                evidence={"review_record": result.outputs[0]},
+                observed_identities={"proposal": "sha256:proposal"},
+            ),
         )
 
         self.assertEqual(observed, ["invoked"])
@@ -550,7 +711,7 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         state["effective_capabilities"] = {}
         store = self.make_store(state)
 
-        def invoke() -> list[str]:
+        def invoke() -> StageExecutionResult:
             raise RuntimeError("stage failed")
 
         with self.assertRaisesRegex(RuntimeError, "stage failed"):
@@ -573,14 +734,116 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         before = store.read().document_identity
 
         with self.assertRaisesRegex(AutomationContractError, "already in flight"):
-            self.coordinate_proposal_review(store, lambda: ["sha256:output"])
+            self.coordinate_proposal_review(
+                store,
+                lambda: StageExecutionResult(
+                    outputs=("sha256:output",),
+                    completion_evidence={"review_occurrence": "recorded"},
+                ),
+            )
 
         self.assertEqual(store.read().document_identity, before)
         self.assertNotIn(
             "capability-engine-001", store.read().automation["effective_capabilities"]
         )
 
-    def coordinate_proposal_review(self, store, invoke):
+    def test_capability_coordination_rejects_identity_drift_before_invocation(self) -> None:
+        state = copy.deepcopy(FIXTURES.valid_automation())
+        state["effective_capabilities"] = {}
+        store = self.make_store(state)
+        invoked: list[bool] = []
+
+        cases = (
+            ({"proposal": "sha256:different-proposal"}, "canonical identity mismatch"),
+            ({"standing_gates_identity": "sha256:different-gates"}, "basis input mismatch"),
+        )
+        for identities, expected in cases:
+            with self.subTest(identities=identities), self.assertRaisesRegex(
+                AutomationContractError, expected
+            ):
+                self.coordinate_proposal_review(
+                    store,
+                    lambda: invoked.append(True),
+                    input_identities=identities,
+                )
+
+        self.assertEqual(invoked, [])
+        self.assertEqual(store.read().automation["transition_receipts"], {})
+
+    def test_capability_coordination_pauses_when_completion_or_sync_is_unproven(self) -> None:
+        for label, invoke, synchronize in (
+            (
+                "postcondition",
+                lambda: StageExecutionResult(
+                    outputs=("sha256:review-output",),
+                    completion_evidence={"review_occurrence": "missing"},
+                ),
+                self.synchronized_result,
+            ),
+            (
+                "sync",
+                lambda: StageExecutionResult(
+                    outputs=("sha256:review-output",),
+                    completion_evidence={"review_occurrence": "recorded"},
+                ),
+                lambda result: CanonicalSyncResult(
+                    status="failed",
+                    evidence={"reason": "stale-plan"},
+                    observed_identities={"proposal": "sha256:proposal"},
+                ),
+            ),
+        ):
+            state = copy.deepcopy(FIXTURES.valid_automation())
+            state["effective_capabilities"] = {}
+            store = self.make_store(state)
+            with self.subTest(label=label), self.assertRaises(AutomationContractError):
+                self.coordinate_proposal_review(store, invoke, synchronize=synchronize)
+            receipt = store.read().automation["transition_receipts"]["transition-engine-001"]
+            self.assertEqual(receipt["status"], "paused")
+            self.assertEqual(
+                store.read().automation["effective_capabilities"]["capability-engine-001"]["status"],
+                "active",
+            )
+
+    @staticmethod
+    def proposal_pre_plan() -> PrePlanEvidence:
+        return PrePlanEvidence(
+            positions={"proposal": ("sha256:proposal",)},
+            review_outcomes={},
+            review_resolution_closed=True,
+            architecture_applicability="not-required",
+        )
+
+    @staticmethod
+    def proposal_input_identities() -> dict[str, object]:
+        return {
+            "proposal": "sha256:proposal",
+            "proposal_identity": "sha256:proposal",
+            "standing_gates_identity": "sha256:gates",
+            "review_policy_identity": "sha256:policy",
+            "structured_target_identity": "sha256:target",
+            "review_evidence_roots": ["docs/changes/2026-07-20-example/"],
+        }
+
+    @staticmethod
+    def synchronized_result(result: StageExecutionResult) -> CanonicalSyncResult:
+        return CanonicalSyncResult(
+            status="synchronized",
+            evidence={"review_record": result.outputs[0]},
+            observed_identities={"proposal": "sha256:proposal"},
+        )
+
+    def coordinate_proposal_review(
+        self,
+        store,
+        invoke,
+        *,
+        input_identities=None,
+        synchronize=None,
+    ):
+        receipt_inputs = self.proposal_input_identities()
+        if input_identities is not None:
+            receipt_inputs.update(input_identities)
         return coordinate_one_stage(
             store=store,
             parent_authorization_id="authorization-authoring-001",
@@ -598,10 +861,11 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             mutation_categories=("change-local-review-evidence",),
             derived_at="2026-07-22T00:01:00Z",
             transition_id="transition-engine-001",
-            from_position="proposal",
-            input_identities={"proposal": "sha256:proposal"},
+            input_identities=receipt_inputs,
             expected_postcondition={"review_occurrence": "recorded"},
             invoke_stage=invoke,
+            pre_plan=self.proposal_pre_plan(),
+            synchronize_canonical_state=synchronize or self.synchronized_result,
         )
 
 

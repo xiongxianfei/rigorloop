@@ -14,7 +14,12 @@ from validate_workflow_automation import (
     RUN_STATUS_TRANSITIONS,
     validate_status_transition,
 )
-from workflow_automation_policy import PUBLIC_TARGET_STAGES, STAGE_POLICY_BY_STAGE, WorkflowStage
+from workflow_automation_policy import (
+    PUBLIC_TARGET_STAGES,
+    STAGE_POLICY_BY_STAGE,
+    WorkflowStage,
+    target_completion_predicate,
+)
 from workflow_automation_state import compute_transition_key
 
 
@@ -31,7 +36,7 @@ def valid_automation() -> dict[str, object]:
                 "stage": "proposal-review",
                 "occurrence": {"kind": "singleton"},
                 "bound_at": "2026-07-20T00:00:00Z",
-                "completion": {"review_occurrence": "recorded"},
+                "completion": target_completion_predicate("proposal-review"),
             },
         },
         "parent_authorizations": {
@@ -46,7 +51,7 @@ def valid_automation() -> dict[str, object]:
                     "stage": "proposal-review",
                     "occurrence": {"kind": "singleton"},
                     "bound_at": "2026-07-20T00:00:00Z",
-                    "completion": {"review_occurrence": "recorded"},
+                    "completion": target_completion_predicate("proposal-review"),
                 },
                 "allowed_capability_kinds": ["proposal-review"],
                 "maximum_path_roots": ["docs/changes/2026-07-20-example/"],
@@ -135,7 +140,7 @@ def configure_post_proposal_transition(
         "stage": target_stage,
         "occurrence": {"kind": "singleton"},
         "bound_at": "2026-07-20T00:00:00Z",
-        "completion": {"target": "reached"},
+        "completion": target_completion_predicate(target_stage),
     }
     state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
     parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
@@ -166,7 +171,7 @@ def configure_next_milestone_transition(
         "stage": "verify",
         "occurrence": {"kind": "final"},
         "bound_at": "2026-07-20T00:00:00Z",
-        "completion": {"target": "reached"},
+        "completion": target_completion_predicate("verify"),
     }
     state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
     parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
@@ -201,6 +206,34 @@ def configure_next_milestone_transition(
 class WorkflowAutomationVocabularyTests(unittest.TestCase):
     def test_valid_unified_state_passes(self) -> None:
         self.assertEqual(validate_workflow_automation(valid_automation()), [])
+
+    def test_target_completion_must_match_immutable_policy_for_every_public_stage(self) -> None:
+        for stage in PUBLIC_TARGET_STAGES:
+            with self.subTest(stage=stage.value):
+                state = valid_automation()
+                occurrence = {
+                    "kind": STAGE_POLICY_BY_STAGE[stage.value].occurrence_rule.value
+                }
+                target = {
+                    "stage": stage.value,
+                    "occurrence": occurrence,
+                    "bound_at": "2026-07-20T00:00:00Z",
+                    "completion": {"rule": "attacker-selected"},
+                }
+                if occurrence["kind"] == "milestone":
+                    occurrence["milestone_id"] = "M1"
+                    target["plan_identity"] = "sha256:plan"
+                state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
+                state["parent_authorizations"]["authorization-authoring-001"][  # type: ignore[index]
+                    "maximum_target"
+                ] = copy.deepcopy(target)
+
+                errors = validate_workflow_automation(state)
+
+                self.assertTrue(
+                    any("completion: must match immutable stage policy" in error for error in errors),
+                    errors,
+                )
 
     def test_unknown_vocabulary_values_fail_before_consistency(self) -> None:
         cases = (
@@ -496,7 +529,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     "stage": maximum_stage,
                     "occurrence": {"kind": maximum_occurrence},
                     "bound_at": "2026-07-20T00:00:00Z",
-                    "completion": {"target": "reached"},
+                    "completion": target_completion_predicate(maximum_stage),
                 }
                 if maximum_occurrence == "milestone":
                     parent["maximum_target"]["occurrence"]["milestone_id"] = "M1"  # type: ignore[index]
@@ -511,6 +544,17 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     "affected_path_roots": ["docs/changes/2026-07-20-example/"],
                     "mutation_categories": [category],
                 }
+                if kind in {"proposal-correction", "implementation-correction"}:
+                    budget_identity = basis.get(
+                        "correction_budget_identity", "sha256:budget"
+                    )
+                    capability["basis"]["correction_budget_identity"] = budget_identity  # type: ignore[index]
+                    capability["scope"].update(  # type: ignore[index]
+                        {
+                            "correction_budget": {"max_cycles": 1},
+                            "correction_budget_identity": budget_identity,
+                        }
+                    )
                 self.assertEqual(validate_workflow_automation(state), [])
 
     def test_parent_cannot_allow_cross_risk_capability_kind(self) -> None:
@@ -558,7 +602,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     "occurrence": {"kind": "milestone", "milestone_id": "M1"},
                     "plan_identity": "sha256:plan",
                     "bound_at": "2026-07-20T00:00:00Z",
-                    "completion": {"milestone_state": "review-requested"},
+                    "completion": target_completion_predicate("implement"),
                 }
                 state["effective_capabilities"] = {}
                 cursor = parent["maximum_target"]  # type: ignore[index]
@@ -661,7 +705,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "stage": "spec",
             "occurrence": {"kind": "singleton"},
             "bound_at": "2026-07-20T00:00:00Z",
-            "completion": {"spec": "authored"},
+            "completion": target_completion_predicate("spec"),
         }
         add_valid_receipt(state)
         self.assertEqual(validate_workflow_automation(state), [])
@@ -700,7 +744,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "occurrence": {"kind": "milestone", "milestone_id": "M1"},
             "plan_identity": "sha256:plan",
             "bound_at": "2026-07-20T00:00:00Z",
-            "completion": {"milestone_state": "review-requested"},
+            "completion": target_completion_predicate("implement"),
         }
         state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
         parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
@@ -777,7 +821,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "stage": "spec",
             "occurrence": {"kind": "singleton"},
             "bound_at": "2026-07-20T00:00:00Z",
-            "completion": {"spec": "authored"},
+            "completion": target_completion_predicate("spec"),
         }
         state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
         parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
@@ -797,6 +841,8 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "affected_proposal_roots": ["docs/proposals/"],
         }
         capability["scope"]["mutation_categories"] = ["proposal-content"]  # type: ignore[index]
+        capability["scope"]["correction_budget"] = {"max_cycles": 1}  # type: ignore[index]
+        capability["scope"]["correction_budget_identity"] = "sha256:budget"  # type: ignore[index]
         receipt = add_valid_receipt(state)
         receipt["from_position"] = "proposal-review"
         errors = validate_workflow_automation(state)
@@ -870,7 +916,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     "occurrence": {"kind": "milestone", "milestone_id": "M2"},
                     "plan_identity": "sha256:plan",
                     "bound_at": "2026-07-20T00:00:00Z",
-                    "completion": {"target": "reached"},
+                    "completion": target_completion_predicate(target_stage),
                 }
                 state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
                 parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
@@ -904,7 +950,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "occurrence": {"kind": "milestone", "milestone_id": "M1"},
             "plan_identity": "sha256:plan",
             "bound_at": "2026-07-20T00:00:00Z",
-            "completion": {"review": "approved"},
+            "completion": target_completion_predicate("code-review"),
         }
         state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
         parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
@@ -956,7 +1002,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                         "stage": "spec",
                         "occurrence": {"kind": "singleton"},
                         "bound_at": "2026-07-20T00:00:00Z",
-                        "completion": {"spec": "authored"},
+                        "completion": target_completion_predicate("spec"),
                     }
                 add_valid_receipt(state)
                 errors = validate_workflow_automation(state)
@@ -970,7 +1016,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "stage": "spec",
             "occurrence": {"kind": "singleton"},
             "bound_at": "2026-07-20T00:00:00Z",
-            "completion": {"spec": "authored"},
+            "completion": target_completion_predicate("spec"),
         }
         errors = validate_workflow_automation(state)
         self.assertTrue(any("must match automation run target" in error for error in errors), errors)

@@ -347,7 +347,7 @@ review:
           kind: singleton
         bound_at: 2026-06-24T12:00:00Z
         completion:
-          review_occurrence: recorded
+          rule: formal review occurrence is recorded
     parent_authorizations: {{}}
     effective_capabilities: {{}}
     transition_receipts: {{}}
