@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
@@ -21,6 +22,7 @@ from lifecycle_state_sync import HandoffSummary, parse_handoff_summary
 from review_artifact_validation import (
     REVIEW_FIX_AUTO_RESOLUTION_CLASSES,
     REVIEW_FIX_BUDGET_LIMITS,
+    parse_formal_review_record,
 )
 from validate_workflow_automation import (
     CAPABILITY_AUTHORIZATION_CLASSES,
@@ -233,6 +235,22 @@ class ProposalCorrectionDecision:
 
 
 @dataclass(frozen=True)
+class ProposalCorrectionAuthority:
+    capability_id: str
+    reviewed_review_identity: str
+    accepted_finding_ids: frozenset[str]
+    finding_classifications: Mapping[str, str]
+    correction_budget: Mapping[str, int]
+    allowed_path_roots: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class AuthoringCoordinationResult:
+    coordination: CoordinationResult
+    route: AuthoringRouteDecision
+
+
+@dataclass(frozen=True)
 class AuthoringRouteDecision:
     status: str
     next_stage: str | None = None
@@ -262,8 +280,7 @@ def evaluate_proposal_review(
     proposal_identity: str,
     reviewed_proposal_identity: str,
     target_stage: str,
-    correction_capability_active: bool = False,
-    correction_budget_remaining: bool = False,
+    correction_authority: ProposalCorrectionAuthority | None = None,
 ) -> ProposalReviewDecision:
     """Separate a recorded proposal-review occurrence from clean-gate routing."""
 
@@ -311,7 +328,10 @@ def evaluate_proposal_review(
             "continue",
             next_stage=WorkflowStage.SPEC.value,
         )
-    if correction_capability_active and correction_budget_remaining:
+    if correction_authority is not None and all(
+        isinstance(value, int) and not isinstance(value, bool) and value > 0
+        for value in correction_authority.correction_budget.values()
+    ):
         return ProposalReviewDecision(
             True,
             review_id,
@@ -323,7 +343,7 @@ def evaluate_proposal_review(
         )
     reason = (
         "proposal-correction-budget-exhausted"
-        if correction_capability_active
+        if correction_authority is not None
         else "proposal-correction-authorization-required"
     )
     return ProposalReviewDecision(
@@ -350,48 +370,105 @@ def _path_is_within_roots(path: str, roots: Iterable[str]) -> bool:
     return False
 
 
+def _structured_identity(value: Any) -> str:
+    payload = json.dumps(
+        value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    return f"sha256:{hashlib.sha256(payload).hexdigest()}"
+
+
+def resolve_proposal_correction_authority(
+    automation: Mapping[str, Any],
+    capability_id: str,
+    *,
+    reviewed_review_identity: str,
+    accepted_finding_ids: Iterable[str],
+    finding_classifications: Mapping[str, str],
+    correction_budget: Mapping[str, int],
+) -> ProposalCorrectionAuthority:
+    """Resolve correction authority from an active capability and bound evidence."""
+
+    capabilities = automation.get("effective_capabilities")
+    capability = capabilities.get(capability_id) if isinstance(capabilities, Mapping) else None
+    if not isinstance(capability, Mapping):
+        raise AutomationContractError("proposal-correction capability not found")
+    parents = automation.get("parent_authorizations")
+    parent_id = capability.get("parent_authorization_id")
+    parent = parents.get(parent_id) if isinstance(parents, Mapping) else None
+    stage = capability.get("stage")
+    if (
+        capability.get("status") != "active"
+        or capability.get("capability_kind") != CapabilityKind.PROPOSAL_CORRECTION.value
+        or not isinstance(stage, Mapping)
+        or stage.get("name") != WorkflowStage.PROPOSAL.value
+        or not isinstance(parent, Mapping)
+        or parent.get("status") != "active"
+    ):
+        raise AutomationContractError("proposal-correction capability is not executable")
+    basis = capability.get("basis")
+    scope = capability.get("scope")
+    if not isinstance(basis, Mapping) or not isinstance(scope, Mapping):
+        raise AutomationContractError("proposal-correction capability basis is invalid")
+    accepted = frozenset(accepted_finding_ids)
+    classifications = dict(finding_classifications)
+    budget = dict(correction_budget)
+    expected = {
+        "review_record_identity": reviewed_review_identity,
+        "accepted_finding_set_identity": _structured_identity(sorted(accepted)),
+        "classifier_policy_identity": _structured_identity(classifications),
+        "correction_budget_identity": _structured_identity(budget),
+    }
+    if any(basis.get(name) != identity for name, identity in expected.items()):
+        raise AutomationContractError("proposal-correction evidence does not match capability basis")
+    if scope.get("correction_budget_identity") != expected["correction_budget_identity"]:
+        raise AutomationContractError("proposal-correction budget identity is stale")
+    roots = scope.get("affected_path_roots")
+    if not isinstance(roots, list) or not all(isinstance(root, str) for root in roots):
+        raise AutomationContractError("proposal-correction path scope is invalid")
+    return ProposalCorrectionAuthority(
+        capability_id,
+        reviewed_review_identity,
+        accepted,
+        classifications,
+        budget,
+        tuple(roots),
+    )
+
+
 def evaluate_proposal_correction(
     *,
-    capability_kind: str,
-    capability_status: str,
+    authority: ProposalCorrectionAuthority,
     finding_classifications: Mapping[str, str],
     accepted_finding_ids: Iterable[str],
     current_finding_ids: Iterable[str],
-    reviewed_review_identity: str,
     current_review_identity: str,
-    correction_budget: Mapping[str, int],
     unresolved_before: Iterable[str],
     unresolved_after: Iterable[str],
     affected_paths: Iterable[str],
-    allowed_path_roots: Iterable[str],
     proposal_identity_before: str,
     proposal_identity_after: str,
-    reviewed_finding_classifications: Mapping[str, str] | None = None,
+    reviewed_finding_classifications: Mapping[str, str],
     basis_current: bool = True,
     deterministic_validation_passed: bool = True,
     scope_expanded: bool = False,
     owner_decision_required: bool = False,
+    mutation_completed: bool = True,
 ) -> ProposalCorrectionDecision:
     """Evaluate the driver-owned bounded proposal-correction contract."""
 
     def pause(reason: str) -> ProposalCorrectionDecision:
         return ProposalCorrectionDecision("paused", pause_reason=reason)
 
-    if capability_kind != CapabilityKind.PROPOSAL_CORRECTION.value or capability_status != "active":
-        return pause("proposal-correction-capability-required")
     accepted = frozenset(accepted_finding_ids)
     current = frozenset(current_finding_ids)
     classifications = dict(finding_classifications)
     if owner_decision_required:
         return pause("owner-decision-required")
-    if not basis_current or reviewed_review_identity != current_review_identity:
+    if not basis_current or authority.reviewed_review_identity != current_review_identity:
         return pause("stale-review-evidence")
-    if current != accepted or set(classifications) != accepted:
+    if current != accepted or accepted != authority.accepted_finding_ids or set(classifications) != accepted:
         return pause("finding-set-changed")
-    if (
-        reviewed_finding_classifications is not None
-        and dict(reviewed_finding_classifications) != classifications
-    ):
+    if dict(reviewed_finding_classifications) != classifications or classifications != dict(authority.finding_classifications):
         return pause("finding-classification-changed")
     unknown_classes = set(classifications.values()) - REVIEW_FIX_AUTO_RESOLUTION_CLASSES
     if unknown_classes:
@@ -400,6 +477,7 @@ def evaluate_proposal_correction(
         return pause("not-auto-safe")
     if scope_expanded:
         return pause("scope-expanded")
+    correction_budget = authority.correction_budget
     if set(correction_budget) != set(REVIEW_FIX_BUDGET_LIMITS):
         return pause("correction-budget-invalid")
     if any(
@@ -410,7 +488,7 @@ def evaluate_proposal_correction(
         for label, value in correction_budget.items()
     ):
         return pause("correction-budget-exhausted")
-    roots = tuple(allowed_path_roots)
+    roots = authority.allowed_path_roots
     paths = tuple(affected_paths)
     if not paths or not roots or any(not _path_is_within_roots(path, roots) for path in paths):
         return pause("affected-path-scope-exceeded")
@@ -418,6 +496,8 @@ def evaluate_proposal_correction(
     after = frozenset(unresolved_after)
     if before and (not after < before):
         return pause("unresolved-findings-did-not-shrink")
+    if not mutation_completed:
+        return ProposalCorrectionDecision("authorized")
     if not deterministic_validation_passed:
         return pause("deterministic-validation-missing")
     if (
@@ -522,6 +602,109 @@ def evaluate_non_public_authoring_route(
     if next_stage is None:
         raise AutomationContractError(f"authoring route is undefined for stage: {current_stage}")
     return AuthoringRouteDecision("continue", next_stage)
+
+
+def coordinate_non_public_authoring_stage(
+    *,
+    invocation_context: str,
+    target_stage: str,
+    store: WorkflowAutomationStateStore,
+    repository_root: Path,
+    correction_evidence: Mapping[str, Any] | None = None,
+    **coordination: Any,
+) -> AuthoringCoordinationResult:
+    """Run one M4 authoring stage transaction, then route from verified evidence."""
+
+    if invocation_context != "non-public-test-harness":
+        raise AutomationContractError("non-public authoring harness is required")
+    stage_request = coordination.get("stage")
+    correction_decision: ProposalCorrectionDecision | None = None
+    if stage_request == WorkflowStage.PROPOSAL.value:
+        if correction_evidence is None:
+            raise AutomationContractError("proposal-correction canonical evidence is required")
+        snapshot = store.read()
+        if snapshot.automation is None:
+            raise AutomationContractError("unified automation state does not exist")
+        capability_id = coordination.get("capability_id")
+        authority = resolve_proposal_correction_authority(
+            snapshot.automation,
+            capability_id,
+            reviewed_review_identity=correction_evidence.get("reviewed_review_identity"),
+            accepted_finding_ids=correction_evidence.get("accepted_finding_ids", ()),
+            finding_classifications=correction_evidence.get("finding_classifications", {}),
+            correction_budget=correction_evidence.get("correction_budget", {}),
+        )
+        correction_decision = evaluate_proposal_correction(
+            authority=authority,
+            finding_classifications=correction_evidence.get("finding_classifications", {}),
+            reviewed_finding_classifications=correction_evidence.get(
+                "reviewed_finding_classifications", {}
+            ),
+            accepted_finding_ids=correction_evidence.get("accepted_finding_ids", ()),
+            current_finding_ids=correction_evidence.get("current_finding_ids", ()),
+            current_review_identity=correction_evidence.get("current_review_identity", ""),
+            unresolved_before=correction_evidence.get("unresolved_before", ()),
+            unresolved_after=correction_evidence.get("unresolved_after", ()),
+            affected_paths=correction_evidence.get("affected_paths", ()),
+            proposal_identity_before=correction_evidence.get("proposal_identity_before", ""),
+            proposal_identity_after=correction_evidence.get("proposal_identity_after", ""),
+            basis_current=correction_evidence.get("basis_current", True),
+            deterministic_validation_passed=correction_evidence.get(
+                "deterministic_validation_passed", True
+            ),
+            scope_expanded=correction_evidence.get("scope_expanded", False),
+            owner_decision_required=correction_evidence.get(
+                "owner_decision_required", False
+            ),
+            mutation_completed=False,
+        )
+        if correction_decision.status != "authorized":
+            raise AutomationContractError(
+                "proposal correction paused: " + str(correction_decision.pause_reason)
+            )
+    result = coordinate_one_stage(
+        store=store,
+        repository_root=repository_root,
+        **coordination,
+    )
+    snapshot = store.read()
+    assert snapshot.automation is not None
+    receipt = snapshot.automation["transition_receipts"][result.transition_id]
+    capability = snapshot.automation["effective_capabilities"][result.capability_id]
+    stage = capability["stage"]["name"]
+    evidence = receipt["canonical_sync"]["evidence"]
+    review_outcome: str | None = None
+    architecture_applicability: str | None = None
+    if correction_decision is not None:
+        return AuthoringCoordinationResult(
+            result,
+            AuthoringRouteDecision("continue", WorkflowStage.PROPOSAL_REVIEW.value),
+        )
+    if stage in _AUTHORING_REVIEW_STAGES or stage == WorkflowStage.PROPOSAL_REVIEW.value:
+        evidence_name = next(iter(STAGE_POLICY_BY_STAGE[stage].completion_evidence))
+        review_path = repository_root / evidence[evidence_name]["path"]
+        review, findings = parse_formal_review_record(review_path)
+        if review is None or findings:
+            raise AutomationContractError("verified formal review could not be routed")
+        review_outcome = review.status
+    elif stage == WorkflowStage.ARCHITECTURE_ASSESSMENT.value:
+        assessment_path = repository_root / evidence["architecture-assessment"]["path"]
+        for line in assessment_path.read_text(encoding="utf-8").splitlines():
+            if line.startswith("Applicability:"):
+                architecture_applicability = line.split(":", 1)[1].strip()
+                break
+    route = evaluate_non_public_authoring_route(
+        current_stage=stage,
+        target_stage=target_stage,
+        capability_kind=capability["capability_kind"],
+        # Completion consumed this exact capability; routing describes that
+        # verified operation and never authorizes another mutation.
+        capability_status="active",
+        invocation_context=invocation_context,
+        review_outcome=review_outcome,
+        architecture_applicability=architecture_applicability,
+    )
+    return AuthoringCoordinationResult(result, route)
 
 
 def normalize_command(command: str) -> NormalizedCommand:
@@ -1314,19 +1497,39 @@ def coordinate_one_stage(
         raise AutomationContractError("active parent authorization not found")
     capabilities = snapshot.automation.get("effective_capabilities")
     existing = tuple(capabilities.values()) if isinstance(capabilities, dict) else ()
-    capability = derive_effective_capability(
-        capability_id=capability_id,
-        parent=parent,
-        stage=stage,
-        occurrence=occurrence,
-        basis=basis,
-        affected_path_roots=bounded_path_roots,
-        mutation_categories=bounded_mutation_categories,
-        correction_budget=correction_budget,
-        correction_budget_identity=correction_budget_identity,
-        derived_at=derived_at,
-        existing_capabilities=existing,
+    persisted_capability = (
+        capabilities.get(capability_id) if isinstance(capabilities, dict) else None
     )
+    if isinstance(persisted_capability, dict):
+        scope = persisted_capability.get("scope")
+        if (
+            persisted_capability.get("status") != "active"
+            or persisted_capability.get("parent_authorization_id") != parent_authorization_id
+            or persisted_capability.get("stage")
+            != {"name": stage, "occurrence": dict(occurrence)}
+            or persisted_capability.get("basis") != dict(basis)
+            or not isinstance(scope, dict)
+            or scope.get("affected_path_roots") != list(bounded_path_roots)
+            or scope.get("mutation_categories") != list(bounded_mutation_categories)
+        ):
+            raise AutomationContractError(
+                "persisted effective capability does not match stage request"
+            )
+        capability = copy.deepcopy(persisted_capability)
+    else:
+        capability = derive_effective_capability(
+            capability_id=capability_id,
+            parent=parent,
+            stage=stage,
+            occurrence=occurrence,
+            basis=basis,
+            affected_path_roots=bounded_path_roots,
+            mutation_categories=bounded_mutation_categories,
+            correction_budget=correction_budget,
+            correction_budget_identity=correction_budget_identity,
+            derived_at=derived_at,
+            existing_capabilities=existing,
+        )
     policy = STAGE_POLICY_BY_STAGE[stage]
     expected_postcondition = {
         "completion_rule": policy.completion_rule,
@@ -1452,6 +1655,7 @@ def coordinate_one_stage(
 __all__ = [
     "ActivePlanContext",
     "ArtifactEvidence",
+    "AuthoringCoordinationResult",
     "AutomationContractError",
     "CanonicalPosition",
     "CanonicalSyncResult",
@@ -1462,13 +1666,16 @@ __all__ = [
     "StageExecutionResult",
     "bind_target",
     "coordinate_one_stage",
+    "coordinate_non_public_authoring_stage",
     "create_parent_authorization",
     "derive_effective_capability",
     "invalidate_effective_capabilities",
     "normalize_command",
     "persist_target",
+    "ProposalCorrectionAuthority",
     "record_plan_ownership_handoff",
     "resolve_canonical_position",
+    "resolve_proposal_correction_authority",
     "resolve_command_target",
     "resume_target",
 ]

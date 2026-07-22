@@ -26,6 +26,8 @@ from review_artifact_validation import (
     parse_formal_review_log,
     parse_formal_review_record,
 )
+from artifact_lifecycle_validation import inspect_lifecycle_artifact
+from lifecycle_state_sync import parse_handoff_summary
 from workflow_automation_policy import STAGE_POLICY_BY_STAGE
 from validate_workflow_automation import (
     compute_transition_key,
@@ -47,7 +49,22 @@ PROPOSAL_REVIEW_OUTCOMES = frozenset(
 )
 FORMAL_REVIEW_INPUT_IDENTITIES = {
     "proposal-review": "proposal",
+    "spec-review": "spec",
+    "architecture-review": "architecture",
+    "plan-review": "plan",
+    "test-spec-review": "test-spec",
 }
+LIFECYCLE_STAGE_CLASSES = {
+    "proposal": "proposal",
+    "spec": "spec",
+    "architecture": "architecture",
+    "test-spec": "test-spec",
+}
+STAGE_NATIVE_VERIFIER_STAGES = frozenset(
+    set(FORMAL_REVIEW_INPUT_IDENTITIES)
+    | set(LIFECYCLE_STAGE_CLASSES)
+    | {"architecture-assessment", "plan"}
+)
 _PLAIN_STRING_RESERVED = frozenset({"true", "false", "null", "[]", "{}"})
 _NUMBER_RE = re.compile(
     r"-?(?:[0-9]+|[0-9]+\.[0-9]+|[0-9]+[eE][+-]?[0-9]+|[0-9]+\.[0-9]+[eE][+-]?[0-9]+)"
@@ -292,10 +309,6 @@ def verify_transition_completion(
     policy = STAGE_POLICY_BY_STAGE.get(stage_name)
     if policy is None:
         return CompletionVerification(False, "unknown-capability-stage")
-    expected_input = FORMAL_REVIEW_INPUT_IDENTITIES.get(stage_name)
-    if expected_input is None:
-        return CompletionVerification(False, "stage-native-verifier-unavailable")
-
     inputs = completion_evidence.get("input_identities")
     if inputs != receipt.get("input_identities"):
         return CompletionVerification(False, "input-identity-drift")
@@ -318,22 +331,87 @@ def verify_transition_completion(
     ):
         return CompletionVerification(False, "canonical-stage-evidence-incomplete")
 
-    evidence_name = next(iter(policy.completion_evidence), None)
-    evidence = sync_evidence.get(evidence_name)
     scope = capability.get("scope")
     affected_roots = scope.get("affected_path_roots") if isinstance(scope, dict) else None
     if not isinstance(affected_roots, list):
         return CompletionVerification(False, "capability-evidence-scope-invalid")
-    resolved = _resolve_completion_artifact(
-        evidence,
-        repository_root=repository_root,
-        affected_path_roots=affected_roots,
-    )
-    if resolved is None:
-        return CompletionVerification(False, "stage-completion-artifact-invalid")
-    artifact, artifact_identity = resolved
-    if evidence not in outputs or observed_identities.get(evidence_name) != artifact_identity:
-        return CompletionVerification(False, "stage-completion-identity-mismatch")
+    resolved_evidence: dict[str, tuple[dict[str, str], Path, str]] = {}
+    for evidence_name in policy.completion_evidence:
+        evidence = sync_evidence.get(evidence_name)
+        resolved = _resolve_completion_artifact(
+            evidence,
+            repository_root=repository_root,
+            affected_path_roots=affected_roots,
+        )
+        if resolved is None:
+            return CompletionVerification(False, "stage-completion-artifact-invalid")
+        artifact, artifact_identity = resolved
+        if evidence not in outputs or observed_identities.get(evidence_name) != artifact_identity:
+            return CompletionVerification(False, "stage-completion-identity-mismatch")
+        resolved_evidence[evidence_name] = (evidence, artifact, artifact_identity)
+
+    expected_input = FORMAL_REVIEW_INPUT_IDENTITIES.get(stage_name)
+    if expected_input is None:
+        artifacts = {value[1].resolve() for value in resolved_evidence.values()}
+        if stage_name == "plan":
+            if len(artifacts) != 1:
+                return CompletionVerification(False, "stage-native-plan-evidence-mismatch")
+            plan = next(iter(artifacts))
+            handoff, handoff_errors = parse_handoff_summary(plan.read_text(encoding="utf-8"))
+            if handoff is None or handoff_errors:
+                return CompletionVerification(False, "stage-native-plan-invalid")
+        elif stage_name == "architecture-assessment":
+            assessment = next(iter(artifacts), None)
+            if assessment is None:
+                return CompletionVerification(False, "stage-native-assessment-invalid")
+            fields: dict[str, str] = {}
+            for line in assessment.read_text(encoding="utf-8").splitlines():
+                if ":" in line:
+                    key, value = line.split(":", 1)
+                    fields[key.strip()] = value.strip()
+            if (
+                fields.get("Stage") != "architecture-assessment"
+                or fields.get("Applicability") not in {"required", "not-required"}
+                or fields.get("Spec identity") != inputs.get("spec")
+            ):
+                return CompletionVerification(False, "stage-native-assessment-invalid")
+        elif stage_name in LIFECYCLE_STAGE_CLASSES:
+            if len(artifacts) != 1:
+                return CompletionVerification(False, "stage-native-artifact-evidence-mismatch")
+            inspection = inspect_lifecycle_artifact(next(iter(artifacts)), repository_root)
+            if (
+                inspection is None
+                or inspection.contract.class_name != LIFECYCLE_STAGE_CLASSES[stage_name]
+                or inspection.errors
+            ):
+                return CompletionVerification(False, "stage-native-artifact-invalid")
+            if stage_name == "proposal" and capability.get("capability_kind") == "proposal-correction":
+                previous = inputs.get("reviewed_proposal_identity")
+                current = next(iter(resolved_evidence.values()))[2]
+                if not isinstance(previous, str) or previous == current:
+                    return CompletionVerification(False, "proposal-identity-unchanged")
+        else:
+            return CompletionVerification(False, "stage-native-verifier-unavailable")
+
+        unique_outputs: dict[tuple[str, str], dict[str, str]] = {}
+        normalized_evidence: dict[str, Any] = {}
+        normalized_observed: dict[str, str] = {}
+        for name, (evidence, _artifact, identity) in resolved_evidence.items():
+            normalized_evidence[name] = copy.deepcopy(evidence)
+            normalized_observed[name] = identity
+            unique_outputs[(evidence["path"], identity)] = copy.deepcopy(evidence)
+        return CompletionVerification(
+            True,
+            "stage-completion-evidence-valid",
+            VerifiedCompletion(
+                outputs=tuple(unique_outputs.values()),
+                canonical_evidence=normalized_evidence,
+                observed_identities=normalized_observed,
+            ),
+        )
+
+    evidence_name = next(iter(policy.completion_evidence), None)
+    evidence, artifact, artifact_identity = resolved_evidence[evidence_name]
 
     review, review_findings = parse_formal_review_record(artifact)
     if review is None or review_findings:

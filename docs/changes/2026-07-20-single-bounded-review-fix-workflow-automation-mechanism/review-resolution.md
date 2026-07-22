@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -32,9 +32,9 @@ Review closeout: code-review-m3-r9
 Review closeout: code-review-m4-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`
-- Findings resolved: 55
-- Unresolved findings: 2
-- Current result: Code-review M4 R1 requested changes in `BRF-M4-CR1` and `BRF-M4-CR2`. M4 is resolution-needed; M5 remains blocked.
+- Findings resolved: 57
+- Unresolved findings: 0
+- Current result: `BRF-M4-CR1` and `BRF-M4-CR2` are resolved in the M4 correction; code-review M4 R2 is required before M5.
 
 ## Resolution Overview
 
@@ -95,8 +95,8 @@ Review closeout: code-review-m4-r1
 | BRF-M3-CR13 | accepted | resolved | Canonical construction now checks every absolute lexical component through `change.yaml` before resolution, including ancestors above the derived root. |
 | BRF-M3-CR14 | accepted | resolved | The review-state remainder now rejects every additional structured field as well as independent finding claims and IDs. |
 | BRF-M3-CR15 | accepted | resolved | Replaced the prefix-plus-remainder parser and denylist with exact equality against one generated open/closed formal review-state projection. |
-| BRF-M4-CR1 | needs-decision | open | M4 authoring integration is helper-only; no receipt-backed non-public stage path or post-proposal stage-native completion verifier exists. |
-| BRF-M4-CR2 | needs-decision | open | Proposal correction trusts caller assertions and permits omission of prior finding classifications instead of binding current durable authority and evidence. |
+| BRF-M4-CR1 | accepted | resolved | Connected the non-public authoring route to prepared receipts, capability consumption, canonical synchronization, and parser-backed completion for every M4 stage. |
+| BRF-M4-CR2 | accepted | resolved | Replaced caller authority booleans with capability-derived correction authority and bound review, finding, classification, budget, path, and proposal mutation evidence. |
 
 ## Common Resolution Metadata
 
@@ -112,34 +112,34 @@ Review closeout: code-review-m4-r1
 #### BRF-M4-CR1 - Authoring integration is not connected to the transactional engine
 
 Finding ID: BRF-M4-CR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the approved receipt-backed M4 integration boundary rather than treating helper-only routing as milestone completion.
+Decision needed: None; the user's implementation request accepted the recorded safe resolution.
 Rationale: Pure decisions called only by tests cannot establish stage invocation, prepared-receipt ordering, stage-native completion, canonical synchronization, or durable resume behavior.
 Required outcome: Provide one explicitly non-public receipt-backed path through every M4 stage to `test-spec-review`, using exact effective capabilities and stage-native evidence without exposing public or legacy entry.
-Chosen action: Pending review-resolution.
+Chosen action: Implement the non-public transition harness through the existing coordinator and state writer, add stage-native completion verifiers for every M4 stage, and replace helper-only positives with transactional temporary-repository proof.
 Safe resolution path: Add stage-specific completion verification, compose it through `coordinate_one_stage`, and replace helper-only positives with temporary-repository transition fixtures covering receipt, invocation, synchronization, exact target, conditional applicability, and isolation behavior.
 Validation target: CMD14-CMD20, direct state/receipt integration contrasts for every M4 stage, MP1, selector routing, broad smoke when selected, and code-review M4 R2.
-Validation evidence: CMD14-CMD20 pass, but call-site inspection finds the M4 evaluators only in tests and the state verifier supports only `proposal-review`; every later M4 stage lacks stage-native completion.
+Validation evidence: Receipt-backed spec and proposal-correction integration tests pass; all eleven M4 authoring stages have closed verifier registration; the full 33-test engine, 49-test state/recovery, 52-test automation-validator, CMD14-CMD20, Python compilation, diff checks, and repository broad smoke pass.
 
 #### BRF-M4-CR2 - Proposal correction trusts unbound caller assertions
 
 Finding ID: BRF-M4-CR2
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept canonical effective-capability and tracked-evidence lookup as mandatory inputs rather than caller booleans, status strings, and optional history.
+Decision needed: None; the user's implementation request accepted the recorded safe resolution.
 Rationale: Correction authority and convergence cannot be established from caller assertions, and an optional reviewed-classification map cannot detect every new or changed finding class.
 Required outcome: Resolve correction authority, finding/classification state, budget identity, path scope, validation evidence, and proposal identities from the exact current persisted capability and repository evidence; omission or drift must pause or fail closed.
-Chosen action: Pending review-resolution.
+Chosen action: Resolve correction from the canonical capability and repository-backed review/correction evidence, require classification history and budget identity, verify the resulting proposal identity, and force fresh proposal review authority.
 Safe resolution path: Replace boolean/string inputs with a canonical capability ID and repository-backed review-resolution/proposal evidence, require old and current classification identities, bind the budget identity, record mutation under a prepared receipt, invalidate the old review, and derive a fresh proposal-review capability.
 Validation target: Add omission, forged authority, changed classification, stale budget, forged validation/identity, and old-review continuation regressions; rerun CMD14-CMD20, broad smoke when selected, and code-review M4 R2.
-Validation evidence: Direct probes returned `correction-loop` from caller booleans without durable authority and `rereview-required` when prior finding classifications were omitted.
+Validation evidence: The correction-capability resolver rejects forged finding sets and stale basis identities; classification history is mandatory; exhausted budget, changed class, stale review, expanded path/scope, non-shrinking findings, and missing deterministic validation pause; receipt-backed correction proves a changed proposal identity and consumes the exact capability before rereview routing. CMD14-CMD20 and repository broad smoke pass.
 
 ### code-review-m3-r9
 
