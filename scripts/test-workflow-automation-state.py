@@ -22,6 +22,7 @@ from workflow_automation_state import (
     dump_yaml,
     evaluate_receipt_recovery,
     project_automation_status,
+    STAGE_NATIVE_VERIFIER_STAGES,
 )
 
 
@@ -75,6 +76,26 @@ def synchronized_evidence() -> dict[str, object]:
 
 
 class WorkflowAutomationStateTests(unittest.TestCase):
+    def test_authoring_stage_native_verifier_registry_is_complete(self) -> None:
+        self.assertEqual(
+            STAGE_NATIVE_VERIFIER_STAGES,
+            frozenset(
+                {
+                    "proposal",
+                    "proposal-review",
+                    "spec",
+                    "spec-review",
+                    "architecture-assessment",
+                    "architecture",
+                    "architecture-review",
+                    "plan",
+                    "plan-review",
+                    "test-spec",
+                    "test-spec-review",
+                }
+            ),
+        )
+
     def make_store(self, automation: dict | None = None, *, legacy: dict | None = None):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
