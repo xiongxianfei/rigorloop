@@ -215,6 +215,7 @@ CAPABILITY_BASIS_FIELDS = {
             "code_review_identity",
             "accepted_finding_set_identity",
             "reviewer_classification_identity",
+            "correction_budget_identity",
             "affected_paths_identity",
         }
     ),
@@ -389,6 +390,43 @@ def _validate_evidence_object(value: Any, path: str) -> list[str]:
         elif not isinstance(item, str) or not item.strip():
             errors.append(f"{path}.{key}: expected non-empty identity string")
     return errors
+
+
+def _validate_artifact_evidence(value: Any, path: str) -> list[str]:
+    if not isinstance(value, dict):
+        return [f"{path}: expected artifact evidence object"]
+    errors = _required(value, {"path", "identity"}, path)
+    extra = set(value) - {"path", "identity"}
+    if extra:
+        errors.append(f"{path}: unknown artifact evidence fields: {', '.join(sorted(extra))}")
+    artifact_path = value.get("path")
+    if (
+        not isinstance(artifact_path, str)
+        or not artifact_path.strip()
+        or artifact_path.startswith("/")
+        or ".." in artifact_path.split("/")
+    ):
+        errors.append(f"{path}.path: expected repository-relative artifact path")
+    identity = value.get("identity")
+    if not isinstance(identity, str) or not identity.strip():
+        errors.append(f"{path}.identity: expected non-empty identity string")
+    return errors
+
+
+def _artifact_path_in_roots(value: Any, roots: Any) -> bool:
+    if not isinstance(value, dict) or not isinstance(roots, list):
+        return False
+    artifact_path = value.get("path")
+    if not isinstance(artifact_path, str):
+        return False
+    return any(
+        isinstance(root, str)
+        and (
+            artifact_path == root.rstrip("/")
+            or artifact_path.startswith(root.rstrip("/") + "/")
+        )
+        for root in roots
+    )
 
 
 def _is_sequence_subset(candidate: Any, maximum: Any) -> bool:
@@ -927,11 +965,7 @@ def _validate_capability(
                 errors.append(
                     f"{path}.scope.correction_budget_identity: required concrete identity"
                 )
-            if (
-                isinstance(basis, dict)
-                and "correction_budget_identity" in basis
-                and basis.get("correction_budget_identity") != budget_identity
-            ):
+            if isinstance(basis, dict) and basis.get("correction_budget_identity") != budget_identity:
                 errors.append(
                     f"{path}.scope.correction_budget_identity: must match capability basis"
                 )
@@ -1200,10 +1234,45 @@ def validate_workflow_automation(
                 if receipt.get("status") == "completed" and not outputs:
                     errors.append(f"{path}.outputs: completed receipt requires concrete output evidence")
                 for index, output in enumerate(outputs):
-                    errors.extend(_validate_concrete_value(output, f"{path}.outputs[{index}]"))
-            errors.extend(
-                _required(receipt.get("canonical_sync"), {"status"}, f"{path}.canonical_sync")
-            )
+                    if receipt.get("status") == "completed":
+                        errors.extend(
+                            _validate_artifact_evidence(output, f"{path}.outputs[{index}]")
+                        )
+                    else:
+                        errors.extend(_validate_concrete_value(output, f"{path}.outputs[{index}]"))
+            canonical_sync = receipt.get("canonical_sync")
+            sync_required = {"status"}
+            if receipt.get("status") == "completed":
+                sync_required |= {"evidence", "observed_identities"}
+            errors.extend(_required(canonical_sync, sync_required, f"{path}.canonical_sync"))
+            if isinstance(canonical_sync, dict) and receipt.get("status") == "completed":
+                sync_evidence = canonical_sync.get("evidence")
+                observed_identities = canonical_sync.get("observed_identities")
+                if not isinstance(sync_evidence, dict) or not sync_evidence:
+                    errors.append(f"{path}.canonical_sync.evidence: expected concrete evidence object")
+                else:
+                    for name, evidence in sync_evidence.items():
+                        errors.extend(
+                            _validate_artifact_evidence(
+                                evidence, f"{path}.canonical_sync.evidence.{name}"
+                            )
+                        )
+                errors.extend(
+                    _validate_evidence_object(
+                        observed_identities,
+                        f"{path}.canonical_sync.observed_identities",
+                    )
+                )
+                if isinstance(sync_evidence, dict) and isinstance(observed_identities, dict):
+                    for name, evidence in sync_evidence.items():
+                        if (
+                            isinstance(evidence, dict)
+                            and observed_identities.get(name) != evidence.get("identity")
+                        ):
+                            errors.append(
+                                f"{path}.canonical_sync.observed_identities.{name}: "
+                                "must match synchronized artifact identity"
+                            )
             capability_id = receipt.get("effective_capability_id")
             if not isinstance(capability_id, str) or capability_id not in capabilities:
                 errors.append(f"{path}.effective_capability_id: active capability not found")
@@ -1226,6 +1295,29 @@ def validate_workflow_automation(
                         )
                     if receipt.get("policy_version") != capability.get("policy_version"):
                         errors.append(f"{path}.policy_version: must match effective capability")
+                    if receipt.get("status") == "completed":
+                        scope = capability.get("scope")
+                        affected_roots = (
+                            scope.get("affected_path_roots")
+                            if isinstance(scope, dict)
+                            else None
+                        )
+                        if isinstance(outputs, list):
+                            for index, output in enumerate(outputs):
+                                if not _artifact_path_in_roots(output, affected_roots):
+                                    errors.append(
+                                        f"{path}.outputs[{index}].path: exceeds effective "
+                                        "capability scope"
+                                    )
+                        if isinstance(canonical_sync, dict) and isinstance(
+                            canonical_sync.get("evidence"), dict
+                        ):
+                            for name, evidence in canonical_sync["evidence"].items():
+                                if not _artifact_path_in_roots(evidence, affected_roots):
+                                    errors.append(
+                                        f"{path}.canonical_sync.evidence.{name}.path: "
+                                        "exceeds effective capability scope"
+                                    )
                     stage = capability.get("stage")
                     stage_name = stage.get("name") if isinstance(stage, dict) else None
                     try:
@@ -1244,6 +1336,26 @@ def validate_workflow_automation(
                                 f"{path}.retry_policy: must match immutable stage policy "
                                 f"{stage_policy.retry_policy.value}"
                             )
+                        if stage_policy is not None:
+                            expected_postcondition = {
+                                "completion_rule": stage_policy.completion_rule,
+                                "required_evidence": sorted(stage_policy.completion_evidence),
+                            }
+                            if receipt.get("expected_postcondition") != expected_postcondition:
+                                errors.append(
+                                    f"{path}.expected_postcondition: must match immutable stage policy"
+                                )
+                            if receipt.get("status") == "completed" and isinstance(
+                                canonical_sync, dict
+                            ):
+                                sync_evidence = canonical_sync.get("evidence")
+                                if isinstance(sync_evidence, dict) and set(sync_evidence) != set(
+                                    stage_policy.completion_evidence
+                                ):
+                                    errors.append(
+                                        f"{path}.canonical_sync.evidence: must contain exact "
+                                        "stage-policy completion evidence"
+                                    )
                         if not is_immediate_predecessor(from_position, operation_stage):
                             errors.append(
                                 f"{path}.from_position: {from_position.value} cannot transition "

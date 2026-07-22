@@ -105,7 +105,10 @@ def add_valid_receipt(state: dict[str, object]) -> dict[str, object]:
         "target": copy.deepcopy(state["run"]["target"]),  # type: ignore[index]
         "effective_capability_id": "capability-proposal-review-001",
         "input_identities": {"proposal": "sha256:proposal"},
-        "expected_postcondition": {"review_occurrence": "recorded"},
+        "expected_postcondition": {
+            "completion_rule": "formal review occurrence is recorded",
+            "required_evidence": ["proposal-review"],
+        },
         "status": "prepared",
         "retry_policy": "reconcile-only",
         "outputs": [],
@@ -114,6 +117,14 @@ def add_valid_receipt(state: dict[str, object]) -> dict[str, object]:
     receipt["transition_key"] = compute_transition_key(receipt)
     state["transition_receipts"] = {"transition-001": receipt}
     return receipt
+
+
+def set_policy_postcondition(receipt: dict[str, object], stage_name: str) -> None:
+    policy = STAGE_POLICY_BY_STAGE[stage_name]
+    receipt["expected_postcondition"] = {
+        "completion_rule": policy.completion_rule,
+        "required_evidence": sorted(policy.completion_evidence),
+    }
 
 
 def add_valid_migration_receipt(state: dict[str, object]) -> dict[str, object]:
@@ -159,6 +170,7 @@ def configure_post_proposal_transition(
     capability["scope"]["mutation_categories"] = ["downstream-authoring-artifacts"]  # type: ignore[index]
     receipt = add_valid_receipt(state)
     receipt["retry_policy"] = STAGE_POLICY_BY_STAGE[stage_name].retry_policy.value
+    set_policy_postcondition(receipt, stage_name)
     return receipt
 
 
@@ -200,6 +212,7 @@ def configure_next_milestone_transition(
     receipt["retry_policy"] = STAGE_POLICY_BY_STAGE[
         WorkflowStage.IMPLEMENT.value
     ].retry_policy.value
+    set_policy_postcondition(receipt, WorkflowStage.IMPLEMENT.value)
     return receipt
 
 
@@ -556,6 +569,19 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                         }
                     )
                 self.assertEqual(validate_workflow_automation(state), [])
+                if kind == "implementation-correction":
+                    capability["basis"].pop("correction_budget_identity")  # type: ignore[index]
+                    missing_errors = validate_workflow_automation(state)
+                    self.assertTrue(
+                        any("basis.correction_budget_identity: missing" in error for error in missing_errors),
+                        missing_errors,
+                    )
+                    capability["basis"]["correction_budget_identity"] = "sha256:other-budget"  # type: ignore[index]
+                    mismatch_errors = validate_workflow_automation(state)
+                    self.assertTrue(
+                        any("must match capability basis" in error for error in mismatch_errors),
+                        mismatch_errors,
+                    )
 
     def test_parent_cannot_allow_cross_risk_capability_kind(self) -> None:
         state = valid_automation()
@@ -812,6 +838,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         )
         receipt = add_valid_receipt(state)
         receipt["from_position"] = "proposal-review"
+        set_policy_postcondition(receipt, WorkflowStage.PROPOSAL.value)
         errors = validate_workflow_automation(state)
         self.assertTrue(any("run target" in error for error in errors), errors)
 
@@ -845,6 +872,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         capability["scope"]["correction_budget_identity"] = "sha256:budget"  # type: ignore[index]
         receipt = add_valid_receipt(state)
         receipt["from_position"] = "proposal-review"
+        set_policy_postcondition(receipt, WorkflowStage.PROPOSAL.value)
         errors = validate_workflow_automation(state)
         self.assertTrue(any("review_outcome" in error for error in errors), errors)
 
@@ -964,6 +992,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         receipt["retry_policy"] = STAGE_POLICY_BY_STAGE[
             WorkflowStage.CODE_REVIEW.value
         ].retry_policy.value
+        set_policy_postcondition(receipt, WorkflowStage.CODE_REVIEW.value)
         receipt["input_identities"] = {
             "source_milestone_id": "M0",
             "source_milestone_identity": "sha256:M0",
@@ -1068,7 +1097,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         errors = validate_workflow_automation(state)
         self.assertTrue(any("cyclic concrete evidence" in error for error in errors), errors)
 
-    def test_receipt_accepts_finite_numeric_evidence(self) -> None:
+    def test_receipt_rejects_caller_defined_postcondition(self) -> None:
         state = valid_automation()
         receipt = add_valid_receipt(state)
         receipt["expected_postcondition"] = {
@@ -1077,7 +1106,8 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "large_counter": 10**1000,
         }
         receipt["transition_key"] = compute_transition_key(receipt)
-        self.assertEqual(validate_workflow_automation(state), [])
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("must match immutable stage policy" in error for error in errors), errors)
 
     def test_prepared_receipt_requires_active_capability(self) -> None:
         state = valid_automation()
@@ -1144,11 +1174,77 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         state = valid_automation()
         receipt = add_valid_receipt(state)
         receipt["status"] = "completed"
-        receipt["outputs"] = ["sha256:proposal-review"]
-        receipt["canonical_sync"] = {"status": "synchronized"}
+        receipt["outputs"] = [
+            {
+                "path": "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md",
+                "identity": "sha256:proposal-review",
+            }
+        ]
+        evidence = {
+            "proposal-review": {
+                "path": "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md",
+                "identity": "sha256:proposal-review",
+            }
+        }
+        receipt["canonical_sync"] = {
+            "status": "synchronized",
+            "evidence": evidence,
+            "observed_identities": {"proposal-review": "sha256:proposal-review"},
+        }
         capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
         capability["status"] = "consumed"  # type: ignore[index]
         self.assertEqual(validate_workflow_automation(state), [])
+
+    def test_completed_receipt_requires_independent_sync_evidence(self) -> None:
+        for missing_field in ("evidence", "observed_identities"):
+            state = valid_automation()
+            receipt = add_valid_receipt(state)
+            receipt["status"] = "completed"
+            receipt["outputs"] = [
+                {
+                    "path": "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md",
+                    "identity": "sha256:proposal-review",
+                }
+            ]
+            receipt["canonical_sync"] = {
+                "status": "synchronized",
+                "evidence": {
+                    "proposal-review": {
+                        "path": "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md",
+                        "identity": "sha256:proposal-review",
+                    }
+                },
+                "observed_identities": {
+                    "proposal-review": "sha256:proposal-review"
+                },
+            }
+            del receipt["canonical_sync"][missing_field]
+            capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+            capability["status"] = "consumed"  # type: ignore[index]
+            errors = validate_workflow_automation(state)
+            self.assertTrue(
+                any(f"canonical_sync.{missing_field}" in error for error in errors),
+                errors,
+            )
+
+    def test_completed_receipt_evidence_must_remain_in_capability_scope(self) -> None:
+        state = valid_automation()
+        receipt = add_valid_receipt(state)
+        outside = {
+            "path": "docs/outside/review.md",
+            "identity": "sha256:proposal-review",
+        }
+        receipt["status"] = "completed"
+        receipt["outputs"] = [outside]
+        receipt["canonical_sync"] = {
+            "status": "synchronized",
+            "evidence": {"proposal-review": outside},
+            "observed_identities": {"proposal-review": "sha256:proposal-review"},
+        }
+        capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+        capability["status"] = "consumed"  # type: ignore[index]
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("exceeds effective capability scope" in error for error in errors), errors)
 
     def test_multiple_prepared_receipts_fail_closed(self) -> None:
         state = valid_automation()

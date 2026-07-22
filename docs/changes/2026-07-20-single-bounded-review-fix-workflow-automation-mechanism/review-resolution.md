@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -24,9 +24,9 @@ Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`
-- Findings resolved: 44
-- Unresolved findings: 2
-- Current result: Code-review M3 R2 confirmed `BRF-M3-CR1` and `BRF-M3-CR2` resolved, but classified `BRF-M3-CR3` and `BRF-M3-CR4` as failed remediations and opened `BRF-M3-CR5` and `BRF-M3-CR6`. M3 is resolution-needed and M4 remains blocked.
+- Findings resolved: 46
+- Unresolved findings: 0
+- Current result: `BRF-M3-CR5` and `BRF-M3-CR6` are resolved with mandatory correction-budget basis identity, policy-derived postconditions, repository-backed completion evidence, independent identity rereads, and durable synchronization proof. M3 is review-requested for code-review R3; M4 remains blocked pending rereview.
 
 ## Resolution Overview
 
@@ -76,8 +76,8 @@ Review closeout: code-review-m3-r2
 | BRF-M3-CR2 | accepted | resolved | One policy projection now supplies target completion for binding, resume, and durable validation; every public-stage tamper fails closed. |
 | BRF-M3-CR3 | accepted | resolved | Proposal and implementation correction capabilities now require current positive budget scope and identity within the parent maximum. |
 | BRF-M3-CR4 | accepted | resolved | Typed stage completion and canonical synchronization results are validated before completion; unsafe outcomes pause without consuming authority. |
-| BRF-M3-CR5 | needs-decision | open | Implementation-correction budget identity remains optional in its authoritative basis, so arbitrary unbound identities derive and validate. |
-| BRF-M3-CR6 | needs-decision | open | Typed callback claims still substitute for stage-owned completion and an independent canonical synchronization reread. |
+| BRF-M3-CR5 | accepted | resolved | Implementation-correction basis now requires the concrete correction-budget identity and must match bounded scope exactly. |
+| BRF-M3-CR6 | accepted | resolved | Completion now uses policy-derived postconditions and repository-backed evidence that is independently reread before synchronized completion can consume authority. |
 
 ## Common Resolution Metadata
 
@@ -93,34 +93,34 @@ Review closeout: code-review-m3-r2
 #### BRF-M3-CR5 - Implementation-correction budget identity is not bound to its basis
 
 Finding ID: BRF-M3-CR5
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the deterministic safe resolution or record why the approved current-budget identity contract needs a higher-level decision.
+Decision needed: Resolved by the user's request to apply the deterministic safe resolution.
 Rationale: Implementation-correction basis omits correction-budget identity, so derivation and durable validation accept any non-empty scope identity when the optional basis field is absent.
 Required outcome: Require a concrete correction-budget identity in every correction capability basis and exact equality with its bounded scope identity.
-Chosen action: Pending review-resolution.
+Chosen action: Added `correction_budget_identity` to the implementation-correction basis contract, made basis/scope equality unconditional for both correction kinds, and added missing, mismatched, and matching derivation and durable-validation contrasts.
 Safe resolution path: Add the identity to implementation-correction basis requirements, compare it unconditionally for both correction kinds, and add derivation plus durable-validation contrasts for missing, arbitrary, changed, and matching identities.
 Validation target: CMD12, full automation-validator regressions, direct unbound-identity rejection, and code-review M3 R3.
-Validation evidence: Direct R2 reproduction derived active implementation-correction authority with an unbound identity and zero durable validation errors.
+Validation evidence: The proof-first missing-basis test failed before the correction. CMD12, all 18 engine tests, all 52 automation-validator tests, all 30 state-writer tests, all 149 lifecycle tests, all 53 metadata tests, Python compilation, diff checks, and the final 12-check broad-smoke suite now pass; missing or mismatched identities fail closed.
 
 #### BRF-M3-CR6 - Typed callback claims still substitute for stage completion and canonical reread
 
 Finding ID: BRF-M3-CR6
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the deterministic safe resolution or identify an approved existing stage-evidence and canonical-reread boundary that the coordinator can invoke.
+Decision needed: Resolved by the user's request to apply the deterministic safe resolution.
 Rationale: Callback-returned mappings are trusted as completion and synchronization without inspecting a stage-owned artifact or independently rereading canonical state; completed durable receipts also require only synchronized status.
 Required outcome: Establish completion from repository-owned stage evidence, synchronize through the canonical owner, reread it independently, and durably validate the proof before consuming authority.
-Chosen action: Pending review-resolution.
+Chosen action: Removed caller-selected postconditions; the coordinator now derives them from immutable stage policy, requires typed repository-relative artifact references within capability scope, rereads and hashes those artifacts after invocation and synchronization, and persists exact synchronization evidence plus engine-derived observed identities. Completed-receipt validation requires those proofs before authority can be consumed.
 Safe resolution path: Separate invocation from evidence inspection, derive postconditions from policy, inspect real stage evidence after invocation, synchronize and reread canonical state through its owner, require completed receipt sync evidence/identities, and add fake/no-artifact/no-write/stale-reread/valid-fixture contrasts.
 Validation target: CMD12-CMD14, full engine/state/validator regressions, direct no-artifact and evidence-free completed-receipt rejection, and code-review M3 R3.
-Validation evidence: Direct R2 reproduction finalized completed/synchronized while only `change.yaml` existed; the existing durable-validator fixture accepts synchronized status without evidence or observed identities.
+Validation evidence: Proof-first tests failed before `ArtifactEvidence` existed. The corrected contrasts reject absent artifacts, stale identities, failed synchronization, caller-defined postconditions, and evidence-free completed receipts; the valid file-backed fixture completes and consumes capability authority. CMD10-CMD14, the full engine/state/validator regressions, Python compilation, diff checks, and the final 12-check broad-smoke suite pass.
 
 ### code-review-m3-r1
 
