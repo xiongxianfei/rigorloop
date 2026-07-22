@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -23,11 +23,12 @@ Review closeout: code-review-m2-r3
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
+Review closeout: code-review-m3-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`
 - Findings resolved: 47
-- Unresolved findings: 0
-- Current result: `BRF-M3-CR7` is resolved by routing proposal-review completion, prepared-receipt recovery, completed-receipt resume, and cancellation through the same repository-owned formal-review parser and canonical review-log reread. M3 is review-requested for code-review R4; M4 remains blocked pending rereview.
+- Unresolved findings: 1
+- Current result: Code-review M3 R4 classified `BRF-M3-CR7` as failed remediation and opened `BRF-M3-CR8`. A canonical review log may resolve outside the repository through a symlink, and review-log identity drift is not persisted or compared during completed recovery. M3 is resolution-needed and M4 remains blocked.
 
 ## Resolution Overview
 
@@ -79,7 +80,8 @@ Review closeout: code-review-m3-r3
 | BRF-M3-CR4 | accepted | resolved | Typed stage completion and canonical synchronization results are validated before completion; unsafe outcomes pause without consuming authority. |
 | BRF-M3-CR5 | accepted | resolved | Implementation-correction basis now requires the concrete correction-budget identity and must match bounded scope exactly. |
 | BRF-M3-CR6 | accepted | resolved | Added policy-derived postconditions, repository path/hash checks, and durable synchronization fields; R3 records the remaining semantic and recovery gap separately as `BRF-M3-CR7`. |
-| BRF-M3-CR7 | accepted | resolved | Proposal-review completion now requires a parser-valid review bound to the exact proposal identity plus a matching canonical review-log occurrence; recovery and cancellation reuse the same verifier. |
+| BRF-M3-CR7 | accepted | resolved | Added parser-valid review and occurrence checks; R4 records the remaining canonical-path and canonical-identity gap separately as `BRF-M3-CR8`. |
+| BRF-M3-CR8 | needs-decision | open | R4 failed-remediation: canonical review-log symlink escape and unpersisted canonical-log identity still permit unsafe completion or continuation. |
 
 ## Common Resolution Metadata
 
@@ -141,6 +143,24 @@ Chosen action: Exposed bounded formal-review record and review-log parsers from 
 Safe resolution path: Add one policy-owned evidence verifier/reader contract per stage that reuses existing review, lifecycle, plan, and verification parsers. Route coordinator completion, prepared-receipt recovery, and cancellation through it; independently re-resolve canonical state after synchronization; and add arbitrary-bytes, malformed-review, identity/outcome mismatch, no-write, stale-reread, nonexistent-recovery, and valid parser-produced fixtures.
 Validation target: CMD12-CMD14, full engine/state/validator regressions, direct semantic-artifact and recovery contrasts, and code-review M3 R4.
 Validation evidence: Proof-first tests reproduced arbitrary review bytes and nonexistent recovery evidence completing or consuming authority before the fix. After the correction, CMD10-CMD14 pass; 14 capability tests, 33 state/recovery tests, 52 durable validator tests, and 103 review-parser tests pass. Direct contrasts reject arbitrary or malformed review evidence, unknown outcomes, wrong reviewed-artifact identity, missing canonical-log synchronization, nonexistent recovery artifacts, and disappeared completed-receipt canonical evidence; the parser-produced valid review fixture completes and consumes authority exactly once. The required broad-smoke suite passed all 11 checks in 436 seconds.
+
+### code-review-m3-r4
+
+#### BRF-M3-CR8 - Canonical review-log path and identity are not authority-bound
+
+Finding ID: BRF-M3-CR8
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Accept the deterministic safe resolution or identify an approved canonical-evidence resolver that already binds repository containment and canonical-owner identity across completion and recovery.
+Rationale: The formal review artifact is path- and hash-bound, but the canonical review log is followed without repository containment and its identity is absent from completed receipt evidence.
+Required outcome: Canonical review-log evidence must remain inside its repository-owned location, and its independently observed identity must be persisted and compared before normal completion, prepared/completed recovery, cancellation, or capability consumption.
+Chosen action: Pending review-resolution.
+Safe resolution path: Resolve every canonical-owner path through one containment checker; reject absolute paths, traversal, and symlink escape; return engine-derived normalized canonical identities from the shared verifier; persist the review-log identity; and make recovery/cancellation consume only that verified normalized proof. Add external/in-repository symlink, canonical-log identity drift, mismatched occurrence, missing log, and valid parser-produced fixtures.
+Validation target: CMD12-CMD14, full engine/state/validator regressions, direct canonical-path and canonical-identity contrasts, and code-review M3 R5.
+Validation evidence: R4 reproduced `reconcile-completed` and `completed/consumed/cancelled` using a parser-valid canonical review log outside the repository through a symlink. A second reproduction changed canonical review-log bytes after completion and still received `continue/completed-evidence-current`; the persisted observed identities contained only the review-record identity. Fourteen capability, 33 state, and 52 validator tests pass but do not reject these cases.
 
 ### code-review-m3-r1
 
