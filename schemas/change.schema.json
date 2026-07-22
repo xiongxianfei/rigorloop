@@ -268,11 +268,62 @@
             },
             "migration_receipts": {
               "type": "object",
-              "additionalProperties": true
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "migration_id",
+                  "source_mechanism",
+                  "source_record_identity",
+                  "migrated_at",
+                  "unified_run_id",
+                  "projection_result",
+                  "legacy_read_only"
+                ],
+                "properties": {
+                  "migration_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_mechanism": {
+                    "type": "string",
+                    "enum": [
+                      "authoring-through-plan-review",
+                      "bounded-review-fix",
+                      "implementation-through-verify"
+                    ]
+                  },
+                  "source_record_identity": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "migrated_at": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "unified_run_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "projection_result": {
+                    "type": "string",
+                    "enum": [
+                      "equivalent"
+                    ]
+                  },
+                  "legacy_read_only": {
+                    "const": true
+                  }
+                },
+                "additionalProperties": false
+              }
             },
             "observed_identities": {
               "type": "object",
               "additionalProperties": true
+            },
+            "canonical_position_source": {
+              "type": "string",
+              "minLength": 1
             },
             "latest_review_result": {
               "type": "object",

@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M2. Sole State Writer, Prepared Receipts, and Recovery
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Unified State Model and Complete Policy Registry
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r7.md`
 - Review status: approved; stage=code-review; round=r7
 - Remaining in-scope implementation milestones: M2, M3, M4, M5, M6
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed after clean code-review R7, but M2-M6, final holistic review, explanation, verification, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 is awaiting independent code review; M3-M6, final holistic review, explanation, verification, and PR handoff remain.
 
 ## Milestones
 
@@ -168,7 +168,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M2. Sole State Writer, Prepared Receipts, and Recovery
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Implement atomic-file state updates, the sole automation-state write boundary, prepared/finalized receipts, reconciliation, cancellation, and one-way legacy-state migration without invoking stage work through the new engine yet.
 - Requirements: `BRF-R006`-`BRF-R008f`, `BRF-R030`, `BRF-R044`-`BRF-R046`, `BRF-R068`-`BRF-R077`, `BRF-R091`-`BRF-R098`
 - Files/components likely touched:
@@ -520,6 +520,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-21: Code-review M1 R6 confirmed guard enforcement but classified `BRF-M1-CR11` as failed remediation and opened `BRF-M1-CR12`: the stage-only next-milestone frontier rejects valid `implement@M2` and `code-review@M2` targets. M1 is resolution-needed; M2 remains blocked.
 - 2026-07-22: Resolved `BRF-M1-CR12` by admitting repeated targets on the next-milestone edge only when their persisted target occurrence equals the identity-bound next milestone. M1 is review-requested; M2 remains blocked pending M1 R7.
 - 2026-07-22: Code-review M1 R7 independently confirmed `BRF-M1-CR12` resolved with no new material findings. M1 is closed and the next stage is implement M2.
+- 2026-07-22: M2 added the sole atomic state adapter, capability-bound prepared/finalized receipts, evidence-first recovery and cancellation, exact one-way legacy migration receipts, and read-only unified status projection. All plan-mandated M2 commands pass; M2 is review-requested and the public workflow route remains unchanged.
 
 ## Decision log
 
@@ -535,6 +536,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-21 | Bind transition permission to an immutable edge-specific target frontier. | Generic reachability over a cyclic graph cannot preserve exact structured targets as stopping boundaries. | Unqualified breadth-first reachability and validator-local cycle exceptions. |
 | 2026-07-21 | Make `evaluate_transition` the only executable transition-permission decision. | Immutable guard and occurrence metadata is not a policy unless every selected rule evaluates it against concrete evidence. | Decorative predicate fields and boolean helpers whose names imply executable permission. |
 | 2026-07-22 | Evaluate repeated-stage target frontiers against the bound next-milestone occurrence. | Stage names alone cannot distinguish an already-reached M1 target from the same stage requested for M2. | M2-specific exceptions, unqualified cyclic reachability, and allowing every repeated-stage occurrence. |
+| 2026-07-22 | Serialize complete change metadata behind a directory lock and compare-and-swap identity check. | One stable lock boundary prevents concurrent writers from both passing the identity check while atomic replacement prevents truncation. | Direct subsection edits, unlocked replacement, and a second persisted state file. |
+| 2026-07-22 | Bind migration receipts to the canonical hash of exactly one active legacy source record. | A boolean read-only marker alone cannot prove which historical writer was frozen or prevent fabricated migration evidence. | Unbound compatibility markers and rewriting the legacy record. |
 
 ## Surprises and discoveries
 
@@ -597,6 +600,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Explicit-path artifact lifecycle validation passed for 5 lifecycle-managed artifacts and retained the existing non-blocking lifecycle-language warning in `review-resolution.md` line 444.
 - `git diff --check` passed after handoff synchronization.
 - M1 intentionally adds no `workflow.automation` writer, command adapter, stage invocation, or public skill change; those boundaries remain assigned to M2-M6.
+- M2 proof-first execution failed because `workflow_automation_state.py` did not exist. The completed slice passes 24 state/recovery tests, 15 receipt-selected validator tests, 3 migration-selected validator tests, 17 query tests, all 53 metadata-validator tests, direct change-metadata validation, Python compilation, and diff checks.
+- M2 keeps the new writer unreachable from public commands. It uses complete-file atomic replacement with file-mode preservation, directory locking, identity compare-and-swap, prepared receipt persistence, deterministic transition keys, evidence-first recovery, cancellation settlement, and exact legacy-source migration binding.
 
 ## Outcome and retrospective
 

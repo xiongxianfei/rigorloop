@@ -563,6 +563,32 @@ validation:
     result: passed_after_code_review_m1_r7_handoff_sync
   - command: git diff --check
     result: passed_after_code_review_m1_r7_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_for_M2_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_for_M2_handoff_before_final_metadata_sync
+  - command: python scripts/test-workflow-automation-state.py
+    result: passed_24_tests_for_M2_handoff
+  - command: python scripts/test-validate-workflow-automation.py -k receipt
+    result: passed_15_selected_tests_for_M2_handoff
+  - command: python scripts/test-validate-workflow-automation.py -k migration
+    result: passed_3_selected_tests_for_M2_handoff
+  - command: python scripts/test-query-change-record.py
+    result: passed_17_tests_for_M2_handoff
+  - command: python -m py_compile scripts/workflow_automation_state.py scripts/validate_workflow_automation.py scripts/validate-change-metadata.py scripts/query-change-record.py
+    result: passed_for_M2_handoff
+  - command: git diff --check
+    result: passed_for_M2_handoff_before_final_metadata_sync
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_reviews_25_findings_34_open_findings_0_for_M2_handoff
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for M2 handoff evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_M2_handoff_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_M2_handoff_sync
+  - command: git diff --check
+    result: passed_after_M2_handoff_sync
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md
@@ -612,11 +638,15 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r7.md
   - schemas/change.schema.json
   - scripts/workflow_automation_policy.py
+  - scripts/workflow_automation_state.py
   - scripts/validate_workflow_automation.py
   - scripts/validate-change-metadata.py
+  - scripts/query-change-record.py
   - scripts/test-workflow-automation-policy.py
+  - scripts/test-workflow-automation-state.py
   - scripts/test-validate-workflow-automation.py
   - scripts/test-change-metadata-validator.py
+  - scripts/test-query-change-record.py
 review:
   status: clean-with-notes
   unresolved_items: 0

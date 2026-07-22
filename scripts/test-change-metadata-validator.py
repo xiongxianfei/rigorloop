@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import os
@@ -397,6 +398,47 @@ review:
             self.assertPathFails(
                 target,
                 "workflow: mixed writable workflow.automation and legacy workflow.autoprogression state",
+            )
+
+    def test_workflow_automation_accepts_read_only_legacy_after_migration(self) -> None:
+        legacy_record = {
+            "profile": "authoring-through-plan-review",
+            "authorized_by": "user",
+            "authorized_at": "2026-06-24T12:00:00Z",
+            "change_id": "2026-06-24-policy-fixture",
+        }
+        source_identity = "sha256:" + hashlib.sha256(
+            json.dumps(
+                legacy_record, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+            ).encode("utf-8")
+        ).hexdigest()
+        migration = f"""    migration_receipts:
+      migration-001:
+        migration_id: migration-001
+        source_mechanism: authoring-through-plan-review
+        source_record_identity: {source_identity}
+        migrated_at: 2026-07-22T00:00:00Z
+        unified_run_id: run-001
+        projection_result: equivalent
+        legacy_read_only: true"""
+        block = self.valid_workflow_automation(extra_automation=migration) + """  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+"""
+        with tempfile.TemporaryDirectory(prefix="change-metadata-workflow-automation-") as temp_dir:
+            target = self.write_policy_fixture(Path(temp_dir), workflow_block=block)
+            self.assertPathPasses(target)
+
+        with tempfile.TemporaryDirectory(prefix="change-metadata-workflow-automation-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=block.replace(source_identity, "sha256:" + "0" * 64),
+            )
+            self.assertPathFails(
+                target,
+                "legacy source mechanism and identity must match exactly",
             )
 
     def test_valid_basic_fixture_passes(self) -> None:
