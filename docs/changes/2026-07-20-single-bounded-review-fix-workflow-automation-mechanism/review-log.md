@@ -402,4 +402,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r7.md
 Resolution: review-resolution.md#code-review-m3-r7
 Material findings: BRF-M3-CR13, BRF-M3-CR14
-Open findings: BRF-M3-CR13, BRF-M3-CR14
+Open findings: None

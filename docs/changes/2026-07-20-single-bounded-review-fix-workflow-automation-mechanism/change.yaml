@@ -907,6 +907,14 @@ validation:
     result: changes_requested_store_followed_ancestor_symlink_and_full_lifecycle_validator_reported_zero_blockers_for_both_contradictory_state_cases
   - command: review structure, closeout, metadata, lifecycle-state, and diff validation after code-review M3 R7 recording
     result: structure_passed_35_reviews_54_findings_metadata_and_lifecycle_passed_closeout_correctly_blocked_by_two_open_findings_diff_check_passed
+  - command: proof-first earlier-ancestor symlink and duplicate/unstructured review-state field regressions for M3 R7 resolution
+    result: failed_before_correction_then_passed_after_full_lexical_chain_and_reserved_structured_field_enforcement
+  - command: python scripts/test-workflow-automation-state.py; python scripts/test-workflow-automation.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-validate-workflow-automation.py; python scripts/test-review-artifact-validator.py
+    result: passed_48_state_23_engine_154_lifecycle_52_automation_validator_103_review_parser_tests_after_M3_R7_resolution
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M3 R7 resolution paths
+    result: artifact_lifecycle_regression_and_broad_smoke_selected_manual_routing_required_for_two_unsupported_automation_state_paths_covered_by_explicit_suites
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_478_seconds_after_M3_R7_resolution
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md
@@ -980,12 +988,12 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r6.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r7.md
 review:
-  status: changes-requested
-  unresolved_items: 2
+  status: resolved
+  unresolved_items: 0
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   material_findings: 54
-  closed_findings: 52
-  open_findings: 2
+  closed_findings: 54
+  open_findings: 0
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md

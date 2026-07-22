@@ -615,12 +615,8 @@ class WorkflowAutomationStateStore:
                     raise StateContractError(
                         "explicit repository root must equal canonical root"
                     )
-            current = lexical_root
-            if current.is_symlink():
-                raise StateContractError(
-                    "canonical change metadata path must not contain symlinks"
-                )
-            for component in lexical_metadata.relative_to(lexical_root).parts:
+            current = Path(lexical_metadata.parts[0])
+            for component in lexical_metadata.parts[1:]:
                 current /= component
                 if current.is_symlink():
                     raise StateContractError(

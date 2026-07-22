@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r7.md`
 - Review status: changes-requested; stage=code-review; round=r7
-- Remaining in-scope implementation milestones: M3 resolution needed, M4, M5, M6
-- Next stage: review-resolution
+- Remaining in-scope implementation milestones: M3 rereview, M4, M5, M6
+- Next stage: code-review M3 R8
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BRF-M3-CR13,BRF-M3-CR14; M3 R7 requires resolution; later lifecycle gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 R8 rereview and later lifecycle gates remain.
 
 ## Milestones
 
@@ -220,7 +220,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M3. Target Binding, Canonical Position, and Capability Evaluation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
 - Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
 - Files/components likely touched:
@@ -546,6 +546,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: M3 R6 review-resolution implementation started with proof-first ancestor-root, canonical metadata symlink, exact-root, review-state count/ID, and contradictory-detail regressions. M4-M6 and public routing remain out of scope.
 - 2026-07-22: Resolved `BRF-M3-CR11` and `BRF-M3-CR12` by binding construction to the lexical canonical metadata layout, rejecting metadata-path symlinks and non-exact explicit roots, removing the finalizer root override, and validating an exact open-review count/ID detail projection with no independent finding claims. M3 is review-requested for R7; M4 remains blocked.
 - 2026-07-22: Code-review M3 R7 classified both R6 corrections as failed remediations and opened `BRF-M3-CR13` plus `BRF-M3-CR14`. A symlink earlier than the derived repository root still redirects ownership, and a second structured review-state claim can contradict the validated detail prefix. M3 is resolution-needed; M4 remains blocked.
+- 2026-07-22: M3 R7 review-resolution implementation added proof-first earlier-ancestor symlink and duplicate/unstructured state-field regressions; each reproduced the reported bypass before production correction.
+- 2026-07-22: Resolved `BRF-M3-CR13` and `BRF-M3-CR14` by checking the entire absolute lexical metadata chain before resolution and rejecting all additional structured fields outside the single review-state projection. M3 is review-requested for R8; M4 remains blocked.
 
 ## Decision log
 
@@ -568,6 +570,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-22 | Bind every mutable automation operation to the state store's immutable repository root. | Path containment is meaningful only when the root is the repository that canonically owns the change metadata. | Caller-selected evidence roots and silent rebinding during finalization or recovery. |
 | 2026-07-22 | Derive canonical state ownership from the lexical metadata layout before resolving filesystem paths. | Resolving first erases symlink and repository-boundary evidence that must be rejected. | Ancestor containment and post-resolution layout inference. |
 | 2026-07-22 | Reserve one exact review-state clause in live closeout detail. | Count and ID projection is deterministic, while broad prose interpretation is incomplete and unsafe. | Free-form finding-state claims and repository-wide historical prose scanning. |
+| 2026-07-22 | Validate canonical metadata symlinks across the complete absolute lexical chain. | Starting at the derived root leaves earlier ancestors able to erase ownership evidence during resolution. | Partial descendant-only symlink walks and post-resolution inference. |
+| 2026-07-22 | Reserve every structured field in live review-state detail to the single leading projection. | A closed positive grammar prevents duplicate or alternate state keys without attempting broad natural-language interpretation. | Keyword denylists and unrestricted additional `key=value` fields. |
 | 2026-07-22 | Serialize complete change metadata behind a directory lock and compare-and-swap identity check. | One stable lock boundary prevents concurrent writers from both passing the identity check while atomic replacement prevents truncation. | Direct subsection edits, unlocked replacement, and a second persisted state file. |
 | 2026-07-22 | Bind migration receipts to the canonical hash of exactly one active legacy source record. | A boolean read-only marker alone cannot prove which historical writer was frozen or prevent fabricated migration evidence. | Unbound compatibility markers and rewriting the legacy record. |
 
@@ -580,6 +584,11 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - A stage-only frontier cannot represent stopping order across repeated milestone occurrences; the target milestone must participate in next-edge permission.
 
 ## Validation notes
+
+- M3 R7 proof-first tests failed for a symlink above the derived repository root, a second `review-state`, and zero formal state with unstructured state fields before production changes.
+- The correction passes 48 state/recovery tests, 23 engine tests, CMD10-CMD14 including 154 lifecycle tests, 52 automation-validator tests, 103 review-parser tests, and Python compilation.
+- The selector chose `artifact_lifecycle.regression` and `broad_smoke.repo`, with expected manual-routing diagnostics for two unsupported automation-state script paths covered by explicit suites. Broad smoke passed all 11 checks in 478 seconds.
+- Governing spec, test spec, architecture, and ADR are unaffected: this correction enforces their already-approved canonical ownership and fail-closed state-synchronization boundaries without changing the contract or component model.
 
 - Code-review M3 R7 independently reran 47 state tests, 153 lifecycle tests, and CMD10-CMD12, then reproduced earlier-ancestor symlink rebinding and two contradictory structured review-state cases despite those suites passing.
 

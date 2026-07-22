@@ -75,6 +75,9 @@ REVIEW_FINDING_DETAIL_CLAIM_PATTERN = re.compile(r"\bfindings?\b", re.IGNORECASE
 REVIEW_FINDING_ID_CLAIM_PATTERN = re.compile(
     r"(?<![A-Z0-9])[A-Z]{2,}[A-Z0-9]*(?:-[A-Z0-9]+)+(?![A-Z0-9])"
 )
+REVIEW_STATE_DETAIL_FIELD_PATTERN = re.compile(
+    r"(?<![A-Za-z0-9_-])[A-Za-z][A-Za-z0-9-]*\s*="
+)
 
 
 @dataclass(frozen=True)
@@ -333,6 +336,7 @@ def _review_state_detail_errors(
         return bool(
             REVIEW_FINDING_DETAIL_CLAIM_PATTERN.search(value)
             or REVIEW_FINDING_ID_CLAIM_PATTERN.search(value)
+            or REVIEW_STATE_DETAIL_FIELD_PATTERN.search(value)
         )
 
     detail = reason.split("\u2014", 1)[1].strip() if "\u2014" in reason else ""
@@ -352,7 +356,7 @@ def _review_state_detail_errors(
             errors.append("Final closeout review-state open-findings must match formal review evidence")
         if contains_independent_claim(match.group("remainder")):
             errors.append(
-                "Final closeout review-state remainder must not contain independent finding claims"
+                "Final closeout review-state remainder must not contain independent finding or structured state claims"
             )
         return errors
     if match is not None:
@@ -367,12 +371,12 @@ def _review_state_detail_errors(
             )
         if contains_independent_claim(match.group("remainder")):
             errors.append(
-                "Final closeout review-state remainder must not contain independent finding claims"
+                "Final closeout review-state remainder must not contain independent finding or structured state claims"
             )
         return errors
     if contains_independent_claim(detail):
         return [
-            "Final closeout reason detail with finding claims must use a valid review-state projection"
+            "Final closeout reason detail with finding or structured state claims must use a valid review-state projection"
         ]
     return []
 
