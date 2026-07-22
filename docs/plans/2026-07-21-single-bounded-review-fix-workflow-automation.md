@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Sole State Writer, Prepared Receipts, and Recovery
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r3.md`
 - Review status: approved; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: M3, M4, M5, M6
-- Next stage: implement M3
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M3-M6, final holistic review, explanation, verification, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 awaits independent code review; M4-M6, final holistic review, explanation, verification, and PR handoff remain.
 
 ## Milestones
 
@@ -220,7 +220,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M3. Target Binding, Canonical Position, and Capability Evaluation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
 - Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
 - Files/components likely touched:
@@ -528,6 +528,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: M2 R2 review-resolution implementation started with proof-first stale-key tests across validator, canonical read, recovery, and query boundaries plus complete persisted states for all three retry policies. No public routing or M3 behavior is in scope.
 - 2026-07-22: Resolved `BRF-M2-CR5` and `BRF-M2-CR6` by centralizing deterministic transition-key validation across canonical state boundaries and replacing synthetic retry tests with complete persisted states for architecture-assessment, proposal-review, and implement@M2. M2 is review-requested for R3; M3 remains blocked.
 - 2026-07-22: Code-review M2 R3 independently confirmed `BRF-M2-CR5` and `BRF-M2-CR6` resolved with no new material findings. M2 is closed and the next stage is implement M3.
+- 2026-07-22: M3 implementation started with T4-T9 and T14 as the same-slice proof boundary. Public workflow skill commands, legacy public adapters, stage-native authoring/review behavior, and M4-M6 integration remain intentionally unaffected until their approved milestones.
+- 2026-07-22: M3 added closed current/legacy command normalization, structured occurrence binding, immutable repeated-target resume, pre-plan and active-plan canonical-position resolution, risk-scoped parent/capability evaluation, and one-stage prepared-receipt coordination. All M3 commands and repository broad smoke pass; M3 is review-requested while public routing remains unchanged.
 
 ## Decision log
 
@@ -539,6 +541,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-21 | Use six independently reviewed implementation milestones. | Authoring/review correction and implementation/verification have different authority, evidence, and recovery risks. | One combined stage-integration milestone would be too broad; per-stage milestones would create excessive coupling and overhead. |
 | 2026-07-21 | Require generated release-output adapter proof and executed selected CI at cutover. | The active adapter contract is archive-based and selection output alone is not validation execution. | Bare tracked-tree adapter checks and selection-only output are not reliable milestone gates. |
 | 2026-07-21 | Treat receipt target as the run destination and effective-capability stage as the concrete operation. | Target selection and executable authority are independent; direct equality rejects valid earlier transitions toward later targets. | Reusing one field for both concepts or adding an unapproved receipt schema field. |
+| 2026-07-22 | Reuse the canonical handoff parser and persist no engine-owned cursor. | Target binding and position resolution must agree with existing lifecycle validation before and after plan creation. | Reimplementing plan handoff semantics inside the engine would create a competing workflow truth. |
+| 2026-07-22 | Validate the candidate capability-and-receipt state before the first M3 write. | Invalid transition inputs and an existing in-flight receipt must fail before invocation or partial authority persistence. | Relying only on sequential writer validation could leave avoidable orphan capability state after a predictable precondition failure. |
 | 2026-07-21 | Represent predecessor and next-stage relations as an immutable typed graph in the policy projection. | Conditional stages, correction loops, and repeated milestones cannot be modeled safely by a mutable linear rank table. | Validator-local frontier/rank maps and free-form predecessor strings. |
 | 2026-07-21 | Bind transition permission to an immutable edge-specific target frontier. | Generic reachability over a cyclic graph cannot preserve exact structured targets as stopping boundaries. | Unqualified breadth-first reachability and validator-local cycle exceptions. |
 | 2026-07-21 | Make `evaluate_transition` the only executable transition-permission decision. | Immutable guard and occurrence metadata is not a policy unless every selected rule evaluates it against concrete evidence. | Decorative predicate fields and boolean helpers whose names imply executable permission. |
@@ -614,6 +618,9 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Code-review M2 R2 independently reran CMD4-CMD9 and directly proved that stale transition keys survive canonical validation/recovery and that the architecture-assessment and implement retry fixtures are not validator-valid states. Passing suites do not close `BRF-M2-CR5` or `BRF-M2-CR6`.
 - M2 R2 resolution passed 30 state/recovery tests, 18 receipt-selected validator tests, 3 migration-selected tests, 49 full automation-validator tests, 19 query tests, all 53 metadata-validator tests, direct metadata validation, Python compilation, diff checks, and 11 repository broad-smoke checks in 408 seconds. Prepared/completed stale keys fail canonical read; recovery, cancellation, and status fail closed; all three retry families pass canonical persisted-state validation before decision evaluation.
 - Code-review M2 R3 reran 30 state/recovery tests, 18 receipt-selected validator tests, 49 full automation-validator tests, 19 query tests, and all 53 metadata-validator tests. A direct nine-field mutation matrix confirmed every immutable transition input changes the key and fails validation; M2 is clean-with-notes and closed.
+- M3 proof-first execution failed because `workflow_automation.py` did not exist, and the lifecycle `-k automation` selection initially contained no tests. The completed slice passes 5 target-selected tests, 4 position-selected tests, 7 capability-selected tests, all 15 engine tests, 2 lifecycle automation tests, all 149 lifecycle regressions, 30 state-writer tests, 49 automation-validator tests, Python compilation, and diff checks.
+- M3 keeps the coordinator non-public until M6. Candidate authority/receipt state is validated before persistence, prepared receipts exist before stage invocation, failed invocations remain failed without consuming authority, and an existing prepared transition prevents any new capability mutation.
+- Validation selection required manual routing for the two new unsupported Python paths; the plan-owned CMD10-CMD14 commands covered them directly. The selected lifecycle regression and lifecycle validation passed, and repository broad smoke passed all 11 checks in 401 seconds.
 
 ## Outcome and retrospective
 
