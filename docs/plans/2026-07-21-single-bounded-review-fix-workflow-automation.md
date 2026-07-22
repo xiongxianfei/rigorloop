@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r1.md`
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M3 rereview, M4, M5, M6
-- Next stage: code-review
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r2.md`
+- Review status: changes-requested; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M3 resolution needed, M4, M5, M6
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 R1 corrections await independent rereview; M4-M6, final holistic review, explanation, verification, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 has two open R2 findings; M4-M6, final holistic review, explanation, verification, and PR handoff remain.
 
 ## Milestones
 
@@ -220,7 +220,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M3. Target Binding, Canonical Position, and Capability Evaluation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
 - Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
 - Files/components likely touched:
@@ -533,6 +533,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: Code-review M3 R1 requested changes in `BRF-M3-CR1` through `BRF-M3-CR4`: canonical evidence is not bound to invocation, target completion is mutable, correction budgets are not enforced during derivation, and arbitrary output is finalized as synchronized. M3 is resolution-needed; M4 remains blocked.
 - 2026-07-22: M3 R1 review-resolution implementation started with proof-first regressions for canonical evidence binding, exact target completion, correction-budget scope, and stage-owned completion/synchronization. Public routing and M4-M6 integration remain unchanged.
 - 2026-07-22: Resolved `BRF-M3-CR1` through `BRF-M3-CR4` by binding canonical evidence before invocation, deriving immutable target completion from policy, enforcing proposal and implementation correction budgets, and requiring typed stage completion plus canonical synchronization proof. M3 is review-requested for R2; M4 remains blocked.
+- 2026-07-22: Code-review M3 R2 confirmed `BRF-M3-CR1` and `BRF-M3-CR2` resolved, classified `BRF-M3-CR3` and `BRF-M3-CR4` as failed remediations, and opened `BRF-M3-CR5` and `BRF-M3-CR6` for unbound implementation budget identity and callback-fabricated completion/synchronization. M3 is resolution-needed; M4 remains blocked.
 
 ## Decision log
 
@@ -627,6 +628,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Code-review M3 R1 reran and inspected the M3 proof after a blind-first pass, then directly reproduced completion-predicate tampering, unknown/missing canonical evidence acceptance, mismatched basis/input invocation, exhausted correction-budget derivation, and false completed synchronization. Passing CMD10-CMD14 does not close the four recorded findings.
 - M3 R1 resolution passed 5 target-selected, 4 position-selected, 10 capability-selected, and all 18 engine tests; 15 policy tests; 50 automation-validator tests; 30 state-writer tests; 2 selected and all 149 lifecycle tests; all 53 metadata-validator tests; Python compilation; diff checks; and a final 12-check broad-smoke run in 230 seconds. Canonical mismatches prevent invocation, target completion is policy-owned, correction budgets are identity-bound and positive, and incomplete synchronization pauses without consuming capability authority.
 - Validation selection required manual routing for the six unsupported M3 Python paths. The plan-owned focused suites covered those paths directly; all five deterministically selected lifecycle, review, metadata, and guide checks passed, and the required final repository broad smoke passed all 12 checks.
+- Code-review M3 R2 reran 5 target, 4 position, 10 capability-selected, all 18 engine, and all 50 automation-validator tests, then directly derived implementation correction with an unbound budget identity and finalized completed/synchronized state without any stage-owned artifact. Passing suites do not close `BRF-M3-CR5` or `BRF-M3-CR6`.
 
 ## Outcome and retrospective
 
