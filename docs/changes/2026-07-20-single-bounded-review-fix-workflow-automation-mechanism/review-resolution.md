@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -24,11 +24,12 @@ Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m3-r4
+Review closeout: code-review-m3-r5
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`
 - Findings resolved: 48
-- Unresolved findings: 0
-- Current result: `BRF-M3-CR8` is resolved by one no-symlink repository-containment resolver and verifier-derived completion proof that persists the independently observed canonical review-log identity. M3 is review-requested for code-review R5 and M4 remains blocked.
+- Unresolved findings: 2
+- Current result: Code-review M3 R5 classified the repository-owned portion of `BRF-M3-CR8` as failed remediation and opened `BRF-M3-CR9` plus `BRF-M3-CR10`. Caller-selected repository roots can complete canonical state from an unrelated repository, and the prior implementation handoff left contradictory canonical plan state. M3 is resolution-needed and M4 remains blocked.
 
 ## Resolution Overview
 
@@ -81,7 +82,9 @@ Review closeout: code-review-m3-r4
 | BRF-M3-CR5 | accepted | resolved | Implementation-correction basis now requires the concrete correction-budget identity and must match bounded scope exactly. |
 | BRF-M3-CR6 | accepted | resolved | Added policy-derived postconditions, repository path/hash checks, and durable synchronization fields; R3 records the remaining semantic and recovery gap separately as `BRF-M3-CR7`. |
 | BRF-M3-CR7 | accepted | resolved | Added parser-valid review and occurrence checks; R4 records the remaining canonical-path and canonical-identity gap separately as `BRF-M3-CR8`. |
-| BRF-M3-CR8 | accepted | resolved | Canonical completion paths reject symlinks, and the shared verifier supplies the review-log identity persisted and compared by completion, recovery, and cancellation. |
+| BRF-M3-CR8 | accepted | resolved | Canonical completion paths reject symlinks and bind log identity; R5 records the remaining repository-root binding gap separately as `BRF-M3-CR9`. |
+| BRF-M3-CR9 | needs-decision | open | R5 failed-remediation: the completion verifier's root is caller-selected and need not own the state store's canonical metadata. |
+| BRF-M3-CR10 | needs-decision | open | R5 new finding: the authoritative plan handoff reason contradicts the closed R4 review-resolution state. |
 
 ## Common Resolution Metadata
 
@@ -161,6 +164,40 @@ Chosen action: Added one repository-file resolver that rejects absolute paths, t
 Safe resolution path: Resolve every canonical-owner path through one containment checker; reject absolute paths, traversal, and symlink escape; return engine-derived normalized canonical identities from the shared verifier; persist the review-log identity; and make recovery/cancellation consume only that verified normalized proof. Add external/in-repository symlink, canonical-log identity drift, mismatched occurrence, missing log, and valid parser-produced fixtures.
 Validation target: CMD12-CMD14, full engine/state/validator regressions, direct canonical-path and canonical-identity contrasts, and code-review M3 R5.
 Validation evidence: Proof-first tests reproduced five unsafe outcomes before the correction: external and in-repository log symlinks reconciled, canonical-log drift continued, cancellation consumed authority from an external log, and caller-selected log identity was persisted. After the correction, CMD10-CMD14 pass; all 22 engine, 40 state/recovery, 52 automation-validator, and 103 review-parser tests pass. The new contrasts reject both symlink forms without consuming authority, reject mismatched canonical occurrences, pause on canonical-log drift, persist verifier-derived identities in normal completion and cancellation, and continue with unchanged valid proof. All five selector-chosen focused checks pass, and the final required repository broad-smoke suite passed all 11 checks in 445 seconds. Awaiting code-review M3 R5.
+
+### code-review-m3-r5
+
+#### BRF-M3-CR9 - Completion evidence root is not bound to canonical state
+
+Finding ID: BRF-M3-CR9
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Accept the deterministic store-bound repository-root resolution or identify an approved canonical repository resolver already owned by the state adapter.
+Rationale: Path-level containment is enforced relative to a root, but the caller can choose a root unrelated to the state store's metadata and consume authority from copied evidence there.
+Required outcome: Completion, recovery, and cancellation evidence must resolve only against the repository that canonically owns the persisted change metadata.
+Chosen action: Pending review-resolution.
+Safe resolution path: Bind and validate one repository root at state-store construction, reject coordinator/root mismatch before invocation, remove per-finalization trust-root override, use the bound root across recovery/cancellation, and add a two-repository negative regression.
+Validation target: CMD12-CMD14, full engine/state/validator regressions, direct cross-repository contrasts, and code-review M3 R6.
+Validation evidence: R5 directly finalized Store A as `completed` and consumed its capability using parser-valid evidence located only in unrelated Repository B. Fourteen capability tests, 40 state/recovery tests, and 52 validator tests pass but contain no mismatched store/root case.
+
+#### BRF-M3-CR10 - Authoritative handoff reason contradicts resolved review state
+
+Finding ID: BRF-M3-CR10
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Accept deterministic handoff synchronization and its regression coverage.
+Rationale: The active plan owns post-plan workflow state but its handoff reason said one R4 finding remained open while every review evidence surface recorded zero open findings.
+Required outcome: Current Handoff Summary, review resolution, review log, change metadata, and plan index must agree at every handoff.
+Chosen action: Pending review-resolution.
+Safe resolution path: Synchronize the plan from the actual R5 state, add a semantic state-sync regression for reason tokens and open-finding prose, and rerun lifecycle validation before rereview.
+Validation target: lifecycle state-sync selection, full lifecycle regressions, review/metadata validation, and code-review M3 R6.
+Validation evidence: R5 compared tracked plan line 112 with closed/zero-open review-resolution, review-log, and change metadata in the same reviewed commit and found a direct contradiction that existing lifecycle validation did not report.
 
 ### code-review-m3-r1
 
