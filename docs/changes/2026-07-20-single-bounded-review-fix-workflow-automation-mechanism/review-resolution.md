@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -22,11 +22,12 @@ Review closeout: code-review-m2-r2
 Review closeout: code-review-m2-r3
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
+Review closeout: code-review-m3-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`
 - Findings resolved: 46
-- Unresolved findings: 0
-- Current result: `BRF-M3-CR5` and `BRF-M3-CR6` are resolved with mandatory correction-budget basis identity, policy-derived postconditions, repository-backed completion evidence, independent identity rereads, and durable synchronization proof. M3 is review-requested for code-review R3; M4 remains blocked pending rereview.
+- Unresolved findings: 1
+- Current result: Code-review M3 R3 confirmed `BRF-M3-CR5` resolved, classified `BRF-M3-CR6` as failed remediation, and opened `BRF-M3-CR7`. Path and hash checks do not prove stage-native completion or canonical synchronization, and prepared-receipt recovery still consumes authority from caller-supplied nonexistent evidence. M3 is resolution-needed and M4 remains blocked.
 
 ## Resolution Overview
 
@@ -77,7 +78,8 @@ Review closeout: code-review-m3-r2
 | BRF-M3-CR3 | accepted | resolved | Proposal and implementation correction capabilities now require current positive budget scope and identity within the parent maximum. |
 | BRF-M3-CR4 | accepted | resolved | Typed stage completion and canonical synchronization results are validated before completion; unsafe outcomes pause without consuming authority. |
 | BRF-M3-CR5 | accepted | resolved | Implementation-correction basis now requires the concrete correction-budget identity and must match bounded scope exactly. |
-| BRF-M3-CR6 | accepted | resolved | Completion now uses policy-derived postconditions and repository-backed evidence that is independently reread before synchronized completion can consume authority. |
+| BRF-M3-CR6 | accepted | resolved | Added policy-derived postconditions, repository path/hash checks, and durable synchronization fields; R3 records the remaining semantic and recovery gap separately as `BRF-M3-CR7`. |
+| BRF-M3-CR7 | needs-decision | open | R3 failed-remediation: path/hash evidence and callback equality still substitute for stage-native completion, canonical-owner reread, and recovery proof. |
 
 ## Common Resolution Metadata
 
@@ -117,10 +119,28 @@ Decision owner: implementation author
 Decision needed: Resolved by the user's request to apply the deterministic safe resolution.
 Rationale: Callback-returned mappings are trusted as completion and synchronization without inspecting a stage-owned artifact or independently rereading canonical state; completed durable receipts also require only synchronized status.
 Required outcome: Establish completion from repository-owned stage evidence, synchronize through the canonical owner, reread it independently, and durably validate the proof before consuming authority.
-Chosen action: Removed caller-selected postconditions; the coordinator now derives them from immutable stage policy, requires typed repository-relative artifact references within capability scope, rereads and hashes those artifacts after invocation and synchronization, and persists exact synchronization evidence plus engine-derived observed identities. Completed-receipt validation requires those proofs before authority can be consumed.
+Chosen action: Removed caller-selected postconditions; the coordinator now derives them from immutable stage policy, requires typed repository-relative artifact references within capability scope, rereads and hashes those artifacts after invocation and synchronization, and persists exact synchronization evidence plus engine-derived observed identities. R3 records the remaining semantic verification and recovery gap as `BRF-M3-CR7`.
 Safe resolution path: Separate invocation from evidence inspection, derive postconditions from policy, inspect real stage evidence after invocation, synchronize and reread canonical state through its owner, require completed receipt sync evidence/identities, and add fake/no-artifact/no-write/stale-reread/valid-fixture contrasts.
 Validation target: CMD12-CMD14, full engine/state/validator regressions, direct no-artifact and evidence-free completed-receipt rejection, and code-review M3 R3.
-Validation evidence: Proof-first tests failed before `ArtifactEvidence` existed. The corrected contrasts reject absent artifacts, stale identities, failed synchronization, caller-defined postconditions, and evidence-free completed receipts; the valid file-backed fixture completes and consumes capability authority. CMD10-CMD14, the full engine/state/validator regressions, Python compilation, diff checks, and the final 12-check broad-smoke suite pass.
+Validation evidence: Proof-first tests failed before `ArtifactEvidence` existed. The corrected contrasts reject absent artifacts, stale identities, failed synchronization, caller-defined postconditions, and evidence-free completed receipts; the valid file-backed fixture completes and consumes capability authority. R3 found the narrower remaining semantic-verification and recovery defect recorded in `BRF-M3-CR7`.
+
+### code-review-m3-r3
+
+#### BRF-M3-CR7 - Path labels substitute for stage-native completion and recovery proof
+
+Finding ID: BRF-M3-CR7
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Accept the deterministic safe resolution or identify an approved stage-native evidence verifier that already covers coordinator, recovery, and cancellation.
+Rationale: Path and SHA-256 checks establish artifact identity but not the stage-owned semantic completion predicate. The synchronization callback can echo the same evidence mapping, while recovery and cancellation accept caller-supplied evidence without locating or parsing any artifact.
+Required outcome: Completion and recovery must use stage-native semantic evidence and an independent canonical-owner reread before a receipt becomes completed or a capability becomes consumed.
+Chosen action: Pending review-resolution.
+Safe resolution path: Add one policy-owned evidence verifier/reader contract per stage that reuses existing review, lifecycle, plan, and verification parsers. Route coordinator completion, prepared-receipt recovery, and cancellation through it; independently re-resolve canonical state after synchronization; and add arbitrary-bytes, malformed-review, identity/outcome mismatch, no-write, stale-reread, nonexistent-recovery, and valid parser-produced fixtures.
+Validation target: CMD12-CMD14, full engine/state/validator regressions, direct semantic-artifact and recovery contrasts, and code-review M3 R4.
+Validation evidence: R3 completed proposal review from arbitrary non-review bytes and consumed capability authority. A second reproduction reconciled and cancelled a prepared transition from a nonexistent artifact, leaving the receipt completed and capability consumed. Ten capability, 30 state, and 52 validator tests pass but do not reject these cases.
 
 ### code-review-m3-r1
 
