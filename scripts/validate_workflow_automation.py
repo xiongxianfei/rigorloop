@@ -1070,6 +1070,7 @@ def validate_workflow_automation(
             "from_position",
             "target",
             "effective_capability_id",
+            "retry_policy",
             "input_identities",
             "expected_postcondition",
             "status",
@@ -1145,6 +1146,16 @@ def validate_workflow_automation(
                     except (TypeError, ValueError):
                         pass
                     else:
+                        stage_policy = STAGE_POLICY_BY_STAGE.get(stage_name)
+                        if (
+                            stage_policy is not None
+                            and receipt.get("retry_policy")
+                            != stage_policy.retry_policy.value
+                        ):
+                            errors.append(
+                                f"{path}.retry_policy: must match immutable stage policy "
+                                f"{stage_policy.retry_policy.value}"
+                            )
                         if not is_immediate_predecessor(from_position, operation_stage):
                             errors.append(
                                 f"{path}.from_position: {from_position.value} cannot transition "

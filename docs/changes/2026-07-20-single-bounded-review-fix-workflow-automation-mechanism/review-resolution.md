@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -20,9 +20,9 @@ Review closeout: code-review-m1-r7
 Review closeout: code-review-m2-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`
-- Findings resolved: 34
-- Unresolved findings: 4
-- Current result: code-review M2 R1 requested changes in `BRF-M2-CR1` through `BRF-M2-CR4`. M2 is resolution-needed and M3 remains blocked.
+- Findings resolved: 38
+- Unresolved findings: 0
+- Current result: `BRF-M2-CR1` through `BRF-M2-CR4` are resolved with direct regression and full M2 validation evidence. M2 is review-requested for code-review R2; M3 remains blocked pending a clean rereview.
 
 ## Resolution Overview
 
@@ -62,10 +62,10 @@ Review closeout: code-review-m2-r1
 | BRF-M1-CR10 | accepted | resolved | Exact-target frontier checks replaced cyclic reachability; R5 classified the broader predicate-enforcement remediation as failed and records the remaining defect separately in `BRF-M1-CR11`. |
 | BRF-M1-CR11 | accepted | resolved | One typed evaluator now enforces target frontier, guard evidence, and occurrence constraints; structural helpers cannot authorize execution. |
 | BRF-M1-CR12 | accepted | resolved | The next-milestone edge admits repeated targets only when their persisted occurrence equals the identity-bound next milestone. |
-| BRF-M2-CR1 | accepted | open | Bind recovery to the exact unique persisted prepared receipt rather than caller-supplied receipt data. |
-| BRF-M2-CR2 | accepted | open | Derive retry authority from the immutable stage policy and reject or bind any receipt projection. |
-| BRF-M2-CR3 | accepted | open | Implement T29's complete repeated and reverse-order deterministic state proof. |
-| BRF-M2-CR4 | accepted | open | Validate unified automation state before returning a successful status projection. |
+| BRF-M2-CR1 | accepted | resolved | Recovery resolves the exact persisted receipt by transition ID and rejects absent, mismatched, or non-unique prepared bindings. |
+| BRF-M2-CR2 | accepted | resolved | Recovery derives retry behavior from the immutable stage policy; required receipt projections must match and are transition-key-bound. |
+| BRF-M2-CR3 | accepted | resolved | T29 now repeats and reverses fresh-root transition/migration scenarios and compares receipts, keys, migration evidence, canonical bytes, and teardown. |
+| BRF-M2-CR4 | accepted | resolved | Unified status queries use the canonical validated read boundary and return stable read-only errors for malformed state. |
 
 ## Common Resolution Metadata
 
@@ -82,57 +82,65 @@ Review closeout: code-review-m2-r1
 
 Finding ID: BRF-M2-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Resolved by the approved write-ahead receipt contract; no owner choice remained.
 Rationale: Resume authority must come from the durable write-ahead record, but the evaluator currently accepts a separate caller-supplied receipt and can retry when no receipt is persisted.
 Required outcome: Resolve and evaluate exactly the unique persisted prepared receipt by transition identity; reject absence, substitution, mismatch, or duplication before retry or reconciliation.
 Chosen action: Change recovery to resolve the receipt from canonical automation state and add direct persisted-versus-supplied identity contrasts.
 Safe resolution path: Accept a transition ID, retrieve the canonical receipt, bind its mapping key and immutable identity, and fail closed before evaluating policy or evidence when the binding is not exact.
 Validation target: CMD6-CMD7, direct unpersisted/mismatched receipt regressions, and code-review M2 R2.
-Validation evidence: Pending implementation and rereview.
+Validation evidence: Proof-first recovery tests failed when the evaluator still accepted a caller-supplied object. After correction, unpersisted and substituted IDs fail closed and all 27 state/recovery tests pass.
 
 #### BRF-M2-CR2 - Retry authority is controlled by receipt data instead of stage policy
 
 Finding ID: BRF-M2-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Resolved by the immutable stage-policy ownership contract; no owner choice remained.
 Rationale: The approved immutable registry owns retry policy; a mutable receipt value cannot widen a reconcile-only or manual stage into idempotent retry.
 Required outcome: Derive retry behavior from the effective capability's immutable stage policy and reject any persisted projection that disagrees.
 Chosen action: Make stage policy authoritative, validate any receipt projection against it, and bind a retained projection into the transition key.
 Safe resolution path: Resolve capability stage to `STAGE_POLICY_BY_STAGE`, use its retry policy for recovery, reject mismatch/missing required projection, and add all-family contrasts.
 Validation target: CMD6-CMD7, direct policy-mismatch/key-binding regressions, and code-review M2 R2.
-Validation evidence: Pending implementation and rereview.
+Validation evidence: Proof-first transition-key and recovery tests exposed mutable retry authority. After correction, all three retry families derive from `STAGE_POLICY_BY_STAGE`, mismatched or missing projections fail validation, the projection changes the key, 27 state tests pass, and 17 receipt-selected validator tests pass.
 
 #### BRF-M2-CR3 - T29 deterministic proof is incomplete
 
 Finding ID: BRF-M2-CR3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Resolved by approved T29; no owner choice remained.
 Rationale: Dictionary-order and duplicate migration checks do not prove the approved transactional subset is repeatable and order-independent across canonical files and fresh roots.
 Required outcome: Execute T29's complete fixed-input repeated and reverse-order scenario and compare normalized receipt, key, migration, canonical-file, and teardown evidence.
 Chosen action: Add a deterministic fresh-root scenario runner and explicit normal/repeated/reverse comparisons.
 Safe resolution path: Keep M2 scope to state/receipt/migration operations, inject fixed IDs and time, sanitize inputs, compare canonical outputs, and assert no shared temporary state remains.
 Validation target: CMD6-CMD8 and code-review M2 R2.
-Validation evidence: Pending implementation and rereview.
+Validation evidence: The new T29 runner uses fresh temporary roots and fixed inputs, executes transition and migration scenarios twice in normal order and once in reverse order, compares normalized receipts, keys, migration records, and canonical file bytes, and proves temporary-root and temporary-file cleanup. All 27 state tests plus the 17 receipt and 3 migration validator selections pass.
 
 #### BRF-M2-CR4 - Status bypasses canonical automation validation
 
 Finding ID: BRF-M2-CR4
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Resolved by the approved canonical read-boundary contract; no owner choice remained.
 Rationale: Operator status must not report unknown or malformed durable automation state as successful current state.
 Required outcome: Validate the unified automation subsection before projection and return a stable read-only error diagnostic on invalid state.
 Chosen action: Route unified query status through the canonical validated read boundary and add malformed-state byte-stability regressions.
 Safe resolution path: Reuse `validate_workflow_automation` or `WorkflowAutomationStateStore.status`, convert failures to the query error envelope, and cover unknown run/receipt/policy/migration values.
 Validation target: CMD8-CMD9, direct unknown-status regression, and code-review M2 R2.
-Validation evidence: Pending implementation and rereview.
+Validation evidence: Proof-first query regression returned success for an unknown run status before correction. Unified queries now use `WorkflowAutomationStateStore.read`; unknown run, policy, receipt, and migration values return `invalid-automation-state`, preserve source bytes, and all 18 query tests pass.
 
 ### code-review-m1-r7
 
