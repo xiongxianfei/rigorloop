@@ -15,11 +15,12 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 Review closeout: code-review-m1-r5
+Review closeout: code-review-m1-r6
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`
-- Findings resolved: 33
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`
+- Findings resolved: 34
 - Unresolved findings: 0
-- Current result: `BRF-M1-CR11` is resolved with one typed fail-closed transition evaluator, complete guard and occurrence contrasts, the full M1 command set, and repository broad smoke. M1 is ready for fresh code review; M2 remains blocked pending approval.
+- Current result: `BRF-M1-CR12` is resolved with occurrence-aware repeated-target permission and complete exact/stale target contrasts. M1 is ready for fresh code review; M2 remains blocked pending approval.
 
 ## Resolution Overview
 
@@ -58,6 +59,7 @@ Review closeout: code-review-m1-r5
 | BRF-M1-CR9 | accepted | resolved | Recursive evidence validation now rejects stripped-empty strings, non-finite numbers, cycles, and excessive nesting while accepting finite values. |
 | BRF-M1-CR10 | accepted | resolved | Exact-target frontier checks replaced cyclic reachability; R5 classified the broader predicate-enforcement remediation as failed and records the remaining defect separately in `BRF-M1-CR11`. |
 | BRF-M1-CR11 | accepted | resolved | One typed evaluator now enforces target frontier, guard evidence, and occurrence constraints; structural helpers cannot authorize execution. |
+| BRF-M1-CR12 | accepted | resolved | The next-milestone edge admits repeated targets only when their persisted occurrence equals the identity-bound next milestone. |
 
 ## Common Resolution Metadata
 
@@ -67,6 +69,24 @@ Review closeout: code-review-m1-r5
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m1-r6
+
+#### BRF-M1-CR12 - Stage-only target frontiers reject valid later milestone targets
+
+Finding ID: BRF-M1-CR12
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Resolved by the approved structured-target contract; no owner choice remained.
+Rationale: R6 directly reproduced a complete next-milestone transition that succeeds only for final target `verify` and fails for structured targets `implement@M2` and `code-review@M2`.
+Required outcome: Repeated-stage target permission must use target occurrence identity so valid work can advance to a bound later milestone without allowing continuation after an already-reached occurrence.
+Chosen action: Expanded the next-milestone edge to the repeated-stage frontier and required `implement` and `code-review` targets to bind the same milestone ID as the evaluated next milestone.
+Safe resolution path: Make the repeated-stage frontier occurrence-aware, add positive M1-to-M2 transitions toward `implement@M2` and `code-review@M2`, and retain negative exact-M1 stopping and no-rebinding contrasts.
+Validation target: Targeted repeated-target predicate tests, the full M1 command set, broad smoke, and code-review M1 R7.
+Validation evidence: Proof-first policy and complete-state tests failed for both repeated targets before implementation. After correction, 15 policy tests, 42 automation-validator tests, 5 vocabulary tests, 4 focused metadata tests, all 52 metadata tests, Python compilation, and 12 broad-smoke checks in 299 seconds pass. Exact stale-M1 and missing-target-identity contrasts remain rejected.
 
 ### test-spec-review-r1
 

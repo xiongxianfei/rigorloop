@@ -8,7 +8,7 @@ Terminal disposition: none
 - Change ID: 2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
 - Owner: agent
 - Start date: 2026-07-21
-- Last updated: 2026-07-21
+- Last updated: 2026-07-22
 - Related issue or PR: none yet
 - Supersedes: none
 - broad_smoke_required: true
@@ -104,12 +104,12 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Current milestone: M1. Unified State Model and Complete Policy Registry
 - Current milestone state: review-requested
 - Last reviewed milestone: M1. Unified State Model and Complete Policy Registry
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r5.md`
-- Review status: changes-requested; stage=code-review; round=r5
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r6.md`
+- Review status: changes-requested; stage=code-review; round=r6
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5, M6
 - Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — `BRF-M1-CR11` is resolved with validation evidence, but fresh M1 code review is required and M2-M6 have not started.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — `BRF-M1-CR12` is resolved with validation evidence, but fresh M1 code review is required and M2-M6 have not started.
 
 ## Milestones
 
@@ -517,6 +517,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-21: Resolved `BRF-M1-CR10` by replacing cyclic stage-name reachability with immutable target-aware transition rules bound to predecessor, operation, target frontier, guard, and occurrence constraint. Exact implement and proposal-review stopping regressions pass; M1 is review-requested and M2 remains blocked pending M1 R5.
 - 2026-07-21: Code-review M1 R5 confirmed the exact-target fixtures but classified `BRF-M1-CR10` as failed remediation and opened `BRF-M1-CR11`: transition selectors ignore their declared guards and occurrence constraints, so missing architecture-applicability evidence and arbitrary next-milestone context still pass. M1 is resolution-needed; M2 remains blocked.
 - 2026-07-21: Resolved `BRF-M1-CR11` with one typed transition evaluator that enforces target frontier, all guarded branches, plan-bound same/next milestone identities, and missing-context rejection from identity-bound receipt evidence. M1 is review-requested; M2 remains blocked pending M1 R6.
+- 2026-07-21: Code-review M1 R6 confirmed guard enforcement but classified `BRF-M1-CR11` as failed remediation and opened `BRF-M1-CR12`: the stage-only next-milestone frontier rejects valid `implement@M2` and `code-review@M2` targets. M1 is resolution-needed; M2 remains blocked.
+- 2026-07-22: Resolved `BRF-M1-CR12` by admitting repeated targets on the next-milestone edge only when their persisted target occurrence equals the identity-bound next milestone. M1 is review-requested; M2 remains blocked pending M1 R7.
 
 ## Decision log
 
@@ -531,6 +533,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-21 | Represent predecessor and next-stage relations as an immutable typed graph in the policy projection. | Conditional stages, correction loops, and repeated milestones cannot be modeled safely by a mutable linear rank table. | Validator-local frontier/rank maps and free-form predecessor strings. |
 | 2026-07-21 | Bind transition permission to an immutable edge-specific target frontier. | Generic reachability over a cyclic graph cannot preserve exact structured targets as stopping boundaries. | Unqualified breadth-first reachability and validator-local cycle exceptions. |
 | 2026-07-21 | Make `evaluate_transition` the only executable transition-permission decision. | Immutable guard and occurrence metadata is not a policy unless every selected rule evaluates it against concrete evidence. | Decorative predicate fields and boolean helpers whose names imply executable permission. |
+| 2026-07-22 | Evaluate repeated-stage target frontiers against the bound next-milestone occurrence. | Stage names alone cannot distinguish an already-reached M1 target from the same stage requested for M2. | M2-specific exceptions, unqualified cyclic reachability, and allowing every repeated-stage occurrence. |
 
 ## Surprises and discoveries
 
@@ -538,6 +541,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - The current change schema permits three legacy state families, so migration must preserve reads while proving that every new write uses only `workflow.automation`.
 - The repository has no dedicated Mermaid renderer; architecture diagram changes route through canonical package lifecycle validation and manual review.
 - A parent consent envelope still carries a complete structured target; reducing it to stage and occurrence kind silently loses repeated-stage identity before authorization persistence.
+- A stage-only frontier cannot represent stopping order across repeated milestone occurrences; the target milestone must participate in next-edge permission.
 
 ## Validation notes
 
@@ -579,6 +583,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Code-review M1 R5 recording passed review-structure validation with 23 reviews, 33 findings, and 1 open finding; lifecycle validation passed for five managed artifacts with the existing merge-language warning; guide-system, change-metadata, and diff checks passed after handoff synchronization.
 - M1 R5 proof-first tests failed on the missing evaluator and both complete predicate-context gaps before production changes. The final correction passed 15 policy tests, 41 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, metadata validation, Python compilation, diff checks, and 12 repository broad-smoke checks in the final 231-second run after plan and milestone identity binding was tightened.
 - Review structure and closeout validation passed with 23 reviews, 33 resolved findings, and no open findings. Explicit lifecycle validation passed for the five managed handoff artifacts with the existing merge-language warning, and guide-system validation passed after the M1 R6 plan-index synchronization.
+- M1 R6 proof-first regressions failed for valid `code-review@M1 -> implement@M2` transitions toward both `implement@M2` and `code-review@M2`; the final `verify` target control remained accepted.
+- M1 R6 resolution passed 15 policy tests, 42 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, Python compilation, and 12 repository broad-smoke checks in 299 seconds. Bound M2 repeated targets pass while stale M1 and missing target occurrence identities fail closed.
 - `python scripts/test-workflow-automation-policy.py` passed 7 tests.
 - `python scripts/test-validate-workflow-automation.py -k vocabulary` passed 3 selected tests.
 - `python scripts/test-change-metadata-validator.py -k workflow_automation` passed 4 selected tests.
