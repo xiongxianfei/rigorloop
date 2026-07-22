@@ -1114,7 +1114,6 @@ def coordinate_one_stage(
             canonical_sync_evidence=serialized_sync_evidence,
             canonical_sync_observed_identities=observed_identities,
             expected_document_identity=completed_snapshot.document_identity,
-            repository_root=repository_root,
         )
     except StateContractError as error:
         paused_snapshot = store.read()

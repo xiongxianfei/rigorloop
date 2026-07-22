@@ -601,18 +601,38 @@ class WorkflowAutomationStateStore:
     """Read and atomically replace the one canonical automation subsection."""
 
     def __init__(self, metadata_path: Path, *, repository_root: Path | None = None):
-        resolved_metadata = metadata_path.resolve()
+        lexical_metadata = Path(os.path.abspath(metadata_path))
         canonical_layout = (
-            resolved_metadata.name == "change.yaml"
-            and resolved_metadata.parent.parent.name == "changes"
-            and resolved_metadata.parent.parent.parent.name == "docs"
+            lexical_metadata.name == "change.yaml"
+            and lexical_metadata.parent.parent.name == "changes"
+            and lexical_metadata.parent.parent.parent.name == "docs"
         )
-        inferred_root = (
-            resolved_metadata.parent.parent.parent.parent
-            if canonical_layout
-            else resolved_metadata.parent
-        )
-        resolved_root = (repository_root or inferred_root).resolve()
+        if canonical_layout:
+            lexical_root = lexical_metadata.parent.parent.parent.parent
+            if repository_root is not None:
+                explicit_root = Path(os.path.abspath(repository_root))
+                if explicit_root != lexical_root:
+                    raise StateContractError(
+                        "explicit repository root must equal canonical root"
+                    )
+            current = lexical_root
+            if current.is_symlink():
+                raise StateContractError(
+                    "canonical change metadata path must not contain symlinks"
+                )
+            for component in lexical_metadata.relative_to(lexical_root).parts:
+                current /= component
+                if current.is_symlink():
+                    raise StateContractError(
+                        "canonical change metadata path must not contain symlinks"
+                    )
+            resolved_root = lexical_root.resolve()
+            resolved_metadata = lexical_metadata.resolve()
+            canonical_change_id = lexical_metadata.parent.name
+        else:
+            resolved_metadata = metadata_path.resolve()
+            resolved_root = (repository_root or resolved_metadata.parent).resolve()
+            canonical_change_id = None
         try:
             relative_metadata = resolved_metadata.relative_to(resolved_root)
         except ValueError as error:
@@ -628,6 +648,7 @@ class WorkflowAutomationStateStore:
             )
         self.metadata_path = resolved_metadata
         self._repository_root = resolved_root
+        self._canonical_change_id = canonical_change_id
 
     @property
     def repository_root(self) -> Path:
@@ -638,7 +659,11 @@ class WorkflowAutomationStateStore:
     def require_repository_root(self, repository_root: Path | None = None) -> Path:
         """Reject evidence roots that are not the store's canonical repository."""
 
-        candidate = (repository_root or self._repository_root).resolve()
+        candidate = (
+            self._repository_root
+            if repository_root is None
+            else Path(os.path.abspath(repository_root))
+        )
         if candidate != self._repository_root:
             raise StateContractError("repository root does not match state store")
         return self._repository_root
@@ -654,10 +679,9 @@ class WorkflowAutomationStateStore:
             raise StateContractError("change metadata contains trailing content")
         if not isinstance(document, dict):
             raise StateContractError("change metadata root must be an object")
-        relative_metadata = self.metadata_path.relative_to(self._repository_root)
-        if relative_metadata.parts[:2] == ("docs", "changes"):
+        if self._canonical_change_id is not None:
             change_id = document.get("change_id")
-            if change_id != relative_metadata.parts[2]:
+            if change_id != self._canonical_change_id:
                 raise StateContractError(
                     "change metadata change_id must match its canonical change directory"
                 )
@@ -780,9 +804,8 @@ class WorkflowAutomationStateStore:
         canonical_sync_evidence: dict[str, Any] | None = None,
         canonical_sync_observed_identities: dict[str, str] | None = None,
         expected_document_identity: str,
-        repository_root: Path | None = None,
     ) -> StateMutationResult:
-        evidence_root = self.require_repository_root(repository_root)
+        evidence_root = self.repository_root
         if status not in RECEIPT_TERMINAL_STATUSES:
             raise StateContractError(f"invalid terminal receipt status: {status}")
         snapshot = self.read()

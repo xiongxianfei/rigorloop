@@ -1150,7 +1150,7 @@ review:
             current_milestone_state="resolution-needed",
             review_status="changes-requested; stage=code-review; round=r1",
             next_stage="review-resolution / implement M2 fixes",
-            reason="implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
+            reason="implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=WSS-F1; later closeout gates remain.",
         )
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
@@ -1189,6 +1189,46 @@ review:
 
         self.assertTrue(result.blocking_findings)
         self.assertIn("review-findings-open", messages)
+
+    def test_workflow_state_open_review_rejects_closed_or_wrong_detail_projection(self) -> None:
+        cases = {
+            "closed-prose": "review-state=open; open-count=1; open-findings=WSS-F1; no findings remain; later gates remain.",
+            "wrong-count": "review-state=open; open-count=2; open-findings=WSS-F1; later gates remain.",
+            "wrong-id": "review-state=open; open-count=1; open-findings=WSS-F2; later gates remain.",
+            "missing-projection": "WSS-F1 remains open and later gates remain.",
+        }
+        for name, detail in cases.items():
+            fixture_root = Path(tempfile.mkdtemp(prefix=f"workflow-state-open-detail-{name}-"))
+            self.addCleanupTree(fixture_root)
+            self.write_workflow_state_fixture(
+                fixture_root,
+                include_open_review_finding=True,
+                review_unresolved_items=1,
+                current_milestone_state="resolution-needed",
+                review_status="changes-requested; stage=code-review; round=r1",
+                next_stage="review-resolution / implement M2 fixes",
+                reason=f"implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — {detail}",
+            )
+
+            result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+            self.assertTrue(result.blocking_findings, msg=f"{name} should fail")
+            self.assertIn("review-state", messages)
+
+    def test_workflow_state_closed_review_rejects_unstructured_open_finding_detail(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-closed-detail-open-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=False,
+            review_unresolved_items=0,
+            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("review-state", messages)
 
     def test_workflow_state_index_only_catches_next_stage_drift(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-drift-"))
