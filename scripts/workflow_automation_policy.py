@@ -315,7 +315,7 @@ TRANSITION_RULES: tuple[TransitionRule, ...] = (
     _transition(
         WorkflowPosition.CODE_REVIEW,
         WorkflowStage.IMPLEMENT,
-        WorkflowStage.VERIFY,
+        WorkflowStage.IMPLEMENT,
         T.NEXT_MILESTONE,
         Q.NEXT_MILESTONE,
     ),
@@ -814,6 +814,21 @@ def _evaluate_occurrence(
             errors.append(
                 "transition next_milestone_id: must differ from source_milestone_id"
             )
+        if context.target in {
+            WorkflowStage.IMPLEMENT,
+            WorkflowStage.CODE_REVIEW,
+        }:
+            if (
+                not isinstance(context.target_milestone_id, str)
+                or not context.target_milestone_id
+            ):
+                errors.append(
+                    "transition target milestone_id: required for repeated-stage target"
+                )
+            elif not next_errors and context.target_milestone_id != next_milestone_id:
+                errors.append(
+                    "transition target milestone_id: must match next_milestone_id"
+                )
     if not plan_errors and context.plan_identity != context.evidence.get("plan_identity"):
         errors.append("transition plan identity: must match evidence plan_identity")
     if constraint in {

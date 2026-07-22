@@ -835,6 +835,41 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         capability["basis"]["milestone_identity"] = "sha256:M2"  # type: ignore[index]
         self.assertEqual(validate_workflow_automation(state), [])
 
+    def test_next_milestone_allows_only_the_bound_repeated_target_occurrence(self) -> None:
+        for target_stage in ("implement", "code-review"):
+            with self.subTest(target=target_stage):
+                state = valid_automation()
+                receipt = configure_next_milestone_transition(state, milestone_id="M2")
+                target = {
+                    "stage": target_stage,
+                    "occurrence": {"kind": "milestone", "milestone_id": "M2"},
+                    "plan_identity": "sha256:plan",
+                    "bound_at": "2026-07-20T00:00:00Z",
+                    "completion": {"target": "reached"},
+                }
+                state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
+                parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
+                parent["maximum_target"] = copy.deepcopy(target)  # type: ignore[index]
+                receipt["target"] = copy.deepcopy(target)
+                receipt["from_position"] = "code-review"
+                receipt["input_identities"] = {
+                    "source_milestone_id": "M1",
+                    "source_milestone_identity": "sha256:M1",
+                    "next_milestone_id": "M2",
+                    "next_milestone_identity": "sha256:M2",
+                    "milestone_order_identity": "sha256:order",
+                    "plan_identity": "sha256:plan",
+                }
+                self.assertEqual(validate_workflow_automation(state), [])
+
+                stale_target = copy.deepcopy(target)
+                stale_target["occurrence"]["milestone_id"] = "M1"
+                state["run"]["target"] = copy.deepcopy(stale_target)  # type: ignore[index]
+                parent["maximum_target"] = copy.deepcopy(stale_target)  # type: ignore[index]
+                receipt["target"] = copy.deepcopy(stale_target)
+                errors = validate_workflow_automation(state)
+                self.assertTrue(any("milestone_id" in error for error in errors), errors)
+
     def test_milestone_code_review_requires_same_source_occurrence(self) -> None:
         state = valid_automation()
         receipt = configure_next_milestone_transition(state, milestone_id="M1")

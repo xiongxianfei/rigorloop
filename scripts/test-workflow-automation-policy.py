@@ -330,6 +330,35 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
             },
         )
         self.assertTrue(evaluate_transition(next_milestone).allowed)
+        for target in (WorkflowStage.IMPLEMENT, WorkflowStage.CODE_REVIEW):
+            with self.subTest(target=target.value):
+                self.assertTrue(
+                    evaluate_transition(
+                        dataclasses.replace(
+                            next_milestone,
+                            target=target,
+                            target_milestone_id="M2",
+                        )
+                    ).allowed
+                )
+                self.assertFalse(
+                    evaluate_transition(
+                        dataclasses.replace(
+                            next_milestone,
+                            target=target,
+                            target_milestone_id="M1",
+                        )
+                    ).allowed
+                )
+                self.assertFalse(
+                    evaluate_transition(
+                        dataclasses.replace(
+                            next_milestone,
+                            target=target,
+                            target_milestone_id=None,
+                        )
+                    ).allowed
+                )
         self.assertFalse(
             evaluate_transition(
                 dataclasses.replace(next_milestone, operation_milestone_id="M99")
