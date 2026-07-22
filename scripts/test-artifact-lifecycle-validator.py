@@ -18,6 +18,7 @@ from lifecycle_state_sync import evaluate_automated_review_gate_route
 from lifecycle_state_sync import evaluate_implementation_autoprogression_route
 from lifecycle_state_sync import evaluate_implementation_correction_guardrails
 from lifecycle_state_sync import evaluate_review_fix_autoprogression_route
+from workflow_automation import ActivePlanContext, AutomationContractError, bind_target
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1236,6 +1237,58 @@ review:
         result, messages = self.validate_workflow_state_fixture(fixture_root)
 
         self.assertFalse(result.blocking_findings, msg=messages)
+
+    def test_automation_active_plan_context_reuses_canonical_handoff(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-automation-plan-context-"))
+        self.addCleanupTree(fixture_root)
+        plan_path, _, _ = self.write_workflow_state_fixture(
+            fixture_root,
+            current_milestone_state="implementing",
+            review_status="approved; stage=code-review; round=r1",
+            next_stage="implement M2",
+            milestone_projection_state="implementing",
+        )
+
+        context = ActivePlanContext.from_text(
+            plan_path.read_text(encoding="utf-8"),
+            plan_identity="sha256:plan",
+        )
+        target = bind_target(
+            "implement",
+            bound_at="2026-07-22T00:00:00Z",
+            plan=context,
+        )
+
+        self.assertEqual(target["occurrence"]["milestone_id"], "M2")
+        self.assertEqual(target["plan_identity"], "sha256:plan")
+
+    def test_automation_active_plan_context_rejects_ambiguous_current_milestone(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-automation-plan-ambiguous-"))
+        self.addCleanupTree(fixture_root)
+        plan_path, _, _ = self.write_workflow_state_fixture(
+            fixture_root,
+            current_milestone_state="implementing",
+            review_status="approved; stage=code-review; round=r1",
+            next_stage="implement M2",
+            milestone_projection_state="implementing",
+        )
+        text = plan_path.read_text(encoding="utf-8")
+        text = text.replace(
+            "### M2. Parser Fixture Harness\n\n- Milestone state: implementing",
+            "### M2. Parser Fixture Harness\n\n- Milestone state: implementing\n\n"
+            "### M2. Parser Fixture Harness\n\n- Milestone state: implementing",
+        )
+        context = ActivePlanContext.from_text(text, plan_identity="sha256:plan")
+
+        with self.assertRaisesRegex(
+            AutomationContractError,
+            "cannot bind implement target: active plan does not identify exactly one",
+        ):
+            bind_target(
+                "implement",
+                bound_at="2026-07-22T00:00:00Z",
+                plan=context,
+            )
 
     def test_handoff_disagreeing_with_change_yaml_fails(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-cross-surface-drift-"))
