@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r9.md`
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M4, M5, M6
-- Next stage: code-review M4
+- Current milestone state: resolution-needed
+- Last reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r1.md`
+- Review status: changes-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M4 resolution needed, M5, M6
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BRF-M4-CR1,BRF-M4-CR2
 
 ## Milestones
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -553,6 +553,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: Code-review M3 R9 independently confirmed `BRF-M3-CR15` resolved with no new material findings. M3 is closed; the next explicit stage is implement M4.
 - 2026-07-22: M4 implementation started with proposal-review outcome routing, bounded driver-owned proposal correction, conditional authoring progression through `test-spec-review`, and explicit non-public harness isolation. Public workflow and legacy adapter activation remain reserved for M6.
 - 2026-07-22: M4 added exhaustive proposal-review occurrence/gate routing, unchanged-inconclusive retry prevention, driver-owned bounded proposal correction with stale-review/rereview enforcement, and deterministic authoring/architecture routing through `test-spec-review`. CMD14-CMD20, the full engine suite, and repository broad smoke pass; M4 is review-requested and remains unreachable from public and legacy commands.
+- 2026-07-22: Code-review M4 R1 requested changes in `BRF-M4-CR1` and `BRF-M4-CR2`: the M4 authoring path is helper-only rather than receipt-backed, and proposal correction trusts unbound caller assertions with optional classification history. M4 is resolution-needed; M5 remains blocked.
 
 ## Decision log
 
@@ -589,6 +590,10 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - A stage-only frontier cannot represent stopping order across repeated milestone occurrences; the target milestone must participate in next-edge permission.
 
 ## Validation notes
+
+- Code-review M4 R1 reran CMD14-CMD20 successfully, then found that the M4 authoring/correction evaluators have no non-test call sites and that the state-native verifier supports only `proposal-review`.
+- Direct adversarial probes returned `correction-loop` from caller booleans without durable capability evidence and returned `rereview-required` when prior finding classifications were omitted. MP1 cannot pass until a composed non-public invocation path exists.
+- Review structure passed with 38 reviews, 57 findings, and 2 open findings; metadata, guide-system, lifecycle state synchronization, and diff checks pass. Closeout validation correctly remains blocked by `BRF-M4-CR1` and `BRF-M4-CR2`.
 
 - M4 proof-first execution failed before production changes because the proposal-review, proposal-correction, and non-public authoring decision interfaces did not exist.
 - CMD15-CMD18 pass with 3 proposal-review, 1 proposal-correction, 3 authoring, and 2 non-public selected tests; the full automation-engine suite passes all 30 tests.
