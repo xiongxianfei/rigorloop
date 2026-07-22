@@ -14,10 +14,14 @@ import copy
 import hashlib
 import re
 from dataclasses import dataclass, field
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Iterable, Mapping
 
 from lifecycle_state_sync import HandoffSummary, parse_handoff_summary
+from review_artifact_validation import (
+    REVIEW_FIX_AUTO_RESOLUTION_CLASSES,
+    REVIEW_FIX_BUDGET_LIMITS,
+)
 from validate_workflow_automation import (
     CAPABILITY_AUTHORIZATION_CLASSES,
     CAPABILITY_BASIS_FIELDS,
@@ -205,6 +209,319 @@ class StageExecutionResult:
 class CanonicalSyncResult:
     status: str
     evidence: Mapping[str, ArtifactEvidence]
+
+
+@dataclass(frozen=True)
+class ProposalReviewDecision:
+    occurrence_recorded: bool
+    review_id: str
+    reviewed_artifact_identity: str
+    outcome: str
+    clean_gate: str
+    routing_action: str
+    next_stage: str | None = None
+    pause_reason: str | None = None
+
+
+@dataclass(frozen=True)
+class ProposalCorrectionDecision:
+    status: str
+    next_stage: str | None = None
+    pause_reason: str | None = None
+    prior_review_stale: bool = False
+    historical_review_preserved: bool = False
+
+
+@dataclass(frozen=True)
+class AuthoringRouteDecision:
+    status: str
+    next_stage: str | None = None
+    pause_reason: str | None = None
+    record_not_applicable: bool = False
+
+
+def authorize_proposal_review_invocation(
+    *,
+    current_basis_identity: str,
+    previous_inconclusive_basis_identity: str | None = None,
+) -> None:
+    """Reject an inconclusive rereview when no material input changed."""
+
+    if not isinstance(current_basis_identity, str) or not current_basis_identity.strip():
+        raise AutomationContractError("proposal-review basis identity is required")
+    if previous_inconclusive_basis_identity == current_basis_identity:
+        raise AutomationContractError(
+            "unchanged inconclusive proposal-review cannot be invoked again"
+        )
+
+
+def evaluate_proposal_review(
+    *,
+    outcome: str,
+    review_id: str,
+    proposal_identity: str,
+    reviewed_proposal_identity: str,
+    target_stage: str,
+    correction_capability_active: bool = False,
+    correction_budget_remaining: bool = False,
+) -> ProposalReviewDecision:
+    """Separate a recorded proposal-review occurrence from clean-gate routing."""
+
+    if outcome not in REVIEW_OUTCOMES:
+        raise AutomationContractError(f"unknown proposal-review outcome: {outcome}")
+    if not isinstance(review_id, str) or not review_id.strip():
+        raise AutomationContractError("proposal-review identity is required")
+    if (
+        not isinstance(proposal_identity, str)
+        or not proposal_identity.strip()
+        or reviewed_proposal_identity != proposal_identity
+    ):
+        raise AutomationContractError("proposal-review target identity is stale")
+    target = _target_stage(target_stage)
+    if not can_operation_fit_target(WorkflowStage.PROPOSAL_REVIEW, target):
+        raise AutomationContractError("proposal-review exceeds structured target")
+
+    clean_gate = "satisfied" if outcome == "approved" else "not-satisfied"
+    if outcome in {"blocked", "inconclusive"}:
+        return ProposalReviewDecision(
+            True,
+            review_id,
+            proposal_identity,
+            outcome,
+            clean_gate,
+            "pause",
+            pause_reason=f"proposal-review-{outcome}",
+        )
+    if target == WorkflowStage.PROPOSAL_REVIEW:
+        return ProposalReviewDecision(
+            True,
+            review_id,
+            proposal_identity,
+            outcome,
+            clean_gate,
+            "stop-at-target",
+        )
+    if outcome == "approved":
+        return ProposalReviewDecision(
+            True,
+            review_id,
+            proposal_identity,
+            outcome,
+            clean_gate,
+            "continue",
+            next_stage=WorkflowStage.SPEC.value,
+        )
+    if correction_capability_active and correction_budget_remaining:
+        return ProposalReviewDecision(
+            True,
+            review_id,
+            proposal_identity,
+            outcome,
+            clean_gate,
+            "correction-loop",
+            next_stage="proposal-correction",
+        )
+    reason = (
+        "proposal-correction-budget-exhausted"
+        if correction_capability_active
+        else "proposal-correction-authorization-required"
+    )
+    return ProposalReviewDecision(
+        True,
+        review_id,
+        proposal_identity,
+        outcome,
+        clean_gate,
+        "pause",
+        pause_reason=reason,
+    )
+
+
+def _path_is_within_roots(path: str, roots: Iterable[str]) -> bool:
+    candidate = PurePosixPath(path)
+    if candidate.is_absolute() or ".." in candidate.parts:
+        return False
+    for root in roots:
+        parent = PurePosixPath(root)
+        if parent.is_absolute() or ".." in parent.parts:
+            continue
+        if candidate == parent or parent in candidate.parents:
+            return True
+    return False
+
+
+def evaluate_proposal_correction(
+    *,
+    capability_kind: str,
+    capability_status: str,
+    finding_classifications: Mapping[str, str],
+    accepted_finding_ids: Iterable[str],
+    current_finding_ids: Iterable[str],
+    reviewed_review_identity: str,
+    current_review_identity: str,
+    correction_budget: Mapping[str, int],
+    unresolved_before: Iterable[str],
+    unresolved_after: Iterable[str],
+    affected_paths: Iterable[str],
+    allowed_path_roots: Iterable[str],
+    proposal_identity_before: str,
+    proposal_identity_after: str,
+    reviewed_finding_classifications: Mapping[str, str] | None = None,
+    basis_current: bool = True,
+    deterministic_validation_passed: bool = True,
+    scope_expanded: bool = False,
+    owner_decision_required: bool = False,
+) -> ProposalCorrectionDecision:
+    """Evaluate the driver-owned bounded proposal-correction contract."""
+
+    def pause(reason: str) -> ProposalCorrectionDecision:
+        return ProposalCorrectionDecision("paused", pause_reason=reason)
+
+    if capability_kind != CapabilityKind.PROPOSAL_CORRECTION.value or capability_status != "active":
+        return pause("proposal-correction-capability-required")
+    accepted = frozenset(accepted_finding_ids)
+    current = frozenset(current_finding_ids)
+    classifications = dict(finding_classifications)
+    if owner_decision_required:
+        return pause("owner-decision-required")
+    if not basis_current or reviewed_review_identity != current_review_identity:
+        return pause("stale-review-evidence")
+    if current != accepted or set(classifications) != accepted:
+        return pause("finding-set-changed")
+    if (
+        reviewed_finding_classifications is not None
+        and dict(reviewed_finding_classifications) != classifications
+    ):
+        return pause("finding-classification-changed")
+    unknown_classes = set(classifications.values()) - REVIEW_FIX_AUTO_RESOLUTION_CLASSES
+    if unknown_classes:
+        return pause("unknown-correction-classification")
+    if "not-auto-safe" in classifications.values():
+        return pause("not-auto-safe")
+    if scope_expanded:
+        return pause("scope-expanded")
+    if set(correction_budget) != set(REVIEW_FIX_BUDGET_LIMITS):
+        return pause("correction-budget-invalid")
+    if any(
+        not isinstance(value, int)
+        or isinstance(value, bool)
+        or value <= 0
+        or value > REVIEW_FIX_BUDGET_LIMITS[label]
+        for label, value in correction_budget.items()
+    ):
+        return pause("correction-budget-exhausted")
+    roots = tuple(allowed_path_roots)
+    paths = tuple(affected_paths)
+    if not paths or not roots or any(not _path_is_within_roots(path, roots) for path in paths):
+        return pause("affected-path-scope-exceeded")
+    before = frozenset(unresolved_before)
+    after = frozenset(unresolved_after)
+    if before and (not after < before):
+        return pause("unresolved-findings-did-not-shrink")
+    if not deterministic_validation_passed:
+        return pause("deterministic-validation-missing")
+    if (
+        not proposal_identity_before
+        or not proposal_identity_after
+        or proposal_identity_before == proposal_identity_after
+    ):
+        return pause("proposal-identity-unchanged")
+    return ProposalCorrectionDecision(
+        "rereview-required",
+        next_stage=WorkflowStage.PROPOSAL_REVIEW.value,
+        prior_review_stale=True,
+        historical_review_preserved=True,
+    )
+
+
+_AUTHORING_NEXT_STAGE = {
+    WorkflowStage.SPEC.value: WorkflowStage.SPEC_REVIEW.value,
+    WorkflowStage.SPEC_REVIEW.value: WorkflowStage.ARCHITECTURE_ASSESSMENT.value,
+    WorkflowStage.ARCHITECTURE.value: WorkflowStage.ARCHITECTURE_REVIEW.value,
+    WorkflowStage.ARCHITECTURE_REVIEW.value: WorkflowStage.PLAN.value,
+    WorkflowStage.PLAN.value: WorkflowStage.PLAN_REVIEW.value,
+    WorkflowStage.PLAN_REVIEW.value: WorkflowStage.TEST_SPEC.value,
+    WorkflowStage.TEST_SPEC.value: WorkflowStage.TEST_SPEC_REVIEW.value,
+}
+_AUTHORING_REVIEW_STAGES = frozenset(
+    {
+        WorkflowStage.SPEC_REVIEW.value,
+        WorkflowStage.ARCHITECTURE_REVIEW.value,
+        WorkflowStage.PLAN_REVIEW.value,
+        WorkflowStage.TEST_SPEC_REVIEW.value,
+    }
+)
+
+
+def evaluate_non_public_authoring_route(
+    *,
+    current_stage: str,
+    target_stage: str,
+    capability_kind: str,
+    capability_status: str,
+    invocation_context: str,
+    review_outcome: str | None = None,
+    architecture_applicability: str | None = None,
+) -> AuthoringRouteDecision:
+    """Evaluate M4 authoring progression without exposing a public route."""
+
+    if invocation_context != "non-public-test-harness":
+        return AuthoringRouteDecision("paused", pause_reason="non-public-harness-required")
+    target = _target_stage(target_stage)
+    policy = STAGE_POLICY_BY_STAGE.get(current_stage)
+    if policy is None:
+        raise AutomationContractError(f"unknown authoring stage: {current_stage}")
+    if capability_status != "active" or capability_kind != policy.capability_kind.value:
+        return AuthoringRouteDecision("paused", pause_reason="effective-capability-required")
+    if not can_operation_fit_target(WorkflowStage(current_stage), target):
+        raise AutomationContractError("authoring stage exceeds structured target")
+
+    if current_stage == WorkflowStage.PROPOSAL_REVIEW.value:
+        if review_outcome is None:
+            return AuthoringRouteDecision("paused", pause_reason="proposal-review-outcome-required")
+        review = evaluate_proposal_review(
+            outcome=review_outcome,
+            review_id="non-public-harness-review",
+            proposal_identity="non-public-harness-proposal",
+            reviewed_proposal_identity="non-public-harness-proposal",
+            target_stage=target_stage,
+        )
+        status = "continue" if review.routing_action == "continue" else review.routing_action
+        return AuthoringRouteDecision(status, review.next_stage, review.pause_reason)
+
+    if current_stage == WorkflowStage.ARCHITECTURE_ASSESSMENT.value:
+        if architecture_applicability not in {"required", "not-required"}:
+            return AuthoringRouteDecision(
+                "paused", pause_reason="architecture-applicability-ambiguous"
+            )
+        if architecture_applicability == "required":
+            return AuthoringRouteDecision("continue", WorkflowStage.ARCHITECTURE.value)
+        if target in {WorkflowStage.ARCHITECTURE, WorkflowStage.ARCHITECTURE_REVIEW}:
+            return AuthoringRouteDecision("target-not-applicable", record_not_applicable=True)
+        return AuthoringRouteDecision(
+            "continue", WorkflowStage.PLAN.value, record_not_applicable=True
+        )
+
+    if current_stage in _AUTHORING_REVIEW_STAGES:
+        if review_outcome not in REVIEW_OUTCOMES:
+            return AuthoringRouteDecision("paused", pause_reason="review-outcome-required")
+        if current_stage == target_stage and review_outcome in {"approved", "changes-requested"}:
+            return AuthoringRouteDecision("target-reached")
+        if review_outcome != "approved":
+            return AuthoringRouteDecision(
+                "paused", pause_reason=f"{current_stage}-{review_outcome}"
+            )
+    elif current_stage == target_stage:
+        return AuthoringRouteDecision("target-reached")
+
+    if current_stage == WorkflowStage.TEST_SPEC_REVIEW.value:
+        return AuthoringRouteDecision(
+            "paused", pause_reason="implementation-authorization-required"
+        )
+    next_stage = _AUTHORING_NEXT_STAGE.get(current_stage)
+    if next_stage is None:
+        raise AutomationContractError(f"authoring route is undefined for stage: {current_stage}")
+    return AuthoringRouteDecision("continue", next_stage)
 
 
 def normalize_command(command: str) -> NormalizedCommand:

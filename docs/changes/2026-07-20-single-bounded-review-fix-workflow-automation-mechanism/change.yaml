@@ -929,6 +929,12 @@ validation:
     result: passed_11_checks_in_455_seconds_after_M3_R8_resolution
   - command: code-review M3 R9 direct exact open/closed, reported suffix, terminal-history, CMD10-CMD13, lifecycle, selector, and diff checks
     result: clean_with_notes_BRF_M3_CR15_resolved_no_new_material_findings
+  - command: python scripts/test-workflow-automation.py -k proposal_review; python scripts/test-workflow-automation.py -k proposal_correction; python scripts/test-workflow-automation.py -k authoring; python scripts/test-workflow-automation.py -k non_public
+    result: passed_CMD15_3_CMD16_1_CMD17_3_CMD18_2_after_M4_implementation
+  - command: python scripts/test-artifact-lifecycle-validator.py; python scripts/test-review-artifact-validator.py; python scripts/test-skill-validator.py; python scripts/test-workflow-automation.py
+    result: passed_CMD14_156_CMD19_103_CMD20_259_and_30_engine_tests_after_M4_implementation
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M4 implementation paths; bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: manual_routing_required_for_two_automation_paths_plan_owned_CMD15_through_CMD18_executed_final_broad_smoke_passed_11_checks_in_409_seconds_after_capability_binding
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md

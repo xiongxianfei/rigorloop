@@ -23,6 +23,10 @@ from workflow_automation import (
     coordinate_one_stage,
     create_parent_authorization,
     derive_effective_capability,
+    authorize_proposal_review_invocation,
+    evaluate_non_public_authoring_route,
+    evaluate_proposal_correction,
+    evaluate_proposal_review,
     invalidate_effective_capabilities,
     normalize_command,
     persist_target,
@@ -961,6 +965,261 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             AutomationContractError, "stage-native-review-outcome-invalid"
         ):
             self.coordinate_proposal_review(store, invoke)
+
+    def test_proposal_review_outcome_matrix_and_exact_target(self) -> None:
+        for outcome in ("approved", "changes-requested", "blocked", "inconclusive"):
+            with self.subTest(exact_outcome=outcome):
+                exact = evaluate_proposal_review(
+                    outcome=outcome,
+                    review_id="proposal-review-r1",
+                    proposal_identity="sha256:proposal-v1",
+                    reviewed_proposal_identity="sha256:proposal-v1",
+                    target_stage="proposal-review",
+                )
+                self.assertTrue(exact.occurrence_recorded)
+                self.assertEqual(
+                    exact.clean_gate,
+                    "satisfied" if outcome == "approved" else "not-satisfied",
+                )
+                self.assertEqual(
+                    exact.routing_action,
+                    "pause" if outcome in {"blocked", "inconclusive"} else "stop-at-target",
+                )
+
+        approved = evaluate_proposal_review(
+            outcome="approved",
+            review_id="proposal-review-r1",
+            proposal_identity="sha256:proposal-v1",
+            reviewed_proposal_identity="sha256:proposal-v1",
+            target_stage="spec",
+        )
+        self.assertEqual((approved.clean_gate, approved.routing_action), ("satisfied", "continue"))
+        self.assertEqual(approved.next_stage, "spec")
+
+        correction = evaluate_proposal_review(
+            outcome="changes-requested",
+            review_id="proposal-review-r1",
+            proposal_identity="sha256:proposal-v1",
+            reviewed_proposal_identity="sha256:proposal-v1",
+            target_stage="test-spec-review",
+            correction_capability_active=True,
+            correction_budget_remaining=True,
+        )
+        self.assertEqual(correction.routing_action, "correction-loop")
+        self.assertEqual(correction.next_stage, "proposal-correction")
+
+        for outcome in ("blocked", "inconclusive"):
+            with self.subTest(outcome=outcome):
+                decision = evaluate_proposal_review(
+                    outcome=outcome,
+                    review_id="proposal-review-r1",
+                    proposal_identity="sha256:proposal-v1",
+                    reviewed_proposal_identity="sha256:proposal-v1",
+                    target_stage="spec",
+                )
+                self.assertTrue(decision.occurrence_recorded)
+                self.assertEqual(decision.clean_gate, "not-satisfied")
+                self.assertEqual(decision.routing_action, "pause")
+                self.assertEqual(decision.pause_reason, f"proposal-review-{outcome}")
+
+    def test_proposal_review_unknown_and_unchanged_inconclusive_fail_closed(self) -> None:
+        with self.assertRaisesRegex(AutomationContractError, "unknown proposal-review outcome"):
+            evaluate_proposal_review(
+                outcome="rubber-stamp",
+                review_id="proposal-review-r1",
+                proposal_identity="sha256:proposal-v1",
+                reviewed_proposal_identity="sha256:proposal-v1",
+                target_stage="spec",
+            )
+        with self.assertRaisesRegex(AutomationContractError, "unchanged inconclusive"):
+            authorize_proposal_review_invocation(
+                current_basis_identity="sha256:basis-v1",
+                previous_inconclusive_basis_identity="sha256:basis-v1",
+            )
+
+    def test_proposal_review_rejects_target_mutation(self) -> None:
+        state = copy.deepcopy(FIXTURES.valid_automation())
+        state["effective_capabilities"] = {}
+        store = self.make_store(state)
+
+        def invoke() -> StageExecutionResult:
+            evidence = self.write_evidence(store)
+            proposal = store.repository_root / "docs/proposals/example.md"
+            proposal.write_text("# Mutated by reviewer\n", encoding="utf-8")
+            return StageExecutionResult(
+                outputs=(evidence,), completion_evidence={"proposal-review": evidence}
+            )
+
+        with self.assertRaisesRegex(
+            AutomationContractError, "reviewed-artifact-identity-mismatch"
+        ):
+            self.coordinate_proposal_review(store, invoke)
+
+    def test_proposal_correction_guardrails_and_rereview(self) -> None:
+        safe = evaluate_proposal_correction(
+            capability_kind="proposal-correction",
+            capability_status="active",
+            finding_classifications={"BRF-1": "mechanical"},
+            accepted_finding_ids=("BRF-1",),
+            current_finding_ids=("BRF-1",),
+            reviewed_review_identity="sha256:review-v1",
+            current_review_identity="sha256:review-v1",
+            correction_budget={
+                "Review-fix cycle count": 1,
+                "Findings auto-applied this cycle": 1,
+                "Files changed this cycle": 1,
+                "Files changed this invocation": 1,
+            },
+            unresolved_before=("BRF-1",),
+            unresolved_after=(),
+            affected_paths=("docs/proposals/example.md",),
+            allowed_path_roots=("docs/proposals/",),
+            proposal_identity_before="sha256:proposal-v1",
+            proposal_identity_after="sha256:proposal-v2",
+        )
+        self.assertEqual(safe.status, "rereview-required")
+        self.assertTrue(safe.prior_review_stale)
+        self.assertTrue(safe.historical_review_preserved)
+        self.assertEqual(safe.next_stage, "proposal-review")
+
+        unsafe_cases = (
+            ({"capability_status": "invalidated"}, "proposal-correction-capability-required"),
+            ({"finding_classifications": {"BRF-1": "not-auto-safe"}}, "not-auto-safe"),
+            ({"current_finding_ids": ("BRF-1", "BRF-2")}, "finding-set-changed"),
+            (
+                {"reviewed_finding_classifications": {"BRF-1": "format-preserving"}},
+                "finding-classification-changed",
+            ),
+            ({"unresolved_after": ("BRF-1",)}, "unresolved-findings-did-not-shrink"),
+            (
+                {
+                    "correction_budget": {
+                        "Review-fix cycle count": 0,
+                        "Findings auto-applied this cycle": 1,
+                        "Files changed this cycle": 1,
+                        "Files changed this invocation": 1,
+                    }
+                },
+                "correction-budget-exhausted",
+            ),
+            ({"current_review_identity": "sha256:review-v2"}, "stale-review-evidence"),
+            ({"affected_paths": ("scripts/escape.py",)}, "affected-path-scope-exceeded"),
+            ({"scope_expanded": True}, "scope-expanded"),
+            ({"owner_decision_required": True}, "owner-decision-required"),
+            ({"deterministic_validation_passed": False}, "deterministic-validation-missing"),
+        )
+        base = {
+            "capability_kind": "proposal-correction",
+            "capability_status": "active",
+            "finding_classifications": {"BRF-1": "mechanical"},
+            "accepted_finding_ids": ("BRF-1",),
+            "current_finding_ids": ("BRF-1",),
+            "reviewed_review_identity": "sha256:review-v1",
+            "current_review_identity": "sha256:review-v1",
+            "correction_budget": {
+                "Review-fix cycle count": 1,
+                "Findings auto-applied this cycle": 1,
+                "Files changed this cycle": 1,
+                "Files changed this invocation": 1,
+            },
+            "unresolved_before": ("BRF-1",),
+            "unresolved_after": (),
+            "affected_paths": ("docs/proposals/example.md",),
+            "allowed_path_roots": ("docs/proposals/",),
+            "proposal_identity_before": "sha256:proposal-v1",
+            "proposal_identity_after": "sha256:proposal-v2",
+        }
+        for override, reason in unsafe_cases:
+            with self.subTest(reason=reason):
+                decision = evaluate_proposal_correction(**(base | override))
+                self.assertEqual((decision.status, decision.pause_reason), ("paused", reason))
+
+    def test_authoring_non_public_harness_routes_through_test_spec_review(self) -> None:
+        cases = (
+            ("proposal-review", "approved", "spec"),
+            ("spec", None, "spec-review"),
+            ("spec-review", "approved", "architecture-assessment"),
+            ("plan", None, "plan-review"),
+            ("plan-review", "approved", "test-spec"),
+            ("test-spec", None, "test-spec-review"),
+        )
+        for current_stage, review_outcome, expected in cases:
+            with self.subTest(stage=current_stage):
+                capability = (
+                    "proposal-review" if current_stage == "proposal-review" else "post-proposal-authoring"
+                )
+                decision = evaluate_non_public_authoring_route(
+                    current_stage=current_stage,
+                    target_stage="test-spec-review",
+                    capability_kind=capability,
+                    capability_status="active",
+                    invocation_context="non-public-test-harness",
+                    review_outcome=review_outcome,
+                )
+                self.assertEqual((decision.status, decision.next_stage), ("continue", expected))
+
+        boundary = evaluate_non_public_authoring_route(
+            current_stage="test-spec-review",
+            target_stage="verify",
+            capability_kind="post-proposal-authoring",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            review_outcome="approved",
+        )
+        self.assertEqual(boundary.status, "paused")
+        self.assertEqual(boundary.pause_reason, "implementation-authorization-required")
+
+    def test_authoring_conditional_architecture_routes(self) -> None:
+        required = evaluate_non_public_authoring_route(
+            current_stage="architecture-assessment",
+            target_stage="plan",
+            capability_kind="post-proposal-authoring",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            architecture_applicability="required",
+        )
+        self.assertEqual(required.next_stage, "architecture")
+        skipped = evaluate_non_public_authoring_route(
+            current_stage="architecture-assessment",
+            target_stage="plan",
+            capability_kind="post-proposal-authoring",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            architecture_applicability="not-required",
+        )
+        self.assertEqual((skipped.next_stage, skipped.record_not_applicable), ("plan", True))
+        explicit = evaluate_non_public_authoring_route(
+            current_stage="architecture-assessment",
+            target_stage="architecture",
+            capability_kind="post-proposal-authoring",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            architecture_applicability="not-required",
+        )
+        self.assertEqual(explicit.status, "target-not-applicable")
+        ambiguous = evaluate_non_public_authoring_route(
+            current_stage="architecture-assessment",
+            target_stage="plan",
+            capability_kind="post-proposal-authoring",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            architecture_applicability="unknown",
+        )
+        self.assertEqual(ambiguous.pause_reason, "architecture-applicability-ambiguous")
+
+    def test_non_public_authoring_harness_rejects_public_direct_and_legacy_entry(self) -> None:
+        for context in ("public-command", "direct-skill", "bugfix", "legacy-adapter"):
+            with self.subTest(context=context):
+                decision = evaluate_non_public_authoring_route(
+                    current_stage="proposal-review",
+                    target_stage="spec",
+                    capability_kind="proposal-review",
+                    capability_status="active",
+                    invocation_context=context,
+                    review_outcome="approved",
+                )
+                self.assertEqual(decision.status, "paused")
+                self.assertEqual(decision.pause_reason, "non-public-harness-required")
 
     @staticmethod
     def proposal_pre_plan(proposal_identity: str = "sha256:proposal") -> PrePlanEvidence:
