@@ -19,11 +19,12 @@ Review closeout: code-review-m1-r6
 Review closeout: code-review-m1-r7
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m2-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
 - Findings resolved: 40
 - Unresolved findings: 0
-- Current result: `BRF-M2-CR5` and `BRF-M2-CR6` are resolved with canonical stale-key rejection and validator-valid persisted proof for every retry family. M2 is review-requested for code-review R3; M3 remains blocked pending rereview.
+- Current result: Code-review M2 R3 confirmed `BRF-M2-CR5` and `BRF-M2-CR6` resolved with no new material findings. M2 is closed and M3 is the next implementation milestone.
 
 ## Resolution Overview
 
@@ -78,6 +79,10 @@ Review closeout: code-review-m2-r2
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m2-r3
+
+No material findings; no additional review resolution is required.
 
 ### code-review-m2-r2
 

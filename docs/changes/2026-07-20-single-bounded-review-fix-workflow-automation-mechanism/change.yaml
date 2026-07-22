@@ -671,6 +671,28 @@ validation:
     result: passed_before_M2_R2_resolution_handoff_sync
   - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
     result: passed_11_checks_in_408_seconds_after_M2_R2_resolution
+  - command: python scripts/test-workflow-automation-state.py
+    result: passed_30_tests_during_code_review_M2_R3
+  - command: python scripts/test-validate-workflow-automation.py -k receipt
+    result: passed_18_selected_tests_during_code_review_M2_R3
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_49_tests_during_code_review_M2_R3
+  - command: python scripts/test-query-change-record.py
+    result: passed_19_tests_during_code_review_M2_R3
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_during_code_review_M2_R3
+  - command: direct nine-field transition-key mutation matrix during code-review M2 R3
+    result: passed_all_9_bound_fields_changed_key_and_failed_validation
+  - command: python -m py_compile scripts/workflow_automation_state.py scripts/validate_workflow_automation.py scripts/query-change-record.py scripts/test-workflow-automation-state.py scripts/test-validate-workflow-automation.py scripts/test-query-change-record.py
+    result: passed_during_code_review_M2_R3
+  - command: git diff --check 1430d268..f9ba90d2
+    result: passed_during_code_review_M2_R3
+  - command: python scripts/validate-review-artifacts.py --mode structure and --mode closeout after code-review M2 R3
+    result: passed_reviews_28_findings_40_open_findings_0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M2 R3 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_M2_R3_handoff_sync
   - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
     result: passed_after_code_review_M2_R1_recording
   - command: git diff --check
@@ -724,6 +746,7 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r7.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r1.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r3.md
   - schemas/change.schema.json
   - scripts/workflow_automation_policy.py
   - scripts/workflow_automation_state.py
@@ -747,6 +770,6 @@ review:
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
   plan_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
-  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r2.md
+  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r3.md
   review_log: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md
