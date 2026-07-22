@@ -101,13 +101,13 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Current milestone state: review-requested
+- Current milestone: M4. Authoring, Proposal Review, and Correction Integration
+- Current milestone state: planned
 - Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r8.md`
-- Review status: review-requested; stage=code-review; round=r9
-- Remaining in-scope implementation milestones: M3 rereview, M4, M5, M6
-- Next stage: code-review M3 R9
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r9.md`
+- Review status: approved; stage=code-review; round=r9
+- Remaining in-scope implementation milestones: M4, M5, M6
+- Next stage: implement M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -220,7 +220,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M3. Target Binding, Canonical Position, and Capability Evaluation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
 - Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
 - Files/components likely touched:
@@ -550,6 +550,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: Resolved `BRF-M3-CR13` and `BRF-M3-CR14` by checking the entire absolute lexical metadata chain before resolution and rejecting all additional structured fields outside the single review-state projection. M3 is review-requested for R8; M4 remains blocked.
 - 2026-07-22: Code-review M3 R8 confirmed the full-chain symlink correction, classified the R7 review-state correction as failed remediation, and opened `BRF-M3-CR15`. Alternate structured keys and plain contradictory prose remain accepted in the authoritative detail. M3 is resolution-needed; M4 remains blocked.
 - 2026-07-22: Resolved `BRF-M3-CR15` by replacing the prefix-plus-remainder parser and denylist with one exact generated projection for the complete live review-state detail in both open and closed states. Exact open/closed and alternate-key/plain-prose regressions pass; M3 is review-requested for R9 and M4 remains blocked.
+- 2026-07-22: Code-review M3 R9 independently confirmed `BRF-M3-CR15` resolved with no new material findings. M3 is closed; the next explicit stage is implement M4.
 
 ## Decision log
 
@@ -586,6 +587,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - A stage-only frontier cannot represent stopping order across repeated milestone occurrences; the target milestone must participate in next-edge permission.
 
 ## Validation notes
+
+- Code-review M3 R9 reran the exact open/closed and reported bypass contrasts, terminal-history compatibility, all 156 lifecycle tests, CMD10-CMD13, current lifecycle validation, selector routing, and diff checks. No new material finding was identified.
 
 - M3 R8 proof-first regressions failed before correction for exact open and closed projections plus alternate-key and plain contradictory suffixes.
 - The correction passes 48 state/recovery tests, 23 engine tests, CMD10-CMD14 including 156 lifecycle tests, 52 automation-validator tests, 103 review-parser tests, and Python compilation.

@@ -415,3 +415,15 @@ Detailed record: reviews/code-review-m3-r8.md
 Resolution: review-resolution.md#code-review-m3-r8
 Material findings: BRF-M3-CR15
 Open findings: None
+
+### Review entry
+Review ID: code-review-m3-r9
+Stage: code-review
+Round: M3 R9
+Reviewed artifact: M3 correction commit `ccb615bb`
+Reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
+Status: clean-with-notes
+Detailed record: reviews/code-review-m3-r9.md
+Resolution: review-resolution.md#code-review-m3-r9
+Material findings: None
+Open findings: None
