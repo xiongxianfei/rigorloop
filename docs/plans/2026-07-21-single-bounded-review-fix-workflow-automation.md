@@ -101,21 +101,21 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Unified State Model and Complete Policy Registry
-- Current milestone state: review-requested
+- Current milestone: M2. Sole State Writer, Prepared Receipts, and Recovery
+- Current milestone state: planned
 - Last reviewed milestone: M1. Unified State Model and Complete Policy Registry
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r6.md`
-- Review status: changes-requested; stage=code-review; round=r6
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5, M6
-- Next stage: code-review
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r7.md`
+- Review status: approved; stage=code-review; round=r7
+- Remaining in-scope implementation milestones: M2, M3, M4, M5, M6
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — `BRF-M1-CR12` is resolved with validation evidence, but fresh M1 code review is required and M2-M6 have not started.
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — M1 is closed after clean code-review R7, but M2-M6, final holistic review, explanation, verification, and PR handoff remain.
 
 ## Milestones
 
 ### M1. Unified State Model and Complete Policy Registry
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Establish the canonical `workflow.automation` schema, typed durable records, closed enums, complete immutable stage-policy registry, and fail-closed structural validation before any new routing becomes writable.
 - Requirements: `BRF-R001`-`BRF-R017a`, `BRF-R024`-`BRF-R046`, `BRF-R069`-`BRF-R071`, `BRF-R079`-`BRF-R080`, `BRF-R099`-`BRF-R102`
 - Files/components likely touched:
@@ -519,6 +519,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-21: Resolved `BRF-M1-CR11` with one typed transition evaluator that enforces target frontier, all guarded branches, plan-bound same/next milestone identities, and missing-context rejection from identity-bound receipt evidence. M1 is review-requested; M2 remains blocked pending M1 R6.
 - 2026-07-21: Code-review M1 R6 confirmed guard enforcement but classified `BRF-M1-CR11` as failed remediation and opened `BRF-M1-CR12`: the stage-only next-milestone frontier rejects valid `implement@M2` and `code-review@M2` targets. M1 is resolution-needed; M2 remains blocked.
 - 2026-07-22: Resolved `BRF-M1-CR12` by admitting repeated targets on the next-milestone edge only when their persisted target occurrence equals the identity-bound next milestone. M1 is review-requested; M2 remains blocked pending M1 R7.
+- 2026-07-22: Code-review M1 R7 independently confirmed `BRF-M1-CR12` resolved with no new material findings. M1 is closed and the next stage is implement M2.
 
 ## Decision log
 
@@ -585,6 +586,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Review structure and closeout validation passed with 23 reviews, 33 resolved findings, and no open findings. Explicit lifecycle validation passed for the five managed handoff artifacts with the existing merge-language warning, and guide-system validation passed after the M1 R6 plan-index synchronization.
 - M1 R6 proof-first regressions failed for valid `code-review@M1 -> implement@M2` transitions toward both `implement@M2` and `code-review@M2`; the final `verify` target control remained accepted.
 - M1 R6 resolution passed 15 policy tests, 42 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, Python compilation, and 12 repository broad-smoke checks in 299 seconds. Bound M2 repeated targets pass while stale M1 and missing target occurrence identities fail closed.
+- Code-review M1 R7 directly challenged the repeated-target boundary matrix, reran 15 policy, 42 automation-validator, 5 vocabulary, 4 focused metadata, and 52 metadata tests, and returned clean-with-notes. Review structure/closeout, lifecycle state sync, metadata, guide-system, compilation, and diff checks pass; M1 is closed.
 - `python scripts/test-workflow-automation-policy.py` passed 7 tests.
 - `python scripts/test-validate-workflow-automation.py -k vocabulary` passed 3 selected tests.
 - `python scripts/test-change-metadata-validator.py -k workflow_automation` passed 4 selected tests.
