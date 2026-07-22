@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -18,11 +18,12 @@ Review closeout: code-review-m1-r5
 Review closeout: code-review-m1-r6
 Review closeout: code-review-m1-r7
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`
 - Findings resolved: 38
-- Unresolved findings: 0
-- Current result: `BRF-M2-CR1` through `BRF-M2-CR4` are resolved with direct regression and full M2 validation evidence. M2 is review-requested for code-review R2; M3 remains blocked pending a clean rereview.
+- Unresolved findings: 2
+- Current result: code-review M2 R2 classified `BRF-M2-CR2` as failed-remediation and opened `BRF-M2-CR5` and `BRF-M2-CR6`. M2 is resolution-needed; M3 remains blocked.
 
 ## Resolution Overview
 
@@ -66,6 +67,8 @@ Review closeout: code-review-m2-r1
 | BRF-M2-CR2 | accepted | resolved | Recovery derives retry behavior from the immutable stage policy; required receipt projections must match and are transition-key-bound. |
 | BRF-M2-CR3 | accepted | resolved | T29 now repeats and reverses fresh-root transition/migration scenarios and compares receipts, keys, migration evidence, canonical bytes, and teardown. |
 | BRF-M2-CR4 | accepted | resolved | Unified status queries use the canonical validated read boundary and return stable read-only errors for malformed state. |
+| BRF-M2-CR5 | accepted | open | Canonical read and recovery must reject persisted receipts whose deterministic transition key no longer matches immutable inputs. |
+| BRF-M2-CR6 | accepted | open | All three retry-policy families need direct proof through validator-valid persisted states. |
 
 ## Common Resolution Metadata
 
@@ -75,6 +78,36 @@ Review closeout: code-review-m2-r1
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m2-r2
+
+#### BRF-M2-CR5 - Persisted transition-key integrity is not validated
+
+Finding ID: BRF-M2-CR5
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: The correction adds retry policy to transition-key computation, but canonical read and recovery accept a non-empty stale key after immutable receipt inputs change.
+Required outcome: Every persisted prepared or completed receipt must have a transition key equal to the deterministic key computed from its immutable operation inputs before read, projection, or recovery can succeed.
+Chosen action: Enforce transition-key integrity at the canonical state-validation boundary and add prepared/completed read, query, and recovery regressions.
+Safe resolution path: Centralize dependency-safe key computation, reject mismatches with a stable contract error, and prove stale keys cannot reach status or recovery.
+Validation target: CMD6-CMD7, query stale-key regression, and code-review M2 R3.
+Validation evidence: Pending implementation and rereview.
+
+#### BRF-M2-CR6 - Retry-family proof uses invalid automation states
+
+Finding ID: BRF-M2-CR6
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: Two retry-family cases bypass canonical validation with incomplete parent, basis, predecessor, and milestone state, so T15's all-family proof is not credible.
+Required outcome: Exercise idempotent, reconcile-only, and manual recovery with complete validator-valid persisted automation states.
+Chosen action: Replace stage-name mutation fixtures with stage-appropriate complete states that pass canonical read before recovery is evaluated.
+Safe resolution path: Reuse stage-specific fixture builders, persist/read through `WorkflowAutomationStateStore`, assert validation success, then test all three decisions and mismatch rejection.
+Validation target: CMD6-CMD7 and code-review M2 R3.
+Validation evidence: Pending implementation and rereview.
 
 ### code-review-m2-r1
 
