@@ -38,6 +38,7 @@ from workflow_automation_policy import (
     target_completion_predicate,
 )
 from workflow_automation_state import (
+    StateContractError,
     WorkflowAutomationStateStore,
     compute_transition_key,
 )
@@ -1100,15 +1101,29 @@ def coordinate_one_stage(
     observed_identities.update(
         {name: evidence.identity for name, evidence in sync_result.evidence.items()}
     )
-    store.finalize_transition(
-        transition_id,
-        status="completed",
-        outputs=serialized_outputs,
-        canonical_sync_status="synchronized",
-        canonical_sync_evidence=serialized_sync_evidence,
-        canonical_sync_observed_identities=observed_identities,
-        expected_document_identity=completed_snapshot.document_identity,
-    )
+    try:
+        store.finalize_transition(
+            transition_id,
+            status="completed",
+            outputs=serialized_outputs,
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=serialized_sync_evidence,
+            canonical_sync_observed_identities=observed_identities,
+            expected_document_identity=completed_snapshot.document_identity,
+            repository_root=repository_root,
+        )
+    except StateContractError as error:
+        paused_snapshot = store.read()
+        store.finalize_transition(
+            transition_id,
+            status="paused",
+            outputs=serialized_outputs,
+            canonical_sync_status="failed",
+            expected_document_identity=paused_snapshot.document_identity,
+        )
+        raise AutomationContractError(
+            "stage-native completion verification failed: " + str(error)
+        ) from error
     return CoordinationResult(
         "completed", transition_id, capability_id, tuple(serialized_outputs)
     )

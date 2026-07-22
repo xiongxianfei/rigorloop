@@ -674,6 +674,7 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         state["effective_capabilities"] = {}
         store = self.make_store(state)
         observed: list[str] = []
+        proposal_identity = self.write_proposal(store)
 
         def invoke() -> StageExecutionResult:
             snapshot = store.read().automation
@@ -694,7 +695,7 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             stage="proposal-review",
             occurrence={"kind": "singleton"},
             basis={
-                "proposal_identity": "sha256:proposal",
+                "proposal_identity": proposal_identity,
                 "standing_gates_identity": "sha256:gates",
                 "review_policy_identity": "sha256:policy",
                 "structured_target_identity": "sha256:target",
@@ -704,13 +705,12 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             mutation_categories=("change-local-review-evidence",),
             derived_at="2026-07-22T00:01:00Z",
             transition_id="transition-engine-001",
-            input_identities=self.proposal_input_identities(),
+            input_identities=self.proposal_input_identities(proposal_identity),
             invoke_stage=invoke,
             repository_root=store.metadata_path.parent,
-            pre_plan=self.proposal_pre_plan(),
-            synchronize_canonical_state=lambda result: CanonicalSyncResult(
-                status="synchronized",
-                evidence=result.completion_evidence,
+            pre_plan=self.proposal_pre_plan(proposal_identity),
+            synchronize_canonical_state=lambda result: self.synchronize_review(
+                store, result
             ),
         )
 
@@ -813,7 +813,7 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
                 invoke = lambda: StageExecutionResult(
                     outputs=(missing,), completion_evidence={"proposal-review": missing}
                 )
-                synchronize = self.synchronized_result
+                synchronize = lambda result: self.synchronize_review(store, result)
             elif label == "stale-artifact":
                 def invoke() -> StageExecutionResult:
                     evidence = self.write_evidence(store)
@@ -823,7 +823,7 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
                         completion_evidence={"proposal-review": stale},
                     )
 
-                synchronize = self.synchronized_result
+                synchronize = lambda result: self.synchronize_review(store, result)
             else:
                 def invoke() -> StageExecutionResult:
                     evidence = self.write_evidence(store)
@@ -844,39 +844,182 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
                 "active",
             )
 
+    def test_capability_coordination_rejects_arbitrary_review_bytes(self) -> None:
+        state = copy.deepcopy(FIXTURES.valid_automation())
+        state["effective_capabilities"] = {}
+        store = self.make_store(state)
+
+        def invoke() -> StageExecutionResult:
+            relative = Path(
+                "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md"
+            )
+            path = store.metadata_path.parent / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("arbitrary bytes; not a formal review\n", encoding="utf-8")
+            evidence = ArtifactEvidence(
+                relative.as_posix(),
+                "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest(),
+            )
+            return StageExecutionResult(
+                outputs=(evidence,), completion_evidence={"proposal-review": evidence}
+            )
+
+        with self.assertRaisesRegex(
+            AutomationContractError, "stage-native|formal review"
+        ):
+            self.coordinate_proposal_review(store, invoke)
+
+        persisted = store.read().automation
+        self.assertEqual(
+            persisted["transition_receipts"]["transition-engine-001"]["status"],
+            "paused",
+        )
+        self.assertEqual(
+            persisted["effective_capabilities"]["capability-engine-001"]["status"],
+            "active",
+        )
+
+    def test_capability_coordination_requires_independent_review_log_reread(self) -> None:
+        state = copy.deepcopy(FIXTURES.valid_automation())
+        state["effective_capabilities"] = {}
+        store = self.make_store(state)
+
+        def invoke() -> StageExecutionResult:
+            evidence = self.write_evidence(store)
+            return StageExecutionResult(
+                outputs=(evidence,), completion_evidence={"proposal-review": evidence}
+            )
+
+        with self.assertRaisesRegex(
+            AutomationContractError, "canonical-review-log-missing"
+        ):
+            self.coordinate_proposal_review(
+                store,
+                invoke,
+                synchronize=lambda result: CanonicalSyncResult(
+                    status="synchronized", evidence=result.completion_evidence
+                ),
+            )
+
+    def test_capability_coordination_rejects_review_target_identity_mismatch(self) -> None:
+        state = copy.deepcopy(FIXTURES.valid_automation())
+        state["effective_capabilities"] = {}
+        store = self.make_store(state)
+        other = store.repository_root / "docs/proposals/other.md"
+        other.parent.mkdir(parents=True, exist_ok=True)
+        other.write_text("# Other proposal\n", encoding="utf-8")
+
+        def invoke() -> StageExecutionResult:
+            evidence = self.write_evidence(
+                store, target="docs/proposals/other.md"
+            )
+            return StageExecutionResult(
+                outputs=(evidence,), completion_evidence={"proposal-review": evidence}
+            )
+
+        with self.assertRaisesRegex(
+            AutomationContractError, "reviewed-artifact-identity-mismatch"
+        ):
+            self.coordinate_proposal_review(store, invoke)
+
+    def test_capability_coordination_rejects_unknown_review_outcome(self) -> None:
+        state = copy.deepcopy(FIXTURES.valid_automation())
+        state["effective_capabilities"] = {}
+        store = self.make_store(state)
+
+        def invoke() -> StageExecutionResult:
+            evidence = self.write_evidence(store, status="rubber-stamp")
+            return StageExecutionResult(
+                outputs=(evidence,), completion_evidence={"proposal-review": evidence}
+            )
+
+        with self.assertRaisesRegex(
+            AutomationContractError, "stage-native-review-outcome-invalid"
+        ):
+            self.coordinate_proposal_review(store, invoke)
+
     @staticmethod
-    def proposal_pre_plan() -> PrePlanEvidence:
+    def proposal_pre_plan(proposal_identity: str = "sha256:proposal") -> PrePlanEvidence:
         return PrePlanEvidence(
-            positions={"proposal": ("sha256:proposal",)},
+            positions={"proposal": (proposal_identity,)},
             review_outcomes={},
             review_resolution_closed=True,
             architecture_applicability="not-required",
         )
 
     @staticmethod
-    def proposal_input_identities() -> dict[str, object]:
+    def proposal_input_identities(
+        proposal_identity: str = "sha256:proposal",
+    ) -> dict[str, object]:
         return {
-            "proposal": "sha256:proposal",
-            "proposal_identity": "sha256:proposal",
+            "proposal": proposal_identity,
+            "proposal_identity": proposal_identity,
             "standing_gates_identity": "sha256:gates",
             "review_policy_identity": "sha256:policy",
             "structured_target_identity": "sha256:target",
             "review_evidence_roots": ["docs/changes/2026-07-20-example/"],
         }
 
-    @staticmethod
-    def synchronized_result(result: StageExecutionResult) -> CanonicalSyncResult:
+    def synchronize_review(
+        self,
+        store: WorkflowAutomationStateStore,
+        result: StageExecutionResult,
+    ) -> CanonicalSyncResult:
+        change_root = (
+            store.metadata_path.parent / "docs/changes/2026-07-20-example"
+        )
+        change_root.mkdir(parents=True, exist_ok=True)
+        (change_root / "review-log.md").write_text(
+            """# Review Log
+
+### Review entry
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Status: approved
+Detailed record: reviews/proposal-review-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+            encoding="utf-8",
+        )
         return CanonicalSyncResult(
             status="synchronized",
             evidence=result.completion_evidence,
         )
 
     @staticmethod
-    def write_evidence(store: WorkflowAutomationStateStore) -> ArtifactEvidence:
+    def write_proposal(store: WorkflowAutomationStateStore) -> str:
+        relative = Path("docs/proposals/example.md")
+        path = store.metadata_path.parent / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("# Example proposal\n", encoding="utf-8")
+        return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+
+    @staticmethod
+    def write_evidence(
+        store: WorkflowAutomationStateStore,
+        *,
+        target: str = "docs/proposals/example.md",
+        status: str = "approved",
+    ) -> ArtifactEvidence:
         relative = Path("docs/changes/2026-07-20-example/reviews/proposal-review-r1.md")
         path = store.metadata_path.parent / relative
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text("# Proposal review\n\nOutcome: approved\n", encoding="utf-8")
+        path.write_text(
+            f"""# Proposal review
+
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Reviewer: fixture reviewer
+Target: {target}
+Status: {status}
+Material findings: None
+""",
+            encoding="utf-8",
+        )
         identity = "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
         return ArtifactEvidence(relative.as_posix(), identity)
 
@@ -888,7 +1031,8 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         input_identities=None,
         synchronize=None,
     ):
-        receipt_inputs = self.proposal_input_identities()
+        proposal_identity = self.write_proposal(store)
+        receipt_inputs = self.proposal_input_identities(proposal_identity)
         if input_identities is not None:
             receipt_inputs.update(input_identities)
         return coordinate_one_stage(
@@ -898,7 +1042,7 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             stage="proposal-review",
             occurrence={"kind": "singleton"},
             basis={
-                "proposal_identity": "sha256:proposal",
+                "proposal_identity": proposal_identity,
                 "standing_gates_identity": "sha256:gates",
                 "review_policy_identity": "sha256:policy",
                 "structured_target_identity": "sha256:target",
@@ -911,8 +1055,9 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             input_identities=receipt_inputs,
             invoke_stage=invoke,
             repository_root=store.metadata_path.parent,
-            pre_plan=self.proposal_pre_plan(),
-            synchronize_canonical_state=synchronize or self.synchronized_result,
+            pre_plan=self.proposal_pre_plan(proposal_identity),
+            synchronize_canonical_state=synchronize
+            or (lambda result: self.synchronize_review(store, result)),
         )
 
 
