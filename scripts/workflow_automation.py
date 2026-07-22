@@ -11,8 +11,10 @@ milestone.
 from __future__ import annotations
 
 import copy
+import hashlib
 import re
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping
 
 from lifecycle_state_sync import HandoffSummary, parse_handoff_summary
@@ -185,16 +187,23 @@ class CoordinationResult:
 
 
 @dataclass(frozen=True)
+class ArtifactEvidence:
+    """Repository-backed evidence whose identity can be independently verified."""
+
+    path: str
+    identity: str
+
+
+@dataclass(frozen=True)
 class StageExecutionResult:
-    outputs: tuple[Any, ...]
-    completion_evidence: Mapping[str, Any]
+    outputs: tuple[ArtifactEvidence, ...]
+    completion_evidence: Mapping[str, ArtifactEvidence]
 
 
 @dataclass(frozen=True)
 class CanonicalSyncResult:
     status: str
-    evidence: Mapping[str, Any]
-    observed_identities: Mapping[str, str]
+    evidence: Mapping[str, ArtifactEvidence]
 
 
 def normalize_command(command: str) -> NormalizedCommand:
@@ -724,7 +733,7 @@ def derive_effective_capability(
         if not isinstance(correction_budget_identity, str) or not correction_budget_identity.strip():
             raise AutomationContractError("correction budget identity is required")
         basis_budget_identity = basis.get("correction_budget_identity")
-        if basis_budget_identity is not None and basis_budget_identity != correction_budget_identity:
+        if basis_budget_identity != correction_budget_identity:
             raise AutomationContractError("correction budget identity is stale")
         bounded_budget = dict(correction_budget)
     elif correction_budget is not None or correction_budget_identity is not None:
@@ -810,30 +819,88 @@ def _bind_canonical_evidence(
                 )
 
 
+def _serialize_evidence(evidence: ArtifactEvidence) -> dict[str, str]:
+    return {"path": evidence.path, "identity": evidence.identity}
+
+
+def _validate_artifact_evidence(
+    evidence: Any,
+    *,
+    repository_root: Path,
+    affected_path_roots: Iterable[str],
+) -> ArtifactEvidence:
+    if not isinstance(evidence, ArtifactEvidence):
+        raise AutomationContractError("stage evidence requires a typed artifact reference")
+    relative = Path(evidence.path)
+    if relative.is_absolute() or not evidence.path or ".." in relative.parts:
+        raise AutomationContractError("stage evidence path must be repository-relative")
+    allowed_roots = tuple(Path(root) for root in affected_path_roots)
+    if any(root.is_absolute() or ".." in root.parts for root in allowed_roots):
+        raise AutomationContractError("capability evidence roots must be repository-relative")
+    if not allowed_roots or not any(
+        relative == root or relative.is_relative_to(root) for root in allowed_roots
+    ):
+        raise AutomationContractError("stage evidence path exceeds capability scope")
+    root = repository_root.resolve()
+    artifact = (root / relative).resolve()
+    if not artifact.is_relative_to(root) or not artifact.is_file():
+        raise AutomationContractError("stage evidence artifact does not exist")
+    observed_identity = "sha256:" + hashlib.sha256(artifact.read_bytes()).hexdigest()
+    if evidence.identity != observed_identity:
+        raise AutomationContractError("stage evidence identity does not match artifact")
+    return evidence
+
+
 def _validate_stage_result(
     result: Any,
-    expected_postcondition: Mapping[str, Any],
+    *,
+    policy: Any,
+    repository_root: Path,
+    affected_path_roots: Iterable[str],
 ) -> StageExecutionResult:
     if not isinstance(result, StageExecutionResult):
         raise AutomationContractError("stage invocation requires a typed execution result")
     if not result.outputs:
         raise AutomationContractError("stage invocation requires concrete outputs")
-    if dict(result.completion_evidence) != dict(expected_postcondition):
-        raise AutomationContractError("stage completion evidence does not satisfy postcondition")
+    if set(result.completion_evidence) != set(policy.completion_evidence):
+        raise AutomationContractError("stage completion evidence does not satisfy stage policy")
+    for output in result.outputs:
+        _validate_artifact_evidence(
+            output,
+            repository_root=repository_root,
+            affected_path_roots=affected_path_roots,
+        )
+    for evidence in result.completion_evidence.values():
+        _validate_artifact_evidence(
+            evidence,
+            repository_root=repository_root,
+            affected_path_roots=affected_path_roots,
+        )
     return result
 
 
 def _validate_sync_result(
     result: Any,
-    canonical: CanonicalPosition,
+    *,
+    stage_result: StageExecutionResult,
+    policy: Any,
+    repository_root: Path,
+    affected_path_roots: Iterable[str],
 ) -> CanonicalSyncResult:
     if not isinstance(result, CanonicalSyncResult):
         raise AutomationContractError("canonical synchronization requires a typed result")
-    if result.status != "synchronized" or not result.evidence:
+    if result.status != "synchronized" or set(result.evidence) != set(
+        policy.completion_evidence
+    ):
         raise AutomationContractError("canonical synchronization did not complete")
-    for name, identity in canonical.observed_identities.items():
-        if result.observed_identities.get(name) != identity:
-            raise AutomationContractError(f"canonical synchronization identity mismatch: {name}")
+    if dict(result.evidence) != dict(stage_result.completion_evidence):
+        raise AutomationContractError("canonical synchronization evidence changed")
+    for evidence in result.evidence.values():
+        _validate_artifact_evidence(
+            evidence,
+            repository_root=repository_root,
+            affected_path_roots=affected_path_roots,
+        )
     return result
 
 
@@ -852,9 +919,9 @@ def coordinate_one_stage(
     derived_at: str | None = None,
     transition_id: str | None = None,
     input_identities: Mapping[str, Any] | None = None,
-    expected_postcondition: Mapping[str, Any] | None = None,
     invoke_stage: Callable[[], StageExecutionResult] | None = None,
     synchronize_canonical_state: Callable[[StageExecutionResult], CanonicalSyncResult] | None = None,
+    repository_root: Path | None = None,
     pre_plan: PrePlanEvidence | None = None,
     active_plan: ActivePlanContext | None = None,
     previously_observed: Mapping[str, str] | None = None,
@@ -874,9 +941,9 @@ def coordinate_one_stage(
         "derived_at": derived_at,
         "transition_id": transition_id,
         "input_identities": input_identities,
-        "expected_postcondition": expected_postcondition,
         "invoke_stage": invoke_stage,
         "synchronize_canonical_state": synchronize_canonical_state,
+        "repository_root": repository_root,
     }
     missing = [name for name, value in required.items() if value is None]
     if missing:
@@ -892,9 +959,11 @@ def coordinate_one_stage(
     assert derived_at is not None
     assert transition_id is not None
     assert input_identities is not None
-    assert expected_postcondition is not None
     assert invoke_stage is not None
     assert synchronize_canonical_state is not None
+    assert repository_root is not None
+    bounded_path_roots = tuple(affected_path_roots)
+    bounded_mutation_categories = tuple(mutation_categories)
 
     canonical = resolve_canonical_position(
         pre_plan=pre_plan,
@@ -929,14 +998,18 @@ def coordinate_one_stage(
         stage=stage,
         occurrence=occurrence,
         basis=basis,
-        affected_path_roots=affected_path_roots,
-        mutation_categories=mutation_categories,
+        affected_path_roots=bounded_path_roots,
+        mutation_categories=bounded_mutation_categories,
         correction_budget=correction_budget,
         correction_budget_identity=correction_budget_identity,
         derived_at=derived_at,
         existing_capabilities=existing,
     )
     policy = STAGE_POLICY_BY_STAGE[stage]
+    expected_postcondition = {
+        "completion_rule": policy.completion_rule,
+        "required_evidence": sorted(policy.completion_evidence),
+    }
     receipt = {
         "transition_id": transition_id,
         "transition_key": "pending",
@@ -988,13 +1061,27 @@ def coordinate_one_stage(
         )
         raise
     try:
-        stage_result = _validate_stage_result(stage_result, expected_postcondition)
+        stage_result = _validate_stage_result(
+            stage_result,
+            policy=policy,
+            repository_root=repository_root,
+            affected_path_roots=bounded_path_roots,
+        )
         sync_result = _validate_sync_result(
-            synchronize_canonical_state(stage_result), canonical
+            synchronize_canonical_state(stage_result),
+            stage_result=stage_result,
+            policy=policy,
+            repository_root=repository_root,
+            affected_path_roots=bounded_path_roots,
         )
     except Exception:
         paused_snapshot = store.read()
-        outputs = list(stage_result.outputs) if isinstance(stage_result, StageExecutionResult) else []
+        outputs = (
+            [_serialize_evidence(output) for output in stage_result.outputs]
+            if isinstance(stage_result, StageExecutionResult)
+            and all(isinstance(output, ArtifactEvidence) for output in stage_result.outputs)
+            else []
+        )
         store.finalize_transition(
             transition_id,
             status="paused",
@@ -1004,22 +1091,32 @@ def coordinate_one_stage(
         )
         raise
     completed_snapshot = store.read()
+    serialized_outputs = [_serialize_evidence(output) for output in stage_result.outputs]
+    serialized_sync_evidence = {
+        name: _serialize_evidence(evidence)
+        for name, evidence in sync_result.evidence.items()
+    }
+    observed_identities = dict(canonical.observed_identities)
+    observed_identities.update(
+        {name: evidence.identity for name, evidence in sync_result.evidence.items()}
+    )
     store.finalize_transition(
         transition_id,
         status="completed",
-        outputs=list(stage_result.outputs),
+        outputs=serialized_outputs,
         canonical_sync_status="synchronized",
-        canonical_sync_evidence=dict(sync_result.evidence),
-        canonical_sync_observed_identities=dict(sync_result.observed_identities),
+        canonical_sync_evidence=serialized_sync_evidence,
+        canonical_sync_observed_identities=observed_identities,
         expected_document_identity=completed_snapshot.document_identity,
     )
     return CoordinationResult(
-        "completed", transition_id, capability_id, tuple(stage_result.outputs)
+        "completed", transition_id, capability_id, tuple(serialized_outputs)
     )
 
 
 __all__ = [
     "ActivePlanContext",
+    "ArtifactEvidence",
     "AutomationContractError",
     "CanonicalPosition",
     "CanonicalSyncResult",

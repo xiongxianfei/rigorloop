@@ -58,6 +58,21 @@ def persist_receipt(state: dict, receipt: dict | None = None) -> dict:
     return persisted
 
 
+def artifact_evidence() -> dict[str, str]:
+    return {
+        "path": "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md",
+        "identity": "sha256:review-output",
+    }
+
+
+def synchronized_evidence() -> dict[str, object]:
+    return {
+        "status": "synchronized",
+        "evidence": {"proposal-review": artifact_evidence()},
+        "observed_identities": {"proposal-review": "sha256:review-output"},
+    }
+
+
 class WorkflowAutomationStateTests(unittest.TestCase):
     def make_store(self, automation: dict | None = None, *, legacy: dict | None = None):
         temp = tempfile.TemporaryDirectory()
@@ -144,8 +159,8 @@ class WorkflowAutomationStateTests(unittest.TestCase):
                 if status == "completed":
                     receipt.update(
                         status="completed",
-                        outputs=["sha256:review-output"],
-                        canonical_sync={"status": "synchronized"},
+                        outputs=[artifact_evidence()],
+                        canonical_sync=synchronized_evidence(),
                     )
                     state["effective_capabilities"][
                         "capability-proposal-review-001"
@@ -322,8 +337,8 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         receipt = valid_receipt(state)
         receipt.update(
             status="completed",
-            outputs=["sha256:original"],
-            canonical_sync={"status": "synchronized"},
+            outputs=[artifact_evidence()],
+            canonical_sync=synchronized_evidence(),
         )
         persist_receipt(state, receipt)
         decision = evaluate_receipt_recovery(
@@ -345,8 +360,12 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         store.finalize_transition(
             "transition-001",
             status="completed",
-            outputs=["sha256:review-output"],
+            outputs=[artifact_evidence()],
             canonical_sync_status="synchronized",
+            canonical_sync_evidence={"proposal-review": artifact_evidence()},
+            canonical_sync_observed_identities={
+                "proposal-review": "sha256:review-output"
+            },
             expected_document_identity=store.read().document_identity,
         )
 
@@ -362,8 +381,8 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         receipt = valid_receipt(state)
         receipt.update(
             status="completed",
-            outputs=["sha256:review-output"],
-            canonical_sync={"status": "synchronized"},
+            outputs=[artifact_evidence()],
+            canonical_sync=synchronized_evidence(),
         )
         state["effective_capabilities"]["capability-proposal-review-001"]["status"] = "consumed"
         state["transition_receipts"] = {"transition-001": receipt}
@@ -442,8 +461,8 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         evidence = {
             "input_identities": copy.deepcopy(receipt["input_identities"]),
             "expected_postcondition": copy.deepcopy(receipt["expected_postcondition"]),
-            "outputs": ["sha256:review-output"],
-            "canonical_sync": {"status": "synchronized"},
+            "outputs": [artifact_evidence()],
+            "canonical_sync": synchronized_evidence(),
         }
         result = store.cancel(
             cancelled_by="user",
@@ -712,8 +731,8 @@ class WorkflowAutomationStateTests(unittest.TestCase):
                             "expected_postcondition": copy.deepcopy(
                                 receipt["expected_postcondition"]
                             ),
-                            "outputs": ["sha256:review-output"],
-                            "canonical_sync": {"status": "synchronized"},
+                            "outputs": [artifact_evidence()],
+                            "canonical_sync": synchronized_evidence(),
                         }
                         prepared = store.read()
                         recovery = evaluate_receipt_recovery(
@@ -726,6 +745,10 @@ class WorkflowAutomationStateTests(unittest.TestCase):
                             status="completed",
                             outputs=evidence["outputs"],
                             canonical_sync_status="synchronized",
+                            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+                            canonical_sync_observed_identities=evidence["canonical_sync"][
+                                "observed_identities"
+                            ],
                             expected_document_identity=prepared.document_identity,
                         )
                         persisted = store.read().automation
