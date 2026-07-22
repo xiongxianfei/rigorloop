@@ -537,6 +537,32 @@ validation:
     result: passed_after_code_review_m1_r6_resolution_sync
   - command: git diff --check
     result: passed_after_code_review_m1_r6_resolution
+  - command: direct repeated-target boundary matrix during code-review M1 R7
+    result: passed_bound_M2_verify_stale_M1_missing_target_unbound_M3_wrong_operation_and_source_equals_next_contrasts
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_15_tests_during_code_review_m1_r7
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_42_tests_during_code_review_m1_r7
+  - command: python scripts/test-validate-workflow-automation.py -k vocabulary
+    result: passed_5_selected_tests_during_code_review_m1_r7
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_during_code_review_m1_r7
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_during_code_review_m1_r7
+  - command: python -m py_compile scripts/workflow_automation_policy.py scripts/validate_workflow_automation.py scripts/test-workflow-automation-policy.py scripts/test-validate-workflow-automation.py
+    result: passed_during_code_review_m1_r7
+  - command: git diff --check ff270c41..04064d50
+    result: passed_during_code_review_m1_r7
+  - command: python scripts/validate-review-artifacts.py --mode structure and --mode closeout after code-review M1 R7
+    result: passed_reviews_25_findings_34_open_findings_0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R7 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_code_review_m1_r7_recording
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r7_handoff_sync
+  - command: git diff --check
+    result: passed_after_code_review_m1_r7_recording
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md
@@ -583,6 +609,7 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r4.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r5.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r6.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r7.md
   - schemas/change.schema.json
   - scripts/workflow_automation_policy.py
   - scripts/validate_workflow_automation.py
@@ -591,7 +618,7 @@ changed_files:
   - scripts/test-validate-workflow-automation.py
   - scripts/test-change-metadata-validator.py
 review:
-  status: changes-requested
+  status: clean-with-notes
   unresolved_items: 0
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   material_findings: 34
@@ -602,6 +629,6 @@ review:
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
   plan_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
-  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r6.md
+  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r7.md
   review_log: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md

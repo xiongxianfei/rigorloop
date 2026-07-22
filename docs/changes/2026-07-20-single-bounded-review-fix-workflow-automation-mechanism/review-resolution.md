@@ -16,11 +16,12 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 Review closeout: code-review-m1-r5
 Review closeout: code-review-m1-r6
+Review closeout: code-review-m1-r7
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`
 - Findings resolved: 34
 - Unresolved findings: 0
-- Current result: `BRF-M1-CR12` is resolved with occurrence-aware repeated-target permission and complete exact/stale target contrasts. M1 is ready for fresh code review; M2 remains blocked pending approval.
+- Current result: code-review M1 R7 confirmed `BRF-M1-CR12` resolved with no new material findings. M1 is closed and the next stage is implement M2.
 
 ## Resolution Overview
 
@@ -69,6 +70,10 @@ Review closeout: code-review-m1-r6
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m1-r7
+
+No material findings; no additional review resolution is required.
 
 ### code-review-m1-r6
 
