@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r6.md`
-- Review status: changes-requested; stage=code-review; round=r6
-- Remaining in-scope implementation milestones: M3 rereview, M4, M5, M6
-- Next stage: code-review M3 R7
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r7.md`
+- Review status: changes-requested; stage=code-review; round=r7
+- Remaining in-scope implementation milestones: M3 resolution needed, M4, M5, M6
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M3 R7 rereview and later lifecycle gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BRF-M3-CR13,BRF-M3-CR14; M3 R7 requires resolution; later lifecycle gates remain.
 
 ## Milestones
 
@@ -220,7 +220,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M3. Target Binding, Canonical Position, and Capability Evaluation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
 - Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
 - Files/components likely touched:
@@ -545,6 +545,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: Code-review M3 R6 classified both R5 corrections as failed remediations and opened `BRF-M3-CR11` plus `BRF-M3-CR12`. Constructor-time ancestor or symlink root rebinding remains possible, and authoritative bounded detail can still contradict formal open-finding state. M3 is resolution-needed; M4 remains blocked.
 - 2026-07-22: M3 R6 review-resolution implementation started with proof-first ancestor-root, canonical metadata symlink, exact-root, review-state count/ID, and contradictory-detail regressions. M4-M6 and public routing remain out of scope.
 - 2026-07-22: Resolved `BRF-M3-CR11` and `BRF-M3-CR12` by binding construction to the lexical canonical metadata layout, rejecting metadata-path symlinks and non-exact explicit roots, removing the finalizer root override, and validating an exact open-review count/ID detail projection with no independent finding claims. M3 is review-requested for R7; M4 remains blocked.
+- 2026-07-22: Code-review M3 R7 classified both R6 corrections as failed remediations and opened `BRF-M3-CR13` plus `BRF-M3-CR14`. A symlink earlier than the derived repository root still redirects ownership, and a second structured review-state claim can contradict the validated detail prefix. M3 is resolution-needed; M4 remains blocked.
 
 ## Decision log
 
@@ -579,6 +580,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - A stage-only frontier cannot represent stopping order across repeated milestone occurrences; the target milestone must participate in next-edge permission.
 
 ## Validation notes
+
+- Code-review M3 R7 independently reran 47 state tests, 153 lifecycle tests, and CMD10-CMD12, then reproduced earlier-ancestor symlink rebinding and two contradictory structured review-state cases despite those suites passing.
 
 - M3 R6 proof-first tests failed for ancestor-root construction, symlinked metadata file/directory, and contradictory review-state detail before production changes.
 - The correction passes 47 state/recovery tests, 23 engine tests, CMD10-CMD14 including 153 lifecycle tests, 52 automation-validator tests, and 103 review-parser tests.
