@@ -777,6 +777,30 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             "capability-engine-001", store.read().automation["effective_capabilities"]
         )
 
+    def test_capability_coordination_rejects_foreign_repository_before_invocation(self) -> None:
+        state = copy.deepcopy(FIXTURES.valid_automation())
+        state["effective_capabilities"] = {}
+        store = self.make_store(state)
+        foreign = tempfile.TemporaryDirectory()
+        self.addCleanup(foreign.cleanup)
+        invoked: list[bool] = []
+        before = store.read().document_identity
+
+        with self.assertRaisesRegex(
+            AutomationContractError, "repository root does not match state store"
+        ):
+            self.coordinate_proposal_review(
+                store,
+                lambda: invoked.append(True),
+                repository_root=Path(foreign.name),
+            )
+
+        self.assertEqual(invoked, [])
+        self.assertEqual(store.read().document_identity, before)
+        self.assertNotIn(
+            "capability-engine-001", store.read().automation["effective_capabilities"]
+        )
+
     def test_capability_coordination_rejects_identity_drift_before_invocation(self) -> None:
         state = copy.deepcopy(FIXTURES.valid_automation())
         state["effective_capabilities"] = {}
@@ -1030,6 +1054,7 @@ Material findings: None
         *,
         input_identities=None,
         synchronize=None,
+        repository_root=None,
     ):
         proposal_identity = self.write_proposal(store)
         receipt_inputs = self.proposal_input_identities(proposal_identity)
@@ -1054,7 +1079,7 @@ Material findings: None
             transition_id="transition-engine-001",
             input_identities=receipt_inputs,
             invoke_stage=invoke,
-            repository_root=store.metadata_path.parent,
+            repository_root=repository_root or store.metadata_path.parent,
             pre_plan=self.proposal_pre_plan(proposal_identity),
             synchronize_canonical_state=synchronize
             or (lambda result: self.synchronize_review(store, result)),

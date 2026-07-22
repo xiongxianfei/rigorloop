@@ -963,6 +963,10 @@ def coordinate_one_stage(
     assert invoke_stage is not None
     assert synchronize_canonical_state is not None
     assert repository_root is not None
+    try:
+        repository_root = store.require_repository_root(repository_root)
+    except StateContractError as error:
+        raise AutomationContractError(str(error)) from error
     bounded_path_roots = tuple(affected_path_roots)
     bounded_mutation_categories = tuple(mutation_categories)
 

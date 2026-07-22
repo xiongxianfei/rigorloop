@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r5.md`
 - Review status: changes-requested; stage=code-review; round=r5
-- Remaining in-scope implementation milestones: M3 resolution needed, M4, M5, M6
-- Next stage: review-resolution
+- Remaining in-scope implementation milestones: M3 rereview, M4, M5, M6
+- Next stage: code-review M3 R6
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 has two open R5 findings; M4-M6, final holistic review, explanation, verification, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — BRF-M3-CR9 and BRF-M3-CR10 are resolved; M3 R6, M4-M6, final holistic review, explanation, verification, and PR handoff remain.
 
 ## Milestones
 
@@ -220,7 +220,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M3. Target Binding, Canonical Position, and Capability Evaluation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
 - Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
 - Files/components likely touched:
@@ -541,6 +541,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: M3 R4 review-resolution implementation started with proof-first repository-containment, canonical-log identity drift, and engine-derived persistence contrasts. Public routing and M4-M6 integration remain unchanged.
 - 2026-07-22: Resolved `BRF-M3-CR8` by rejecting symlinks in every repository-owned completion path, independently hashing the canonical review log, and making normal completion, recovery, and cancellation persist only verifier-derived normalized proof. M3 is review-requested for R5; M4 remains blocked.
 - 2026-07-22: Code-review M3 R5 confirmed the path-level symlink and log-drift cases resolved, classified the repository-owned portion of `BRF-M3-CR8` as failed remediation, and opened `BRF-M3-CR9` plus `BRF-M3-CR10`. A caller-selected root can still supply unrelated-repository evidence, and the R4 handoff reason contradicted its closed review state. M3 is resolution-needed; M4 remains blocked.
+- 2026-07-22: Resolved `BRF-M3-CR9` and `BRF-M3-CR10` by binding the state store to its canonical repository root, rejecting foreign roots before invocation or finalization, inferring and validating canonical change-metadata ownership, and requiring the plan handoff reason code to agree with structured open-finding evidence. M3 is review-requested for R6; M4 remains blocked.
 
 ## Decision log
 
@@ -560,6 +561,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-22 | Evaluate repeated-stage target frontiers against the bound next-milestone occurrence. | Stage names alone cannot distinguish an already-reached M1 target from the same stage requested for M2. | M2-specific exceptions, unqualified cyclic reachability, and allowing every repeated-stage occurrence. |
 | 2026-07-22 | Treat policy-derived, repository-backed artifact identities as the M3 completion boundary. | A typed callback is transport, not proof; the coordinator must independently reread concrete evidence before consuming capability authority. | Caller-selected postconditions, status-only synchronization, and callback-supplied observed identities. |
 | 2026-07-22 | Bind completion to no-symlink canonical paths and verifier-derived canonical-owner identities. | Canonical evidence remains trustworthy only when its repository-owned path and independently observed bytes are stable across completion and resume. | Following in-repository or external symlinks, or persisting callback-selected canonical identities. |
+| 2026-07-22 | Bind every mutable automation operation to the state store's immutable repository root. | Path containment is meaningful only when the root is the repository that canonically owns the change metadata. | Caller-selected evidence roots and silent rebinding during finalization or recovery. |
 | 2026-07-22 | Serialize complete change metadata behind a directory lock and compare-and-swap identity check. | One stable lock boundary prevents concurrent writers from both passing the identity check while atomic replacement prevents truncation. | Direct subsection edits, unlocked replacement, and a second persisted state file. |
 | 2026-07-22 | Bind migration receipts to the canonical hash of exactly one active legacy source record. | A boolean read-only marker alone cannot prove which historical writer was frozen or prevent fabricated migration evidence. | Unbound compatibility markers and rewriting the legacy record. |
 
@@ -572,6 +574,10 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - A stage-only frontier cannot represent stopping order across repeated milestone occurrences; the target milestone must participate in next-edge permission.
 
 ## Validation notes
+
+- M3 R5 proof-first regressions reproduced completion against a foreign repository root and both directions of review-finding reason drift before the production correction.
+- The corrected boundary passed 23 engine tests, 43 state/recovery tests, and 151 lifecycle tests. Canonical-layout tests also prove repository-root inference and change-directory identity rejection.
+- The validation selector chose the full lifecycle regression and required repository broad smoke; unsupported automation modules retained the expected plan-owned manual routing. Broad smoke passed all 11 checks in 443 seconds.
 
 - `architecture-review-r3` approved the architecture package with no material findings.
 - Review structure and closeout validation passed with 12 reviews and 16 resolved findings before planning.

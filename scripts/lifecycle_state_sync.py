@@ -1700,7 +1700,21 @@ def validate_workflow_state_sync(
                 )
 
         for plan_path, state in matching_plan_states:
-            if review_summary.open_count and state.handoff is not None:
+            if state.handoff is None:
+                continue
+            reason_codes = {
+                code.strip()
+                for code in state.handoff.final_closeout_reason.split("\u2014", 1)[0].split(",")
+                if code.strip()
+            }
+            if review_summary.open_count:
+                if "review-findings-open" not in reason_codes:
+                    findings.append(
+                        StateSyncFinding(
+                            plan_path,
+                            "Final closeout reason must include review-findings-open while accepted material findings remain open",
+                        )
+                    )
                 if state.handoff.current_milestone_state != "resolution-needed":
                     findings.append(
                         StateSyncFinding(
@@ -1723,5 +1737,12 @@ def validate_workflow_state_sync(
                             "Review status must not be review-requested while required finding dispositions remain unresolved",
                         )
                     )
+            elif "review-findings-open" in reason_codes:
+                findings.append(
+                    StateSyncFinding(
+                        plan_path,
+                        "Final closeout reason must not include review-findings-open when no accepted material findings remain open",
+                    )
+                )
 
     return findings

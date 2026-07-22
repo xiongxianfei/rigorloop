@@ -601,8 +601,47 @@ class WorkflowAutomationStateStore:
     """Read and atomically replace the one canonical automation subsection."""
 
     def __init__(self, metadata_path: Path, *, repository_root: Path | None = None):
-        self.metadata_path = metadata_path
-        self.repository_root = (repository_root or metadata_path.parent).resolve()
+        resolved_metadata = metadata_path.resolve()
+        canonical_layout = (
+            resolved_metadata.name == "change.yaml"
+            and resolved_metadata.parent.parent.name == "changes"
+            and resolved_metadata.parent.parent.parent.name == "docs"
+        )
+        inferred_root = (
+            resolved_metadata.parent.parent.parent.parent
+            if canonical_layout
+            else resolved_metadata.parent
+        )
+        resolved_root = (repository_root or inferred_root).resolve()
+        try:
+            relative_metadata = resolved_metadata.relative_to(resolved_root)
+        except ValueError as error:
+            raise StateContractError(
+                "change metadata must belong to the state store repository root"
+            ) from error
+        if relative_metadata.parts[:2] == ("docs", "changes") and (
+            len(relative_metadata.parts) != 4
+            or relative_metadata.parts[-1] != "change.yaml"
+        ):
+            raise StateContractError(
+                "canonical change metadata must use docs/changes/<change-id>/change.yaml"
+            )
+        self.metadata_path = resolved_metadata
+        self._repository_root = resolved_root
+
+    @property
+    def repository_root(self) -> Path:
+        """Return the immutable repository root bound to this state store."""
+
+        return self._repository_root
+
+    def require_repository_root(self, repository_root: Path | None = None) -> Path:
+        """Reject evidence roots that are not the store's canonical repository."""
+
+        candidate = (repository_root or self._repository_root).resolve()
+        if candidate != self._repository_root:
+            raise StateContractError("repository root does not match state store")
+        return self._repository_root
 
     def read(self) -> StateSnapshot:
         payload = self.metadata_path.read_bytes()
@@ -615,6 +654,13 @@ class WorkflowAutomationStateStore:
             raise StateContractError("change metadata contains trailing content")
         if not isinstance(document, dict):
             raise StateContractError("change metadata root must be an object")
+        relative_metadata = self.metadata_path.relative_to(self._repository_root)
+        if relative_metadata.parts[:2] == ("docs", "changes"):
+            change_id = document.get("change_id")
+            if change_id != relative_metadata.parts[2]:
+                raise StateContractError(
+                    "change metadata change_id must match its canonical change directory"
+                )
         workflow = document.get("workflow")
         automation = workflow.get("automation") if isinstance(workflow, dict) else None
         if automation is not None:
@@ -736,6 +782,7 @@ class WorkflowAutomationStateStore:
         expected_document_identity: str,
         repository_root: Path | None = None,
     ) -> StateMutationResult:
+        evidence_root = self.require_repository_root(repository_root)
         if status not in RECEIPT_TERMINAL_STATUSES:
             raise StateContractError(f"invalid terminal receipt status: {status}")
         snapshot = self.read()
@@ -769,7 +816,7 @@ class WorkflowAutomationStateStore:
                 replacement,
                 receipt,
                 completion_evidence=completion_evidence,
-                repository_root=(repository_root or self.repository_root),
+                repository_root=evidence_root,
             )
             if not verification.valid:
                 raise StateContractError(
