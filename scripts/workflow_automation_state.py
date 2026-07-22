@@ -433,6 +433,8 @@ class WorkflowAutomationStateStore:
         status: str,
         outputs: list[Any],
         canonical_sync_status: str,
+        canonical_sync_evidence: dict[str, Any] | None = None,
+        canonical_sync_observed_identities: dict[str, str] | None = None,
         expected_document_identity: str,
     ) -> StateMutationResult:
         if status not in RECEIPT_TERMINAL_STATUSES:
@@ -447,7 +449,14 @@ class WorkflowAutomationStateStore:
             raise StateContractError("transition is not prepared")
         receipt["status"] = status
         receipt["outputs"] = copy.deepcopy(outputs)
-        receipt["canonical_sync"] = {"status": canonical_sync_status}
+        canonical_sync: dict[str, Any] = {"status": canonical_sync_status}
+        if canonical_sync_evidence is not None:
+            canonical_sync["evidence"] = copy.deepcopy(canonical_sync_evidence)
+        if canonical_sync_observed_identities is not None:
+            canonical_sync["observed_identities"] = copy.deepcopy(
+                canonical_sync_observed_identities
+            )
+        receipt["canonical_sync"] = canonical_sync
         if status == "completed":
             capabilities = replacement.get("effective_capabilities")
             capability = (
