@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r5.md`
-- Review status: changes-requested; stage=code-review; round=r5
-- Remaining in-scope implementation milestones: M3 rereview, M4, M5, M6
-- Next stage: code-review M3 R6
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r6.md`
+- Review status: changes-requested; stage=code-review; round=r6
+- Remaining in-scope implementation milestones: M3 resolution needed, M4, M5, M6
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — BRF-M3-CR9 and BRF-M3-CR10 are resolved; M3 R6, M4-M6, final holistic review, explanation, verification, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M3 has two open R6 findings; M4-M6, final holistic review, explanation, verification, and PR handoff remain.
 
 ## Milestones
 
@@ -220,7 +220,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M3. Target Binding, Canonical Position, and Capability Evaluation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
 - Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
 - Files/components likely touched:
@@ -542,6 +542,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: Resolved `BRF-M3-CR8` by rejecting symlinks in every repository-owned completion path, independently hashing the canonical review log, and making normal completion, recovery, and cancellation persist only verifier-derived normalized proof. M3 is review-requested for R5; M4 remains blocked.
 - 2026-07-22: Code-review M3 R5 confirmed the path-level symlink and log-drift cases resolved, classified the repository-owned portion of `BRF-M3-CR8` as failed remediation, and opened `BRF-M3-CR9` plus `BRF-M3-CR10`. A caller-selected root can still supply unrelated-repository evidence, and the R4 handoff reason contradicted its closed review state. M3 is resolution-needed; M4 remains blocked.
 - 2026-07-22: Resolved `BRF-M3-CR9` and `BRF-M3-CR10` by binding the state store to its canonical repository root, rejecting foreign roots before invocation or finalization, inferring and validating canonical change-metadata ownership, and requiring the plan handoff reason code to agree with structured open-finding evidence. M3 is review-requested for R6; M4 remains blocked.
+- 2026-07-22: Code-review M3 R6 classified both R5 corrections as failed remediations and opened `BRF-M3-CR11` plus `BRF-M3-CR12`. Constructor-time ancestor or symlink root rebinding remains possible, and authoritative bounded detail can still contradict formal open-finding state. M3 is resolution-needed; M4 remains blocked.
 
 ## Decision log
 
@@ -574,6 +575,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - A stage-only frontier cannot represent stopping order across repeated milestone occurrences; the target milestone must participate in next-edge permission.
 
 ## Validation notes
+
+- Code-review M3 R6 independently reran CMD10-CMD14 and the focused new tests, then reproduced ancestor-root acceptance, metadata-symlink escape, and contradictory live reason detail despite those suites passing.
 
 - M3 R5 proof-first regressions reproduced completion against a foreign repository root and both directions of review-finding reason drift before the production correction.
 - The corrected boundary passed 23 engine tests, 43 state/recovery tests, and 151 lifecycle tests. Canonical-layout tests also prove repository-root inference and change-directory identity rejection.
