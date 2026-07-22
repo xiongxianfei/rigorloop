@@ -244,6 +244,39 @@ Open findings: None
         ):
             WorkflowAutomationStateStore(path, repository_root=common_root)
 
+    def test_store_rejects_symlink_before_derived_canonical_root(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        real_parent = root / "real-parent"
+        repository_root = real_parent / "repository"
+        path = repository_root / "docs/changes/2026-07-20-example/change.yaml"
+        path.parent.mkdir(parents=True)
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Canonical state fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                    "workflow": {},
+                }
+            ),
+            encoding="utf-8",
+        )
+        linked_parent = root / "linked-parent"
+        linked_parent.symlink_to(real_parent, target_is_directory=True)
+        lexical_path = (
+            linked_parent
+            / "repository/docs/changes/2026-07-20-example/change.yaml"
+        )
+
+        with self.assertRaisesRegex(
+            StateContractError, "canonical change metadata path must not contain symlinks"
+        ):
+            WorkflowAutomationStateStore(lexical_path)
+
     def test_store_rejects_symlinked_canonical_metadata_file(self) -> None:
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
