@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -26,9 +26,9 @@ Review closeout: code-review-m3-r3
 Review closeout: code-review-m3-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`
-- Findings resolved: 47
-- Unresolved findings: 1
-- Current result: Code-review M3 R4 classified `BRF-M3-CR7` as failed remediation and opened `BRF-M3-CR8`. A canonical review log may resolve outside the repository through a symlink, and review-log identity drift is not persisted or compared during completed recovery. M3 is resolution-needed and M4 remains blocked.
+- Findings resolved: 48
+- Unresolved findings: 0
+- Current result: `BRF-M3-CR8` is resolved by one no-symlink repository-containment resolver and verifier-derived completion proof that persists the independently observed canonical review-log identity. M3 is review-requested for code-review R5 and M4 remains blocked.
 
 ## Resolution Overview
 
@@ -81,7 +81,7 @@ Review closeout: code-review-m3-r4
 | BRF-M3-CR5 | accepted | resolved | Implementation-correction basis now requires the concrete correction-budget identity and must match bounded scope exactly. |
 | BRF-M3-CR6 | accepted | resolved | Added policy-derived postconditions, repository path/hash checks, and durable synchronization fields; R3 records the remaining semantic and recovery gap separately as `BRF-M3-CR7`. |
 | BRF-M3-CR7 | accepted | resolved | Added parser-valid review and occurrence checks; R4 records the remaining canonical-path and canonical-identity gap separately as `BRF-M3-CR8`. |
-| BRF-M3-CR8 | needs-decision | open | R4 failed-remediation: canonical review-log symlink escape and unpersisted canonical-log identity still permit unsafe completion or continuation. |
+| BRF-M3-CR8 | accepted | resolved | Canonical completion paths reject symlinks, and the shared verifier supplies the review-log identity persisted and compared by completion, recovery, and cancellation. |
 
 ## Common Resolution Metadata
 
@@ -149,18 +149,18 @@ Validation evidence: Proof-first tests reproduced arbitrary review bytes and non
 #### BRF-M3-CR8 - Canonical review-log path and identity are not authority-bound
 
 Finding ID: BRF-M3-CR8
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the deterministic safe resolution or identify an approved canonical-evidence resolver that already binds repository containment and canonical-owner identity across completion and recovery.
+Decision needed: None; the deterministic safe resolution was accepted.
 Rationale: The formal review artifact is path- and hash-bound, but the canonical review log is followed without repository containment and its identity is absent from completed receipt evidence.
 Required outcome: Canonical review-log evidence must remain inside its repository-owned location, and its independently observed identity must be persisted and compared before normal completion, prepared/completed recovery, cancellation, or capability consumption.
-Chosen action: Pending review-resolution.
+Chosen action: Added one repository-file resolver that rejects absolute paths, traversal, missing files, and every symlinked path component for reviewed artifacts, review targets, and canonical logs. The shared stage-native verifier now returns normalized completion proof with independently observed review-record and review-log identities. Finalization and cancellation persist only that proof, and completed recovery compares the current log identity with the receipt before continuing.
 Safe resolution path: Resolve every canonical-owner path through one containment checker; reject absolute paths, traversal, and symlink escape; return engine-derived normalized canonical identities from the shared verifier; persist the review-log identity; and make recovery/cancellation consume only that verified normalized proof. Add external/in-repository symlink, canonical-log identity drift, mismatched occurrence, missing log, and valid parser-produced fixtures.
 Validation target: CMD12-CMD14, full engine/state/validator regressions, direct canonical-path and canonical-identity contrasts, and code-review M3 R5.
-Validation evidence: R4 reproduced `reconcile-completed` and `completed/consumed/cancelled` using a parser-valid canonical review log outside the repository through a symlink. A second reproduction changed canonical review-log bytes after completion and still received `continue/completed-evidence-current`; the persisted observed identities contained only the review-record identity. Fourteen capability, 33 state, and 52 validator tests pass but do not reject these cases.
+Validation evidence: Proof-first tests reproduced five unsafe outcomes before the correction: external and in-repository log symlinks reconciled, canonical-log drift continued, cancellation consumed authority from an external log, and caller-selected log identity was persisted. After the correction, CMD10-CMD14 pass; all 22 engine, 40 state/recovery, 52 automation-validator, and 103 review-parser tests pass. The new contrasts reject both symlink forms without consuming authority, reject mismatched canonical occurrences, pause on canonical-log drift, persist verifier-derived identities in normal completion and cancellation, and continue with unchanged valid proof. All five selector-chosen focused checks pass, and the final required repository broad-smoke suite passed all 11 checks in 445 seconds. Awaiting code-review M3 R5.
 
 ### code-review-m3-r1
 
