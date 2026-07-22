@@ -42,6 +42,14 @@ CLEAN_GATE_STATES = frozenset({"satisfied", "not-satisfied"})
 ROUTING_ACTIONS = frozenset({"continue", "correction-loop", "stop-at-target", "pause", "fail-closed"})
 CANONICAL_SYNC_STATUSES = frozenset({"pending", "synchronized", "failed"})
 EXTERNAL_ACTION_VALUES = frozenset({"prohibited"})
+LEGACY_SOURCE_MECHANISMS = frozenset(
+    {
+        "authoring-through-plan-review",
+        "bounded-review-fix",
+        "implementation-through-verify",
+    }
+)
+MIGRATION_PROJECTION_RESULTS = frozenset({"equivalent"})
 INVALIDATION_ACTIONS = frozenset({"pause", "invalidate"})
 PARENT_INVALIDATION_TRIGGERS = frozenset(
     {
@@ -598,7 +606,9 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
                 if error:
                     errors.append(error)
             if "retry_policy" in receipt:
-                error = _unknown_value(f"{path}.retry_policy", receipt["retry_policy"], RETRY_POLICY_VALUES)
+                error = _unknown_value(
+                    f"{path}.retry_policy", receipt["retry_policy"], RETRY_POLICY_VALUES
+                )
                 if error:
                     errors.append(error)
             if "from_position" in receipt:
@@ -616,6 +626,29 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
                     f"{path}.canonical_sync.status",
                     canonical_sync["status"],
                     CANONICAL_SYNC_STATUSES,
+                )
+                if error:
+                    errors.append(error)
+
+    migrations = automation.get("migration_receipts")
+    if isinstance(migrations, dict):
+        for migration_id, migration in migrations.items():
+            if not isinstance(migration, dict):
+                continue
+            path = f"workflow.automation.migration_receipts.{migration_id}"
+            if "source_mechanism" in migration:
+                error = _unknown_value(
+                    f"{path}.source_mechanism",
+                    migration["source_mechanism"],
+                    LEGACY_SOURCE_MECHANISMS,
+                )
+                if error:
+                    errors.append(error)
+            if "projection_result" in migration:
+                error = _unknown_value(
+                    f"{path}.projection_result",
+                    migration["projection_result"],
+                    MIGRATION_PROJECTION_RESULTS,
                 )
                 if error:
                     errors.append(error)
@@ -786,9 +819,13 @@ def _validate_capability(
     if not isinstance(parent, dict):
         errors.append(f"{path}.parent_authorization_id: active parent authorization not found")
         parent = None
-    elif parent.get("status") != "active":
+    elif capability.get("status") == "active" and parent.get("status") != "active":
         errors.append(f"{path}.parent_authorization_id: parent authorization is not active")
-    elif isinstance(parent.get("revocation"), dict) and parent["revocation"].get("revoked") is True:
+    elif (
+        capability.get("status") == "active"
+        and isinstance(parent.get("revocation"), dict)
+        and parent["revocation"].get("revoked") is True
+    ):
         errors.append(f"{path}.parent_authorization_id: parent authorization is revoked")
 
     stage = capability.get("stage")
@@ -1015,6 +1052,15 @@ def validate_workflow_automation(
     if not isinstance(receipts, dict):
         errors.append("workflow.automation.transition_receipts: expected object")
     else:
+        prepared_count = sum(
+            1
+            for receipt in receipts.values()
+            if isinstance(receipt, dict) and receipt.get("status") == "prepared"
+        )
+        if prepared_count > 1:
+            errors.append(
+                "workflow.automation.transition_receipts: at most one prepared transition is permitted"
+            )
         receipt_required = {
             "transition_id",
             "transition_key",
@@ -1114,13 +1160,58 @@ def validate_workflow_automation(
                             receipt.get("input_identities"),
                         )
                     )
+
+    migrations = automation.get("migration_receipts")
+    if migrations is not None and not isinstance(migrations, dict):
+        errors.append("workflow.automation.migration_receipts: expected object")
+    elif isinstance(migrations, dict):
+        required_migration_fields = {
+            "migration_id",
+            "source_mechanism",
+            "source_record_identity",
+            "migrated_at",
+            "unified_run_id",
+            "projection_result",
+            "legacy_read_only",
+        }
+        for migration_id, migration in migrations.items():
+            path = f"workflow.automation.migration_receipts.{migration_id}"
+            errors.extend(_required(migration, required_migration_fields, path))
+            if not isinstance(migration, dict):
+                continue
+            if migration.get("migration_id") != migration_id:
+                errors.append(f"{path}.migration_id: must match mapping key")
+            if not isinstance(migration.get("source_record_identity"), str) or not migration.get(
+                "source_record_identity"
+            ):
+                errors.append(f"{path}.source_record_identity: expected non-empty string")
+            migrated_at = migration.get("migrated_at")
+            if not isinstance(migrated_at, str) or RFC3339_UTC_RE.fullmatch(migrated_at) is None:
+                errors.append(f"{path}.migrated_at: expected RFC3339 UTC timestamp")
+            if isinstance(run, dict) and migration.get("unified_run_id") != run.get("run_id"):
+                errors.append(f"{path}.unified_run_id: must match automation run")
+            if migration.get("legacy_read_only") is not True:
+                errors.append(f"{path}.legacy_read_only: must be true")
     return errors
+
+
+def has_read_only_legacy_migration(automation: Any) -> bool:
+    """Return whether unified state durably marks its legacy source read-only."""
+
+    if not isinstance(automation, dict):
+        return False
+    migrations = automation.get("migration_receipts")
+    return isinstance(migrations, dict) and bool(migrations) and all(
+        isinstance(receipt, dict) and receipt.get("legacy_read_only") is True
+        for receipt in migrations.values()
+    )
 
 
 __all__ = [
     "CAPABILITY_STATUS_TRANSITIONS",
     "PARENT_STATUS_TRANSITIONS",
     "RUN_STATUS_TRANSITIONS",
+    "has_read_only_legacy_migration",
     "validate_status_transition",
     "validate_workflow_automation",
 ]

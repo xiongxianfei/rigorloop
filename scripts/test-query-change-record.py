@@ -126,6 +126,33 @@ changed_files:
   - scripts/query-change-record.py
 """
 
+    def unified_automation_yaml(self) -> str:
+        return self.legacy_change_yaml() + """workflow:
+  automation:
+    mechanism: bounded-review-fix
+    schema_version: 1
+    run:
+      run_id: run-001
+      change_id: 2026-05-22-legacy-query
+      status: paused
+      policy_version: 1
+      target:
+        stage: verify
+        occurrence:
+          kind: final
+        bound_at: 2026-07-22T00:00:00Z
+        completion:
+          verification: passed
+      stop_reason: verification-authorization-required
+    parent_authorizations: {}
+    effective_capabilities: {}
+    transition_receipts: {}
+    canonical_position_source: plan-current-handoff-summary
+    observed_identities:
+      plan: sha256:plan
+    external_actions: prohibited
+"""
+
     def compact_path_vars_change_yaml(
         self,
         *,
@@ -180,6 +207,25 @@ validation_summary:
         self.assertEqual(payload["open_blockers"], ["code-review-r1"])
         self.assertIn("validation_history", payload["detail_pointers"])
         self.assertNotIn("validation_events", payload)
+
+    def test_summary_reports_unified_automation_without_mutation(self) -> None:
+        repo = self.make_change(
+            "2026-05-22-legacy-query", self.unified_automation_yaml()
+        )
+        path = repo / "docs" / "changes" / "2026-05-22-legacy-query" / "change.yaml"
+        before = path.read_bytes()
+
+        result = run_query("2026-05-22-legacy-query", "summary", repo_root=repo)
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        policy = payload["automation_policy"]
+        self.assertEqual(policy["source"], "unified")
+        self.assertEqual(policy["target"]["stage"], "verify")
+        self.assertEqual(policy["canonical_position_source"], "plan-current-handoff-summary")
+        self.assertEqual(policy["stop_reason"], "verification-authorization-required")
+        self.assertEqual(policy["latest_evidence_identities"], {"plan": "sha256:plan"})
+        self.assertEqual(path.read_bytes(), before)
 
     def test_summary_supports_legacy_metadata(self) -> None:
         repo = self.make_change("2026-05-22-legacy-query", self.legacy_change_yaml())

@@ -109,6 +109,20 @@ def add_valid_receipt(state: dict[str, object]) -> dict[str, object]:
     return receipt
 
 
+def add_valid_migration_receipt(state: dict[str, object]) -> dict[str, object]:
+    receipt = {
+        "migration_id": "migration-001",
+        "source_mechanism": "implementation-through-verify",
+        "source_record_identity": "sha256:legacy",
+        "migrated_at": "2026-07-22T00:00:00Z",
+        "unified_run_id": "run-001",
+        "projection_result": "equivalent",
+        "legacy_read_only": True,
+    }
+    state["migration_receipts"] = {"migration-001": receipt}
+    return receipt
+
+
 def configure_post_proposal_transition(
     state: dict[str, object],
     *,
@@ -1022,6 +1036,38 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
         capability["status"] = "consumed"  # type: ignore[index]
         self.assertEqual(validate_workflow_automation(state), [])
+
+    def test_multiple_prepared_receipts_fail_closed(self) -> None:
+        state = valid_automation()
+        receipt = add_valid_receipt(state)
+        second = copy.deepcopy(receipt)
+        second["transition_id"] = "transition-002"
+        second["transition_key"] = "sha256:transition-002"
+        state["transition_receipts"]["transition-002"] = second  # type: ignore[index]
+        errors = validate_workflow_automation(state)
+        self.assertIn(
+            "workflow.automation.transition_receipts: at most one prepared transition is permitted",
+            errors,
+        )
+
+    def test_valid_migration_receipt_is_accepted(self) -> None:
+        state = valid_automation()
+        add_valid_migration_receipt(state)
+        self.assertEqual(validate_workflow_automation(state), [])
+
+    def test_unknown_migration_source_mechanism_fails_closed(self) -> None:
+        state = valid_automation()
+        migration = add_valid_migration_receipt(state)
+        migration["source_mechanism"] = "unknown-value"
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("source_mechanism: unknown value" in error for error in errors), errors)
+
+    def test_unknown_migration_projection_result_fails_closed(self) -> None:
+        state = valid_automation()
+        migration = add_valid_migration_receipt(state)
+        migration["projection_result"] = "close-enough"
+        errors = validate_workflow_automation(state)
+        self.assertTrue(any("projection_result: unknown value" in error for error in errors), errors)
 
     def test_forbidden_live_state_fields_fail(self) -> None:
         state = valid_automation()
