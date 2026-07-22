@@ -65,21 +65,6 @@ FIELD_PATTERN = re.compile(r"^\s*-?\s*(?P<label>[A-Za-z][A-Za-z -]*):\s*(?P<valu
 HANDOFF_FIELD_PATTERN = re.compile(r"^\s*-\s*(?P<label>[A-Za-z][A-Za-z -]*):\s*(?P<value>.+?)\s*$")
 MARKDOWN_LINK_PATTERN = re.compile(r"^\[(?P<text>[^\]]+)\]\((?P<target>[^)]+)\)$")
 READINESS_STAGE_CLAIM_PATTERN = re.compile(r"\b(?:ready for|next stage|current stage|current round)\b", re.IGNORECASE)
-REVIEW_STATE_DETAIL_PATTERN = re.compile(
-    r"^review-state=(?P<state>open|closed); "
-    r"open-count=(?P<count>0|[1-9][0-9]*); "
-    r"open-findings=(?P<findings>none|[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+(?:,[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+)*); "
-    r"(?P<remainder>.+)$"
-)
-REVIEW_FINDING_DETAIL_CLAIM_PATTERN = re.compile(r"\bfindings?\b", re.IGNORECASE)
-REVIEW_FINDING_ID_CLAIM_PATTERN = re.compile(
-    r"(?<![A-Z0-9])[A-Z]{2,}[A-Z0-9]*(?:-[A-Z0-9]+)+(?![A-Z0-9])"
-)
-REVIEW_STATE_DETAIL_FIELD_PATTERN = re.compile(
-    r"(?<![A-Za-z0-9_-])[A-Za-z][A-Za-z0-9-]*\s*="
-)
-
-
 @dataclass(frozen=True)
 class StateSyncFinding:
     path: Path
@@ -332,53 +317,20 @@ def _review_state_detail_errors(
     *,
     open_finding_ids: tuple[str, ...],
 ) -> list[str]:
-    def contains_independent_claim(value: str) -> bool:
-        return bool(
-            REVIEW_FINDING_DETAIL_CLAIM_PATTERN.search(value)
-            or REVIEW_FINDING_ID_CLAIM_PATTERN.search(value)
-            or REVIEW_STATE_DETAIL_FIELD_PATTERN.search(value)
-        )
-
     detail = reason.split("\u2014", 1)[1].strip() if "\u2014" in reason else ""
-    match = REVIEW_STATE_DETAIL_PATTERN.fullmatch(detail)
-    if open_finding_ids:
-        if match is None:
-            return [
-                "Final closeout reason detail must begin with a valid review-state=open projection while accepted material findings remain open"
-            ]
-        errors: list[str] = []
-        expected_ids = ",".join(open_finding_ids)
-        if match.group("state") != "open":
-            errors.append("Final closeout review-state must be open")
-        if int(match.group("count")) != len(open_finding_ids):
-            errors.append("Final closeout review-state open-count must match formal review evidence")
-        if match.group("findings") != expected_ids:
-            errors.append("Final closeout review-state open-findings must match formal review evidence")
-        if contains_independent_claim(match.group("remainder")):
-            errors.append(
-                "Final closeout review-state remainder must not contain independent finding or structured state claims"
-            )
-        return errors
-    if match is not None:
-        errors = []
-        if (
-            match.group("state") != "closed"
-            or match.group("count") != "0"
-            or match.group("findings") != "none"
-        ):
-            errors.append(
-                "Final closeout review-state must be closed with zero open findings"
-            )
-        if contains_independent_claim(match.group("remainder")):
-            errors.append(
-                "Final closeout review-state remainder must not contain independent finding or structured state claims"
-            )
-        return errors
-    if contains_independent_claim(detail):
-        return [
-            "Final closeout reason detail with finding or structured state claims must use a valid review-state projection"
-        ]
-    return []
+    expected_state = "open" if open_finding_ids else "closed"
+    expected_count = len(open_finding_ids)
+    expected_findings = ",".join(open_finding_ids) if open_finding_ids else "none"
+    expected_detail = (
+        f"review-state={expected_state}; open-count={expected_count}; "
+        f"open-findings={expected_findings}"
+    )
+    if detail == expected_detail:
+        return []
+    return [
+        "Final closeout reason detail must equal formal review-state projection: "
+        f"{expected_detail}"
+    ]
 
 
 AUTHORING_PROFILE = "authoring-through-plan-review"
@@ -1774,11 +1726,12 @@ def validate_workflow_state_sync(
                 for code in state.handoff.final_closeout_reason.split("\u2014", 1)[0].split(",")
                 if code.strip()
             }
-            for error in _review_state_detail_errors(
-                state.handoff.final_closeout_reason,
-                open_finding_ids=review_summary.open_finding_ids,
-            ):
-                findings.append(StateSyncFinding(plan_path, error))
+            if state.lifecycle_state in LIVE_INDEX_STATES:
+                for error in _review_state_detail_errors(
+                    state.handoff.final_closeout_reason,
+                    open_finding_ids=review_summary.open_finding_ids,
+                ):
+                    findings.append(StateSyncFinding(plan_path, error))
             if review_summary.open_count:
                 if "review-findings-open" not in reason_codes:
                     findings.append(

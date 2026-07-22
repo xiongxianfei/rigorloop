@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -30,9 +30,9 @@ Review closeout: code-review-m3-r7
 Review closeout: code-review-m3-r8
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`
-- Findings resolved: 54
-- Unresolved findings: 1
-- Current result: Code-review M3 R8 confirmed `BRF-M3-CR13` resolved and classified `BRF-M3-CR14` as failed remediation. Alternate structured keys and plain contradictory state prose still pass through the unrestricted remainder; `BRF-M3-CR15` is open. M3 is resolution-needed and M4 remains blocked.
+- Findings resolved: 55
+- Unresolved findings: 0
+- Current result: `BRF-M3-CR15` is resolved with one exact complete live review-state projection and no unrestricted remainder. M3 is review-requested for code-review R9; M4 remains blocked pending approval.
 
 ## Resolution Overview
 
@@ -92,7 +92,7 @@ Review closeout: code-review-m3-r8
 | BRF-M3-CR12 | accepted | resolved | Live open-review detail now carries an exact count/ID projection and forbids independent finding claims in its remainder. |
 | BRF-M3-CR13 | accepted | resolved | Canonical construction now checks every absolute lexical component through `change.yaml` before resolution, including ancestors above the derived root. |
 | BRF-M3-CR14 | accepted | resolved | The review-state remainder now rejects every additional structured field as well as independent finding claims and IDs. |
-| BRF-M3-CR15 | needs-decision | open | R8 failed-remediation: the remainder denylist still accepts alternate structured keys and plain contradictory review-state prose. |
+| BRF-M3-CR15 | accepted | resolved | Replaced the prefix-plus-remainder parser and denylist with exact equality against one generated open/closed formal review-state projection. |
 
 ## Common Resolution Metadata
 
@@ -108,18 +108,18 @@ Review closeout: code-review-m3-r8
 #### BRF-M3-CR15 - Review-state remainder remains an open vocabulary
 
 Finding ID: BRF-M3-CR15
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the exact full-detail projection already required by the R7 outcome instead of another vocabulary-denylist expansion.
+Decision needed: None; the user's implementation request accepted the review's safe resolution.
 Rationale: Restricted key matching and selected prose tokens cannot prove that an unrestricted authoritative remainder contains no equivalent review-state assertion.
 Required outcome: The complete live review-state detail must use one closed representation for both open and closed formal state, with no unrestricted remainder.
-Chosen action: Pending review-resolution.
+Chosen action: Require the entire live detail after the em dash to equal `review-state=<open|closed>; open-count=<n>; open-findings=<none|sorted IDs>`, remove all remainder scanners, preserve terminal history, and add exact open/closed plus alternate-key/plain-prose regressions.
 Safe resolution path: Make the text after the em dash exactly `review-state=<open|closed>; open-count=<n>; open-findings=<none|sorted IDs>`; require it in both states, remove the remainder scanners, update active-plan and fixture defaults, and add exact open/closed plus alternate-key/prose negative regressions.
 Validation target: Focused state-sync contrasts, full lifecycle regressions, artifact validation, broad smoke when selected, and code-review M3 R9.
-Validation evidence: R8 full-validator probes returned zero blockers for a valid open projection followed by plain `nothing remains open`, `review_state=closed`, or `_review-state=closed`, while all 154 lifecycle tests passed.
+Validation evidence: The proof-first contrasts failed before correction. After correction, focused open/closed contrasts, the complete 156-test lifecycle suite, M3 state/engine/validator/review-parser/compile suites, selected artifact checks, and the 11-check repository broad smoke pass.
 
 ### code-review-m3-r7
 

@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r8.md`
-- Review status: changes-requested; stage=code-review; round=r8
-- Remaining in-scope implementation milestones: M3 resolution needed, M4, M5, M6
-- Next stage: review-resolution
+- Review status: review-requested; stage=code-review; round=r9
+- Remaining in-scope implementation milestones: M3 rereview, M4, M5, M6
+- Next stage: code-review M3 R9
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M3-CR15; M3 R8 requires resolution; later lifecycle gates remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -220,7 +220,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M3. Target Binding, Canonical Position, and Capability Evaluation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Implement the target-driven engine through deterministic command normalization, repeated-stage binding, canonical-position resolution, parent/capability evaluation, and one-stage transition coordination.
 - Requirements: `BRF-R003`-`BRF-R005`, `BRF-R009`-`BRF-R023`, `BRF-R024`-`BRF-R046`, `BRF-R068`, `BRF-R072`, `BRF-R078`-`BRF-R080`
 - Files/components likely touched:
@@ -549,6 +549,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: M3 R7 review-resolution implementation added proof-first earlier-ancestor symlink and duplicate/unstructured state-field regressions; each reproduced the reported bypass before production correction.
 - 2026-07-22: Resolved `BRF-M3-CR13` and `BRF-M3-CR14` by checking the entire absolute lexical metadata chain before resolution and rejecting all additional structured fields outside the single review-state projection. M3 is review-requested for R8; M4 remains blocked.
 - 2026-07-22: Code-review M3 R8 confirmed the full-chain symlink correction, classified the R7 review-state correction as failed remediation, and opened `BRF-M3-CR15`. Alternate structured keys and plain contradictory prose remain accepted in the authoritative detail. M3 is resolution-needed; M4 remains blocked.
+- 2026-07-22: Resolved `BRF-M3-CR15` by replacing the prefix-plus-remainder parser and denylist with one exact generated projection for the complete live review-state detail in both open and closed states. Exact open/closed and alternate-key/plain-prose regressions pass; M3 is review-requested for R9 and M4 remains blocked.
 
 ## Decision log
 
@@ -572,7 +573,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-22 | Derive canonical state ownership from the lexical metadata layout before resolving filesystem paths. | Resolving first erases symlink and repository-boundary evidence that must be rejected. | Ancestor containment and post-resolution layout inference. |
 | 2026-07-22 | Reserve one exact review-state clause in live closeout detail. | Count and ID projection is deterministic, while broad prose interpretation is incomplete and unsafe. | Free-form finding-state claims and repository-wide historical prose scanning. |
 | 2026-07-22 | Validate canonical metadata symlinks across the complete absolute lexical chain. | Starting at the derived root leaves earlier ancestors able to erase ownership evidence during resolution. | Partial descendant-only symlink walks and post-resolution inference. |
-| 2026-07-22 | Reserve every structured field in live review-state detail to the single leading projection. | A closed positive grammar prevents duplicate or alternate state keys without attempting broad natural-language interpretation. | Keyword denylists and unrestricted additional `key=value` fields. |
+| 2026-07-22 | Serialize the complete live review-state detail as one exact generated projection with no remainder. | Exact equality against formal review evidence closes both structured-key and equivalent-prose bypasses without attempting natural-language classification. | Prefix validation, remainder denylists, and any unrestricted trailing detail. |
 | 2026-07-22 | Serialize complete change metadata behind a directory lock and compare-and-swap identity check. | One stable lock boundary prevents concurrent writers from both passing the identity check while atomic replacement prevents truncation. | Direct subsection edits, unlocked replacement, and a second persisted state file. |
 | 2026-07-22 | Bind migration receipts to the canonical hash of exactly one active legacy source record. | A boolean read-only marker alone cannot prove which historical writer was frozen or prevent fabricated migration evidence. | Unbound compatibility markers and rewriting the legacy record. |
 
@@ -585,6 +586,11 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - A stage-only frontier cannot represent stopping order across repeated milestone occurrences; the target milestone must participate in next-edge permission.
 
 ## Validation notes
+
+- M3 R8 proof-first regressions failed before correction for exact open and closed projections plus alternate-key and plain contradictory suffixes.
+- The correction passes 48 state/recovery tests, 23 engine tests, CMD10-CMD14 including 156 lifecycle tests, 52 automation-validator tests, 103 review-parser tests, and Python compilation.
+- The selector chose review-artifact, lifecycle, metadata, guide-system, and broad-smoke checks with no unclassified paths or registration debt. Repository broad smoke passed all 11 checks in 455 seconds.
+- Governing spec, test spec, architecture, and ADR are unchanged: the correction completes their existing fail-closed live-state projection and leaves terminal plan history outside the live contract.
 
 - Code-review M3 R8 independently reran 48 state and 154 lifecycle tests, confirmed the earlier-ancestor symlink is rejected, and reproduced three review-state remainder bypasses despite those suites passing.
 
