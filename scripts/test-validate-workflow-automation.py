@@ -15,6 +15,7 @@ from validate_workflow_automation import (
     validate_status_transition,
 )
 from workflow_automation_policy import PUBLIC_TARGET_STAGES, STAGE_POLICY_BY_STAGE, WorkflowStage
+from workflow_automation_state import compute_transition_key
 
 
 def valid_automation() -> dict[str, object]:
@@ -105,6 +106,7 @@ def add_valid_receipt(state: dict[str, object]) -> dict[str, object]:
         "outputs": [],
         "canonical_sync": {"status": "pending"},
     }
+    receipt["transition_key"] = compute_transition_key(receipt)
     state["transition_receipts"] = {"transition-001": receipt}
     return receipt
 
@@ -807,6 +809,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "correction_budget_state": "remaining",
             "correction_budget_identity": "sha256:budget",
         }
+        receipt["transition_key"] = compute_transition_key(receipt)
         self.assertEqual(validate_workflow_automation(state), [])
 
     def test_architecture_skip_requires_matching_applicability_evidence(self) -> None:
@@ -827,6 +830,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 "architecture_applicability_identity": "sha256:assessment",
             }
         )
+        receipt["transition_key"] = compute_transition_key(receipt)
         self.assertEqual(validate_workflow_automation(state), [])
 
     def test_next_milestone_requires_ordered_source_and_destination_evidence(self) -> None:
@@ -853,6 +857,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
         capability["stage"]["occurrence"]["milestone_id"] = "M2"  # type: ignore[index]
         capability["basis"]["milestone_identity"] = "sha256:M2"  # type: ignore[index]
+        receipt["transition_key"] = compute_transition_key(receipt)
         self.assertEqual(validate_workflow_automation(state), [])
 
     def test_next_milestone_allows_only_the_bound_repeated_target_occurrence(self) -> None:
@@ -880,6 +885,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     "milestone_order_identity": "sha256:order",
                     "plan_identity": "sha256:plan",
                 }
+                receipt["transition_key"] = compute_transition_key(receipt)
                 self.assertEqual(validate_workflow_automation(state), [])
 
                 stale_target = copy.deepcopy(target)
@@ -925,6 +931,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "source_milestone_identity": "sha256:M1",
             "plan_identity": "sha256:plan",
         }
+        receipt["transition_key"] = compute_transition_key(receipt)
         self.assertEqual(validate_workflow_automation(state), [])
 
     def test_capability_operation_cannot_exceed_run_or_parent_target(self) -> None:
@@ -1023,6 +1030,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "ratio": 0.5,
             "large_counter": 10**1000,
         }
+        receipt["transition_key"] = compute_transition_key(receipt)
         self.assertEqual(validate_workflow_automation(state), [])
 
     def test_prepared_receipt_requires_active_capability(self) -> None:
@@ -1056,6 +1064,35 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "must match immutable stage policy reconcile-only",
             errors,
         )
+
+    def test_receipt_transition_key_must_match_immutable_inputs(self) -> None:
+        for status in ("prepared", "completed"):
+            with self.subTest(status=status):
+                state = valid_automation()
+                receipt = add_valid_receipt(state)
+                receipt["transition_key"] = compute_transition_key(receipt)
+                if status == "completed":
+                    receipt.update(
+                        status="completed",
+                        outputs=["sha256:proposal-review"],
+                        canonical_sync={"status": "synchronized"},
+                    )
+                    capability = state["effective_capabilities"][
+                        "capability-proposal-review-001"
+                    ]
+                    capability["status"] = "consumed"
+                receipt["input_identities"] = {
+                    "proposal": "sha256:tampered-after-key"
+                }
+                errors = validate_workflow_automation(state)
+                self.assertTrue(
+                    any(
+                        "transition_key: does not match immutable operation inputs"
+                        in error
+                        for error in errors
+                    ),
+                    errors,
+                )
 
     def test_completed_receipt_accepts_consumed_capability(self) -> None:
         state = valid_automation()

@@ -7,6 +7,8 @@ the sole-writer transaction boundary is introduced by the next milestone.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 import re
 from enum import Enum
@@ -104,6 +106,29 @@ AUTHORIZATION_CLASS_VALUES = frozenset(value.value for value in AuthorizationCla
 CAPABILITY_KIND_VALUES = frozenset(value.value for value in CapabilityKind)
 MUTATION_CATEGORY_VALUES = frozenset(value.value for value in MutationCategory)
 RETRY_POLICY_VALUES = frozenset(value.value for value in RetryPolicy)
+TRANSITION_KEY_FIELDS = frozenset(
+    {
+        "policy_version",
+        "run_id",
+        "change_id",
+        "from_position",
+        "target",
+        "effective_capability_id",
+        "retry_policy",
+        "input_identities",
+        "expected_postcondition",
+    }
+)
+
+
+def compute_transition_key(receipt: dict[str, Any]) -> str:
+    """Compute the deterministic identity of immutable transition inputs."""
+
+    projection = {field: receipt.get(field) for field in sorted(TRANSITION_KEY_FIELDS)}
+    payload = json.dumps(
+        projection, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    return f"sha256:{hashlib.sha256(payload).hexdigest()}"
 
 CAPABILITY_AUTHORIZATION_CLASSES = {
     CapabilityKind.PROPOSAL_REVIEW.value: AuthorizationClass.AUTHORING.value,
@@ -1087,6 +1112,20 @@ def validate_workflow_automation(
             for field in ("transition_id", "transition_key", "run_id", "change_id", "from_position"):
                 if not isinstance(receipt.get(field), str) or not receipt.get(field):
                     errors.append(f"{path}.{field}: expected non-empty string")
+            if TRANSITION_KEY_FIELDS.issubset(receipt) and isinstance(
+                receipt.get("transition_key"), str
+            ):
+                try:
+                    expected_transition_key = compute_transition_key(receipt)
+                except (TypeError, ValueError, RecursionError):
+                    expected_transition_key = None
+                if (
+                    expected_transition_key is not None
+                    and receipt["transition_key"] != expected_transition_key
+                ):
+                    errors.append(
+                        f"{path}.transition_key: does not match immutable operation inputs"
+                    )
             errors.extend(_validate_target(receipt.get("target"), f"{path}.target"))
             if isinstance(run, dict):
                 if receipt.get("run_id") != run.get("run_id"):
@@ -1222,6 +1261,7 @@ __all__ = [
     "CAPABILITY_STATUS_TRANSITIONS",
     "PARENT_STATUS_TRANSITIONS",
     "RUN_STATUS_TRANSITIONS",
+    "compute_transition_key",
     "has_read_only_legacy_migration",
     "validate_status_transition",
     "validate_workflow_automation",

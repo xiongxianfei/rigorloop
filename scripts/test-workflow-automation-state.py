@@ -136,6 +136,42 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         changed["retry_policy"] = "idempotent-retry"
         self.assertNotEqual(compute_transition_key(changed), receipt["transition_key"])
 
+    def test_canonical_read_rejects_tampered_prepared_and_completed_keys(self) -> None:
+        for status in ("prepared", "completed"):
+            with self.subTest(status=status):
+                state = valid_automation()
+                receipt = valid_receipt(state)
+                if status == "completed":
+                    receipt.update(
+                        status="completed",
+                        outputs=["sha256:review-output"],
+                        canonical_sync={"status": "synchronized"},
+                    )
+                    state["effective_capabilities"][
+                        "capability-proposal-review-001"
+                    ]["status"] = "consumed"
+                persist_receipt(state, receipt)
+                receipt["expected_postcondition"] = {
+                    "review_occurrence": "tampered-after-key"
+                }
+                store, _ = self.make_store(state)
+                with self.assertRaisesRegex(
+                    StateContractError, "transition_key.*immutable operation inputs"
+                ):
+                    store.read()
+
+    def test_recovery_rejects_tampered_transition_key(self) -> None:
+        state = valid_automation()
+        receipt = persist_receipt(state)
+        receipt["input_identities"] = {"proposal": "sha256:tampered-after-key"}
+        decision = evaluate_receipt_recovery(
+            state,
+            receipt["transition_id"],
+            completion_evidence=None,
+        )
+        self.assertEqual(decision.action, "fail-closed")
+        self.assertEqual(decision.reason, "transition-key-mismatch")
+
     def test_prepare_rejects_transition_key_not_bound_to_inputs(self) -> None:
         state = valid_automation()
         store, _ = self.make_store(state)
@@ -163,30 +199,72 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         self.assertFalse(decision.invoke_stage)
 
     def test_recovery_retries_only_idempotent_policy_without_evidence(self) -> None:
-        expected_actions = {
-            "architecture-assessment": "retry",
-            "proposal-review": "pause",
-            "implement": "manual-recovery",
+        cases = []
+
+        state = valid_automation()
+        receipt = FIXTURES.configure_post_proposal_transition(
+            state,
+            stage_name="architecture-assessment",
+            target_stage="plan",
+        )
+        receipt["from_position"] = "spec-review"
+        receipt["input_identities"] = {
+            "spec": "sha256:spec",
+            "spec-review": "sha256:spec-review",
         }
-        for stage_name, expected_action in expected_actions.items():
+        receipt["transition_key"] = compute_transition_key(receipt)
+        cases.append(("architecture-assessment", state, "retry"))
+
+        state = valid_automation()
+        persist_receipt(state)
+        cases.append(("proposal-review", state, "pause"))
+
+        state = valid_automation()
+        receipt = FIXTURES.configure_next_milestone_transition(
+            state, milestone_id="M2"
+        )
+        receipt["from_position"] = "code-review"
+        receipt["input_identities"] = {
+            "source_milestone_id": "M1",
+            "source_milestone_identity": "sha256:M1",
+            "next_milestone_id": "M2",
+            "next_milestone_identity": "sha256:M2",
+            "milestone_order_identity": "sha256:order",
+            "plan_identity": "sha256:plan",
+        }
+        receipt["transition_key"] = compute_transition_key(receipt)
+        cases.append(("implement", state, "manual-recovery"))
+
+        mismatch_policy = {
+            "architecture-assessment": "reconcile-only",
+            "proposal-review": "idempotent-retry",
+            "implement": "reconcile-only",
+        }
+        for stage_name, state, expected_action in cases:
             with self.subTest(stage=stage_name):
-                state = valid_automation()
-                capability = state["effective_capabilities"]["capability-proposal-review-001"]
-                capability["stage"]["name"] = stage_name
-                capability["capability_kind"] = STAGE_POLICY_BY_STAGE[
-                    stage_name
-                ].capability_kind.value
-                retry_policy = STAGE_POLICY_BY_STAGE[stage_name].retry_policy.value
-                receipt = valid_receipt(state)
-                receipt["retry_policy"] = retry_policy
-                receipt["transition_key"] = compute_transition_key(receipt)
-                persist_receipt(state, receipt)
+                store, _ = self.make_store(state)
+                snapshot = store.read()
+                receipt = snapshot.automation["transition_receipts"]["transition-001"]
                 self.assertEqual(
                     evaluate_receipt_recovery(
-                        state, receipt["transition_id"], completion_evidence=None
+                        snapshot.automation,
+                        receipt["transition_id"],
+                        completion_evidence=None,
                     ).action,
                     expected_action,
                 )
+
+                mismatched = copy.deepcopy(state)
+                mismatched_receipt = mismatched["transition_receipts"]["transition-001"]
+                mismatched_receipt["retry_policy"] = mismatch_policy[stage_name]
+                mismatched_receipt["transition_key"] = compute_transition_key(
+                    mismatched_receipt
+                )
+                mismatch_store, _ = self.make_store(mismatched)
+                with self.assertRaisesRegex(
+                    StateContractError, "retry_policy.*immutable stage policy"
+                ):
+                    mismatch_store.read()
 
     def test_recovery_rejects_unpersisted_or_substituted_receipt_identity(self) -> None:
         state = valid_automation()
@@ -337,6 +415,24 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         self.assertEqual(result.status, "reconciliation-required")
         self.assertFalse(result.mutated)
         self.assertEqual(store.read().automation["run"]["status"], "active")
+
+    def test_cancel_rejects_stale_transition_key_before_mutation(self) -> None:
+        state = valid_automation()
+        receipt = persist_receipt(state)
+        receipt["expected_postcondition"] = {
+            "review_occurrence": "tampered-after-key"
+        }
+        store, path = self.make_store(state)
+        before = path.read_bytes()
+
+        with self.assertRaisesRegex(
+            StateContractError, "transition_key.*immutable operation inputs"
+        ):
+            store.cancel(
+                cancelled_by="user",
+                cancelled_at="2026-07-22T00:00:00Z",
+            )
+        self.assertEqual(path.read_bytes(), before)
 
     def test_cancel_reconciles_valid_prepared_completion_then_cancels(self) -> None:
         state = valid_automation()

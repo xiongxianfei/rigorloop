@@ -4,14 +4,32 @@
 from __future__ import annotations
 
 import json
+import copy
+import importlib.util
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
+from workflow_automation_state import compute_transition_key, dump_yaml
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "query-change-record.py"
+
+
+def _load_automation_fixtures():
+    path = ROOT / "scripts" / "test-validate-workflow-automation.py"
+    spec = importlib.util.spec_from_file_location("query_automation_fixtures", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+AUTOMATION_FIXTURES = _load_automation_fixtures()
 
 
 def run_query(*args: str, repo_root: Path | None = None) -> subprocess.CompletedProcess[str]:
@@ -273,6 +291,33 @@ validation_summary:
                 self.assertEqual(payload["code"], "invalid-automation-state")
                 self.assertIn("unknown value", payload["detail"])
                 self.assertEqual(path.read_bytes(), before)
+
+    def test_summary_rejects_stale_transition_key_without_mutation(self) -> None:
+        state = copy.deepcopy(AUTOMATION_FIXTURES.valid_automation())
+        receipt = AUTOMATION_FIXTURES.add_valid_receipt(state)
+        receipt["transition_key"] = compute_transition_key(receipt)
+        receipt["expected_postcondition"] = {
+            "review_occurrence": "tampered-after-key"
+        }
+        document = {
+            "change_id": "2026-07-20-example",
+            "title": "Stale transition key query fixture",
+            "classification": "default",
+            "risk": "medium",
+            "review": {"status": "resolved", "unresolved_items": 0},
+            "workflow": {"automation": state},
+        }
+        repo = self.make_change("2026-07-20-example", dump_yaml(document))
+        path = repo / "docs" / "changes" / "2026-07-20-example" / "change.yaml"
+        before = path.read_bytes()
+
+        result = run_query("2026-07-20-example", "summary", repo_root=repo)
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["code"], "invalid-automation-state")
+        self.assertIn("transition_key", payload["detail"])
+        self.assertEqual(path.read_bytes(), before)
 
     def test_summary_supports_legacy_metadata(self) -> None:
         repo = self.make_change("2026-05-22-legacy-query", self.legacy_change_yaml())

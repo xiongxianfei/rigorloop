@@ -24,6 +24,7 @@ from typing import Any, Callable
 
 from workflow_automation_policy import STAGE_POLICY_BY_STAGE
 from validate_workflow_automation import (
+    compute_transition_key,
     has_read_only_legacy_migration,
     validate_workflow_automation,
 )
@@ -93,24 +94,6 @@ def _structured_identity(value: Any) -> str:
         value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
     ).encode("utf-8")
     return _identity(payload)
-
-
-def compute_transition_key(receipt: dict[str, Any]) -> str:
-    """Compute the stable transition identity from immutable operation inputs."""
-
-    return _structured_identity(
-        {
-            "policy_version": receipt.get("policy_version"),
-            "run_id": receipt.get("run_id"),
-            "change_id": receipt.get("change_id"),
-            "from_position": receipt.get("from_position"),
-            "target": receipt.get("target"),
-            "effective_capability_id": receipt.get("effective_capability_id"),
-            "retry_policy": receipt.get("retry_policy"),
-            "input_identities": receipt.get("input_identities"),
-            "expected_postcondition": receipt.get("expected_postcondition"),
-        }
-    )
 
 
 def _yaml_scalar(value: Any) -> str:
@@ -214,6 +197,12 @@ def evaluate_receipt_recovery(
         return RecoveryDecision("fail-closed", False, "transition-receipt-not-found")
     if receipt.get("transition_id") != transition_id:
         return RecoveryDecision("fail-closed", False, "transition-receipt-identity-mismatch")
+    try:
+        expected_transition_key = compute_transition_key(receipt)
+    except (TypeError, ValueError, RecursionError):
+        return RecoveryDecision("fail-closed", False, "transition-key-uncomputable")
+    if receipt.get("transition_key") != expected_transition_key:
+        return RecoveryDecision("fail-closed", False, "transition-key-mismatch")
     status = receipt.get("status")
     if status == "completed":
         if completion_evidence is None:

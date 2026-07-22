@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M2. Sole State Writer, Prepared Receipts, and Recovery
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Sole State Writer, Prepared Receipts, and Recovery
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r2.md`
 - Review status: changes-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M2 resolution needed, M3, M4, M5, M6
-- Next stage: review-resolution
+- Remaining in-scope implementation milestones: M2 rereview, M3, M4, M5, M6
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 has two open R2 findings; M3-M6, final holistic review, explanation, verification, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 R2 corrections await independent rereview; M3-M6, final holistic review, explanation, verification, and PR handoff remain.
 
 ## Milestones
 
@@ -168,7 +168,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M2. Sole State Writer, Prepared Receipts, and Recovery
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Implement atomic-file state updates, the sole automation-state write boundary, prepared/finalized receipts, reconciliation, cancellation, and one-way legacy-state migration without invoking stage work through the new engine yet.
 - Requirements: `BRF-R006`-`BRF-R008f`, `BRF-R030`, `BRF-R044`-`BRF-R046`, `BRF-R068`-`BRF-R077`, `BRF-R091`-`BRF-R098`
 - Files/components likely touched:
@@ -525,6 +525,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: M2 review-resolution implementation started for the four accepted R1 findings. The correction is limited to canonical receipt/policy binding, complete T29 determinism proof, and validated read-only status projection; public routing remains out of scope.
 - 2026-07-22: Resolved `BRF-M2-CR1` through `BRF-M2-CR4` by binding recovery to canonical persisted receipt IDs, deriving retry from the immutable registry with key-bound projections, completing the fresh-root T29 repeat/reverse proof, and validating unified status before projection. M2 is review-requested for R2; M3 remains blocked.
 - 2026-07-22: Code-review M2 R2 confirmed `BRF-M2-CR1`, `BRF-M2-CR3`, and `BRF-M2-CR4` resolved, classified `BRF-M2-CR2` as failed-remediation, and opened `BRF-M2-CR5` and `BRF-M2-CR6` for missing persisted transition-key validation and invalid all-family retry fixtures. M2 is resolution-needed; M3 remains blocked.
+- 2026-07-22: M2 R2 review-resolution implementation started with proof-first stale-key tests across validator, canonical read, recovery, and query boundaries plus complete persisted states for all three retry policies. No public routing or M3 behavior is in scope.
+- 2026-07-22: Resolved `BRF-M2-CR5` and `BRF-M2-CR6` by centralizing deterministic transition-key validation across canonical state boundaries and replacing synthetic retry tests with complete persisted states for architecture-assessment, proposal-review, and implement@M2. M2 is review-requested for R3; M3 remains blocked.
 
 ## Decision log
 
@@ -609,6 +611,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Code-review M2 R1 reran CMD4-CMD9 successfully, then directly reproduced retry from an unpersisted receipt, retry-policy override without transition-key change, and successful status projection of an unknown run status. Static T29 inspection found no full repeated/reverse-order scenario or canonical-file comparison.
 - M2 R1 resolution passed 27 state/recovery tests, 17 receipt-selected validator tests, 3 migration-selected validator tests, 18 query tests, all 53 metadata-validator tests, direct change-metadata validation, Python compilation, and diff checks. Direct contrasts reject missing/substituted receipt IDs, retry-policy mismatch, and unknown run/policy/receipt/migration status projection; T29 compares canonical bytes and cleanup across repeated and reverse-order fresh-root scenarios.
 - Code-review M2 R2 independently reran CMD4-CMD9 and directly proved that stale transition keys survive canonical validation/recovery and that the architecture-assessment and implement retry fixtures are not validator-valid states. Passing suites do not close `BRF-M2-CR5` or `BRF-M2-CR6`.
+- M2 R2 resolution passed 30 state/recovery tests, 18 receipt-selected validator tests, 3 migration-selected tests, 49 full automation-validator tests, 19 query tests, all 53 metadata-validator tests, direct metadata validation, Python compilation, diff checks, and 11 repository broad-smoke checks in 408 seconds. Prepared/completed stale keys fail canonical read; recovery, cancellation, and status fail closed; all three retry families pass canonical persisted-state validation before decision evaluation.
 
 ## Outcome and retrospective
 
