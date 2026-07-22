@@ -12,6 +12,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from workflow_automation_policy import STAGE_POLICY_BY_STAGE
 from workflow_automation_state import (
     ConcurrentStateChange,
     StateContractError,
@@ -49,6 +50,12 @@ def valid_receipt(state: dict) -> dict:
     result = copy.deepcopy(receipt)
     result["transition_key"] = compute_transition_key(result)
     return result
+
+
+def persist_receipt(state: dict, receipt: dict | None = None) -> dict:
+    persisted = receipt or valid_receipt(state)
+    state["transition_receipts"] = {persisted["transition_id"]: persisted}
+    return persisted
 
 
 class WorkflowAutomationStateTests(unittest.TestCase):
@@ -125,6 +132,10 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         changed["input_identities"]["proposal"] = "sha256:changed"
         self.assertNotEqual(compute_transition_key(changed), receipt["transition_key"])
 
+        changed = copy.deepcopy(receipt)
+        changed["retry_policy"] = "idempotent-retry"
+        self.assertNotEqual(compute_transition_key(changed), receipt["transition_key"])
+
     def test_prepare_rejects_transition_key_not_bound_to_inputs(self) -> None:
         state = valid_automation()
         store, _ = self.make_store(state)
@@ -137,10 +148,10 @@ class WorkflowAutomationStateTests(unittest.TestCase):
 
     def test_recovery_reconciles_valid_completion_without_retry(self) -> None:
         state = valid_automation()
-        receipt = valid_receipt(state)
+        receipt = persist_receipt(state)
         decision = evaluate_receipt_recovery(
             state,
-            receipt,
+            receipt["transition_id"],
             completion_evidence={
                 "input_identities": copy.deepcopy(receipt["input_identities"]),
                 "expected_postcondition": copy.deepcopy(receipt["expected_postcondition"]),
@@ -152,34 +163,73 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         self.assertFalse(decision.invoke_stage)
 
     def test_recovery_retries_only_idempotent_policy_without_evidence(self) -> None:
+        expected_actions = {
+            "architecture-assessment": "retry",
+            "proposal-review": "pause",
+            "implement": "manual-recovery",
+        }
+        for stage_name, expected_action in expected_actions.items():
+            with self.subTest(stage=stage_name):
+                state = valid_automation()
+                capability = state["effective_capabilities"]["capability-proposal-review-001"]
+                capability["stage"]["name"] = stage_name
+                capability["capability_kind"] = STAGE_POLICY_BY_STAGE[
+                    stage_name
+                ].capability_kind.value
+                retry_policy = STAGE_POLICY_BY_STAGE[stage_name].retry_policy.value
+                receipt = valid_receipt(state)
+                receipt["retry_policy"] = retry_policy
+                receipt["transition_key"] = compute_transition_key(receipt)
+                persist_receipt(state, receipt)
+                self.assertEqual(
+                    evaluate_receipt_recovery(
+                        state, receipt["transition_id"], completion_evidence=None
+                    ).action,
+                    expected_action,
+                )
+
+    def test_recovery_rejects_unpersisted_or_substituted_receipt_identity(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        self.assertEqual(
+            evaluate_receipt_recovery(
+                state, receipt["transition_id"], completion_evidence=None
+            ).reason,
+            "transition-receipt-not-found",
+        )
+
+        persist_receipt(state, receipt)
+        self.assertEqual(
+            evaluate_receipt_recovery(
+                state, "transition-substituted", completion_evidence=None
+            ).reason,
+            "transition-receipt-not-found",
+        )
+
+    def test_recovery_rejects_retry_policy_projection_mismatch(self) -> None:
         state = valid_automation()
         receipt = valid_receipt(state)
         receipt["retry_policy"] = "idempotent-retry"
-        self.assertEqual(
-            evaluate_receipt_recovery(state, receipt, completion_evidence=None).action,
-            "retry",
+        receipt["transition_key"] = compute_transition_key(receipt)
+        persist_receipt(state, receipt)
+        decision = evaluate_receipt_recovery(
+            state, receipt["transition_id"], completion_evidence=None
         )
-        receipt["retry_policy"] = "reconcile-only"
-        self.assertEqual(
-            evaluate_receipt_recovery(state, receipt, completion_evidence=None).action,
-            "pause",
-        )
-        receipt["retry_policy"] = "manual-recovery"
-        self.assertEqual(
-            evaluate_receipt_recovery(state, receipt, completion_evidence=None).action,
-            "manual-recovery",
-        )
+        self.assertEqual(decision.action, "fail-closed")
+        self.assertEqual(decision.reason, "retry-policy-projection-mismatch")
 
     def test_recovery_fails_closed_on_partial_or_identity_drift(self) -> None:
         state = valid_automation()
-        receipt = valid_receipt(state)
+        receipt = persist_receipt(state)
         partial = evaluate_receipt_recovery(
-            state, receipt, completion_evidence={"partial": True, "outputs": ["one"]}
+            state,
+            receipt["transition_id"],
+            completion_evidence={"partial": True, "outputs": ["one"]},
         )
         self.assertEqual(partial.action, "fail-closed")
         drift = evaluate_receipt_recovery(
             state,
-            receipt,
+            receipt["transition_id"],
             completion_evidence={
                 "input_identities": {"proposal": "sha256:changed"},
                 "expected_postcondition": copy.deepcopy(receipt["expected_postcondition"]),
@@ -197,9 +247,10 @@ class WorkflowAutomationStateTests(unittest.TestCase):
             outputs=["sha256:original"],
             canonical_sync={"status": "synchronized"},
         )
+        persist_receipt(state, receipt)
         decision = evaluate_receipt_recovery(
             state,
-            receipt,
+            receipt["transition_id"],
             completion_evidence={
                 "outputs": ["sha256:changed"],
                 "canonical_sync": {"status": "synchronized"},
@@ -541,6 +592,117 @@ class WorkflowAutomationStateTests(unittest.TestCase):
             )
             normalized.append(copy.deepcopy(store.read().automation["migration_receipts"]))
         self.assertEqual(normalized[0], normalized[1])
+
+    def test_m2_scenarios_are_deterministic_across_repetition_and_order(self) -> None:
+        def run(order: tuple[str, ...]) -> dict[str, dict]:
+            results: dict[str, dict] = {}
+            roots: list[Path] = []
+            for scenario in order:
+                with tempfile.TemporaryDirectory() as name:
+                    root = Path(name)
+                    roots.append(root)
+                    if scenario == "transition":
+                        state = valid_automation()
+                        store, path = self._make_store_at(root, state)
+                        receipt = valid_receipt(state)
+                        store.prepare_transition(
+                            receipt,
+                            expected_document_identity=store.read().document_identity,
+                        )
+                        evidence = {
+                            "input_identities": copy.deepcopy(
+                                receipt["input_identities"]
+                            ),
+                            "expected_postcondition": copy.deepcopy(
+                                receipt["expected_postcondition"]
+                            ),
+                            "outputs": ["sha256:review-output"],
+                            "canonical_sync": {"status": "synchronized"},
+                        }
+                        prepared = store.read()
+                        recovery = evaluate_receipt_recovery(
+                            prepared.automation,
+                            receipt["transition_id"],
+                            completion_evidence=evidence,
+                        )
+                        store.finalize_transition(
+                            receipt["transition_id"],
+                            status="completed",
+                            outputs=evidence["outputs"],
+                            canonical_sync_status="synchronized",
+                            expected_document_identity=prepared.document_identity,
+                        )
+                        persisted = store.read().automation
+                        results[scenario] = {
+                            "receipt": copy.deepcopy(
+                                persisted["transition_receipts"]["transition-001"]
+                            ),
+                            "transition_key": receipt["transition_key"],
+                            "recovery": {
+                                "action": recovery.action,
+                                "invoke_stage": recovery.invoke_stage,
+                                "reason": recovery.reason,
+                            },
+                            "canonical_file": path.read_bytes(),
+                            "temporary_files": sorted(
+                                item.name for item in root.glob(".change.yaml.*.tmp")
+                            ),
+                        }
+                    else:
+                        legacy = {
+                            "profile": "implementation-through-verify",
+                            "authorized_by": "user",
+                            "authorized_at": "2026-07-20T00:00:00Z",
+                            "change_id": "2026-07-20-example",
+                            "phase": "implementation",
+                            "state": "armed",
+                        }
+                        store, path = self._make_store_at(root, legacy=legacy)
+                        store.migrate_legacy(
+                            valid_automation(),
+                            migrated_at="2026-07-22T00:00:00Z",
+                            expected_document_identity=store.read().document_identity,
+                        )
+                        persisted = store.read().automation
+                        results[scenario] = {
+                            "migration": copy.deepcopy(persisted["migration_receipts"]),
+                            "canonical_file": path.read_bytes(),
+                            "temporary_files": sorted(
+                                item.name for item in root.glob(".change.yaml.*.tmp")
+                            ),
+                        }
+                self.assertFalse(root.exists())
+            return results
+
+        normal = run(("transition", "migration"))
+        repeated = run(("transition", "migration"))
+        reversed_order = run(("migration", "transition"))
+        self.assertEqual(normal, repeated)
+        self.assertEqual(normal, reversed_order)
+
+    @staticmethod
+    def _make_store_at(
+        root: Path,
+        automation: dict | None = None,
+        *,
+        legacy: dict | None = None,
+    ) -> tuple[WorkflowAutomationStateStore, Path]:
+        path = root / "change.yaml"
+        document = {
+            "change_id": "2026-07-20-example",
+            "title": "State adapter fixture",
+            "classification": "default",
+            "risk": "medium",
+            "review": {"status": "resolved", "unresolved_items": 0},
+            "workflow": {},
+            "unrelated": {"owner": "keep-me", "count": 7},
+        }
+        if automation is not None:
+            document["workflow"]["automation"] = automation
+        if legacy is not None:
+            document["workflow"]["autoprogression"] = legacy
+        path.write_text(dump_yaml(document), encoding="utf-8")
+        return WorkflowAutomationStateStore(path), path
 
 
 if __name__ == "__main__":

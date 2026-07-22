@@ -227,6 +227,53 @@ validation_summary:
         self.assertEqual(policy["latest_evidence_identities"], {"plan": "sha256:plan"})
         self.assertEqual(path.read_bytes(), before)
 
+    def test_summary_rejects_invalid_unified_automation_without_mutation(self) -> None:
+        mutations = {
+            "run-status": lambda body: body.replace(
+                "      status: paused", "      status: impossible", 1
+            ),
+            "policy-version": lambda body: body.replace(
+                "      policy_version: 1", "      policy_version: 999", 1
+            ),
+            "receipt-status": lambda body: body.replace(
+                "    transition_receipts: {}",
+                "    transition_receipts:\n"
+                "      transition-unknown:\n"
+                "        status: impossible",
+                1,
+            ),
+            "migration-source": lambda body: body.replace(
+                "    canonical_position_source: plan-current-handoff-summary",
+                "    migration_receipts:\n"
+                "      migration-unknown:\n"
+                "        source_mechanism: impossible\n"
+                "    canonical_position_source: plan-current-handoff-summary",
+                1,
+            ),
+        }
+        for case, mutate in mutations.items():
+            with self.subTest(case=case):
+                body = mutate(self.unified_automation_yaml())
+                repo = self.make_change("2026-05-22-legacy-query", body)
+                path = (
+                    repo
+                    / "docs"
+                    / "changes"
+                    / "2026-05-22-legacy-query"
+                    / "change.yaml"
+                )
+                before = path.read_bytes()
+
+                result = run_query(
+                    "2026-05-22-legacy-query", "summary", repo_root=repo
+                )
+                payload = parse_json(result)
+
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(payload["code"], "invalid-automation-state")
+                self.assertIn("unknown value", payload["detail"])
+                self.assertEqual(path.read_bytes(), before)
+
     def test_summary_supports_legacy_metadata(self) -> None:
         repo = self.make_change("2026-05-22-legacy-query", self.legacy_change_yaml())
 

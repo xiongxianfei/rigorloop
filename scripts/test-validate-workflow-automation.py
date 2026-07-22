@@ -150,7 +150,9 @@ def configure_post_proposal_transition(
         "stage_scope_identity": "sha256:scope",
     }
     capability["scope"]["mutation_categories"] = ["downstream-authoring-artifacts"]  # type: ignore[index]
-    return add_valid_receipt(state)
+    receipt = add_valid_receipt(state)
+    receipt["retry_policy"] = STAGE_POLICY_BY_STAGE[stage_name].retry_policy.value
+    return receipt
 
 
 def configure_next_milestone_transition(
@@ -187,7 +189,11 @@ def configure_next_milestone_transition(
         "validation_commands_identity": "sha256:commands",
     }
     capability["scope"]["mutation_categories"] = ["production-code"]  # type: ignore[index]
-    return add_valid_receipt(state)
+    receipt = add_valid_receipt(state)
+    receipt["retry_policy"] = STAGE_POLICY_BY_STAGE[
+        WorkflowStage.IMPLEMENT.value
+    ].retry_policy.value
+    return receipt
 
 
 class WorkflowAutomationVocabularyTests(unittest.TestCase):
@@ -903,6 +909,9 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         parent["maximum_mutation_categories"] = ["change-local-review-evidence"]  # type: ignore[index]
         receipt["target"] = copy.deepcopy(target)
         receipt["from_position"] = "implement"
+        receipt["retry_policy"] = STAGE_POLICY_BY_STAGE[
+            WorkflowStage.CODE_REVIEW.value
+        ].retry_policy.value
         receipt["input_identities"] = {
             "source_milestone_id": "M0",
             "source_milestone_identity": "sha256:M0",
@@ -1024,6 +1033,27 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         errors = validate_workflow_automation(state)
         self.assertIn(
             "workflow.automation.transition_receipts.transition-001.effective_capability_id: capability must be active for prepared receipt",
+            errors,
+        )
+
+    def test_receipt_requires_retry_policy_projection(self) -> None:
+        state = valid_automation()
+        receipt = add_valid_receipt(state)
+        del receipt["retry_policy"]
+        errors = validate_workflow_automation(state)
+        self.assertTrue(
+            any("transition-001.retry_policy: missing required field" in error for error in errors),
+            errors,
+        )
+
+    def test_receipt_retry_policy_must_match_immutable_stage_policy(self) -> None:
+        state = valid_automation()
+        receipt = add_valid_receipt(state)
+        receipt["retry_policy"] = "idempotent-retry"
+        errors = validate_workflow_automation(state)
+        self.assertIn(
+            "workflow.automation.transition_receipts.transition-001.retry_policy: "
+            "must match immutable stage policy reconcile-only",
             errors,
         )
 

@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M2. Sole State Writer, Prepared Receipts, and Recovery
-- Current milestone state: resolution-needed
-- Last reviewed milestone: M1. Unified State Model and Complete Policy Registry
+- Current milestone state: review-requested
+- Last reviewed milestone: M2. Sole State Writer, Prepared Receipts, and Recovery
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r1.md`
 - Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M2 resolution needed, M3, M4, M5, M6
-- Next stage: review-resolution
+- Remaining in-scope implementation milestones: M2 rereview, M3, M4, M5, M6
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — M2 has four open R1 findings; M3-M6, final holistic review, explanation, verification, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 R1 corrections await independent rereview; M3-M6, final holistic review, explanation, verification, and PR handoff remain.
 
 ## Milestones
 
@@ -168,7 +168,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M2. Sole State Writer, Prepared Receipts, and Recovery
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Implement atomic-file state updates, the sole automation-state write boundary, prepared/finalized receipts, reconciliation, cancellation, and one-way legacy-state migration without invoking stage work through the new engine yet.
 - Requirements: `BRF-R006`-`BRF-R008f`, `BRF-R030`, `BRF-R044`-`BRF-R046`, `BRF-R068`-`BRF-R077`, `BRF-R091`-`BRF-R098`
 - Files/components likely touched:
@@ -522,6 +522,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: Code-review M1 R7 independently confirmed `BRF-M1-CR12` resolved with no new material findings. M1 is closed and the next stage is implement M2.
 - 2026-07-22: M2 added the sole atomic state adapter, capability-bound prepared/finalized receipts, evidence-first recovery and cancellation, exact one-way legacy migration receipts, and read-only unified status projection. All plan-mandated M2 commands pass; M2 is review-requested and the public workflow route remains unchanged.
 - 2026-07-22: Code-review M2 R1 requested changes in `BRF-M2-CR1` through `BRF-M2-CR4`: recovery is not bound to the persisted receipt or immutable retry policy, T29 proof is incomplete, and unified status bypasses state validation. M2 is resolution-needed; M3 remains blocked.
+- 2026-07-22: M2 review-resolution implementation started for the four accepted R1 findings. The correction is limited to canonical receipt/policy binding, complete T29 determinism proof, and validated read-only status projection; public routing remains out of scope.
+- 2026-07-22: Resolved `BRF-M2-CR1` through `BRF-M2-CR4` by binding recovery to canonical persisted receipt IDs, deriving retry from the immutable registry with key-bound projections, completing the fresh-root T29 repeat/reverse proof, and validating unified status before projection. M2 is review-requested for R2; M3 remains blocked.
 
 ## Decision log
 
@@ -604,6 +606,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - M2 proof-first execution failed because `workflow_automation_state.py` did not exist. The completed slice passes 24 state/recovery tests, 15 receipt-selected validator tests, 3 migration-selected validator tests, 17 query tests, all 53 metadata-validator tests, direct change-metadata validation, Python compilation, and diff checks.
 - M2 keeps the new writer unreachable from public commands. It uses complete-file atomic replacement with file-mode preservation, directory locking, identity compare-and-swap, prepared receipt persistence, deterministic transition keys, evidence-first recovery, cancellation settlement, and exact legacy-source migration binding.
 - Code-review M2 R1 reran CMD4-CMD9 successfully, then directly reproduced retry from an unpersisted receipt, retry-policy override without transition-key change, and successful status projection of an unknown run status. Static T29 inspection found no full repeated/reverse-order scenario or canonical-file comparison.
+- M2 R1 resolution passed 27 state/recovery tests, 17 receipt-selected validator tests, 3 migration-selected validator tests, 18 query tests, all 53 metadata-validator tests, direct change-metadata validation, Python compilation, and diff checks. Direct contrasts reject missing/substituted receipt IDs, retry-policy mismatch, and unknown run/policy/receipt/migration status projection; T29 compares canonical bytes and cleanup across repeated and reverse-order fresh-root scenarios.
 
 ## Outcome and retrospective
 

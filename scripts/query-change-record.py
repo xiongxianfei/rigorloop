@@ -9,7 +9,11 @@ import sys
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-from workflow_automation_state import project_automation_status
+from workflow_automation_state import (
+    StateContractError,
+    WorkflowAutomationStateStore,
+    project_automation_status,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -132,6 +136,21 @@ def validate_supported_shape(
     metadata_path: Path,
     repo_root: Path,
 ) -> dict[str, Any] | None:
+    workflow = data.get("workflow")
+    automation = workflow.get("automation") if isinstance(workflow, dict) else None
+    if automation is not None:
+        try:
+            WorkflowAutomationStateStore(metadata_path).read()
+        except StateContractError as exc:
+            return error_payload(
+                "invalid-automation-state",
+                "change metadata contains invalid workflow automation state",
+                change_id=change_id,
+                detail=str(exc),
+                detail_pointers={
+                    "change_metadata": repo_relative(metadata_path, repo_root)
+                },
+            )
     try:
         paths = artifact_paths(data)
     except QueryShapeError as exc:

@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
+from workflow_automation_policy import STAGE_POLICY_BY_STAGE
 from validate_workflow_automation import (
     has_read_only_legacy_migration,
     validate_workflow_automation,
@@ -32,9 +33,6 @@ ROOT = Path(__file__).resolve().parents[1]
 METADATA_VALIDATOR = ROOT / "scripts" / "validate-change-metadata.py"
 TERMINAL_LEGACY_STATES = frozenset(
     {"cancelled", "completed", "complete", "off", "inactive", "stopped"}
-)
-RETRY_POLICIES = frozenset(
-    {"idempotent-retry", "reconcile-only", "manual-recovery"}
 )
 RECEIPT_TERMINAL_STATUSES = frozenset(
     {"completed", "failed", "paused", "cancelled"}
@@ -108,6 +106,7 @@ def compute_transition_key(receipt: dict[str, Any]) -> str:
             "from_position": receipt.get("from_position"),
             "target": receipt.get("target"),
             "effective_capability_id": receipt.get("effective_capability_id"),
+            "retry_policy": receipt.get("retry_policy"),
             "input_identities": receipt.get("input_identities"),
             "expected_postcondition": receipt.get("expected_postcondition"),
         }
@@ -200,7 +199,7 @@ def _active_prepared_receipts(automation: dict[str, Any]) -> list[dict[str, Any]
 
 def evaluate_receipt_recovery(
     automation: dict[str, Any],
-    receipt: dict[str, Any],
+    transition_id: str,
     *,
     completion_evidence: dict[str, Any] | None,
 ) -> RecoveryDecision:
@@ -209,6 +208,12 @@ def evaluate_receipt_recovery(
     prepared = _active_prepared_receipts(automation)
     if len(prepared) > 1:
         return RecoveryDecision("fail-closed", False, "multiple-in-flight-transitions")
+    receipts = automation.get("transition_receipts")
+    receipt = receipts.get(transition_id) if isinstance(receipts, dict) else None
+    if not isinstance(receipt, dict):
+        return RecoveryDecision("fail-closed", False, "transition-receipt-not-found")
+    if receipt.get("transition_id") != transition_id:
+        return RecoveryDecision("fail-closed", False, "transition-receipt-identity-mismatch")
     status = receipt.get("status")
     if status == "completed":
         if completion_evidence is None:
@@ -220,6 +225,8 @@ def evaluate_receipt_recovery(
         return RecoveryDecision("continue", False, "completed-evidence-current")
     if status != "prepared":
         return RecoveryDecision("fail-closed", False, "unknown-or-nonrecoverable-receipt")
+    if len(prepared) != 1 or prepared[0].get("transition_id") != transition_id:
+        return RecoveryDecision("fail-closed", False, "prepared-receipt-binding-mismatch")
 
     capability_id = receipt.get("effective_capability_id")
     capabilities = automation.get("effective_capabilities")
@@ -227,9 +234,18 @@ def evaluate_receipt_recovery(
     if not isinstance(capability, dict) or capability.get("status") != "active":
         return RecoveryDecision("pause", False, "effective-capability-not-active")
 
-    retry_policy = receipt.get("retry_policy")
-    if retry_policy not in RETRY_POLICIES:
-        return RecoveryDecision("fail-closed", False, "unknown-retry-policy")
+    stage = capability.get("stage")
+    stage_name = stage.get("name") if isinstance(stage, dict) else None
+    stage_policy = STAGE_POLICY_BY_STAGE.get(stage_name)
+    if stage_policy is None:
+        return RecoveryDecision("fail-closed", False, "unknown-capability-stage")
+    if capability.get("capability_kind") != stage_policy.capability_kind.value:
+        return RecoveryDecision("fail-closed", False, "capability-policy-mismatch")
+    retry_policy = stage_policy.retry_policy.value
+    if receipt.get("retry_policy") != retry_policy:
+        return RecoveryDecision(
+            "fail-closed", False, "retry-policy-projection-mismatch"
+        )
     if completion_evidence is None:
         if retry_policy == "idempotent-retry":
             return RecoveryDecision("retry", True, "no-completion-evidence")
@@ -482,7 +498,7 @@ class WorkflowAutomationStateStore:
         if prepared:
             decision = evaluate_receipt_recovery(
                 snapshot.automation,
-                prepared[0],
+                prepared[0]["transition_id"],
                 completion_evidence=completion_evidence,
             )
             if decision.action != "reconcile-completed":
