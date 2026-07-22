@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -27,9 +27,9 @@ Review closeout: code-review-m3-r4
 Review closeout: code-review-m3-r5
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`
-- Findings resolved: 48
-- Unresolved findings: 2
-- Current result: Code-review M3 R5 classified the repository-owned portion of `BRF-M3-CR8` as failed remediation and opened `BRF-M3-CR9` plus `BRF-M3-CR10`. Caller-selected repository roots can complete canonical state from an unrelated repository, and the prior implementation handoff left contradictory canonical plan state. M3 is resolution-needed and M4 remains blocked.
+- Findings resolved: 50
+- Unresolved findings: 0
+- Current result: `BRF-M3-CR9` and `BRF-M3-CR10` are resolved with store-bound repository ownership and semantic review-state synchronization. M3 is review-requested for code-review R6 and M4 remains blocked.
 
 ## Resolution Overview
 
@@ -83,8 +83,8 @@ Review closeout: code-review-m3-r5
 | BRF-M3-CR6 | accepted | resolved | Added policy-derived postconditions, repository path/hash checks, and durable synchronization fields; R3 records the remaining semantic and recovery gap separately as `BRF-M3-CR7`. |
 | BRF-M3-CR7 | accepted | resolved | Added parser-valid review and occurrence checks; R4 records the remaining canonical-path and canonical-identity gap separately as `BRF-M3-CR8`. |
 | BRF-M3-CR8 | accepted | resolved | Canonical completion paths reject symlinks and bind log identity; R5 records the remaining repository-root binding gap separately as `BRF-M3-CR9`. |
-| BRF-M3-CR9 | needs-decision | open | R5 failed-remediation: the completion verifier's root is caller-selected and need not own the state store's canonical metadata. |
-| BRF-M3-CR10 | needs-decision | open | R5 new finding: the authoritative plan handoff reason contradicts the closed R4 review-resolution state. |
+| BRF-M3-CR9 | accepted | resolved | The state store now owns one immutable canonical repository root and rejects foreign-root coordination or finalization before mutation. |
+| BRF-M3-CR10 | accepted | resolved | Lifecycle state sync now requires `review-findings-open` exactly when structured formal review evidence has open accepted findings. |
 
 ## Common Resolution Metadata
 
@@ -170,34 +170,34 @@ Validation evidence: Proof-first tests reproduced five unsafe outcomes before th
 #### BRF-M3-CR9 - Completion evidence root is not bound to canonical state
 
 Finding ID: BRF-M3-CR9
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the deterministic store-bound repository-root resolution or identify an approved canonical repository resolver already owned by the state adapter.
+Decision needed: None; the user's request accepted the deterministic safe resolution.
 Rationale: Path-level containment is enforced relative to a root, but the caller can choose a root unrelated to the state store's metadata and consume authority from copied evidence there.
 Required outcome: Completion, recovery, and cancellation evidence must resolve only against the repository that canonically owns the persisted change metadata.
-Chosen action: Pending review-resolution.
+Chosen action: Bound each state store to one immutable canonical repository root, inferred that root from canonical change paths, validated the change-directory identity, rejected coordinator/root mismatch before invocation, and rejected finalization/root mismatch before any durable mutation.
 Safe resolution path: Bind and validate one repository root at state-store construction, reject coordinator/root mismatch before invocation, remove per-finalization trust-root override, use the bound root across recovery/cancellation, and add a two-repository negative regression.
 Validation target: CMD12-CMD14, full engine/state/validator regressions, direct cross-repository contrasts, and code-review M3 R6.
-Validation evidence: R5 directly finalized Store A as `completed` and consumed its capability using parser-valid evidence located only in unrelated Repository B. Fourteen capability tests, 40 state/recovery tests, and 52 validator tests pass but contain no mismatched store/root case.
+Validation evidence: Proof-first cross-repository tests failed before the correction. The direct coordinator and finalization contrasts now reject Repository B while preserving Store A byte-for-byte with its capability active and receipt prepared. All 23 engine tests and 43 state/recovery tests pass; canonical-layout tests also prove repository-root inference and change-directory identity rejection. Repository broad smoke passed all 11 checks in 443 seconds.
 
 #### BRF-M3-CR10 - Authoritative handoff reason contradicts resolved review state
 
 Finding ID: BRF-M3-CR10
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept deterministic handoff synchronization and its regression coverage.
+Decision needed: None; the user's request accepted deterministic handoff synchronization.
 Rationale: The active plan owns post-plan workflow state but its handoff reason said one R4 finding remained open while every review evidence surface recorded zero open findings.
 Required outcome: Current Handoff Summary, review resolution, review log, change metadata, and plan index must agree at every handoff.
-Chosen action: Pending review-resolution.
+Chosen action: Added a bidirectional lifecycle state-sync rule: open accepted material findings require `review-findings-open`, while a zero-open formal review summary forbids that reason code. Synchronized the active plan, plan index, review log, review resolution, and change metadata for the M3 R6 handoff.
 Safe resolution path: Synchronize the plan from the actual R5 state, add a semantic state-sync regression for reason tokens and open-finding prose, and rerun lifecycle validation before rereview.
 Validation target: lifecycle state-sync selection, full lifecycle regressions, review/metadata validation, and code-review M3 R6.
-Validation evidence: R5 compared tracked plan line 112 with closed/zero-open review-resolution, review-log, and change metadata in the same reviewed commit and found a direct contradiction that existing lifecycle validation did not report.
+Validation evidence: Both proof-first semantic drift fixtures passed incorrectly before the correction and now fail with explicit `review-findings-open` diagnostics. The valid resolution-needed control and all 151 lifecycle regressions pass. Review, metadata, guide, and lifecycle artifact validation are rerun for final handoff.
 
 ### code-review-m3-r1
 
@@ -824,8 +824,8 @@ No material findings. Architecture-review R3 confirmed `BRF-AR1` through `BRF-AR
 - [x] `BRF-AR1` through `BRF-AR3` are incorporated in the architecture package.
 - [x] A changed architecture package is ready for architecture-review R3.
 - [x] Architecture-review R3 approves the revised package.
-- [ ] No review-log findings remain open.
-- [ ] Closeout status is closed with final dispositions and validation evidence.
+- [x] No review-log findings remain open.
+- [x] Closeout status is closed with final dispositions and validation evidence.
 
 ### code-review-m1-r1
 

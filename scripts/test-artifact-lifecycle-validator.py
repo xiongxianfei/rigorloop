@@ -1157,6 +1157,39 @@ review:
 
         self.assertFalse(result.blocking_findings, msg=messages)
 
+    def test_workflow_state_open_review_finding_requires_matching_reason_code(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-open-review-reason-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=True,
+            review_unresolved_items=1,
+            current_milestone_state="resolution-needed",
+            review_status="changes-requested; stage=code-review; round=r1",
+            next_stage="review-resolution / implement M2 fixes",
+            reason="implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("review-findings-open", messages)
+
+    def test_workflow_state_closed_review_rejects_open_findings_reason_code(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-closed-review-reason-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=False,
+            review_unresolved_items=0,
+            reason="implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — The review is closed and later closeout gates remain.",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("review-findings-open", messages)
+
     def test_workflow_state_index_only_catches_next_stage_drift(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-drift-"))
         self.addCleanupTree(fixture_root)

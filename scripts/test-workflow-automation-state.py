@@ -7,6 +7,7 @@ import copy
 import hashlib
 import importlib.util
 import os
+import shutil
 import sys
 import tempfile
 import unittest
@@ -166,6 +167,56 @@ Open findings: None
                 "observed_identities": {"proposal-review": review_identity},
             },
         }
+
+    def test_store_infers_canonical_repository_root_from_change_path(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        path = root / "docs/changes/2026-07-20-example/change.yaml"
+        path.parent.mkdir(parents=True)
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Canonical state fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                    "workflow": {},
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        store = WorkflowAutomationStateStore(path)
+
+        self.assertEqual(store.repository_root, root.resolve())
+        self.assertEqual(store.read().document["change_id"], "2026-07-20-example")
+
+    def test_store_rejects_canonical_change_directory_identity_mismatch(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        path = root / "docs/changes/2026-07-20-example/change.yaml"
+        path.parent.mkdir(parents=True)
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-other",
+                    "title": "Mismatched state fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                    "workflow": {},
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        with self.assertRaisesRegex(
+            StateContractError, "change_id must match its canonical change directory"
+        ):
+            WorkflowAutomationStateStore(path).read()
 
     def test_prepare_persists_receipt_before_caller_can_invoke_stage(self) -> None:
         state = valid_automation()
@@ -697,6 +748,47 @@ Open findings: None
         self.assertEqual(
             persisted["effective_capabilities"]["capability-proposal-review-001"]["status"],
             "consumed",
+        )
+
+    def test_finalize_rejects_foreign_repository_root_before_mutation(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        foreign = tempfile.TemporaryDirectory()
+        self.addCleanup(foreign.cleanup)
+        foreign_root = Path(foreign.name)
+        shutil.copytree(store.repository_root / "docs", foreign_root / "docs")
+        before = store.read()
+
+        with self.assertRaisesRegex(
+            StateContractError, "repository root does not match state store"
+        ):
+            store.finalize_transition(
+                "transition-001",
+                status="completed",
+                outputs=evidence["outputs"],
+                canonical_sync_status="synchronized",
+                canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+                canonical_sync_observed_identities=evidence["canonical_sync"][
+                    "observed_identities"
+                ],
+                expected_document_identity=before.document_identity,
+                repository_root=foreign_root,
+            )
+
+        after = store.read()
+        self.assertEqual(after.document_identity, before.document_identity)
+        self.assertEqual(
+            after.automation["transition_receipts"]["transition-001"]["status"],
+            "prepared",
+        )
+        self.assertEqual(
+            after.automation["effective_capabilities"][
+                "capability-proposal-review-001"
+            ]["status"],
+            "active",
         )
 
     def test_finalize_persists_engine_derived_canonical_review_log_identity(self) -> None:
