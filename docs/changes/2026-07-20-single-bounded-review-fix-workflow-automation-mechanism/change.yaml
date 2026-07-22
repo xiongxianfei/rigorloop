@@ -811,6 +811,20 @@ validation:
     result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
   - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml; python scripts/validate-guide-system.py
     result: passed_after_code_review_M3_R3_handoff_sync
+  - command: proof-first BRF-M3-CR7 arbitrary-review-bytes and nonexistent-recovery tests
+    result: failed_before_fix_then_passed_after_stage_native_verifier_and_canonical_reread
+  - command: python scripts/test-workflow-automation.py -k target; python scripts/test-workflow-automation.py -k position; python scripts/test-workflow-automation.py -k capability
+    result: passed_6_target_4_position_14_capability_tests_after_M3_R3_resolution
+  - command: python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-review-artifact-validator.py
+    result: passed_33_state_recovery_52_automation_validator_103_review_parser_tests_after_M3_R3_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py -k automation; python scripts/test-artifact-lifecycle-validator.py
+    result: passed_2_selected_and_149_full_lifecycle_tests_after_M3_R3_resolution
+  - command: python -m py_compile for M3 R3 resolution Python surfaces; git diff --check
+    result: passed_after_M3_R3_resolution
+  - command: python scripts/select-validation.py --mode explicit for M3 R3 resolution paths
+    result: manual_routing_required_for_four_automation_paths_plan_owned_CMD10_CMD14_passed_selected_review_lifecycle_metadata_and_guide_checks_passed_broad_smoke_required
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_436_seconds_after_M3_R3_resolution
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md
@@ -874,17 +888,18 @@ changed_files:
   - scripts/test-query-change-record.py
   - scripts/workflow_automation.py
   - scripts/test-workflow-automation.py
+  - scripts/review_artifact_validation.py
   - scripts/test-artifact-lifecycle-validator.py
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r1.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r2.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r3.md
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: resolved
+  unresolved_items: 0
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   material_findings: 47
-  closed_findings: 46
-  open_findings: 1
+  closed_findings: 47
+  open_findings: 0
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md

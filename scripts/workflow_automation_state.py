@@ -22,6 +22,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
+from review_artifact_validation import (
+    parse_formal_review_log,
+    parse_formal_review_record,
+)
 from workflow_automation_policy import STAGE_POLICY_BY_STAGE
 from validate_workflow_automation import (
     compute_transition_key,
@@ -38,6 +42,12 @@ TERMINAL_LEGACY_STATES = frozenset(
 RECEIPT_TERMINAL_STATUSES = frozenset(
     {"completed", "failed", "paused", "cancelled"}
 )
+PROPOSAL_REVIEW_OUTCOMES = frozenset(
+    {"approved", "changes-requested", "blocked", "inconclusive"}
+)
+FORMAL_REVIEW_INPUT_IDENTITIES = {
+    "proposal-review": "proposal",
+}
 _PLAIN_STRING_RESERVED = frozenset({"true", "false", "null", "[]", "{}"})
 _NUMBER_RE = re.compile(
     r"-?(?:[0-9]+|[0-9]+\.[0-9]+|[0-9]+[eE][+-]?[0-9]+|[0-9]+\.[0-9]+[eE][+-]?[0-9]+)"
@@ -70,6 +80,12 @@ class StateMutationResult:
 class RecoveryDecision:
     action: str
     invoke_stage: bool
+    reason: str
+
+
+@dataclass(frozen=True)
+class CompletionVerification:
+    valid: bool
     reason: str
 
 
@@ -180,11 +196,160 @@ def _active_prepared_receipts(automation: dict[str, Any]) -> list[dict[str, Any]
     ]
 
 
+def _strip_code(value: str) -> str:
+    normalized = value.strip()
+    if len(normalized) >= 2 and normalized.startswith("`") and normalized.endswith("`"):
+        return normalized[1:-1].strip()
+    return normalized
+
+
+def _resolve_completion_artifact(
+    evidence: Any,
+    *,
+    repository_root: Path,
+    affected_path_roots: list[str],
+) -> tuple[Path, str] | None:
+    if not isinstance(evidence, dict) or set(evidence) != {"path", "identity"}:
+        return None
+    relative_text = evidence.get("path")
+    identity = evidence.get("identity")
+    if not isinstance(relative_text, str) or not isinstance(identity, str):
+        return None
+    relative = Path(relative_text)
+    roots = tuple(Path(root) for root in affected_path_roots if isinstance(root, str))
+    if (
+        not relative_text
+        or relative.is_absolute()
+        or ".." in relative.parts
+        or not roots
+        or any(root.is_absolute() or ".." in root.parts for root in roots)
+        or not any(relative == root or relative.is_relative_to(root) for root in roots)
+    ):
+        return None
+    root = repository_root.resolve()
+    artifact = (root / relative).resolve()
+    if not artifact.is_relative_to(root) or not artifact.is_file():
+        return None
+    observed_identity = _identity(artifact.read_bytes())
+    if identity != observed_identity:
+        return None
+    return artifact, observed_identity
+
+
+def verify_transition_completion(
+    automation: dict[str, Any],
+    receipt: dict[str, Any],
+    *,
+    completion_evidence: dict[str, Any],
+    repository_root: Path,
+) -> CompletionVerification:
+    """Verify one stage completion from stage-native and canonical evidence."""
+
+    capability_id = receipt.get("effective_capability_id")
+    capabilities = automation.get("effective_capabilities")
+    capability = capabilities.get(capability_id) if isinstance(capabilities, dict) else None
+    if not isinstance(capability, dict):
+        return CompletionVerification(False, "effective-capability-not-found")
+    stage = capability.get("stage")
+    stage_name = stage.get("name") if isinstance(stage, dict) else None
+    policy = STAGE_POLICY_BY_STAGE.get(stage_name)
+    if policy is None:
+        return CompletionVerification(False, "unknown-capability-stage")
+    expected_input = FORMAL_REVIEW_INPUT_IDENTITIES.get(stage_name)
+    if expected_input is None:
+        return CompletionVerification(False, "stage-native-verifier-unavailable")
+
+    inputs = completion_evidence.get("input_identities")
+    if inputs != receipt.get("input_identities"):
+        return CompletionVerification(False, "input-identity-drift")
+    if completion_evidence.get("expected_postcondition") != receipt.get(
+        "expected_postcondition"
+    ):
+        return CompletionVerification(False, "postcondition-drift")
+    outputs = completion_evidence.get("outputs")
+    canonical_sync = completion_evidence.get("canonical_sync")
+    if not isinstance(outputs, list) or not outputs or not isinstance(canonical_sync, dict):
+        return CompletionVerification(False, "incomplete-completion-evidence")
+    if canonical_sync.get("status") != "synchronized":
+        return CompletionVerification(False, "canonical-state-not-synchronized")
+    sync_evidence = canonical_sync.get("evidence")
+    observed_identities = canonical_sync.get("observed_identities")
+    if (
+        not isinstance(sync_evidence, dict)
+        or set(sync_evidence) != set(policy.completion_evidence)
+        or not isinstance(observed_identities, dict)
+    ):
+        return CompletionVerification(False, "canonical-stage-evidence-incomplete")
+
+    evidence_name = next(iter(policy.completion_evidence), None)
+    evidence = sync_evidence.get(evidence_name)
+    scope = capability.get("scope")
+    affected_roots = scope.get("affected_path_roots") if isinstance(scope, dict) else None
+    if not isinstance(affected_roots, list):
+        return CompletionVerification(False, "capability-evidence-scope-invalid")
+    resolved = _resolve_completion_artifact(
+        evidence,
+        repository_root=repository_root,
+        affected_path_roots=affected_roots,
+    )
+    if resolved is None:
+        return CompletionVerification(False, "stage-completion-artifact-invalid")
+    artifact, artifact_identity = resolved
+    if evidence not in outputs or observed_identities.get(evidence_name) != artifact_identity:
+        return CompletionVerification(False, "stage-completion-identity-mismatch")
+
+    review, review_findings = parse_formal_review_record(artifact)
+    if review is None or review_findings:
+        return CompletionVerification(False, "stage-native-review-invalid")
+    if review.stage != stage_name:
+        return CompletionVerification(False, "stage-native-review-stage-mismatch")
+    if review.status not in PROPOSAL_REVIEW_OUTCOMES:
+        return CompletionVerification(False, "stage-native-review-outcome-invalid")
+
+    target_text = _strip_code(review.target)
+    target_relative = Path(target_text)
+    root = repository_root.resolve()
+    target = (root / target_relative).resolve()
+    expected_identity = inputs.get(expected_input) if isinstance(inputs, dict) else None
+    if (
+        not target_text
+        or target_relative.is_absolute()
+        or ".." in target_relative.parts
+        or not target.is_relative_to(root)
+        or not target.is_file()
+        or _identity(target.read_bytes()) != expected_identity
+    ):
+        return CompletionVerification(False, "reviewed-artifact-identity-mismatch")
+
+    if artifact.parent.name != "reviews":
+        return CompletionVerification(False, "formal-review-record-location-invalid")
+    change_root = artifact.parent.parent
+    review_log = change_root / "review-log.md"
+    if not review_log.is_file():
+        return CompletionVerification(False, "canonical-review-log-missing")
+    entries, log_findings = parse_formal_review_log(review_log)
+    if log_findings:
+        return CompletionVerification(False, "canonical-review-log-invalid")
+    matches = [entry for entry in entries if entry.review_id == review.review_id]
+    expected_record = artifact.relative_to(change_root).as_posix()
+    if len(matches) != 1:
+        return CompletionVerification(False, "canonical-review-occurrence-missing")
+    entry = matches[0]
+    if (
+        entry.stage != review.stage
+        or entry.status != review.status
+        or _strip_code(entry.detailed_record) != expected_record
+    ):
+        return CompletionVerification(False, "canonical-review-occurrence-mismatch")
+    return CompletionVerification(True, "stage-completion-evidence-valid")
+
+
 def evaluate_receipt_recovery(
     automation: dict[str, Any],
     transition_id: str,
     *,
     completion_evidence: dict[str, Any] | None,
+    repository_root: Path | None = None,
 ) -> RecoveryDecision:
     """Return the only safe action for one durable transition receipt."""
 
@@ -211,6 +376,23 @@ def evaluate_receipt_recovery(
             return RecoveryDecision("pause", False, "completed-output-identity-drift")
         if completion_evidence.get("canonical_sync") != receipt.get("canonical_sync"):
             return RecoveryDecision("pause", False, "completed-canonical-state-drift")
+        if repository_root is None:
+            return RecoveryDecision("pause", False, "stage-completion-evidence-invalid")
+        current_evidence = copy.deepcopy(completion_evidence)
+        current_evidence["input_identities"] = copy.deepcopy(
+            receipt.get("input_identities")
+        )
+        current_evidence["expected_postcondition"] = copy.deepcopy(
+            receipt.get("expected_postcondition")
+        )
+        verification = verify_transition_completion(
+            automation,
+            receipt,
+            completion_evidence=current_evidence,
+            repository_root=repository_root,
+        )
+        if not verification.valid:
+            return RecoveryDecision("pause", False, verification.reason)
         return RecoveryDecision("continue", False, "completed-evidence-current")
     if status != "prepared":
         return RecoveryDecision("fail-closed", False, "unknown-or-nonrecoverable-receipt")
@@ -255,6 +437,16 @@ def evaluate_receipt_recovery(
     canonical_sync = completion_evidence.get("canonical_sync")
     if not isinstance(canonical_sync, dict) or canonical_sync.get("status") != "synchronized":
         return RecoveryDecision("pause", False, "canonical-state-not-synchronized")
+    if repository_root is None:
+        return RecoveryDecision("pause", False, "stage-completion-evidence-invalid")
+    verification = verify_transition_completion(
+        automation,
+        receipt,
+        completion_evidence=completion_evidence,
+        repository_root=repository_root,
+    )
+    if not verification.valid:
+        return RecoveryDecision("pause", False, verification.reason)
     return RecoveryDecision("reconcile-completed", False, "completion-evidence-valid")
 
 
@@ -303,8 +495,9 @@ def project_automation_status(automation: dict[str, Any]) -> dict[str, Any]:
 class WorkflowAutomationStateStore:
     """Read and atomically replace the one canonical automation subsection."""
 
-    def __init__(self, metadata_path: Path):
+    def __init__(self, metadata_path: Path, *, repository_root: Path | None = None):
         self.metadata_path = metadata_path
+        self.repository_root = (repository_root or metadata_path.parent).resolve()
 
     def read(self) -> StateSnapshot:
         payload = self.metadata_path.read_bytes()
@@ -436,6 +629,7 @@ class WorkflowAutomationStateStore:
         canonical_sync_evidence: dict[str, Any] | None = None,
         canonical_sync_observed_identities: dict[str, str] | None = None,
         expected_document_identity: str,
+        repository_root: Path | None = None,
     ) -> StateMutationResult:
         if status not in RECEIPT_TERMINAL_STATUSES:
             raise StateContractError(f"invalid terminal receipt status: {status}")
@@ -458,6 +652,24 @@ class WorkflowAutomationStateStore:
             )
         receipt["canonical_sync"] = canonical_sync
         if status == "completed":
+            completion_evidence = {
+                "input_identities": copy.deepcopy(receipt.get("input_identities")),
+                "expected_postcondition": copy.deepcopy(
+                    receipt.get("expected_postcondition")
+                ),
+                "outputs": copy.deepcopy(outputs),
+                "canonical_sync": copy.deepcopy(canonical_sync),
+            }
+            verification = verify_transition_completion(
+                replacement,
+                receipt,
+                completion_evidence=completion_evidence,
+                repository_root=(repository_root or self.repository_root),
+            )
+            if not verification.valid:
+                raise StateContractError(
+                    "stage-native completion evidence invalid: " + verification.reason
+                )
             capabilities = replacement.get("effective_capabilities")
             capability = (
                 capabilities.get(receipt.get("effective_capability_id"))
@@ -498,6 +710,7 @@ class WorkflowAutomationStateStore:
                 snapshot.automation,
                 prepared[0]["transition_id"],
                 completion_evidence=completion_evidence,
+                repository_root=self.repository_root,
             )
             if decision.action != "reconcile-completed":
                 return StateMutationResult(

@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -25,9 +25,9 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`
-- Findings resolved: 46
-- Unresolved findings: 1
-- Current result: Code-review M3 R3 confirmed `BRF-M3-CR5` resolved, classified `BRF-M3-CR6` as failed remediation, and opened `BRF-M3-CR7`. Path and hash checks do not prove stage-native completion or canonical synchronization, and prepared-receipt recovery still consumes authority from caller-supplied nonexistent evidence. M3 is resolution-needed and M4 remains blocked.
+- Findings resolved: 47
+- Unresolved findings: 0
+- Current result: `BRF-M3-CR7` is resolved by routing proposal-review completion, prepared-receipt recovery, completed-receipt resume, and cancellation through the same repository-owned formal-review parser and canonical review-log reread. M3 is review-requested for code-review R4; M4 remains blocked pending rereview.
 
 ## Resolution Overview
 
@@ -79,7 +79,7 @@ Review closeout: code-review-m3-r3
 | BRF-M3-CR4 | accepted | resolved | Typed stage completion and canonical synchronization results are validated before completion; unsafe outcomes pause without consuming authority. |
 | BRF-M3-CR5 | accepted | resolved | Implementation-correction basis now requires the concrete correction-budget identity and must match bounded scope exactly. |
 | BRF-M3-CR6 | accepted | resolved | Added policy-derived postconditions, repository path/hash checks, and durable synchronization fields; R3 records the remaining semantic and recovery gap separately as `BRF-M3-CR7`. |
-| BRF-M3-CR7 | needs-decision | open | R3 failed-remediation: path/hash evidence and callback equality still substitute for stage-native completion, canonical-owner reread, and recovery proof. |
+| BRF-M3-CR7 | accepted | resolved | Proposal-review completion now requires a parser-valid review bound to the exact proposal identity plus a matching canonical review-log occurrence; recovery and cancellation reuse the same verifier. |
 
 ## Common Resolution Metadata
 
@@ -129,18 +129,18 @@ Validation evidence: Proof-first tests failed before `ArtifactEvidence` existed.
 #### BRF-M3-CR7 - Path labels substitute for stage-native completion and recovery proof
 
 Finding ID: BRF-M3-CR7
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the deterministic safe resolution or identify an approved stage-native evidence verifier that already covers coordinator, recovery, and cancellation.
+Decision needed: Resolved by the user's request to apply the deterministic safe resolution.
 Rationale: Path and SHA-256 checks establish artifact identity but not the stage-owned semantic completion predicate. The synchronization callback can echo the same evidence mapping, while recovery and cancellation accept caller-supplied evidence without locating or parsing any artifact.
 Required outcome: Completion and recovery must use stage-native semantic evidence and an independent canonical-owner reread before a receipt becomes completed or a capability becomes consumed.
-Chosen action: Pending review-resolution.
+Chosen action: Exposed bounded formal-review record and review-log parsers from the repository review validator, added a fail-closed proposal-review completion verifier in the state/reconciliation boundary, bound the parsed review target to the receipt proposal identity, required a matching canonical review-log occurrence, enforced the verifier before state-writer completion, and reused it for prepared/completed recovery and cancellation. Unsupported later-stage verifiers remain fail-closed until their owning M4/M5 integration milestones.
 Safe resolution path: Add one policy-owned evidence verifier/reader contract per stage that reuses existing review, lifecycle, plan, and verification parsers. Route coordinator completion, prepared-receipt recovery, and cancellation through it; independently re-resolve canonical state after synchronization; and add arbitrary-bytes, malformed-review, identity/outcome mismatch, no-write, stale-reread, nonexistent-recovery, and valid parser-produced fixtures.
 Validation target: CMD12-CMD14, full engine/state/validator regressions, direct semantic-artifact and recovery contrasts, and code-review M3 R4.
-Validation evidence: R3 completed proposal review from arbitrary non-review bytes and consumed capability authority. A second reproduction reconciled and cancelled a prepared transition from a nonexistent artifact, leaving the receipt completed and capability consumed. Ten capability, 30 state, and 52 validator tests pass but do not reject these cases.
+Validation evidence: Proof-first tests reproduced arbitrary review bytes and nonexistent recovery evidence completing or consuming authority before the fix. After the correction, CMD10-CMD14 pass; 14 capability tests, 33 state/recovery tests, 52 durable validator tests, and 103 review-parser tests pass. Direct contrasts reject arbitrary or malformed review evidence, unknown outcomes, wrong reviewed-artifact identity, missing canonical-log synchronization, nonexistent recovery artifacts, and disappeared completed-receipt canonical evidence; the parser-produced valid review fixture completes and consumes authority exactly once. The required broad-smoke suite passed all 11 checks in 436 seconds.
 
 ### code-review-m3-r1
 

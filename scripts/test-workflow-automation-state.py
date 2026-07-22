@@ -94,6 +94,79 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         path.write_text(dump_yaml(document), encoding="utf-8")
         return WorkflowAutomationStateStore(path), path
 
+    def materialize_valid_review_completion(
+        self,
+        store: WorkflowAutomationStateStore,
+        *,
+        transition_id: str = "transition-001",
+    ) -> dict[str, object]:
+        root = store.repository_root
+        proposal_relative = Path("docs/proposals/example.md")
+        proposal = root / proposal_relative
+        proposal.parent.mkdir(parents=True, exist_ok=True)
+        proposal.write_text("# Example proposal\n", encoding="utf-8")
+        proposal_identity = "sha256:" + hashlib.sha256(proposal.read_bytes()).hexdigest()
+
+        review_relative = Path(
+            "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md"
+        )
+        review = root / review_relative
+        review.parent.mkdir(parents=True, exist_ok=True)
+        review.write_text(
+            """# Proposal review
+
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Reviewer: fixture reviewer
+Target: docs/proposals/example.md
+Status: approved
+Material findings: None
+""",
+            encoding="utf-8",
+        )
+        review_identity = "sha256:" + hashlib.sha256(review.read_bytes()).hexdigest()
+        evidence = {"path": review_relative.as_posix(), "identity": review_identity}
+        change_root = review.parent.parent
+        (change_root / "review-log.md").write_text(
+            """# Review Log
+
+### Review entry
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Status: approved
+Detailed record: reviews/proposal-review-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+            encoding="utf-8",
+        )
+
+        snapshot = store.read()
+        replacement = copy.deepcopy(snapshot.automation)
+        receipt = replacement["transition_receipts"][transition_id]
+        receipt["input_identities"]["proposal"] = proposal_identity
+        receipt["transition_key"] = compute_transition_key(receipt)
+        capability = replacement["effective_capabilities"][
+            receipt["effective_capability_id"]
+        ]
+        capability["basis"]["proposal_identity"] = proposal_identity
+        store.replace_automation(
+            replacement, expected_document_identity=snapshot.document_identity
+        )
+        return {
+            "input_identities": copy.deepcopy(receipt["input_identities"]),
+            "expected_postcondition": copy.deepcopy(receipt["expected_postcondition"]),
+            "outputs": [copy.deepcopy(evidence)],
+            "canonical_sync": {
+                "status": "synchronized",
+                "evidence": {"proposal-review": copy.deepcopy(evidence)},
+                "observed_identities": {"proposal-review": review_identity},
+            },
+        }
+
     def test_prepare_persists_receipt_before_caller_can_invoke_stage(self) -> None:
         state = valid_automation()
         store, _ = self.make_store(state)
@@ -199,19 +272,41 @@ class WorkflowAutomationStateTests(unittest.TestCase):
 
     def test_recovery_reconciles_valid_completion_without_retry(self) -> None:
         state = valid_automation()
-        receipt = persist_receipt(state)
+        persist_receipt(state)
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        snapshot = store.read()
+        receipt = snapshot.automation["transition_receipts"]["transition-001"]
         decision = evaluate_receipt_recovery(
-            state,
+            snapshot.automation,
             receipt["transition_id"],
-            completion_evidence={
-                "input_identities": copy.deepcopy(receipt["input_identities"]),
-                "expected_postcondition": copy.deepcopy(receipt["expected_postcondition"]),
-                "outputs": ["sha256:review-output"],
-                "canonical_sync": {"status": "synchronized"},
-            },
+            completion_evidence=evidence,
+            repository_root=store.repository_root,
         )
         self.assertEqual(decision.action, "reconcile-completed")
         self.assertFalse(decision.invoke_stage)
+
+    def test_recovery_rejects_nonexistent_stage_evidence(self) -> None:
+        state = valid_automation()
+        persist_receipt(state)
+        store, _ = self.make_store(state)
+        snapshot = store.read()
+        receipt = snapshot.automation["transition_receipts"]["transition-001"]
+        decision = evaluate_receipt_recovery(
+            snapshot.automation,
+            receipt["transition_id"],
+            completion_evidence={
+                "input_identities": copy.deepcopy(receipt["input_identities"]),
+                "expected_postcondition": copy.deepcopy(
+                    receipt["expected_postcondition"]
+                ),
+                "outputs": [artifact_evidence()],
+                "canonical_sync": synchronized_evidence(),
+            },
+            repository_root=store.repository_root,
+        )
+        self.assertEqual(decision.action, "pause")
+        self.assertEqual(decision.reason, "stage-completion-artifact-invalid")
 
     def test_recovery_retries_only_idempotent_policy_without_evidence(self) -> None:
         cases = []
@@ -351,21 +446,59 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         )
         self.assertEqual(decision.action, "pause")
 
+    def test_completed_recovery_pauses_when_canonical_review_log_disappears(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
+        (
+            store.repository_root
+            / "docs/changes/2026-07-20-example/review-log.md"
+        ).unlink()
+        snapshot = store.read()
+        completed = snapshot.automation["transition_receipts"]["transition-001"]
+
+        decision = evaluate_receipt_recovery(
+            snapshot.automation,
+            "transition-001",
+            completion_evidence={
+                "outputs": copy.deepcopy(completed["outputs"]),
+                "canonical_sync": copy.deepcopy(completed["canonical_sync"]),
+            },
+            repository_root=store.repository_root,
+        )
+
+        self.assertEqual(decision.action, "pause")
+        self.assertEqual(decision.reason, "canonical-review-log-missing")
+
     def test_finalize_consumes_capability_only_with_completed_receipt(self) -> None:
         state = valid_automation()
         receipt = valid_receipt(state)
         state["transition_receipts"] = {"transition-001": receipt}
         store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
 
         store.finalize_transition(
             "transition-001",
             status="completed",
-            outputs=[artifact_evidence()],
+            outputs=evidence["outputs"],
             canonical_sync_status="synchronized",
-            canonical_sync_evidence={"proposal-review": artifact_evidence()},
-            canonical_sync_observed_identities={
-                "proposal-review": "sha256:review-output"
-            },
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
             expected_document_identity=store.read().document_identity,
         )
 
@@ -458,12 +591,7 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         receipt = valid_receipt(state)
         state["transition_receipts"] = {"transition-001": receipt}
         store, _ = self.make_store(state)
-        evidence = {
-            "input_identities": copy.deepcopy(receipt["input_identities"]),
-            "expected_postcondition": copy.deepcopy(receipt["expected_postcondition"]),
-            "outputs": [artifact_evidence()],
-            "canonical_sync": synchronized_evidence(),
-        }
+        evidence = self.materialize_valid_review_completion(store)
         result = store.cancel(
             cancelled_by="user",
             cancelled_at="2026-07-22T00:00:00Z",
@@ -478,6 +606,36 @@ class WorkflowAutomationStateTests(unittest.TestCase):
         self.assertEqual(
             persisted["effective_capabilities"]["capability-proposal-review-001"]["status"],
             "consumed",
+        )
+
+    def test_cancel_does_not_consume_nonexistent_stage_evidence(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = {
+            "input_identities": copy.deepcopy(receipt["input_identities"]),
+            "expected_postcondition": copy.deepcopy(receipt["expected_postcondition"]),
+            "outputs": [artifact_evidence()],
+            "canonical_sync": synchronized_evidence(),
+        }
+
+        result = store.cancel(
+            cancelled_by="user",
+            cancelled_at="2026-07-22T00:00:00Z",
+            completion_evidence=evidence,
+            expected_document_identity=store.read().document_identity,
+        )
+
+        persisted = store.read().automation
+        self.assertEqual(result.status, "reconciliation-required")
+        self.assertEqual(
+            persisted["transition_receipts"]["transition-001"]["status"],
+            "prepared",
+        )
+        self.assertEqual(
+            persisted["effective_capabilities"]["capability-proposal-review-001"]["status"],
+            "active",
         )
 
     def test_atomic_writer_preserves_unrelated_metadata_and_detects_drift(self) -> None:
@@ -724,21 +882,16 @@ class WorkflowAutomationStateTests(unittest.TestCase):
                             receipt,
                             expected_document_identity=store.read().document_identity,
                         )
-                        evidence = {
-                            "input_identities": copy.deepcopy(
-                                receipt["input_identities"]
-                            ),
-                            "expected_postcondition": copy.deepcopy(
-                                receipt["expected_postcondition"]
-                            ),
-                            "outputs": [artifact_evidence()],
-                            "canonical_sync": synchronized_evidence(),
-                        }
+                        evidence = self.materialize_valid_review_completion(store)
                         prepared = store.read()
+                        receipt = prepared.automation["transition_receipts"][
+                            "transition-001"
+                        ]
                         recovery = evaluate_receipt_recovery(
                             prepared.automation,
                             receipt["transition_id"],
                             completion_evidence=evidence,
+                            repository_root=store.repository_root,
                         )
                         store.finalize_transition(
                             receipt["transition_id"],
