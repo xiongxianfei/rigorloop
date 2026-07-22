@@ -102,12 +102,12 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Target Binding, Canonical Position, and Capability Evaluation
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r9.md`
-- Review status: approved; stage=code-review; round=r9
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M4, M5, M6
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -551,6 +551,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: Code-review M3 R8 confirmed the full-chain symlink correction, classified the R7 review-state correction as failed remediation, and opened `BRF-M3-CR15`. Alternate structured keys and plain contradictory prose remain accepted in the authoritative detail. M3 is resolution-needed; M4 remains blocked.
 - 2026-07-22: Resolved `BRF-M3-CR15` by replacing the prefix-plus-remainder parser and denylist with one exact generated projection for the complete live review-state detail in both open and closed states. Exact open/closed and alternate-key/plain-prose regressions pass; M3 is review-requested for R9 and M4 remains blocked.
 - 2026-07-22: Code-review M3 R9 independently confirmed `BRF-M3-CR15` resolved with no new material findings. M3 is closed; the next explicit stage is implement M4.
+- 2026-07-22: M4 implementation started with proposal-review outcome routing, bounded driver-owned proposal correction, conditional authoring progression through `test-spec-review`, and explicit non-public harness isolation. Public workflow and legacy adapter activation remain reserved for M6.
+- 2026-07-22: M4 added exhaustive proposal-review occurrence/gate routing, unchanged-inconclusive retry prevention, driver-owned bounded proposal correction with stale-review/rereview enforcement, and deterministic authoring/architecture routing through `test-spec-review`. CMD14-CMD20, the full engine suite, and repository broad smoke pass; M4 is review-requested and remains unreachable from public and legacy commands.
 
 ## Decision log
 
@@ -587,6 +589,12 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - A stage-only frontier cannot represent stopping order across repeated milestone occurrences; the target milestone must participate in next-edge permission.
 
 ## Validation notes
+
+- M4 proof-first execution failed before production changes because the proposal-review, proposal-correction, and non-public authoring decision interfaces did not exist.
+- CMD15-CMD18 pass with 3 proposal-review, 1 proposal-correction, 3 authoring, and 2 non-public selected tests; the full automation-engine suite passes all 30 tests.
+- CMD14, CMD19, and CMD20 pass all 156 lifecycle, 103 review-artifact, and 259 skill-validator tests. Python compilation and `git diff --check` also pass.
+- The validation selector selected lifecycle validation and broad smoke while reporting expected manual routing for the two unsupported automation script paths covered by CMD15-CMD18. The final repository broad-smoke rerun passed all 11 checks in 409 seconds after executable correction-capability binding was tightened.
+- M4 does not change `skills/workflow/SKILL.md`, public command routing, legacy adapter behavior, or any external-action boundary; those remain reserved for M6.
 
 - Code-review M3 R9 reran the exact open/closed and reported bypass contrasts, terminal-history compatibility, all 156 lifecycle tests, CMD10-CMD13, current lifecycle validation, selector routing, and diff checks. No new material finding was identified.
 
