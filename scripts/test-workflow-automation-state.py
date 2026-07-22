@@ -6,8 +6,8 @@ from __future__ import annotations
 import copy
 import hashlib
 import importlib.util
+import inspect
 import os
-import shutil
 import sys
 import tempfile
 import unittest
@@ -217,6 +217,115 @@ Open findings: None
             StateContractError, "change_id must match its canonical change directory"
         ):
             WorkflowAutomationStateStore(path).read()
+
+    def test_store_rejects_canonical_metadata_with_ancestor_root(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        common_root = Path(temp.name)
+        repository_root = common_root / "repository"
+        path = repository_root / "docs/changes/2026-07-20-example/change.yaml"
+        path.parent.mkdir(parents=True)
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Canonical state fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                    "workflow": {},
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        with self.assertRaisesRegex(
+            StateContractError, "explicit repository root must equal canonical root"
+        ):
+            WorkflowAutomationStateStore(path, repository_root=common_root)
+
+    def test_store_rejects_symlinked_canonical_metadata_file(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        foreign = root / "foreign/change.yaml"
+        foreign.parent.mkdir(parents=True)
+        foreign.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Foreign state fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                    "workflow": {},
+                }
+            ),
+            encoding="utf-8",
+        )
+        path = root / "repository/docs/changes/2026-07-20-example/change.yaml"
+        path.parent.mkdir(parents=True)
+        path.symlink_to(foreign)
+
+        with self.assertRaisesRegex(
+            StateContractError, "canonical change metadata path must not contain symlinks"
+        ):
+            WorkflowAutomationStateStore(path)
+
+    def test_store_rejects_symlinked_canonical_metadata_directory(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        repository_root = root / "repository"
+        foreign_change = root / "foreign/2026-07-20-example"
+        foreign_change.mkdir(parents=True)
+        (foreign_change / "change.yaml").write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Foreign state fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                    "workflow": {},
+                }
+            ),
+            encoding="utf-8",
+        )
+        changes = repository_root / "docs/changes"
+        changes.mkdir(parents=True)
+        linked_change = changes / "2026-07-20-example"
+        linked_change.symlink_to(foreign_change, target_is_directory=True)
+
+        with self.assertRaisesRegex(
+            StateContractError, "canonical change metadata path must not contain symlinks"
+        ):
+            WorkflowAutomationStateStore(linked_change / "change.yaml")
+
+    def test_store_accepts_matching_explicit_canonical_root(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        path = root / "docs/changes/2026-07-20-example/change.yaml"
+        path.parent.mkdir(parents=True)
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Canonical state fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                    "workflow": {},
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        store = WorkflowAutomationStateStore(path, repository_root=root)
+
+        self.assertEqual(store.repository_root, root.resolve())
+        self.assertEqual(store.read().document["change_id"], "2026-07-20-example")
 
     def test_prepare_persists_receipt_before_caller_can_invoke_stage(self) -> None:
         state = valid_automation()
@@ -750,33 +859,23 @@ Open findings: None
             "consumed",
         )
 
-    def test_finalize_rejects_foreign_repository_root_before_mutation(self) -> None:
+    def test_finalization_has_no_foreign_repository_root_override(self) -> None:
         state = valid_automation()
         receipt = valid_receipt(state)
         state["transition_receipts"] = {"transition-001": receipt}
         store, _ = self.make_store(state)
-        evidence = self.materialize_valid_review_completion(store)
         foreign = tempfile.TemporaryDirectory()
         self.addCleanup(foreign.cleanup)
         foreign_root = Path(foreign.name)
-        shutil.copytree(store.repository_root / "docs", foreign_root / "docs")
         before = store.read()
 
+        self.assertNotIn(
+            "repository_root", inspect.signature(store.finalize_transition).parameters
+        )
         with self.assertRaisesRegex(
             StateContractError, "repository root does not match state store"
         ):
-            store.finalize_transition(
-                "transition-001",
-                status="completed",
-                outputs=evidence["outputs"],
-                canonical_sync_status="synchronized",
-                canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
-                canonical_sync_observed_identities=evidence["canonical_sync"][
-                    "observed_identities"
-                ],
-                expected_document_identity=before.document_identity,
-                repository_root=foreign_root,
-            )
+            store.require_repository_root(foreign_root)
 
         after = store.read()
         self.assertEqual(after.document_identity, before.document_identity)
