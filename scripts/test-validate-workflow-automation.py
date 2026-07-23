@@ -121,6 +121,48 @@ def add_valid_receipt(state: dict[str, object]) -> dict[str, object]:
     return receipt
 
 
+def add_completed_proposal_review(
+    state: dict[str, object],
+    review_result: dict[str, object],
+) -> dict[str, object]:
+    receipt = add_valid_receipt(state)
+    evidence = {
+        "path": (
+            "docs/changes/2026-07-20-example/reviews/"
+            "proposal-review-r1.md"
+        ),
+        "identity": review_result["review_record_identity"],
+    }
+    receipt["status"] = "completed"
+    receipt["outputs"] = [copy.deepcopy(evidence)]
+    receipt["canonical_sync"] = {
+        "status": "synchronized",
+        "evidence": {"proposal-review": copy.deepcopy(evidence)},
+        "observed_identities": {
+            "proposal-review": review_result["review_record_identity"],
+        },
+    }
+    receipt["proposal_review_route"] = {
+        "review_id": review_result["review_id"],
+        "outcome": review_result["outcome"],
+        "target": copy.deepcopy(receipt["target"]),
+        "reviewed_artifact_identity": review_result[
+            "reviewed_artifact_identity"
+        ],
+        "review_record_identity": review_result["review_record_identity"],
+        "routing_action": review_result["routing_action"],
+        "correction_capability_id": review_result.get(
+            "correction_capability_id"
+        ),
+    }
+    state["effective_capabilities"]["capability-proposal-review-001"][  # type: ignore[index]
+        "status"
+    ] = "consumed"
+    review_result["source_transition_id"] = "transition-001"
+    state["latest_review_result"] = review_result
+    return receipt
+
+
 def set_policy_postcondition(receipt: dict[str, object], stage_name: str) -> None:
     policy = STAGE_POLICY_BY_STAGE[stage_name]
     receipt["expected_postcondition"] = {
@@ -402,16 +444,15 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
 
     def test_receipt_and_review_vocabulary_values_fail_closed(self) -> None:
         state = valid_automation()
-        add_valid_receipt(state)
-        state["latest_review_result"] = {
+        add_completed_proposal_review(state, {
             "review_id": "proposal-review-r1",
             "reviewed_artifact_identity": "sha256:proposal",
             "review_record_identity": "sha256:review",
             "outcome": "approved",
             "occurrence_recorded": True,
             "clean_gate": "satisfied",
-            "routing_action": "continue",
-        }
+            "routing_action": "stop-at-target",
+        })
         mutations = (
             (("transition_receipts", "transition-001", "status"), "waiting", "status"),
             (("transition_receipts", "transition-001", "retry_policy"), "retry-forever", "retry_policy"),
@@ -542,7 +583,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 state["parent_authorizations"][
                     "authorization-authoring-001"
                 ]["maximum_target"] = copy.deepcopy(target)
-                state["latest_review_result"] = {
+                review_result = {
                     "review_id": "proposal-review-r1",
                     "reviewed_artifact_identity": "sha256:proposal",
                     "review_record_identity": "sha256:review",
@@ -552,9 +593,8 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     "routing_action": route,
                 }
                 if expected_pause_reason is not None:
-                    state["latest_review_result"][
-                        "pause_reason"
-                    ] = expected_pause_reason
+                    review_result["pause_reason"] = expected_pause_reason
+                add_completed_proposal_review(state, review_result)
 
                 errors = validate_workflow_automation(state)
 

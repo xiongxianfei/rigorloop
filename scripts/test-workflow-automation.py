@@ -44,6 +44,7 @@ from workflow_automation import (
 )
 from workflow_automation_policy import PUBLIC_TARGET_STAGES, STAGE_POLICY_BY_STAGE
 from workflow_automation_state import (
+    StateContractError,
     WorkflowAutomationStateStore,
     dump_yaml,
     evaluate_receipt_recovery,
@@ -1016,6 +1017,7 @@ Planned validation rule: proposal-exact-append
                 "occurrence_recorded": True,
                 "clean_gate": "satisfied",
                 "routing_action": "stop-at-target",
+                "source_transition_id": "transition-engine-001",
             },
         )
 
@@ -1489,7 +1491,14 @@ Planned validation rule: proposal-exact-append
                 "clean_gate": "not-satisfied",
                 "routing_action": "correction-loop",
                 "correction_capability_id": "cap-correction-transaction",
+                "source_transition_id": "transition-engine-001",
             },
+        )
+        self.assertEqual(
+            automation["transition_receipts"]["transition-engine-001"][
+                "proposal_review_route"
+            ]["correction_capability_id"],
+            "cap-correction-transaction",
         )
         self.assertEqual(automation["run"]["status"], "active")
 
@@ -1535,6 +1544,18 @@ Planned validation rule: proposal-exact-append
             "transition-engine-001"
         )
         tampered_cases.append(("missing-review-receipt", missing_review_receipt))
+        wrong_source_transition = copy.deepcopy(corrected)
+        wrong_source_transition["latest_review_result"][
+            "source_transition_id"
+        ] = "transition-later"
+        tampered_cases.append(
+            ("wrong-source-transition", wrong_source_transition)
+        )
+        changed_route_binding = copy.deepcopy(corrected)
+        changed_route_binding["transition_receipts"]["transition-engine-001"][
+            "proposal_review_route"
+        ]["correction_capability_id"] = None
+        tampered_cases.append(("changed-route-binding", changed_route_binding))
         for label, candidate in tampered_cases:
             with self.subTest(tamper=label):
                 errors = validate_workflow_automation(candidate)
@@ -1596,8 +1617,17 @@ Planned validation rule: proposal-exact-append
         )
         self.assertEqual(recorded_result["routing_action"], "pause")
         self.assertEqual(
+            recorded_result["source_transition_id"],
+            "transition-engine-001",
+        )
+        self.assertEqual(
             recorded_result["pause_reason"],
             "proposal-correction-authorization-required",
+        )
+        self.assertIsNone(
+            paused_snapshot.automation["transition_receipts"][
+                recorded_result["source_transition_id"]
+            ]["proposal_review_route"]["correction_capability_id"]
         )
 
         with_later_capability = copy.deepcopy(paused_snapshot.automation)
@@ -1616,6 +1646,44 @@ Planned validation rule: proposal-exact-append
             persisted["run"]["pause_reason"],
             "proposal-correction-authorization-required",
         )
+
+        retroactive_route = copy.deepcopy(persisted)
+        retroactive_route["latest_review_result"].pop("pause_reason")
+        retroactive_route["latest_review_result"]["routing_action"] = (
+            "correction-loop"
+        )
+        retroactive_route["latest_review_result"]["correction_capability_id"] = (
+            correction_capability["capability_id"]
+        )
+        retroactive_route["run"]["status"] = "active"
+        retroactive_route["run"].pop("pause_reason")
+        errors = validate_workflow_automation(retroactive_route)
+        self.assertTrue(
+            any(
+                "invalid recorded proposal-review route" in error
+                for error in errors
+            ),
+            errors,
+        )
+
+        rewritten_receipt = copy.deepcopy(retroactive_route)
+        route_binding = rewritten_receipt["transition_receipts"][
+            recorded_result["source_transition_id"]
+        ]["proposal_review_route"]
+        route_binding["routing_action"] = "correction-loop"
+        route_binding["correction_capability_id"] = correction_capability[
+            "capability_id"
+        ]
+        self.assertEqual(validate_workflow_automation(rewritten_receipt), [])
+        current_snapshot = store.read()
+        with self.assertRaisesRegex(
+            StateContractError,
+            "finalized transition receipt is immutable",
+        ):
+            store.replace_automation(
+                rewritten_receipt,
+                expected_document_identity=current_snapshot.document_identity,
+            )
 
     def test_proposal_review_transaction_rejects_stale_correction_capability(
         self,
