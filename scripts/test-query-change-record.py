@@ -499,6 +499,66 @@ validation_summary:
         )
         self.assertEqual(metadata_path.read_bytes(), before)
 
+    def test_load_does_not_bypass_unified_state_when_first_parse_lacks_automation(
+        self,
+    ) -> None:
+        for tracked_state in ("valid", "invalid"):
+            with self.subTest(tracked_state=tracked_state):
+                repo, metadata_path, store = self.make_completed_review_change()
+                tracked = copy.deepcopy(store.read().document)
+                stale = copy.deepcopy(tracked)
+                stale["workflow"].pop("automation")
+                if tracked_state == "invalid":
+                    automation = tracked["workflow"]["automation"]
+                    receipt = automation["transition_receipts"][
+                        "transition-001"
+                    ]
+                    for surface in (
+                        receipt["proposal_review_evidence"],
+                        receipt["proposal_review_route"],
+                        automation["latest_review_result"],
+                    ):
+                        surface["review_id"] = "proposal-review-forged"
+                    metadata_path.write_text(
+                        dump_yaml(tracked),
+                        encoding="utf-8",
+                    )
+                before = metadata_path.read_bytes()
+                query_module = _load_query_module()
+                parser = mock.Mock()
+                parser.load_yaml.return_value = stale
+
+                with mock.patch.object(
+                    query_module,
+                    "load_metadata_parser",
+                    return_value=parser,
+                ):
+                    _, data, error = query_module.load_change_metadata(
+                        repo,
+                        "2026-07-20-example",
+                    )
+
+                if tracked_state == "valid":
+                    self.assertIsNone(error)
+                    self.assertIsNotNone(data)
+                    self.assertEqual(
+                        data["workflow"]["automation"][
+                            "latest_review_result"
+                        ]["review_id"],
+                        "proposal-review-r1",
+                    )
+                else:
+                    self.assertIsNone(data)
+                    self.assertEqual(
+                        error["code"],
+                        "invalid-automation-state",
+                    )
+                    self.assertIn(
+                        "proposal-review semantic evidence",
+                        error["detail"],
+                    )
+                self.assertEqual(metadata_path.read_bytes(), before)
+
     def test_summary_supports_legacy_metadata(self) -> None:
         repo = self.make_change("2026-05-22-legacy-query", self.legacy_change_yaml())
 

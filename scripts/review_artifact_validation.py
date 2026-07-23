@@ -2543,6 +2543,7 @@ def _parse_review_log(path: Path, mode: str) -> tuple[list[ReviewLogEntry], list
 
     table_entries, table_findings = _parse_clean_receipt_log_table(path, lines, mode)
     entries.extend(table_entries)
+    entries.sort(key=lambda entry: entry.line)
     findings.extend(table_findings)
     return entries, findings
 
