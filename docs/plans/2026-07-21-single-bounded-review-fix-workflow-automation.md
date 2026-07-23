@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r1.md`
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M4 rereview, M5, M6
-- Next stage: code-review M4 R2
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r2.md`
+- Review status: changes-requested; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M4 resolution needed, M5, M6
+- Next stage: review-resolution M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BRF-M4-CR3,BRF-M4-CR4
 
 ## Milestones
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -556,6 +556,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: Code-review M4 R1 requested changes in `BRF-M4-CR1` and `BRF-M4-CR2`: the M4 authoring path is helper-only rather than receipt-backed, and proposal correction trusts unbound caller assertions with optional classification history. M4 is resolution-needed; M5 remains blocked.
 - 2026-07-22: The user accepted the recorded safe resolutions for `BRF-M4-CR1` and `BRF-M4-CR2`. M4 correction implementation started with transactional stage proof and canonical correction-evidence binding; M5 and public routing remain out of scope.
 - 2026-07-22: Resolved `BRF-M4-CR1` and `BRF-M4-CR2` by connecting authoring and proposal correction to the prepared-receipt coordinator, adding parser-backed completion for all M4 stages, and deriving correction authority from exact persisted capability identities. M4 is review-requested for R2; public and legacy routing remain unchanged.
+- 2026-07-22: Code-review M4 R2 classified both R1 findings as failed remediations and opened `BRF-M4-CR3` plus `BRF-M4-CR4`: non-review completed recovery is review-log-specific, and correction authority/convergence remains caller-substitutable. M4 is resolution-needed; M5 remains blocked.
 
 ## Decision log
 
@@ -593,6 +594,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- Code-review M4 R2 used an L2 separated blind-first risk map before releasing tests, validation summaries, or prior findings. CMD14-CMD20 and full engine/state/validator suites passed, but direct probes reproduced empty-budget routing, stale persisted budget acceptance, preflight authorization without post-mutation validation, and completed non-review recovery that always pauses for absent review-log identity.
 - M4 R1 correction passes 3 proposal-review, 3 proposal-correction, 4 authoring, and 3 non-public selected tests; all 33 engine, 49 state/recovery, and 52 automation-validator tests pass. Receipt-backed spec and proposal-correction fixtures prove prepared-receipt ordering, parser-backed completion, exact capability consumption, rereview routing, and pre-write rejection of public, direct, bugfix, and legacy contexts.
 - CMD14, CMD19, and CMD20 pass all 156 lifecycle, 103 review-artifact, and 259 skill-validator tests. All 53 metadata-validator tests, closeout review validation with 57/57 findings resolved, change metadata validation, guide validation, exact lifecycle validation, Python compilation, and diff checks pass.
 - Validation selection reports expected manual routing for the four unsupported automation engine/test paths; the plan-owned CMD15-CMD18 and full engine/state/validator suites cover them directly. The required repository broad-smoke command passes. Public workflow/legacy adapters, external actions, and M5 implementation behavior remain unchanged.
