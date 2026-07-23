@@ -979,19 +979,26 @@ class WorkflowAutomationStateStore:
                 target_stage = (
                     target.get("stage") if isinstance(target, dict) else None
                 )
+                review_record_identity = proof.observed_identities.get(
+                    "proposal-review"
+                )
+                reviewed_artifact_identity = proof.stage_facts.get(
+                    "reviewed_artifact_identity"
+                )
                 try:
                     correction_capability_id = (
                         resolve_active_proposal_correction_capability(
-                            replacement
+                            replacement,
+                            reviewed_proposal_identity=reviewed_artifact_identity,
+                            review_record_identity=review_record_identity,
                         )
                     )
                     projection = project_proposal_review_result(
                         outcome=outcome,
                         target_stage=target_stage,
                         review_id=proof.stage_facts.get("review_id"),
-                        reviewed_artifact_identity=proof.stage_facts.get(
-                            "reviewed_artifact_identity"
-                        ),
+                        reviewed_artifact_identity=reviewed_artifact_identity,
+                        review_record_identity=review_record_identity,
                         correction_capability_id=correction_capability_id,
                     )
                 except (TypeError, ValueError) as error:
@@ -1003,10 +1010,8 @@ class WorkflowAutomationStateStore:
                     projection.review_result
                 )
                 run["status"] = projection.run_status
-                if "pause_reason" in projection.review_result:
-                    run["pause_reason"] = projection.review_result[
-                        "pause_reason"
-                    ]
+                if projection.run_pause_reason is not None:
+                    run["pause_reason"] = projection.run_pause_reason
                 else:
                     run.pop("pause_reason", None)
         elif invalidate_bound_capability:

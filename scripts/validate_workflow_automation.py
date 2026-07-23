@@ -132,9 +132,21 @@ TRANSITION_KEY_FIELDS = frozenset(
 
 def resolve_active_proposal_correction_capability(
     automation: dict[str, Any],
+    *,
+    reviewed_proposal_identity: str,
+    review_record_identity: str,
 ) -> str | None:
     """Return the unique executable proposal-correction capability, if any."""
 
+    if (
+        not isinstance(reviewed_proposal_identity, str)
+        or not reviewed_proposal_identity.strip()
+        or not isinstance(review_record_identity, str)
+        or not review_record_identity.strip()
+    ):
+        raise ValueError(
+            "current proposal and review-record identities are required"
+        )
     parents = automation.get("parent_authorizations")
     capabilities = automation.get("effective_capabilities")
     if not isinstance(parents, dict) or not isinstance(capabilities, dict):
@@ -144,6 +156,7 @@ def resolve_active_proposal_correction_capability(
         if not isinstance(capability_id, str) or not isinstance(capability, dict):
             continue
         stage = capability.get("stage")
+        basis = capability.get("basis")
         scope = capability.get("scope")
         parent = parents.get(capability.get("parent_authorization_id"))
         budget = scope.get("correction_budget") if isinstance(scope, dict) else None
@@ -153,6 +166,10 @@ def resolve_active_proposal_correction_capability(
             == CapabilityKind.PROPOSAL_CORRECTION.value
             and isinstance(stage, dict)
             and stage.get("name") == WorkflowStage.PROPOSAL.value
+            and isinstance(basis, dict)
+            and basis.get("reviewed_proposal_identity")
+            == reviewed_proposal_identity
+            and basis.get("review_record_identity") == review_record_identity
             and isinstance(parent, dict)
             and parent.get("status") == "active"
             and isinstance(budget, dict)
@@ -778,6 +795,7 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
         required_review_result_fields = {
             "review_id",
             "reviewed_artifact_identity",
+            "review_record_identity",
             "outcome",
             "occurrence_recorded",
             "clean_gate",
@@ -1402,6 +1420,7 @@ def validate_workflow_automation(
     if isinstance(review_result, dict) and isinstance(run, dict):
         review_id = review_result.get("review_id")
         reviewed_identity = review_result.get("reviewed_artifact_identity")
+        review_record_identity = review_result.get("review_record_identity")
         if not isinstance(review_id, str) or not review_id.strip():
             errors.append(
                 "workflow.automation.latest_review_result.review_id: "
@@ -1415,17 +1434,28 @@ def validate_workflow_automation(
                 "workflow.automation.latest_review_result."
                 "reviewed_artifact_identity: expected concrete identity"
             )
+        if (
+            not isinstance(review_record_identity, str)
+            or not review_record_identity.strip()
+        ):
+            errors.append(
+                "workflow.automation.latest_review_result."
+                "review_record_identity: expected concrete identity"
+            )
         target = run.get("target")
         target_stage = target.get("stage") if isinstance(target, dict) else None
         try:
-            correction_capability_id = (
-                resolve_active_proposal_correction_capability(automation)
+            correction_capability_id = resolve_active_proposal_correction_capability(
+                automation,
+                reviewed_proposal_identity=reviewed_identity,
+                review_record_identity=review_record_identity,
             )
             expected_projection = project_proposal_review_result(
                 outcome=review_result.get("outcome"),
                 target_stage=target_stage,
                 review_id=review_id,
                 reviewed_artifact_identity=reviewed_identity,
+                review_record_identity=review_record_identity,
                 correction_capability_id=correction_capability_id,
             )
         except (TypeError, ValueError):
@@ -1440,6 +1470,18 @@ def validate_workflow_automation(
             if run.get("status") != expected_projection.run_status:
                 errors.append(
                     "workflow.automation.run.status: must match latest "
+                    "proposal-review routing action"
+                )
+            expected_pause_reason = expected_projection.run_pause_reason
+            if expected_pause_reason is None:
+                if "pause_reason" in run:
+                    errors.append(
+                        "workflow.automation.run.pause_reason: must be absent "
+                        "for the latest proposal-review routing action"
+                    )
+            elif run.get("pause_reason") != expected_pause_reason:
+                errors.append(
+                    "workflow.automation.run.pause_reason: must match latest "
                     "proposal-review routing action"
                 )
 
