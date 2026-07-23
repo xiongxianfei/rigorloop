@@ -1044,14 +1044,28 @@ Open findings: None
 
     def test_cancel_revokes_authority_and_preserves_receipts(self) -> None:
         state = valid_automation()
-        receipt = valid_receipt(state)
-        receipt.update(
-            status="completed",
-            outputs=[artifact_evidence()],
-            canonical_sync=synchronized_evidence(),
+        later_target = {
+            "stage": "spec",
+            "occurrence": {"kind": "singleton"},
+            "bound_at": "2026-07-20T00:00:00Z",
+            "completion": FIXTURES.target_completion_predicate("spec"),
+        }
+        state["run"]["target"] = copy.deepcopy(later_target)
+        state["parent_authorizations"]["authorization-authoring-001"][
+            "maximum_target"
+        ] = copy.deepcopy(later_target)
+        FIXTURES.add_completed_proposal_review(
+            state,
+            {
+                "review_id": "proposal-review-r1",
+                "reviewed_artifact_identity": "sha256:proposal",
+                "review_record_identity": "sha256:review-output",
+                "outcome": "approved",
+                "occurrence_recorded": True,
+                "clean_gate": "satisfied",
+                "routing_action": "continue",
+            },
         )
-        state["effective_capabilities"]["capability-proposal-review-001"]["status"] = "consumed"
-        state["transition_receipts"] = {"transition-001": receipt}
         store, _ = self.make_store(state)
 
         result = store.cancel(
@@ -1072,6 +1086,26 @@ Open findings: None
     def test_cancel_is_idempotent_and_completed_run_is_immutable(self) -> None:
         state = valid_automation()
         state["run"]["status"] = "cancelled"
+        state["run"]["stop_reason"] = "run-cancelled"
+        state["cancellation"] = {
+            "cancelled_by": "user",
+            "cancelled_at": "2026-07-22T00:00:00Z",
+            "reason": "run-cancelled",
+        }
+        state["parent_authorizations"]["authorization-authoring-001"][
+            "status"
+        ] = "revoked"
+        state["parent_authorizations"]["authorization-authoring-001"][
+            "revocation"
+        ] = {
+            "revoked": True,
+            "revoked_by": "user",
+            "revoked_at": "2026-07-22T00:00:00Z",
+            "reason": "run-cancelled",
+        }
+        state["effective_capabilities"]["capability-proposal-review-001"][
+            "status"
+        ] = "invalidated"
         store, path = self.make_store(state)
         before = hashlib.sha256(path.read_bytes()).hexdigest()
         result = store.cancel(cancelled_by="user", cancelled_at="2026-07-22T00:00:00Z")
@@ -1123,7 +1157,7 @@ Open findings: None
         state = valid_automation()
         receipt = valid_receipt(state)
         state["transition_receipts"] = {"transition-001": receipt}
-        store, _ = self.make_store(state)
+        store, path = self.make_store(state)
         evidence = self.materialize_valid_review_completion(store)
         result = store.cancel(
             cancelled_by="user",
@@ -1146,6 +1180,55 @@ Open findings: None
                 "observed_identities"
             ],
         )
+        route = persisted["transition_receipts"]["transition-001"][
+            "proposal_review_route"
+        ]
+        review_result = persisted["latest_review_result"]
+        self.assertEqual(review_result["source_transition_id"], "transition-001")
+        self.assertEqual(
+            route,
+            {
+                "review_id": review_result["review_id"],
+                "outcome": review_result["outcome"],
+                "target": receipt["target"],
+                "reviewed_artifact_identity": review_result[
+                    "reviewed_artifact_identity"
+                ],
+                "review_record_identity": review_result[
+                    "review_record_identity"
+                ],
+                "routing_action": review_result["routing_action"],
+                "correction_capability_id": None,
+            },
+        )
+        self.assertEqual(persisted["run"]["status"], "cancelled")
+        self.assertEqual(persisted["run"]["stop_reason"], "run-cancelled")
+        self.assertNotIn("pause_reason", persisted["run"])
+        self.assertEqual(
+            persisted["parent_authorizations"]["authorization-authoring-001"][
+                "status"
+            ],
+            "revoked",
+        )
+        self.assertEqual(
+            persisted["latest_review_result"]["routing_action"],
+            "stop-at-target",
+        )
+
+        rewritten = copy.deepcopy(persisted)
+        rewritten["transition_receipts"]["transition-001"][
+            "unexpected_rewrite"
+        ] = True
+        before = path.read_bytes()
+        with self.assertRaisesRegex(
+            StateContractError,
+            "finalized transition receipt is immutable",
+        ):
+            store.replace_automation(
+                rewritten,
+                expected_document_identity=store.read().document_identity,
+            )
+        self.assertEqual(path.read_bytes(), before)
 
     def test_cancel_does_not_consume_nonexistent_stage_evidence(self) -> None:
         state = valid_automation()

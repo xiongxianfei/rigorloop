@@ -123,6 +123,61 @@ class VerifiedCompletion:
     stage_facts: dict[str, str]
 
 
+def _project_completed_proposal_review(
+    automation: dict[str, Any],
+    receipt: dict[str, Any],
+    proof: VerifiedCompletion,
+) -> None:
+    """Persist the complete proposal-review result for every completion path."""
+
+    run = automation.get("run")
+    if not isinstance(run, dict):
+        raise StateContractError(
+            "proposal-review result requires an automation run"
+        )
+    transition_id = receipt.get("transition_id")
+    if not isinstance(transition_id, str) or not transition_id:
+        raise StateContractError(
+            "proposal-review result requires a transition identity"
+        )
+    target = run.get("target")
+    target_stage = target.get("stage") if isinstance(target, dict) else None
+    review_record_identity = proof.observed_identities.get("proposal-review")
+    reviewed_artifact_identity = proof.stage_facts.get(
+        "reviewed_artifact_identity"
+    )
+    try:
+        correction_capability_id = resolve_active_proposal_correction_capability(
+            automation,
+            reviewed_proposal_identity=reviewed_artifact_identity,
+            review_record_identity=review_record_identity,
+        )
+        projection = project_proposal_review_result(
+            outcome=proof.stage_facts.get("review_outcome"),
+            target_stage=target_stage,
+            review_id=proof.stage_facts.get("review_id"),
+            reviewed_artifact_identity=reviewed_artifact_identity,
+            review_record_identity=review_record_identity,
+            correction_capability_id=correction_capability_id,
+        )
+    except (TypeError, ValueError) as error:
+        raise StateContractError(
+            "proposal-review result projection failed: " + str(error)
+        ) from error
+    receipt["proposal_review_route"] = copy.deepcopy(
+        proposal_review_route_binding(projection.review_result, target)
+    )
+    automation["latest_review_result"] = {
+        **projection.review_result,
+        "source_transition_id": transition_id,
+    }
+    run["status"] = projection.run_status
+    if projection.run_pause_reason is not None:
+        run["pause_reason"] = projection.run_pause_reason
+    else:
+        run.pop("pause_reason", None)
+
+
 def _load_metadata_parser() -> Any:
     spec = importlib.util.spec_from_file_location(
         "change_metadata_validator_for_automation_state", METADATA_VALIDATOR
@@ -992,58 +1047,11 @@ class WorkflowAutomationStateStore:
                 isinstance(capability_stage, dict)
                 and capability_stage.get("name") == "proposal-review"
             ):
-                run = replacement.get("run")
-                if not isinstance(run, dict):
-                    raise StateContractError(
-                        "proposal-review result requires an automation run"
-                    )
-                outcome = proof.stage_facts.get("review_outcome")
-                target = run.get("target")
-                target_stage = (
-                    target.get("stage") if isinstance(target, dict) else None
+                _project_completed_proposal_review(
+                    replacement,
+                    receipt,
+                    proof,
                 )
-                review_record_identity = proof.observed_identities.get(
-                    "proposal-review"
-                )
-                reviewed_artifact_identity = proof.stage_facts.get(
-                    "reviewed_artifact_identity"
-                )
-                try:
-                    correction_capability_id = (
-                        resolve_active_proposal_correction_capability(
-                            replacement,
-                            reviewed_proposal_identity=reviewed_artifact_identity,
-                            review_record_identity=review_record_identity,
-                        )
-                    )
-                    projection = project_proposal_review_result(
-                        outcome=outcome,
-                        target_stage=target_stage,
-                        review_id=proof.stage_facts.get("review_id"),
-                        reviewed_artifact_identity=reviewed_artifact_identity,
-                        review_record_identity=review_record_identity,
-                        correction_capability_id=correction_capability_id,
-                    )
-                except (TypeError, ValueError) as error:
-                    raise StateContractError(
-                        "proposal-review result projection failed: "
-                        + str(error)
-                    ) from error
-                receipt["proposal_review_route"] = copy.deepcopy(
-                    proposal_review_route_binding(
-                        projection.review_result,
-                        target,
-                    )
-                )
-                replacement["latest_review_result"] = {
-                    **projection.review_result,
-                    "source_transition_id": transition_id,
-                }
-                run["status"] = projection.run_status
-                if projection.run_pause_reason is not None:
-                    run["pause_reason"] = projection.run_pause_reason
-                else:
-                    run.pop("pause_reason", None)
         elif invalidate_bound_capability:
             capabilities = replacement.get("effective_capabilities")
             capability = (
@@ -1112,7 +1120,18 @@ class WorkflowAutomationStateStore:
                 receipt["effective_capability_id"]
             ]
             capability["status"] = "consumed"
+            capability_stage = capability.get("stage")
+            if (
+                isinstance(capability_stage, dict)
+                and capability_stage.get("name") == "proposal-review"
+            ):
+                _project_completed_proposal_review(
+                    replacement,
+                    receipt,
+                    proof,
+                )
         replacement["run"]["status"] = "cancelled"
+        replacement["run"].pop("pause_reason", None)
         replacement["run"]["stop_reason"] = "run-cancelled"
         replacement["cancellation"] = {
             "cancelled_by": cancelled_by,

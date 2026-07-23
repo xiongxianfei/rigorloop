@@ -1551,6 +1551,85 @@ def validate_workflow_automation(
         active_occurrences[key] = capability_id
 
     review_result = automation.get("latest_review_result")
+    completed_proposal_review_receipts: list[tuple[str, dict[str, Any]]] = []
+    review_receipts = automation.get("transition_receipts")
+    if not isinstance(review_receipts, dict):
+        review_receipts = {}
+    for transition_id, receipt in review_receipts.items():
+        if not isinstance(receipt, dict) or receipt.get("status") != "completed":
+            continue
+        capability = capabilities.get(receipt.get("effective_capability_id"))
+        stage = capability.get("stage") if isinstance(capability, dict) else None
+        if (
+            isinstance(capability, dict)
+            and capability.get("capability_kind")
+            == CapabilityKind.PROPOSAL_REVIEW.value
+            and isinstance(stage, dict)
+            and stage.get("name") == WorkflowStage.PROPOSAL_REVIEW.value
+        ):
+            completed_proposal_review_receipts.append((transition_id, receipt))
+            if not isinstance(receipt.get("proposal_review_route"), dict):
+                errors.append(
+                    "workflow.automation.transition_receipts."
+                    f"{transition_id}.proposal_review_route: completed "
+                    "proposal-review transition requires immutable route binding"
+                )
+    if completed_proposal_review_receipts and not isinstance(review_result, dict):
+        errors.append(
+            "workflow.automation.latest_review_result: completed "
+            "proposal-review transition requires a source-linked latest "
+            "review occurrence"
+        )
+
+    if isinstance(run, dict) and run.get("status") == "cancelled":
+        if run.get("stop_reason") != "run-cancelled":
+            errors.append(
+                "workflow.automation.run.stop_reason: cancelled run requires "
+                "run-cancelled"
+            )
+        if "pause_reason" in run:
+            errors.append(
+                "workflow.automation.run.pause_reason: must be absent for "
+                "cancelled run"
+            )
+        cancellation = automation.get("cancellation")
+        if not isinstance(cancellation, dict):
+            errors.append(
+                "workflow.automation.cancellation: cancelled run requires "
+                "cancellation evidence"
+            )
+        else:
+            for field in ("cancelled_by", "cancelled_at"):
+                if (
+                    not isinstance(cancellation.get(field), str)
+                    or not cancellation[field].strip()
+                ):
+                    errors.append(
+                        "workflow.automation.cancellation."
+                        f"{field}: cancelled run requires concrete evidence"
+                    )
+            if cancellation.get("reason") != "run-cancelled":
+                errors.append(
+                    "workflow.automation.cancellation.reason: cancelled run "
+                    "requires run-cancelled"
+                )
+        if any(
+            isinstance(parent, dict) and parent.get("status") == "active"
+            for parent in parents.values()
+        ):
+            errors.append(
+                "workflow.automation.parent_authorizations: cancelled run "
+                "cannot retain active authorization"
+            )
+        if any(
+            isinstance(capability, dict) and capability.get("status") == "active"
+            for capability in capabilities.values()
+        ):
+            errors.append(
+                "workflow.automation.effective_capabilities: cancelled run "
+                "cannot retain active capability"
+            )
+
     if isinstance(review_result, dict) and isinstance(run, dict):
         review_id = review_result.get("review_id")
         reviewed_identity = review_result.get("reviewed_artifact_identity")
@@ -1610,23 +1689,24 @@ def validate_workflow_automation(
                     "workflow.automation.latest_review_result: must match "
                     "the canonical proposal-review projection"
                 )
-            if run.get("status") != expected_projection.run_status:
-                errors.append(
-                    "workflow.automation.run.status: must match latest "
-                    "proposal-review routing action"
-                )
-            expected_pause_reason = expected_projection.run_pause_reason
-            if expected_pause_reason is None:
-                if "pause_reason" in run:
+            if run.get("status") != "cancelled":
+                if run.get("status") != expected_projection.run_status:
                     errors.append(
-                        "workflow.automation.run.pause_reason: must be absent "
-                        "for the latest proposal-review routing action"
+                        "workflow.automation.run.status: must match latest "
+                        "proposal-review routing action"
                     )
-            elif run.get("pause_reason") != expected_pause_reason:
-                errors.append(
-                    "workflow.automation.run.pause_reason: must match latest "
-                    "proposal-review routing action"
-                )
+                expected_pause_reason = expected_projection.run_pause_reason
+                if expected_pause_reason is None:
+                    if "pause_reason" in run:
+                        errors.append(
+                            "workflow.automation.run.pause_reason: must be absent "
+                            "for the latest proposal-review routing action"
+                        )
+                elif run.get("pause_reason") != expected_pause_reason:
+                    errors.append(
+                        "workflow.automation.run.pause_reason: must match latest "
+                        "proposal-review routing action"
+                    )
 
     if isinstance(run, dict) and "effective_capability_id" in run:
         capability_id = run["effective_capability_id"]
