@@ -887,6 +887,200 @@ Open findings: None
         self.assertEqual(decision.reason, "completed-evidence-current")
         self.assertIsNotNone(decision.verified_completion)
 
+    def test_completed_recovery_pauses_on_coordinated_review_fact_rewrite(
+        self,
+    ) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
+        persisted = store.read().automation
+
+        forged_review_id = copy.deepcopy(persisted)
+        forged_receipt = forged_review_id["transition_receipts"][
+            "transition-001"
+        ]
+        forged_receipt["proposal_review_evidence"][
+            "review_id"
+        ] = "proposal-review-forged"
+        forged_receipt["proposal_review_route"][
+            "review_id"
+        ] = "proposal-review-forged"
+        forged_review_id["latest_review_result"][
+            "review_id"
+        ] = "proposal-review-forged"
+        decision = evaluate_receipt_recovery(
+            forged_review_id,
+            "transition-001",
+            completion_evidence={
+                "outputs": copy.deepcopy(forged_receipt["outputs"]),
+                "canonical_sync": copy.deepcopy(
+                    forged_receipt["canonical_sync"]
+                ),
+            },
+            repository_root=store.repository_root,
+        )
+        self.assertEqual(decision.action, "pause")
+        self.assertEqual(
+            decision.reason,
+            "completed-proposal-review-evidence-drift",
+        )
+
+        for outcome in (
+            "changes-requested",
+            "blocked",
+            "inconclusive",
+        ):
+            with self.subTest(outcome=outcome):
+                forged_outcome = copy.deepcopy(persisted)
+                forged_receipt = forged_outcome["transition_receipts"][
+                    "transition-001"
+                ]
+                forged_receipt["proposal_review_evidence"][
+                    "outcome"
+                ] = outcome
+                forged_receipt["proposal_review_route"]["outcome"] = outcome
+                forged_outcome["latest_review_result"]["outcome"] = outcome
+                decision = evaluate_receipt_recovery(
+                    forged_outcome,
+                    "transition-001",
+                    completion_evidence={
+                        "outputs": copy.deepcopy(forged_receipt["outputs"]),
+                        "canonical_sync": copy.deepcopy(
+                            forged_receipt["canonical_sync"]
+                        ),
+                    },
+                    repository_root=store.repository_root,
+                )
+                self.assertEqual(decision.action, "pause")
+                self.assertEqual(
+                    decision.reason,
+                    "completed-proposal-review-evidence-drift",
+                )
+
+    def test_completed_recovery_pauses_on_coherent_review_identity_rewrite(
+        self,
+    ) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
+        forged = copy.deepcopy(store.read().automation)
+        forged_receipt = forged["transition_receipts"]["transition-001"]
+        forged_identity = "sha256:" + ("f" * 64)
+        forged_receipt["proposal_review_evidence"][
+            "review_record_identity"
+        ] = forged_identity
+        forged_receipt["proposal_review_route"][
+            "review_record_identity"
+        ] = forged_identity
+        forged["latest_review_result"][
+            "review_record_identity"
+        ] = forged_identity
+        forged_receipt["outputs"][0]["identity"] = forged_identity
+        forged_receipt["canonical_sync"]["evidence"]["proposal-review"][
+            "identity"
+        ] = forged_identity
+        forged_receipt["canonical_sync"]["observed_identities"][
+            "proposal-review"
+        ] = forged_identity
+
+        decision = evaluate_receipt_recovery(
+            forged,
+            "transition-001",
+            completion_evidence={
+                "outputs": copy.deepcopy(forged_receipt["outputs"]),
+                "canonical_sync": copy.deepcopy(
+                    forged_receipt["canonical_sync"]
+                ),
+            },
+            repository_root=store.repository_root,
+        )
+
+        self.assertEqual(decision.action, "pause")
+        self.assertEqual(
+            decision.reason,
+            "stage-completion-artifact-invalid",
+        )
+
+    def test_completed_recovery_pauses_on_review_projection_rewrite(
+        self,
+    ) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
+        persisted = store.read().automation
+
+        for surface in ("route", "latest-result", "latest-result-missing"):
+            with self.subTest(surface=surface):
+                forged = copy.deepcopy(persisted)
+                forged_receipt = forged["transition_receipts"][
+                    "transition-001"
+                ]
+                if surface == "route":
+                    forged_receipt["proposal_review_route"][
+                        "routing_action"
+                    ] = "pause"
+                elif surface == "latest-result":
+                    forged["latest_review_result"][
+                        "routing_action"
+                    ] = "pause"
+                else:
+                    forged.pop("latest_review_result")
+                decision = evaluate_receipt_recovery(
+                    forged,
+                    "transition-001",
+                    completion_evidence={
+                        "outputs": copy.deepcopy(forged_receipt["outputs"]),
+                        "canonical_sync": copy.deepcopy(
+                            forged_receipt["canonical_sync"]
+                        ),
+                    },
+                    repository_root=store.repository_root,
+                )
+                self.assertEqual(decision.action, "pause")
+                self.assertEqual(
+                    decision.reason,
+                    "completed-proposal-review-projection-drift",
+                )
+
     def test_finalize_consumes_capability_only_with_completed_receipt(self) -> None:
         state = valid_automation()
         receipt = valid_receipt(state)

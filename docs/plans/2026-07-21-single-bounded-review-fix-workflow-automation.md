@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r11.md`
-- Review status: changes-requested; stage=code-review; round=r11
-- Remaining in-scope implementation milestones: M4 resolution and rereview, M5, M6
-- Next stage: review-resolution M4
+- Review status: review-requested; stage=code-review; round=r12
+- Remaining in-scope implementation milestones: M4 rereview, M5, M6
+- Next stage: code-review M4 R12
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M4-CR18
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -598,6 +598,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-22 | Evaluate repeated-stage target frontiers against the bound next-milestone occurrence. | Stage names alone cannot distinguish an already-reached M1 target from the same stage requested for M2. | M2-specific exceptions, unqualified cyclic reachability, and allowing every repeated-stage occurrence. |
 | 2026-07-22 | Treat policy-derived, repository-backed artifact identities as the M3 completion boundary. | A typed callback is transport, not proof; the coordinator must independently reread concrete evidence before consuming capability authority. | Caller-selected postconditions, status-only synchronization, and callback-supplied observed identities. |
 | 2026-07-22 | Bind completion to no-symlink canonical paths and verifier-derived canonical-owner identities. | Canonical evidence remains trustworthy only when its repository-owned path and independently observed bytes are stable across completion and resume. | Following in-repository or external symlinks, or persisting callback-selected canonical identities. |
+| 2026-07-23 | Reuse one parser-derived proposal-review evidence projection at finalization and completed recovery. | Persisted copies cannot authenticate coordinated rewrites; recovery must compare them with independently re-read stage facts before trusting routes. | Treating a self-consistent receipt envelope as authority or adding a digest stored beside the mutable facts. |
 | 2026-07-22 | Bind every mutable automation operation to the state store's immutable repository root. | Path containment is meaningful only when the root is the repository that canonically owns the change metadata. | Caller-selected evidence roots and silent rebinding during finalization or recovery. |
 | 2026-07-22 | Derive canonical state ownership from the lexical metadata layout before resolving filesystem paths. | Resolving first erases symlink and repository-boundary evidence that must be rejected. | Ancestor containment and post-resolution layout inference. |
 | 2026-07-22 | Reserve one exact review-state clause in live closeout detail. | Count and ID projection is deterministic, while broad prose interpretation is incomplete and unsafe. | Free-form finding-state claims and repository-wide historical prose scanning. |
@@ -624,6 +625,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- M4 R11 resolution reproduced coordinated review-ID and all-known-outcome rewrites proof-first. Finalization and completed recovery now share one `VerifiedCompletion` evidence projection; recovery requires exact parser/envelope equality and independently validates receipt route and source-linked latest result. The corrected implementation passes 54 state/recovery, 64 automation-validator, 44 engine, and 15 policy tests; CMD14-CMD20 pass with 156 lifecycle, 103 review-artifact, and 259 skill-validator tests; the final-source repository broad smoke passes all 11 checks in 686 seconds. `BRF-M4-CR18` is resolved and M4 is review-requested for R12; M5 remains blocked pending rereview.
 - Code-review M4 R11 used a replacement L2 blind reviewer after discarding an accidentally contaminated first risk-map attempt. The replacement reviewer recorded its bounded risk map before later evidence, then reran 64 validator, 51 state/recovery, 7 proposal-review engine, and 15 policy tests. Coordinated review-ID, known-outcome, and review-record/output/canonical identity rewrites all returned zero errors; parser-backed completed recovery independently observed the true review ID/outcome but returned `continue` against a contradictory persisted envelope. `BRF-M4-CR17` is a failed remediation and residual finding `BRF-M4-CR18` records the remaining defect; M4 is resolution-needed and M5 remains blocked.
 - M4 R10 resolution reproduced the review-ID, known-outcome, and output-identity bypasses proof-first. The state writer now persists a closed verifier-derived `proposal_review_evidence` envelope before projecting route and latest-result state; durable validation reconstructs every historical and latest route from that envelope and requires the single output, canonical evidence, and observed review identity to agree. All 64 automation-validator, 44 engine, 15 policy, 51 state/recovery, 156 lifecycle, 103 review-artifact, 259 skill-validator, and 53 change-metadata tests pass; CMD15-CMD20 pass; the final 11-check repository broad smoke passes in 421 seconds. `BRF-M4-CR17` is resolved and M4 is review-requested for R11.
 - Code-review M4 R10 used an L2 fresh reviewer agent and spec-first requirement-fidelity pass before validation summaries or prior findings. All 61 validator tests and the focused proposal-review, correction, cancellation, and policy suites passed, but direct historical and latest review-ID/outcome rewrites plus output/canonical identity contradiction returned zero errors. `BRF-M4-CR16` is a failed remediation; `BRF-M4-CR17` records the residual stage-native evidence gap.

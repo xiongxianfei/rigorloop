@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -39,11 +39,12 @@ Review closeout: code-review-m4-r7
 Review closeout: code-review-m4-r8
 Review closeout: code-review-m4-r9
 Review closeout: code-review-m4-r10
+Review closeout: code-review-m4-r11
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`
-- Findings resolved: 72
-- Unresolved findings: 1
-- Current result: Code-review M4 R11 classified `BRF-M4-CR17` as a failed remediation and opened residual finding `BRF-M4-CR18`. The persisted evidence envelope is not independently bound back to parser-derived stage facts, so coordinated receipt/result rewrites validate and completed recovery continues despite observing contradictory review ID and outcome. M4 is resolution-needed; M5 remains blocked.
+- Findings resolved: 73
+- Unresolved findings: 0
+- Current result: `BRF-M4-CR18` is resolved proof-first. Finalization and completed recovery now share one `VerifiedCompletion`-derived proposal-review evidence projection; recovery compares that independently parsed envelope exactly before validating the recorded route and source-linked latest result. Coordinated review-ID/outcome rewrites, route/result projection rewrites, and coherent review-record identity forgery pause. M4 is review-requested for R12; M5 remains blocked pending rereview.
 
 ## Resolution Overview
 
@@ -121,7 +122,7 @@ Review closeout: code-review-m4-r10
 | BRF-M4-CR15 | accepted | resolved | Cancellation reconciliation uses the same proposal-review completion projection as normal finalization, and validation requires complete evidence before accepting terminal cancellation. |
 | BRF-M4-CR16 | accepted | resolved | R10 classified the correction as a failed remediation because review ID, known outcome, and output identity remain unbound; the residual defect is `BRF-M4-CR17`. |
 | BRF-M4-CR17 | accepted | resolved | R11 classified the correction as a failed remediation because persisted stage evidence remained self-authenticating; the residual defect is `BRF-M4-CR18`. |
-| BRF-M4-CR18 | needs-decision | open | Bind persisted proposal-review facts to independently re-read parser evidence during durable validation and completed recovery. |
+| BRF-M4-CR18 | accepted | resolved | Completed recovery now binds the persisted proposal-review envelope, route, and latest result to independently re-read parser evidence. |
 
 ## Common Resolution Metadata
 
@@ -137,18 +138,18 @@ Review closeout: code-review-m4-r10
 #### BRF-M4-CR18 - Persisted review evidence is self-authenticating during recovery
 
 Finding ID: BRF-M4-CR18
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the recorded recovery-bound safe resolution, reject or defer it with rationale, or provide an equally deterministic alternative.
+Decision needed: none
 Rationale: The R10 correction persists parser-derived review facts at finalization, but durable validation later treats that mutable copy as authority. Coordinated envelope, route, latest-result, output, canonical, and observed-identity rewrites validate. Completed recovery independently parses the true review ID and outcome but does not compare those facts with the persisted envelope before returning `continue`.
 Required outcome: Every completed proposal-review receipt must validate review ID, outcome, reviewed proposal identity, and review-record identity against independently re-read or independently integrity-bound stage-native evidence. Completed recovery must pause on any mismatch between parser-derived facts and the persisted envelope, route, or latest projection. Coordinated receipt/result rewrites must not become self-authenticating.
-Chosen action: Pending owner disposition.
+Chosen action: Reuse one canonical `VerifiedCompletion` evidence projection for finalization and recovery. After independently re-reading the proposal, formal review, and review log, recovery requires exact persisted-envelope equality and validates the receipt route and source-linked latest result from that proven envelope.
 Safe resolution path: Define one canonical projection from `VerifiedCompletion` to the proposal-review evidence envelope and reuse it during finalization and completed recovery. After the existing parser re-reads the formal review and review log, require exact equality with persisted `proposal_review_evidence`, then validate route and latest result from the independently derived projection. Add coordinated envelope/route/latest review-ID and all-known-outcome regressions plus a completed-recovery contradiction regression.
 Validation target: Coordinated historical and latest review-ID and all-known-outcome rewrites; coherent review-record/output/canonical identity rewrite; parser-proof-versus-envelope recovery mismatch; prior empty/wrong-target/wrong-identity/unknown-value routes; correction capability lifecycle; cancellation shutdown; full M4 suites; and code-review M4 R12.
-Validation evidence: R11 independently reran 64 validator, 51 state/recovery, 7 proposal-review engine, and 15 policy tests. Four coordinated tamper probes returned zero validator errors, and parser-backed completed recovery returned `continue completed-evidence-current` while its proof contradicted the persisted review ID and outcome.
+Validation evidence: The coordinated review-ID and all-known-outcome regression failed before correction and then passed. The corrected implementation passes 54 state/recovery, 64 automation-validator, 44 engine, and 15 policy tests; CMD14-CMD20 pass with 156 lifecycle, 103 review-artifact, and 259 skill-validator tests; the final-source repository broad smoke passes all 11 checks in 686 seconds. Recovery now pauses with `completed-proposal-review-evidence-drift` for parser/envelope contradiction, `completed-proposal-review-projection-drift` for route/latest-result drift, and the existing stage-native failure for coherent review-record identity forgery. Code-review M4 R12 remains required.
 auto_fix_class: none
 
 ### code-review-m4-r10
