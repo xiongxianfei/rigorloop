@@ -29,6 +29,18 @@ Material findings: BRF-M4-CR18
 Open findings: None
 
 ### Review entry
+Review ID: code-review-m4-r12
+Stage: code-review
+Round: M4 R12
+Reviewed artifact: M4 correction commit `cb814d80`
+Reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
+Status: changes-requested
+Detailed record: reviews/code-review-m4-r12.md
+Resolution: review-resolution.md#code-review-m4-r12
+Material findings: BRF-M4-CR19
+Open findings: BRF-M4-CR19
+
+### Review entry
 Review ID: code-review-m4-r10
 Stage: code-review
 Round: M4 R10
