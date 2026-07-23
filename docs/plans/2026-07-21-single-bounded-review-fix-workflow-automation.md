@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r8.md`
-- Review status: review-requested; stage=code-review; round=r9
-- Remaining in-scope implementation milestones: M4 rereview, M5, M6
-- Next stage: code-review M4 R9
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r9.md`
+- Review status: changes-requested; stage=code-review; round=r9
+- Remaining in-scope implementation milestones: M4 resolution and rereview, M5, M6
+- Next stage: review-resolution M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M4-CR16
 
 ## Milestones
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -576,6 +576,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-23: Resolved `BRF-M4-CR14` with proof-first route-integrity coverage. Proposal-review finalization now atomically stores the exact source transition and route facts, durable validation compares that exact receipt rather than searching by shared identities, and the sole writer rejects finalized-receipt rewrites. M4 is review-requested for R8; M5 remains blocked pending rereview.
 - 2026-07-23: Code-review M4 R8 confirmed the normal-finalization route binding but classified the remediation as incomplete across terminalization paths and opened `BRF-M4-CR15`. A direct cancellation probe completed and permanently froze a proposal-review receipt with no route binding or latest occurrence record while canonical validation returned no errors. M4 is resolution-needed; M5 remains blocked.
 - 2026-07-23: Accepted and resolved `BRF-M4-CR15` proof-first. Normal finalization and cancellation reconciliation now share one proposal-review completion projection; completed review receipts require immutable route and source-linked occurrence evidence; cancelled runs preserve that result, clear stale pause state, revoke parents, and invalidate remaining capabilities. M4 is review-requested for R9; M5 remains blocked pending rereview.
+- 2026-07-23: Code-review M4 R9 confirmed cancellation route parity and closed `BRF-M4-CR15`, then opened `BRF-M4-CR16`. A direct two-receipt probe changed the non-latest completed proposal-review route to an empty object and canonical validation returned no errors because exact route checks follow only `latest_review_result`. M4 is resolution-needed; M5 remains blocked.
 
 ## Decision log
 
@@ -620,6 +621,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- Code-review M4 R9 inspected the source/test diff and governing clauses before validation evidence and R8 reconciliation. The targeted cancellation and proposal-review tests passed, confirming the original cancellation omission is fixed. A direct two-receipt historical-route probe then retained a valid latest source, changed the other completed receipt's route to `{}`, recomputed its transition key, and observed zero validation errors. `BRF-M4-CR15` is resolved for supported writer paths; the historical validator defect is recorded separately as `BRF-M4-CR16`.
 - M4 R8 resolution reproduced both defects proof-first: cancellation raised `KeyError: proposal_review_route`, while a completed proposal-review receipt without `latest_review_result` returned zero validation errors. The corrected implementation passes 7 cancellation state tests, 6 focused proposal-review validator tests, all 44 engine, 15 policy, 51 state/recovery, 58 automation-validator, 156 lifecycle, 103 review-artifact, 259 skill-validator, and 53 change-metadata tests; Python compilation and diff checks; and the final 11-check repository broad-smoke suite in 392 seconds. Normal and cancellation terminalization share one projection; explicit absence is recorded, cancelled-run evidence and authority shutdown validate, stale pause state is rejected, and terminal receipts remain immutable. The approved spec, test spec, architecture, ADR, schema, public skills, adapters, M5/M6 behavior, generated output, and external-action boundaries are unaffected because this correction completes the existing M4 cancellation/evidence contract inside the selected state writer and validator.
 - Code-review M4 R8 inspected the commit before validation-summary and R7 reconciliation, then directly reconciled a valid prepared proposal-review through cancellation. The resulting run was cancelled and the receipt completed, but `proposal_review_route` and `latest_review_result` were absent and `validate_workflow_automation` returned no errors. The existing cancellation test covers this path but does not assert the M4 route-integrity invariant. `BRF-M4-CR14` is classified as failed-remediation across the full terminalization surface, with the residual defect recorded as `BRF-M4-CR15`.
 - M4 R7 resolution reproduced the retroactive-route bypass proof-first: later matching authority plus a rewritten pause returned zero validation errors. The correction passes 7 proposal-review, 8 proposal-correction, 4 authoring, and 4 non-public focused tests; all 44 engine, 15 policy, 51 state/recovery, 56 automation-validator, 103 review-artifact, 156 lifecycle, 259 skill-validator, and 53 change-metadata tests; Python compilation and diff checks; and the final 11-check repository broad-smoke suite in 416 seconds. Exact source-transition, explicit-absence, route-binding tamper, retroactive rewrite, finalized-receipt immutability, and active-to-consumed contrasts pass. The approved spec, test spec, architecture, ADR, schema, public skills, adapters, M5/M6 behavior, generated output, and external-action boundaries are unaffected because this correction completes the existing M4 receipt-integrity contract inside the selected state writer and validator.
