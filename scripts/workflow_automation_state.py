@@ -378,12 +378,13 @@ def _resolve_completion_artifact(
     return artifact, observed_identity
 
 
-def verify_transition_completion(
+def _verify_transition_completion(
     automation: dict[str, Any],
     receipt: dict[str, Any],
     *,
     completion_evidence: dict[str, Any],
     repository_root: Path,
+    allow_stale_reviewed_artifact: bool = False,
 ) -> CompletionVerification:
     """Verify one stage completion from stage-native and canonical evidence."""
 
@@ -526,7 +527,10 @@ def verify_transition_completion(
         or target_relative.is_absolute()
         or ".." in target_relative.parts
         or target is None
-        or _identity(target.read_bytes()) != expected_identity
+        or (
+            not allow_stale_reviewed_artifact
+            and _identity(target.read_bytes()) != expected_identity
+        )
     ):
         return CompletionVerification(False, "reviewed-artifact-identity-mismatch")
 
@@ -581,6 +585,175 @@ def verify_transition_completion(
         },
     )
     return CompletionVerification(True, "stage-completion-evidence-valid", proof)
+
+
+def verify_transition_completion(
+    automation: dict[str, Any],
+    receipt: dict[str, Any],
+    *,
+    completion_evidence: dict[str, Any],
+    repository_root: Path,
+) -> CompletionVerification:
+    """Verify live stage completion against current repository evidence."""
+
+    return _verify_transition_completion(
+        automation,
+        receipt,
+        completion_evidence=completion_evidence,
+        repository_root=repository_root,
+        allow_stale_reviewed_artifact=False,
+    )
+
+
+def _verify_completed_proposal_review_semantics(
+    automation: dict[str, Any],
+    transition_id: str,
+    receipt: dict[str, Any],
+    *,
+    repository_root: Path,
+    proof: VerifiedCompletion | None = None,
+    require_current_log_identity: bool,
+) -> CompletionVerification:
+    """Bind one completed proposal-review receipt to repository review facts."""
+
+    if proof is None:
+        verification = _verify_transition_completion(
+            automation,
+            receipt,
+            completion_evidence={
+                "input_identities": copy.deepcopy(
+                    receipt.get("input_identities")
+                ),
+                "expected_postcondition": copy.deepcopy(
+                    receipt.get("expected_postcondition")
+                ),
+                "outputs": copy.deepcopy(receipt.get("outputs")),
+                "canonical_sync": copy.deepcopy(receipt.get("canonical_sync")),
+            },
+            repository_root=repository_root,
+            allow_stale_reviewed_artifact=not require_current_log_identity,
+        )
+        if not verification.valid or verification.proof is None:
+            return CompletionVerification(
+                False,
+                "proposal-review-semantic-evidence-"
+                + verification.reason,
+            )
+        proof = verification.proof
+
+    parsed_evidence = _proposal_review_evidence_from_proof(proof)
+    if receipt.get("proposal_review_evidence") != parsed_evidence:
+        return CompletionVerification(
+            False,
+            "proposal-review-semantic-evidence-drift",
+        )
+
+    persisted_sync = receipt.get("canonical_sync")
+    persisted_observed = (
+        persisted_sync.get("observed_identities")
+        if isinstance(persisted_sync, dict)
+        else None
+    )
+    if not isinstance(persisted_observed, dict):
+        return CompletionVerification(
+            False,
+            "proposal-review-semantic-observed-identities-invalid",
+        )
+    if (
+        persisted_observed.get("proposal-review")
+        != proof.observed_identities.get("proposal-review")
+    ):
+        return CompletionVerification(
+            False,
+            "proposal-review-semantic-review-identity-drift",
+        )
+    if require_current_log_identity and (
+        persisted_observed.get("proposal-review-log")
+        != proof.observed_identities.get("proposal-review-log")
+    ):
+        return CompletionVerification(
+            False,
+            "canonical-review-log-identity-drift",
+        )
+
+    try:
+        resolve_recorded_proposal_review_receipt(
+            automation,
+            transition_id,
+            receipt,
+        )
+    except (TypeError, ValueError):
+        return CompletionVerification(
+            False,
+            "proposal-review-semantic-route-drift",
+        )
+    return CompletionVerification(
+        True,
+        "proposal-review-semantic-evidence-valid",
+        proof,
+    )
+
+
+def validate_workflow_automation_semantics(
+    automation: dict[str, Any],
+    *,
+    repository_root: Path,
+) -> list[str]:
+    """Validate durable automation facts that require repository evidence."""
+
+    errors: list[str] = []
+    receipts = automation.get("transition_receipts")
+    capabilities = automation.get("effective_capabilities")
+    completed_proposal_reviews: list[str] = []
+    if not isinstance(receipts, dict) or not isinstance(capabilities, dict):
+        return errors
+
+    for transition_id, receipt in receipts.items():
+        if (
+            not isinstance(transition_id, str)
+            or not isinstance(receipt, dict)
+            or receipt.get("status") != "completed"
+        ):
+            continue
+        capability = capabilities.get(receipt.get("effective_capability_id"))
+        stage = capability.get("stage") if isinstance(capability, dict) else None
+        if (
+            not isinstance(capability, dict)
+            or capability.get("capability_kind") != "proposal-review"
+            or not isinstance(stage, dict)
+            or stage.get("name") != "proposal-review"
+        ):
+            continue
+        completed_proposal_reviews.append(transition_id)
+        verification = _verify_completed_proposal_review_semantics(
+            automation,
+            transition_id,
+            receipt,
+            repository_root=repository_root,
+            require_current_log_identity=False,
+        )
+        if not verification.valid:
+            errors.append(f"{transition_id}: {verification.reason}")
+
+    if completed_proposal_reviews:
+        latest_result = automation.get("latest_review_result")
+        if not isinstance(latest_result, dict):
+            errors.append(
+                "latest_review_result: completed proposal-review requires "
+                "repository-backed latest result"
+            )
+        else:
+            try:
+                resolve_recorded_proposal_correction_capability(
+                    automation,
+                    latest_result,
+                )
+            except (TypeError, ValueError) as error:
+                errors.append(
+                    "latest_review_result: proposal-review semantic "
+                    f"projection drift: {error}"
+                )
+    return errors
 
 
 def evaluate_receipt_recovery(
@@ -675,20 +848,31 @@ def evaluate_receipt_recovery(
             isinstance(capability_stage, dict)
             and capability_stage.get("name") == "proposal-review"
         ):
-            parsed_evidence = _proposal_review_evidence_from_proof(proof)
-            if receipt.get("proposal_review_evidence") != parsed_evidence:
+            semantic_verification = _verify_completed_proposal_review_semantics(
+                automation,
+                transition_id,
+                receipt,
+                repository_root=repository_root,
+                proof=proof,
+                require_current_log_identity=True,
+            )
+            if not semantic_verification.valid:
+                reason = semantic_verification.reason
+                if reason == "proposal-review-semantic-evidence-drift":
+                    reason = "completed-proposal-review-evidence-drift"
+                elif reason in {
+                    "proposal-review-semantic-route-drift",
+                    "proposal-review-semantic-observed-identities-invalid",
+                    "proposal-review-semantic-review-identity-drift",
+                }:
+                    reason = "completed-proposal-review-projection-drift"
                 return RecoveryDecision(
                     "pause",
                     False,
-                    "completed-proposal-review-evidence-drift",
+                    reason,
                 )
+            latest_result = automation.get("latest_review_result")
             try:
-                resolve_recorded_proposal_review_receipt(
-                    automation,
-                    transition_id,
-                    receipt,
-                )
-                latest_result = automation.get("latest_review_result")
                 if not isinstance(latest_result, dict):
                     raise ValueError(
                         "completed proposal-review requires latest result"
@@ -903,6 +1087,16 @@ class WorkflowAutomationStateStore:
             )
             if errors:
                 raise StateContractError("invalid workflow.automation: " + "; ".join(errors))
+            semantic_errors = validate_workflow_automation_semantics(
+                automation,
+                repository_root=self._repository_root,
+            )
+            if semantic_errors:
+                raise StateContractError(
+                    "invalid workflow.automation proposal-review semantic "
+                    "evidence: "
+                    + "; ".join(semantic_errors)
+                )
             legacy = workflow.get("autoprogression")
             if legacy is not None:
                 if not has_read_only_legacy_migration(automation):
@@ -931,6 +1125,16 @@ class WorkflowAutomationStateStore:
         )
         if errors:
             raise StateContractError("invalid replacement automation state: " + "; ".join(errors))
+        semantic_errors = validate_workflow_automation_semantics(
+            automation,
+            repository_root=self._repository_root,
+        )
+        if semantic_errors:
+            raise StateContractError(
+                "invalid replacement automation proposal-review semantic "
+                "evidence: "
+                + "; ".join(semantic_errors)
+            )
         current_receipts = (
             snapshot.automation.get("transition_receipts")
             if isinstance(snapshot.automation, dict)
@@ -1315,5 +1519,6 @@ __all__ = [
     "compute_transition_key",
     "dump_yaml",
     "evaluate_receipt_recovery",
+    "validate_workflow_automation_semantics",
     "project_automation_status",
 ]

@@ -38,7 +38,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r12.md
 Resolution: review-resolution.md#code-review-m4-r12
 Material findings: BRF-M4-CR19
-Open findings: BRF-M4-CR19
+Open findings: None
 
 ### Review entry
 Review ID: code-review-m4-r10

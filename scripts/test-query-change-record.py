@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import copy
+import hashlib
 import importlib.util
 import subprocess
 import sys
@@ -12,7 +13,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from workflow_automation_state import compute_transition_key, dump_yaml
+from workflow_automation_state import (
+    WorkflowAutomationStateStore,
+    compute_transition_key,
+    dump_yaml,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -160,7 +165,7 @@ changed_files:
           kind: final
         bound_at: 2026-07-22T00:00:00Z
         completion:
-          verification: passed
+          rule: fresh verification passes
       stop_reason: verification-authorization-required
     parent_authorizations: {}
     effective_capabilities: {}
@@ -170,6 +175,102 @@ changed_files:
       plan: sha256:plan
     external_actions: prohibited
 """
+
+    def make_completed_review_change(
+        self,
+    ) -> tuple[Path, Path, WorkflowAutomationStateStore]:
+        state = copy.deepcopy(AUTOMATION_FIXTURES.valid_automation())
+        receipt = AUTOMATION_FIXTURES.add_valid_receipt(state)
+        receipt["transition_key"] = compute_transition_key(receipt)
+        document = {
+            "change_id": "2026-07-20-example",
+            "title": "Completed review query fixture",
+            "classification": "default",
+            "risk": "medium",
+            "review": {"status": "resolved", "unresolved_items": 0},
+            "workflow": {"automation": state},
+        }
+        repo = self.make_change("2026-07-20-example", dump_yaml(document))
+        metadata_path = (
+            repo
+            / "docs/changes/2026-07-20-example/change.yaml"
+        )
+        store = WorkflowAutomationStateStore(metadata_path)
+
+        proposal = repo / "docs/proposals/example.md"
+        proposal.parent.mkdir(parents=True)
+        proposal.write_text("# Example proposal\n", encoding="utf-8")
+        proposal_identity = (
+            "sha256:" + hashlib.sha256(proposal.read_bytes()).hexdigest()
+        )
+        review = (
+            repo
+            / "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md"
+        )
+        review.parent.mkdir(parents=True)
+        review.write_text(
+            """# Proposal review
+
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Reviewer: query fixture reviewer
+Target: docs/proposals/example.md
+Status: approved
+Material findings: None
+""",
+            encoding="utf-8",
+        )
+        review_identity = (
+            "sha256:" + hashlib.sha256(review.read_bytes()).hexdigest()
+        )
+        (review.parent.parent / "review-log.md").write_text(
+            """# Review Log
+
+### Review entry
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Status: approved
+Detailed record: reviews/proposal-review-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+            encoding="utf-8",
+        )
+        evidence = {
+            "path": review.relative_to(repo).as_posix(),
+            "identity": review_identity,
+        }
+        snapshot = store.read()
+        replacement = copy.deepcopy(snapshot.automation)
+        persisted_receipt = replacement["transition_receipts"][
+            "transition-001"
+        ]
+        persisted_receipt["input_identities"]["proposal"] = proposal_identity
+        persisted_receipt["transition_key"] = compute_transition_key(
+            persisted_receipt
+        )
+        replacement["effective_capabilities"][
+            persisted_receipt["effective_capability_id"]
+        ]["basis"]["proposal_identity"] = proposal_identity
+        store.replace_automation(
+            replacement,
+            expected_document_identity=snapshot.document_identity,
+        )
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=[evidence],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence={"proposal-review": evidence},
+            canonical_sync_observed_identities={
+                "proposal-review": review_identity
+            },
+            expected_document_identity=store.read().document_identity,
+        )
+        return repo, metadata_path, store
 
     def compact_path_vars_change_yaml(
         self,
@@ -318,6 +419,34 @@ validation_summary:
         self.assertEqual(payload["code"], "invalid-automation-state")
         self.assertIn("transition_key", payload["detail"])
         self.assertEqual(path.read_bytes(), before)
+
+    def test_summary_rejects_semantically_forged_review_state_without_mutation(
+        self,
+    ) -> None:
+        repo, metadata_path, store = self.make_completed_review_change()
+        document = copy.deepcopy(store.read().document)
+        automation = document["workflow"]["automation"]
+        receipt = automation["transition_receipts"]["transition-001"]
+        for surface in (
+            receipt["proposal_review_evidence"],
+            receipt["proposal_review_route"],
+            automation["latest_review_result"],
+        ):
+            surface["review_id"] = "proposal-review-forged"
+        metadata_path.write_text(dump_yaml(document), encoding="utf-8")
+        before = metadata_path.read_bytes()
+
+        result = run_query(
+            "2026-07-20-example",
+            "summary",
+            repo_root=repo,
+        )
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["code"], "invalid-automation-state")
+        self.assertIn("proposal-review semantic evidence", payload["detail"])
+        self.assertEqual(metadata_path.read_bytes(), before)
 
     def test_summary_supports_legacy_metadata(self) -> None:
         repo = self.make_change("2026-05-22-legacy-query", self.legacy_change_yaml())

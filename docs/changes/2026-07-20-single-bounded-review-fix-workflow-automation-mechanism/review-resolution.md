@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -40,11 +40,12 @@ Review closeout: code-review-m4-r8
 Review closeout: code-review-m4-r9
 Review closeout: code-review-m4-r10
 Review closeout: code-review-m4-r11
+Review closeout: code-review-m4-r12
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`
-- Findings resolved: 73
-- Unresolved findings: 1
-- Current result: Code-review M4 R12 confirmed parser-bound completed recovery but classified `BRF-M4-CR18` as a failed remediation at the durable read/status boundary and opened residual finding `BRF-M4-CR19`. A coordinated forged review ID is rejected by recovery while canonical state read and status report it as valid unified review state. M4 is resolution-needed; M5 remains blocked.
+- Findings resolved: 74
+- Unresolved findings: 0
+- Current result: `BRF-M4-CR19` is resolved with one repository-backed semantic completed-review validator shared by canonical read/status/query and completed recovery. Coordinated review-ID and all-known-outcome rewrites now fail at every reporting boundary, while append-only later review occurrences and authorized proposal correction preserve historical receipts. M4 is review-requested for code-review R13; M5 remains blocked pending rereview.
 
 ## Resolution Overview
 
@@ -123,7 +124,7 @@ Review closeout: code-review-m4-r11
 | BRF-M4-CR16 | accepted | resolved | R10 classified the correction as a failed remediation because review ID, known outcome, and output identity remain unbound; the residual defect is `BRF-M4-CR17`. |
 | BRF-M4-CR17 | accepted | resolved | R11 classified the correction as a failed remediation because persisted stage evidence remained self-authenticating; the residual defect is `BRF-M4-CR18`. |
 | BRF-M4-CR18 | accepted | resolved | Completed recovery now binds the persisted proposal-review envelope, route, and latest result to independently re-read parser evidence. |
-| BRF-M4-CR19 | needs-decision | open | Make repository-backed read, status, query, and recovery agree on parser-bound proposal-review semantics. |
+| BRF-M4-CR19 | accepted | resolved | Canonical read/status/query and completed recovery now share repository-backed proposal-review semantic validation without requiring historical review-log byte identity to remain current. |
 
 ## Common Resolution Metadata
 
@@ -139,18 +140,18 @@ Review closeout: code-review-m4-r11
 #### BRF-M4-CR19 - Durable status reports proposal-review state that recovery rejects
 
 Finding ID: BRF-M4-CR19
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the recorded repository-backed semantic status resolution, reject or defer it with rationale, or provide an equally deterministic alternative.
+Decision needed: none
 Rationale: The R11 correction completes parser-bound recovery, but state read and status still use only the rootless structural validator. A coordinated envelope, route, and latest-result rewrite is therefore reported as valid unified review state by status while recovery pauses against the tracked review artifact.
 Required outcome: Every repository-backed read or status entrypoint that reports proposal-review semantic state must validate completed proposal-review facts against the tracked formal review artifact and canonical occurrence before returning the result. Rootless structural validation may remain structural, but it must not be the sole gate for semantic review status.
-Chosen action: Pending owner disposition.
+Chosen action: Added one state-adapter-owned repository semantic validator for every completed proposal-review receipt. Canonical read and replacement validate the tracked formal review and exact canonical occurrence before reporting or writing state; status and `query-change-record` inherit that boundary. Completed recovery reuses the same receipt-semantic helper while retaining its stricter current-log identity check and stable recovery reason codes.
 Safe resolution path: Add one repository-root-backed semantic completed-review validator owned by the state adapter and reuse it from read/status and completed recovery. Reparse completed proposal-review records and canonical occurrences, compare ID, outcome, proposal identity, and review-record identity with persisted evidence, then validate route/latest projections. Preserve historical receipts by validating occurrence content rather than requiring an old review-log byte identity to equal the current append-only log. Route `query-change-record` through this repository-backed boundary when it reports automation review state.
 Validation target: Coordinated review-ID and all-known-outcome rewrites through store read, status, query, and recovery; coherent identity rewrite; missing route/latest state; clean recovery; legitimate two-review history with an appended canonical log; full M4 suites; and code-review M4 R13.
-Validation evidence: R12 independently ran 54 state/recovery, 64 automation-validator, 7 proposal-review engine, and 15 policy tests. All passed, but a direct repository-backed probe produced `store_read=accepted`, `status_source=unified`, and `recovery=pause:completed-proposal-review-evidence-drift` for the same coordinated forged durable state.
+Validation evidence: Proof-first read/status and query regressions reproduced the coordinated review-ID and all-known-outcome bypass before the correction. After correction, 56 state/recovery, 44 engine, 64 automation-validator, 20 query, 15 policy, 156 lifecycle, 103 review-artifact, 259 skill-validator, and 53 change-metadata tests pass. The append-only two-review history and post-review proposal-correction paths pass. The explicit selector reports only expected manual routing for the two automation-state paths, which the plan-owned suites cover directly; the final repository broad-smoke run passes all 11 checks in 231 seconds.
 auto_fix_class: none
 
 ### code-review-m4-r11

@@ -13,7 +13,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from workflow_automation_policy import STAGE_POLICY_BY_STAGE
+from workflow_automation_policy import (
+    STAGE_POLICY_BY_STAGE,
+    project_proposal_review_result,
+)
 from workflow_automation_state import (
     ConcurrentStateChange,
     StateContractError,
@@ -24,6 +27,7 @@ from workflow_automation_state import (
     project_automation_status,
     STAGE_NATIVE_VERIFIER_STAGES,
 )
+from validate_workflow_automation import proposal_review_route_binding
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -677,11 +681,11 @@ Open findings: None
             ],
             expected_document_identity=store.read().document_identity,
         )
+        snapshot = store.read()
         (
             store.repository_root
             / "docs/changes/2026-07-20-example/review-log.md"
         ).unlink()
-        snapshot = store.read()
         completed = snapshot.automation["transition_receipts"]["transition-001"]
 
         decision = evaluate_receipt_recovery(
@@ -1081,6 +1085,153 @@ Open findings: None
                     "completed-proposal-review-projection-drift",
                 )
 
+    def test_store_read_and_status_reject_coordinated_review_fact_rewrite(
+        self,
+    ) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, metadata_path = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
+        valid_document = store.read().document
+
+        mutations = (
+            ("review_id", "proposal-review-forged"),
+            ("outcome", "changes-requested"),
+            ("outcome", "blocked"),
+            ("outcome", "inconclusive"),
+        )
+        for field, value in mutations:
+            with self.subTest(field=field, value=value):
+                forged_document = copy.deepcopy(valid_document)
+                automation = forged_document["workflow"]["automation"]
+                forged_receipt = automation["transition_receipts"][
+                    "transition-001"
+                ]
+                evidence_envelope = forged_receipt[
+                    "proposal_review_evidence"
+                ]
+                evidence_envelope[field] = value
+                if field == "review_id":
+                    forged_receipt["proposal_review_route"][field] = value
+                    automation["latest_review_result"][field] = value
+                else:
+                    target = forged_receipt["target"]
+                    projection = project_proposal_review_result(
+                        outcome=value,
+                        target_stage=target["stage"],
+                        review_id=evidence_envelope["review_id"],
+                        reviewed_artifact_identity=evidence_envelope[
+                            "reviewed_artifact_identity"
+                        ],
+                        review_record_identity=evidence_envelope[
+                            "review_record_identity"
+                        ],
+                        correction_capability_id=None,
+                    )
+                    forged_receipt[
+                        "proposal_review_route"
+                    ] = proposal_review_route_binding(
+                        projection.review_result,
+                        target,
+                    )
+                    automation["latest_review_result"] = {
+                        **projection.review_result,
+                        "source_transition_id": "transition-001",
+                    }
+                    automation["run"]["status"] = projection.run_status
+                    if projection.run_pause_reason is None:
+                        automation["run"].pop("pause_reason", None)
+                    else:
+                        automation["run"][
+                            "pause_reason"
+                        ] = projection.run_pause_reason
+                metadata_path.write_text(
+                    dump_yaml(forged_document),
+                    encoding="utf-8",
+                )
+
+                with self.assertRaisesRegex(
+                    StateContractError,
+                    "proposal-review semantic evidence",
+                ):
+                    store.read()
+                with self.assertRaisesRegex(
+                    StateContractError,
+                    "proposal-review semantic evidence",
+                ):
+                    store.status()
+
+    def test_store_read_allows_append_only_later_review_occurrence(
+        self,
+    ) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
+
+        review_root = (
+            store.repository_root
+            / "docs/changes/2026-07-20-example"
+        )
+        second_review = review_root / "reviews/proposal-review-r2.md"
+        second_review.write_text(
+            """# Proposal review
+
+Review ID: proposal-review-r2
+Stage: proposal-review
+Round: r2
+Reviewer: second fixture reviewer
+Target: docs/proposals/example.md
+Status: approved
+Material findings: None
+""",
+            encoding="utf-8",
+        )
+        with (review_root / "review-log.md").open(
+            "a",
+            encoding="utf-8",
+        ) as review_log:
+            review_log.write(
+                """
+### Review entry
+Review ID: proposal-review-r2
+Stage: proposal-review
+Round: r2
+Status: approved
+Detailed record: reviews/proposal-review-r2.md
+Resolution: none
+Material findings: None
+Open findings: None
+"""
+            )
+
+        self.assertIsNotNone(store.read().automation)
+        self.assertEqual(store.status()["source"], "unified")
+
     def test_finalize_consumes_capability_only_with_completed_receipt(self) -> None:
         state = valid_automation()
         receipt = valid_receipt(state)
@@ -1264,19 +1415,21 @@ Open findings: None
         state["parent_authorizations"]["authorization-authoring-001"][
             "maximum_target"
         ] = copy.deepcopy(later_target)
-        FIXTURES.add_completed_proposal_review(
-            state,
-            {
-                "review_id": "proposal-review-r1",
-                "reviewed_artifact_identity": "sha256:proposal",
-                "review_record_identity": "sha256:review-output",
-                "outcome": "approved",
-                "occurrence_recorded": True,
-                "clean_gate": "satisfied",
-                "routing_action": "continue",
-            },
-        )
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
         store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
 
         result = store.cancel(
             cancelled_by="user",
