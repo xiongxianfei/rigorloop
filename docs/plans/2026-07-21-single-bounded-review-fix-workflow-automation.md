@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r12.md`
-- Review status: changes-requested; stage=code-review; round=r12
-- Remaining in-scope implementation milestones: M4 resolution and rereview, M5, M6
-- Next stage: review-resolution M4
+- Review status: review-requested; stage=code-review; round=r13
+- Remaining in-scope implementation milestones: M4 rereview, M5, M6
+- Next stage: code-review M4 R13
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M4-CR19
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -579,6 +579,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-23: Code-review M4 R9 confirmed cancellation route parity and closed `BRF-M4-CR15`, then opened `BRF-M4-CR16`. A direct two-receipt probe changed the non-latest completed proposal-review route to an empty object and canonical validation returned no errors because exact route checks follow only `latest_review_result`. M4 is resolution-needed; M5 remains blocked.
 - 2026-07-23: Resolved `BRF-M4-CR16` proof-first by reconstructing the route of every completed proposal-review receipt from its own target and stage evidence, validating its closed outcome/action vocabulary before consistency, and preserving its originally recorded correction-capability relationship without requiring current active status. M4 is review-requested for R10; M5 remains blocked pending rereview.
 - 2026-07-23: Code-review M4 R10 classified `BRF-M4-CR16` as a failed remediation and opened `BRF-M4-CR17`. Blind two-receipt probes rewrote historical review ID and known outcomes, and contradicted output versus canonical review identity, while durable validation returned zero errors because those facts remain route-owned rather than stage-native. M4 is resolution-needed; M5 remains blocked.
+- 2026-07-23: Resolved `BRF-M4-CR19` proof-first by making canonical read, status, query, replacement, and completed recovery share repository-backed proposal-review semantic validation. Coordinated review-ID and known-outcome rewrites fail closed; append-only later review occurrences and authorized proposal correction preserve historical receipts. M4 is review-requested for R13; M5 remains blocked pending rereview.
 
 ## Decision log
 
@@ -587,6 +588,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-21 | Build the immutable model before enabling any new writer. | Closed policy and state contracts provide a safe base for transactional and routing behavior. | Editing public workflow guidance first would expose an unimplemented contract. |
 | 2026-07-21 | Establish the sole state writer before the transition engine. | Prepared receipts and recovery must exist before a coordinator can safely invoke stages. | Letting the engine write YAML directly would duplicate persistence and recovery logic. |
 | 2026-07-21 | Reserve public and legacy command cutover for M6. | Compatibility, retired-writer removal, and public guidance must activate atomically after internal behavior is proven. | Editing public routing during M4 or M5 could expose a partially migrated engine. |
+| 2026-07-23 | Validate completed proposal-review semantics at the canonical repository-backed read boundary. | Status and query must not report durable review facts that completed recovery rejects, while append-only review history must remain valid. | Rootless structural validation as the reporting boundary, duplicated status-only parsing, or requiring historical whole-log hashes to remain current. |
 | 2026-07-21 | Use six independently reviewed implementation milestones. | Authoring/review correction and implementation/verification have different authority, evidence, and recovery risks. | One combined stage-integration milestone would be too broad; per-stage milestones would create excessive coupling and overhead. |
 | 2026-07-21 | Require generated release-output adapter proof and executed selected CI at cutover. | The active adapter contract is archive-based and selection output alone is not validation execution. | Bare tracked-tree adapter checks and selection-only output are not reliable milestone gates. |
 | 2026-07-21 | Treat receipt target as the run destination and effective-capability stage as the concrete operation. | Target selection and executable authority are independent; direct equality rejects valid earlier transitions toward later targets. | Reusing one field for both concepts or adding an unapproved receipt schema field. |
