@@ -228,6 +228,14 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         ]
         accepted = ["BRF-1"]
         classifications = {"BRF-1": "future-classification"}
+        correction_plans = {
+            "BRF-1": {
+                "classification": "future-classification",
+                "rationale": "fixture rationale",
+                "recipe": "fixture recipe",
+                "validation_rule": "proposal-identity-changed",
+            }
+        }
         budget = {
             "Review-fix cycle count": 1,
             "Findings auto-applied this cycle": 1,
@@ -246,7 +254,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "reviewed_proposal_identity": "sha256:proposal",
             "review_record_identity": "sha256:review",
             "accepted_finding_set_identity": structured(accepted),
-            "classifier_policy_identity": structured(classifications),
+            "classifier_policy_identity": structured(correction_plans),
             "correction_budget_identity": structured(budget),
             "affected_proposal_roots": ["docs/proposals/"],
         }
@@ -259,6 +267,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "review_resolution_path": "docs/changes/example/review-resolution.md",
             "accepted_finding_ids": accepted,
             "finding_classifications": classifications,
+            "correction_plans": correction_plans,
             "proposal_review_basis": {
                 "standing_gates_identity": "sha256:gates",
                 "review_policy_identity": "sha256:policy",
@@ -271,6 +280,18 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
 
         self.assertTrue(
             any("unsupported classification" in error for error in errors),
+            errors,
+        )
+
+        classifications["BRF-1"] = "mechanical"
+        correction_plans["BRF-1"]["classification"] = "mechanical"
+        correction_plans["BRF-1"]["validation_rule"] = "future-validation"
+        capability["basis"]["classifier_policy_identity"] = structured(
+            correction_plans
+        )
+        errors = validate_workflow_automation(state)
+        self.assertTrue(
+            any("unsupported validation rule" in error for error in errors),
             errors,
         )
 
@@ -383,7 +404,10 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         state = valid_automation()
         add_valid_receipt(state)
         state["latest_review_result"] = {
+            "review_id": "proposal-review-r1",
+            "reviewed_artifact_identity": "sha256:proposal",
             "outcome": "approved",
+            "occurrence_recorded": True,
             "clean_gate": "satisfied",
             "routing_action": "continue",
         }
@@ -668,6 +692,14 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 if kind == "proposal-correction":
                     accepted = ["BRF-1"]
                     classifications = {"BRF-1": "mechanical"}
+                    correction_plans = {
+                        "BRF-1": {
+                            "classification": "mechanical",
+                            "rationale": "fixture rationale",
+                            "recipe": "fixture recipe",
+                            "validation_rule": "proposal-identity-changed",
+                        }
+                    }
                     budget = {
                         "Review-fix cycle count": 1,
                         "Findings auto-applied this cycle": 1,
@@ -683,7 +715,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     capability["basis"].update(  # type: ignore[index]
                         {
                             "accepted_finding_set_identity": structured(accepted),
-                            "classifier_policy_identity": structured(classifications),
+                            "classifier_policy_identity": structured(correction_plans),
                             "correction_budget_identity": structured(budget),
                         }
                     )
@@ -695,6 +727,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                             "review_resolution_path": "docs/changes/2026-07-20-example/review-resolution.md",
                             "accepted_finding_ids": accepted,
                             "finding_classifications": classifications,
+                            "correction_plans": correction_plans,
                             "proposal_review_basis": {
                                 "standing_gates_identity": "sha256:gates",
                                 "review_policy_identity": "sha256:policy",
@@ -1000,6 +1033,14 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         }
         accepted = ["BRF-1"]
         classifications = {"BRF-1": "mechanical"}
+        correction_plans = {
+            "BRF-1": {
+                "classification": "mechanical",
+                "rationale": "fixture rationale",
+                "recipe": "fixture recipe",
+                "validation_rule": "proposal-identity-changed",
+            }
+        }
         structured = lambda value: "sha256:" + hashlib.sha256(
             json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
         ).hexdigest()
@@ -1011,7 +1052,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "reviewed_proposal_identity": "sha256:proposal",
             "review_record_identity": "sha256:review",
             "accepted_finding_set_identity": structured(accepted),
-            "classifier_policy_identity": structured(classifications),
+            "classifier_policy_identity": structured(correction_plans),
             "correction_budget_identity": structured(budget),
             "affected_proposal_roots": ["docs/proposals/"],
         }
@@ -1024,6 +1065,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 "review_resolution_path": "docs/changes/2026-07-20-example/review-resolution.md",
                 "accepted_finding_ids": accepted,
                 "finding_classifications": classifications,
+                "correction_plans": correction_plans,
                 "proposal_review_basis": {
                     "standing_gates_identity": "sha256:gates",
                     "review_policy_identity": "sha256:policy",

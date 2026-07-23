@@ -8,6 +8,7 @@ import dataclasses
 import hashlib
 import json
 import importlib.util
+import re
 import sys
 import tempfile
 import unittest
@@ -207,6 +208,10 @@ Owning stage: review-resolution
 Rationale: deterministic fixture correction
 Chosen action: apply the correction
 Validation target: rereview
+Planned driver classification: mechanical
+Planned correction rationale: The requested change is deterministic and bounded.
+Planned correction recipe: Append one newline to the reviewed proposal.
+Planned validation rule: proposal-identity-changed
 """,
             encoding="utf-8",
         )
@@ -221,6 +226,14 @@ Validation target: rereview
     ) -> dict[str, object]:
         accepted = ["BRF-1"]
         classifications = {"BRF-1": "mechanical"}
+        correction_plans = {
+            "BRF-1": {
+                "classification": "mechanical",
+                "rationale": "The requested change is deterministic and bounded.",
+                "recipe": "Append one newline to the reviewed proposal.",
+                "validation_rule": "proposal-identity-changed",
+            }
+        }
         budget = {
             "Review-fix cycle count": 1,
             "Findings auto-applied this cycle": 1,
@@ -286,7 +299,7 @@ Validation target: rereview
             "reviewed_proposal_identity": proposal_before,
             "review_record_identity": review_identity,
             "accepted_finding_set_identity": identity(accepted),
-            "classifier_policy_identity": identity(classifications),
+            "classifier_policy_identity": identity(correction_plans),
             "correction_budget_identity": budget_identity,
             "affected_proposal_roots": ["docs/proposals/"],
         }
@@ -308,6 +321,7 @@ Validation target: rereview
                 "review_resolution_path": resolution_path,
                 "accepted_finding_ids": accepted,
                 "finding_classifications": classifications,
+                "correction_plans": correction_plans,
                 "proposal_review_basis": {
                     "standing_gates_identity": "sha256:gates",
                     "review_policy_identity": "sha256:policy",
@@ -987,6 +1001,18 @@ Validation target: rereview
             store.read().automation["effective_capabilities"]["capability-engine-001"]["status"],
             "consumed",
         )
+        latest_review = store.read().automation["latest_review_result"]
+        self.assertEqual(
+            latest_review,
+            {
+                "review_id": "proposal-review-r1",
+                "reviewed_artifact_identity": proposal_identity,
+                "outcome": "approved",
+                "occurrence_recorded": True,
+                "clean_gate": "satisfied",
+                "routing_action": "stop-at-target",
+            },
+        )
 
     def test_capability_one_stage_failure_records_failure_without_consuming(self) -> None:
         state = copy.deepcopy(FIXTURES.valid_automation())
@@ -1303,6 +1329,81 @@ Validation target: rereview
                 self.assertEqual(decision.routing_action, "pause")
                 self.assertEqual(decision.pause_reason, f"proposal-review-{outcome}")
 
+    def test_proposal_review_transaction_persists_complete_outcome_matrix(
+        self,
+    ) -> None:
+        for target_stage in ("proposal-review", "spec"):
+            for outcome in (
+                "approved",
+                "changes-requested",
+                "blocked",
+                "inconclusive",
+            ):
+                with self.subTest(target=target_stage, outcome=outcome):
+                    state = copy.deepcopy(FIXTURES.valid_automation())
+                    state["effective_capabilities"] = {}
+                    target = bind_target(
+                        target_stage, bound_at="2026-07-22T00:00:00Z"
+                    )
+                    state["run"]["target"] = copy.deepcopy(target)
+                    state["parent_authorizations"][
+                        "authorization-authoring-001"
+                    ]["maximum_target"] = copy.deepcopy(target)
+                    store = self.make_store(state)
+
+                    def invoke() -> StageExecutionResult:
+                        evidence = self.write_evidence(store, status=outcome)
+                        return StageExecutionResult(
+                            (evidence,), {"proposal-review": evidence}
+                        )
+
+                    result = self.coordinate_proposal_review(store, invoke)
+                    self.assertEqual(result.status, "completed")
+                    persisted = store.read().automation[
+                        "latest_review_result"
+                    ]
+                    required = {
+                        "review_id",
+                        "reviewed_artifact_identity",
+                        "outcome",
+                        "occurrence_recorded",
+                        "clean_gate",
+                        "routing_action",
+                    }
+                    self.assertTrue(required <= set(persisted))
+                    self.assertEqual(persisted["outcome"], outcome)
+                    self.assertTrue(persisted["occurrence_recorded"])
+                    self.assertEqual(
+                        persisted["clean_gate"],
+                        "satisfied"
+                        if outcome == "approved"
+                        else "not-satisfied",
+                    )
+                    if outcome in {"blocked", "inconclusive"}:
+                        expected_action = "pause"
+                    elif target_stage == "proposal-review":
+                        expected_action = "stop-at-target"
+                    elif outcome == "approved":
+                        expected_action = "continue"
+                    else:
+                        expected_action = "pause"
+                    self.assertEqual(
+                        persisted["routing_action"], expected_action
+                    )
+                    self.assertEqual(
+                        "pause_reason" in persisted,
+                        expected_action == "pause",
+                    )
+                    run = store.read().automation["run"]
+                    self.assertEqual(
+                        run["status"],
+                        "paused"
+                        if expected_action == "pause"
+                        else "completed"
+                        if expected_action == "stop-at-target"
+                        else "active",
+                    )
+
     def test_proposal_review_unknown_and_unchanged_inconclusive_fail_closed(self) -> None:
         with self.assertRaisesRegex(AutomationContractError, "unknown proposal-review outcome"):
             evaluate_proposal_review(
@@ -1514,6 +1615,14 @@ Validation target: rereview
     def test_proposal_correction_authority_is_bound_to_capability_evidence(self) -> None:
         accepted = ["BRF-1"]
         classifications = {"BRF-1": "mechanical"}
+        correction_plans = {
+            "BRF-1": {
+                "classification": "mechanical",
+                "rationale": "The requested change is deterministic and bounded.",
+                "recipe": "Append one newline to the reviewed proposal.",
+                "validation_rule": "proposal-identity-changed",
+            }
+        }
         budget = {
             "Review-fix cycle count": 1,
             "Findings auto-applied this cycle": 1,
@@ -1544,7 +1653,7 @@ Validation target: rereview
                 "reviewed_proposal_identity": "sha256:proposal-v1",
                 "review_record_identity": review_identity,
                 "accepted_finding_set_identity": identity(accepted),
-                "classifier_policy_identity": identity(classifications),
+                "classifier_policy_identity": identity(correction_plans),
                 "correction_budget_identity": identity(budget),
                 "affected_proposal_roots": ["docs/proposals/"],
             },
@@ -1557,6 +1666,7 @@ Validation target: rereview
                 "review_resolution_path": resolution_path,
                 "accepted_finding_ids": accepted,
                 "finding_classifications": classifications,
+                "correction_plans": correction_plans,
                 "proposal_review_basis": {
                     "standing_gates_identity": "sha256:gates",
                     "review_policy_identity": "sha256:policy",
@@ -1599,6 +1709,59 @@ Validation target: rereview
             resolve_proposal_correction_authority(
                 state,
                 "capability-proposal-review-001",
+                repository_root=store.repository_root,
+            )
+
+    def test_proposal_correction_rejects_noncanonical_occurrence_and_classification(
+        self,
+    ) -> None:
+        fixture = self.prepare_proposal_correction_transaction(
+            transition_id="transition-canonical-correction"
+        )
+        store = fixture["store"]
+        automation = store.read().automation
+        capability = automation["effective_capabilities"][
+            "cap-correction-transaction"
+        ]
+        review_log = (
+            store.repository_root
+            / "docs/changes/2026-07-20-example/review-log.md"
+        )
+        original_log = review_log.read_text(encoding="utf-8")
+        review_log.write_text(
+            original_log.replace("Round: r1", "Round: r2"),
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError, "review occurrence is not canonical"
+        ):
+            resolve_proposal_correction_authority(
+                automation,
+                "cap-correction-transaction",
+                repository_root=store.repository_root,
+            )
+        review_log.write_text(original_log, encoding="utf-8")
+
+        forged = {"BRF-1": "format-preserving"}
+        forged_plans = copy.deepcopy(capability["scope"]["correction_plans"])
+        forged_plans["BRF-1"]["classification"] = "format-preserving"
+        capability["scope"]["finding_classifications"] = forged
+        capability["scope"]["correction_plans"] = forged_plans
+        capability["basis"]["classifier_policy_identity"] = (
+            "sha256:"
+            + hashlib.sha256(
+                json.dumps(
+                    forged_plans, sort_keys=True, separators=(",", ":")
+                ).encode()
+            ).hexdigest()
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError,
+            "evidence does not match capability basis|driver classification evidence",
+        ):
+            resolve_proposal_correction_authority(
+                automation,
+                "cap-correction-transaction",
                 repository_root=store.repository_root,
             )
 
@@ -1866,6 +2029,14 @@ Validation target: rereview
     def test_proposal_correction_uses_bound_capability_and_receipt(self) -> None:
         accepted = ["BRF-1"]
         classifications = {"BRF-1": "mechanical"}
+        correction_plans = {
+            "BRF-1": {
+                "classification": "mechanical",
+                "rationale": "The requested change is deterministic and bounded.",
+                "recipe": "Append one newline to the reviewed proposal.",
+                "validation_rule": "proposal-identity-changed",
+            }
+        }
         budget = {
             "Review-fix cycle count": 1,
             "Findings auto-applied this cycle": 1,
@@ -1919,7 +2090,7 @@ Validation target: rereview
             "reviewed_proposal_identity": proposal_before,
             "review_record_identity": review_identity,
             "accepted_finding_set_identity": identity(accepted),
-            "classifier_policy_identity": identity(classifications),
+            "classifier_policy_identity": identity(correction_plans),
             "correction_budget_identity": budget_identity,
             "affected_proposal_roots": ["docs/proposals/"],
         }
@@ -1941,6 +2112,7 @@ Validation target: rereview
                 "review_resolution_path": resolution_path,
                 "accepted_finding_ids": accepted,
                 "finding_classifications": classifications,
+                "correction_plans": correction_plans,
                 "proposal_review_basis": {
                     "standing_gates_identity": "sha256:gates",
                     "review_policy_identity": "sha256:policy",
@@ -1969,23 +2141,6 @@ Validation target: rereview
 
         def invoke() -> StageExecutionResult:
             proposal.write_text(proposal.read_text() + "\n", encoding="utf-8")
-            resolution = store.repository_root / resolution_path
-            resolution.write_text(
-                resolution.read_text(encoding="utf-8").replace(
-                    "Status: open", "Status: resolved"
-                ),
-                encoding="utf-8",
-            )
-            review_log = (
-                store.repository_root
-                / "docs/changes/2026-07-20-example/review-log.md"
-            )
-            review_log.write_text(
-                review_log.read_text(encoding="utf-8").replace(
-                    "Open findings: BRF-1", "Open findings: None"
-                ),
-                encoding="utf-8",
-            )
             evidence = ArtifactEvidence(
                 relative.as_posix(),
                 "sha256:" + hashlib.sha256(proposal.read_bytes()).hexdigest(),
@@ -1997,11 +2152,6 @@ Validation target: rereview
             target_stage="spec",
             store=store,
             repository_root=store.repository_root,
-            correction_evidence={
-                "affected_paths": (relative.as_posix(),),
-                "deterministic_validator": lambda path: path == proposal,
-                "rereview_capability_derived_at": "2026-07-22T00:02:00Z",
-            },
             parent_authorization_id="auth-correction",
             capability_id="cap-correction-transaction",
             stage="proposal",
@@ -2043,15 +2193,11 @@ Validation target: rereview
 
     def test_proposal_correction_post_mutation_failures_pause_durably(self) -> None:
         cases = (
-            ("deterministic-validation", True, False, False, True),
-            ("non-shrinking-findings", False, True, False, True),
-            ("historical-review-drift", True, True, True, True),
-            ("fresh-review-authority", True, True, False, False),
+            ("historical-review-drift", True, True),
+            ("fresh-review-authority", False, False),
         )
         for (
             label,
-            resolve_finding,
-            validation_passes,
             mutate_review,
             allow_rereview,
         ) in cases:
@@ -2071,24 +2217,6 @@ Validation target: rereview
                         proposal.read_text(encoding="utf-8") + "\n",
                         encoding="utf-8",
                     )
-                    if resolve_finding:
-                        resolution.write_text(
-                            resolution.read_text(encoding="utf-8").replace(
-                                "Status: open", "Status: resolved"
-                            ),
-                            encoding="utf-8",
-                        )
-                        review_log = (
-                            store.repository_root
-                            / "docs/changes/2026-07-20-example/review-log.md"
-                        )
-                        review_log.write_text(
-                            review_log.read_text(encoding="utf-8").replace(
-                                "Open findings: BRF-1",
-                                "Open findings: None",
-                            ),
-                            encoding="utf-8",
-                        )
                     if mutate_review:
                         review.write_text(
                             review.read_text(encoding="utf-8")
@@ -2106,13 +2234,6 @@ Validation target: rereview
 
                 coordination = dict(fixture["coordination"])
                 coordination["invoke_stage"] = invoke
-                coordination["correction_evidence"] = {
-                    "affected_paths": (proposal_relative.as_posix(),),
-                    "deterministic_validator": (
-                        lambda path: validation_passes and path == proposal
-                    ),
-                    "rereview_capability_derived_at": "2026-07-22T00:02:00Z",
-                }
                 with self.assertRaisesRegex(
                     AutomationContractError, "proposal correction paused"
                 ):
@@ -2141,6 +2262,37 @@ Validation target: rereview
                         ].values()
                     )
                 )
+
+    def test_proposal_correction_rejects_actual_mutation_outside_capability(
+        self,
+    ) -> None:
+        fixture = self.prepare_proposal_correction_transaction(
+            transition_id="transition-undisclosed-mutation"
+        )
+        store = fixture["store"]
+        proposal = fixture["proposal"]
+        proposal_relative = fixture["proposal_relative"]
+        escaped = store.repository_root / "scripts/escaped.py"
+
+        def invoke() -> StageExecutionResult:
+            proposal.write_text(
+                proposal.read_text(encoding="utf-8") + "\n",
+                encoding="utf-8",
+            )
+            escaped.parent.mkdir(parents=True, exist_ok=True)
+            escaped.write_text("escaped = True\n", encoding="utf-8")
+            evidence = ArtifactEvidence(
+                proposal_relative.as_posix(),
+                "sha256:" + hashlib.sha256(proposal.read_bytes()).hexdigest(),
+            )
+            return StageExecutionResult((evidence,), {"proposal": evidence})
+
+        coordination = dict(fixture["coordination"])
+        coordination["invoke_stage"] = invoke
+        with self.assertRaisesRegex(
+            AutomationContractError, "mutation escaped effective capability"
+        ):
+            coordinate_non_public_authoring_stage(**coordination)
 
     def test_authoring_non_public_harness_routes_through_test_spec_review(self) -> None:
         cases = (
@@ -2270,6 +2422,12 @@ Validation target: rereview
         store: WorkflowAutomationStateStore,
         result: StageExecutionResult,
     ) -> CanonicalSyncResult:
+        review_evidence = result.completion_evidence["proposal-review"]
+        review_text = (
+            store.repository_root / review_evidence.path
+        ).read_text(encoding="utf-8")
+        status_match = re.search(r"^Status:\s*(\S+)\s*$", review_text, re.MULTILINE)
+        status = status_match.group(1) if status_match is not None else "approved"
         change_root = (
             store.metadata_path.parent / "docs/changes/2026-07-20-example"
         )
@@ -2281,12 +2439,12 @@ Validation target: rereview
 Review ID: proposal-review-r1
 Stage: proposal-review
 Round: r1
-Status: approved
+Status: {status}
 Detailed record: reviews/proposal-review-r1.md
 Resolution: none
 Material findings: None
 Open findings: None
-""",
+""".format(status=status),
             encoding="utf-8",
         )
         return CanonicalSyncResult(
