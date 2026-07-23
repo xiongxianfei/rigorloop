@@ -146,24 +146,41 @@ def _project_completed_proposal_review(
     reviewed_artifact_identity = proof.stage_facts.get(
         "reviewed_artifact_identity"
     )
+    proposal_review_evidence = {
+        "review_id": proof.stage_facts.get("review_id"),
+        "outcome": proof.stage_facts.get("review_outcome"),
+        "reviewed_artifact_identity": reviewed_artifact_identity,
+        "review_record_identity": review_record_identity,
+    }
     try:
         correction_capability_id = resolve_active_proposal_correction_capability(
             automation,
-            reviewed_proposal_identity=reviewed_artifact_identity,
-            review_record_identity=review_record_identity,
+            reviewed_proposal_identity=proposal_review_evidence[
+                "reviewed_artifact_identity"
+            ],
+            review_record_identity=proposal_review_evidence[
+                "review_record_identity"
+            ],
         )
         projection = project_proposal_review_result(
-            outcome=proof.stage_facts.get("review_outcome"),
+            outcome=proposal_review_evidence["outcome"],
             target_stage=target_stage,
-            review_id=proof.stage_facts.get("review_id"),
-            reviewed_artifact_identity=reviewed_artifact_identity,
-            review_record_identity=review_record_identity,
+            review_id=proposal_review_evidence["review_id"],
+            reviewed_artifact_identity=proposal_review_evidence[
+                "reviewed_artifact_identity"
+            ],
+            review_record_identity=proposal_review_evidence[
+                "review_record_identity"
+            ],
             correction_capability_id=correction_capability_id,
         )
     except (TypeError, ValueError) as error:
         raise StateContractError(
             "proposal-review result projection failed: " + str(error)
         ) from error
+    receipt["proposal_review_evidence"] = copy.deepcopy(
+        proposal_review_evidence
+    )
     receipt["proposal_review_route"] = copy.deepcopy(
         proposal_review_route_binding(projection.review_result, target)
     )

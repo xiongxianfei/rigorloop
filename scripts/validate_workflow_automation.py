@@ -47,6 +47,14 @@ PARENT_AUTHORIZATION_STATUSES = frozenset({"active", "revoked", "invalidated"})
 EFFECTIVE_CAPABILITY_STATUSES = frozenset({"active", "consumed", "invalidated"})
 RECEIPT_STATUSES = frozenset({"prepared", "completed", "failed", "paused", "cancelled"})
 REVIEW_OUTCOMES = frozenset({"approved", "changes-requested", "blocked", "inconclusive"})
+PROPOSAL_REVIEW_EVIDENCE_FIELDS = frozenset(
+    {
+        "review_id",
+        "outcome",
+        "reviewed_artifact_identity",
+        "review_record_identity",
+    }
+)
 CLEAN_GATE_STATES = frozenset({"satisfied", "not-satisfied"})
 ROUTING_ACTIONS = frozenset({"continue", "correction-loop", "stop-at-target", "pause", "fail-closed"})
 PROPOSAL_CORRECTION_VALIDATION_RULES = frozenset(
@@ -265,6 +273,15 @@ def resolve_recorded_proposal_review_receipt(
             "completed proposal-review transition requires immutable route "
             "binding"
         )
+    evidence = receipt.get("proposal_review_evidence")
+    if (
+        not isinstance(evidence, dict)
+        or set(evidence) != PROPOSAL_REVIEW_EVIDENCE_FIELDS
+    ):
+        raise ValueError(
+            "completed proposal-review transition requires complete "
+            "stage-native completion evidence"
+        )
 
     capabilities = automation.get("effective_capabilities")
     review_capability = (
@@ -278,9 +295,19 @@ def resolve_recorded_proposal_review_receipt(
         else None
     )
     canonical_sync = receipt.get("canonical_sync")
+    canonical_evidence = (
+        canonical_sync.get("evidence")
+        if isinstance(canonical_sync, dict)
+        else None
+    )
     observed = (
         canonical_sync.get("observed_identities")
         if isinstance(canonical_sync, dict)
+        else None
+    )
+    review_output = (
+        canonical_evidence.get("proposal-review")
+        if isinstance(canonical_evidence, dict)
         else None
     )
     inputs = receipt.get("input_identities")
@@ -294,27 +321,37 @@ def resolve_recorded_proposal_review_receipt(
         or review_stage.get("name") != WorkflowStage.PROPOSAL_REVIEW.value
         or not isinstance(inputs, dict)
         or inputs.get("proposal")
-        != route.get("reviewed_artifact_identity")
+        != evidence.get("reviewed_artifact_identity")
         or not isinstance(canonical_sync, dict)
         or canonical_sync.get("status") != "synchronized"
+        or not isinstance(review_output, dict)
         or not isinstance(observed, dict)
         or observed.get("proposal-review")
-        != route.get("review_record_identity")
+        != evidence.get("review_record_identity")
+        or review_output.get("identity")
+        != evidence.get("review_record_identity")
     ):
         raise ValueError(
             "recorded proposal-review route does not match source transition "
             "evidence"
+        )
+    if receipt.get("outputs") != [review_output]:
+        raise ValueError(
+            "recorded proposal-review output evidence does not match "
+            "canonical stage evidence"
         )
 
     target = receipt.get("target")
     target_stage = target.get("stage") if isinstance(target, dict) else None
     capability_id = route.get("correction_capability_id")
     projection = project_proposal_review_result(
-        outcome=route.get("outcome"),
+        outcome=evidence.get("outcome"),
         target_stage=target_stage,
-        review_id=route.get("review_id"),
-        reviewed_artifact_identity=route.get("reviewed_artifact_identity"),
-        review_record_identity=route.get("review_record_identity"),
+        review_id=evidence.get("review_id"),
+        reviewed_artifact_identity=evidence.get(
+            "reviewed_artifact_identity"
+        ),
+        review_record_identity=evidence.get("review_record_identity"),
         correction_capability_id=capability_id,
     )
     expected_route_binding = proposal_review_route_binding(
@@ -323,8 +360,8 @@ def resolve_recorded_proposal_review_receipt(
     )
     if route != expected_route_binding:
         raise ValueError(
-            "recorded proposal-review route does not match immutable source "
-            "transition binding"
+            "recorded proposal-review route does not match stage-native "
+            "completion evidence"
         )
 
     if route.get("routing_action") != "correction-loop":
@@ -352,9 +389,9 @@ def resolve_recorded_proposal_review_receipt(
         or stage.get("occurrence") != {"kind": "singleton"}
         or not isinstance(basis, dict)
         or basis.get("reviewed_proposal_identity")
-        != route.get("reviewed_artifact_identity")
+        != evidence.get("reviewed_artifact_identity")
         or basis.get("review_record_identity")
-        != route.get("review_record_identity")
+        != evidence.get("review_record_identity")
     ):
         raise ValueError(
             "recorded correction capability does not match review basis"
@@ -955,6 +992,15 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
                         )
                         if error:
                             errors.append(error)
+            evidence = receipt.get("proposal_review_evidence")
+            if isinstance(evidence, dict) and "outcome" in evidence:
+                error = _unknown_value(
+                    f"{path}.proposal_review_evidence.outcome",
+                    evidence["outcome"],
+                    REVIEW_OUTCOMES,
+                )
+                if error:
+                    errors.append(error)
 
     migrations = automation.get("migration_receipts")
     if isinstance(migrations, dict):

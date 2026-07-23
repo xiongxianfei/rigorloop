@@ -908,6 +908,22 @@ Open findings: None
 
         persisted = store.read().automation
         self.assertEqual(persisted["transition_receipts"]["transition-001"]["status"], "completed")
+        review_result = persisted["latest_review_result"]
+        self.assertEqual(
+            persisted["transition_receipts"]["transition-001"][
+                "proposal_review_evidence"
+            ],
+            {
+                "review_id": review_result["review_id"],
+                "outcome": review_result["outcome"],
+                "reviewed_artifact_identity": review_result[
+                    "reviewed_artifact_identity"
+                ],
+                "review_record_identity": review_result[
+                    "review_record_identity"
+                ],
+            },
+        )
         self.assertEqual(
             persisted["effective_capabilities"]["capability-proposal-review-001"]["status"],
             "consumed",
@@ -1183,7 +1199,23 @@ Open findings: None
         route = persisted["transition_receipts"]["transition-001"][
             "proposal_review_route"
         ]
+        stage_evidence = persisted["transition_receipts"]["transition-001"][
+            "proposal_review_evidence"
+        ]
         review_result = persisted["latest_review_result"]
+        self.assertEqual(
+            stage_evidence,
+            {
+                "review_id": review_result["review_id"],
+                "outcome": review_result["outcome"],
+                "reviewed_artifact_identity": review_result[
+                    "reviewed_artifact_identity"
+                ],
+                "review_record_identity": review_result[
+                    "review_record_identity"
+                ],
+            },
+        )
         self.assertEqual(review_result["source_transition_id"], "transition-001")
         self.assertEqual(
             route,
