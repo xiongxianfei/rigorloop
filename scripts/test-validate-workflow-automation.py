@@ -163,6 +163,147 @@ def add_completed_proposal_review(
     return receipt
 
 
+def add_historical_completed_proposal_review(
+    state: dict[str, object],
+) -> dict[str, object]:
+    """Add a second valid completed review without changing the latest result."""
+
+    capabilities = state["effective_capabilities"]  # type: ignore[index]
+    original_capability = capabilities["capability-proposal-review-001"]  # type: ignore[index]
+    historical_capability = copy.deepcopy(original_capability)
+    historical_capability["capability_id"] = "capability-proposal-review-000"  # type: ignore[index]
+    historical_capability["status"] = "consumed"  # type: ignore[index]
+    capabilities["capability-proposal-review-000"] = historical_capability  # type: ignore[index]
+
+    receipts = state["transition_receipts"]  # type: ignore[index]
+    latest_receipt = receipts["transition-001"]  # type: ignore[index]
+    historical_receipt = copy.deepcopy(latest_receipt)
+    historical_receipt["transition_id"] = "transition-000"  # type: ignore[index]
+    historical_receipt[
+        "effective_capability_id"
+    ] = "capability-proposal-review-000"  # type: ignore[index]
+    historical_receipt["proposal_review_route"].update(  # type: ignore[index,union-attr]
+        {
+            "review_id": "proposal-review-r0",
+            "review_record_identity": "sha256:review-r0",
+        }
+    )
+    historical_receipt["outputs"][0][  # type: ignore[index]
+        "identity"
+    ] = "sha256:review-r0"
+    historical_receipt["canonical_sync"]["evidence"]["proposal-review"][  # type: ignore[index]
+        "identity"
+    ] = "sha256:review-r0"
+    historical_receipt["canonical_sync"]["observed_identities"][  # type: ignore[index]
+        "proposal-review"
+    ] = "sha256:review-r0"
+    historical_receipt["transition_key"] = compute_transition_key(  # type: ignore[index]
+        historical_receipt
+    )
+    receipts["transition-000"] = historical_receipt  # type: ignore[index]
+    return historical_receipt
+
+
+def add_proposal_correction_capability(
+    state: dict[str, object],
+    *,
+    capability_id: str,
+    reviewed_proposal_identity: str,
+    review_record_identity: str,
+    status: str = "consumed",
+) -> dict[str, object]:
+    """Add a structurally valid correction capability for route-history tests."""
+
+    budget = {
+        "Review-fix cycle count": 1,
+        "Findings auto-applied this cycle": 1,
+        "Files changed this cycle": 1,
+        "Files changed this invocation": 1,
+    }
+    accepted = ["BRF-1"]
+    classifications = {"BRF-1": "mechanical"}
+    correction_plans = {
+        "BRF-1": {
+            "classification": "mechanical",
+            "rationale": "fixture rationale",
+            "recipe": "Append one newline to the reviewed proposal.",
+            "validation_rule": "proposal-exact-append",
+        }
+    }
+
+    def structured(value: object) -> str:
+        payload = json.dumps(
+            value, sort_keys=True, separators=(",", ":")
+        ).encode()
+        return "sha256:" + hashlib.sha256(payload).hexdigest()
+
+    parent = state["parent_authorizations"][  # type: ignore[index]
+        "authorization-authoring-001"
+    ]
+    parent["allowed_capability_kinds"] = [  # type: ignore[index]
+        "proposal-review",
+        "proposal-correction",
+    ]
+    parent["maximum_path_roots"] = [  # type: ignore[index]
+        "docs/changes/2026-07-20-example/",
+        "docs/proposals/",
+    ]
+    parent["maximum_mutation_categories"] = [  # type: ignore[index]
+        "change-local-review-evidence",
+        "proposal-content",
+    ]
+    parent["correction_budget"] = copy.deepcopy(budget)  # type: ignore[index]
+
+    capability = {
+        "capability_id": capability_id,
+        "capability_kind": "proposal-correction",
+        "parent_authorization_id": "authorization-authoring-001",
+        "policy_version": 1,
+        "change_id": "2026-07-20-example",
+        "stage": {
+            "name": "proposal",
+            "occurrence": {"kind": "singleton"},
+        },
+        "basis": {
+            "reviewed_proposal_identity": reviewed_proposal_identity,
+            "review_record_identity": review_record_identity,
+            "accepted_finding_set_identity": structured(accepted),
+            "classifier_policy_identity": structured(correction_plans),
+            "correction_budget_identity": structured(budget),
+            "affected_proposal_roots": ["docs/proposals/"],
+        },
+        "scope": {
+            "affected_path_roots": ["docs/proposals/"],
+            "mutation_categories": ["proposal-content"],
+            "correction_budget": copy.deepcopy(budget),
+            "correction_budget_identity": structured(budget),
+            "review_record_path": (
+                "docs/changes/2026-07-20-example/reviews/"
+                "proposal-review-r0.md"
+            ),
+            "review_resolution_path": (
+                "docs/changes/2026-07-20-example/review-resolution.md"
+            ),
+            "accepted_finding_ids": accepted,
+            "finding_classifications": classifications,
+            "correction_plans": correction_plans,
+            "proposal_review_basis": {
+                "standing_gates_identity": "sha256:gates",
+                "review_policy_identity": "sha256:policy",
+                "structured_target_identity": "sha256:target",
+                "review_evidence_roots": [
+                    "docs/changes/2026-07-20-example/"
+                ],
+            },
+        },
+        "derived_at": "2026-07-20T00:02:00Z",
+        "status": status,
+        "invalidation": {"on_parent_revocation": "invalidate"},
+    }
+    state["effective_capabilities"][capability_id] = capability  # type: ignore[index]
+    return capability
+
+
 def set_policy_postcondition(receipt: dict[str, object], stage_name: str) -> None:
     policy = STAGE_POLICY_BY_STAGE[stage_name]
     receipt["expected_postcondition"] = {
@@ -556,6 +697,176 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             errors,
         )
 
+    def test_every_completed_proposal_review_receipt_has_a_canonical_route(
+        self,
+    ) -> None:
+        state = valid_automation()
+        add_completed_proposal_review(state, {
+            "review_id": "proposal-review-r1",
+            "reviewed_artifact_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "outcome": "approved",
+            "occurrence_recorded": True,
+            "clean_gate": "satisfied",
+            "routing_action": "stop-at-target",
+        })
+        state["run"]["status"] = "completed"  # type: ignore[index]
+        historical_receipt = add_historical_completed_proposal_review(state)
+        self.assertEqual(validate_workflow_automation(state), [])
+
+        cases = (
+            (
+                "empty-route",
+                lambda receipt: receipt.__setitem__(
+                    "proposal_review_route", {}
+                ),
+                "immutable",
+            ),
+            (
+                "wrong-target",
+                lambda receipt: receipt["proposal_review_route"].__setitem__(  # type: ignore[index]
+                    "target",
+                    {
+                        "stage": "spec",
+                        "occurrence": {"kind": "singleton"},
+                        "bound_at": "2026-07-20T00:00:00Z",
+                        "completion": target_completion_predicate("spec"),
+                    },
+                ),
+                "immutable",
+            ),
+            (
+                "wrong-proposal-identity",
+                lambda receipt: receipt["proposal_review_route"].__setitem__(  # type: ignore[index]
+                    "reviewed_artifact_identity", "sha256:other-proposal"
+                ),
+                "source transition evidence",
+            ),
+            (
+                "wrong-review-identity",
+                lambda receipt: receipt["proposal_review_route"].__setitem__(  # type: ignore[index]
+                    "review_record_identity", "sha256:other-review"
+                ),
+                "source transition evidence",
+            ),
+        )
+        for label, mutate, expected in cases:
+            with self.subTest(case=label):
+                candidate = copy.deepcopy(state)
+                receipt = candidate["transition_receipts"]["transition-000"]  # type: ignore[index]
+                mutate(receipt)
+                errors = validate_workflow_automation(candidate)
+                self.assertTrue(errors)
+                self.assertTrue(
+                    any(expected in error for error in errors),
+                    errors,
+                )
+
+        self.assertEqual(
+            historical_receipt["proposal_review_route"]["review_id"],  # type: ignore[index]
+            "proposal-review-r0",
+        )
+
+    def test_historical_proposal_review_route_vocabulary_fails_closed(
+        self,
+    ) -> None:
+        state = valid_automation()
+        add_completed_proposal_review(state, {
+            "review_id": "proposal-review-r1",
+            "reviewed_artifact_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "outcome": "approved",
+            "occurrence_recorded": True,
+            "clean_gate": "satisfied",
+            "routing_action": "stop-at-target",
+        })
+        state["run"]["status"] = "completed"  # type: ignore[index]
+        add_historical_completed_proposal_review(state)
+        for field, value in (
+            ("outcome", "unknown-outcome"),
+            ("routing_action", "unknown-action"),
+        ):
+            with self.subTest(field=field):
+                candidate = copy.deepcopy(state)
+                candidate["transition_receipts"]["transition-000"][  # type: ignore[index]
+                    "proposal_review_route"
+                ][field] = value
+                errors = validate_workflow_automation(candidate)
+                self.assertTrue(errors)
+                self.assertIn(
+                    f"proposal_review_route.{field}",
+                    errors[0],
+                )
+                self.assertIn("unknown value", errors[0])
+
+    def test_historical_correction_route_retains_its_original_capability(
+        self,
+    ) -> None:
+        state = valid_automation()
+        target = {
+            "stage": "spec",
+            "occurrence": {"kind": "singleton"},
+            "bound_at": "2026-07-20T00:00:00Z",
+            "completion": target_completion_predicate("spec"),
+        }
+        state["run"]["target"] = copy.deepcopy(target)  # type: ignore[index]
+        state["parent_authorizations"]["authorization-authoring-001"][  # type: ignore[index]
+            "maximum_target"
+        ] = copy.deepcopy(target)
+        add_completed_proposal_review(state, {
+            "review_id": "proposal-review-r1",
+            "reviewed_artifact_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "outcome": "approved",
+            "occurrence_recorded": True,
+            "clean_gate": "satisfied",
+            "routing_action": "continue",
+        })
+        historical_receipt = add_historical_completed_proposal_review(state)
+        correction_id = "capability-proposal-correction-000"
+        add_proposal_correction_capability(
+            state,
+            capability_id=correction_id,
+            reviewed_proposal_identity="sha256:proposal",
+            review_record_identity="sha256:review-r0",
+        )
+        historical_receipt["proposal_review_route"].update(  # type: ignore[index,union-attr]
+            {
+                "outcome": "changes-requested",
+                "routing_action": "correction-loop",
+                "correction_capability_id": correction_id,
+            }
+        )
+        self.assertEqual(validate_workflow_automation(state), [])
+
+        missing = copy.deepcopy(state)
+        missing["effective_capabilities"].pop(correction_id)  # type: ignore[index]
+        errors = validate_workflow_automation(missing)
+        self.assertTrue(
+            any("correction capability does not exist" in error for error in errors),
+            errors,
+        )
+
+        mismatched = copy.deepcopy(state)
+        mismatched["effective_capabilities"][correction_id]["basis"][  # type: ignore[index]
+            "review_record_identity"
+        ] = "sha256:other-review"
+        errors = validate_workflow_automation(mismatched)
+        self.assertTrue(
+            any(
+                "correction capability does not match review basis"
+                in error
+                for error in errors
+            ),
+            errors,
+        )
+
+        invalidated = copy.deepcopy(state)
+        invalidated["effective_capabilities"][correction_id][  # type: ignore[index]
+            "status"
+        ] = "invalidated"
+        self.assertEqual(validate_workflow_automation(invalidated), [])
+
     def test_cancelled_run_preserves_valid_proposal_review_result_and_authority_shutdown(
         self,
     ) -> None:
@@ -610,6 +921,25 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 candidate = copy.deepcopy(state)
                 mutate(candidate)
                 self.assertTrue(validate_workflow_automation(candidate))
+
+        active_correction = copy.deepcopy(state)
+        correction = add_proposal_correction_capability(
+            active_correction,
+            capability_id="capability-proposal-correction-001",
+            reviewed_proposal_identity="sha256:proposal",
+            review_record_identity="sha256:review",
+            status="active",
+        )
+        errors = validate_workflow_automation(active_correction)
+        self.assertTrue(
+            any(
+                "cancelled run cannot retain active capability" in error
+                for error in errors
+            ),
+            errors,
+        )
+        correction["status"] = "invalidated"
+        self.assertEqual(validate_workflow_automation(active_correction), [])
 
     def test_proposal_review_result_requires_exact_run_pause_projection(
         self,
