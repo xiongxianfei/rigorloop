@@ -232,8 +232,8 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "BRF-1": {
                 "classification": "future-classification",
                 "rationale": "fixture rationale",
-                "recipe": "fixture recipe",
-                "validation_rule": "proposal-identity-changed",
+                "recipe": "Append one newline to the reviewed proposal.",
+                "validation_rule": "proposal-exact-append",
             }
         }
         budget = {
@@ -429,6 +429,46 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 errors = validate_workflow_automation(candidate)
                 self.assertTrue(errors)
                 self.assertIn(expected, errors[0])
+
+    def test_proposal_review_result_requires_concrete_consistent_projection(
+        self,
+    ) -> None:
+        invalid_results = (
+            {
+                "review_id": "",
+                "reviewed_artifact_identity": "",
+                "outcome": "approved",
+                "occurrence_recorded": True,
+                "clean_gate": "satisfied",
+                "routing_action": "stop-at-target",
+            },
+            {
+                "review_id": "proposal-review-r1",
+                "reviewed_artifact_identity": "sha256:proposal",
+                "outcome": "blocked",
+                "occurrence_recorded": True,
+                "clean_gate": "satisfied",
+                "routing_action": "continue",
+            },
+            {
+                "review_id": "proposal-review-r1",
+                "reviewed_artifact_identity": "sha256:proposal",
+                "outcome": "changes-requested",
+                "occurrence_recorded": True,
+                "clean_gate": "not-satisfied",
+                "routing_action": "pause",
+            },
+        )
+        for review_result in invalid_results:
+            with self.subTest(review_result=review_result):
+                state = valid_automation()
+                state["latest_review_result"] = review_result
+                errors = validate_workflow_automation(state)
+                self.assertTrue(errors)
+                self.assertTrue(
+                    any("latest_review_result" in error for error in errors),
+                    errors,
+                )
 
     def test_unknown_policy_version_vocabulary_fails_closed_for_every_record(self) -> None:
         cases = (
@@ -696,8 +736,8 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                         "BRF-1": {
                             "classification": "mechanical",
                             "rationale": "fixture rationale",
-                            "recipe": "fixture recipe",
-                            "validation_rule": "proposal-identity-changed",
+                            "recipe": "Append one newline to the reviewed proposal.",
+                            "validation_rule": "proposal-exact-append",
                         }
                     }
                     budget = {
@@ -1037,8 +1077,8 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             "BRF-1": {
                 "classification": "mechanical",
                 "rationale": "fixture rationale",
-                "recipe": "fixture recipe",
-                "validation_rule": "proposal-identity-changed",
+                "recipe": "Append one newline to the reviewed proposal.",
+                "validation_rule": "proposal-exact-append",
             }
         }
         structured = lambda value: "sha256:" + hashlib.sha256(

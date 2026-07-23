@@ -13,8 +13,11 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import os
 import re
+import tempfile
 from dataclasses import dataclass, field
+from os import replace as _replace_file
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Iterable, Mapping
 
@@ -44,6 +47,7 @@ from workflow_automation_policy import (
     WorkflowPosition,
     WorkflowStage,
     can_operation_fit_target,
+    project_proposal_review_result,
     target_completion_predicate,
 )
 from workflow_automation_state import (
@@ -252,6 +256,9 @@ class ProposalCorrectionAuthority:
     review_record_path: str | None = None
     review_resolution_path: str | None = None
     proposal_review_basis: Mapping[str, Any] = field(default_factory=dict)
+    correction_plans: Mapping[str, Mapping[str, str]] = field(
+        default_factory=dict
+    )
 
 
 @dataclass(frozen=True)
@@ -308,66 +315,39 @@ def evaluate_proposal_review(
     if not can_operation_fit_target(WorkflowStage.PROPOSAL_REVIEW, target):
         raise AutomationContractError("proposal-review exceeds structured target")
 
-    clean_gate = "satisfied" if outcome == "approved" else "not-satisfied"
-    if outcome in {"blocked", "inconclusive"}:
-        return ProposalReviewDecision(
-            True,
-            review_id,
-            proposal_identity,
-            outcome,
-            clean_gate,
-            "pause",
-            pause_reason=f"proposal-review-{outcome}",
-        )
-    if target == WorkflowStage.PROPOSAL_REVIEW:
-        return ProposalReviewDecision(
-            True,
-            review_id,
-            proposal_identity,
-            outcome,
-            clean_gate,
-            "stop-at-target",
-        )
-    if outcome == "approved":
-        return ProposalReviewDecision(
-            True,
-            review_id,
-            proposal_identity,
-            outcome,
-            clean_gate,
-            "continue",
-            next_stage=WorkflowStage.SPEC.value,
-        )
+    correction_capability_id = None
     if (
         correction_authority is not None
         and set(correction_authority.correction_budget) == set(REVIEW_FIX_BUDGET_LIMITS)
         and all(
-        isinstance(value, int) and not isinstance(value, bool) and value > 0
-        for value in correction_authority.correction_budget.values()
+            isinstance(value, int)
+            and not isinstance(value, bool)
+            and value > 0
+            and value <= REVIEW_FIX_BUDGET_LIMITS[label]
+            for label, value in correction_authority.correction_budget.items()
         )
     ):
-        return ProposalReviewDecision(
-            True,
-            review_id,
-            proposal_identity,
-            outcome,
-            clean_gate,
-            "correction-loop",
-            next_stage="proposal-correction",
+        correction_capability_id = correction_authority.capability_id
+    try:
+        projection = project_proposal_review_result(
+            outcome=outcome,
+            target_stage=target_stage,
+            review_id=review_id,
+            reviewed_artifact_identity=proposal_identity,
+            correction_capability_id=correction_capability_id,
         )
-    reason = (
-        "proposal-correction-budget-exhausted"
-        if correction_authority is not None
-        else "proposal-correction-authorization-required"
-    )
+    except ValueError as error:
+        raise AutomationContractError(str(error)) from error
+    review_result = projection.review_result
     return ProposalReviewDecision(
-        True,
-        review_id,
-        proposal_identity,
-        outcome,
-        clean_gate,
-        "pause",
-        pause_reason=reason,
+        occurrence_recorded=True,
+        review_id=review_id,
+        reviewed_artifact_identity=proposal_identity,
+        outcome=outcome,
+        clean_gate=str(review_result["clean_gate"]),
+        routing_action=str(review_result["routing_action"]),
+        next_stage=projection.next_stage,
+        pause_reason=review_result.get("pause_reason"),
     )
 
 
@@ -391,28 +371,50 @@ def _structured_identity(value: Any) -> str:
     return f"sha256:{hashlib.sha256(payload).hexdigest()}"
 
 
-def _snapshot_repository_files(repository_root: Path) -> dict[str, str]:
-    root = repository_root.resolve()
-    snapshot: dict[str, str] = {}
-    for path in root.rglob("*"):
-        relative = path.relative_to(root)
-        if ".git" in relative.parts or path.is_symlink() or not path.is_file():
-            continue
-        snapshot[relative.as_posix()] = (
-            "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
-        )
-    return snapshot
+@dataclass(frozen=True)
+class _ProposalCorrectionOperation:
+    kind: str
+    payload: bytes
 
 
-def _changed_repository_paths(
-    before: Mapping[str, str],
-    after: Mapping[str, str],
-) -> frozenset[str]:
-    return frozenset(
-        path
-        for path in set(before) | set(after)
-        if before.get(path) != after.get(path)
+def _compile_proposal_correction_operation(
+    plan: Mapping[str, str],
+) -> _ProposalCorrectionOperation:
+    if (
+        plan.get("classification") == "mechanical"
+        and plan.get("recipe")
+        == "Append one newline to the reviewed proposal."
+        and plan.get("validation_rule") == "proposal-exact-append"
+    ):
+        return _ProposalCorrectionOperation("append-exact-bytes", b"\n")
+    raise AutomationContractError(
+        "proposal-correction recipe has no closed executable operation"
     )
+
+
+def _atomic_replace_regular_file(path: Path, content: bytes) -> None:
+    """Replace one non-symlink regular file without exposing partial bytes."""
+
+    if path.is_symlink() or not path.is_file():
+        raise AutomationContractError(
+            "proposal-correction target must be a regular repository file"
+        )
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.",
+        suffix=".tmp",
+        dir=path.parent,
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(content)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.chmod(temporary, path.stat().st_mode)
+        _replace_file(temporary, path)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
 
 
 def _resolve_repository_file(repository_root: Path, relative_path: Any) -> Path:
@@ -562,6 +564,7 @@ def _load_proposal_correction_repository_evidence(
             raise AutomationContractError(
                 "proposal-correction driver classification evidence is incomplete"
             )
+        _compile_proposal_correction_operation(plan)
         correction_plans[finding_id] = plan
     if "sha256:" + hashlib.sha256(review_path.read_bytes()).hexdigest() != review_identity:
         raise AutomationContractError("proposal-correction review identity drifted")
@@ -682,6 +685,10 @@ def resolve_proposal_correction_authority(
         str(scope["review_record_path"]),
         str(scope["review_resolution_path"]),
         dict(proposal_review_basis),
+        {
+            finding_id: dict(plan)
+            for finding_id, plan in repository_evidence.correction_plans.items()
+        },
     )
 
 
@@ -869,6 +876,9 @@ def coordinate_non_public_authoring_stage(
     stage_request = coordination.get("stage")
     correction_decision: ProposalCorrectionDecision | None = None
     actual_changed_paths: frozenset[str] = frozenset()
+    expected_proposal_identity_after: str | None = None
+    proposal_path_for_rollback: Path | None = None
+    proposal_content_before: bytes | None = None
     post_completion_capabilities: Callable[
         [VerifiedCompletion, Mapping[str, Any], Mapping[str, Any]],
         Iterable[Mapping[str, Any]],
@@ -905,20 +915,47 @@ def coordinate_non_public_authoring_stage(
         assert authority.review_resolution_path is not None
         assert authority.reviewed_proposal_path is not None
 
-        original_invoke_stage = coordination.get("invoke_stage")
-        if not callable(original_invoke_stage):
-            raise AutomationContractError("proposal-correction stage invocation is required")
+        proposal_path = _resolve_repository_file(
+            repository_root, authority.reviewed_proposal_path
+        )
+        proposal_path_for_rollback = proposal_path
+        operations = tuple(
+            _compile_proposal_correction_operation(
+                authority.correction_plans[finding_id]
+            )
+            for finding_id in sorted(authority.accepted_finding_ids)
+        )
 
         def invoke_bounded_proposal_correction() -> StageExecutionResult:
             nonlocal actual_changed_paths
-            before = _snapshot_repository_files(repository_root)
-            result = original_invoke_stage()
-            after = _snapshot_repository_files(repository_root)
-            actual_changed_paths = _changed_repository_paths(before, after)
-            return result
+            nonlocal expected_proposal_identity_after
+            nonlocal proposal_content_before
+            before = proposal_path.read_bytes()
+            after = before + b"".join(operation.payload for operation in operations)
+            proposal_content_before = before
+            _atomic_replace_regular_file(proposal_path, after)
+            expected_proposal_identity_after = (
+                "sha256:" + hashlib.sha256(after).hexdigest()
+            )
+            actual_changed_paths = frozenset(
+                {authority.reviewed_proposal_path}
+            )
+            evidence = ArtifactEvidence(
+                authority.reviewed_proposal_path,
+                expected_proposal_identity_after,
+            )
+            return StageExecutionResult(
+                (evidence,),
+                {"proposal": evidence},
+            )
 
         coordination = dict(coordination)
         coordination["invoke_stage"] = invoke_bounded_proposal_correction
+        coordination["synchronize_canonical_state"] = (
+            lambda stage_result: CanonicalSyncResult(
+                "synchronized", stage_result.completion_evidence
+            )
+        )
 
         def derive_post_correction_capabilities(
             proof: VerifiedCompletion,
@@ -948,6 +985,8 @@ def coordinate_non_public_authoring_stage(
                 capability["basis"].get("reviewed_proposal_identity", "")
             )
             proposal_after = proof.observed_identities.get("proposal", "")
+            if proposal_after != expected_proposal_identity_after:
+                pause("proposal correction does not match compiled operation")
             post_decision = evaluate_proposal_correction(
                 authority=authority,
                 finding_classifications=authority.finding_classifications,
@@ -1014,7 +1053,22 @@ def coordinate_non_public_authoring_stage(
             post_completion_capabilities=post_completion_capabilities,
             **coordination,
         )
-    except AutomationContractError as error:
+    except Exception as error:
+        if (
+            correction_decision is not None
+            and expected_proposal_identity_after is not None
+            and proposal_path_for_rollback is not None
+            and proposal_content_before is not None
+        ):
+            try:
+                _atomic_replace_regular_file(
+                    proposal_path_for_rollback, proposal_content_before
+                )
+            except Exception as rollback_error:
+                raise AutomationContractError(
+                    "proposal correction rollback failed after rejected "
+                    f"transaction: {rollback_error}"
+                ) from error
         if str(error).startswith("proposal correction paused:"):
             paused_snapshot = store.read()
             assert paused_snapshot.automation is not None

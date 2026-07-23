@@ -28,10 +28,14 @@ from review_artifact_validation import (
 )
 from artifact_lifecycle_validation import inspect_lifecycle_artifact
 from lifecycle_state_sync import parse_handoff_summary
-from workflow_automation_policy import STAGE_POLICY_BY_STAGE
+from workflow_automation_policy import (
+    STAGE_POLICY_BY_STAGE,
+    project_proposal_review_result,
+)
 from validate_workflow_automation import (
     compute_transition_key,
     has_read_only_legacy_migration,
+    resolve_active_proposal_correction_capability,
     validate_workflow_automation,
 )
 
@@ -975,47 +979,35 @@ class WorkflowAutomationStateStore:
                 target_stage = (
                     target.get("stage") if isinstance(target, dict) else None
                 )
-                if outcome in {"blocked", "inconclusive"}:
-                    expected_action = "pause"
-                    expected_pause_reason = f"proposal-review-{outcome}"
-                elif target_stage == "proposal-review":
-                    expected_action = "stop-at-target"
-                    expected_pause_reason = None
-                elif outcome == "approved":
-                    expected_action = "continue"
-                    expected_pause_reason = None
-                else:
-                    expected_action = "pause"
-                    expected_pause_reason = (
-                        "proposal-correction-authorization-required"
+                try:
+                    correction_capability_id = (
+                        resolve_active_proposal_correction_capability(
+                            replacement
+                        )
                     )
-                expected_review_result = {
-                    "review_id": proof.stage_facts.get("review_id"),
-                    "reviewed_artifact_identity": proof.stage_facts.get(
-                        "reviewed_artifact_identity"
-                    ),
-                    "outcome": outcome,
-                    "occurrence_recorded": True,
-                    "clean_gate": (
-                        "satisfied"
-                        if outcome == "approved"
-                        else "not-satisfied"
-                    ),
-                    "routing_action": expected_action,
-                }
-                if expected_pause_reason is not None:
-                    expected_review_result["pause_reason"] = (
-                        expected_pause_reason
+                    projection = project_proposal_review_result(
+                        outcome=outcome,
+                        target_stage=target_stage,
+                        review_id=proof.stage_facts.get("review_id"),
+                        reviewed_artifact_identity=proof.stage_facts.get(
+                            "reviewed_artifact_identity"
+                        ),
+                        correction_capability_id=correction_capability_id,
                     )
-                replacement["latest_review_result"] = expected_review_result
-                routing_action = expected_action
-                if routing_action == "pause":
-                    run["status"] = "paused"
-                    run["pause_reason"] = expected_review_result.get(
+                except (TypeError, ValueError) as error:
+                    raise StateContractError(
+                        "proposal-review result projection failed: "
+                        + str(error)
+                    ) from error
+                replacement["latest_review_result"] = dict(
+                    projection.review_result
+                )
+                run["status"] = projection.run_status
+                if "pause_reason" in projection.review_result:
+                    run["pause_reason"] = projection.review_result[
                         "pause_reason"
-                    )
-                elif routing_action == "stop-at-target":
-                    run["status"] = "completed"
+                    ]
+                else:
                     run.pop("pause_reason", None)
         elif invalidate_bound_capability:
             capabilities = replacement.get("effective_capabilities")

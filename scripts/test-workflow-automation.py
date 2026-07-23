@@ -13,7 +13,9 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+from review_artifact_validation import REVIEW_FIX_BUDGET_LIMITS
 from workflow_automation import (
     ActivePlanContext,
     ArtifactEvidence,
@@ -211,7 +213,7 @@ Validation target: rereview
 Planned driver classification: mechanical
 Planned correction rationale: The requested change is deterministic and bounded.
 Planned correction recipe: Append one newline to the reviewed proposal.
-Planned validation rule: proposal-identity-changed
+Planned validation rule: proposal-exact-append
 """,
             encoding="utf-8",
         )
@@ -231,7 +233,7 @@ Planned validation rule: proposal-identity-changed
                 "classification": "mechanical",
                 "rationale": "The requested change is deterministic and bounded.",
                 "recipe": "Append one newline to the reviewed proposal.",
-                "validation_rule": "proposal-identity-changed",
+                "validation_rule": "proposal-exact-append",
             }
         }
         budget = {
@@ -1312,7 +1314,30 @@ Planned validation rule: proposal-identity-changed
         )
         self.assertEqual(
             (empty_budget.routing_action, empty_budget.pause_reason),
-            ("pause", "proposal-correction-budget-exhausted"),
+            ("pause", "proposal-correction-authorization-required"),
+        )
+
+        over_budget = evaluate_proposal_review(
+            outcome="changes-requested",
+            review_id="proposal-review-r1",
+            proposal_identity="sha256:proposal-v1",
+            reviewed_proposal_identity="sha256:proposal-v1",
+            target_stage="test-spec-review",
+            correction_authority=ProposalCorrectionAuthority(
+                "capability-correction-over-budget",
+                "sha256:review-v1",
+                frozenset({"BRF-1"}),
+                {"BRF-1": "mechanical"},
+                {
+                    label: limit + 1
+                    for label, limit in REVIEW_FIX_BUDGET_LIMITS.items()
+                },
+                ("docs/proposals/",),
+            ),
+        )
+        self.assertEqual(
+            (over_budget.routing_action, over_budget.pause_reason),
+            ("pause", "proposal-correction-authorization-required"),
         )
 
         for outcome in ("blocked", "inconclusive"):
@@ -1403,6 +1428,47 @@ Planned validation rule: proposal-identity-changed
                         if expected_action == "stop-at-target"
                         else "active",
                     )
+
+    def test_proposal_review_transaction_persists_authorized_correction_loop(
+        self,
+    ) -> None:
+        fixture = self.prepare_proposal_correction_transaction(
+            transition_id="unused-correction-transition"
+        )
+        store = fixture["store"]
+
+        def invoke() -> StageExecutionResult:
+            evidence = self.write_evidence(
+                store, status="changes-requested"
+            )
+            return StageExecutionResult(
+                (evidence,), {"proposal-review": evidence}
+            )
+
+        result = self.coordinate_proposal_review(
+            store,
+            invoke,
+            parent_authorization_id="auth-correction",
+            capability_id="cap-review-for-correction-loop",
+        )
+
+        self.assertEqual(result.status, "completed")
+        automation = store.read().automation
+        self.assertEqual(
+            automation["latest_review_result"],
+            {
+                "review_id": "proposal-review-r1",
+                "reviewed_artifact_identity": automation[
+                    "transition_receipts"
+                ]["transition-engine-001"]["input_identities"]["proposal"],
+                "outcome": "changes-requested",
+                "occurrence_recorded": True,
+                "clean_gate": "not-satisfied",
+                "routing_action": "correction-loop",
+                "correction_capability_id": "cap-correction-transaction",
+            },
+        )
+        self.assertEqual(automation["run"]["status"], "active")
 
     def test_proposal_review_unknown_and_unchanged_inconclusive_fail_closed(self) -> None:
         with self.assertRaisesRegex(AutomationContractError, "unknown proposal-review outcome"):
@@ -1620,7 +1686,7 @@ Planned validation rule: proposal-identity-changed
                 "classification": "mechanical",
                 "rationale": "The requested change is deterministic and bounded.",
                 "recipe": "Append one newline to the reviewed proposal.",
-                "validation_rule": "proposal-identity-changed",
+                "validation_rule": "proposal-exact-append",
             }
         }
         budget = {
@@ -1761,6 +1827,31 @@ Planned validation rule: proposal-identity-changed
         ):
             resolve_proposal_correction_authority(
                 automation,
+                "cap-correction-transaction",
+                repository_root=store.repository_root,
+            )
+
+    def test_proposal_correction_rejects_recipe_without_closed_operation(
+        self,
+    ) -> None:
+        fixture = self.prepare_proposal_correction_transaction(
+            transition_id="transition-unsupported-recipe"
+        )
+        store = fixture["store"]
+        resolution = store.repository_root / fixture["resolution_path"]
+        resolution.write_text(
+            resolution.read_text(encoding="utf-8").replace(
+                "Append one newline to the reviewed proposal.",
+                "Rewrite the proposal however the callback chooses.",
+            ),
+            encoding="utf-8",
+        )
+
+        with self.assertRaisesRegex(
+            AutomationContractError, "no closed executable operation"
+        ):
+            resolve_proposal_correction_authority(
+                store.read().automation,
                 "cap-correction-transaction",
                 repository_root=store.repository_root,
             )
@@ -2034,7 +2125,7 @@ Planned validation rule: proposal-identity-changed
                 "classification": "mechanical",
                 "rationale": "The requested change is deterministic and bounded.",
                 "recipe": "Append one newline to the reviewed proposal.",
-                "validation_rule": "proposal-identity-changed",
+                "validation_rule": "proposal-exact-append",
             }
         }
         budget = {
@@ -2192,107 +2283,115 @@ Planned validation rule: proposal-identity-changed
         )
 
     def test_proposal_correction_post_mutation_failures_pause_durably(self) -> None:
-        cases = (
-            ("historical-review-drift", True, True),
-            ("fresh-review-authority", False, False),
-        )
-        for (
-            label,
-            mutate_review,
-            allow_rereview,
-        ) in cases:
-            with self.subTest(case=label):
-                fixture = self.prepare_proposal_correction_transaction(
-                    transition_id=f"transition-{label}",
-                    allow_rereview=allow_rereview,
-                )
-                store = fixture["store"]
-                proposal = fixture["proposal"]
-                proposal_relative = fixture["proposal_relative"]
-                resolution = store.repository_root / fixture["resolution_path"]
-                review = store.repository_root / fixture["review_path"]
-
-                def invoke() -> StageExecutionResult:
-                    proposal.write_text(
-                        proposal.read_text(encoding="utf-8") + "\n",
-                        encoding="utf-8",
-                    )
-                    if mutate_review:
-                        review.write_text(
-                            review.read_text(encoding="utf-8")
-                            + "\n<!-- changed review -->\n",
-                            encoding="utf-8",
-                        )
-                    evidence = ArtifactEvidence(
-                        proposal_relative.as_posix(),
-                        "sha256:"
-                        + hashlib.sha256(proposal.read_bytes()).hexdigest(),
-                    )
-                    return StageExecutionResult(
-                        (evidence,), {"proposal": evidence}
-                    )
-
-                coordination = dict(fixture["coordination"])
-                coordination["invoke_stage"] = invoke
-                with self.assertRaisesRegex(
-                    AutomationContractError, "proposal correction paused"
-                ):
-                    coordinate_non_public_authoring_stage(**coordination)
-
-                persisted = store.read().automation
-                self.assertEqual(persisted["run"]["status"], "paused")
-                self.assertEqual(
-                    persisted["transition_receipts"][
-                        f"transition-{label}"
-                    ]["status"],
-                    "paused",
-                )
-                self.assertEqual(
-                    persisted["effective_capabilities"][
-                        "cap-correction-transaction"
-                    ]["status"],
-                    "invalidated",
-                )
-                self.assertFalse(
-                    any(
-                        capability["capability_kind"] == "proposal-review"
-                        and capability["status"] == "active"
-                        for capability in persisted[
-                            "effective_capabilities"
-                        ].values()
-                    )
-                )
-
-    def test_proposal_correction_rejects_actual_mutation_outside_capability(
-        self,
-    ) -> None:
         fixture = self.prepare_proposal_correction_transaction(
-            transition_id="transition-undisclosed-mutation"
+            transition_id="transition-fresh-review-authority",
+            allow_rereview=False,
         )
         store = fixture["store"]
         proposal = fixture["proposal"]
-        proposal_relative = fixture["proposal_relative"]
-        escaped = store.repository_root / "scripts/escaped.py"
+        proposal_before = proposal.read_bytes()
+        coordination = dict(fixture["coordination"])
+        with self.assertRaisesRegex(
+            AutomationContractError, "proposal correction paused"
+        ):
+            coordinate_non_public_authoring_stage(**coordination)
+
+        persisted = store.read().automation
+        self.assertEqual(persisted["run"]["status"], "paused")
+        self.assertEqual(
+            persisted["transition_receipts"][
+                "transition-fresh-review-authority"
+            ]["status"],
+            "paused",
+        )
+        self.assertEqual(
+            persisted["effective_capabilities"][
+                "cap-correction-transaction"
+            ]["status"],
+            "invalidated",
+        )
+        self.assertFalse(
+            any(
+                capability["capability_kind"] == "proposal-review"
+                and capability["status"] == "active"
+                for capability in persisted[
+                    "effective_capabilities"
+                ].values()
+            )
+        )
+        self.assertEqual(proposal.read_bytes(), proposal_before)
+
+    def test_proposal_correction_executes_bound_recipe_without_caller_callback(
+        self,
+    ) -> None:
+        fixture = self.prepare_proposal_correction_transaction(
+            transition_id="transition-bound-recipe"
+        )
+        store = fixture["store"]
+        proposal = fixture["proposal"]
+        before = proposal.read_bytes()
+        escaped = store.repository_root / "scripts/escaped-link"
+        callback_invoked = False
 
         def invoke() -> StageExecutionResult:
-            proposal.write_text(
-                proposal.read_text(encoding="utf-8") + "\n",
-                encoding="utf-8",
-            )
+            nonlocal callback_invoked
+            callback_invoked = True
             escaped.parent.mkdir(parents=True, exist_ok=True)
-            escaped.write_text("escaped = True\n", encoding="utf-8")
-            evidence = ArtifactEvidence(
-                proposal_relative.as_posix(),
-                "sha256:" + hashlib.sha256(proposal.read_bytes()).hexdigest(),
-            )
-            return StageExecutionResult((evidence,), {"proposal": evidence})
+            escaped.symlink_to(proposal)
+            raise RuntimeError("untrusted correction callback executed")
 
         coordination = dict(fixture["coordination"])
         coordination["invoke_stage"] = invoke
-        with self.assertRaisesRegex(
-            AutomationContractError, "mutation escaped effective capability"
+        result = coordinate_non_public_authoring_stage(**coordination)
+
+        self.assertFalse(callback_invoked)
+        self.assertFalse(escaped.exists())
+        self.assertEqual(proposal.read_bytes(), before + b"\n")
+        self.assertEqual(result.coordination.status, "completed")
+        persisted = store.read().automation
+        self.assertEqual(
+            persisted["transition_receipts"]["transition-bound-recipe"]["status"],
+            "completed",
+        )
+
+    def test_proposal_correction_atomic_replace_failure_leaves_no_mutation(
+        self,
+    ) -> None:
+        fixture = self.prepare_proposal_correction_transaction(
+            transition_id="transition-atomic-replace-failure"
+        )
+        store = fixture["store"]
+        proposal = fixture["proposal"]
+        before = proposal.read_bytes()
+        coordination = dict(fixture["coordination"])
+
+        with patch(
+            "workflow_automation._replace_file",
+            side_effect=OSError("simulated atomic replace failure"),
         ):
-            coordinate_non_public_authoring_stage(**coordination)
+            with self.assertRaisesRegex(
+                OSError, "simulated atomic replace failure"
+            ):
+                coordinate_non_public_authoring_stage(**coordination)
+
+        self.assertEqual(proposal.read_bytes(), before)
+        self.assertEqual(
+            list(proposal.parent.glob(f".{proposal.name}.*.tmp")),
+            [],
+        )
+        persisted = store.read().automation
+        self.assertEqual(
+            persisted["transition_receipts"][
+                "transition-atomic-replace-failure"
+            ]["status"],
+            "failed",
+        )
+        self.assertEqual(
+            persisted["effective_capabilities"][
+                "cap-correction-transaction"
+            ]["status"],
+            "active",
+        )
 
     def test_authoring_non_public_harness_routes_through_test_spec_review(self) -> None:
         cases = (
@@ -2491,6 +2590,8 @@ Material findings: None
         store,
         invoke,
         *,
+        parent_authorization_id="authorization-authoring-001",
+        capability_id="capability-engine-001",
         input_identities=None,
         synchronize=None,
         repository_root=None,
@@ -2501,8 +2602,8 @@ Material findings: None
             receipt_inputs.update(input_identities)
         return coordinate_one_stage(
             store=store,
-            parent_authorization_id="authorization-authoring-001",
-            capability_id="capability-engine-001",
+            parent_authorization_id=parent_authorization_id,
+            capability_id=capability_id,
             stage="proposal-review",
             occurrence={"kind": "singleton"},
             basis={
