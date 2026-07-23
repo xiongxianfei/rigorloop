@@ -451,3 +451,15 @@ Detailed record: reviews/code-review-m4-r2.md
 Resolution: review-resolution.md#code-review-m4-r2
 Material findings: BRF-M4-CR3, BRF-M4-CR4
 Open findings: None
+
+### Review entry
+Review ID: code-review-m4-r3
+Stage: code-review
+Round: M4 R3
+Reviewed artifact: M4 correction commit `6404b7b7`
+Reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
+Status: changes-requested
+Detailed record: reviews/code-review-m4-r3.md
+Resolution: review-resolution.md#code-review-m4-r3
+Material findings: BRF-M4-CR5, BRF-M4-CR6
+Open findings: BRF-M4-CR5, BRF-M4-CR6

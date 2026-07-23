@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -32,10 +32,10 @@ Review closeout: code-review-m3-r9
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`
 - Findings resolved: 59
-- Unresolved findings: 0
-- Current result: `BRF-M4-CR3` and `BRF-M4-CR4` are resolved in the M4 R2 correction; code-review M4 R3 is required before M5.
+- Unresolved findings: 2
+- Current result: Code-review M4 R3 resolved `BRF-M4-CR3`, classified `BRF-M4-CR4` as a failed remediation, and opened `BRF-M4-CR5` and `BRF-M4-CR6`. M4 remains resolution-needed; M5 is blocked.
 
 ## Resolution Overview
 
@@ -98,8 +98,10 @@ Review closeout: code-review-m4-r2
 | BRF-M3-CR15 | accepted | resolved | Replaced the prefix-plus-remainder parser and denylist with exact equality against one generated open/closed formal review-state projection. |
 | BRF-M4-CR1 | accepted | resolved | Connected the non-public authoring route to prepared receipts, capability consumption, canonical synchronization, and parser-backed completion for every M4 stage. |
 | BRF-M4-CR2 | accepted | resolved | Replaced caller authority booleans with capability-derived correction authority and bound review, finding, classification, budget, path, and proposal mutation evidence. |
-| BRF-M4-CR3 | accepted | resolved | Completed recovery now compares stage-generic normalized proof, preserves review-log drift diagnostics only when applicable, and routes from verified stage facts. |
-| BRF-M4-CR4 | accepted | resolved | Correction authority now comes from canonical review evidence and persisted identities; post-mutation convergence must pass before fresh review authority is derived. |
+| BRF-M4-CR3 | accepted | resolved | Completed recovery now compares stage-generic normalized proof, preserves review-log drift diagnostics only when applicable, and routes from verified stage facts; R3 confirmed resolution. |
+| BRF-M4-CR4 | accepted | resolved | R3 classified the correction as a failed remediation because caller-substitutable authority remains; the remaining defect is recorded as `BRF-M4-CR5`. |
+| BRF-M4-CR5 | needs-decision | open | Exact review occurrence, driver classification, deterministic validation, and complete changed-path evidence remain caller-substitutable. |
+| BRF-M4-CR6 | needs-decision | open | The composed proposal-review path does not persist the complete occurrence, gate, routing, and pause projection required by BRF-R047. |
 
 ## Common Resolution Metadata
 
@@ -109,6 +111,42 @@ Review closeout: code-review-m4-r2
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m4-r3
+
+#### BRF-M4-CR5 - Correction authority remains caller-substitutable
+
+Finding ID: BRF-M4-CR5
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: accept, reject, defer, or partially accept the recorded safe resolution before correction begins
+Rationale: The correction now parses tracked review evidence, but it does not bind the exact log occurrence, canonical driver classification, deterministic validation, or actual changed-path set. Direct probes still complete correction with the wrong review round, an always-true validator, and an undeclared out-of-scope mutation.
+Required outcome: Correction must derive exact occurrence, driver classification, deterministic validation, and the complete changed-path set from current stage-owned evidence, and no mutation outside the effective capability may occur.
+Chosen action: Pending disposition.
+Safe resolution path: Require exact round and material/open-finding parity; bind driver classification plus rationale or recipe to canonical resolution evidence; replace arbitrary validation callbacks with named identity-bound validation evidence; compare actual repository changes with capability scope; and move review-log or resolution mutation into separately authorized stage work.
+Validation target: Wrong-round, missing or forged driver classification, always-true validator, undeclared mutation, policy-category ownership, CMD14-CMD20, and code-review M4 R4.
+Validation evidence: Pending.
+auto_fix_class: none
+
+#### BRF-M4-CR6 - Proposal-review occurrence is routed but not recorded
+
+Finding ID: BRF-M4-CR6
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: accept, reject, defer, or partially accept the recorded safe resolution before correction begins
+Rationale: Verified completion exposes only review ID and outcome, routing uses placeholder identities, and the coordinator never writes the complete durable BRF-R047 occurrence, clean-gate, routing, and pause projection.
+Required outcome: Atomically persist the complete verifier-derived BRF-R047 projection for the actual structured target, including exact-target, correction-loop, blocked, and inconclusive outcomes.
+Chosen action: Pending disposition.
+Safe resolution path: Derive the complete proposal-review result from verified completion and the bound target, persist it through the sole state writer with receipt finalization or another atomic transition, remove placeholder identities, and add transactional four-outcome exact-versus-later assertions.
+Validation target: Complete transactional BRF-R047 projection for all four outcomes, exact and later targets, pause reasons, state validation, CMD14-CMD20, and code-review M4 R4.
+Validation evidence: Pending.
+auto_fix_class: none
 
 ### code-review-m4-r2
 
