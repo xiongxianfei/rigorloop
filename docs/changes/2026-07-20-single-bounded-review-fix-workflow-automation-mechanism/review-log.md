@@ -41,6 +41,18 @@ Material findings: BRF-M4-CR19
 Open findings: None
 
 ### Review entry
+Review ID: code-review-m4-r13
+Stage: code-review
+Round: M4 R13
+Reviewed artifact: M4 correction commit `f12a4f3a`
+Reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
+Status: changes-requested
+Detailed record: reviews/code-review-m4-r13.md
+Resolution: review-resolution.md#code-review-m4-r13
+Material findings: BRF-M4-CR20, BRF-M4-CR21
+Open findings: BRF-M4-CR20, BRF-M4-CR21
+
+### Review entry
 Review ID: code-review-m4-r10
 Stage: code-review
 Round: M4 R10

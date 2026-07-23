@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Single Bounded Review-Fix Workflow Automation](plans/2026-07-21-single-bounded-review-fix-workflow-automation.md) | active | code-review M4 R13 | 2026-07-20-single-bounded-review-fix-workflow-automation-mechanism |
+| [Single Bounded Review-Fix Workflow Automation](plans/2026-07-21-single-bounded-review-fix-workflow-automation.md) | active | review-resolution M4 | 2026-07-20-single-bounded-review-fix-workflow-automation-mechanism |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
