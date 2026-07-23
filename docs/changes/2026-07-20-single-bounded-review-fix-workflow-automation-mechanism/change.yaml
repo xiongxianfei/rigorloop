@@ -997,6 +997,12 @@ validation:
     result: passed_7_cancellation_and_6_proposal_review_validator_tests_but_direct_historical_route_probe_returned_zero_errors
   - command: review structure, metadata, guide-system, lifecycle state synchronization, and diff checks after code-review M4 R9 recording
     result: structure_passed_46_reviews_71_findings_1_open_metadata_guide_lifecycle_diff_passed
+  - command: proof-first two-completed-receipt route and authority-history regressions for BRF-M4-CR16
+    result: failed_before_correction_for_non_latest_route_tampering_then_passed_with_per_receipt_canonical_reconstruction
+  - command: CMD15 through CMD20; full engine, policy, state, automation-validator, lifecycle, review-artifact, and skill-validator suites; diff checks
+    result: passed_7_proposal_review_8_proposal_correction_4_authoring_4_non_public_44_engine_15_policy_51_state_61_automation_validator_156_lifecycle_103_review_259_skill_tests
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_401_seconds_after_M4_R9_resolution
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md
@@ -1082,12 +1088,12 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r8.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r9.md
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: review-requested
+  unresolved_items: 0
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   material_findings: 71
-  closed_findings: 70
-  open_findings: 1
+  closed_findings: 71
+  open_findings: 0
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md

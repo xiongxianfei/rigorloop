@@ -24,6 +24,7 @@ from workflow_automation_policy import (
     CapabilityKind,
     MutationCategory,
     OccurrenceKind,
+    ProposalReviewProjection,
     PUBLIC_TARGET_STAGES,
     RetryPolicy,
     STAGE_POLICY_BY_STAGE,
@@ -236,6 +237,35 @@ def resolve_recorded_proposal_correction_capability(
             "source transition"
         )
 
+    projection = resolve_recorded_proposal_review_receipt(
+        automation,
+        source_transition_id,
+        receipt,
+    )
+    expected_result = dict(projection.review_result)
+    expected_result["source_transition_id"] = source_transition_id
+    if review_result != expected_result:
+        raise ValueError(
+            "recorded proposal-review result does not match its source "
+            "transition route"
+        )
+    return projection.review_result.get("correction_capability_id")
+
+
+def resolve_recorded_proposal_review_receipt(
+    automation: dict[str, Any],
+    transition_id: str,
+    receipt: dict[str, Any],
+) -> ProposalReviewProjection:
+    """Reconstruct and validate one completed proposal-review receipt."""
+
+    route = receipt.get("proposal_review_route")
+    if not isinstance(route, dict) or not route:
+        raise ValueError(
+            "completed proposal-review transition requires immutable route "
+            "binding"
+        )
+
     capabilities = automation.get("effective_capabilities")
     review_capability = (
         capabilities.get(receipt.get("effective_capability_id"))
@@ -255,38 +285,50 @@ def resolve_recorded_proposal_correction_capability(
     )
     inputs = receipt.get("input_identities")
     if (
-        not isinstance(review_capability, dict)
+        receipt.get("transition_id") != transition_id
+        or receipt.get("status") != "completed"
+        or not isinstance(review_capability, dict)
         or review_capability.get("capability_kind")
         != CapabilityKind.PROPOSAL_REVIEW.value
         or not isinstance(review_stage, dict)
         or review_stage.get("name") != WorkflowStage.PROPOSAL_REVIEW.value
         or not isinstance(inputs, dict)
         or inputs.get("proposal")
-        != review_result.get("reviewed_artifact_identity")
+        != route.get("reviewed_artifact_identity")
         or not isinstance(canonical_sync, dict)
         or canonical_sync.get("status") != "synchronized"
         or not isinstance(observed, dict)
         or observed.get("proposal-review")
-        != review_result.get("review_record_identity")
+        != route.get("review_record_identity")
     ):
         raise ValueError(
             "recorded proposal-review route does not match source transition "
             "evidence"
         )
 
-    capability_id = review_result.get("correction_capability_id")
-    expected_route_binding = proposal_review_route_binding(
-        review_result,
-        receipt.get("target"),
+    target = receipt.get("target")
+    target_stage = target.get("stage") if isinstance(target, dict) else None
+    capability_id = route.get("correction_capability_id")
+    projection = project_proposal_review_result(
+        outcome=route.get("outcome"),
+        target_stage=target_stage,
+        review_id=route.get("review_id"),
+        reviewed_artifact_identity=route.get("reviewed_artifact_identity"),
+        review_record_identity=route.get("review_record_identity"),
+        correction_capability_id=capability_id,
     )
-    if receipt.get("proposal_review_route") != expected_route_binding:
+    expected_route_binding = proposal_review_route_binding(
+        projection.review_result,
+        target,
+    )
+    if route != expected_route_binding:
         raise ValueError(
             "recorded proposal-review route does not match immutable source "
             "transition binding"
         )
 
-    if review_result.get("routing_action") != "correction-loop":
-        return None
+    if route.get("routing_action") != "correction-loop":
+        return projection
     if not isinstance(capability_id, str) or not capability_id.strip():
         raise ValueError(
             "recorded correction-loop requires correction_capability_id"
@@ -310,14 +352,14 @@ def resolve_recorded_proposal_correction_capability(
         or stage.get("occurrence") != {"kind": "singleton"}
         or not isinstance(basis, dict)
         or basis.get("reviewed_proposal_identity")
-        != review_result.get("reviewed_artifact_identity")
+        != route.get("reviewed_artifact_identity")
         or basis.get("review_record_identity")
-        != review_result.get("review_record_identity")
+        != route.get("review_record_identity")
     ):
         raise ValueError(
             "recorded correction capability does not match review basis"
         )
-    return capability_id
+    return projection
 
 
 def compute_transition_key(receipt: dict[str, Any]) -> str:
@@ -899,6 +941,20 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
                 )
                 if error:
                     errors.append(error)
+            route = receipt.get("proposal_review_route")
+            if isinstance(route, dict):
+                for field, allowed in (
+                    ("outcome", REVIEW_OUTCOMES),
+                    ("routing_action", ROUTING_ACTIONS),
+                ):
+                    if field in route:
+                        error = _unknown_value(
+                            f"{path}.proposal_review_route.{field}",
+                            route[field],
+                            allowed,
+                        )
+                        if error:
+                            errors.append(error)
 
     migrations = automation.get("migration_receipts")
     if isinstance(migrations, dict):
@@ -1568,11 +1624,18 @@ def validate_workflow_automation(
             and stage.get("name") == WorkflowStage.PROPOSAL_REVIEW.value
         ):
             completed_proposal_review_receipts.append((transition_id, receipt))
-            if not isinstance(receipt.get("proposal_review_route"), dict):
+            try:
+                resolve_recorded_proposal_review_receipt(
+                    automation,
+                    transition_id,
+                    receipt,
+                )
+            except (TypeError, ValueError) as error:
                 errors.append(
                     "workflow.automation.transition_receipts."
-                    f"{transition_id}.proposal_review_route: completed "
-                    "proposal-review transition requires immutable route binding"
+                    f"{transition_id}.proposal_review_route: invalid recorded "
+                    "proposal-review route: "
+                    + str(error)
                 )
     if completed_proposal_review_receipts and not isinstance(review_result, dict):
         errors.append(

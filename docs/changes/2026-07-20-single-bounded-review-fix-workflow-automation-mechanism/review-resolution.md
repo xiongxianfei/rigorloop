@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -37,11 +37,12 @@ Review closeout: code-review-m4-r5
 Review closeout: code-review-m4-r6
 Review closeout: code-review-m4-r7
 Review closeout: code-review-m4-r8
+Review closeout: code-review-m4-r9
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`
-- Findings resolved: 70
-- Unresolved findings: 1
-- Current result: Code-review M4 R9 confirmed cancellation route parity and resolved `BRF-M4-CR15`, but opened `BRF-M4-CR16`: exact route validation applies only to the latest completed proposal-review receipt, so a malformed non-latest historical route can validate. M4 is resolution-needed; M5 remains blocked.
+- Findings resolved: 71
+- Unresolved findings: 0
+- Current result: `BRF-M4-CR16` is resolved proof-first. Durable validation now reconstructs and validates the canonical route and recorded correction authority for every completed proposal-review receipt, including non-latest history, before M4 code-review R10.
 
 ## Resolution Overview
 
@@ -117,7 +118,7 @@ Review closeout: code-review-m4-r8
 | BRF-M4-CR13 | accepted | resolved | Recorded review routing now validates its persisted capability, exact basis, and completed review receipt without depending on mutable active status. |
 | BRF-M4-CR14 | accepted | resolved | The latest review result references the exact completed proposal-review transition, whose immutable route binding records selected correction authority or explicit absence. |
 | BRF-M4-CR15 | accepted | resolved | Cancellation reconciliation uses the same proposal-review completion projection as normal finalization, and validation requires complete evidence before accepting terminal cancellation. |
-| BRF-M4-CR16 | needs-decision | open | Validate the exact canonical route and authority history of every completed proposal-review receipt, not only the latest source receipt. |
+| BRF-M4-CR16 | accepted | resolved | Every completed proposal-review receipt now independently validates its canonical route, source evidence, closed vocabulary, and recorded correction-capability relationship. |
 
 ## Common Resolution Metadata
 
@@ -133,18 +134,18 @@ Review closeout: code-review-m4-r8
 #### BRF-M4-CR16 - Non-latest completed proposal-review route can be malformed without validation
 
 Finding ID: BRF-M4-CR16
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept, reject, defer, partially accept, or provide an alternative to the recorded safe resolution.
+Decision needed: none
 Rationale: Completed proposal-review receipt-set validation checks only that `proposal_review_route` is an object. Exact route and authority validation follows only `latest_review_result.source_transition_id`, allowing malformed retained historical route evidence to pass.
 Required outcome: Every completed proposal-review receipt must independently prove its exact canonical route, stage-native identities, and correction-capability selection or explicit absence; unknown route values must fail before consistency checks.
-Chosen action: Pending owner disposition.
+Chosen action: Added one reusable receipt-level route validator, invoked it for every completed proposal-review receipt and the latest-result projection, and added fail-closed route vocabulary checks plus multi-receipt authority-history and cancellation contrasts.
 Safe resolution path: Factor one receipt-level proposal-review route validator and reuse it for both historical receipts and the latest result; add route vocabulary checks; validate each receipt's target, proposal input, canonical review identity, outcome, action, and correction capability; and add two-receipt tamper contrasts plus active-correction cancellation proof.
 Validation target: Empty, missing, wrong-target, wrong-identity, unknown-outcome/action, and mismatched-capability historical routes; valid current and historical receipts; cancellation explicit absence and selected capability; terminal immutability; full state/engine/validator suites; CMD14-CMD20; and code-review M4 R10.
-Validation evidence: Pending.
+Validation evidence: The two-receipt proof failed before correction for empty, wrong-target, wrong-proposal, wrong-review, and unknown outcome/action historical routes. The corrected validator passes all 61 automation-validator tests, including valid consumed and invalidated historical correction capabilities, missing or mismatched capability rejection, and active-correction cancellation shutdown. All 44 engine, 15 policy, 51 state/recovery, 156 lifecycle, 103 review-artifact, and 259 skill-validator tests pass, as do CMD15-CMD20 and diff checks. Repository broad-smoke evidence is recorded in the change validation ledger and active plan.
 auto_fix_class: none
 
 ### code-review-m4-r8
