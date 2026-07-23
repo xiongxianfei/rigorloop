@@ -31,6 +31,7 @@ from validate_workflow_automation import (
     CAPABILITY_BASIS_FIELDS,
     CAPABILITY_BASIS_LIST_FIELDS,
     CAPABILITY_STAGES,
+    PROPOSAL_CORRECTION_VALIDATION_RULES,
     validate_workflow_automation,
 )
 from workflow_automation_policy import (
@@ -247,6 +248,7 @@ class ProposalCorrectionAuthority:
     finding_classifications: Mapping[str, str]
     correction_budget: Mapping[str, int]
     allowed_path_roots: tuple[str, ...]
+    reviewed_proposal_path: str | None = None
     review_record_path: str | None = None
     review_resolution_path: str | None = None
     proposal_review_basis: Mapping[str, Any] = field(default_factory=dict)
@@ -389,6 +391,30 @@ def _structured_identity(value: Any) -> str:
     return f"sha256:{hashlib.sha256(payload).hexdigest()}"
 
 
+def _snapshot_repository_files(repository_root: Path) -> dict[str, str]:
+    root = repository_root.resolve()
+    snapshot: dict[str, str] = {}
+    for path in root.rglob("*"):
+        relative = path.relative_to(root)
+        if ".git" in relative.parts or path.is_symlink() or not path.is_file():
+            continue
+        snapshot[relative.as_posix()] = (
+            "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+        )
+    return snapshot
+
+
+def _changed_repository_paths(
+    before: Mapping[str, str],
+    after: Mapping[str, str],
+) -> frozenset[str]:
+    return frozenset(
+        path
+        for path in set(before) | set(after)
+        if before.get(path) != after.get(path)
+    )
+
+
 def _resolve_repository_file(repository_root: Path, relative_path: Any) -> Path:
     if not isinstance(relative_path, str) or not relative_path:
         raise AutomationContractError("canonical evidence path is required")
@@ -412,8 +438,10 @@ def _resolve_repository_file(repository_root: Path, relative_path: Any) -> Path:
 class _ProposalCorrectionRepositoryEvidence:
     review_identity: str
     review_id: str
+    reviewed_proposal_path: str
     material_finding_ids: frozenset[str]
     unresolved_finding_ids: frozenset[str]
+    correction_plans: Mapping[str, Mapping[str, str]]
 
 
 def _load_proposal_correction_repository_evidence(
@@ -458,9 +486,12 @@ def _load_proposal_correction_repository_evidence(
         for entry in review_log
         if entry.review_id == review.review_id
         and entry.stage == review.stage
+        and entry.round == review.round
         and entry.status == review.status
         and entry.detailed_record.strip("`")
         == review_path.relative_to(review_path.parent.parent).as_posix()
+        and frozenset(entry.material_finding_ids)
+        == frozenset(finding.finding_id for finding in findings)
     ]
     if len(matching_log_entries) != 1:
         raise AutomationContractError(
@@ -497,13 +528,50 @@ def _load_proposal_correction_repository_evidence(
         raise AutomationContractError(
             "proposal-correction review log and resolution disagree"
         )
+    correction_plans: dict[str, dict[str, str]] = {}
+    for finding_id, entry in resolution_by_id.items():
+        plan = {
+            "classification": (
+                entry.fields.get("Planned driver classification").value
+                if entry.fields.get("Planned driver classification") is not None
+                else ""
+            ),
+            "rationale": (
+                entry.fields.get("Planned correction rationale").value
+                if entry.fields.get("Planned correction rationale") is not None
+                else ""
+            ),
+            "recipe": (
+                entry.fields.get("Planned correction recipe").value
+                if entry.fields.get("Planned correction recipe") is not None
+                else ""
+            ),
+            "validation_rule": (
+                entry.fields.get("Planned validation rule").value
+                if entry.fields.get("Planned validation rule") is not None
+                else ""
+            ),
+        }
+        if (
+            plan["classification"] not in REVIEW_FIX_AUTO_RESOLUTION_CLASSES
+            or not plan["rationale"]
+            or not plan["recipe"]
+            or plan["validation_rule"]
+            not in PROPOSAL_CORRECTION_VALIDATION_RULES
+        ):
+            raise AutomationContractError(
+                "proposal-correction driver classification evidence is incomplete"
+            )
+        correction_plans[finding_id] = plan
     if "sha256:" + hashlib.sha256(review_path.read_bytes()).hexdigest() != review_identity:
         raise AutomationContractError("proposal-correction review identity drifted")
     return _ProposalCorrectionRepositoryEvidence(
         review_identity,
         review.review_id,
+        review.target.strip("`"),
         material_ids,
         unresolved,
+        correction_plans,
     )
 
 
@@ -538,6 +606,7 @@ def resolve_proposal_correction_authority(
         raise AutomationContractError("proposal-correction capability basis is invalid")
     accepted_value = scope.get("accepted_finding_ids")
     classifications_value = scope.get("finding_classifications")
+    correction_plans_value = scope.get("correction_plans")
     budget_value = scope.get("correction_budget")
     proposal_review_basis = scope.get("proposal_review_basis")
     if (
@@ -545,6 +614,7 @@ def resolve_proposal_correction_authority(
         or not accepted_value
         or not all(isinstance(item, str) and item for item in accepted_value)
         or not isinstance(classifications_value, Mapping)
+        or not isinstance(correction_plans_value, Mapping)
         or not isinstance(budget_value, Mapping)
         or not isinstance(proposal_review_basis, Mapping)
     ):
@@ -553,16 +623,27 @@ def resolve_proposal_correction_authority(
         )
     accepted = frozenset(accepted_value)
     classifications = dict(classifications_value)
+    correction_plans = {
+        finding_id: dict(plan)
+        for finding_id, plan in correction_plans_value.items()
+        if isinstance(finding_id, str) and isinstance(plan, Mapping)
+    }
     budget = dict(budget_value)
     repository_evidence = _load_proposal_correction_repository_evidence(
         repository_root=repository_root,
         review_record_path=scope.get("review_record_path"),
         review_resolution_path=scope.get("review_resolution_path"),
     )
+    repository_classifications = {
+        finding_id: plan["classification"]
+        for finding_id, plan in repository_evidence.correction_plans.items()
+    }
     expected = {
         "review_record_identity": repository_evidence.review_identity,
         "accepted_finding_set_identity": _structured_identity(sorted(accepted)),
-        "classifier_policy_identity": _structured_identity(classifications),
+        "classifier_policy_identity": _structured_identity(
+            repository_evidence.correction_plans
+        ),
         "correction_budget_identity": _structured_identity(budget),
     }
     if any(basis.get(name) != identity for name, identity in expected.items()):
@@ -577,6 +658,16 @@ def resolve_proposal_correction_authority(
         raise AutomationContractError(
             "proposal-correction classification evidence is incomplete"
         )
+    if classifications != repository_classifications:
+        raise AutomationContractError(
+            "proposal-correction driver classification evidence does not "
+            "match capability scope"
+        )
+    if correction_plans != repository_evidence.correction_plans:
+        raise AutomationContractError(
+            "proposal-correction driver plan evidence does not match "
+            "capability scope"
+        )
     roots = scope.get("affected_path_roots")
     if not isinstance(roots, list) or not all(isinstance(root, str) for root in roots):
         raise AutomationContractError("proposal-correction path scope is invalid")
@@ -587,6 +678,7 @@ def resolve_proposal_correction_authority(
         classifications,
         budget,
         tuple(roots),
+        repository_evidence.reviewed_proposal_path,
         str(scope["review_record_path"]),
         str(scope["review_resolution_path"]),
         dict(proposal_review_basis),
@@ -768,7 +860,6 @@ def coordinate_non_public_authoring_stage(
     target_stage: str,
     store: WorkflowAutomationStateStore,
     repository_root: Path,
-    correction_evidence: Mapping[str, Any] | None = None,
     **coordination: Any,
 ) -> AuthoringCoordinationResult:
     """Run one M4 authoring stage transaction, then route from verified evidence."""
@@ -777,13 +868,12 @@ def coordinate_non_public_authoring_stage(
         raise AutomationContractError("non-public authoring harness is required")
     stage_request = coordination.get("stage")
     correction_decision: ProposalCorrectionDecision | None = None
+    actual_changed_paths: frozenset[str] = frozenset()
     post_completion_capabilities: Callable[
         [VerifiedCompletion, Mapping[str, Any], Mapping[str, Any]],
         Iterable[Mapping[str, Any]],
     ] | None = None
     if stage_request == WorkflowStage.PROPOSAL.value:
-        if correction_evidence is None:
-            raise AutomationContractError("proposal-correction canonical evidence is required")
         snapshot = store.read()
         if snapshot.automation is None:
             raise AutomationContractError("unified automation state does not exist")
@@ -802,7 +892,7 @@ def coordinate_non_public_authoring_stage(
             current_review_identity=authority.reviewed_review_identity,
             unresolved_before=authority.accepted_finding_ids,
             unresolved_after=authority.accepted_finding_ids,
-            affected_paths=correction_evidence.get("affected_paths", ()),
+            affected_paths=(authority.reviewed_proposal_path or "",),
             proposal_identity_before="",
             proposal_identity_after="",
             mutation_completed=False,
@@ -813,6 +903,22 @@ def coordinate_non_public_authoring_stage(
             )
         assert authority.review_record_path is not None
         assert authority.review_resolution_path is not None
+        assert authority.reviewed_proposal_path is not None
+
+        original_invoke_stage = coordination.get("invoke_stage")
+        if not callable(original_invoke_stage):
+            raise AutomationContractError("proposal-correction stage invocation is required")
+
+        def invoke_bounded_proposal_correction() -> StageExecutionResult:
+            nonlocal actual_changed_paths
+            before = _snapshot_repository_files(repository_root)
+            result = original_invoke_stage()
+            after = _snapshot_repository_files(repository_root)
+            actual_changed_paths = _changed_repository_paths(before, after)
+            return result
+
+        coordination = dict(coordination)
+        coordination["invoke_stage"] = invoke_bounded_proposal_correction
 
         def derive_post_correction_capabilities(
             proof: VerifiedCompletion,
@@ -830,14 +936,14 @@ def coordinate_non_public_authoring_stage(
                 )
             except AutomationContractError as error:
                 pause(str(error))
-            validator = correction_evidence.get("deterministic_validator")
             proposal_proof = proof.canonical_evidence.get("proposal")
             if (
-                not callable(validator)
-                or not isinstance(proposal_proof, Mapping)
-                or not validator(repository_root / str(proposal_proof.get("path")))
+                not isinstance(proposal_proof, Mapping)
+                or proposal_proof.get("path") != authority.reviewed_proposal_path
+                or actual_changed_paths
+                != frozenset({authority.reviewed_proposal_path})
             ):
-                pause("deterministic-validation-missing")
+                pause("mutation escaped effective capability")
             proposal_before = str(
                 capability["basis"].get("reviewed_proposal_identity", "")
             )
@@ -850,8 +956,8 @@ def coordinate_non_public_authoring_stage(
                 current_finding_ids=authority.accepted_finding_ids,
                 current_review_identity=post_evidence.review_identity,
                 unresolved_before=authority.accepted_finding_ids,
-                unresolved_after=post_evidence.unresolved_finding_ids,
-                affected_paths=correction_evidence.get("affected_paths", ()),
+                unresolved_after=(),
+                affected_paths=actual_changed_paths,
                 proposal_identity_before=proposal_before,
                 proposal_identity_after=proposal_after,
                 deterministic_validation_passed=True,
@@ -893,11 +999,7 @@ def coordinate_non_public_authoring_stage(
                     basis=fresh_basis,
                     affected_path_roots=tuple(review_roots),
                     mutation_categories=("change-local-review-evidence",),
-                    derived_at=str(
-                        correction_evidence.get(
-                            "rereview_capability_derived_at", ""
-                        )
-                    ),
+                    derived_at=str(coordination.get("derived_at", "")),
                     existing_capabilities=tuple(capabilities.values()),
                 )
             except AutomationContractError as error:

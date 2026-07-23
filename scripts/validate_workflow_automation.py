@@ -47,6 +47,9 @@ RECEIPT_STATUSES = frozenset({"prepared", "completed", "failed", "paused", "canc
 REVIEW_OUTCOMES = frozenset({"approved", "changes-requested", "blocked", "inconclusive"})
 CLEAN_GATE_STATES = frozenset({"satisfied", "not-satisfied"})
 ROUTING_ACTIONS = frozenset({"continue", "correction-loop", "stop-at-target", "pause", "fail-closed"})
+PROPOSAL_CORRECTION_VALIDATION_RULES = frozenset(
+    {"proposal-identity-changed"}
+)
 CANONICAL_SYNC_STATUSES = frozenset({"pending", "synchronized", "failed"})
 EXTERNAL_ACTION_VALUES = frozenset({"prohibited"})
 LEGACY_SOURCE_MECHANISMS = frozenset(
@@ -731,6 +734,23 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
 
     review_result = automation.get("latest_review_result")
     if isinstance(review_result, dict):
+        required_review_result_fields = {
+            "review_id",
+            "reviewed_artifact_identity",
+            "outcome",
+            "occurrence_recorded",
+            "clean_gate",
+            "routing_action",
+        }
+        missing_review_result_fields = sorted(
+            required_review_result_fields - set(review_result)
+        )
+        for field in missing_review_result_fields:
+            errors.append(
+                "workflow.automation.latest_review_result."
+                + field
+                + ": required"
+            )
         for field, allowed in (
             ("outcome", REVIEW_OUTCOMES),
             ("clean_gate", CLEAN_GATE_STATES),
@@ -740,6 +760,19 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
                 error = _unknown_value(f"workflow.automation.latest_review_result.{field}", review_result[field], allowed)
                 if error:
                     errors.append(error)
+        if review_result.get("occurrence_recorded") is not True:
+            errors.append(
+                "workflow.automation.latest_review_result.occurrence_recorded: "
+                "must be true"
+            )
+        if (
+            review_result.get("routing_action") == "pause"
+            and not review_result.get("pause_reason")
+        ):
+            errors.append(
+                "workflow.automation.latest_review_result.pause_reason: "
+                "required when routing_action is pause"
+            )
     return errors
 
 
@@ -1005,6 +1038,7 @@ def _validate_capability(
                     "review_resolution_path",
                     "accepted_finding_ids",
                     "finding_classifications",
+                    "correction_plans",
                     "proposal_review_basis",
                 ):
                     if field not in scope:
@@ -1013,6 +1047,20 @@ def _validate_capability(
                         )
                 accepted = scope.get("accepted_finding_ids")
                 classifications = scope.get("finding_classifications")
+                correction_plans = scope.get("correction_plans")
+                if isinstance(correction_plans, dict):
+                    for finding_id, plan in correction_plans.items():
+                        if (
+                            isinstance(plan, dict)
+                            and "validation_rule" in plan
+                            and plan["validation_rule"]
+                            not in PROPOSAL_CORRECTION_VALIDATION_RULES
+                        ):
+                            errors.append(
+                                f"{path}.scope.correction_plans.{finding_id}."
+                                "validation_rule: unsupported validation rule "
+                                f"{plan['validation_rule']!r}"
+                            )
                 if (
                     not isinstance(accepted, list)
                     or not accepted
@@ -1038,6 +1086,41 @@ def _validate_capability(
                         f"{path}.scope.finding_classifications: contains unsupported classification"
                     )
                 if (
+                    not isinstance(correction_plans, dict)
+                    or not isinstance(accepted, list)
+                    or set(correction_plans) != set(accepted)
+                    or any(
+                        not isinstance(plan, dict)
+                        or set(plan)
+                        != {
+                            "classification",
+                            "rationale",
+                            "recipe",
+                            "validation_rule",
+                        }
+                        or plan.get("classification")
+                        not in REVIEW_FIX_AUTO_RESOLUTION_CLASSES
+                        or not isinstance(plan.get("rationale"), str)
+                        or not plan["rationale"].strip()
+                        or not isinstance(plan.get("recipe"), str)
+                        or not plan["recipe"].strip()
+                        or plan.get("validation_rule")
+                        != "proposal-identity-changed"
+                        for plan in correction_plans.values()
+                    )
+                ):
+                    errors.append(
+                        f"{path}.scope.correction_plans: expected complete "
+                        "identity-bound driver plans"
+                    )
+                elif isinstance(classifications, dict) and classifications != {
+                    finding_id: plan["classification"]
+                    for finding_id, plan in correction_plans.items()
+                }:
+                    errors.append(
+                        f"{path}.scope.correction_plans: classifications disagree"
+                    )
+                if (
                     isinstance(basis, dict)
                     and isinstance(accepted, list)
                     and basis.get("accepted_finding_set_identity")
@@ -1048,12 +1131,12 @@ def _validate_capability(
                     )
                 if (
                     isinstance(basis, dict)
-                    and isinstance(classifications, dict)
+                    and isinstance(correction_plans, dict)
                     and basis.get("classifier_policy_identity")
-                    != _structured_identity(classifications)
+                    != _structured_identity(correction_plans)
                 ):
                     errors.append(
-                        f"{path}.scope.finding_classifications: does not match capability basis"
+                        f"{path}.scope.correction_plans: does not match capability basis"
                     )
                 for field in ("review_record_path", "review_resolution_path"):
                     value = scope.get(field)

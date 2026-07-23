@@ -490,6 +490,7 @@ def verify_transition_completion(
         stage_facts={
             "review_id": review.review_id,
             "review_outcome": review.status,
+            "reviewed_artifact_identity": expected_identity,
         },
     )
     return CompletionVerification(True, "stage-completion-evidence-valid", proof)
@@ -959,6 +960,63 @@ class WorkflowAutomationStateStore:
                         "activated effective capability identity is invalid"
                     )
                 capabilities[activated_id] = copy.deepcopy(activated)
+            capability_stage = capability.get("stage")
+            if (
+                isinstance(capability_stage, dict)
+                and capability_stage.get("name") == "proposal-review"
+            ):
+                run = replacement.get("run")
+                if not isinstance(run, dict):
+                    raise StateContractError(
+                        "proposal-review result requires an automation run"
+                    )
+                outcome = proof.stage_facts.get("review_outcome")
+                target = run.get("target")
+                target_stage = (
+                    target.get("stage") if isinstance(target, dict) else None
+                )
+                if outcome in {"blocked", "inconclusive"}:
+                    expected_action = "pause"
+                    expected_pause_reason = f"proposal-review-{outcome}"
+                elif target_stage == "proposal-review":
+                    expected_action = "stop-at-target"
+                    expected_pause_reason = None
+                elif outcome == "approved":
+                    expected_action = "continue"
+                    expected_pause_reason = None
+                else:
+                    expected_action = "pause"
+                    expected_pause_reason = (
+                        "proposal-correction-authorization-required"
+                    )
+                expected_review_result = {
+                    "review_id": proof.stage_facts.get("review_id"),
+                    "reviewed_artifact_identity": proof.stage_facts.get(
+                        "reviewed_artifact_identity"
+                    ),
+                    "outcome": outcome,
+                    "occurrence_recorded": True,
+                    "clean_gate": (
+                        "satisfied"
+                        if outcome == "approved"
+                        else "not-satisfied"
+                    ),
+                    "routing_action": expected_action,
+                }
+                if expected_pause_reason is not None:
+                    expected_review_result["pause_reason"] = (
+                        expected_pause_reason
+                    )
+                replacement["latest_review_result"] = expected_review_result
+                routing_action = expected_action
+                if routing_action == "pause":
+                    run["status"] = "paused"
+                    run["pause_reason"] = expected_review_result.get(
+                        "pause_reason"
+                    )
+                elif routing_action == "stop-at-target":
+                    run["status"] = "completed"
+                    run.pop("pause_reason", None)
         elif invalidate_bound_capability:
             capabilities = replacement.get("effective_capabilities")
             capability = (
