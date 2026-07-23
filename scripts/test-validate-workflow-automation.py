@@ -155,6 +155,14 @@ def add_completed_proposal_review(
             "correction_capability_id"
         ),
     }
+    receipt["proposal_review_evidence"] = {
+        "review_id": review_result["review_id"],
+        "outcome": review_result["outcome"],
+        "reviewed_artifact_identity": review_result[
+            "reviewed_artifact_identity"
+        ],
+        "review_record_identity": review_result["review_record_identity"],
+    }
     state["effective_capabilities"]["capability-proposal-review-001"][  # type: ignore[index]
         "status"
     ] = "consumed"
@@ -183,6 +191,12 @@ def add_historical_completed_proposal_review(
         "effective_capability_id"
     ] = "capability-proposal-review-000"  # type: ignore[index]
     historical_receipt["proposal_review_route"].update(  # type: ignore[index,union-attr]
+        {
+            "review_id": "proposal-review-r0",
+            "review_record_identity": "sha256:review-r0",
+        }
+    )
+    historical_receipt["proposal_review_evidence"].update(  # type: ignore[index,union-attr]
         {
             "review_id": "proposal-review-r0",
             "review_record_identity": "sha256:review-r0",
@@ -723,6 +737,13 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 "immutable",
             ),
             (
+                "wrong-review-id",
+                lambda receipt: receipt["proposal_review_route"].__setitem__(  # type: ignore[index]
+                    "review_id", "proposal-review-forged"
+                ),
+                "stage-native completion evidence",
+            ),
+            (
                 "wrong-target",
                 lambda receipt: receipt["proposal_review_route"].__setitem__(  # type: ignore[index]
                     "target",
@@ -733,21 +754,38 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                         "completion": target_completion_predicate("spec"),
                     },
                 ),
-                "immutable",
+                "stage-native completion evidence",
             ),
             (
                 "wrong-proposal-identity",
                 lambda receipt: receipt["proposal_review_route"].__setitem__(  # type: ignore[index]
                     "reviewed_artifact_identity", "sha256:other-proposal"
                 ),
-                "source transition evidence",
+                "stage-native completion evidence",
+            ),
+            (
+                "wrong-known-outcome",
+                lambda receipt: receipt["proposal_review_route"].update(  # type: ignore[index]
+                    {
+                        "outcome": "changes-requested",
+                        "routing_action": "stop-at-target",
+                    }
+                ),
+                "stage-native completion evidence",
+            ),
+            (
+                "wrong-output-identity",
+                lambda receipt: receipt["outputs"][0].__setitem__(  # type: ignore[index]
+                    "identity", "sha256:other-review"
+                ),
+                "output evidence",
             ),
             (
                 "wrong-review-identity",
                 lambda receipt: receipt["proposal_review_route"].__setitem__(  # type: ignore[index]
                     "review_record_identity", "sha256:other-review"
                 ),
-                "source transition evidence",
+                "stage-native completion evidence",
             ),
         )
         for label, mutate, expected in cases:
@@ -765,6 +803,110 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         self.assertEqual(
             historical_receipt["proposal_review_route"]["review_id"],  # type: ignore[index]
             "proposal-review-r0",
+        )
+
+    def test_historical_route_rejects_every_alternative_known_outcome(
+        self,
+    ) -> None:
+        state = valid_automation()
+        add_completed_proposal_review(state, {
+            "review_id": "proposal-review-r1",
+            "reviewed_artifact_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "outcome": "approved",
+            "occurrence_recorded": True,
+            "clean_gate": "satisfied",
+            "routing_action": "stop-at-target",
+        })
+        state["run"]["status"] = "completed"  # type: ignore[index]
+        add_historical_completed_proposal_review(state)
+
+        for outcome, routing_action in (
+            ("changes-requested", "stop-at-target"),
+            ("blocked", "pause"),
+            ("inconclusive", "pause"),
+        ):
+            with self.subTest(outcome=outcome):
+                candidate = copy.deepcopy(state)
+                route = candidate["transition_receipts"]["transition-000"][  # type: ignore[index]
+                    "proposal_review_route"
+                ]
+                route["outcome"] = outcome
+                route["routing_action"] = routing_action
+                errors = validate_workflow_automation(candidate)
+                self.assertTrue(
+                    any(
+                        "stage-native completion evidence" in error
+                        for error in errors
+                    ),
+                    errors,
+                )
+
+    def test_latest_route_cannot_rewrite_stage_native_review_facts(
+        self,
+    ) -> None:
+        state = valid_automation()
+        add_completed_proposal_review(state, {
+            "review_id": "proposal-review-r1",
+            "reviewed_artifact_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "outcome": "approved",
+            "occurrence_recorded": True,
+            "clean_gate": "satisfied",
+            "routing_action": "stop-at-target",
+        })
+        state["run"]["status"] = "completed"  # type: ignore[index]
+
+        forged_id = copy.deepcopy(state)
+        forged_id["transition_receipts"]["transition-001"][  # type: ignore[index]
+            "proposal_review_route"
+        ]["review_id"] = "proposal-review-forged"
+        forged_id["latest_review_result"][
+            "review_id"
+        ] = "proposal-review-forged"
+        errors = validate_workflow_automation(forged_id)
+        self.assertTrue(
+            any("stage-native completion evidence" in error for error in errors),
+            errors,
+        )
+
+        forged_outcome = copy.deepcopy(state)
+        forged_outcome["transition_receipts"]["transition-001"][  # type: ignore[index]
+            "proposal_review_route"
+        ]["outcome"] = "changes-requested"
+        forged_outcome["latest_review_result"].update(  # type: ignore[index,union-attr]
+            {
+                "outcome": "changes-requested",
+                "clean_gate": "not-satisfied",
+            }
+        )
+        errors = validate_workflow_automation(forged_outcome)
+        self.assertTrue(
+            any("stage-native completion evidence" in error for error in errors),
+            errors,
+        )
+
+    def test_completed_proposal_review_requires_stage_native_evidence(
+        self,
+    ) -> None:
+        state = valid_automation()
+        add_completed_proposal_review(state, {
+            "review_id": "proposal-review-r1",
+            "reviewed_artifact_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "outcome": "approved",
+            "occurrence_recorded": True,
+            "clean_gate": "satisfied",
+            "routing_action": "stop-at-target",
+        })
+        state["run"]["status"] = "completed"  # type: ignore[index]
+        state["transition_receipts"]["transition-001"].pop(  # type: ignore[index]
+            "proposal_review_evidence"
+        )
+        errors = validate_workflow_automation(state)
+        self.assertTrue(
+            any("stage-native completion evidence" in error for error in errors),
+            errors,
         )
 
     def test_historical_proposal_review_route_vocabulary_fails_closed(
@@ -798,6 +940,18 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     errors[0],
                 )
                 self.assertIn("unknown value", errors[0])
+
+        unknown_evidence = copy.deepcopy(state)
+        unknown_evidence["transition_receipts"]["transition-000"][  # type: ignore[index]
+            "proposal_review_evidence"
+        ]["outcome"] = "unknown-evidence-outcome"
+        errors = validate_workflow_automation(unknown_evidence)
+        self.assertTrue(errors)
+        self.assertIn(
+            "proposal_review_evidence.outcome",
+            errors[0],
+        )
+        self.assertIn("unknown value", errors[0])
 
     def test_historical_correction_route_retains_its_original_capability(
         self,
@@ -837,6 +991,9 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 "correction_capability_id": correction_id,
             }
         )
+        historical_receipt["proposal_review_evidence"][  # type: ignore[index]
+            "outcome"
+        ] = "changes-requested"
         self.assertEqual(validate_workflow_automation(state), [])
 
         missing = copy.deepcopy(state)
