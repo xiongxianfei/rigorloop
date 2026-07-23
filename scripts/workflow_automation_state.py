@@ -37,6 +37,8 @@ from validate_workflow_automation import (
     has_read_only_legacy_migration,
     proposal_review_route_binding,
     resolve_active_proposal_correction_capability,
+    resolve_recorded_proposal_correction_capability,
+    resolve_recorded_proposal_review_receipt,
     validate_workflow_automation,
 )
 
@@ -123,6 +125,23 @@ class VerifiedCompletion:
     stage_facts: dict[str, str]
 
 
+def _proposal_review_evidence_from_proof(
+    proof: VerifiedCompletion,
+) -> dict[str, str | None]:
+    """Project the only proposal-review facts trusted by durable state."""
+
+    return {
+        "review_id": proof.stage_facts.get("review_id"),
+        "outcome": proof.stage_facts.get("review_outcome"),
+        "reviewed_artifact_identity": proof.stage_facts.get(
+            "reviewed_artifact_identity"
+        ),
+        "review_record_identity": proof.observed_identities.get(
+            "proposal-review"
+        ),
+    }
+
+
 def _project_completed_proposal_review(
     automation: dict[str, Any],
     receipt: dict[str, Any],
@@ -142,16 +161,7 @@ def _project_completed_proposal_review(
         )
     target = run.get("target")
     target_stage = target.get("stage") if isinstance(target, dict) else None
-    review_record_identity = proof.observed_identities.get("proposal-review")
-    reviewed_artifact_identity = proof.stage_facts.get(
-        "reviewed_artifact_identity"
-    )
-    proposal_review_evidence = {
-        "review_id": proof.stage_facts.get("review_id"),
-        "outcome": proof.stage_facts.get("review_outcome"),
-        "reviewed_artifact_identity": reviewed_artifact_identity,
-        "review_record_identity": review_record_identity,
-    }
+    proposal_review_evidence = _proposal_review_evidence_from_proof(proof)
     try:
         correction_capability_id = resolve_active_proposal_correction_capability(
             automation,
@@ -650,6 +660,49 @@ def evaluate_receipt_recovery(
             or persisted_observed != proof.observed_identities
         ):
             return RecoveryDecision("pause", False, "completed-canonical-state-drift")
+        capabilities = automation.get("effective_capabilities")
+        capability = (
+            capabilities.get(receipt.get("effective_capability_id"))
+            if isinstance(capabilities, dict)
+            else None
+        )
+        capability_stage = (
+            capability.get("stage")
+            if isinstance(capability, dict)
+            else None
+        )
+        if (
+            isinstance(capability_stage, dict)
+            and capability_stage.get("name") == "proposal-review"
+        ):
+            parsed_evidence = _proposal_review_evidence_from_proof(proof)
+            if receipt.get("proposal_review_evidence") != parsed_evidence:
+                return RecoveryDecision(
+                    "pause",
+                    False,
+                    "completed-proposal-review-evidence-drift",
+                )
+            try:
+                resolve_recorded_proposal_review_receipt(
+                    automation,
+                    transition_id,
+                    receipt,
+                )
+                latest_result = automation.get("latest_review_result")
+                if not isinstance(latest_result, dict):
+                    raise ValueError(
+                        "completed proposal-review requires latest result"
+                    )
+                resolve_recorded_proposal_correction_capability(
+                    automation,
+                    latest_result,
+                )
+            except (TypeError, ValueError):
+                return RecoveryDecision(
+                    "pause",
+                    False,
+                    "completed-proposal-review-projection-drift",
+                )
         return RecoveryDecision(
             "continue", False, "completed-evidence-current", proof
         )
