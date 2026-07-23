@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -33,10 +33,10 @@ Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`
 - Findings resolved: 61
-- Unresolved findings: 0
-- Current result: `BRF-M4-CR5` and `BRF-M4-CR6` are resolved in the M4 R3 correction; code-review M4 R4 is required before M5.
+- Unresolved findings: 4
+- Current result: Code-review M4 R4 classified `BRF-M4-CR5` and `BRF-M4-CR6` as failed remediations and opened `BRF-M4-CR7` through `BRF-M4-CR10`. M4 remains resolution-needed; M5 is blocked.
 
 ## Resolution Overview
 
@@ -103,6 +103,10 @@ Review closeout: code-review-m4-r3
 | BRF-M4-CR4 | accepted | resolved | R3 classified the correction as a failed remediation because caller-substitutable authority remains; the remaining defect is recorded as `BRF-M4-CR5`. |
 | BRF-M4-CR5 | accepted | resolved | Exact round and finding parity, canonical driver plans, named validation rules, and actual repository mutation comparison now bound proposal correction to stage-owned evidence and proposal-content scope. |
 | BRF-M4-CR6 | accepted | resolved | Proposal-review finalization now atomically persists the complete verifier-derived BRF-R047 occurrence, gate, route, and pause projection. |
+| BRF-M4-CR7 | needs-decision | open | Canonical correction recipes are identity-bound but do not constrain or validate the actual proposal bytes written. |
+| BRF-M4-CR8 | needs-decision | open | Mutation containment omits symlink repository entries and does not inspect mutations left by failed callbacks. |
+| BRF-M4-CR9 | needs-decision | open | Durable proposal-review validation accepts empty identities and contradictory known-value outcome, gate, and route combinations. |
+| BRF-M4-CR10 | needs-decision | open | The sole writer cannot persist the authorized later-target correction-loop route. |
 
 ## Common Resolution Metadata
 
@@ -112,6 +116,76 @@ Review closeout: code-review-m4-r3
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m4-r4
+
+#### BRF-M4-CR7 - Deterministic correction recipe is not enforced
+
+Finding ID: BRF-M4-CR7
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: accept, reject, defer, or partially accept the recorded safe resolution before correction begins
+Rationale: The capability hashes canonical classification, rationale, recipe, and validation-rule text, but completion accepts any proposal identity change and unconditionally treats deterministic validation as passed. A direct probe completed a mutation that did not match the canonical recipe.
+Required outcome: The executable correction must be a deterministic projection of the canonical reviewed recipe, or a stage-owned named validator must prove the exact recipe-specific postcondition before authority is consumed.
+Chosen action: Pending disposition.
+Safe resolution path: Replace the descriptive recipe plus generic identity-change rule with a closed executable correction operation or recipe-specific validator carrying immutable inputs and expected outputs; derive mutation from it and add wrong-result contrasts.
+Validation target: Positive and wrong-result proof for every supported correction kind, CMD14-CMD20, and code-review M4 R5.
+Validation evidence: Pending.
+auto_fix_class: none
+
+#### BRF-M4-CR8 - Mutation containment misses symlinks and failed callbacks
+
+Finding ID: BRF-M4-CR8
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: accept, reject, defer, or partially accept the recorded safe resolution before correction begins
+Rationale: The repository snapshot skips symlink entries and computes its after-state only when the callback returns. Direct probes completed with an undeclared repository symlink and left an undeclared file after a callback raised.
+Required outcome: Every repository mutation attempted under correction authority must be detected and reconciled against capability scope on success and failure, including entry-type changes, symlinks, creations, deletions, and exceptions.
+Chosen action: Pending disposition.
+Safe resolution path: Snapshot entry type and symlink target, compute after-state in a finally path, fail closed on escaped mutation, and prefer bounded temporary-worktree or transactional patch application so rejected changes do not remain.
+Validation target: Symlink creation, file-to-symlink replacement, external symlink target, mutate-then-raise, ordinary file escape, CMD14-CMD20, and code-review M4 R5.
+Validation evidence: Pending.
+auto_fix_class: none
+
+#### BRF-M4-CR9 - Durable review-result consistency is not validated
+
+Finding ID: BRF-M4-CR9
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: accept, reject, defer, or partially accept the recorded safe resolution before correction begins
+Rationale: The validator checks required keys and enum membership but accepts empty review identities and impossible known-value combinations. A blocked review with a satisfied gate and continue route returned no errors.
+Required outcome: Durable proposal-review state must fail closed unless identities are concrete and the complete outcome, gate, route, pause, target, and run-state projection is consistent.
+Chosen action: Pending disposition.
+Safe resolution path: Centralize the proposal-review routing projection and use it in finalization and validation; enforce concrete identities and an exhaustive cross-field consistency matrix.
+Validation target: Empty identities, every invalid known-value combination, exact/later target and run-state consistency, CMD14-CMD20, and code-review M4 R5.
+Validation evidence: Pending.
+auto_fix_class: none
+
+#### BRF-M4-CR10 - Transactional review finalization omits correction-loop
+
+Finding ID: BRF-M4-CR10
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: accept, reject, defer, or partially accept the recorded safe resolution before correction begins
+Rationale: The pure evaluator supports correction-loop with valid authority, but the sole writer independently maps every later-target changes-requested result to authorization-required pause and receives no correction capability evidence.
+Required outcome: Transactional proposal-review finalization must persist correction-loop with an exact active correction capability and remaining budget, or persist the specified pause when authority is absent or invalid.
+Chosen action: Pending disposition.
+Safe resolution path: Use one shared routing projection, supply verifier-owned active correction-capability and budget evidence, bind the selected capability into the atomic handoff, and test both authorized and unauthorized branches transactionally.
+Validation target: Transactional later-target correction-loop, absent/invalid/exhausted authority pauses, exact target, all four outcomes, CMD14-CMD20, and code-review M4 R5.
+Validation evidence: Pending.
+auto_fix_class: none
 
 ### code-review-m4-r3
 

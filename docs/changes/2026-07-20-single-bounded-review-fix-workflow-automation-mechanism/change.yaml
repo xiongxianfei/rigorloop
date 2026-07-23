@@ -1025,18 +1025,19 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r1.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r2.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r4.md
 review:
-  status: review-requested
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 4
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
-  material_findings: 61
+  material_findings: 65
   closed_findings: 61
-  open_findings: 0
+  open_findings: 4
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
   plan_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
-  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r3.md
+  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r4.md
   review_log: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md
