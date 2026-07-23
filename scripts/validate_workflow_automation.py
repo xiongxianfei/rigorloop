@@ -33,6 +33,7 @@ from workflow_automation_policy import (
     can_operation_fit_target,
     evaluate_transition,
     is_immediate_predecessor,
+    project_proposal_review_result,
     target_completion_predicate,
 )
 
@@ -48,7 +49,7 @@ REVIEW_OUTCOMES = frozenset({"approved", "changes-requested", "blocked", "inconc
 CLEAN_GATE_STATES = frozenset({"satisfied", "not-satisfied"})
 ROUTING_ACTIONS = frozenset({"continue", "correction-loop", "stop-at-target", "pause", "fail-closed"})
 PROPOSAL_CORRECTION_VALIDATION_RULES = frozenset(
-    {"proposal-identity-changed"}
+    {"proposal-exact-append"}
 )
 CANONICAL_SYNC_STATUSES = frozenset({"pending", "synchronized", "failed"})
 EXTERNAL_ACTION_VALUES = frozenset({"prohibited"})
@@ -127,6 +128,46 @@ TRANSITION_KEY_FIELDS = frozenset(
         "expected_postcondition",
     }
 )
+
+
+def resolve_active_proposal_correction_capability(
+    automation: dict[str, Any],
+) -> str | None:
+    """Return the unique executable proposal-correction capability, if any."""
+
+    parents = automation.get("parent_authorizations")
+    capabilities = automation.get("effective_capabilities")
+    if not isinstance(parents, dict) or not isinstance(capabilities, dict):
+        return None
+    eligible: list[str] = []
+    for capability_id, capability in capabilities.items():
+        if not isinstance(capability_id, str) or not isinstance(capability, dict):
+            continue
+        stage = capability.get("stage")
+        scope = capability.get("scope")
+        parent = parents.get(capability.get("parent_authorization_id"))
+        budget = scope.get("correction_budget") if isinstance(scope, dict) else None
+        if (
+            capability.get("status") == "active"
+            and capability.get("capability_kind")
+            == CapabilityKind.PROPOSAL_CORRECTION.value
+            and isinstance(stage, dict)
+            and stage.get("name") == WorkflowStage.PROPOSAL.value
+            and isinstance(parent, dict)
+            and parent.get("status") == "active"
+            and isinstance(budget, dict)
+            and set(budget) == set(REVIEW_FIX_BUDGET_LIMITS)
+            and all(
+                isinstance(value, int)
+                and not isinstance(value, bool)
+                and 0 < value <= REVIEW_FIX_BUDGET_LIMITS[label]
+                for label, value in budget.items()
+            )
+        ):
+            eligible.append(capability_id)
+    if len(eligible) > 1:
+        raise ValueError("multiple active proposal-correction capabilities")
+    return eligible[0] if eligible else None
 
 
 def compute_transition_key(receipt: dict[str, Any]) -> str:
@@ -1104,8 +1145,13 @@ def _validate_capability(
                         or not plan["rationale"].strip()
                         or not isinstance(plan.get("recipe"), str)
                         or not plan["recipe"].strip()
-                        or plan.get("validation_rule")
-                        != "proposal-identity-changed"
+                        or not (
+                            plan.get("classification") == "mechanical"
+                            and plan.get("recipe")
+                            == "Append one newline to the reviewed proposal."
+                            and plan.get("validation_rule")
+                            == "proposal-exact-append"
+                        )
                         for plan in correction_plans.values()
                     )
                 ):
@@ -1351,6 +1397,51 @@ def validate_workflow_automation(
                 f"{previous} and {capability_id} for stage occurrence {key}"
             )
         active_occurrences[key] = capability_id
+
+    review_result = automation.get("latest_review_result")
+    if isinstance(review_result, dict) and isinstance(run, dict):
+        review_id = review_result.get("review_id")
+        reviewed_identity = review_result.get("reviewed_artifact_identity")
+        if not isinstance(review_id, str) or not review_id.strip():
+            errors.append(
+                "workflow.automation.latest_review_result.review_id: "
+                "expected non-empty string"
+            )
+        if (
+            not isinstance(reviewed_identity, str)
+            or not reviewed_identity.strip()
+        ):
+            errors.append(
+                "workflow.automation.latest_review_result."
+                "reviewed_artifact_identity: expected concrete identity"
+            )
+        target = run.get("target")
+        target_stage = target.get("stage") if isinstance(target, dict) else None
+        try:
+            correction_capability_id = (
+                resolve_active_proposal_correction_capability(automation)
+            )
+            expected_projection = project_proposal_review_result(
+                outcome=review_result.get("outcome"),
+                target_stage=target_stage,
+                review_id=review_id,
+                reviewed_artifact_identity=reviewed_identity,
+                correction_capability_id=correction_capability_id,
+            )
+        except (TypeError, ValueError):
+            expected_projection = None
+        if expected_projection is not None:
+            expected_result = dict(expected_projection.review_result)
+            if review_result != expected_result:
+                errors.append(
+                    "workflow.automation.latest_review_result: must match "
+                    "the canonical proposal-review projection"
+                )
+            if run.get("status") != expected_projection.run_status:
+                errors.append(
+                    "workflow.automation.run.status: must match latest "
+                    "proposal-review routing action"
+                )
 
     if isinstance(run, dict) and "effective_capability_id" in run:
         capability_id = run["effective_capability_id"]
@@ -1636,6 +1727,7 @@ __all__ = [
     "RUN_STATUS_TRANSITIONS",
     "compute_transition_key",
     "has_read_only_legacy_migration",
+    "resolve_active_proposal_correction_capability",
     "validate_status_transition",
     "validate_workflow_automation",
 ]

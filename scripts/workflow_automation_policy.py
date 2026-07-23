@@ -120,6 +120,87 @@ class StopBehavior(ClosedStringEnum):
     STOP_BEFORE_PR = "stop-before-pr"
 
 
+@dataclass(frozen=True)
+class ProposalReviewProjection:
+    """Complete deterministic projection of one proposal-review occurrence."""
+
+    review_result: Mapping[str, Any]
+    run_status: str
+    next_stage: str | None = None
+
+
+def project_proposal_review_result(
+    *,
+    outcome: str,
+    target_stage: str,
+    review_id: str,
+    reviewed_artifact_identity: str,
+    correction_capability_id: str | None = None,
+) -> ProposalReviewProjection:
+    """Project proposal-review evidence to its only valid durable state."""
+
+    outcomes = {"approved", "changes-requested", "blocked", "inconclusive"}
+    if outcome not in outcomes:
+        raise ValueError(f"unknown proposal-review outcome: {outcome}")
+    if not isinstance(review_id, str) or not review_id.strip():
+        raise ValueError("proposal-review identity is required")
+    if (
+        not isinstance(reviewed_artifact_identity, str)
+        or not reviewed_artifact_identity.strip()
+    ):
+        raise ValueError("reviewed proposal identity is required")
+    if target_stage not in {stage.value for stage in PUBLIC_TARGET_STAGES}:
+        raise ValueError(f"unknown proposal-review target: {target_stage}")
+
+    clean_gate = "satisfied" if outcome == "approved" else "not-satisfied"
+    pause_reason: str | None = None
+    next_stage: str | None = None
+    selected_correction: str | None = None
+    if outcome in {"blocked", "inconclusive"}:
+        routing_action = "pause"
+        run_status = "paused"
+        pause_reason = f"proposal-review-{outcome}"
+    elif target_stage == WorkflowStage.PROPOSAL_REVIEW.value:
+        routing_action = "stop-at-target"
+        run_status = "completed"
+    elif outcome == "approved":
+        routing_action = "continue"
+        run_status = "active"
+        next_stage = WorkflowStage.SPEC.value
+    elif correction_capability_id is not None:
+        if (
+            not isinstance(correction_capability_id, str)
+            or not correction_capability_id.strip()
+        ):
+            raise ValueError("correction capability identity is invalid")
+        routing_action = "correction-loop"
+        run_status = "active"
+        next_stage = "proposal-correction"
+        selected_correction = correction_capability_id
+    else:
+        routing_action = "pause"
+        run_status = "paused"
+        pause_reason = "proposal-correction-authorization-required"
+
+    result: dict[str, Any] = {
+        "review_id": review_id,
+        "reviewed_artifact_identity": reviewed_artifact_identity,
+        "outcome": outcome,
+        "occurrence_recorded": True,
+        "clean_gate": clean_gate,
+        "routing_action": routing_action,
+    }
+    if pause_reason is not None:
+        result["pause_reason"] = pause_reason
+    if selected_correction is not None:
+        result["correction_capability_id"] = selected_correction
+    return ProposalReviewProjection(
+        MappingProxyType(result),
+        run_status,
+        next_stage,
+    )
+
+
 class TransitionGuard(ClosedStringEnum):
     ALWAYS = "always"
     PROPOSAL_CORRECTION = "proposal-correction"
