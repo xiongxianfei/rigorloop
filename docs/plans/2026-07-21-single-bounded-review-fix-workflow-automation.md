@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r6.md`
-- Review status: review-requested; stage=code-review; round=r7
-- Remaining in-scope implementation milestones: M4 rereview, M5, M6
-- Next stage: code-review M4 R7
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r7.md`
+- Review status: changes-requested; stage=code-review; round=r7
+- Remaining in-scope implementation milestones: M4 resolution and rereview, M5, M6
+- Next stage: review-resolution M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M4-CR14
 
 ## Milestones
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -571,6 +571,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-23: Code-review M4 R6 confirmed `BRF-M4-CR11` and `BRF-M4-CR12` resolved and opened `BRF-M4-CR13`. A composed probe showed that consuming the selected correction capability makes durable validation reinterpret the historical correction-loop route, so correction cannot finalize or activate fresh rereview authority. M4 is resolution-needed; M5 remains blocked.
 - 2026-07-23: Accepted `BRF-M4-CR13` and started its M4 correction. The bounded resolution keeps active capability selection at review-routing time, validates the persisted historical route against its recorded capability relationship without requiring current active status, and adds both authority-lifecycle direction regressions before production changes.
 - 2026-07-23: Resolved `BRF-M4-CR13` by separating active route-time capability selection from immutable historical-route validation. A completed review route now remains bound to its recorded correction capability, exact proposal/review identities, and one completed review receipt after capability consumption; later authority does not rewrite an earlier authorization-required pause. M4 is review-requested for R7; M5 remains blocked pending rereview.
+- 2026-07-23: Code-review M4 R7 confirmed active-to-consumed correction liveness but classified the historical-integrity remediation as incomplete and opened `BRF-M4-CR14`. A direct probe showed that later matching authority plus a rewritten review result validates as `correction-loop` because the completed review receipt does not bind the selected correction capability or explicit absence. M4 is resolution-needed; M5 remains blocked.
 
 ## Decision log
 
