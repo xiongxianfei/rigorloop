@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -30,11 +30,12 @@ Review closeout: code-review-m3-r7
 Review closeout: code-review-m3-r8
 Review closeout: code-review-m3-r9
 Review closeout: code-review-m4-r1
+Review closeout: code-review-m4-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`
 - Findings resolved: 57
-- Unresolved findings: 0
-- Current result: `BRF-M4-CR1` and `BRF-M4-CR2` are resolved in the M4 correction; code-review M4 R2 is required before M5.
+- Unresolved findings: 2
+- Current result: Code-review M4 R2 classified `BRF-M4-CR1` and `BRF-M4-CR2` as failed remediations and opened `BRF-M4-CR3` and `BRF-M4-CR4`. M4 remains resolution-needed; M5 is blocked.
 
 ## Resolution Overview
 
@@ -97,6 +98,8 @@ Review closeout: code-review-m4-r1
 | BRF-M3-CR15 | accepted | resolved | Replaced the prefix-plus-remainder parser and denylist with exact equality against one generated open/closed formal review-state projection. |
 | BRF-M4-CR1 | accepted | resolved | Connected the non-public authoring route to prepared receipts, capability consumption, canonical synchronization, and parser-backed completion for every M4 stage. |
 | BRF-M4-CR2 | accepted | resolved | Replaced caller authority booleans with capability-derived correction authority and bound review, finding, classification, budget, path, and proposal mutation evidence. |
+| BRF-M4-CR3 | needs-decision | open | Completed non-review recovery requires irrelevant review-log evidence, all-stage proof remains registry-only, and post-verification routing rereads unbound paths. |
+| BRF-M4-CR4 | needs-decision | open | Correction still trusts caller dictionaries, accepts invalid budget state, and omits independent post-mutation convergence plus fresh-review authority. |
 
 ## Common Resolution Metadata
 
@@ -106,6 +109,40 @@ Review closeout: code-review-m4-r1
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m4-r2
+
+#### BRF-M4-CR3 - Non-review authoring completion is not durably recoverable
+
+Finding ID: BRF-M4-CR3
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Confirm the recorded stage-generic recovery and verifier-normalized routing correction.
+Rationale: A completed authored-artifact receipt cannot resume because recovery requires a formal-review log identity that its valid proof cannot contain.
+Required outcome: Every M4 stage must have stage-appropriate completion and completed-recovery proof that compares the originally persisted identities without requiring irrelevant review-log evidence, and route selection must use verifier-normalized proof or recheck the exact identity.
+Chosen action: Pending user acceptance of the safe resolution.
+Safe resolution path: Make completed recovery compare the complete normalized identity map generically, condition review-log checks on formal-review proof, route from verified proof or rehash before parsing, and add positive recovery plus drift contrasts for every M4 stage family.
+Validation target: Stage-semantic completion/recovery matrix, CMD14-CMD20, full engine/state/validator suites, broad smoke when selected, and code-review M4 R3.
+Validation evidence: R2 source-level proof shows non-review proof lacks `-log` while completed recovery requires it; the registry equality and representative spec transaction do not exercise recovery.
+
+#### BRF-M4-CR4 - Correction authority and convergence remain caller-substitutable
+
+Finding ID: BRF-M4-CR4
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Confirm the recorded repository-backed authority and post-mutation convergence correction.
+Rationale: Hashing caller dictionaries against opaque identities does not derive current review-resolution evidence, and preflight returns before the post-mutation obligations that the composed coordinator never re-evaluates.
+Required outcome: Correction authority and convergence must come from current repository-backed review, resolution, classifier, budget, and proposal evidence; invalid budgets must pause; post-mutation proof must establish strict shrinkage, validation, identity change, preserved history, stale gate, and fresh proposal-review authority.
+Chosen action: Pending user acceptance of the safe resolution.
+Safe resolution path: Parse capability-bound review/resolution paths through repository parsers, recompute persisted structured identities, validate the exact closed budget, split preflight from independent post-mutation evaluation, persist stale-gate/history proof, and derive fresh review authority before rereview routing.
+Validation target: Forged caller, stale persisted budget, empty/extra/over-limit budget, false shrinkage/validation, unchanged identity, old-review reuse, and fresh-capability tests; CMD14-CMD20; broad smoke when selected; code-review M4 R3.
+Validation evidence: R2 directly reproduced empty-budget correction routing, preflight authorization with false deterministic validation and unchanged identities, and persisted budget content drift accepted without identity recomputation.
 
 ### code-review-m4-r1
 
