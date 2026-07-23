@@ -1446,7 +1446,7 @@ Planned validation rule: proposal-exact-append
         self,
     ) -> None:
         fixture = self.prepare_proposal_correction_transaction(
-            transition_id="unused-correction-transition"
+            transition_id="transition-correction-after-review"
         )
         store = fixture["store"]
 
@@ -1469,6 +1469,9 @@ Planned validation rule: proposal-exact-append
             parent_authorization_id="auth-correction",
             capability_id="cap-review-for-correction-loop",
             proposal_identity=proposal_identity,
+            synchronize=lambda stage_result: CanonicalSyncResult(
+                "synchronized", stage_result.completion_evidence
+            ),
         )
 
         self.assertEqual(result.status, "completed")
@@ -1489,6 +1492,130 @@ Planned validation rule: proposal-exact-append
             },
         )
         self.assertEqual(automation["run"]["status"], "active")
+
+        correction = coordinate_non_public_authoring_stage(
+            **fixture["coordination"]
+        )
+        self.assertEqual(
+            (correction.coordination.status, correction.route.next_stage),
+            ("completed", "proposal-review"),
+        )
+        corrected = store.read().automation
+        self.assertEqual(
+            corrected["latest_review_result"],
+            automation["latest_review_result"],
+        )
+        self.assertEqual(
+            corrected["effective_capabilities"][
+                "cap-correction-transaction"
+            ]["status"],
+            "consumed",
+        )
+        fresh_review_capabilities = [
+            capability
+            for capability in corrected["effective_capabilities"].values()
+            if capability["capability_kind"] == "proposal-review"
+            and capability["status"] == "active"
+        ]
+        self.assertEqual(len(fresh_review_capabilities), 1)
+        self.assertEqual(validate_workflow_automation(corrected), [])
+        tampered_cases = []
+        missing_capability = copy.deepcopy(corrected)
+        missing_capability["effective_capabilities"].pop(
+            "cap-correction-transaction"
+        )
+        tampered_cases.append(("missing-capability", missing_capability))
+        stale_basis = copy.deepcopy(corrected)
+        stale_basis["effective_capabilities"]["cap-correction-transaction"][
+            "basis"
+        ]["review_record_identity"] = "sha256:stale-review"
+        tampered_cases.append(("stale-basis", stale_basis))
+        missing_review_receipt = copy.deepcopy(corrected)
+        missing_review_receipt["transition_receipts"].pop(
+            "transition-engine-001"
+        )
+        tampered_cases.append(("missing-review-receipt", missing_review_receipt))
+        for label, candidate in tampered_cases:
+            with self.subTest(tamper=label):
+                errors = validate_workflow_automation(candidate)
+                self.assertTrue(
+                    any(
+                        "invalid recorded proposal-review route" in error
+                        for error in errors
+                    ),
+                    errors,
+                )
+
+    def test_proposal_review_authorization_pause_is_stable_after_later_capability(
+        self,
+    ) -> None:
+        fixture = self.prepare_proposal_correction_transaction(
+            transition_id="unused-later-correction"
+        )
+        store = fixture["store"]
+        snapshot = store.read()
+        correction_capability = copy.deepcopy(
+            snapshot.automation["effective_capabilities"][
+                "cap-correction-transaction"
+            ]
+        )
+        without_correction = copy.deepcopy(snapshot.automation)
+        without_correction["effective_capabilities"] = {}
+        store.replace_automation(
+            without_correction,
+            expected_document_identity=snapshot.document_identity,
+        )
+
+        review_path = fixture["review_path"]
+        review_identity = correction_capability["basis"][
+            "review_record_identity"
+        ]
+        proposal_identity = correction_capability["basis"][
+            "reviewed_proposal_identity"
+        ]
+
+        def invoke() -> StageExecutionResult:
+            evidence = ArtifactEvidence(review_path, review_identity)
+            return StageExecutionResult(
+                (evidence,), {"proposal-review": evidence}
+            )
+
+        self.coordinate_proposal_review(
+            store,
+            invoke,
+            parent_authorization_id="auth-correction",
+            capability_id="cap-review-without-correction",
+            proposal_identity=proposal_identity,
+            synchronize=lambda stage_result: CanonicalSyncResult(
+                "synchronized", stage_result.completion_evidence
+            ),
+        )
+        paused_snapshot = store.read()
+        recorded_result = copy.deepcopy(
+            paused_snapshot.automation["latest_review_result"]
+        )
+        self.assertEqual(recorded_result["routing_action"], "pause")
+        self.assertEqual(
+            recorded_result["pause_reason"],
+            "proposal-correction-authorization-required",
+        )
+
+        with_later_capability = copy.deepcopy(paused_snapshot.automation)
+        with_later_capability["effective_capabilities"][
+            correction_capability["capability_id"]
+        ] = correction_capability
+        store.replace_automation(
+            with_later_capability,
+            expected_document_identity=paused_snapshot.document_identity,
+        )
+
+        persisted = store.read().automation
+        self.assertEqual(persisted["latest_review_result"], recorded_result)
+        self.assertEqual(persisted["run"]["status"], "paused")
+        self.assertEqual(
+            persisted["run"]["pause_reason"],
+            "proposal-correction-authorization-required",
+        )
 
     def test_proposal_review_transaction_rejects_stale_correction_capability(
         self,

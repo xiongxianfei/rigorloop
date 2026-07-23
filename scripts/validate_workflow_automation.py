@@ -187,6 +187,96 @@ def resolve_active_proposal_correction_capability(
     return eligible[0] if eligible else None
 
 
+def resolve_recorded_proposal_correction_capability(
+    automation: dict[str, Any],
+    review_result: dict[str, Any],
+) -> str | None:
+    """Validate the immutable capability binding recorded by a review route."""
+
+    if review_result.get("routing_action") != "correction-loop":
+        return None
+    capability_id = review_result.get("correction_capability_id")
+    if not isinstance(capability_id, str) or not capability_id.strip():
+        raise ValueError(
+            "recorded correction-loop requires correction_capability_id"
+        )
+    capabilities = automation.get("effective_capabilities")
+    capability = (
+        capabilities.get(capability_id)
+        if isinstance(capabilities, dict)
+        else None
+    )
+    if not isinstance(capability, dict):
+        raise ValueError(
+            "recorded correction capability does not exist"
+        )
+    stage = capability.get("stage")
+    basis = capability.get("basis")
+    if (
+        capability.get("capability_kind")
+        != CapabilityKind.PROPOSAL_CORRECTION.value
+        or not isinstance(stage, dict)
+        or stage.get("name") != WorkflowStage.PROPOSAL.value
+        or stage.get("occurrence") != {"kind": "singleton"}
+        or not isinstance(basis, dict)
+        or basis.get("reviewed_proposal_identity")
+        != review_result.get("reviewed_artifact_identity")
+        or basis.get("review_record_identity")
+        != review_result.get("review_record_identity")
+    ):
+        raise ValueError(
+            "recorded correction capability does not match review basis"
+        )
+
+    receipts = automation.get("transition_receipts")
+    matching_review_receipts: list[str] = []
+    if isinstance(receipts, dict):
+        for transition_id, receipt in receipts.items():
+            if not isinstance(transition_id, str) or not isinstance(receipt, dict):
+                continue
+            review_capability = (
+                capabilities.get(receipt.get("effective_capability_id"))
+                if isinstance(capabilities, dict)
+                else None
+            )
+            review_stage = (
+                review_capability.get("stage")
+                if isinstance(review_capability, dict)
+                else None
+            )
+            canonical_sync = receipt.get("canonical_sync")
+            observed = (
+                canonical_sync.get("observed_identities")
+                if isinstance(canonical_sync, dict)
+                else None
+            )
+            inputs = receipt.get("input_identities")
+            if (
+                receipt.get("status") == "completed"
+                and isinstance(review_capability, dict)
+                and review_capability.get("capability_kind")
+                == CapabilityKind.PROPOSAL_REVIEW.value
+                and isinstance(review_stage, dict)
+                and review_stage.get("name")
+                == WorkflowStage.PROPOSAL_REVIEW.value
+                and isinstance(inputs, dict)
+                and inputs.get("proposal")
+                == review_result.get("reviewed_artifact_identity")
+                and isinstance(canonical_sync, dict)
+                and canonical_sync.get("status") == "synchronized"
+                and isinstance(observed, dict)
+                and observed.get("proposal-review")
+                == review_result.get("review_record_identity")
+            ):
+                matching_review_receipts.append(transition_id)
+    if len(matching_review_receipts) != 1:
+        raise ValueError(
+            "recorded correction-loop requires one matching completed "
+            "proposal-review receipt"
+        )
+    return capability_id
+
+
 def compute_transition_key(receipt: dict[str, Any]) -> str:
     """Compute the deterministic identity of immutable transition inputs."""
 
@@ -1445,10 +1535,11 @@ def validate_workflow_automation(
         target = run.get("target")
         target_stage = target.get("stage") if isinstance(target, dict) else None
         try:
-            correction_capability_id = resolve_active_proposal_correction_capability(
-                automation,
-                reviewed_proposal_identity=reviewed_identity,
-                review_record_identity=review_record_identity,
+            correction_capability_id = (
+                resolve_recorded_proposal_correction_capability(
+                    automation,
+                    review_result,
+                )
             )
             expected_projection = project_proposal_review_result(
                 outcome=review_result.get("outcome"),
@@ -1458,7 +1549,12 @@ def validate_workflow_automation(
                 review_record_identity=review_record_identity,
                 correction_capability_id=correction_capability_id,
             )
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as error:
+            errors.append(
+                "workflow.automation.latest_review_result: invalid recorded "
+                "proposal-review route: "
+                + str(error)
+            )
             expected_projection = None
         if expected_projection is not None:
             expected_result = dict(expected_projection.review_result)
