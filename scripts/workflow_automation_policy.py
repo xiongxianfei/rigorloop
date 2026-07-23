@@ -126,6 +126,7 @@ class ProposalReviewProjection:
 
     review_result: Mapping[str, Any]
     run_status: str
+    run_pause_reason: str | None
     next_stage: str | None = None
 
 
@@ -135,6 +136,7 @@ def project_proposal_review_result(
     target_stage: str,
     review_id: str,
     reviewed_artifact_identity: str,
+    review_record_identity: str | None = None,
     correction_capability_id: str | None = None,
 ) -> ProposalReviewProjection:
     """Project proposal-review evidence to its only valid durable state."""
@@ -149,6 +151,11 @@ def project_proposal_review_result(
         or not reviewed_artifact_identity.strip()
     ):
         raise ValueError("reviewed proposal identity is required")
+    if review_record_identity is not None and (
+        not isinstance(review_record_identity, str)
+        or not review_record_identity.strip()
+    ):
+        raise ValueError("proposal-review record identity is invalid")
     if target_stage not in {stage.value for stage in PUBLIC_TARGET_STAGES}:
         raise ValueError(f"unknown proposal-review target: {target_stage}")
 
@@ -190,6 +197,8 @@ def project_proposal_review_result(
         "clean_gate": clean_gate,
         "routing_action": routing_action,
     }
+    if review_record_identity is not None:
+        result["review_record_identity"] = review_record_identity
     if pause_reason is not None:
         result["pause_reason"] = pause_reason
     if selected_correction is not None:
@@ -197,6 +206,7 @@ def project_proposal_review_result(
     return ProposalReviewProjection(
         MappingProxyType(result),
         run_status,
+        pause_reason,
         next_stage,
     )
 

@@ -1009,6 +1009,9 @@ Planned validation rule: proposal-exact-append
             {
                 "review_id": "proposal-review-r1",
                 "reviewed_artifact_identity": proposal_identity,
+                "review_record_identity": completed["canonical_sync"][
+                    "observed_identities"
+                ]["proposal-review"],
                 "outcome": "approved",
                 "occurrence_recorded": True,
                 "clean_gate": "satisfied",
@@ -1280,6 +1283,7 @@ Planned validation rule: proposal-exact-append
             proposal_identity="sha256:proposal-v1",
             reviewed_proposal_identity="sha256:proposal-v1",
             target_stage="test-spec-review",
+            review_record_identity="sha256:review-v1",
             correction_authority=ProposalCorrectionAuthority(
                 "capability-correction-001",
                 "sha256:review-v1",
@@ -1371,6 +1375,7 @@ Planned validation rule: proposal-exact-append
                         target_stage, bound_at="2026-07-22T00:00:00Z"
                     )
                     state["run"]["target"] = copy.deepcopy(target)
+                    state["run"]["pause_reason"] = "stale-before-review"
                     state["parent_authorizations"][
                         "authorization-authoring-001"
                     ]["maximum_target"] = copy.deepcopy(target)
@@ -1390,6 +1395,7 @@ Planned validation rule: proposal-exact-append
                     required = {
                         "review_id",
                         "reviewed_artifact_identity",
+                        "review_record_identity",
                         "outcome",
                         "occurrence_recorded",
                         "clean_gate",
@@ -1428,6 +1434,13 @@ Planned validation rule: proposal-exact-append
                         if expected_action == "stop-at-target"
                         else "active",
                     )
+                    if expected_action == "pause":
+                        self.assertEqual(
+                            run["pause_reason"],
+                            persisted["pause_reason"],
+                        )
+                    else:
+                        self.assertNotIn("pause_reason", run)
 
     def test_proposal_review_transaction_persists_authorized_correction_loop(
         self,
@@ -1437,10 +1450,15 @@ Planned validation rule: proposal-exact-append
         )
         store = fixture["store"]
 
+        capability = store.read().automation["effective_capabilities"][
+            "cap-correction-transaction"
+        ]
+        review_path = fixture["review_path"]
+        review_identity = capability["basis"]["review_record_identity"]
+        proposal_identity = capability["basis"]["reviewed_proposal_identity"]
+
         def invoke() -> StageExecutionResult:
-            evidence = self.write_evidence(
-                store, status="changes-requested"
-            )
+            evidence = ArtifactEvidence(review_path, review_identity)
             return StageExecutionResult(
                 (evidence,), {"proposal-review": evidence}
             )
@@ -1450,6 +1468,7 @@ Planned validation rule: proposal-exact-append
             invoke,
             parent_authorization_id="auth-correction",
             capability_id="cap-review-for-correction-loop",
+            proposal_identity=proposal_identity,
         )
 
         self.assertEqual(result.status, "completed")
@@ -1461,6 +1480,7 @@ Planned validation rule: proposal-exact-append
                 "reviewed_artifact_identity": automation[
                     "transition_receipts"
                 ]["transition-engine-001"]["input_identities"]["proposal"],
+                "review_record_identity": review_identity,
                 "outcome": "changes-requested",
                 "occurrence_recorded": True,
                 "clean_gate": "not-satisfied",
@@ -1469,6 +1489,61 @@ Planned validation rule: proposal-exact-append
             },
         )
         self.assertEqual(automation["run"]["status"], "active")
+
+    def test_proposal_review_transaction_rejects_stale_correction_capability(
+        self,
+    ) -> None:
+        cases = ("review_record_identity", "reviewed_proposal_identity")
+        for stale_field in cases:
+            with self.subTest(stale_field=stale_field):
+                fixture = self.prepare_proposal_correction_transaction(
+                    transition_id=f"unused-stale-{stale_field}"
+                )
+                store = fixture["store"]
+                snapshot = store.read()
+                automation = snapshot.automation
+                capability = automation["effective_capabilities"][
+                    "cap-correction-transaction"
+                ]
+                review_path = fixture["review_path"]
+                review_identity = capability["basis"]["review_record_identity"]
+                proposal_identity = capability["basis"][
+                    "reviewed_proposal_identity"
+                ]
+                capability["basis"][stale_field] = f"sha256:stale-{stale_field}"
+                store.replace_automation(
+                    automation,
+                    expected_document_identity=snapshot.document_identity,
+                )
+
+                def invoke() -> StageExecutionResult:
+                    evidence = ArtifactEvidence(review_path, review_identity)
+                    return StageExecutionResult(
+                        (evidence,), {"proposal-review": evidence}
+                    )
+
+                self.coordinate_proposal_review(
+                    store,
+                    invoke,
+                    parent_authorization_id="auth-correction",
+                    capability_id=f"cap-review-stale-{stale_field}",
+                    proposal_identity=proposal_identity,
+                )
+
+                persisted = store.read().automation
+                self.assertEqual(
+                    persisted["latest_review_result"]["routing_action"],
+                    "pause",
+                )
+                self.assertEqual(
+                    persisted["latest_review_result"]["pause_reason"],
+                    "proposal-correction-authorization-required",
+                )
+                self.assertEqual(persisted["run"]["status"], "paused")
+                self.assertEqual(
+                    persisted["run"]["pause_reason"],
+                    "proposal-correction-authorization-required",
+                )
 
     def test_proposal_review_unknown_and_unchanged_inconclusive_fail_closed(self) -> None:
         with self.assertRaisesRegex(AutomationContractError, "unknown proposal-review outcome"):
@@ -2595,8 +2670,9 @@ Material findings: None
         input_identities=None,
         synchronize=None,
         repository_root=None,
+        proposal_identity=None,
     ):
-        proposal_identity = self.write_proposal(store)
+        proposal_identity = proposal_identity or self.write_proposal(store)
         receipt_inputs = self.proposal_input_identities(proposal_identity)
         if input_identities is not None:
             receipt_inputs.update(input_identities)

@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -33,11 +33,12 @@ Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r3
 Review closeout: code-review-m4-r4
+Review closeout: code-review-m4-r5
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`
-- Findings resolved: 65
-- Unresolved findings: 2
-- Current result: Code-review M4 R5 confirmed the closed correction operation and rollback fixes, but classified the R4 capability-binding and durable-state corrections as failed remediations. `BRF-M4-CR11` and `BRF-M4-CR12` keep M4 resolution-needed; M5 remains blocked.
+- Findings resolved: 67
+- Unresolved findings: 0
+- Current result: `BRF-M4-CR11` and `BRF-M4-CR12` are resolved with current review-identity binding and exact run pause-reason projection. M4 is review-requested for code-review R6; M5 remains blocked pending that independent rereview.
 
 ## Resolution Overview
 
@@ -108,8 +109,8 @@ Review closeout: code-review-m4-r4
 | BRF-M4-CR8 | accepted | resolved | Arbitrary correction callbacks were removed; the bounded operation atomically replaces one exact regular proposal file and leaves no mutation on replace failure. |
 | BRF-M4-CR9 | accepted | resolved | One shared pure projection now enforces concrete identities and exact durable review-result, route, target, and run-state consistency. |
 | BRF-M4-CR10 | accepted | resolved | Transactional finalization uses the shared projection and binds the unique active correction capability for an authorized correction-loop route. |
-| BRF-M4-CR11 | needs-decision | open | Correction-loop selection accepts an active correction capability whose review and proposal identities need not match the just-finalized occurrence. |
-| BRF-M4-CR12 | needs-decision | open | Durable validation accepts a stale run-level pause reason when the canonical proposal-review route is non-paused. |
+| BRF-M4-CR11 | accepted | resolved | Correction-loop selection requires exact current proposal and review-record identities from the finalized review proof. |
+| BRF-M4-CR12 | accepted | resolved | The shared projection owns exact run-level pause-reason presence, absence, and value. |
 
 ## Common Resolution Metadata
 
@@ -125,35 +126,35 @@ Review closeout: code-review-m4-r4
 #### BRF-M4-CR11 - Correction-loop authority is not bound to the finalized review
 
 Finding ID: BRF-M4-CR11
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: accept, reject, defer, or partially accept the recorded safe resolution before correction begins
+Decision needed: none
 Rationale: The correction-capability selector checks active status, type, stage, parent, and budget but not whether its reviewed proposal and review-record identities match the occurrence being finalized. A direct probe persisted correction-loop with different capability and current-review hashes, and durable validation returned no errors.
 Required outcome: Correction-loop routing must bind exactly one current active correction capability to the just-recorded proposal and review occurrence.
-Chosen action: Pending disposition.
+Chosen action: Make the shared selector identity-aware and reuse it in finalization and durable validation with direct stale-authority contrasts.
 Safe resolution path: Pass verified proposal and review-record identities into the shared selector, require exact capability-basis matches in finalization and durable validation, and add current/stale/absent/ambiguous transactional contrasts.
 Validation target: Identity-matched positive correction-loop, stale review, stale proposal, absent/invalid budget, ambiguous capability, CMD15-CMD20, and code-review M4 R6.
-Validation evidence: Pending.
+Validation evidence: Proof-first stale review-record and proposal-identity cases failed before correction. The identity-matched correction-loop and stale-authority contrasts now pass in the six-case proposal-review suite; all 43 engine, 15 policy, 51 state/recovery, and 56 automation-validator tests pass, followed by the 11-check broad-smoke suite.
 auto_fix_class: none
 
 #### BRF-M4-CR12 - Run-level pause evidence can contradict the canonical route
 
 Finding ID: BRF-M4-CR12
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: accept, reject, defer, or partially accept the recorded safe resolution before correction begins
+Decision needed: none
 Rationale: The shared projection validates result fields and run status, but durable validation ignores `run.pause_reason`. A direct probe accepted an approved later-target continue result with active run status and a stale blocker reason.
 Required outcome: Run-level pause evidence must exactly match the canonical proposal-review route and must be absent for active or completed routes.
-Chosen action: Pending disposition.
+Chosen action: Add run pause reason to the shared routing projection and require exact durable equality for paused and non-paused routes.
 Safe resolution path: Project and validate the expected run pause reason alongside run status, with positive and negative coverage for every paused and non-paused route.
 Validation target: Blocked, inconclusive, authorization-required, correction-loop, continue, and stop-at-target run-reason consistency, CMD15-CMD20, and code-review M4 R6.
-Validation evidence: Pending.
+Validation evidence: The proof-first stale pause-reason contrast failed before correction. Exact target, continue, authorization-required, blocked, inconclusive, and correction-loop routes now project or remove the run pause reason deterministically; all focused and full automation suites plus the 11-check broad-smoke suite pass.
 auto_fix_class: none
 
 ### code-review-m4-r4

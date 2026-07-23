@@ -406,6 +406,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         state["latest_review_result"] = {
             "review_id": "proposal-review-r1",
             "reviewed_artifact_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
             "outcome": "approved",
             "occurrence_recorded": True,
             "clean_gate": "satisfied",
@@ -437,6 +438,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             {
                 "review_id": "",
                 "reviewed_artifact_identity": "",
+                "review_record_identity": "",
                 "outcome": "approved",
                 "occurrence_recorded": True,
                 "clean_gate": "satisfied",
@@ -445,6 +447,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             {
                 "review_id": "proposal-review-r1",
                 "reviewed_artifact_identity": "sha256:proposal",
+                "review_record_identity": "sha256:review",
                 "outcome": "blocked",
                 "occurrence_recorded": True,
                 "clean_gate": "satisfied",
@@ -453,6 +456,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             {
                 "review_id": "proposal-review-r1",
                 "reviewed_artifact_identity": "sha256:proposal",
+                "review_record_identity": "sha256:review",
                 "outcome": "changes-requested",
                 "occurrence_recorded": True,
                 "clean_gate": "not-satisfied",
@@ -467,6 +471,95 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 self.assertTrue(errors)
                 self.assertTrue(
                     any("latest_review_result" in error for error in errors),
+                    errors,
+                )
+
+    def test_proposal_review_result_requires_exact_run_pause_projection(
+        self,
+    ) -> None:
+        cases = (
+            (
+                "proposal-review",
+                "approved",
+                "satisfied",
+                "stop-at-target",
+                "completed",
+                None,
+            ),
+            (
+                "proposal-review",
+                "changes-requested",
+                "not-satisfied",
+                "stop-at-target",
+                "completed",
+                None,
+            ),
+            ("spec", "approved", "satisfied", "continue", "active", None),
+            (
+                "spec",
+                "changes-requested",
+                "not-satisfied",
+                "pause",
+                "paused",
+                "proposal-correction-authorization-required",
+            ),
+            (
+                "spec",
+                "blocked",
+                "not-satisfied",
+                "pause",
+                "paused",
+                "proposal-review-blocked",
+            ),
+            (
+                "spec",
+                "inconclusive",
+                "not-satisfied",
+                "pause",
+                "paused",
+                "proposal-review-inconclusive",
+            ),
+        )
+        for (
+            target_stage,
+            outcome,
+            gate,
+            route,
+            run_status,
+            expected_pause_reason,
+        ) in cases:
+            with self.subTest(target=target_stage, outcome=outcome):
+                state = valid_automation()
+                target = {
+                    "stage": target_stage,
+                    "occurrence": {"kind": "singleton"},
+                    "bound_at": "2026-07-20T00:00:00Z",
+                    "completion": target_completion_predicate(target_stage),
+                }
+                state["run"]["target"] = copy.deepcopy(target)
+                state["run"]["status"] = run_status
+                state["run"]["pause_reason"] = "wrong-pause-reason"
+                state["parent_authorizations"][
+                    "authorization-authoring-001"
+                ]["maximum_target"] = copy.deepcopy(target)
+                state["latest_review_result"] = {
+                    "review_id": "proposal-review-r1",
+                    "reviewed_artifact_identity": "sha256:proposal",
+                    "review_record_identity": "sha256:review",
+                    "outcome": outcome,
+                    "occurrence_recorded": True,
+                    "clean_gate": gate,
+                    "routing_action": route,
+                }
+                if expected_pause_reason is not None:
+                    state["latest_review_result"][
+                        "pause_reason"
+                    ] = expected_pause_reason
+
+                errors = validate_workflow_automation(state)
+
+                self.assertTrue(
+                    any("run.pause_reason" in error for error in errors),
                     errors,
                 )
 

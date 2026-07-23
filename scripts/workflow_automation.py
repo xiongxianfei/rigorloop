@@ -297,6 +297,7 @@ def evaluate_proposal_review(
     proposal_identity: str,
     reviewed_proposal_identity: str,
     target_stage: str,
+    review_record_identity: str | None = None,
     correction_authority: ProposalCorrectionAuthority | None = None,
 ) -> ProposalReviewDecision:
     """Separate a recorded proposal-review occurrence from clean-gate routing."""
@@ -318,6 +319,8 @@ def evaluate_proposal_review(
     correction_capability_id = None
     if (
         correction_authority is not None
+        and review_record_identity
+        == correction_authority.reviewed_review_identity
         and set(correction_authority.correction_budget) == set(REVIEW_FIX_BUDGET_LIMITS)
         and all(
             isinstance(value, int)
@@ -334,6 +337,7 @@ def evaluate_proposal_review(
             target_stage=target_stage,
             review_id=review_id,
             reviewed_artifact_identity=proposal_identity,
+            review_record_identity=review_record_identity,
             correction_capability_id=correction_capability_id,
         )
     except ValueError as error:
