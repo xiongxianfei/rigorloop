@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -35,11 +35,12 @@ Review closeout: code-review-m4-r3
 Review closeout: code-review-m4-r4
 Review closeout: code-review-m4-r5
 Review closeout: code-review-m4-r6
+Review closeout: code-review-m4-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`
-- Findings resolved: 68
-- Unresolved findings: 1
-- Current result: Code-review M4 R7 confirmed active-to-consumed correction liveness but opened `BRF-M4-CR14`: the historical route lacks an occurrence-bound receipt binding for the selected correction capability or explicit absence. M4 is resolution-needed; M5 remains blocked.
+- Findings resolved: 69
+- Unresolved findings: 0
+- Current result: `BRF-M4-CR14` is resolved. Proposal-review finalization now binds the complete route to its exact immutable completed transition, and durable validation rejects retroactive correction authorization from later authority. M4 is review-requested for code-review R8; M5 remains blocked pending rereview.
 
 ## Resolution Overview
 
@@ -113,7 +114,7 @@ Review closeout: code-review-m4-r6
 | BRF-M4-CR11 | accepted | resolved | Correction-loop selection requires exact current proposal and review-record identities from the finalized review proof. |
 | BRF-M4-CR12 | accepted | resolved | The shared projection owns exact run-level pause-reason presence, absence, and value. |
 | BRF-M4-CR13 | accepted | resolved | Recorded review routing now validates its persisted capability, exact basis, and completed review receipt without depending on mutable active status. |
-| BRF-M4-CR14 | needs-decision | open | Bind the route decision itself to the exact completed proposal-review transition so later authority cannot manufacture historical correction authorization. |
+| BRF-M4-CR14 | accepted | resolved | The latest review result references the exact completed proposal-review transition, whose immutable route binding records selected correction authority or explicit absence. |
 
 ## Common Resolution Metadata
 
@@ -129,18 +130,18 @@ Review closeout: code-review-m4-r6
 #### BRF-M4-CR14 - The completed review receipt does not bind the recorded correction route
 
 Finding ID: BRF-M4-CR14
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept, reject, defer, partially accept, or provide an alternative to the recorded safe resolution.
+Decision needed: none
 Rationale: The validator checks that a matching correction capability and completed proposal-review receipt exist, but the receipt proves only the review occurrence. It does not record which correction capability the active selector chose, or that none existed, when the route was finalized.
 Required outcome: Durable validation must prove the exact route decision recorded at proposal-review finalization and must reject retroactive correction-loop fabrication from later authority.
-Chosen action: Pending owner disposition.
+Chosen action: Persist the route decision atomically on the completed proposal-review receipt, reference that exact source transition from the latest review result, validate the complete binding without receipt search or capability rebinding, and add the retroactive route-rewrite regression.
 Safe resolution path: Persist an immutable route binding on the completed proposal-review transition, reference that exact source transition from `latest_review_result`, validate the outcome, target, proposal identity, review-record identity, and selected correction capability ID or explicit absence from that binding, and add the retroactive-rewrite regression while preserving active-to-consumed liveness.
 Validation target: Authorized active-to-consumed route, unchanged authorization-required pause after later authority, rejected retroactive pause-to-correction-loop rewrite, receipt tampering, CMD15-CMD20, and code-review M4 R8.
-Validation evidence: Pending.
+Validation evidence: The proof-first retroactive pause-to-correction-loop regression failed with zero validation errors before correction. The corrected implementation passes all 7 proposal-review cases, including active-to-consumed liveness, absent-to-active stability, exact source-transition binding, route-binding tamper rejection, retroactive rewrite rejection, and finalized-receipt immutability. All 44 engine, 15 policy, 51 state/recovery, and 56 automation-validator tests pass; CMD14-CMD20 pass with 156 lifecycle, 103 review-artifact, and 259 skill-validator tests; all 53 change-metadata tests, Python compilation, and diff checks pass. The final repository broad-smoke suite passed all 11 checks in 416 seconds.
 auto_fix_class: none
 
 ### code-review-m4-r6

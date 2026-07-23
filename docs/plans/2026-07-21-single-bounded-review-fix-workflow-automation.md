@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r7.md`
-- Review status: changes-requested; stage=code-review; round=r7
-- Remaining in-scope implementation milestones: M4 resolution and rereview, M5, M6
-- Next stage: review-resolution M4
+- Review status: review-requested; stage=code-review; round=r8
+- Remaining in-scope implementation milestones: M4 rereview, M5, M6
+- Next stage: code-review M4 R8
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M4-CR14
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -572,6 +572,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-23: Accepted `BRF-M4-CR13` and started its M4 correction. The bounded resolution keeps active capability selection at review-routing time, validates the persisted historical route against its recorded capability relationship without requiring current active status, and adds both authority-lifecycle direction regressions before production changes.
 - 2026-07-23: Resolved `BRF-M4-CR13` by separating active route-time capability selection from immutable historical-route validation. A completed review route now remains bound to its recorded correction capability, exact proposal/review identities, and one completed review receipt after capability consumption; later authority does not rewrite an earlier authorization-required pause. M4 is review-requested for R7; M5 remains blocked pending rereview.
 - 2026-07-23: Code-review M4 R7 confirmed active-to-consumed correction liveness but classified the historical-integrity remediation as incomplete and opened `BRF-M4-CR14`. A direct probe showed that later matching authority plus a rewritten review result validates as `correction-loop` because the completed review receipt does not bind the selected correction capability or explicit absence. M4 is resolution-needed; M5 remains blocked.
+- 2026-07-23: Accepted `BRF-M4-CR14` for implementation. The bounded correction will persist one immutable proposal-review route binding on the exact completed source transition, make `latest_review_result` reference that transition, and reject later-authority route fabrication while preserving active-to-consumed correction liveness. Public routing, M5, M6, and external-action behavior remain unchanged.
+- 2026-07-23: Resolved `BRF-M4-CR14` with proof-first route-integrity coverage. Proposal-review finalization now atomically stores the exact source transition and route facts, durable validation compares that exact receipt rather than searching by shared identities, and the sole writer rejects finalized-receipt rewrites. M4 is review-requested for R8; M5 remains blocked pending rereview.
 
 ## Decision log
 
@@ -602,6 +604,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-23 | Compile accepted proposal-correction recipes to closed internal operations and never execute caller correction code. | The canonical recipe must determine exact bytes, and failure containment is reliable only when the engine owns the single atomic write. | Descriptive recipes plus arbitrary callbacks, repository-wide after-the-fact snapshots, and caller-declared changed paths. |
 | 2026-07-23 | Persist the canonical proposal-review record identity and require exact correction-capability basis matching. | Correction authority is executable only for the review occurrence that produced the current finding set; kind, stage, parent, and budget alone cannot establish currency. | Selecting any active correction capability or silently rebinding stale authority. |
 | 2026-07-23 | Validate recorded review routing from immutable historical bindings, not current executable-capability status. | A correction must consume its capability without changing the already recorded review occurrence, while later authority must not retroactively rewrite an earlier pause. | Re-running the active selector during durable validation or silently replacing the recorded capability. |
+| 2026-07-23 | Bind each proposal-review route to its exact finalized transition and make finalized receipts immutable at the sole writer. | Shared proposal/review identities prove occurrence but not the authority selected or absent at route time; exact source binding preserves that decision across later capability creation. | Searching for any matching receipt, trusting the result's route field, or silently rebinding later authority. |
 
 ## Surprises and discoveries
 
@@ -613,6 +616,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- M4 R7 resolution reproduced the retroactive-route bypass proof-first: later matching authority plus a rewritten pause returned zero validation errors. The correction passes 7 proposal-review, 8 proposal-correction, 4 authoring, and 4 non-public focused tests; all 44 engine, 15 policy, 51 state/recovery, 56 automation-validator, 103 review-artifact, 156 lifecycle, 259 skill-validator, and 53 change-metadata tests; Python compilation and diff checks; and the final 11-check repository broad-smoke suite in 416 seconds. Exact source-transition, explicit-absence, route-binding tamper, retroactive rewrite, finalized-receipt immutability, and active-to-consumed contrasts pass. The approved spec, test spec, architecture, ADR, schema, public skills, adapters, M5/M6 behavior, generated output, and external-action boundaries are unaffected because this correction completes the existing M4 receipt-integrity contract inside the selected state writer and validator.
 - M4 R6 resolution failed proof-first in both authority-lifecycle directions: consuming the selected correction capability prevented correction finalization, and adding matching authority after an authorization-required review made the paused state invalid. The corrected implementation passes 7 proposal-review, 8 proposal-correction, 4 authoring, and 4 non-public focused tests; all 44 engine, 15 policy, 51 state/recovery, 56 automation-validator, 103 review-artifact, 156 lifecycle, 259 skill-validator, and 53 change-metadata tests; change metadata, review structure, guide-system, explicit lifecycle, Python compilation, and diff checks; and the final 11-check repository broad-smoke suite in 838 seconds. Tamper cases reject a missing recorded capability, stale recorded basis, and missing completed review receipt. The approved spec, test spec, architecture, ADR, schema, public skills, adapters, M5 behavior, generated output, and external-action boundaries are unaffected because this correction completes the existing M4 historical-evidence contract inside the approved Python validator boundary.
 - M4 R5 resolution failed proof-first when stale reviewed-proposal or review-record capability bases still selected correction-loop and when a stale active-run pause reason passed durable validation. The corrected implementation passes all 6 focused proposal-review cases; all 43 engine, 15 policy, 51 state/recovery, 56 automation-validator, 103 review-artifact, 156 lifecycle, 259 skill-validator, and 53 change-metadata tests; closeout, metadata, guide-system, selected lifecycle, Python compilation, and diff checks; and the final 11-check broad-smoke suite in 391 seconds. The canonical latest review result now includes the independently observed review-record identity, and the shared projection is the sole owner of run status and pause-reason consistency. Specifications, test spec, architecture, ADR, schemas, public skills, adapters, M5 behavior, and external-action boundaries are unaffected because this is additive change-local evidence and internal M4 routing validation within the approved open `latest_review_result` record.
 - M4 R4 resolution failed proof-first on unsupported recipe execution, callback isolation, contradictory durable review projections, and missing transactional correction-loop persistence. The corrected implementation passes 5 proposal-review and 8 proposal-correction focused tests; all 42 engine, 15 policy, 51 state/recovery, 55 automation-validator, 103 review-artifact, 156 lifecycle, and 259 skill-validator tests; explicit lifecycle, metadata, review-structure, Python compilation, and diff validation; and the final 12-check broad-smoke suite in 241 seconds. Rejected postconditions restore original proposal bytes. The change stays inside the approved M4 Python execution/state boundary: public workflow and legacy adapters, schemas, specifications, architecture, generated outputs, M5 behavior, and external-action authority are unchanged.

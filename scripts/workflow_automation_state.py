@@ -35,6 +35,7 @@ from workflow_automation_policy import (
 from validate_workflow_automation import (
     compute_transition_key,
     has_read_only_legacy_migration,
+    proposal_review_route_binding,
     resolve_active_proposal_correction_capability,
     validate_workflow_automation,
 )
@@ -805,6 +806,28 @@ class WorkflowAutomationStateStore:
         )
         if errors:
             raise StateContractError("invalid replacement automation state: " + "; ".join(errors))
+        current_receipts = (
+            snapshot.automation.get("transition_receipts")
+            if isinstance(snapshot.automation, dict)
+            else None
+        )
+        replacement_receipts = automation.get("transition_receipts")
+        if isinstance(current_receipts, dict):
+            for transition_id, current_receipt in current_receipts.items():
+                if (
+                    isinstance(current_receipt, dict)
+                    and current_receipt.get("status")
+                    in RECEIPT_TERMINAL_STATUSES
+                    and (
+                        not isinstance(replacement_receipts, dict)
+                        or replacement_receipts.get(transition_id)
+                        != current_receipt
+                    )
+                ):
+                    raise StateContractError(
+                        "finalized transition receipt is immutable: "
+                        + str(transition_id)
+                    )
         document = copy.deepcopy(snapshot.document)
         workflow = document.setdefault("workflow", {})
         if not isinstance(workflow, dict):
@@ -1006,9 +1029,16 @@ class WorkflowAutomationStateStore:
                         "proposal-review result projection failed: "
                         + str(error)
                     ) from error
-                replacement["latest_review_result"] = dict(
-                    projection.review_result
+                receipt["proposal_review_route"] = copy.deepcopy(
+                    proposal_review_route_binding(
+                        projection.review_result,
+                        target,
+                    )
                 )
+                replacement["latest_review_result"] = {
+                    **projection.review_result,
+                    "source_transition_id": transition_id,
+                }
                 run["status"] = projection.run_status
                 if projection.run_pause_reason is not None:
                     run["pause_reason"] = projection.run_pause_reason
