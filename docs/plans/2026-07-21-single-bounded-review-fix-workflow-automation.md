@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r13.md`
-- Review status: review-requested; stage=code-review; round=r14
-- Remaining in-scope implementation milestones: M4 rereview, M5, M6
-- Next stage: code-review M4 R14
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r14.md`
+- Review status: changes-requested; stage=code-review; round=r14
+- Remaining in-scope implementation milestones: M4 resolution and rereview, M5, M6
+- Next stage: review-resolution M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BRF-M4-CR22,BRF-M4-CR23
 
 ## Milestones
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -583,6 +583,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-23: Code-review M4 R13 confirmed `BRF-M4-CR19` resolved and opened `BRF-M4-CR20` plus `BRF-M4-CR21`. Independent probes showed that two genuine completed receipts can rewind latest review state to the older canonical occurrence and that query validation can inspect one snapshot while projecting another. M4 is resolution-needed; M5 remains blocked.
 - 2026-07-23: The user accepted `BRF-M4-CR20` and `BRF-M4-CR21` for proof-first M4 resolution. Implementation started with canonical multi-receipt latest ordering and single-snapshot query projection; M5/M6 remain out of scope.
 - 2026-07-23: Resolved `BRF-M4-CR20` and `BRF-M4-CR21` proof-first. Completed proposal-review receipts now bind unique canonical review-log occurrence order, latest result cannot rewind to an older represented occurrence, completed recovery pauses on projection drift, and unified queries project the exact validated state-store snapshot. M4 is review-requested for R14; M5 remains blocked pending rereview.
+- 2026-07-23: Code-review M4 R14 classified `BRF-M4-CR20` and `BRF-M4-CR21` as failed remediations and opened `BRF-M4-CR22` plus `BRF-M4-CR23`. Mixed accepted review-log formats invert parser chronology, and a stale first query parse without automation bypasses newer valid or invalid unified tracked state. M4 is resolution-needed; M5 remains blocked.
 
 ## Decision log
 
@@ -631,6 +632,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- Code-review M4 R14 used a final fresh L2 reviewer after discarding two contaminated risk-map attempts. The clean reviewer recorded its bounded risk map before validation or R13 evidence, reran 57 state, 21 query, and 64 automation-validator tests, and challenged the reported 772-test and 12-check broad-smoke evidence. Direct probes showed accepted mixed-format review logs parse out of source order and no-automation-first queries bypass newer valid or invalid unified tracked state. `BRF-M4-CR20` and `BRF-M4-CR21` are failed remediations; residual `BRF-M4-CR22` and `BRF-M4-CR23` are open.
 - M4 R13 resolution failed proof-first for coherent rewind to an older genuine review occurrence and for a forged earlier query parse projected after a different state-store read validated. The corrected slice passes 57 state, 21 query, 44 engine, 15 policy, 64 automation-validator, 156 lifecycle, 103 review-artifact, 259 skill-validator, and 53 metadata-validator tests plus Python compilation. The selector chose query and metadata checks and reported expected manual routing for the two automation-state paths; the plan-owned suites covered them directly. Explicit lifecycle validation passes with one existing merge-language warning, and final repository broad smoke passes all 12 checks in 541 seconds. The approved spec, test spec, architecture, ADR, schema, public skills, adapters, M5/M6 behavior, and external-action boundary are unaffected because the correction tightens existing M4 canonical-evidence and query-read boundaries.
 - Code-review M4 R12 used a same-session L1 context reset, recorded its blind-first risk map before prior-finding resolution and validation summaries, and independently reran 54 state/recovery, 64 automation-validator, 7 proposal-review engine, and 15 policy tests. Recovery correctly rejects coordinated review-fact tampering, but a direct repository-backed probe showed `store.read()` and `status()` still accept and report the forged review ID. `BRF-M4-CR18` is a failed remediation at the durable status boundary; residual `BRF-M4-CR19` is open. M4 is resolution-needed and M5 remains blocked.
 - M4 R11 resolution reproduced coordinated review-ID and all-known-outcome rewrites proof-first. Finalization and completed recovery now share one `VerifiedCompletion` evidence projection; recovery requires exact parser/envelope equality and independently validates receipt route and source-linked latest result. The corrected implementation passes 54 state/recovery, 64 automation-validator, 44 engine, and 15 policy tests; CMD14-CMD20 pass with 156 lifecycle, 103 review-artifact, and 259 skill-validator tests; the final-source repository broad smoke passes all 11 checks in 686 seconds. `BRF-M4-CR18` is resolved and M4 is review-requested for R12; M5 remains blocked pending rereview.
