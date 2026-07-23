@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -34,11 +34,12 @@ Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r3
 Review closeout: code-review-m4-r4
 Review closeout: code-review-m4-r5
+Review closeout: code-review-m4-r6
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`
-- Findings resolved: 67
-- Unresolved findings: 1
-- Current result: Code-review M4 R6 confirmed `BRF-M4-CR11` and `BRF-M4-CR12` resolved, then opened `BRF-M4-CR13`: durable validation recomputes a historical review route from mutable current capability status, preventing correction completion. M4 is resolution-needed; M5 remains blocked.
+- Findings resolved: 68
+- Unresolved findings: 0
+- Current result: `BRF-M4-CR13` is resolved by separating active route-time authority selection from immutable historical-route validation. M4 is review-requested for code-review R7; M5 remains blocked pending rereview.
 
 ## Resolution Overview
 
@@ -111,7 +112,7 @@ Review closeout: code-review-m4-r5
 | BRF-M4-CR10 | accepted | resolved | Transactional finalization uses the shared projection and binds the unique active correction capability for an authorized correction-loop route. |
 | BRF-M4-CR11 | accepted | resolved | Correction-loop selection requires exact current proposal and review-record identities from the finalized review proof. |
 | BRF-M4-CR12 | accepted | resolved | The shared projection owns exact run-level pause-reason presence, absence, and value. |
-| BRF-M4-CR13 | needs-decision | open | Separate historical review-route validation from mutable current capability selection so correction can consume authority and reach rereview. |
+| BRF-M4-CR13 | accepted | resolved | Recorded review routing now validates its persisted capability, exact basis, and completed review receipt without depending on mutable active status. |
 
 ## Common Resolution Metadata
 
@@ -127,18 +128,18 @@ Review closeout: code-review-m4-r5
 #### BRF-M4-CR13 - Historical review routing is recomputed from mutable capability status
 
 Finding ID: BRF-M4-CR13
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept, reject, defer, partially accept, or provide an alternative to the recorded safe resolution.
+Decision needed: none
 Rationale: The identity-aware selector is correct at review finalization, but durable validation calls the same active-only selector later. Consuming the selected correction capability therefore changes the expected historical review route and makes proposal-correction completion impossible.
 Required outcome: A recorded proposal-review occurrence and route must remain stable while later capability lifecycle transitions are validated independently.
-Chosen action: Pending owner disposition.
+Chosen action: Keep the active-only selector for route-time authorization, add a persisted-route validator keyed by the recorded correction capability and exact review basis, and prove both active-to-consumed and absent-to-active route stability.
 Safe resolution path: Separate route-time selection from historical result validation; persist and validate the selected capability relationship without requiring current active status, and add composed active-to-consumed plus absent-to-active route-stability regressions.
 Validation target: Composed review-to-correction-to-rereview transaction, inverse later-authorization stability, receipt recovery, CMD15-CMD20, and code-review M4 R7.
-Validation evidence: Pending.
+Validation evidence: Proof-first active-to-consumed and absent-to-active regressions failed before correction and now pass. CMD15-CMD20 pass with 7 proposal-review, 8 proposal-correction, 4 authoring, 4 non-public, 156 lifecycle, 103 review-artifact, and 259 skill tests; all 44 engine, 15 policy, 51 state/recovery, 56 automation-validator, and 53 metadata tests pass. Change metadata, review structure, guide-system, explicit lifecycle, Python compilation, and diff checks pass. Repository broad smoke passed all 11 checks in 838 seconds.
 auto_fix_class: none
 
 ### code-review-m4-r5
