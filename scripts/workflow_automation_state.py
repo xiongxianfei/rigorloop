@@ -557,11 +557,16 @@ def _verify_transition_completion(
         return CompletionVerification(False, "canonical-review-log-invalid")
     if _identity(resolved_review_log.read_bytes()) != review_log_identity:
         return CompletionVerification(False, "canonical-review-log-identity-drift")
-    matches = [entry for entry in entries if entry.review_id == review.review_id]
+    match_indices = [
+        index
+        for index, entry in enumerate(entries)
+        if entry.review_id == review.review_id
+    ]
     expected_record = artifact.relative_to(change_root).as_posix()
-    if len(matches) != 1:
+    if len(match_indices) != 1:
         return CompletionVerification(False, "canonical-review-occurrence-missing")
-    entry = matches[0]
+    occurrence_index = match_indices[0]
+    entry = entries[occurrence_index]
     if (
         entry.stage != review.stage
         or entry.round != review.round
@@ -582,6 +587,8 @@ def _verify_transition_completion(
             "review_id": review.review_id,
             "review_outcome": review.status,
             "reviewed_artifact_identity": expected_identity,
+            "review_log_path": review_log_relative.as_posix(),
+            "review_occurrence_index": str(occurrence_index),
         },
     )
     return CompletionVerification(True, "stage-completion-evidence-valid", proof)
@@ -705,6 +712,7 @@ def validate_workflow_automation_semantics(
     receipts = automation.get("transition_receipts")
     capabilities = automation.get("effective_capabilities")
     completed_proposal_reviews: list[str] = []
+    verified_occurrences: list[tuple[str, int, str]] = []
     if not isinstance(receipts, dict) or not isinstance(capabilities, dict):
         return errors
 
@@ -734,6 +742,30 @@ def validate_workflow_automation_semantics(
         )
         if not verification.valid:
             errors.append(f"{transition_id}: {verification.reason}")
+        elif verification.proof is not None:
+            occurrence_index = verification.proof.stage_facts.get(
+                "review_occurrence_index"
+            )
+            review_log_path = verification.proof.stage_facts.get(
+                "review_log_path"
+            )
+            try:
+                parsed_index = int(occurrence_index)
+            except (TypeError, ValueError):
+                errors.append(
+                    f"{transition_id}: proposal-review semantic occurrence "
+                    "order missing"
+                )
+            else:
+                if not isinstance(review_log_path, str) or not review_log_path:
+                    errors.append(
+                        f"{transition_id}: proposal-review semantic canonical "
+                        "log identity missing"
+                    )
+                else:
+                    verified_occurrences.append(
+                        (transition_id, parsed_index, review_log_path)
+                    )
 
     if completed_proposal_reviews:
         latest_result = automation.get("latest_review_result")
@@ -753,6 +785,43 @@ def validate_workflow_automation_semantics(
                     "latest_review_result: proposal-review semantic "
                     f"projection drift: {error}"
                 )
+        if (
+            not errors
+            and isinstance(latest_result, dict)
+            and verified_occurrences
+        ):
+            review_log_paths = {
+                review_log_path
+                for _, _, review_log_path in verified_occurrences
+            }
+            occurrence_indices = [
+                occurrence_index
+                for _, occurrence_index, _ in verified_occurrences
+            ]
+            if len(review_log_paths) != 1:
+                errors.append(
+                    "latest_review_result: completed proposal-review "
+                    "receipts use different canonical review logs"
+                )
+            elif len(set(occurrence_indices)) != len(occurrence_indices):
+                errors.append(
+                    "latest_review_result: completed proposal-review "
+                    "receipts have duplicate canonical occurrences"
+                )
+            else:
+                latest_transition_id = max(
+                    verified_occurrences,
+                    key=lambda occurrence: occurrence[1],
+                )[0]
+                if (
+                    latest_result.get("source_transition_id")
+                    != latest_transition_id
+                ):
+                    errors.append(
+                        "latest_review_result: must select the latest "
+                        "canonical proposal-review occurrence represented by "
+                        "a completed receipt"
+                    )
     return errors
 
 
@@ -870,6 +939,16 @@ def evaluate_receipt_recovery(
                     "pause",
                     False,
                     reason,
+                )
+            semantic_errors = validate_workflow_automation_semantics(
+                automation,
+                repository_root=repository_root,
+            )
+            if semantic_errors:
+                return RecoveryDecision(
+                    "pause",
+                    False,
+                    "completed-proposal-review-projection-drift",
                 )
             latest_result = automation.get("latest_review_result")
             try:

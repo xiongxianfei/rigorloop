@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 from workflow_automation_state import (
@@ -35,6 +36,18 @@ def _load_automation_fixtures():
 
 
 AUTOMATION_FIXTURES = _load_automation_fixtures()
+
+
+def _load_query_module():
+    spec = importlib.util.spec_from_file_location(
+        "query_change_record_under_test",
+        SCRIPT,
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def run_query(*args: str, repo_root: Path | None = None) -> subprocess.CompletedProcess[str]:
@@ -446,6 +459,44 @@ validation_summary:
         self.assertEqual(result.returncode, 2)
         self.assertEqual(payload["code"], "invalid-automation-state")
         self.assertIn("proposal-review semantic evidence", payload["detail"])
+        self.assertEqual(metadata_path.read_bytes(), before)
+
+    def test_load_projects_the_same_repository_snapshot_it_validates(
+        self,
+    ) -> None:
+        repo, metadata_path, store = self.make_completed_review_change()
+        forged = copy.deepcopy(store.read().document)
+        automation = forged["workflow"]["automation"]
+        receipt = automation["transition_receipts"]["transition-001"]
+        for surface in (
+            receipt["proposal_review_evidence"],
+            receipt["proposal_review_route"],
+            automation["latest_review_result"],
+        ):
+            surface["review_id"] = "proposal-review-forged"
+        before = metadata_path.read_bytes()
+        query_module = _load_query_module()
+
+        parser = mock.Mock()
+        parser.load_yaml.return_value = forged
+        with mock.patch.object(
+            query_module,
+            "load_metadata_parser",
+            return_value=parser,
+        ):
+            _, data, error = query_module.load_change_metadata(
+                repo,
+                "2026-07-20-example",
+            )
+
+        self.assertIsNone(error)
+        self.assertIsNotNone(data)
+        self.assertEqual(
+            data["workflow"]["automation"]["latest_review_result"][
+                "review_id"
+            ],
+            "proposal-review-r1",
+        )
         self.assertEqual(metadata_path.read_bytes(), before)
 
     def test_summary_supports_legacy_metadata(self) -> None:

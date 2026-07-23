@@ -1232,6 +1232,234 @@ Open findings: None
         self.assertIsNotNone(store.read().automation)
         self.assertEqual(store.status()["source"], "unified")
 
+    def test_store_read_rejects_latest_review_rewind_to_older_occurrence(
+        self,
+    ) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, metadata_path = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            expected_document_identity=store.read().document_identity,
+        )
+
+        snapshot = store.read()
+        document = copy.deepcopy(snapshot.document)
+        automation = document["workflow"]["automation"]
+        review_root = (
+            store.repository_root
+            / "docs/changes/2026-07-20-example"
+        )
+        second_review = review_root / "reviews/proposal-review-r2.md"
+        second_review.write_text(
+            """# Proposal review
+
+Review ID: proposal-review-r2
+Stage: proposal-review
+Round: r2
+Reviewer: second fixture reviewer
+Target: docs/proposals/example.md
+Status: blocked
+Material findings: BRF-EXAMPLE
+""",
+            encoding="utf-8",
+        )
+        second_identity = (
+            "sha256:"
+            + hashlib.sha256(second_review.read_bytes()).hexdigest()
+        )
+        review_log = review_root / "review-log.md"
+        with review_log.open("a", encoding="utf-8") as handle:
+            handle.write(
+                """
+### Review entry
+Review ID: proposal-review-r2
+Stage: proposal-review
+Round: r2
+Status: blocked
+Detailed record: reviews/proposal-review-r2.md
+Resolution: none
+Material findings: BRF-EXAMPLE
+Open findings: BRF-EXAMPLE
+"""
+            )
+        review_log_identity = (
+            "sha256:" + hashlib.sha256(review_log.read_bytes()).hexdigest()
+        )
+
+        first_receipt = automation["transition_receipts"]["transition-001"]
+        first_capability = automation["effective_capabilities"][
+            first_receipt["effective_capability_id"]
+        ]
+        second_capability = copy.deepcopy(first_capability)
+        second_capability["capability_id"] = "capability-proposal-review-002"
+        automation["effective_capabilities"][
+            second_capability["capability_id"]
+        ] = second_capability
+
+        second_evidence = {
+            "path": (
+                "docs/changes/2026-07-20-example/reviews/"
+                "proposal-review-r2.md"
+            ),
+            "identity": second_identity,
+        }
+        second_receipt = copy.deepcopy(first_receipt)
+        second_receipt["transition_id"] = "transition-002"
+        second_receipt[
+            "effective_capability_id"
+        ] = second_capability["capability_id"]
+        second_receipt["outputs"] = [copy.deepcopy(second_evidence)]
+        second_receipt["canonical_sync"] = {
+            "status": "synchronized",
+            "evidence": {
+                "proposal-review": copy.deepcopy(second_evidence)
+            },
+            "observed_identities": {
+                "proposal-review": second_identity,
+                "proposal-review-log": review_log_identity,
+            },
+        }
+        second_receipt["proposal_review_evidence"] = {
+            "review_id": "proposal-review-r2",
+            "outcome": "blocked",
+            "reviewed_artifact_identity": second_receipt[
+                "input_identities"
+            ]["proposal"],
+            "review_record_identity": second_identity,
+        }
+        second_projection = project_proposal_review_result(
+            outcome="blocked",
+            target_stage=second_receipt["target"]["stage"],
+            review_id="proposal-review-r2",
+            reviewed_artifact_identity=second_receipt[
+                "input_identities"
+            ]["proposal"],
+            review_record_identity=second_identity,
+            correction_capability_id=None,
+        )
+        second_receipt[
+            "proposal_review_route"
+        ] = proposal_review_route_binding(
+            second_projection.review_result,
+            second_receipt["target"],
+        )
+        second_receipt["transition_key"] = compute_transition_key(
+            second_receipt
+        )
+        automation["transition_receipts"][
+            second_receipt["transition_id"]
+        ] = second_receipt
+        automation["latest_review_result"] = {
+            **second_projection.review_result,
+            "source_transition_id": second_receipt["transition_id"],
+        }
+        automation["run"]["status"] = second_projection.run_status
+        automation["run"][
+            "pause_reason"
+        ] = second_projection.run_pause_reason
+        metadata_path.write_text(dump_yaml(document), encoding="utf-8")
+        self.assertEqual(
+            store.status()["latest_review_result"]["review_id"],
+            "proposal-review-r2",
+        )
+
+        duplicate = copy.deepcopy(store.read().document)
+        duplicate_automation = duplicate["workflow"]["automation"]
+        duplicate_capability = copy.deepcopy(
+            duplicate_automation["effective_capabilities"][
+                "capability-proposal-review-002"
+            ]
+        )
+        duplicate_capability[
+            "capability_id"
+        ] = "capability-proposal-review-003"
+        duplicate_automation["effective_capabilities"][
+            duplicate_capability["capability_id"]
+        ] = duplicate_capability
+        duplicate_receipt = copy.deepcopy(
+            duplicate_automation["transition_receipts"]["transition-002"]
+        )
+        duplicate_receipt["transition_id"] = "transition-003"
+        duplicate_receipt[
+            "effective_capability_id"
+        ] = duplicate_capability["capability_id"]
+        duplicate_receipt["transition_key"] = compute_transition_key(
+            duplicate_receipt
+        )
+        duplicate_automation["transition_receipts"][
+            duplicate_receipt["transition_id"]
+        ] = duplicate_receipt
+        duplicate_automation["latest_review_result"][
+            "source_transition_id"
+        ] = duplicate_receipt["transition_id"]
+        metadata_path.write_text(dump_yaml(duplicate), encoding="utf-8")
+        with self.assertRaisesRegex(
+            StateContractError,
+            "duplicate canonical occurrences",
+        ):
+            store.read()
+
+        metadata_path.write_text(dump_yaml(document), encoding="utf-8")
+        rewind = copy.deepcopy(store.read().document)
+        rewind_automation = rewind["workflow"]["automation"]
+        rewind_receipt = rewind_automation["transition_receipts"][
+            "transition-001"
+        ]
+        rewind_evidence = rewind_receipt["proposal_review_evidence"]
+        rewind_projection = project_proposal_review_result(
+            outcome=rewind_evidence["outcome"],
+            target_stage=rewind_receipt["target"]["stage"],
+            review_id=rewind_evidence["review_id"],
+            reviewed_artifact_identity=rewind_evidence[
+                "reviewed_artifact_identity"
+            ],
+            review_record_identity=rewind_evidence[
+                "review_record_identity"
+            ],
+            correction_capability_id=rewind_receipt[
+                "proposal_review_route"
+            ]["correction_capability_id"],
+        )
+        rewind_automation["latest_review_result"] = {
+            **rewind_projection.review_result,
+            "source_transition_id": "transition-001",
+        }
+        rewind_automation["run"]["status"] = rewind_projection.run_status
+        rewind_automation["run"].pop("pause_reason", None)
+        metadata_path.write_text(dump_yaml(rewind), encoding="utf-8")
+
+        with self.assertRaisesRegex(
+            StateContractError,
+            "latest canonical proposal-review occurrence",
+        ):
+            store.read()
+        recovery = evaluate_receipt_recovery(
+            rewind_automation,
+            "transition-002",
+            completion_evidence={
+                "outputs": copy.deepcopy(second_receipt["outputs"]),
+                "canonical_sync": copy.deepcopy(
+                    second_receipt["canonical_sync"]
+                ),
+            },
+            repository_root=store.repository_root,
+        )
+        self.assertEqual(recovery.action, "pause")
+        self.assertEqual(
+            recovery.reason,
+            "completed-proposal-review-projection-drift",
+        )
+
     def test_finalize_consumes_capability_only_with_completed_receipt(self) -> None:
         state = valid_automation()
         receipt = valid_receipt(state)

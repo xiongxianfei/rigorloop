@@ -123,6 +123,25 @@ def load_change_metadata(repo_root: Path, change_id: str) -> tuple[Path, dict[st
             change_id=change_id,
             detail_pointers={"change_metadata": repo_relative(path, repo_root)},
         )
+    workflow = data.get("workflow")
+    automation = (
+        workflow.get("automation")
+        if isinstance(workflow, dict)
+        else None
+    )
+    if automation is not None:
+        try:
+            data = WorkflowAutomationStateStore(path).read().document
+        except StateContractError as exc:
+            return path, None, error_payload(
+                "invalid-automation-state",
+                "change metadata contains invalid workflow automation state",
+                change_id=change_id,
+                detail=str(exc),
+                detail_pointers={
+                    "change_metadata": repo_relative(path, repo_root)
+                },
+            )
     shape_error = validate_supported_shape(data, change_id=change_id, metadata_path=path, repo_root=repo_root)
     if shape_error is not None:
         return path, None, shape_error
@@ -136,21 +155,6 @@ def validate_supported_shape(
     metadata_path: Path,
     repo_root: Path,
 ) -> dict[str, Any] | None:
-    workflow = data.get("workflow")
-    automation = workflow.get("automation") if isinstance(workflow, dict) else None
-    if automation is not None:
-        try:
-            WorkflowAutomationStateStore(metadata_path).read()
-        except StateContractError as exc:
-            return error_payload(
-                "invalid-automation-state",
-                "change metadata contains invalid workflow automation state",
-                change_id=change_id,
-                detail=str(exc),
-                detail_pointers={
-                    "change_metadata": repo_relative(metadata_path, repo_root)
-                },
-            )
     try:
         paths = artifact_paths(data)
     except QueryShapeError as exc:

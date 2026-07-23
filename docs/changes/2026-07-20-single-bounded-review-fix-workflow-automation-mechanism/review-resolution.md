@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -41,11 +41,12 @@ Review closeout: code-review-m4-r9
 Review closeout: code-review-m4-r10
 Review closeout: code-review-m4-r11
 Review closeout: code-review-m4-r12
+Review closeout: code-review-m4-r13
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`
-- Findings resolved: 74
-- Unresolved findings: 2
-- Current result: Code-review M4 R13 confirmed `BRF-M4-CR19` resolved and opened `BRF-M4-CR20` plus `BRF-M4-CR21`. Two genuine completed review receipts can coherently rewind `latest_review_result` to the older canonical occurrence, and `query-change-record` can validate one state-store snapshot while projecting a different earlier parse. M4 is resolution-needed; M5 remains blocked.
+- Findings resolved: 76
+- Unresolved findings: 0
+- Current result: `BRF-M4-CR20` and `BRF-M4-CR21` are resolved proof-first. Durable validation now derives the latest completed proposal-review receipt from canonical review-log occurrence order, rejects duplicate occurrence bindings, and makes completed recovery pause on projection drift. Unified automation queries project the exact repository snapshot validated by the state store. M4 is review-requested for code-review R14; M5 remains blocked.
 
 ## Resolution Overview
 
@@ -125,8 +126,8 @@ Review closeout: code-review-m4-r12
 | BRF-M4-CR17 | accepted | resolved | R11 classified the correction as a failed remediation because persisted stage evidence remained self-authenticating; the residual defect is `BRF-M4-CR18`. |
 | BRF-M4-CR18 | accepted | resolved | Completed recovery now binds the persisted proposal-review envelope, route, and latest result to independently re-read parser evidence. |
 | BRF-M4-CR19 | accepted | resolved | Canonical read/status/query and completed recovery now share repository-backed proposal-review semantic validation without requiring historical review-log byte identity to remain current. |
-| BRF-M4-CR20 | needs-decision | open | Bind `latest_review_result` to the most recent canonical occurrence represented by completed proposal-review receipts. |
-| BRF-M4-CR21 | needs-decision | open | Make query validation and projection use the same repository-backed state snapshot. |
+| BRF-M4-CR20 | accepted | resolved | Canonical validation orders completed proposal-review receipts by their unique canonical review-log occurrences and requires the latest-result source to select the newest represented occurrence. |
+| BRF-M4-CR21 | accepted | resolved | Unified automation query projection now returns the exact repository-backed `StateSnapshot.document` that passed semantic validation. |
 
 ## Common Resolution Metadata
 
@@ -142,35 +143,35 @@ Review closeout: code-review-m4-r12
 #### BRF-M4-CR20 - Latest review result can rewind to an older genuine occurrence
 
 Finding ID: BRF-M4-CR20
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the recorded canonical occurrence-order resolution, reject or defer it with rationale, or provide an equally deterministic alternative.
+Decision needed: none
 Rationale: Repository-backed validation proves each completed proposal-review receipt independently but does not prove that `latest_review_result` selects the most recent canonical occurrence among those receipts.
 Required outcome: `latest_review_result.source_transition_id` must identify the unique most recent canonical proposal-review occurrence represented by completed proposal-review receipts, while unrelated later log entries without receipts remain compatible.
-Chosen action: Pending owner disposition.
+Chosen action: Retained each verified receipt's canonical review-log path and occurrence index, rejected multiple log identities and duplicate occurrence bindings, required `latest_review_result` to name the completed receipt with the greatest canonical occurrence index, and applied the same semantic check during completed recovery.
 Safe resolution path: Retain canonical log order during receipt verification, reject duplicate or ambiguous receipt-to-occurrence bindings, and require the latest-result source to select the last verified canonical occurrence. Add two genuine outcome-differentiated reviews and receipts that accept the newer source and reject coherent rewind to the older source.
 Validation target: Two real reviews and completed receipts; correct latest selection; coherent rewind; duplicate/ambiguous binding; unrelated appended log entry; proposal correction history; full M4 suites; and code-review M4 R14.
-Validation evidence: R13 independently ran 56 state, 20 query, 64 automation-validator, 15 policy, 7 proposal-review, 8 proposal-correction, 4 authoring, 4 non-public, 156 lifecycle, 103 review-artifact, and 259 skill-validator tests. All passed, but the direct two-receipt probe accepted an older genuine occurrence as latest.
+Validation evidence: The two-receipt proof failed before correction. The corrected 57-test state suite accepts the newer occurrence, rejects coherent rewind and duplicate receipt-to-occurrence bindings, and pauses completed recovery on projection drift. The full engine, policy, automation-validator, lifecycle, review-artifact, skill, metadata, query, and state suites pass; repository broad smoke passes 12 checks in 541 seconds.
 auto_fix_class: none
 
 #### BRF-M4-CR21 - Query validates one snapshot and projects another
 
 Finding ID: BRF-M4-CR21
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the recorded single-snapshot query resolution, reject or defer it with rationale, or provide an equally deterministic alternative.
+Decision needed: none
 Rationale: `load_change_metadata` parses one document, `validate_supported_shape` performs and discards a separate state-store read, and later query projection uses the first parse. Atomic replacement between those reads can make validation and reporting refer to different durable states.
 Required outcome: Query output must project the exact repository-backed document snapshot that passed semantic validation.
-Chosen action: Pending owner disposition.
+Chosen action: Preserved the compact and legacy parser path, but when unified automation exists replaced its parsed document with the exact `WorkflowAutomationStateStore.read()` snapshot and removed the discarded second semantic read from shape validation.
 Safe resolution path: Use one `WorkflowAutomationStateStore.read()` snapshot as the unified automation document returned to query projection, remove the discarded second semantic read, and add a deterministic split-snapshot/atomic-replacement regression with byte-stability proof.
 Validation target: Valid tracked state plus forged stale parsed copy; atomic replacement between read phases; success and semantic-rejection byte stability; complete query suite; full M4 suites; and code-review M4 R14.
-Validation evidence: A deterministic direct probe kept tracked review r1 valid, passed a coordinated forged parsed copy, and observed no shape error plus projected ID `proposal-review-forged`, while state-store status reported tracked ID `proposal-review-r1`.
+Validation evidence: The forged-copy proof failed before correction. The corrected 21-test query suite validates and projects the tracked repository snapshot, preserves metadata bytes, and retains compact/legacy compatibility. The full 772-test selected suite set, Python compilation, explicit lifecycle validation, and the 12-check broad smoke pass.
 auto_fix_class: none
 
 ### code-review-m4-r12
@@ -1328,15 +1329,15 @@ No material findings. Architecture-review R3 confirmed `BRF-AR1` through `BRF-AR
 - [x] `BRF-PR6` and `BRF-PR7` owner decisions and proposal-revision evidence are recorded.
 - [x] Proposal-review R4 is recorded.
 - [x] Spec-review R1 is recorded with dispositions for `BRF-SR1` through `BRF-SR5`.
-- [ ] Spec revision validation evidence is recorded.
+- [x] Spec revision validation evidence is recorded.
 - [x] Spec-review R2 closes `BRF-SR1` through `BRF-SR4`.
 - [x] Spec revision closes `BRF-SR5` and `BRF-SR6`.
 - [x] Spec-review R4 approves the exact-selector and ownership contract.
 - [x] `BRF-AR1` through `BRF-AR3` are incorporated in the architecture package.
 - [x] A changed architecture package is ready for architecture-review R3.
 - [x] Architecture-review R3 approves the revised package.
-- [ ] No review-log findings remain open.
-- [ ] Closeout status is closed with final dispositions and validation evidence.
+- [x] No review-log findings remain open.
+- [x] Closeout status is closed with final dispositions and validation evidence.
 
 ### code-review-m1-r1
 
