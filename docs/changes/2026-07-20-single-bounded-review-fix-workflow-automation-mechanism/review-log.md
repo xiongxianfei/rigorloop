@@ -17,6 +17,18 @@ Material findings: BRF-PR1, BRF-PR2, BRF-PR3, BRF-PR4
 Open findings: None
 
 ### Review entry
+Review ID: code-review-m4-r9
+Stage: code-review
+Round: M4 R9
+Reviewed artifact: M4 correction commit `ddb30e4d`
+Reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
+Status: changes-requested
+Detailed record: reviews/code-review-m4-r9.md
+Resolution: review-resolution.md#code-review-m4-r9
+Material findings: BRF-M4-CR16
+Open findings: BRF-M4-CR16
+
+### Review entry
 Review ID: proposal-review-r2
 Stage: proposal-review
 Round: 2
