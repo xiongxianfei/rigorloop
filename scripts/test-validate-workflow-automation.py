@@ -515,6 +515,102 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     errors,
                 )
 
+    def test_completed_proposal_review_requires_route_linked_latest_occurrence(
+        self,
+    ) -> None:
+        state = valid_automation()
+        review_result = {
+            "review_id": "proposal-review-r1",
+            "reviewed_artifact_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "outcome": "approved",
+            "occurrence_recorded": True,
+            "clean_gate": "satisfied",
+            "routing_action": "stop-at-target",
+        }
+        add_completed_proposal_review(state, review_result)
+
+        missing_latest = copy.deepcopy(state)
+        missing_latest.pop("latest_review_result")
+        errors = validate_workflow_automation(missing_latest)
+        self.assertTrue(
+            any(
+                "completed proposal-review transition requires"
+                in error
+                for error in errors
+            ),
+            errors,
+        )
+
+        missing_route = copy.deepcopy(state)
+        missing_route["transition_receipts"]["transition-001"].pop(
+            "proposal_review_route"
+        )
+        errors = validate_workflow_automation(missing_route)
+        self.assertTrue(
+            any(
+                "completed proposal-review transition requires"
+                in error
+                for error in errors
+            ),
+            errors,
+        )
+
+    def test_cancelled_run_preserves_valid_proposal_review_result_and_authority_shutdown(
+        self,
+    ) -> None:
+        state = valid_automation()
+        review_result = {
+            "review_id": "proposal-review-r1",
+            "reviewed_artifact_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "outcome": "approved",
+            "occurrence_recorded": True,
+            "clean_gate": "satisfied",
+            "routing_action": "stop-at-target",
+        }
+        add_completed_proposal_review(state, review_result)
+        state["run"]["status"] = "cancelled"
+        state["run"]["stop_reason"] = "run-cancelled"
+        state["parent_authorizations"]["authorization-authoring-001"][
+            "status"
+        ] = "revoked"
+        state["parent_authorizations"]["authorization-authoring-001"][
+            "revocation"
+        ] = {
+            "revoked": True,
+            "revoked_by": "user",
+            "revoked_at": "2026-07-22T00:00:00Z",
+            "reason": "run-cancelled",
+        }
+        state["cancellation"] = {
+            "cancelled_by": "user",
+            "cancelled_at": "2026-07-22T00:00:00Z",
+            "reason": "run-cancelled",
+        }
+        self.assertEqual(validate_workflow_automation(state), [])
+
+        cases = (
+            ("missing-cancellation", lambda candidate: candidate.pop("cancellation")),
+            (
+                "active-parent",
+                lambda candidate: candidate["parent_authorizations"][
+                    "authorization-authoring-001"
+                ].__setitem__("status", "active"),
+            ),
+            (
+                "pause-reason",
+                lambda candidate: candidate["run"].__setitem__(
+                    "pause_reason", "stale-pause"
+                ),
+            ),
+        )
+        for label, mutate in cases:
+            with self.subTest(case=label):
+                candidate = copy.deepcopy(state)
+                mutate(candidate)
+                self.assertTrue(validate_workflow_automation(candidate))
+
     def test_proposal_review_result_requires_exact_run_pause_projection(
         self,
     ) -> None:
@@ -1551,27 +1647,19 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
 
     def test_completed_receipt_accepts_consumed_capability(self) -> None:
         state = valid_automation()
-        receipt = add_valid_receipt(state)
-        receipt["status"] = "completed"
-        receipt["outputs"] = [
+        add_completed_proposal_review(
+            state,
             {
-                "path": "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md",
-                "identity": "sha256:proposal-review",
-            }
-        ]
-        evidence = {
-            "proposal-review": {
-                "path": "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md",
-                "identity": "sha256:proposal-review",
-            }
-        }
-        receipt["canonical_sync"] = {
-            "status": "synchronized",
-            "evidence": evidence,
-            "observed_identities": {"proposal-review": "sha256:proposal-review"},
-        }
-        capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
-        capability["status"] = "consumed"  # type: ignore[index]
+                "review_id": "proposal-review-r1",
+                "reviewed_artifact_identity": "sha256:proposal",
+                "review_record_identity": "sha256:proposal-review",
+                "outcome": "approved",
+                "occurrence_recorded": True,
+                "clean_gate": "satisfied",
+                "routing_action": "stop-at-target",
+            },
+        )
+        state["run"]["status"] = "completed"
         self.assertEqual(validate_workflow_automation(state), [])
 
     def test_completed_receipt_requires_independent_sync_evidence(self) -> None:

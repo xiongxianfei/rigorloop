@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -36,11 +36,12 @@ Review closeout: code-review-m4-r4
 Review closeout: code-review-m4-r5
 Review closeout: code-review-m4-r6
 Review closeout: code-review-m4-r7
+Review closeout: code-review-m4-r8
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`
-- Findings resolved: 69
-- Unresolved findings: 1
-- Current result: Code-review M4 R8 confirmed normal route finalization but opened `BRF-M4-CR15`: cancellation reconciliation can complete and permanently freeze a proposal-review receipt without its route binding or latest occurrence record. M4 is resolution-needed; M5 remains blocked.
+- Findings resolved: 70
+- Unresolved findings: 0
+- Current result: `BRF-M4-CR15` is resolved. Normal finalization and cancellation reconciliation now share one proposal-review completion projection; completed review receipts require immutable route and occurrence evidence, while cancelled runs preserve that evidence and terminate authority. M4 is review-requested for code-review R9; M5 remains blocked pending rereview.
 
 ## Resolution Overview
 
@@ -115,7 +116,7 @@ Review closeout: code-review-m4-r7
 | BRF-M4-CR12 | accepted | resolved | The shared projection owns exact run-level pause-reason presence, absence, and value. |
 | BRF-M4-CR13 | accepted | resolved | Recorded review routing now validates its persisted capability, exact basis, and completed review receipt without depending on mutable active status. |
 | BRF-M4-CR14 | accepted | resolved | The latest review result references the exact completed proposal-review transition, whose immutable route binding records selected correction authority or explicit absence. |
-| BRF-M4-CR15 | needs-decision | open | Make cancellation reconciliation preserve the same exact proposal-review route binding and occurrence evidence as normal finalization. |
+| BRF-M4-CR15 | accepted | resolved | Cancellation reconciliation uses the same proposal-review completion projection as normal finalization, and validation requires complete evidence before accepting terminal cancellation. |
 
 ## Common Resolution Metadata
 
@@ -131,18 +132,18 @@ Review closeout: code-review-m4-r7
 #### BRF-M4-CR15 - Cancellation reconciliation terminalizes proposal review without its route binding
 
 Finding ID: BRF-M4-CR15
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept, reject, defer, partially accept, or provide an alternative to the recorded safe resolution.
+Decision needed: none
 Rationale: `cancel()` reconciles a valid prepared proposal-review receipt directly to completed state without invoking the route projection used by normal finalization. The validator conditions route checks on `latest_review_result` already existing, so the omission passes canonical validation, and the new terminal-receipt immutability rule prevents later repair.
 Required outcome: Every supported path that reconciles proposal review to completed state must preserve the exact verifier-derived route decision and occurrence identity while cancellation still becomes terminal and revokes authority.
-Chosen action: Pending owner disposition.
+Chosen action: Factor proposal-review completion into one state-writer projection used by normal finalization and cancellation reconciliation; require every completed proposal-review receipt to retain immutable route evidence and a source-linked latest occurrence; validate cancelled-run evidence, authority shutdown, and pause-reason absence; and extend focused state and validator regressions.
 Safe resolution path: Factor one proposal-review completion projection across normal finalization and cancellation reconciliation; require every completed proposal-review receipt to carry its exact route binding and source-linked occurrence; define canceled-run validation explicitly; and extend the existing cancellation test with missing-binding, explicit-absence, immutability, authority-revocation, and terminal-run assertions.
 Validation target: Normal finalization, cancellation reconciliation, exact route binding, explicit absence, canceled-run semantics, terminal receipt immutability, full state/engine/validator suites, CMD14-CMD20, and code-review M4 R9.
-Validation evidence: Pending.
+Validation evidence: Proof-first cancellation and missing-occurrence regressions failed before correction with a missing `proposal_review_route` and zero validator errors respectively. The corrected implementation passes 7 cancellation state tests, 6 focused proposal-review validator tests, all 44 engine, 15 policy, 51 state/recovery, 58 automation-validator, 156 lifecycle, 103 review-artifact, and 53 change-metadata tests, plus Python compilation and diff checks. The required repository broad-smoke result is recorded in the change validation ledger and active plan.
 auto_fix_class: none
 
 ### code-review-m4-r7
