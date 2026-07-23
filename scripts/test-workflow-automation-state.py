@@ -1259,6 +1259,16 @@ Open findings: None
             store.repository_root
             / "docs/changes/2026-07-20-example"
         )
+        review_log = review_root / "review-log.md"
+        review_log.write_text(
+            """# Review Log
+
+| Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
+|---|---|---:|---|---|---|---:|---|
+| proposal-review-r1 | proposal-review | r1 | `docs/proposals/example.md` | `reviews/proposal-review-r1.md` | approved | 0 | recorded |
+""",
+            encoding="utf-8",
+        )
         second_review = review_root / "reviews/proposal-review-r2.md"
         second_review.write_text(
             """# Proposal review
@@ -1277,7 +1287,6 @@ Material findings: BRF-EXAMPLE
             "sha256:"
             + hashlib.sha256(second_review.read_bytes()).hexdigest()
         )
-        review_log = review_root / "review-log.md"
         with review_log.open("a", encoding="utf-8") as handle:
             handle.write(
                 """

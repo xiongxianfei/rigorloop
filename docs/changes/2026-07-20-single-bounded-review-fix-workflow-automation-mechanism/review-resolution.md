@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -42,11 +42,12 @@ Review closeout: code-review-m4-r10
 Review closeout: code-review-m4-r11
 Review closeout: code-review-m4-r12
 Review closeout: code-review-m4-r13
+Review closeout: code-review-m4-r14
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`
-- Findings resolved: 76
-- Unresolved findings: 2
-- Current result: Code-review M4 R14 classified `BRF-M4-CR20` and `BRF-M4-CR21` as failed remediations and opened `BRF-M4-CR22` plus `BRF-M4-CR23`. Accepted mixed-format review logs do not preserve source chronology in parser output, and a stale first query parse without automation bypasses newer valid or invalid unified tracked state. M4 is resolution-needed; M5 remains blocked.
+- Findings resolved: 78
+- Unresolved findings: 0
+- Current result: `BRF-M4-CR22` and `BRF-M4-CR23` are resolved proof-first. The canonical review parser now preserves source chronology across detailed and clean-table entries, durable review proof binds source line rather than parser grouping index, and every query projects one state-adapter snapshot with unified validation and legacy/compact compatibility. M4 is review-requested for code-review R15; M5 remains blocked.
 
 ## Resolution Overview
 
@@ -128,8 +129,8 @@ Review closeout: code-review-m4-r13
 | BRF-M4-CR19 | accepted | resolved | Canonical read/status/query and completed recovery now share repository-backed proposal-review semantic validation without requiring historical review-log byte identity to remain current. |
 | BRF-M4-CR20 | accepted | resolved | Canonical validation orders completed proposal-review receipts by their unique canonical review-log occurrences and requires the latest-result source to select the newest represented occurrence. |
 | BRF-M4-CR21 | accepted | resolved | Unified automation query projection now returns the exact repository-backed `StateSnapshot.document` that passed semantic validation. |
-| BRF-M4-CR22 | needs-decision | open | Derive latest review chronology from canonical source position across every accepted review-log representation. |
-| BRF-M4-CR23 | needs-decision | open | Make one canonical tracked snapshot authoritative even when the first generic parse lacks automation. |
+| BRF-M4-CR22 | accepted | resolved | The canonical review parser source-sorts all accepted record formats and durable review proof binds the resulting source line. |
+| BRF-M4-CR23 | accepted | resolved | Query loading now unconditionally projects one state-adapter snapshot while unified state retains strict validation and non-unified legacy/compact shapes retain compatibility. |
 
 ## Common Resolution Metadata
 
@@ -145,35 +146,35 @@ Review closeout: code-review-m4-r13
 #### BRF-M4-CR22 - Mixed review-log formats invert canonical occurrence chronology
 
 Finding ID: BRF-M4-CR22
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the recorded canonical source-position resolution, reject or defer it with rationale, or provide an equally deterministic ordering contract.
+Decision needed: none
 Rationale: The R13 correction uses parser tuple index as canonical chronology, but the accepted parser groups detailed entries before clean-receipt table rows regardless of their source positions.
 Required outcome: `latest_review_result.source_transition_id` must select the unique chronologically most recent canonical proposal-review occurrence represented by completed receipts across every accepted review-log representation.
-Chosen action: Pending owner disposition.
+Chosen action: Source-sorted the combined detailed and clean-table parser projection, replaced durable occurrence index with the canonical entry line, and exercised both mixed-format source orders plus the receipt-level rewind and duplicate proof.
 Safe resolution path: Derive chronology from `ReviewLogEntry.line` or return one source-position-sorted parser sequence; retain exact receipt matching and duplicate rejection; add both mixed-format source orders, coherent rewind, duplicate binding, and unrelated append-only contrasts.
 Validation target: Mixed-format two-receipt proof in both source orders; state, review-parser, query, validator, engine, lifecycle, and broad-smoke proof; code-review M4 R15.
-Validation evidence: R14 independently ran 57 state, 21 query, and 64 automation-validator tests successfully, then parsed an accepted log with older clean-table r1 followed by newer detailed r2 as r2 then r1 with no structural findings. The new state regression uses homogeneous detailed entries only.
+Validation evidence: Mixed-format parser and receipt tests failed before correction and now pass. Final validation passed 104 review-parser, 57 state, 22 query, 64 automation-validator, 44 engine, 15 policy, 156 lifecycle, 259 skill-validator, and 53 metadata-validator tests, Python compilation, diff checks, and 12 broad-smoke checks in 241 seconds.
 auto_fix_class: none
 
 #### BRF-M4-CR23 - No-automation-first query parse bypasses tracked unified state
 
 Finding ID: BRF-M4-CR23
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the recorded one-canonical-snapshot resolution, reject or defer it with rationale, or provide an equally coherent tracked-read boundary.
+Decision needed: none
 Rationale: The R13 correction invokes the state store only when a potentially stale first generic parse already contains unified automation.
 Required outcome: Every query result must derive from one exact repository-backed document snapshot that receives all applicable structural and semantic validation.
-Chosen action: Pending owner disposition.
+Chosen action: Made the state adapter's single parsed snapshot authoritative for every query, introduced a typed unified-automation validation error, and allowed missing or mismatched canonical change ID only for non-unified legacy/compact query snapshots.
 Safe resolution path: Make one canonical snapshot authoritative for all query projection; preserve generic, compact, legacy, and invalid-automation diagnostics; add unified-first and no-automation-first valid/invalid race contrasts with byte stability.
 Validation target: All four race directions, semantic and structural invalid-state rejection, legacy/compact compatibility, query and metadata suites, broad smoke, and code-review M4 R15.
-Validation evidence: R14 and the orchestrator independently reproduced stale no-automation first parses returning success and omitting automation while the tracked file contained valid or invalid unified state. The tracked file was unchanged. The existing query test covers only the unified-first branch.
+Validation evidence: Valid and invalid no-automation-first contrasts failed before correction and now pass with byte stability. Unified-first valid/invalid, malformed generic metadata, legacy/compact compatibility, structural precedence, and full query/metadata suites pass. The complete 774-test selected set and 12-check broad smoke pass.
 auto_fix_class: none
 
 ### code-review-m4-r13
@@ -1374,8 +1375,8 @@ No material findings. Architecture-review R3 confirmed `BRF-AR1` through `BRF-AR
 - [x] `BRF-AR1` through `BRF-AR3` are incorporated in the architecture package.
 - [x] A changed architecture package is ready for architecture-review R3.
 - [x] Architecture-review R3 approves the revised package.
-- [ ] No review-log findings remain open.
-- [ ] Closeout status is closed with final dispositions and validation evidence.
+- [x] No review-log findings remain open.
+- [x] Closeout status is closed with final dispositions and validation evidence.
 
 ### code-review-m1-r1
 

@@ -82,6 +82,10 @@ class StateContractError(RuntimeError):
     """Raised before mutation when workflow-automation state is unsafe."""
 
 
+class AutomationStateContractError(StateContractError):
+    """Raised when a parsed document contains invalid unified automation."""
+
+
 class ConcurrentStateChange(StateContractError):
     """Raised when the canonical file changes during a state transaction."""
 
@@ -588,7 +592,7 @@ def _verify_transition_completion(
             "review_outcome": review.status,
             "reviewed_artifact_identity": expected_identity,
             "review_log_path": review_log_relative.as_posix(),
-            "review_occurrence_index": str(occurrence_index),
+            "review_occurrence_line": str(entry.line),
         },
     )
     return CompletionVerification(True, "stage-completion-evidence-valid", proof)
@@ -743,18 +747,18 @@ def validate_workflow_automation_semantics(
         if not verification.valid:
             errors.append(f"{transition_id}: {verification.reason}")
         elif verification.proof is not None:
-            occurrence_index = verification.proof.stage_facts.get(
-                "review_occurrence_index"
+            occurrence_line = verification.proof.stage_facts.get(
+                "review_occurrence_line"
             )
             review_log_path = verification.proof.stage_facts.get(
                 "review_log_path"
             )
             try:
-                parsed_index = int(occurrence_index)
+                parsed_line = int(occurrence_line)
             except (TypeError, ValueError):
                 errors.append(
                     f"{transition_id}: proposal-review semantic occurrence "
-                    "order missing"
+                    "source position missing"
                 )
             else:
                 if not isinstance(review_log_path, str) or not review_log_path:
@@ -764,7 +768,7 @@ def validate_workflow_automation_semantics(
                     )
                 else:
                     verified_occurrences.append(
-                        (transition_id, parsed_index, review_log_path)
+                        (transition_id, parsed_line, review_log_path)
                     )
 
     if completed_proposal_reviews:
@@ -1141,7 +1145,11 @@ class WorkflowAutomationStateStore:
             raise StateContractError("repository root does not match state store")
         return self._repository_root
 
-    def read(self) -> StateSnapshot:
+    def read(
+        self,
+        *,
+        allow_legacy_without_change_id: bool = False,
+    ) -> StateSnapshot:
         payload = self.metadata_path.read_bytes()
         parser = _load_metadata_parser()
         lines = parser.tokenize_yaml(payload.decode("utf-8"))
@@ -1152,26 +1160,43 @@ class WorkflowAutomationStateStore:
             raise StateContractError("change metadata contains trailing content")
         if not isinstance(document, dict):
             raise StateContractError("change metadata root must be an object")
+        workflow = document.get("workflow")
+        automation = (
+            workflow.get("automation")
+            if isinstance(workflow, dict)
+            else None
+        )
         if self._canonical_change_id is not None:
             change_id = document.get("change_id")
-            if change_id != self._canonical_change_id:
-                raise StateContractError(
+            if (
+                change_id != self._canonical_change_id
+                and (
+                    automation is not None
+                    or not allow_legacy_without_change_id
+                )
+            ):
+                error_type = (
+                    AutomationStateContractError
+                    if automation is not None
+                    else StateContractError
+                )
+                raise error_type(
                     "change metadata change_id must match its canonical change directory"
                 )
-        workflow = document.get("workflow")
-        automation = workflow.get("automation") if isinstance(workflow, dict) else None
         if automation is not None:
             errors = validate_workflow_automation(
                 automation, top_level_change_id=document.get("change_id")
             )
             if errors:
-                raise StateContractError("invalid workflow.automation: " + "; ".join(errors))
+                raise AutomationStateContractError(
+                    "invalid workflow.automation: " + "; ".join(errors)
+                )
             semantic_errors = validate_workflow_automation_semantics(
                 automation,
                 repository_root=self._repository_root,
             )
             if semantic_errors:
-                raise StateContractError(
+                raise AutomationStateContractError(
                     "invalid workflow.automation proposal-review semantic "
                     "evidence: "
                     + "; ".join(semantic_errors)
@@ -1179,12 +1204,14 @@ class WorkflowAutomationStateStore:
             legacy = workflow.get("autoprogression")
             if legacy is not None:
                 if not has_read_only_legacy_migration(automation):
-                    raise StateContractError("mixed writable legacy and unified state")
+                    raise AutomationStateContractError(
+                        "mixed writable legacy and unified state"
+                    )
                 binding_errors = parser.validate_legacy_migration_binding(
                     automation, legacy
                 )
                 if binding_errors:
-                    raise StateContractError(
+                    raise AutomationStateContractError(
                         "invalid legacy migration binding: " + "; ".join(binding_errors)
                     )
         return StateSnapshot(document, automation, _identity(payload))

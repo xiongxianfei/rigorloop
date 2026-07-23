@@ -10,7 +10,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 from workflow_automation_state import (
-    StateContractError,
+    AutomationStateContractError,
     WorkflowAutomationStateStore,
     project_automation_status,
 )
@@ -106,8 +106,19 @@ def load_change_metadata(repo_root: Path, change_id: str) -> tuple[Path, dict[st
             detail_pointers={"expected_change_metadata": repo_relative(path, repo_root)},
         )
     try:
-        parser = load_metadata_parser()
-        data = parser.load_yaml(path)
+        data = WorkflowAutomationStateStore(path).read(
+            allow_legacy_without_change_id=True,
+        ).document
+    except AutomationStateContractError as exc:
+        return path, None, error_payload(
+            "invalid-automation-state",
+            "change metadata contains invalid workflow automation state",
+            change_id=change_id,
+            detail=str(exc),
+            detail_pointers={
+                "change_metadata": repo_relative(path, repo_root)
+            },
+        )
     except Exception as exc:  # noqa: BLE001 - diagnostics must not leak parser stack.
         return path, None, error_payload(
             "unsupported-shape",
@@ -123,25 +134,6 @@ def load_change_metadata(repo_root: Path, change_id: str) -> tuple[Path, dict[st
             change_id=change_id,
             detail_pointers={"change_metadata": repo_relative(path, repo_root)},
         )
-    workflow = data.get("workflow")
-    automation = (
-        workflow.get("automation")
-        if isinstance(workflow, dict)
-        else None
-    )
-    if automation is not None:
-        try:
-            data = WorkflowAutomationStateStore(path).read().document
-        except StateContractError as exc:
-            return path, None, error_payload(
-                "invalid-automation-state",
-                "change metadata contains invalid workflow automation state",
-                change_id=change_id,
-                detail=str(exc),
-                detail_pointers={
-                    "change_metadata": repo_relative(path, repo_root)
-                },
-            )
     shape_error = validate_supported_shape(data, change_id=change_id, metadata_path=path, repo_root=repo_root)
     if shape_error is not None:
         return path, None, shape_error
