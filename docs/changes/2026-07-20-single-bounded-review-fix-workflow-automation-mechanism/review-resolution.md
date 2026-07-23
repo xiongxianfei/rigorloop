@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -39,10 +39,10 @@ Review closeout: code-review-m4-r7
 Review closeout: code-review-m4-r8
 Review closeout: code-review-m4-r9
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`
 - Findings resolved: 71
-- Unresolved findings: 0
-- Current result: `BRF-M4-CR16` is resolved proof-first. Durable validation now reconstructs and validates the canonical route and recorded correction authority for every completed proposal-review receipt, including non-latest history, before M4 code-review R10.
+- Unresolved findings: 1
+- Current result: Code-review M4 R10 classified `BRF-M4-CR16` as a failed remediation and opened `BRF-M4-CR17`: historical review ID, known outcome, and output identity remain self-consistent rather than independently bound to stage-native evidence. M4 is resolution-needed; M5 remains blocked.
 
 ## Resolution Overview
 
@@ -118,7 +118,8 @@ Review closeout: code-review-m4-r9
 | BRF-M4-CR13 | accepted | resolved | Recorded review routing now validates its persisted capability, exact basis, and completed review receipt without depending on mutable active status. |
 | BRF-M4-CR14 | accepted | resolved | The latest review result references the exact completed proposal-review transition, whose immutable route binding records selected correction authority or explicit absence. |
 | BRF-M4-CR15 | accepted | resolved | Cancellation reconciliation uses the same proposal-review completion projection as normal finalization, and validation requires complete evidence before accepting terminal cancellation. |
-| BRF-M4-CR16 | accepted | resolved | Every completed proposal-review receipt now independently validates its canonical route, source evidence, closed vocabulary, and recorded correction-capability relationship. |
+| BRF-M4-CR16 | accepted | resolved | R10 classified the correction as a failed remediation because review ID, known outcome, and output identity remain unbound; the residual defect is `BRF-M4-CR17`. |
+| BRF-M4-CR17 | needs-decision | open | Bind every completed review's ID, known outcome, and output identity to independently observed stage-native evidence. |
 
 ## Common Resolution Metadata
 
@@ -128,6 +129,25 @@ Review closeout: code-review-m4-r9
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m4-r10
+
+#### BRF-M4-CR17 - Historical review facts remain route-owned rather than stage-native
+
+Finding ID: BRF-M4-CR17
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: Accept, reject, defer, partially accept, or provide an alternative to the recorded safe resolution.
+Rationale: The receipt validator binds proposal and review-record identities to independent receipt evidence, but takes review ID and known outcome from the route being validated and projects the route from those same values. Proposal-review output identity is also not compared with canonical-sync evidence. Self-consistent historical and latest rewrites therefore validate.
+Required outcome: Every completed proposal-review receipt must bind review ID, selected known outcome, and review output identity to independently observed stage-native completion evidence. Fabricated review ID, alternative known outcome with an otherwise canonical route, and output/canonical identity disagreement must fail.
+Chosen action: Pending owner disposition.
+Safe resolution path: Use the existing stage-native proposal-review parser and evidence owner to persist or re-read independently integrity-bound review ID and outcome, compare the route with those facts, and require proposal-review output identity to equal canonical-sync evidence and observed review identity. Add two-receipt regressions for fabricated review ID, all alternative known outcomes with canonical routing, and output/canonical identity disagreement while retaining the existing route, vocabulary, capability-history, and cancellation contrasts.
+Validation target: Historical and latest review-ID rewrite; all four known historical outcome substitutions; output-to-canonical identity mismatch; empty/wrong-target/wrong-identity/unknown-value routes; correction capability consumption, invalidation, absence, and mismatch; cancellation authority shutdown; full M4 suites; and code-review M4 R11.
+Validation evidence: Pending.
+auto_fix_class: none
 
 ### code-review-m4-r9
 
