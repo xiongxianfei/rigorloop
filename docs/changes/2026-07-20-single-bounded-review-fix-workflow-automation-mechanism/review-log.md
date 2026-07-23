@@ -450,4 +450,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r2.md
 Resolution: review-resolution.md#code-review-m4-r2
 Material findings: BRF-M4-CR3, BRF-M4-CR4
-Open findings: BRF-M4-CR3, BRF-M4-CR4
+Open findings: None

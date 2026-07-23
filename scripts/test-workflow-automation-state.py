@@ -913,6 +913,71 @@ Open findings: None
             "consumed",
         )
 
+    def test_finalize_atomically_consumes_and_activates_capabilities(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        fresh_capability = copy.deepcopy(
+            state["effective_capabilities"]["capability-proposal-review-001"]
+        )
+        fresh_capability["capability_id"] = "capability-proposal-review-002"
+        store, _ = self.make_store(state)
+        evidence = self.materialize_valid_review_completion(store)
+
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=evidence["outputs"],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence=evidence["canonical_sync"]["evidence"],
+            canonical_sync_observed_identities=evidence["canonical_sync"][
+                "observed_identities"
+            ],
+            activated_capabilities=(fresh_capability,),
+            expected_document_identity=store.read().document_identity,
+        )
+
+        persisted = store.read().automation
+        self.assertEqual(
+            persisted["effective_capabilities"][
+                "capability-proposal-review-001"
+            ]["status"],
+            "consumed",
+        )
+        self.assertEqual(
+            persisted["effective_capabilities"][
+                "capability-proposal-review-002"
+            ]["status"],
+            "active",
+        )
+
+    def test_paused_postcondition_invalidates_bound_capability(self) -> None:
+        state = valid_automation()
+        receipt = valid_receipt(state)
+        state["transition_receipts"] = {"transition-001": receipt}
+        store, _ = self.make_store(state)
+
+        store.finalize_transition(
+            "transition-001",
+            status="paused",
+            outputs=[],
+            canonical_sync_status="failed",
+            invalidate_bound_capability=True,
+            expected_document_identity=store.read().document_identity,
+        )
+
+        persisted = store.read().automation
+        self.assertEqual(
+            persisted["transition_receipts"]["transition-001"]["status"],
+            "paused",
+        )
+        self.assertEqual(
+            persisted["effective_capabilities"][
+                "capability-proposal-review-001"
+            ]["status"],
+            "invalidated",
+        )
+
     def test_finalization_has_no_foreign_repository_root_override(self) -> None:
         state = valid_automation()
         receipt = valid_receipt(state)

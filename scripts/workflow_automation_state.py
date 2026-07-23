@@ -115,6 +115,7 @@ class VerifiedCompletion:
     outputs: tuple[dict[str, str], ...]
     canonical_evidence: dict[str, Any]
     observed_identities: dict[str, str]
+    stage_facts: dict[str, str]
 
 
 def _load_metadata_parser() -> Any:
@@ -353,6 +354,7 @@ def verify_transition_completion(
     expected_input = FORMAL_REVIEW_INPUT_IDENTITIES.get(stage_name)
     if expected_input is None:
         artifacts = {value[1].resolve() for value in resolved_evidence.values()}
+        stage_facts: dict[str, str] = {}
         if stage_name == "plan":
             if len(artifacts) != 1:
                 return CompletionVerification(False, "stage-native-plan-evidence-mismatch")
@@ -375,6 +377,7 @@ def verify_transition_completion(
                 or fields.get("Spec identity") != inputs.get("spec")
             ):
                 return CompletionVerification(False, "stage-native-assessment-invalid")
+            stage_facts["architecture_applicability"] = fields["Applicability"]
         elif stage_name in LIFECYCLE_STAGE_CLASSES:
             if len(artifacts) != 1:
                 return CompletionVerification(False, "stage-native-artifact-evidence-mismatch")
@@ -407,6 +410,7 @@ def verify_transition_completion(
                 outputs=tuple(unique_outputs.values()),
                 canonical_evidence=normalized_evidence,
                 observed_identities=normalized_observed,
+                stage_facts=stage_facts,
             ),
         )
 
@@ -483,6 +487,10 @@ def verify_transition_completion(
         outputs=(copy.deepcopy(evidence),),
         canonical_evidence=normalized_evidence,
         observed_identities=normalized_observed_identities,
+        stage_facts={
+            "review_id": review.review_id,
+            "review_outcome": review.status,
+        },
     )
     return CompletionVerification(True, "stage-completion-evidence-valid", proof)
 
@@ -548,14 +556,11 @@ def evaluate_receipt_recovery(
         log_identity_names = tuple(
             name for name in proof.observed_identities if name.endswith("-log")
         )
-        log_identity_name = (
-            log_identity_names[0] if len(log_identity_names) == 1 else None
-        )
         if (
-            not isinstance(persisted_observed, dict)
-            or log_identity_name is None
-            or persisted_observed.get(log_identity_name)
-            != proof.observed_identities.get(log_identity_name)
+            len(log_identity_names) == 1
+            and isinstance(persisted_observed, dict)
+            and persisted_observed.get(log_identity_names[0])
+            != proof.observed_identities.get(log_identity_names[0])
         ):
             return RecoveryDecision(
                 "pause", False, "canonical-review-log-identity-drift"
@@ -877,6 +882,8 @@ class WorkflowAutomationStateStore:
         canonical_sync_status: str,
         canonical_sync_evidence: dict[str, Any] | None = None,
         canonical_sync_observed_identities: dict[str, str] | None = None,
+        activated_capabilities: tuple[dict[str, Any], ...] = (),
+        invalidate_bound_capability: bool = False,
         expected_document_identity: str,
     ) -> StateMutationResult:
         evidence_root = self.repository_root
@@ -937,6 +944,33 @@ class WorkflowAutomationStateStore:
             if not isinstance(capability, dict) or capability.get("status") != "active":
                 raise StateContractError("completed transition requires its active capability")
             capability["status"] = "consumed"
+            for activated in activated_capabilities:
+                if not isinstance(activated, dict):
+                    raise StateContractError(
+                        "activated effective capability must be an object"
+                    )
+                activated_id = activated.get("capability_id")
+                if (
+                    not isinstance(activated_id, str)
+                    or not activated_id
+                    or activated_id in capabilities
+                ):
+                    raise StateContractError(
+                        "activated effective capability identity is invalid"
+                    )
+                capabilities[activated_id] = copy.deepcopy(activated)
+        elif invalidate_bound_capability:
+            capabilities = replacement.get("effective_capabilities")
+            capability = (
+                capabilities.get(receipt.get("effective_capability_id"))
+                if isinstance(capabilities, dict)
+                else None
+            )
+            if not isinstance(capability, dict) or capability.get("status") != "active":
+                raise StateContractError(
+                    "paused transition requires its active capability for invalidation"
+                )
+            capability["status"] = "invalidated"
         result = self.replace_automation(
             replacement, expected_document_identity=expected_document_identity
         )

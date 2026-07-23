@@ -22,7 +22,9 @@ from lifecycle_state_sync import HandoffSummary, parse_handoff_summary
 from review_artifact_validation import (
     REVIEW_FIX_AUTO_RESOLUTION_CLASSES,
     REVIEW_FIX_BUDGET_LIMITS,
-    parse_formal_review_record,
+    parse_formal_review_findings,
+    parse_formal_review_log,
+    parse_formal_review_resolution,
 )
 from validate_workflow_automation import (
     CAPABILITY_AUTHORIZATION_CLASSES,
@@ -45,8 +47,10 @@ from workflow_automation_policy import (
 )
 from workflow_automation_state import (
     StateContractError,
+    VerifiedCompletion,
     WorkflowAutomationStateStore,
     compute_transition_key,
+    verify_transition_completion,
 )
 
 
@@ -191,6 +195,7 @@ class CoordinationResult:
     transition_id: str
     capability_id: str
     outputs: tuple[Any, ...]
+    verified_completion: VerifiedCompletion
 
 
 @dataclass(frozen=True)
@@ -242,6 +247,9 @@ class ProposalCorrectionAuthority:
     finding_classifications: Mapping[str, str]
     correction_budget: Mapping[str, int]
     allowed_path_roots: tuple[str, ...]
+    review_record_path: str | None = None
+    review_resolution_path: str | None = None
+    proposal_review_basis: Mapping[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -328,9 +336,13 @@ def evaluate_proposal_review(
             "continue",
             next_stage=WorkflowStage.SPEC.value,
         )
-    if correction_authority is not None and all(
+    if (
+        correction_authority is not None
+        and set(correction_authority.correction_budget) == set(REVIEW_FIX_BUDGET_LIMITS)
+        and all(
         isinstance(value, int) and not isinstance(value, bool) and value > 0
         for value in correction_authority.correction_budget.values()
+        )
     ):
         return ProposalReviewDecision(
             True,
@@ -377,14 +389,129 @@ def _structured_identity(value: Any) -> str:
     return f"sha256:{hashlib.sha256(payload).hexdigest()}"
 
 
+def _resolve_repository_file(repository_root: Path, relative_path: Any) -> Path:
+    if not isinstance(relative_path, str) or not relative_path:
+        raise AutomationContractError("canonical evidence path is required")
+    relative = Path(relative_path)
+    if relative.is_absolute() or ".." in relative.parts:
+        raise AutomationContractError("canonical evidence path must be repository-relative")
+    root = repository_root.resolve()
+    candidate = root / relative
+    cursor = root
+    for part in relative.parts:
+        cursor /= part
+        if cursor.is_symlink():
+            raise AutomationContractError("canonical evidence path cannot contain symlinks")
+    resolved = candidate.resolve()
+    if not resolved.is_relative_to(root) or not resolved.is_file():
+        raise AutomationContractError("canonical evidence file does not exist")
+    return resolved
+
+
+@dataclass(frozen=True)
+class _ProposalCorrectionRepositoryEvidence:
+    review_identity: str
+    review_id: str
+    material_finding_ids: frozenset[str]
+    unresolved_finding_ids: frozenset[str]
+
+
+def _load_proposal_correction_repository_evidence(
+    *,
+    repository_root: Path,
+    review_record_path: Any,
+    review_resolution_path: Any,
+) -> _ProposalCorrectionRepositoryEvidence:
+    review_path = _resolve_repository_file(repository_root, review_record_path)
+    resolution_path = _resolve_repository_file(
+        repository_root, review_resolution_path
+    )
+    if (
+        review_path.parent.name != "reviews"
+        or resolution_path != review_path.parent.parent / "review-resolution.md"
+    ):
+        raise AutomationContractError(
+            "proposal-correction review evidence is not change-local"
+        )
+    review_identity = "sha256:" + hashlib.sha256(review_path.read_bytes()).hexdigest()
+    review, findings, review_errors = parse_formal_review_findings(review_path)
+    resolution, resolution_errors = parse_formal_review_resolution(resolution_path)
+    review_log_path = review_path.parent.parent / "review-log.md"
+    review_log_path = _resolve_repository_file(
+        repository_root,
+        review_log_path.relative_to(repository_root.resolve()).as_posix(),
+    )
+    review_log, review_log_errors = parse_formal_review_log(review_log_path)
+    if (
+        review is None
+        or review_errors
+        or resolution_errors
+        or review_log_errors
+        or review.stage != WorkflowStage.PROPOSAL_REVIEW.value
+        or review.status != "changes-requested"
+    ):
+        raise AutomationContractError(
+            "proposal-correction canonical review evidence is invalid"
+        )
+    matching_log_entries = [
+        entry
+        for entry in review_log
+        if entry.review_id == review.review_id
+        and entry.stage == review.stage
+        and entry.status == review.status
+        and entry.detailed_record.strip("`")
+        == review_path.relative_to(review_path.parent.parent).as_posix()
+    ]
+    if len(matching_log_entries) != 1:
+        raise AutomationContractError(
+            "proposal-correction review occurrence is not canonical"
+        )
+    material_ids = frozenset(finding.finding_id for finding in findings)
+    matching_resolution_entries = [
+        entry for entry in resolution.entries if entry.finding_id in material_ids
+    ]
+    resolution_by_id = {
+        entry.finding_id: entry for entry in matching_resolution_entries
+    }
+    if (
+        len(matching_resolution_entries) != len(material_ids)
+        or set(resolution_by_id) != set(material_ids)
+        or any(
+            entry.disposition != "accepted"
+            or entry.fields.get("Status") is None
+            or entry.fields["Status"].value not in {"open", "resolved"}
+            for entry in matching_resolution_entries
+        )
+    ):
+        raise AutomationContractError(
+            "proposal-correction review resolution is incomplete"
+        )
+    unresolved = frozenset(
+        finding_id
+        for finding_id, entry in resolution_by_id.items()
+        if entry.disposition == "accepted"
+        and entry.fields.get("Status") is not None
+        and entry.fields["Status"].value == "open"
+    )
+    if frozenset(matching_log_entries[0].open_finding_ids) != unresolved:
+        raise AutomationContractError(
+            "proposal-correction review log and resolution disagree"
+        )
+    if "sha256:" + hashlib.sha256(review_path.read_bytes()).hexdigest() != review_identity:
+        raise AutomationContractError("proposal-correction review identity drifted")
+    return _ProposalCorrectionRepositoryEvidence(
+        review_identity,
+        review.review_id,
+        material_ids,
+        unresolved,
+    )
+
+
 def resolve_proposal_correction_authority(
     automation: Mapping[str, Any],
     capability_id: str,
     *,
-    reviewed_review_identity: str,
-    accepted_finding_ids: Iterable[str],
-    finding_classifications: Mapping[str, str],
-    correction_budget: Mapping[str, int],
+    repository_root: Path,
 ) -> ProposalCorrectionAuthority:
     """Resolve correction authority from an active capability and bound evidence."""
 
@@ -409,11 +536,31 @@ def resolve_proposal_correction_authority(
     scope = capability.get("scope")
     if not isinstance(basis, Mapping) or not isinstance(scope, Mapping):
         raise AutomationContractError("proposal-correction capability basis is invalid")
-    accepted = frozenset(accepted_finding_ids)
-    classifications = dict(finding_classifications)
-    budget = dict(correction_budget)
+    accepted_value = scope.get("accepted_finding_ids")
+    classifications_value = scope.get("finding_classifications")
+    budget_value = scope.get("correction_budget")
+    proposal_review_basis = scope.get("proposal_review_basis")
+    if (
+        not isinstance(accepted_value, list)
+        or not accepted_value
+        or not all(isinstance(item, str) and item for item in accepted_value)
+        or not isinstance(classifications_value, Mapping)
+        or not isinstance(budget_value, Mapping)
+        or not isinstance(proposal_review_basis, Mapping)
+    ):
+        raise AutomationContractError(
+            "proposal-correction persisted evidence is incomplete"
+        )
+    accepted = frozenset(accepted_value)
+    classifications = dict(classifications_value)
+    budget = dict(budget_value)
+    repository_evidence = _load_proposal_correction_repository_evidence(
+        repository_root=repository_root,
+        review_record_path=scope.get("review_record_path"),
+        review_resolution_path=scope.get("review_resolution_path"),
+    )
     expected = {
-        "review_record_identity": reviewed_review_identity,
+        "review_record_identity": repository_evidence.review_identity,
         "accepted_finding_set_identity": _structured_identity(sorted(accepted)),
         "classifier_policy_identity": _structured_identity(classifications),
         "correction_budget_identity": _structured_identity(budget),
@@ -422,16 +569,27 @@ def resolve_proposal_correction_authority(
         raise AutomationContractError("proposal-correction evidence does not match capability basis")
     if scope.get("correction_budget_identity") != expected["correction_budget_identity"]:
         raise AutomationContractError("proposal-correction budget identity is stale")
+    if repository_evidence.unresolved_finding_ids != accepted:
+        raise AutomationContractError(
+            "proposal-correction unresolved finding evidence is stale"
+        )
+    if set(classifications) != accepted:
+        raise AutomationContractError(
+            "proposal-correction classification evidence is incomplete"
+        )
     roots = scope.get("affected_path_roots")
     if not isinstance(roots, list) or not all(isinstance(root, str) for root in roots):
         raise AutomationContractError("proposal-correction path scope is invalid")
     return ProposalCorrectionAuthority(
         capability_id,
-        reviewed_review_identity,
+        repository_evidence.review_identity,
         accepted,
         classifications,
         budget,
         tuple(roots),
+        str(scope["review_record_path"]),
+        str(scope["review_resolution_path"]),
+        dict(proposal_review_basis),
     )
 
 
@@ -492,12 +650,12 @@ def evaluate_proposal_correction(
     paths = tuple(affected_paths)
     if not paths or not roots or any(not _path_is_within_roots(path, roots) for path in paths):
         return pause("affected-path-scope-exceeded")
-    before = frozenset(unresolved_before)
-    after = frozenset(unresolved_after)
-    if before and (not after < before):
-        return pause("unresolved-findings-did-not-shrink")
     if not mutation_completed:
         return ProposalCorrectionDecision("authorized")
+    before = frozenset(unresolved_before)
+    after = frozenset(unresolved_after)
+    if not before or not after < before:
+        return pause("unresolved-findings-did-not-shrink")
     if not deterministic_validation_passed:
         return pause("deterministic-validation-missing")
     if (
@@ -619,6 +777,10 @@ def coordinate_non_public_authoring_stage(
         raise AutomationContractError("non-public authoring harness is required")
     stage_request = coordination.get("stage")
     correction_decision: ProposalCorrectionDecision | None = None
+    post_completion_capabilities: Callable[
+        [VerifiedCompletion, Mapping[str, Any], Mapping[str, Any]],
+        Iterable[Mapping[str, Any]],
+    ] | None = None
     if stage_request == WorkflowStage.PROPOSAL.value:
         if correction_evidence is None:
             raise AutomationContractError("proposal-correction canonical evidence is required")
@@ -629,70 +791,155 @@ def coordinate_non_public_authoring_stage(
         authority = resolve_proposal_correction_authority(
             snapshot.automation,
             capability_id,
-            reviewed_review_identity=correction_evidence.get("reviewed_review_identity"),
-            accepted_finding_ids=correction_evidence.get("accepted_finding_ids", ()),
-            finding_classifications=correction_evidence.get("finding_classifications", {}),
-            correction_budget=correction_evidence.get("correction_budget", {}),
+            repository_root=repository_root,
         )
         correction_decision = evaluate_proposal_correction(
             authority=authority,
-            finding_classifications=correction_evidence.get("finding_classifications", {}),
-            reviewed_finding_classifications=correction_evidence.get(
-                "reviewed_finding_classifications", {}
-            ),
-            accepted_finding_ids=correction_evidence.get("accepted_finding_ids", ()),
-            current_finding_ids=correction_evidence.get("current_finding_ids", ()),
-            current_review_identity=correction_evidence.get("current_review_identity", ""),
-            unresolved_before=correction_evidence.get("unresolved_before", ()),
-            unresolved_after=correction_evidence.get("unresolved_after", ()),
+            finding_classifications=authority.finding_classifications,
+            reviewed_finding_classifications=authority.finding_classifications,
+            accepted_finding_ids=authority.accepted_finding_ids,
+            current_finding_ids=authority.accepted_finding_ids,
+            current_review_identity=authority.reviewed_review_identity,
+            unresolved_before=authority.accepted_finding_ids,
+            unresolved_after=authority.accepted_finding_ids,
             affected_paths=correction_evidence.get("affected_paths", ()),
-            proposal_identity_before=correction_evidence.get("proposal_identity_before", ""),
-            proposal_identity_after=correction_evidence.get("proposal_identity_after", ""),
-            basis_current=correction_evidence.get("basis_current", True),
-            deterministic_validation_passed=correction_evidence.get(
-                "deterministic_validation_passed", True
-            ),
-            scope_expanded=correction_evidence.get("scope_expanded", False),
-            owner_decision_required=correction_evidence.get(
-                "owner_decision_required", False
-            ),
+            proposal_identity_before="",
+            proposal_identity_after="",
             mutation_completed=False,
         )
         if correction_decision.status != "authorized":
             raise AutomationContractError(
                 "proposal correction paused: " + str(correction_decision.pause_reason)
             )
-    result = coordinate_one_stage(
-        store=store,
-        repository_root=repository_root,
-        **coordination,
-    )
+        assert authority.review_record_path is not None
+        assert authority.review_resolution_path is not None
+
+        def derive_post_correction_capabilities(
+            proof: VerifiedCompletion,
+            automation: Mapping[str, Any],
+            capability: Mapping[str, Any],
+        ) -> Iterable[Mapping[str, Any]]:
+            def pause(reason: str) -> None:
+                raise AutomationContractError("proposal correction paused: " + reason)
+
+            try:
+                post_evidence = _load_proposal_correction_repository_evidence(
+                    repository_root=repository_root,
+                    review_record_path=authority.review_record_path,
+                    review_resolution_path=authority.review_resolution_path,
+                )
+            except AutomationContractError as error:
+                pause(str(error))
+            validator = correction_evidence.get("deterministic_validator")
+            proposal_proof = proof.canonical_evidence.get("proposal")
+            if (
+                not callable(validator)
+                or not isinstance(proposal_proof, Mapping)
+                or not validator(repository_root / str(proposal_proof.get("path")))
+            ):
+                pause("deterministic-validation-missing")
+            proposal_before = str(
+                capability["basis"].get("reviewed_proposal_identity", "")
+            )
+            proposal_after = proof.observed_identities.get("proposal", "")
+            post_decision = evaluate_proposal_correction(
+                authority=authority,
+                finding_classifications=authority.finding_classifications,
+                reviewed_finding_classifications=authority.finding_classifications,
+                accepted_finding_ids=authority.accepted_finding_ids,
+                current_finding_ids=authority.accepted_finding_ids,
+                current_review_identity=post_evidence.review_identity,
+                unresolved_before=authority.accepted_finding_ids,
+                unresolved_after=post_evidence.unresolved_finding_ids,
+                affected_paths=correction_evidence.get("affected_paths", ()),
+                proposal_identity_before=proposal_before,
+                proposal_identity_after=proposal_after,
+                deterministic_validation_passed=True,
+                mutation_completed=True,
+            )
+            if post_decision.status != "rereview-required":
+                pause(str(post_decision.pause_reason))
+            if post_evidence.review_identity != authority.reviewed_review_identity:
+                pause("historical-review-not-preserved")
+            fresh_basis = dict(authority.proposal_review_basis)
+            fresh_basis["proposal_identity"] = proposal_after
+            expected_fresh_fields = CAPABILITY_BASIS_FIELDS[
+                CapabilityKind.PROPOSAL_REVIEW.value
+            ]
+            if set(fresh_basis) != set(expected_fresh_fields):
+                pause("fresh-review-basis-incomplete")
+            review_roots = fresh_basis.get("review_evidence_roots")
+            if not isinstance(review_roots, list) or not review_roots:
+                pause("fresh-review-roots-invalid")
+            parents = automation.get("parent_authorizations")
+            parent = (
+                parents.get(capability["parent_authorization_id"])
+                if isinstance(parents, Mapping)
+                else None
+            )
+            capabilities = automation.get("effective_capabilities")
+            if not isinstance(parent, Mapping) or not isinstance(capabilities, Mapping):
+                pause("fresh-review-authority-missing")
+            fresh_capability_id = (
+                f"{capability['capability_id']}-rereview-"
+                f"{proposal_after.split(':', 1)[-1][:12]}"
+            )
+            try:
+                fresh_capability = derive_effective_capability(
+                    capability_id=fresh_capability_id,
+                    parent=parent,
+                    stage=WorkflowStage.PROPOSAL_REVIEW.value,
+                    occurrence={"kind": "singleton"},
+                    basis=fresh_basis,
+                    affected_path_roots=tuple(review_roots),
+                    mutation_categories=("change-local-review-evidence",),
+                    derived_at=str(
+                        correction_evidence.get(
+                            "rereview_capability_derived_at", ""
+                        )
+                    ),
+                    existing_capabilities=tuple(capabilities.values()),
+                )
+            except AutomationContractError as error:
+                pause("fresh-review-capability-invalid: " + str(error))
+            return (fresh_capability,)
+
+        post_completion_capabilities = derive_post_correction_capabilities
+    try:
+        result = coordinate_one_stage(
+            store=store,
+            repository_root=repository_root,
+            post_completion_capabilities=post_completion_capabilities,
+            **coordination,
+        )
+    except AutomationContractError as error:
+        if str(error).startswith("proposal correction paused:"):
+            paused_snapshot = store.read()
+            assert paused_snapshot.automation is not None
+            replacement = copy.deepcopy(paused_snapshot.automation)
+            replacement["run"]["status"] = "paused"
+            replacement["run"]["pause_reason"] = str(error).removeprefix(
+                "proposal correction paused: "
+            )
+            store.replace_automation(
+                replacement,
+                expected_document_identity=paused_snapshot.document_identity,
+            )
+        raise
     snapshot = store.read()
     assert snapshot.automation is not None
     receipt = snapshot.automation["transition_receipts"][result.transition_id]
     capability = snapshot.automation["effective_capabilities"][result.capability_id]
     stage = capability["stage"]["name"]
-    evidence = receipt["canonical_sync"]["evidence"]
-    review_outcome: str | None = None
-    architecture_applicability: str | None = None
+    review_outcome = result.verified_completion.stage_facts.get("review_outcome")
+    architecture_applicability = result.verified_completion.stage_facts.get(
+        "architecture_applicability"
+    )
     if correction_decision is not None:
         return AuthoringCoordinationResult(
             result,
             AuthoringRouteDecision("continue", WorkflowStage.PROPOSAL_REVIEW.value),
         )
-    if stage in _AUTHORING_REVIEW_STAGES or stage == WorkflowStage.PROPOSAL_REVIEW.value:
-        evidence_name = next(iter(STAGE_POLICY_BY_STAGE[stage].completion_evidence))
-        review_path = repository_root / evidence[evidence_name]["path"]
-        review, findings = parse_formal_review_record(review_path)
-        if review is None or findings:
-            raise AutomationContractError("verified formal review could not be routed")
-        review_outcome = review.status
-    elif stage == WorkflowStage.ARCHITECTURE_ASSESSMENT.value:
-        assessment_path = repository_root / evidence["architecture-assessment"]["path"]
-        for line in assessment_path.read_text(encoding="utf-8").splitlines():
-            if line.startswith("Applicability:"):
-                architecture_applicability = line.split(":", 1)[1].strip()
-                break
     route = evaluate_non_public_authoring_route(
         current_stage=stage,
         target_stage=target_stage,
@@ -1427,6 +1674,10 @@ def coordinate_one_stage(
     active_plan: ActivePlanContext | None = None,
     previously_observed: Mapping[str, str] | None = None,
     parent_authorization: Mapping[str, Any] | None = None,
+    post_completion_capabilities: Callable[
+        [VerifiedCompletion, Mapping[str, Any], Mapping[str, Any]],
+        Iterable[Mapping[str, Any]],
+    ] | None = None,
 ) -> CoordinationResult:
     """Coordinate exactly one non-public stage operation through the M2 writer."""
 
@@ -1625,7 +1876,42 @@ def coordinate_one_stage(
     observed_identities.update(
         {name: evidence.identity for name, evidence in sync_result.evidence.items()}
     )
+    activated_capabilities: tuple[dict[str, Any], ...] = ()
     try:
+        provisional_verification = verify_transition_completion(
+            completed_snapshot.automation,
+            receipt,
+            completion_evidence={
+                "input_identities": copy.deepcopy(receipt["input_identities"]),
+                "expected_postcondition": copy.deepcopy(
+                    receipt["expected_postcondition"]
+                ),
+                "outputs": copy.deepcopy(serialized_outputs),
+                "canonical_sync": {
+                    "status": "synchronized",
+                    "evidence": copy.deepcopy(serialized_sync_evidence),
+                    "observed_identities": copy.deepcopy(observed_identities),
+                },
+            },
+            repository_root=repository_root,
+        )
+        if (
+            not provisional_verification.valid
+            or provisional_verification.proof is None
+        ):
+            raise AutomationContractError(
+                "stage-native completion verification failed: "
+                + provisional_verification.reason
+            )
+        if post_completion_capabilities is not None:
+            activated_capabilities = tuple(
+                copy.deepcopy(dict(item))
+                for item in post_completion_capabilities(
+                    provisional_verification.proof,
+                    completed_snapshot.automation,
+                    capability,
+                )
+            )
         store.finalize_transition(
             transition_id,
             status="completed",
@@ -1633,22 +1919,56 @@ def coordinate_one_stage(
             canonical_sync_status="synchronized",
             canonical_sync_evidence=serialized_sync_evidence,
             canonical_sync_observed_identities=observed_identities,
+            activated_capabilities=activated_capabilities,
             expected_document_identity=completed_snapshot.document_identity,
         )
-    except StateContractError as error:
+    except Exception as error:
         paused_snapshot = store.read()
         store.finalize_transition(
             transition_id,
             status="paused",
             outputs=serialized_outputs,
             canonical_sync_status="failed",
+            invalidate_bound_capability=post_completion_capabilities is not None,
             expected_document_identity=paused_snapshot.document_identity,
         )
+        if isinstance(error, AutomationContractError):
+            raise
         raise AutomationContractError(
             "stage-native completion verification failed: " + str(error)
         ) from error
+    finalized_snapshot = store.read()
+    assert finalized_snapshot.automation is not None
+    finalized_receipt = finalized_snapshot.automation["transition_receipts"][
+        transition_id
+    ]
+    verification = verify_transition_completion(
+        finalized_snapshot.automation,
+        finalized_receipt,
+        completion_evidence={
+            "input_identities": copy.deepcopy(
+                finalized_receipt.get("input_identities")
+            ),
+            "expected_postcondition": copy.deepcopy(
+                finalized_receipt.get("expected_postcondition")
+            ),
+            "outputs": copy.deepcopy(finalized_receipt.get("outputs")),
+            "canonical_sync": copy.deepcopy(
+                finalized_receipt.get("canonical_sync")
+            ),
+        },
+        repository_root=repository_root,
+    )
+    if not verification.valid or verification.proof is None:
+        raise AutomationContractError(
+            "finalized stage proof could not be routed: " + verification.reason
+        )
     return CoordinationResult(
-        "completed", transition_id, capability_id, tuple(serialized_outputs)
+        "completed",
+        transition_id,
+        capability_id,
+        tuple(serialized_outputs),
+        verification.proof,
     )
 
 

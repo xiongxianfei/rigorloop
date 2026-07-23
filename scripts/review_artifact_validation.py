@@ -548,6 +548,21 @@ def parse_formal_review_record(
     return review, tuple(findings)
 
 
+def parse_formal_review_findings(
+    path: Path,
+) -> tuple[
+    ReviewRecord | None,
+    tuple[FindingRecord, ...],
+    tuple[ValidationFinding, ...],
+]:
+    """Parse one formal review and its material findings through the canonical grammar."""
+
+    review, finding_records, findings = _parse_review_file(
+        path.resolve(), "structure"
+    )
+    return review, tuple(finding_records), tuple(findings)
+
+
 def parse_formal_review_log(
     path: Path,
 ) -> tuple[tuple[ReviewLogEntry, ...], tuple[ValidationFinding, ...]]:
@@ -555,6 +570,15 @@ def parse_formal_review_log(
 
     entries, findings = _parse_review_log(path.resolve(), "structure")
     return tuple(entries), tuple(findings)
+
+
+def parse_formal_review_resolution(
+    path: Path,
+) -> tuple[ReviewResolution, tuple[ValidationFinding, ...]]:
+    """Parse review-resolution evidence through the canonical grammar."""
+
+    resolution, findings = _parse_review_resolution(path.resolve(), "structure")
+    return resolution, tuple(findings)
 
 
 def finding_closure_state(

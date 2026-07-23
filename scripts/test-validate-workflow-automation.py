@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
 import math
 import unittest
 
@@ -217,6 +219,101 @@ def configure_next_milestone_transition(
 
 
 class WorkflowAutomationVocabularyTests(unittest.TestCase):
+    def test_proposal_correction_unknown_value_classification_fails_closed(
+        self,
+    ) -> None:
+        state = valid_automation()
+        capability = state["effective_capabilities"][
+            "capability-proposal-review-001"
+        ]
+        accepted = ["BRF-1"]
+        classifications = {"BRF-1": "future-classification"}
+        budget = {
+            "Review-fix cycle count": 1,
+            "Findings auto-applied this cycle": 1,
+            "Files changed this cycle": 1,
+            "Files changed this invocation": 1,
+        }
+        structured = lambda value: "sha256:" + hashlib.sha256(
+            json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        capability["capability_kind"] = "proposal-correction"
+        capability["stage"] = {
+            "name": "proposal",
+            "occurrence": {"kind": "singleton"},
+        }
+        capability["basis"] = {
+            "reviewed_proposal_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "accepted_finding_set_identity": structured(accepted),
+            "classifier_policy_identity": structured(classifications),
+            "correction_budget_identity": structured(budget),
+            "affected_proposal_roots": ["docs/proposals/"],
+        }
+        capability["scope"] = {
+            "affected_path_roots": ["docs/proposals/"],
+            "mutation_categories": ["proposal-content"],
+            "correction_budget": budget,
+            "correction_budget_identity": structured(budget),
+            "review_record_path": "docs/changes/example/reviews/proposal-review-r1.md",
+            "review_resolution_path": "docs/changes/example/review-resolution.md",
+            "accepted_finding_ids": accepted,
+            "finding_classifications": classifications,
+            "proposal_review_basis": {
+                "standing_gates_identity": "sha256:gates",
+                "review_policy_identity": "sha256:policy",
+                "structured_target_identity": "sha256:target",
+                "review_evidence_roots": ["docs/changes/example/"],
+            },
+        }
+
+        errors = validate_workflow_automation(state)
+
+        self.assertTrue(
+            any("unsupported classification" in error for error in errors),
+            errors,
+        )
+
+    def test_proposal_correction_budget_content_must_match_identity(self) -> None:
+        state = valid_automation()
+        capability = state["effective_capabilities"]["capability-proposal-review-001"]
+        capability["capability_kind"] = "proposal-correction"
+        capability["stage"] = {
+            "name": "proposal",
+            "occurrence": {"kind": "singleton"},
+        }
+        budget = {
+            "Review-fix cycle count": 1,
+            "Findings auto-applied this cycle": 1,
+            "Files changed this cycle": 1,
+            "Files changed this invocation": 1,
+        }
+        budget_identity = "sha256:" + hashlib.sha256(
+            json.dumps(budget, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        capability["basis"] = {
+            "reviewed_proposal_identity": "sha256:proposal",
+            "review_record_identity": "sha256:review",
+            "accepted_finding_set_identity": "sha256:findings",
+            "classifier_policy_identity": "sha256:classifier",
+            "correction_budget_identity": budget_identity,
+            "affected_proposal_roots": ["docs/proposals/"],
+        }
+        capability["scope"] = {
+            "affected_path_roots": ["docs/proposals/"],
+            "mutation_categories": ["proposal-content"],
+            "correction_budget": copy.deepcopy(budget),
+            "correction_budget_identity": budget_identity,
+        }
+        capability["scope"]["correction_budget"]["Review-fix cycle count"] = 2
+
+        errors = validate_workflow_automation(state)
+
+        self.assertTrue(
+            any("correction_budget_identity: does not match" in error for error in errors),
+            errors,
+        )
+
     def test_valid_unified_state_passes(self) -> None:
         self.assertEqual(validate_workflow_automation(valid_automation()), [])
 
@@ -568,6 +665,46 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                             "correction_budget_identity": budget_identity,
                         }
                     )
+                if kind == "proposal-correction":
+                    accepted = ["BRF-1"]
+                    classifications = {"BRF-1": "mechanical"}
+                    budget = {
+                        "Review-fix cycle count": 1,
+                        "Findings auto-applied this cycle": 1,
+                        "Files changed this cycle": 1,
+                        "Files changed this invocation": 1,
+                    }
+                    structured = lambda value: "sha256:" + hashlib.sha256(
+                        json.dumps(
+                            value, sort_keys=True, separators=(",", ":")
+                        ).encode()
+                    ).hexdigest()
+                    parent["correction_budget"] = copy.deepcopy(budget)  # type: ignore[index]
+                    capability["basis"].update(  # type: ignore[index]
+                        {
+                            "accepted_finding_set_identity": structured(accepted),
+                            "classifier_policy_identity": structured(classifications),
+                            "correction_budget_identity": structured(budget),
+                        }
+                    )
+                    capability["scope"].update(  # type: ignore[index]
+                        {
+                            "correction_budget": budget,
+                            "correction_budget_identity": structured(budget),
+                            "review_record_path": "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md",
+                            "review_resolution_path": "docs/changes/2026-07-20-example/review-resolution.md",
+                            "accepted_finding_ids": accepted,
+                            "finding_classifications": classifications,
+                            "proposal_review_basis": {
+                                "standing_gates_identity": "sha256:gates",
+                                "review_policy_identity": "sha256:policy",
+                                "structured_target_identity": "sha256:target",
+                                "review_evidence_roots": [
+                                    "docs/changes/2026-07-20-example/"
+                                ],
+                            },
+                        }
+                    )
                 self.assertEqual(validate_workflow_automation(state), [])
                 if kind == "implementation-correction":
                     capability["basis"].pop("correction_budget_identity")  # type: ignore[index]
@@ -855,21 +992,48 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         parent["maximum_target"] = copy.deepcopy(target)  # type: ignore[index]
         parent["allowed_capability_kinds"] = ["proposal-correction"]  # type: ignore[index]
         parent["maximum_mutation_categories"] = ["proposal-content"]  # type: ignore[index]
-        parent["correction_budget"] = {"max_cycles": 1}  # type: ignore[index]
+        budget = {
+            "Review-fix cycle count": 1,
+            "Findings auto-applied this cycle": 1,
+            "Files changed this cycle": 1,
+            "Files changed this invocation": 1,
+        }
+        accepted = ["BRF-1"]
+        classifications = {"BRF-1": "mechanical"}
+        structured = lambda value: "sha256:" + hashlib.sha256(
+            json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        parent["correction_budget"] = copy.deepcopy(budget)  # type: ignore[index]
         capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
         capability["capability_kind"] = "proposal-correction"  # type: ignore[index]
         capability["stage"] = {"name": "proposal", "occurrence": {"kind": "singleton"}}  # type: ignore[index]
         capability["basis"] = {  # type: ignore[index]
             "reviewed_proposal_identity": "sha256:proposal",
             "review_record_identity": "sha256:review",
-            "accepted_finding_set_identity": "sha256:findings",
-            "classifier_policy_identity": "sha256:classifier",
-            "correction_budget_identity": "sha256:budget",
+            "accepted_finding_set_identity": structured(accepted),
+            "classifier_policy_identity": structured(classifications),
+            "correction_budget_identity": structured(budget),
             "affected_proposal_roots": ["docs/proposals/"],
         }
         capability["scope"]["mutation_categories"] = ["proposal-content"]  # type: ignore[index]
-        capability["scope"]["correction_budget"] = {"max_cycles": 1}  # type: ignore[index]
-        capability["scope"]["correction_budget_identity"] = "sha256:budget"  # type: ignore[index]
+        capability["scope"].update(  # type: ignore[index]
+            {
+                "correction_budget": budget,
+                "correction_budget_identity": structured(budget),
+                "review_record_path": "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md",
+                "review_resolution_path": "docs/changes/2026-07-20-example/review-resolution.md",
+                "accepted_finding_ids": accepted,
+                "finding_classifications": classifications,
+                "proposal_review_basis": {
+                    "standing_gates_identity": "sha256:gates",
+                    "review_policy_identity": "sha256:policy",
+                    "structured_target_identity": "sha256:target",
+                    "review_evidence_roots": [
+                        "docs/changes/2026-07-20-example/"
+                    ],
+                },
+            }
+        )
         receipt = add_valid_receipt(state)
         receipt["from_position"] = "proposal-review"
         set_policy_postcondition(receipt, WorkflowStage.PROPOSAL.value)
@@ -879,9 +1043,9 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         receipt["input_identities"] = {
             "review_outcome": "changes-requested",
             "review_identity": "sha256:review",
-            "accepted_finding_set_identity": "sha256:findings",
+            "accepted_finding_set_identity": structured(accepted),
             "correction_budget_state": "remaining",
-            "correction_budget_identity": "sha256:budget",
+            "correction_budget_identity": structured(budget),
         }
         receipt["transition_key"] = compute_transition_key(receipt)
         self.assertEqual(validate_workflow_automation(state), [])
