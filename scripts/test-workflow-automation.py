@@ -40,7 +40,11 @@ from workflow_automation import (
     resume_target,
 )
 from workflow_automation_policy import PUBLIC_TARGET_STAGES, STAGE_POLICY_BY_STAGE
-from workflow_automation_state import WorkflowAutomationStateStore, dump_yaml
+from workflow_automation_state import (
+    WorkflowAutomationStateStore,
+    dump_yaml,
+    evaluate_receipt_recovery,
+)
 from validate_workflow_automation import validate_workflow_automation
 
 
@@ -129,6 +133,248 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             encoding="utf-8",
         )
         return WorkflowAutomationStateStore(path)
+
+    def write_proposal_correction_evidence(
+        self,
+        store: WorkflowAutomationStateStore,
+        *,
+        proposal_path: str,
+    ) -> tuple[str, str, str]:
+        change_root = (
+            store.repository_root / "docs/changes/2026-07-20-example"
+        )
+        review_relative = (
+            "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md"
+        )
+        review = store.repository_root / review_relative
+        review.parent.mkdir(parents=True, exist_ok=True)
+        review.write_text(
+            f"""# Proposal review
+
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Reviewer: fixture reviewer
+Target: {proposal_path}
+Status: changes-requested
+Material findings: BRF-1
+
+## Material Findings
+
+### BRF-1 - Fixture correction
+
+Finding ID: BRF-1
+Severity: major
+Location: proposal
+Evidence: fixture evidence
+Required outcome: apply the deterministic fixture correction
+Safe resolution path: update the proposal and rerun review
+auto_fix_class: none
+""",
+            encoding="utf-8",
+        )
+        (change_root / "review-log.md").write_text(
+            """# Review Log
+
+### Review entry
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Status: changes-requested
+Detailed record: reviews/proposal-review-r1.md
+Resolution: review-resolution.md#proposal-review-r1
+Material findings: BRF-1
+Open findings: BRF-1
+""",
+            encoding="utf-8",
+        )
+        resolution_relative = (
+            "docs/changes/2026-07-20-example/review-resolution.md"
+        )
+        (store.repository_root / resolution_relative).write_text(
+            """# Review Resolution
+
+Closeout status: open
+Review closeout: proposal-review-r1
+
+### proposal-review-r1
+
+Finding ID: BRF-1
+Disposition: accepted
+Status: open
+Owner: fixture owner
+Owning stage: review-resolution
+Rationale: deterministic fixture correction
+Chosen action: apply the correction
+Validation target: rereview
+""",
+            encoding="utf-8",
+        )
+        identity = "sha256:" + hashlib.sha256(review.read_bytes()).hexdigest()
+        return review_relative, resolution_relative, identity
+
+    def prepare_proposal_correction_transaction(
+        self,
+        *,
+        transition_id: str,
+        allow_rereview: bool = True,
+    ) -> dict[str, object]:
+        accepted = ["BRF-1"]
+        classifications = {"BRF-1": "mechanical"}
+        budget = {
+            "Review-fix cycle count": 1,
+            "Findings auto-applied this cycle": 1,
+            "Files changed this cycle": 1,
+            "Files changed this invocation": 1,
+        }
+        identity = lambda value: "sha256:" + hashlib.sha256(
+            json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        target = bind_target("spec", bound_at="2026-07-22T00:00:00Z")
+        allowed_kinds = (
+            ("proposal-correction", "proposal-review")
+            if allow_rereview
+            else ("proposal-correction",)
+        )
+        maximum_roots = (
+            (
+                "docs/proposals/",
+                "docs/changes/2026-07-20-example/",
+            )
+            if allow_rereview
+            else ("docs/proposals/",)
+        )
+        maximum_categories = (
+            ("proposal-content", "change-local-review-evidence")
+            if allow_rereview
+            else ("proposal-content",)
+        )
+        parent = create_parent_authorization(
+            authorization_id="auth-correction",
+            authorization_class="authoring",
+            change_id="2026-07-20-example",
+            authorized_by="user",
+            authorized_at="2026-07-22T00:00:00Z",
+            maximum_target=target,
+            allowed_capability_kinds=allowed_kinds,
+            maximum_path_roots=maximum_roots,
+            maximum_mutation_categories=maximum_categories,
+            correction_budget=budget,
+        )
+        state = copy.deepcopy(FIXTURES.valid_automation())
+        state["run"]["target"] = target
+        state["parent_authorizations"] = {"auth-correction": parent}
+        state["effective_capabilities"] = {}
+        state["transition_receipts"] = {}
+        store = self.make_store(state)
+        relative = Path("docs/proposals/2026-07-20-example.md")
+        proposal = store.repository_root / relative
+        proposal.parent.mkdir(parents=True, exist_ok=True)
+        proposal.write_text(
+            (ROOT / "docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md").read_text(),
+            encoding="utf-8",
+        )
+        proposal_before = "sha256:" + hashlib.sha256(proposal.read_bytes()).hexdigest()
+        review_path, resolution_path, review_identity = (
+            self.write_proposal_correction_evidence(
+                store,
+                proposal_path=relative.as_posix(),
+            )
+        )
+        budget_identity = identity(budget)
+        basis = {
+            "reviewed_proposal_identity": proposal_before,
+            "review_record_identity": review_identity,
+            "accepted_finding_set_identity": identity(accepted),
+            "classifier_policy_identity": identity(classifications),
+            "correction_budget_identity": budget_identity,
+            "affected_proposal_roots": ["docs/proposals/"],
+        }
+        capability = derive_effective_capability(
+            capability_id="cap-correction-transaction",
+            parent=parent,
+            stage="proposal",
+            occurrence={"kind": "singleton"},
+            basis=basis,
+            affected_path_roots=("docs/proposals/",),
+            mutation_categories=("proposal-content",),
+            correction_budget=budget,
+            correction_budget_identity=budget_identity,
+            derived_at="2026-07-22T00:01:00Z",
+        )
+        capability["scope"].update(
+            {
+                "review_record_path": review_path,
+                "review_resolution_path": resolution_path,
+                "accepted_finding_ids": accepted,
+                "finding_classifications": classifications,
+                "proposal_review_basis": {
+                    "standing_gates_identity": "sha256:gates",
+                    "review_policy_identity": "sha256:policy",
+                    "structured_target_identity": "sha256:target",
+                    "review_evidence_roots": [
+                        "docs/changes/2026-07-20-example/"
+                    ],
+                },
+            }
+        )
+        replacement = store.read().automation
+        replacement["effective_capabilities"] = {
+            capability["capability_id"]: capability
+        }
+        store.replace_automation(
+            replacement,
+            expected_document_identity=store.read().document_identity,
+        )
+        inputs = dict(
+            basis,
+            proposal=proposal_before,
+            **{
+                "proposal-review": review_identity,
+                "review_outcome": "changes-requested",
+                "review_identity": review_identity,
+                "accepted_finding_set_identity": identity(accepted),
+                "correction_budget_state": "remaining",
+                "correction_budget_identity": budget_identity,
+            },
+        )
+        return {
+            "store": store,
+            "proposal": proposal,
+            "proposal_relative": relative,
+            "review_path": review_path,
+            "resolution_path": resolution_path,
+            "coordination": {
+                "invocation_context": "non-public-test-harness",
+                "target_stage": "spec",
+                "store": store,
+                "repository_root": store.repository_root,
+                "parent_authorization_id": "auth-correction",
+                "capability_id": "cap-correction-transaction",
+                "stage": "proposal",
+                "occurrence": {"kind": "singleton"},
+                "basis": basis,
+                "affected_path_roots": ("docs/proposals/",),
+                "mutation_categories": ("proposal-content",),
+                "derived_at": "2026-07-22T00:01:00Z",
+                "transition_id": transition_id,
+                "input_identities": inputs,
+                "synchronize_canonical_state": lambda stage_result: CanonicalSyncResult(
+                    "synchronized", stage_result.completion_evidence
+                ),
+                "pre_plan": PrePlanEvidence(
+                    positions={
+                        "proposal": (proposal_before,),
+                        "proposal-review": (review_identity,),
+                    },
+                    review_outcomes={
+                        "proposal-review": "changes-requested"
+                    },
+                    review_resolution_closed=True,
+                    architecture_applicability="not-required",
+                ),
+            },
+        }
 
     def test_target_command_normalization_is_closed_and_legacy_is_adapter_only(self) -> None:
         current = normalize_command("$workflow auto: code-review")
@@ -1023,6 +1269,26 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         self.assertEqual(correction.routing_action, "correction-loop")
         self.assertEqual(correction.next_stage, "proposal-correction")
 
+        empty_budget = evaluate_proposal_review(
+            outcome="changes-requested",
+            review_id="proposal-review-r1",
+            proposal_identity="sha256:proposal-v1",
+            reviewed_proposal_identity="sha256:proposal-v1",
+            target_stage="test-spec-review",
+            correction_authority=ProposalCorrectionAuthority(
+                "capability-correction-empty",
+                "sha256:review-v1",
+                frozenset({"BRF-1"}),
+                {"BRF-1": "mechanical"},
+                {},
+                ("docs/proposals/",),
+            ),
+        )
+        self.assertEqual(
+            (empty_budget.routing_action, empty_budget.pause_reason),
+            ("pause", "proposal-correction-budget-exhausted"),
+        )
+
         for outcome in ("blocked", "inconclusive"):
             with self.subTest(outcome=outcome):
                 decision = evaluate_proposal_review(
@@ -1069,6 +1335,61 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             AutomationContractError, "reviewed-artifact-identity-mismatch"
         ):
             self.coordinate_proposal_review(store, invoke)
+
+    def test_non_public_review_routing_uses_identity_stable_verified_facts(self) -> None:
+        state = copy.deepcopy(FIXTURES.valid_automation())
+        state["effective_capabilities"] = {}
+        store = self.make_store(state)
+        proposal_identity = self.write_proposal(store)
+
+        def invoke() -> StageExecutionResult:
+            evidence = self.write_evidence(store)
+            return StageExecutionResult(
+                outputs=(evidence,),
+                completion_evidence={"proposal-review": evidence},
+            )
+
+        result = coordinate_non_public_authoring_stage(
+            invocation_context="non-public-test-harness",
+            target_stage="proposal-review",
+            store=store,
+            repository_root=store.repository_root,
+            parent_authorization_id="authorization-authoring-001",
+            capability_id="capability-stable-routing",
+            stage="proposal-review",
+            occurrence={"kind": "singleton"},
+            basis={
+                "proposal_identity": proposal_identity,
+                "standing_gates_identity": "sha256:gates",
+                "review_policy_identity": "sha256:policy",
+                "structured_target_identity": "sha256:target",
+                "review_evidence_roots": [
+                    "docs/changes/2026-07-20-example/"
+                ],
+            },
+            affected_path_roots=(
+                "docs/changes/2026-07-20-example/",
+            ),
+            mutation_categories=("change-local-review-evidence",),
+            derived_at="2026-07-22T00:01:00Z",
+            transition_id="transition-stable-routing",
+            input_identities=self.proposal_input_identities(
+                proposal_identity
+            ),
+            invoke_stage=invoke,
+            synchronize_canonical_state=lambda stage_result: self.synchronize_review(
+                store, stage_result
+            ),
+            pre_plan=self.proposal_pre_plan(proposal_identity),
+        )
+
+        self.assertEqual(result.route.status, "stop-at-target")
+        self.assertEqual(
+            result.coordination.verified_completion.stage_facts[
+                "review_outcome"
+            ],
+            "approved",
+        )
 
     def test_proposal_correction_guardrails_and_rereview(self) -> None:
         authority = ProposalCorrectionAuthority(
@@ -1133,6 +1454,39 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
                 },
                 "correction-budget-exhausted",
             ),
+            (
+                {
+                    "authority": dataclasses.replace(
+                        authority,
+                        correction_budget={},
+                    )
+                },
+                "correction-budget-invalid",
+            ),
+            (
+                {
+                    "authority": dataclasses.replace(
+                        authority,
+                        correction_budget={
+                            **authority.correction_budget,
+                            "Unknown budget": 1,
+                        },
+                    )
+                },
+                "correction-budget-invalid",
+            ),
+            (
+                {
+                    "authority": dataclasses.replace(
+                        authority,
+                        correction_budget={
+                            **authority.correction_budget,
+                            "Review-fix cycle count": 3,
+                        },
+                    )
+                },
+                "correction-budget-exhausted",
+            ),
             ({"current_review_identity": "sha256:review-v2"}, "stale-review-evidence"),
             ({"affected_paths": ("scripts/escape.py",)}, "affected-path-scope-exceeded"),
             ({"scope_expanded": True}, "scope-expanded"),
@@ -1171,14 +1525,24 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         ).hexdigest()
         state = copy.deepcopy(FIXTURES.valid_automation())
         parent = state["parent_authorizations"]["authorization-authoring-001"]
-        parent["allowed_capability_kinds"] = ["proposal-correction"]
+        parent["allowed_capability_kinds"] = [
+            "proposal-correction",
+            "proposal-review",
+        ]
         capability = state["effective_capabilities"]["capability-proposal-review-001"]
+        store = self.make_store(state)
+        review_path, resolution_path, review_identity = (
+            self.write_proposal_correction_evidence(
+                store,
+                proposal_path="docs/proposals/example.md",
+            )
+        )
         capability.update(
             capability_kind="proposal-correction",
             stage={"name": "proposal", "occurrence": {"kind": "singleton"}},
             basis={
                 "reviewed_proposal_identity": "sha256:proposal-v1",
-                "review_record_identity": "sha256:review-v1",
+                "review_record_identity": review_identity,
                 "accepted_finding_set_identity": identity(accepted),
                 "classifier_policy_identity": identity(classifications),
                 "correction_budget_identity": identity(budget),
@@ -1189,25 +1553,53 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
                 "mutation_categories": ["proposal-content"],
                 "correction_budget": budget,
                 "correction_budget_identity": identity(budget),
+                "review_record_path": review_path,
+                "review_resolution_path": resolution_path,
+                "accepted_finding_ids": accepted,
+                "finding_classifications": classifications,
+                "proposal_review_basis": {
+                    "standing_gates_identity": "sha256:gates",
+                    "review_policy_identity": "sha256:policy",
+                    "structured_target_identity": "sha256:target",
+                    "review_evidence_roots": [
+                        "docs/changes/2026-07-20-example/"
+                    ],
+                },
             },
         )
         authority = resolve_proposal_correction_authority(
             state,
             "capability-proposal-review-001",
-            reviewed_review_identity="sha256:review-v1",
-            accepted_finding_ids=accepted,
-            finding_classifications=classifications,
-            correction_budget=budget,
+            repository_root=store.repository_root,
         )
         self.assertEqual(authority.accepted_finding_ids, frozenset(accepted))
-        with self.assertRaisesRegex(AutomationContractError, "does not match capability basis"):
+        review = store.repository_root / review_path
+        review.write_text(
+            review.read_text(encoding="utf-8") + "\n<!-- stale -->\n",
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError, "does not match capability basis"
+        ):
             resolve_proposal_correction_authority(
                 state,
                 "capability-proposal-review-001",
-                reviewed_review_identity="sha256:review-v1",
-                accepted_finding_ids=("BRF-1", "BRF-forged"),
-                finding_classifications=classifications,
-                correction_budget=budget,
+                repository_root=store.repository_root,
+            )
+        review.write_text(
+            review.read_text(encoding="utf-8").replace(
+                "\n<!-- stale -->\n", ""
+            ),
+            encoding="utf-8",
+        )
+        capability["scope"]["accepted_finding_ids"] = ["BRF-1", "BRF-forged"]
+        with self.assertRaisesRegex(
+            AutomationContractError, "does not match capability basis"
+        ):
+            resolve_proposal_correction_authority(
+                state,
+                "capability-proposal-review-001",
+                repository_root=store.repository_root,
             )
 
     def test_non_public_authoring_stage_uses_receipt_backed_spec_completion(self) -> None:
@@ -1287,6 +1679,189 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         persisted = store.read().automation
         self.assertEqual(persisted["transition_receipts"]["transition-spec-001"]["status"], "completed")
         self.assertEqual(persisted["effective_capabilities"]["cap-spec-transaction"]["status"], "consumed")
+        completed = persisted["transition_receipts"]["transition-spec-001"]
+        recovered = evaluate_receipt_recovery(
+            persisted,
+            "transition-spec-001",
+            completion_evidence={
+                "outputs": copy.deepcopy(completed["outputs"]),
+                "canonical_sync": copy.deepcopy(completed["canonical_sync"]),
+            },
+            repository_root=store.repository_root,
+        )
+        self.assertEqual(
+            (recovered.action, recovered.reason),
+            ("continue", "completed-evidence-current"),
+        )
+
+    def test_completed_recovery_is_stage_semantic_for_assessment_and_plan(
+        self,
+    ) -> None:
+        cases = (
+            (
+                "architecture-assessment",
+                Path(
+                    "docs/changes/2026-07-20-example/architecture-assessment.md"
+                ),
+                {
+                    "proposal": ("sha256:proposal",),
+                    "proposal-review": ("sha256:proposal-review",),
+                    "spec": ("sha256:spec",),
+                    "spec-review": ("sha256:spec-review",),
+                },
+            ),
+            (
+                "plan",
+                Path("docs/plans/example.md"),
+                {
+                    "proposal": ("sha256:proposal",),
+                    "proposal-review": ("sha256:proposal-review",),
+                    "spec": ("sha256:spec",),
+                    "spec-review": ("sha256:spec-review",),
+                    "architecture-assessment": ("sha256:assessment",),
+                },
+            ),
+        )
+        for stage, relative, positions in cases:
+            with self.subTest(stage=stage):
+                target = bind_target(
+                    "plan", bound_at="2026-07-22T00:00:00Z"
+                )
+                parent = create_parent_authorization(
+                    authorization_id="auth-authoring",
+                    authorization_class="authoring",
+                    change_id="2026-07-20-example",
+                    authorized_by="user",
+                    authorized_at="2026-07-22T00:00:00Z",
+                    maximum_target=target,
+                    allowed_capability_kinds=("post-proposal-authoring",),
+                    maximum_path_roots=(
+                        "docs/changes/2026-07-20-example/",
+                        "docs/plans/",
+                    ),
+                    maximum_mutation_categories=(
+                        "downstream-authoring-artifacts",
+                    ),
+                )
+                state = copy.deepcopy(FIXTURES.valid_automation())
+                state["run"]["target"] = target
+                state["parent_authorizations"] = {
+                    "auth-authoring": parent
+                }
+                state["effective_capabilities"] = {}
+                state["transition_receipts"] = {}
+                store = self.make_store(state)
+                basis = {
+                    "proposal_identity": "sha256:proposal",
+                    "approved_proposal_review_identity": "sha256:proposal-review",
+                    "closed_review_resolution_identity": "sha256:resolution",
+                    "stage_scope_identity": "sha256:scope",
+                }
+                inputs = dict(basis)
+                inputs.update(
+                    {
+                        name: identities[0]
+                        for name, identities in positions.items()
+                    }
+                )
+                if stage == "plan":
+                    inputs.update(
+                        {
+                            "architecture_applicability": "not-applicable",
+                            "architecture_applicability_identity": "sha256:assessment",
+                        }
+                    )
+
+                def invoke() -> StageExecutionResult:
+                    artifact = store.repository_root / relative
+                    artifact.parent.mkdir(parents=True, exist_ok=True)
+                    if stage == "architecture-assessment":
+                        artifact.write_text(
+                            "Stage: architecture-assessment\n"
+                            "Applicability: not-required\n"
+                            "Spec identity: sha256:spec\n",
+                            encoding="utf-8",
+                        )
+                    else:
+                        artifact.write_text(
+                            plan_text(
+                                current="M2. Engine Slice",
+                                current_state="implementing",
+                                remaining="M2, M3",
+                                next_stage="implement M2",
+                            ),
+                            encoding="utf-8",
+                        )
+                    evidence = ArtifactEvidence(
+                        relative.as_posix(),
+                        "sha256:"
+                        + hashlib.sha256(artifact.read_bytes()).hexdigest(),
+                    )
+                    return StageExecutionResult(
+                        (evidence,),
+                        {
+                            evidence_name: evidence
+                            for evidence_name in STAGE_POLICY_BY_STAGE[
+                                stage
+                            ].completion_evidence
+                        },
+                    )
+
+                result = coordinate_non_public_authoring_stage(
+                    invocation_context="non-public-test-harness",
+                    target_stage="plan",
+                    store=store,
+                    repository_root=store.repository_root,
+                    parent_authorization_id="auth-authoring",
+                    capability_id=f"cap-{stage}",
+                    stage=stage,
+                    occurrence={"kind": "singleton"},
+                    basis=basis,
+                    affected_path_roots=(
+                        "docs/changes/2026-07-20-example/"
+                        if stage == "architecture-assessment"
+                        else "docs/plans/",
+                    ),
+                    mutation_categories=(
+                        "downstream-authoring-artifacts",
+                    ),
+                    derived_at="2026-07-22T00:01:00Z",
+                    transition_id=f"transition-{stage}",
+                    input_identities=inputs,
+                    invoke_stage=invoke,
+                    synchronize_canonical_state=lambda stage_result: CanonicalSyncResult(
+                        "synchronized", stage_result.completion_evidence
+                    ),
+                    pre_plan=PrePlanEvidence(
+                        positions=positions,
+                        review_outcomes={
+                            "proposal-review": "approved",
+                            "spec-review": "approved",
+                        },
+                        review_resolution_closed=True,
+                        architecture_applicability="not-required",
+                    ),
+                )
+                persisted = store.read().automation
+                receipt = persisted["transition_receipts"][
+                    f"transition-{stage}"
+                ]
+                recovered = evaluate_receipt_recovery(
+                    persisted,
+                    f"transition-{stage}",
+                    completion_evidence={
+                        "outputs": copy.deepcopy(receipt["outputs"]),
+                        "canonical_sync": copy.deepcopy(
+                            receipt["canonical_sync"]
+                        ),
+                    },
+                    repository_root=store.repository_root,
+                )
+                self.assertEqual(result.coordination.status, "completed")
+                self.assertEqual(
+                    (recovered.action, recovered.reason),
+                    ("continue", "completed-evidence-current"),
+                )
 
     def test_proposal_correction_uses_bound_capability_and_receipt(self) -> None:
         accepted = ["BRF-1"]
@@ -1308,9 +1883,15 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             authorized_by="user",
             authorized_at="2026-07-22T00:00:00Z",
             maximum_target=target,
-            allowed_capability_kinds=("proposal-correction",),
-            maximum_path_roots=("docs/proposals/",),
-            maximum_mutation_categories=("proposal-content",),
+            allowed_capability_kinds=("proposal-correction", "proposal-review"),
+            maximum_path_roots=(
+                "docs/proposals/",
+                "docs/changes/2026-07-20-example/",
+            ),
+            maximum_mutation_categories=(
+                "proposal-content",
+                "change-local-review-evidence",
+            ),
             correction_budget=budget,
         )
         relative = Path("docs/proposals/2026-07-20-example.md")
@@ -1327,7 +1908,12 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             encoding="utf-8",
         )
         proposal_before = "sha256:" + hashlib.sha256(proposal.read_bytes()).hexdigest()
-        review_identity = "sha256:review-v1"
+        review_path, resolution_path, review_identity = (
+            self.write_proposal_correction_evidence(
+                store,
+                proposal_path=relative.as_posix(),
+            )
+        )
         budget_identity = identity(budget)
         basis = {
             "reviewed_proposal_identity": proposal_before,
@@ -1349,6 +1935,22 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             correction_budget_identity=budget_identity,
             derived_at="2026-07-22T00:01:00Z",
         )
+        capability["scope"].update(
+            {
+                "review_record_path": review_path,
+                "review_resolution_path": resolution_path,
+                "accepted_finding_ids": accepted,
+                "finding_classifications": classifications,
+                "proposal_review_basis": {
+                    "standing_gates_identity": "sha256:gates",
+                    "review_policy_identity": "sha256:policy",
+                    "structured_target_identity": "sha256:target",
+                    "review_evidence_roots": [
+                        "docs/changes/2026-07-20-example/"
+                    ],
+                },
+            }
+        )
         state = store.read().automation
         state["effective_capabilities"] = {capability["capability_id"]: capability}
         store.replace_automation(state, expected_document_identity=store.read().document_identity)
@@ -1367,6 +1969,23 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
 
         def invoke() -> StageExecutionResult:
             proposal.write_text(proposal.read_text() + "\n", encoding="utf-8")
+            resolution = store.repository_root / resolution_path
+            resolution.write_text(
+                resolution.read_text(encoding="utf-8").replace(
+                    "Status: open", "Status: resolved"
+                ),
+                encoding="utf-8",
+            )
+            review_log = (
+                store.repository_root
+                / "docs/changes/2026-07-20-example/review-log.md"
+            )
+            review_log.write_text(
+                review_log.read_text(encoding="utf-8").replace(
+                    "Open findings: BRF-1", "Open findings: None"
+                ),
+                encoding="utf-8",
+            )
             evidence = ArtifactEvidence(
                 relative.as_posix(),
                 "sha256:" + hashlib.sha256(proposal.read_bytes()).hexdigest(),
@@ -1379,16 +1998,9 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
             store=store,
             repository_root=store.repository_root,
             correction_evidence={
-                "reviewed_review_identity": review_identity,
-                "accepted_finding_ids": accepted,
-                "current_finding_ids": accepted,
-                "finding_classifications": classifications,
-                "reviewed_finding_classifications": classifications,
-                "correction_budget": budget,
-                "current_review_identity": review_identity,
-                "unresolved_before": accepted,
-                "unresolved_after": (),
                 "affected_paths": (relative.as_posix(),),
+                "deterministic_validator": lambda path: path == proposal,
+                "rereview_capability_derived_at": "2026-07-22T00:02:00Z",
             },
             parent_authorization_id="auth-correction",
             capability_id="cap-correction-transaction",
@@ -1415,6 +2027,120 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         persisted = store.read().automation
         self.assertEqual(persisted["transition_receipts"]["transition-correction-001"]["status"], "completed")
         self.assertEqual(persisted["effective_capabilities"]["cap-correction-transaction"]["status"], "consumed")
+        fresh = [
+            capability
+            for capability in persisted["effective_capabilities"].values()
+            if capability["capability_kind"] == "proposal-review"
+            and capability["status"] == "active"
+        ]
+        self.assertEqual(len(fresh), 1)
+        self.assertEqual(
+            fresh[0]["basis"]["proposal_identity"],
+            persisted["transition_receipts"]["transition-correction-001"][
+                "canonical_sync"
+            ]["observed_identities"]["proposal"],
+        )
+
+    def test_proposal_correction_post_mutation_failures_pause_durably(self) -> None:
+        cases = (
+            ("deterministic-validation", True, False, False, True),
+            ("non-shrinking-findings", False, True, False, True),
+            ("historical-review-drift", True, True, True, True),
+            ("fresh-review-authority", True, True, False, False),
+        )
+        for (
+            label,
+            resolve_finding,
+            validation_passes,
+            mutate_review,
+            allow_rereview,
+        ) in cases:
+            with self.subTest(case=label):
+                fixture = self.prepare_proposal_correction_transaction(
+                    transition_id=f"transition-{label}",
+                    allow_rereview=allow_rereview,
+                )
+                store = fixture["store"]
+                proposal = fixture["proposal"]
+                proposal_relative = fixture["proposal_relative"]
+                resolution = store.repository_root / fixture["resolution_path"]
+                review = store.repository_root / fixture["review_path"]
+
+                def invoke() -> StageExecutionResult:
+                    proposal.write_text(
+                        proposal.read_text(encoding="utf-8") + "\n",
+                        encoding="utf-8",
+                    )
+                    if resolve_finding:
+                        resolution.write_text(
+                            resolution.read_text(encoding="utf-8").replace(
+                                "Status: open", "Status: resolved"
+                            ),
+                            encoding="utf-8",
+                        )
+                        review_log = (
+                            store.repository_root
+                            / "docs/changes/2026-07-20-example/review-log.md"
+                        )
+                        review_log.write_text(
+                            review_log.read_text(encoding="utf-8").replace(
+                                "Open findings: BRF-1",
+                                "Open findings: None",
+                            ),
+                            encoding="utf-8",
+                        )
+                    if mutate_review:
+                        review.write_text(
+                            review.read_text(encoding="utf-8")
+                            + "\n<!-- changed review -->\n",
+                            encoding="utf-8",
+                        )
+                    evidence = ArtifactEvidence(
+                        proposal_relative.as_posix(),
+                        "sha256:"
+                        + hashlib.sha256(proposal.read_bytes()).hexdigest(),
+                    )
+                    return StageExecutionResult(
+                        (evidence,), {"proposal": evidence}
+                    )
+
+                coordination = dict(fixture["coordination"])
+                coordination["invoke_stage"] = invoke
+                coordination["correction_evidence"] = {
+                    "affected_paths": (proposal_relative.as_posix(),),
+                    "deterministic_validator": (
+                        lambda path: validation_passes and path == proposal
+                    ),
+                    "rereview_capability_derived_at": "2026-07-22T00:02:00Z",
+                }
+                with self.assertRaisesRegex(
+                    AutomationContractError, "proposal correction paused"
+                ):
+                    coordinate_non_public_authoring_stage(**coordination)
+
+                persisted = store.read().automation
+                self.assertEqual(persisted["run"]["status"], "paused")
+                self.assertEqual(
+                    persisted["transition_receipts"][
+                        f"transition-{label}"
+                    ]["status"],
+                    "paused",
+                )
+                self.assertEqual(
+                    persisted["effective_capabilities"][
+                        "cap-correction-transaction"
+                    ]["status"],
+                    "invalidated",
+                )
+                self.assertFalse(
+                    any(
+                        capability["capability_kind"] == "proposal-review"
+                        and capability["status"] == "active"
+                        for capability in persisted[
+                            "effective_capabilities"
+                        ].values()
+                    )
+                )
 
     def test_authoring_non_public_harness_routes_through_test_spec_review(self) -> None:
         cases = (

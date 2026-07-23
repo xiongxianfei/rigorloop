@@ -14,6 +14,10 @@ import re
 from enum import Enum
 from typing import Any, Iterable
 
+from review_artifact_validation import (
+    REVIEW_FIX_AUTO_RESOLUTION_CLASSES,
+    REVIEW_FIX_BUDGET_LIMITS,
+)
 from workflow_automation_policy import (
     CAPABILITY_MUTATION_CATEGORIES,
     AuthorizationClass,
@@ -130,6 +134,14 @@ def compute_transition_key(receipt: dict[str, Any]) -> str:
         projection, sort_keys=True, separators=(",", ":"), ensure_ascii=False
     ).encode("utf-8")
     return f"sha256:{hashlib.sha256(payload).hexdigest()}"
+
+
+def _structured_identity(value: Any) -> str:
+    payload = json.dumps(
+        value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    return f"sha256:{hashlib.sha256(payload).hexdigest()}"
+
 
 CAPABILITY_AUTHORIZATION_CLASSES = {
     CapabilityKind.PROPOSAL_REVIEW.value: AuthorizationClass.AUTHORING.value,
@@ -952,11 +964,21 @@ def _validate_capability(
             budget_identity = scope.get("correction_budget_identity")
             if not isinstance(budget, dict) or not budget:
                 errors.append(f"{path}.scope.correction_budget: required for correction capability")
+            elif kind == CapabilityKind.PROPOSAL_CORRECTION.value and set(
+                budget
+            ) != set(REVIEW_FIX_BUDGET_LIMITS):
+                errors.append(
+                    f"{path}.scope.correction_budget: expected closed proposal correction budget"
+                )
             elif any(
                 not isinstance(value, int)
                 or isinstance(value, bool)
                 or value <= 0
-                for value in budget.values()
+                or (
+                    kind == CapabilityKind.PROPOSAL_CORRECTION.value
+                    and value > REVIEW_FIX_BUDGET_LIMITS.get(label, value)
+                )
+                for label, value in budget.items()
             ):
                 errors.append(
                     f"{path}.scope.correction_budget: expected positive remaining limits"
@@ -965,10 +987,117 @@ def _validate_capability(
                 errors.append(
                     f"{path}.scope.correction_budget_identity: required concrete identity"
                 )
+            elif (
+                kind == CapabilityKind.PROPOSAL_CORRECTION.value
+                and isinstance(budget, dict)
+                and _structured_identity(budget) != budget_identity
+            ):
+                errors.append(
+                    f"{path}.scope.correction_budget_identity: does not match correction budget content"
+                )
             if isinstance(basis, dict) and basis.get("correction_budget_identity") != budget_identity:
                 errors.append(
                     f"{path}.scope.correction_budget_identity: must match capability basis"
                 )
+            if kind == CapabilityKind.PROPOSAL_CORRECTION.value:
+                for field in (
+                    "review_record_path",
+                    "review_resolution_path",
+                    "accepted_finding_ids",
+                    "finding_classifications",
+                    "proposal_review_basis",
+                ):
+                    if field not in scope:
+                        errors.append(
+                            f"{path}.scope.{field}: required for proposal correction capability"
+                        )
+                accepted = scope.get("accepted_finding_ids")
+                classifications = scope.get("finding_classifications")
+                if (
+                    not isinstance(accepted, list)
+                    or not accepted
+                    or not all(isinstance(item, str) and item for item in accepted)
+                    or len(set(accepted)) != len(accepted)
+                ):
+                    errors.append(
+                        f"{path}.scope.accepted_finding_ids: expected non-empty string list"
+                    )
+                if (
+                    not isinstance(classifications, dict)
+                    or not isinstance(accepted, list)
+                    or set(classifications) != set(accepted)
+                ):
+                    errors.append(
+                        f"{path}.scope.finding_classifications: must cover accepted findings exactly"
+                    )
+                elif any(
+                    value not in REVIEW_FIX_AUTO_RESOLUTION_CLASSES
+                    for value in classifications.values()
+                ):
+                    errors.append(
+                        f"{path}.scope.finding_classifications: contains unsupported classification"
+                    )
+                if (
+                    isinstance(basis, dict)
+                    and isinstance(accepted, list)
+                    and basis.get("accepted_finding_set_identity")
+                    != _structured_identity(sorted(set(accepted)))
+                ):
+                    errors.append(
+                        f"{path}.scope.accepted_finding_ids: does not match capability basis"
+                    )
+                if (
+                    isinstance(basis, dict)
+                    and isinstance(classifications, dict)
+                    and basis.get("classifier_policy_identity")
+                    != _structured_identity(classifications)
+                ):
+                    errors.append(
+                        f"{path}.scope.finding_classifications: does not match capability basis"
+                    )
+                for field in ("review_record_path", "review_resolution_path"):
+                    value = scope.get(field)
+                    if (
+                        not isinstance(value, str)
+                        or not value
+                        or value.startswith("/")
+                        or ".." in value.split("/")
+                    ):
+                        errors.append(
+                            f"{path}.scope.{field}: expected repository-relative path"
+                        )
+                review_basis = scope.get("proposal_review_basis")
+                expected_review_basis_fields = set(
+                    CAPABILITY_BASIS_FIELDS[
+                        CapabilityKind.PROPOSAL_REVIEW.value
+                    ]
+                ) - {"proposal_identity"}
+                if (
+                    not isinstance(review_basis, dict)
+                    or set(review_basis) != expected_review_basis_fields
+                ):
+                    errors.append(
+                        f"{path}.scope.proposal_review_basis: expected complete future review basis"
+                    )
+                elif (
+                    not all(
+                        isinstance(review_basis[field], str)
+                        and bool(review_basis[field].strip())
+                        for field in expected_review_basis_fields
+                        - {"review_evidence_roots"}
+                    )
+                    or not isinstance(
+                        review_basis.get("review_evidence_roots"), list
+                    )
+                    or not review_basis["review_evidence_roots"]
+                    or not all(
+                        isinstance(root, str) and bool(root.strip())
+                        for root in review_basis["review_evidence_roots"]
+                    )
+                ):
+                    errors.append(
+                        f"{path}.scope.proposal_review_basis: contains invalid evidence"
+                    )
 
     errors.extend(
         _validate_invalidation(

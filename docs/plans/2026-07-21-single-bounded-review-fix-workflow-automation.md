@@ -8,7 +8,7 @@ Terminal disposition: none
 - Change ID: 2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
 - Owner: agent
 - Start date: 2026-07-21
-- Last updated: 2026-07-22
+- Last updated: 2026-07-23
 - Related issue or PR: none yet
 - Supersedes: none
 - broad_smoke_required: true
@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r2.md`
-- Review status: changes-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M4 resolution needed, M5, M6
-- Next stage: review-resolution M4
+- Review status: review-requested; stage=code-review; round=r3
+- Remaining in-scope implementation milestones: M4 rereview, M5, M6
+- Next stage: code-review M4 R3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BRF-M4-CR3,BRF-M4-CR4
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -557,6 +557,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-22: The user accepted the recorded safe resolutions for `BRF-M4-CR1` and `BRF-M4-CR2`. M4 correction implementation started with transactional stage proof and canonical correction-evidence binding; M5 and public routing remain out of scope.
 - 2026-07-22: Resolved `BRF-M4-CR1` and `BRF-M4-CR2` by connecting authoring and proposal correction to the prepared-receipt coordinator, adding parser-backed completion for all M4 stages, and deriving correction authority from exact persisted capability identities. M4 is review-requested for R2; public and legacy routing remain unchanged.
 - 2026-07-22: Code-review M4 R2 classified both R1 findings as failed remediations and opened `BRF-M4-CR3` plus `BRF-M4-CR4`: non-review completed recovery is review-log-specific, and correction authority/convergence remains caller-substitutable. M4 is resolution-needed; M5 remains blocked.
+- 2026-07-23: The user accepted the recorded safe resolutions for `BRF-M4-CR3` and `BRF-M4-CR4`. M4 correction implementation started with stage-generic recovery, identity-stable routing, repository-derived correction authority, and independent post-mutation convergence proof; M5 and public routing remain out of scope.
+- 2026-07-23: Resolved `BRF-M4-CR3` and `BRF-M4-CR4` with stage-generic completed recovery, verifier-owned route facts, canonical tracked correction evidence, exact persisted budget identities, independent post-mutation convergence, and atomic correction-capability handoff. Failed postconditions pause the receipt and invalidate spent correction authority; successful finalization consumes it and activates exactly one fresh proposal-review capability in the same state write. M4 is review-requested for R3; M5 and public routing remain blocked.
 
 ## Decision log
 
@@ -583,6 +585,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-22 | Serialize the complete live review-state detail as one exact generated projection with no remainder. | Exact equality against formal review evidence closes both structured-key and equivalent-prose bypasses without attempting natural-language classification. | Prefix validation, remainder denylists, and any unrestricted trailing detail. |
 | 2026-07-22 | Serialize complete change metadata behind a directory lock and compare-and-swap identity check. | One stable lock boundary prevents concurrent writers from both passing the identity check while atomic replacement prevents truncation. | Direct subsection edits, unlocked replacement, and a second persisted state file. |
 | 2026-07-22 | Bind migration receipts to the canonical hash of exactly one active legacy source record. | A boolean read-only marker alone cannot prove which historical writer was frozen or prevent fabricated migration evidence. | Unbound compatibility markers and rewriting the legacy record. |
+| 2026-07-23 | Finalize correction completion and replacement review authority in one state write. | A completed correction receipt without its fresh review capability creates an unrecoverable authority gap. | Finalizing first and persisting replacement authority in a second write. |
 
 ## Surprises and discoveries
 
@@ -594,6 +597,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- M4 R2 resolution passes 36 engine, 51 state/recovery, and 54 automation-validator tests. Regression proof covers completed recovery for spec, architecture assessment, plan, and formal review stages; raw-path-free routing; forged or stale correction evidence; empty, extra, over-limit, and identity-drifted budgets; false validation; non-shrinking findings; historical-review drift; missing fresh authority; atomic correction-to-rereview capability handoff; and failed-postcondition invalidation.
+- CMD14-CMD20 pass after the correction, and the required final repository broad-smoke suite passes all 12 checks in 253 seconds. Public workflow and legacy adapters, M5 behavior, generated outputs, and external-action surfaces are unaffected because this correction remains behind the M4 non-public harness.
 - Code-review M4 R2 used an L2 separated blind-first risk map before releasing tests, validation summaries, or prior findings. CMD14-CMD20 and full engine/state/validator suites passed, but direct probes reproduced empty-budget routing, stale persisted budget acceptance, preflight authorization without post-mutation validation, and completed non-review recovery that always pauses for absent review-log identity.
 - M4 R1 correction passes 3 proposal-review, 3 proposal-correction, 4 authoring, and 3 non-public selected tests; all 33 engine, 49 state/recovery, and 52 automation-validator tests pass. Receipt-backed spec and proposal-correction fixtures prove prepared-receipt ordering, parser-backed completion, exact capability consumption, rereview routing, and pre-write rejection of public, direct, bugfix, and legacy contexts.
 - CMD14, CMD19, and CMD20 pass all 156 lifecycle, 103 review-artifact, and 259 skill-validator tests. All 53 metadata-validator tests, closeout review validation with 57/57 findings resolved, change metadata validation, guide validation, exact lifecycle validation, Python compilation, and diff checks pass.
