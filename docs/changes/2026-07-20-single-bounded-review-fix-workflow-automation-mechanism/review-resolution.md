@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -50,10 +50,10 @@ Review closeout: code-review-m5-r3
 Review closeout: code-review-m5-r4
 Review closeout: code-review-m5-r5
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`
 - Findings resolved: 90
-- Unresolved findings: 0
-- Current result: The accepted correction for `BRF-M5-CR12` is implemented and validated. M5 is review-requested for code-review R6; M6 remains blocked pending that review.
+- Unresolved findings: 1
+- Current result: Code-review M5 R6 confirmed `BRF-M5-CR12` resolved and opened `BRF-M5-CR13` because the T18 subprocess exception is broader than the intended exact read-only Git probe. M5 is resolution-needed and M6 remains blocked.
 
 ## Resolution Overview
 
@@ -149,6 +149,26 @@ Review closeout: code-review-m5-r5
 | BRF-M5-CR10 | accepted | resolved | Final-code currentness now comes from an independent canonical provider and branch evidence must exactly project its revisions, paths, and identity. |
 | BRF-M5-CR11 | accepted | resolved | A repository-owned resolver now derives the default-target merge base and final-review commit anchor; Git runtime callers cannot inject alternate providers or raw ranges. |
 | BRF-M5-CR12 | accepted | resolved | Canonical Git classification now precedes provider selection, state-store root ownership precedes readiness, and the persisted reviewed revision must equal Git's full immutable commit identity. |
+| BRF-M5-CR13 | accepted | open | The T18 subprocess exception permits alternate roots and additional Git operations instead of exactly one canonical read-only probe. |
+
+### code-review-m5-r6
+
+#### BRF-M5-CR13 - External-action trap has a broad Git exception
+
+Finding ID: BRF-M5-CR13
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: The T18 guard checks only the executable and final two arguments before invoking the saved real `Popen`, so commands with alternate roots or inserted Git operations satisfy the exception.
+Required outcome: Allow exactly the canonical-root-bound `git -C <root> rev-parse --show-toplevel` command and reject every other subprocess or external-action surface.
+Chosen action: Replace suffix matching with an exact expected-command comparison and add negative allowlist contrasts.
+Safe resolution path: Extract a small test-local exact-command runner, bind its expected tuple to the state-store root, retain the positive verify transaction, and add alternate-root, inserted-operation, extra-argument, list-form, and direct-`Popen` rejection tests.
+Validation target: T18, `BRF-R090`, `BRF-AC022`, the reopened `BRF-M5-CR7` proof boundary, full M5 automation suites, and broad smoke.
+Validation evidence: pending
+auto_fix_class: none
 
 ### code-review-m5-r5
 
