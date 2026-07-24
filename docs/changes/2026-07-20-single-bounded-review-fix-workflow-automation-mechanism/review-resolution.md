@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -46,10 +46,10 @@ Review closeout: code-review-m4-r14
 Review closeout: code-review-m4-r15
 Review closeout: code-review-m5-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`
 - Findings resolved: 83
-- Unresolved findings: 0
-- Current result: `BRF-M5-CR1` through `BRF-M5-CR5` are resolved with repository-backed correction authority, verification readiness, authoritative evidence parsing, canonical review currentness, and truthful review-resolution proof. M5 awaits code-review R2; M6 remains blocked.
+- Unresolved findings: 4
+- Current result: Code-review M5 R2 classified the attempted corrections for `BRF-M5-CR1`, `BRF-M5-CR2`, `BRF-M5-CR4`, and `BRF-M5-CR5` as failed remediations. Residual findings `BRF-M5-CR6` through `BRF-M5-CR9` remain open; M5 is resolution-needed and M6 remains blocked.
 
 ## Resolution Overview
 
@@ -138,6 +138,80 @@ Review closeout: code-review-m5-r1
 | BRF-M5-CR3 | accepted | resolved | Required evidence fields and active-plan milestones now reject duplicates, contradictions, missing structure, and unsupported closed values before consistency checks. |
 | BRF-M5-CR4 | accepted | resolved | Canonical review selection now rejects symlinked or escaped evidence and invalidates an approval when a later applicable review occurrence exists. |
 | BRF-M5-CR5 | accepted | resolved | Code-review completion now distinguishes clean `not-required` resolution from canonical material-finding `closed` resolution and validates actual review-resolution evidence. |
+| BRF-M5-CR6 | accepted | open | Correction authority compresses the preserved recipe vocabulary and bypasses the stage-policy mutation category. |
+| BRF-M5-CR7 | accepted | open | Verification currentness is not bound to the final code state and T18 lacks the required external-action trap. |
+| BRF-M5-CR8 | accepted | open | Latest-review selection compares mutable milestone display text instead of occurrence identity. |
+| BRF-M5-CR9 | accepted | open | Automatic correction can close global review resolution while unrelated findings remain open. |
+
+### code-review-m5-r2
+
+#### BRF-M5-CR6 - Correction contract and policy authority are compressed
+
+Finding ID: BRF-M5-CR6
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: The implementation accepts only one mechanical kind and one path despite the preserved mechanical and declared-safe contract, and capability-wide mutation categories bypass the review-resolution stage's recorded category.
+Required outcome: Project the complete preserved correction vocabulary and require every mutation category to be authorized by the bound stage policy, capability, and parent.
+Chosen action: Implement typed recipe variants and an exact stage-policy mutation-set check, then add property-by-surface regressions.
+Safe resolution path: Reuse the preserved review-finding-resolution fields, compile each supported recipe to a closed operation, fail closed on unknown values, and test every class, kind, path shape, and policy-exceeding category.
+Validation target: BRF-R033-BRF-R046, BRF-R063-BRF-R065, BRF-R079, preserved R1f-R1k, and T13.
+Validation evidence: pending
+auto_fix_class: none
+
+#### BRF-M5-CR7 - Verification is not bound to final code state
+
+Finding ID: BRF-M5-CR7
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: The plan hash is used as the final diff identity, source drift is unobserved, and the positive verify transaction trusts a report field instead of installing the required external-action traps.
+Required outcome: Bind verification authority to one canonical final code identity and directly prove every prohibited external-action surface remains uncalled.
+Chosen action: Add canonical commit/tree or deterministic final-diff binding across final review, explanation, promotion, branch, and command evidence, plus fail-on-call traps.
+Safe resolution path: Rehash and compare stage-owned closeout evidence against the final code identity, invalidate on source drift, and add composed source-drift and external-action tests.
+Validation target: BRF-R043c, BRF-R085, BRF-R086, BRF-R090, and T18.
+Validation evidence: pending
+auto_fix_class: none
+
+#### BRF-M5-CR8 - Review applicability uses mutable display text
+
+Finding ID: BRF-M5-CR8
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: A later review of the same M2 occurrence is not considered applicable when the milestone title changes, so an earlier approval can remain canonical.
+Required outcome: Compare latest-review applicability by structured milestone occurrence identity.
+Chosen action: Parse the milestone ID from each review, bind it to the active plan occurrence, and add renamed-title and malformed-ID regressions.
+Safe resolution path: Normalize milestone-local applicability to the closed `M<n>` identity while preserving a distinct final-review scope identity.
+Validation target: BRF-R014-BRF-R016, BRF-R084, T17, and stale-review recovery.
+Validation evidence: pending
+auto_fix_class: none
+
+#### BRF-M5-CR9 - Correction manufactures global review closeout
+
+Finding ID: BRF-M5-CR9
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: The correction path resolves only its bound findings but unconditionally marks the entire review-resolution document closed without checking unrelated entries.
+Required outcome: Keep global closeout open until the canonical full-document predicate proves every contributing finding is closed.
+Chosen action: Reparse all review-log and resolution entries after the bounded finding update and derive the top-level closeout state from the canonical closure predicate.
+Safe resolution path: Close only the bound finding entries, preserve global open state for any older/open or needs-decision entry, and add multi-review integration regressions.
+Validation target: BRF-R065, BRF-R083, the review-resolution contract, and T13/T17.
+Validation evidence: pending
+auto_fix_class: none
 
 ## Common Resolution Metadata
 
