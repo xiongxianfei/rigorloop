@@ -81,6 +81,48 @@ def _load_fixtures():
 FIXTURES = _load_fixtures()
 
 
+def run_exact_read_only_git_probe(
+    command,
+    *args,
+    expected_root: Path,
+    real_popen,
+    **kwargs,
+) -> subprocess.CompletedProcess:
+    """Run only the canonical root-discovery probe allowed by T18."""
+
+    expected_command = (
+        "git",
+        "-C",
+        str(expected_root.resolve()),
+        "rev-parse",
+        "--show-toplevel",
+    )
+    expected_keyword_names = {"check", "capture_output", "env"}
+    if (
+        command != expected_command
+        or not isinstance(command, tuple)
+        or args
+        or set(kwargs) != expected_keyword_names
+        or kwargs["check"] is not False
+        or kwargs["capture_output"] is not True
+        or not isinstance(kwargs["env"], dict)
+    ):
+        raise AssertionError("prohibited external action was invoked")
+    process = real_popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=kwargs["env"],
+    )
+    stdout, stderr = process.communicate()
+    return subprocess.CompletedProcess(
+        command,
+        process.returncode,
+        stdout,
+        stderr,
+    )
+
+
 class FixtureCodeStateProvider:
     """Trusted non-Git provider whose path domain is fixture-owned."""
 
@@ -3964,6 +4006,89 @@ Open findings: None
         self.assertEqual((passed.status, passed.next_stage), ("target-reached", "pr"))
         self.assertFalse(passed.external_action_performed)
 
+    def test_verify_git_probe_allowlist_is_exact_and_root_bound(self) -> None:
+        repository_root = Path("/canonical/repository")
+        expected_command = (
+            "git",
+            "-C",
+            str(repository_root),
+            "rev-parse",
+            "--show-toplevel",
+        )
+        popen_calls: list[tuple[str, ...]] = []
+
+        class FakeProcess:
+            returncode = 0
+
+            @staticmethod
+            def communicate() -> tuple[bytes, bytes]:
+                return b"/canonical/repository\n", b""
+
+        def fake_popen(command, **_kwargs):
+            popen_calls.append(command)
+            return FakeProcess()
+
+        result = run_exact_read_only_git_probe(
+            expected_command,
+            expected_root=repository_root,
+            real_popen=fake_popen,
+            check=False,
+            capture_output=True,
+            env={"LC_ALL": "C", "LANG": "C"},
+        )
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(popen_calls, [expected_command])
+
+        rejected_commands = (
+            (
+                "git",
+                "-C",
+                "/alternate/repository",
+                "rev-parse",
+                "--show-toplevel",
+            ),
+            (
+                "git",
+                "-C",
+                str(repository_root),
+                "push",
+                "origin",
+                "HEAD",
+                "rev-parse",
+                "--show-toplevel",
+            ),
+            ("env", *expected_command),
+            (*expected_command, "--extra"),
+            list(expected_command),
+            "git -C /canonical/repository rev-parse --show-toplevel",
+        )
+        for command in rejected_commands:
+            with self.subTest(command=command), self.assertRaisesRegex(
+                AssertionError, "prohibited external action"
+            ):
+                run_exact_read_only_git_probe(
+                    command,
+                    expected_root=repository_root,
+                    real_popen=fake_popen,
+                    check=False,
+                    capture_output=True,
+                    env={"LC_ALL": "C", "LANG": "C"},
+                )
+
+        with self.assertRaisesRegex(
+            AssertionError, "prohibited external action"
+        ):
+            run_exact_read_only_git_probe(
+                expected_command,
+                expected_root=repository_root,
+                real_popen=fake_popen,
+                check=False,
+                capture_output=True,
+                env={"LC_ALL": "C", "LANG": "C"},
+                shell=True,
+            )
+        self.assertEqual(popen_calls, [expected_command])
+
     def test_verify_transaction_stops_before_pr_without_external_action(self) -> None:
         automation = copy.deepcopy(FIXTURES.valid_automation())
         target = {
@@ -4131,28 +4256,16 @@ Open findings: None
             raise AssertionError("prohibited external action was invoked")
 
         real_popen = subprocess.Popen
+        expected_git_root = store.repository_root.resolve()
 
-        def allow_read_only_git_probe(command, *_args, **kwargs):
-            if (
-                isinstance(command, tuple)
-                and len(command) >= 5
-                and command[0] == "git"
-                and command[-2:] == ("rev-parse", "--show-toplevel")
-            ):
-                process = real_popen(
-                    command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    env=kwargs.get("env"),
-                )
-                stdout, stderr = process.communicate()
-                return subprocess.CompletedProcess(
-                    command,
-                    process.returncode,
-                    stdout,
-                    stderr,
-                )
-            return prohibited_external_action(command, *_args, **kwargs)
+        def allow_read_only_git_probe(command, *args, **kwargs):
+            return run_exact_read_only_git_probe(
+                command,
+                *args,
+                expected_root=expected_git_root,
+                real_popen=real_popen,
+                **kwargs,
+            )
 
         with patch(
             "subprocess.run", side_effect=allow_read_only_git_probe
@@ -4165,6 +4278,18 @@ Open findings: None
         ), patch(
             "os.system", side_effect=prohibited_external_action
         ):
+            with self.assertRaisesRegex(
+                AssertionError, "prohibited external action"
+            ):
+                subprocess.Popen(
+                    (
+                        "git",
+                        "-C",
+                        str(expected_git_root),
+                        "rev-parse",
+                        "--show-toplevel",
+                    )
+                )
             result = coordinate_non_public_implementation_stage(
                 invocation_context="non-public-test-harness",
                 target_stage="verify",
