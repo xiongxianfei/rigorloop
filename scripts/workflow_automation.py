@@ -2869,6 +2869,81 @@ def evaluate_public_implementation_route(
     )
 
 
+def _legacy_public_projection(
+    projection: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Project a read-only legacy record into the complete public result shape."""
+
+    legacy = projection.get("legacy")
+    if not isinstance(legacy, Mapping):
+        raise AutomationContractError("legacy status projection is incomplete")
+    record: Mapping[str, Any] = legacy
+    mechanism = legacy.get("profile")
+    if not isinstance(mechanism, str):
+        candidates = [
+            (name.replace("_", "-"), candidate)
+            for name in (
+                "authoring_through_plan_review",
+                "implementation_through_verify",
+                "review_fix",
+            )
+            if isinstance((candidate := legacy.get(name)), Mapping)
+        ]
+        if len(candidates) != 1:
+            raise AutomationContractError(
+                "legacy status requires exactly one source record"
+            )
+        mechanism, record = candidates[0]
+        candidate_mechanism = record.get("profile") or record.get("mechanism")
+        if isinstance(candidate_mechanism, str):
+            mechanism = candidate_mechanism
+    target_stage = {
+        "authoring-through-plan-review": WorkflowStage.PLAN_REVIEW.value,
+        "implementation-through-verify": WorkflowStage.VERIFY.value,
+    }.get(mechanism)
+    if target_stage is None and mechanism == "bounded-review-fix":
+        candidate = record.get("target_stage")
+        if isinstance(candidate, str):
+            target_stage = candidate
+    target = None
+    if target_stage in {stage.value for stage in PUBLIC_TARGET_STAGES}:
+        occurrence_kind = STAGE_POLICY_BY_STAGE[target_stage].occurrence_rule.value
+        target = {
+            "stage": target_stage,
+            "occurrence": {"kind": occurrence_kind},
+        }
+    authorization_boundary = {
+        "authoring-through-plan-review": AuthorizationClass.AUTHORING.value,
+        "implementation-through-verify": AuthorizationClass.IMPLEMENTATION.value,
+        "bounded-review-fix": AuthorizationClass.AUTHORING.value,
+    }.get(str(mechanism))
+    source_identity = projection.get("source_record_identity")
+    state = record.get("state", record.get("status"))
+    return {
+        **copy.deepcopy(dict(projection)),
+        "mechanism": "bounded-review-fix",
+        "target": target,
+        "authorization_boundary": authorization_boundary,
+        "effective_capability_kind": None,
+        "canonical_position_source": "legacy-projection",
+        "latest_evidence_identities": (
+            {"legacy": source_identity}
+            if isinstance(source_identity, str)
+            else {}
+        ),
+        "transition_history": [],
+        "fixes_applied": [],
+        "artifacts_changed": [],
+        "run_status": (
+            "completed"
+            if state in {"completed", "complete"}
+            else "cancelled"
+            if state in {"cancelled", "off", "inactive", "stopped"}
+            else "active"
+        ),
+    }
+
+
 def _public_command_result(
     projection: Mapping[str, Any],
     *,
@@ -2883,7 +2958,8 @@ def _public_command_result(
         "completed": "none",
         "no-active-run": "select-target",
     }.get(str(run_status), "evaluate-next-stage")
-    return {
+    result = copy.deepcopy(dict(projection))
+    result.update({
         "mechanism": projection.get("mechanism"),
         "structured_target": copy.deepcopy(projection.get("target")),
         "canonical_position_source": projection.get("canonical_position_source"),
@@ -2896,22 +2972,22 @@ def _public_command_result(
         "stage_outcome": stage_outcome,
         "review_outcome": review_result.get("outcome"),
         "clean_gate_state": review_result.get("clean_gate"),
-        "transitions_attempted": (
-            [projection["in_flight_transition"]]
-            if projection.get("in_flight_transition")
-            else []
+        "transitions_attempted": copy.deepcopy(
+            projection.get("transition_history", [])
         ),
-        "fixes_applied": [],
+        "fixes_applied": copy.deepcopy(projection.get("fixes_applied", [])),
         "human_decisions_required": (
             [stop_reason]
             if run_status == "paused" and isinstance(stop_reason, str)
             else []
         ),
-        "artifacts_changed": [],
+        "artifacts_changed": copy.deepcopy(
+            projection.get("artifacts_changed", [])
+        ),
         "stop_reason": stop_reason,
         "next_action": next_action,
-        **copy.deepcopy(dict(projection)),
-    }
+    })
+    return result
 
 
 def execute_public_control_command(
@@ -2934,7 +3010,10 @@ def execute_public_control_command(
             "public control command time must be RFC3339 UTC"
         )
     if normalized.action == "status":
-        return _public_command_result(store.status(), stage_outcome="status")
+        status = store.status()
+        if status.get("source") == "legacy-read-only":
+            status = _legacy_public_projection(status)
+        return _public_command_result(status, stage_outcome="status")
 
     before = store.status()
     if before.get("source") == "legacy-read-only":
@@ -2960,12 +3039,54 @@ def execute_public_control_command(
         source_identity = before.get("source_record_identity")
         if not isinstance(source_identity, str) or ":" not in source_identity:
             raise AutomationContractError("legacy source identity is missing")
-        start_public_run(
-            store,
-            f"$workflow auto: {target_stage}",
-            run_id=f"run-migrated-{source_identity.split(':', 1)[1][:16]}",
-            actor=actor,
-            occurred_at=occurred_at,
+        target = bind_target(target_stage, bound_at=occurred_at)
+        run_id = f"run-migrated-{source_identity.split(':', 1)[1][:16]}"
+        legacy_snapshot = store.read(allow_legacy_without_change_id=True)
+        cancelled = {
+            "mechanism": "bounded-review-fix",
+            "schema_version": 1,
+            "run": {
+                "run_id": run_id,
+                "change_id": legacy_snapshot.document.get("change_id"),
+                "status": "cancelled",
+                "policy_version": 1,
+                "target": target,
+                "stop_reason": "run-cancelled",
+            },
+            "parent_authorizations": {},
+            "effective_capabilities": {},
+            "transition_receipts": {},
+            "canonical_position_source": "legacy-projection",
+            "observed_identities": {"legacy": source_identity},
+            "cancellation": {
+                "cancelled_by": actor,
+                "cancelled_at": occurred_at,
+                "reason": "run-cancelled",
+            },
+            "external_actions": "prohibited",
+        }
+        mutation = store.cancel_legacy(
+            cancelled,
+            cancelled_at=occurred_at,
+            expected_document_identity=legacy_snapshot.document_identity,
+        )
+        if mutation.mutated:
+            projection = store.status()
+        else:
+            projection = _legacy_public_projection(before)
+            projection["run_status"] = (
+                "completed"
+                if mutation.status == "already-completed"
+                else "cancelled"
+            )
+            projection["stop_reason"] = (
+                "already-completed"
+                if mutation.status == "already-completed"
+                else "run-cancelled"
+            )
+        return _public_command_result(
+            projection,
+            stage_outcome=mutation.status,
         )
 
     mutation = store.cancel(
@@ -2988,9 +3109,12 @@ def start_public_run(
     run_id: str,
     actor: str,
     occurred_at: str,
+    pre_plan: PrePlanEvidence | None = None,
     plan: ActivePlanContext | None = None,
+    proposal_correction_budget: Mapping[str, int] | None = None,
     implementation_basis: Mapping[str, Any] | None = None,
     implementation_path_roots: Iterable[str] = (),
+    implementation_correction_budget: Mapping[str, int] | None = None,
     verification_basis: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Persist one new public target and its currently valid consent envelope."""
@@ -3018,10 +3142,28 @@ def start_public_run(
         bound_at=occurred_at,
         plan=plan,
     )
+    canonical = resolve_canonical_position(
+        pre_plan=pre_plan,
+        active_plan=plan,
+    )
     parents: dict[str, Any] = {}
     target_policy = STAGE_POLICY_BY_STAGE[normalized.target_stage]
     if target_policy.required_authorization_class == AuthorizationClass.AUTHORING:
         authorization_id = f"authorization-authoring-{run_id}"
+        authoring_kinds = [
+            CapabilityKind.PROPOSAL_REVIEW.value,
+            CapabilityKind.POST_PROPOSAL_AUTHORING.value,
+        ]
+        authoring_categories = [
+            "change-local-review-evidence",
+            "downstream-authoring-artifacts",
+            "change-local-evidence",
+        ]
+        if proposal_correction_budget is not None:
+            authoring_kinds.insert(
+                1, CapabilityKind.PROPOSAL_CORRECTION.value
+            )
+            authoring_categories.append("proposal-content")
         parent = create_parent_authorization(
             authorization_id=authorization_id,
             authorization_class=AuthorizationClass.AUTHORING.value,
@@ -3029,10 +3171,7 @@ def start_public_run(
             authorized_by=actor,
             authorized_at=occurred_at,
             maximum_target=target,
-            allowed_capability_kinds=(
-                CapabilityKind.PROPOSAL_REVIEW.value,
-                CapabilityKind.POST_PROPOSAL_AUTHORING.value,
-            ),
+            allowed_capability_kinds=authoring_kinds,
             maximum_path_roots=(
                 "docs/proposals/",
                 "specs/",
@@ -3041,11 +3180,8 @@ def start_public_run(
                 "docs/plans/",
                 f"docs/changes/{change_id}/",
             ),
-            maximum_mutation_categories=(
-                "change-local-review-evidence",
-                "downstream-authoring-artifacts",
-                "change-local-evidence",
-            ),
+            maximum_mutation_categories=authoring_categories,
+            correction_budget=proposal_correction_budget,
         )
         parents[authorization_id] = parent
     if normalized.target_stage in {
@@ -3065,6 +3201,17 @@ def start_public_run(
             "implementation authorization path roots",
         )
         authorization_id = f"authorization-implementation-{run_id}"
+        implementation_kinds = [CapabilityKind.IMPLEMENTATION.value]
+        implementation_categories = [
+            "tests",
+            "production-code",
+            "change-local-review-evidence",
+        ]
+        if implementation_correction_budget is not None:
+            implementation_kinds.append(
+                CapabilityKind.IMPLEMENTATION_CORRECTION.value
+            )
+            implementation_categories.append("change-local-evidence")
         parents[authorization_id] = create_parent_authorization(
             authorization_id=authorization_id,
             authorization_class=AuthorizationClass.IMPLEMENTATION.value,
@@ -3072,13 +3219,10 @@ def start_public_run(
             authorized_by=actor,
             authorized_at=occurred_at,
             maximum_target=target,
-            allowed_capability_kinds=(CapabilityKind.IMPLEMENTATION.value,),
+            allowed_capability_kinds=implementation_kinds,
             maximum_path_roots=implementation_roots,
-            maximum_mutation_categories=(
-                "tests",
-                "production-code",
-                "change-local-review-evidence",
-            ),
+            maximum_mutation_categories=implementation_categories,
+            correction_budget=implementation_correction_budget,
         )
     if (
         normalized.target_stage == WorkflowStage.VERIFY.value
@@ -3118,6 +3262,8 @@ def start_public_run(
         "parent_authorizations": parents,
         "effective_capabilities": {},
         "transition_receipts": {},
+        "canonical_position_source": canonical.source,
+        "observed_identities": copy.deepcopy(canonical.observed_identities),
         "external_actions": "prohibited",
     }
     workflow = snapshot.document.get("workflow")
@@ -3137,6 +3283,305 @@ def start_public_run(
     except StateContractError as error:
         raise AutomationContractError(str(error)) from error
     return _public_command_result(store.status(), stage_outcome="target-selected")
+
+
+def authorize_public_run(
+    store: WorkflowAutomationStateStore,
+    command: str,
+    *,
+    authorization_id: str,
+    authorization_class: str,
+    actor: str,
+    occurred_at: str,
+    proposal_correction_budget: Mapping[str, int] | None = None,
+    implementation_basis: Mapping[str, Any] | None = None,
+    implementation_path_roots: Iterable[str] = (),
+    implementation_correction_budget: Mapping[str, int] | None = None,
+    verification_basis: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Add one current risk-class consent envelope to an existing public run."""
+
+    normalized = normalize_command(command)
+    if normalized.action != "target" or normalized.target_stage is None:
+        raise AutomationContractError(
+            "public authorization requires a target command"
+        )
+    auth_class = _authorization_class(authorization_class)
+    if (
+        normalized.legacy
+        and normalized.target_stage == WorkflowStage.VERIFY.value
+        and auth_class == AuthorizationClass.AUTHORING
+    ):
+        raise AutomationContractError(
+            "legacy verify adapter must not infer authoring authority"
+        )
+    snapshot = store.read()
+    if snapshot.automation is None:
+        raise AutomationContractError("unified automation state does not exist")
+    run = snapshot.automation.get("run")
+    if (
+        not isinstance(run, Mapping)
+        or run.get("status") not in {"active", "paused"}
+    ):
+        raise AutomationContractError(
+            "public authorization requires an active or paused run"
+        )
+    target = run.get("target")
+    if (
+        not isinstance(target, Mapping)
+        or target.get("stage") != normalized.target_stage
+    ):
+        raise AutomationContractError(
+            "public authorization target does not match persisted target"
+        )
+    parents = snapshot.automation.get("parent_authorizations")
+    if not isinstance(parents, Mapping):
+        raise AutomationContractError("public authorization state is invalid")
+    if authorization_id in parents:
+        raise AutomationContractError("parent authorization identity already exists")
+    if any(
+        isinstance(parent, Mapping)
+        and parent.get("status") == "active"
+        and parent.get("authorization_class") == auth_class.value
+        for parent in parents.values()
+    ):
+        raise AutomationContractError(
+            "active parent authorization already exists for risk class"
+        )
+    change_id = run.get("change_id")
+    if not isinstance(change_id, str):
+        raise AutomationContractError("automation change identity is missing")
+    if auth_class == AuthorizationClass.AUTHORING:
+        kinds = [
+            CapabilityKind.PROPOSAL_REVIEW.value,
+            CapabilityKind.POST_PROPOSAL_AUTHORING.value,
+        ]
+        categories = [
+            "change-local-review-evidence",
+            "downstream-authoring-artifacts",
+            "change-local-evidence",
+        ]
+        if proposal_correction_budget is not None:
+            kinds.insert(1, CapabilityKind.PROPOSAL_CORRECTION.value)
+            categories.append("proposal-content")
+        parent = create_parent_authorization(
+            authorization_id=authorization_id,
+            authorization_class=auth_class.value,
+            change_id=change_id,
+            authorized_by=actor,
+            authorized_at=occurred_at,
+            maximum_target=target,
+            allowed_capability_kinds=kinds,
+            maximum_path_roots=(
+                "docs/proposals/",
+                "specs/",
+                "docs/architecture/",
+                "docs/adr/",
+                "docs/plans/",
+                f"docs/changes/{change_id}/",
+            ),
+            maximum_mutation_categories=categories,
+            correction_budget=proposal_correction_budget,
+        )
+    elif auth_class == AuthorizationClass.IMPLEMENTATION:
+        if implementation_basis is None or not _basis_complete(
+            CapabilityKind.IMPLEMENTATION.value,
+            implementation_basis,
+        ):
+            raise AutomationContractError(
+                "implementation authorization basis is incomplete"
+            )
+        roots = _require_nonempty_strings(
+            implementation_path_roots,
+            "implementation authorization path roots",
+        )
+        kinds = [CapabilityKind.IMPLEMENTATION.value]
+        categories = [
+            "tests",
+            "production-code",
+            "change-local-review-evidence",
+        ]
+        if implementation_correction_budget is not None:
+            kinds.append(CapabilityKind.IMPLEMENTATION_CORRECTION.value)
+            categories.append("change-local-evidence")
+        parent = create_parent_authorization(
+            authorization_id=authorization_id,
+            authorization_class=auth_class.value,
+            change_id=change_id,
+            authorized_by=actor,
+            authorized_at=occurred_at,
+            maximum_target=target,
+            allowed_capability_kinds=kinds,
+            maximum_path_roots=roots,
+            maximum_mutation_categories=categories,
+            correction_budget=implementation_correction_budget,
+        )
+    else:
+        if verification_basis is None or not _basis_complete(
+            CapabilityKind.VERIFICATION.value,
+            verification_basis,
+        ):
+            raise AutomationContractError(
+                "verification authorization basis is incomplete"
+            )
+        parent = create_parent_authorization(
+            authorization_id=authorization_id,
+            authorization_class=auth_class.value,
+            change_id=change_id,
+            authorized_by=actor,
+            authorized_at=occurred_at,
+            maximum_target=target,
+            allowed_capability_kinds=(CapabilityKind.VERIFICATION.value,),
+            maximum_path_roots=(f"docs/changes/{change_id}/",),
+            maximum_mutation_categories=("verification-evidence",),
+            verification_basis=verification_basis,
+        )
+    replacement = copy.deepcopy(snapshot.automation)
+    replacement["parent_authorizations"][authorization_id] = parent
+    if run.get("status") == "paused":
+        pause_reason = run.get("pause_reason")
+        accepted_pause_reasons = {
+            AuthorizationClass.AUTHORING: {
+                "authoring-authorization-required",
+                "proposal-review-authorization-required",
+            },
+            AuthorizationClass.IMPLEMENTATION: {
+                "implementation-authorization-required",
+            },
+            AuthorizationClass.VERIFICATION: {
+                "verification-authorization-required",
+            },
+        }[auth_class]
+        if pause_reason in accepted_pause_reasons:
+            replacement["run"]["status"] = "active"
+            replacement["run"].pop("pause_reason", None)
+    try:
+        store.replace_automation(
+            replacement,
+            expected_document_identity=snapshot.document_identity,
+        )
+    except StateContractError as error:
+        raise AutomationContractError(str(error)) from error
+    return _public_command_result(
+        store.status(),
+        stage_outcome="authorization-recorded",
+    )
+
+
+def resume_public_run(
+    store: WorkflowAutomationStateStore,
+    command: str,
+    *,
+    repository_root: Path,
+    stage: str,
+    **coordination: Any,
+) -> dict[str, Any]:
+    """Execute one public stage through the persisted target and consent envelope."""
+
+    normalized = normalize_command(command)
+    if normalized.action != "target" or normalized.target_stage is None:
+        raise AutomationContractError("public resume requires a target command")
+    snapshot = store.read()
+    if snapshot.automation is None:
+        raise AutomationContractError("unified automation state does not exist")
+    run = snapshot.automation.get("run")
+    if not isinstance(run, Mapping) or run.get("status") != "active":
+        raise AutomationContractError("public resume requires an active run")
+    target = run.get("target")
+    if (
+        not isinstance(target, Mapping)
+        or target.get("stage") != normalized.target_stage
+    ):
+        raise AutomationContractError(
+            "public resume command does not match the persisted structured target"
+        )
+    policy = STAGE_POLICY_BY_STAGE.get(stage)
+    if policy is None:
+        raise AutomationContractError(f"unknown public stage operation: {stage}")
+    if not can_operation_fit_target(
+        WorkflowStage(stage), WorkflowStage(normalized.target_stage)
+    ):
+        raise AutomationContractError(
+            "public stage operation exceeds the persisted structured target"
+        )
+    parents = snapshot.automation.get("parent_authorizations")
+    candidates = [
+        parent
+        for parent in parents.values()
+        if isinstance(parents, Mapping)
+        and isinstance(parent, Mapping)
+        and parent.get("status") == "active"
+        and parent.get("authorization_class")
+        == policy.required_authorization_class.value
+        and policy.capability_kind.value
+        in parent.get("allowed_capability_kinds", [])
+    ] if isinstance(parents, Mapping) else []
+    if len(candidates) != 1:
+        raise AutomationContractError(
+            "public resume requires exactly one matching active parent authorization"
+        )
+    parent_id = candidates[0].get("authorization_id")
+    if not isinstance(parent_id, str):
+        raise AutomationContractError(
+            "public parent authorization identity is missing"
+        )
+    request = dict(coordination)
+    if "parent_authorization_id" in request:
+        raise AutomationContractError(
+            "public resume selects parent authorization from durable state"
+        )
+    request["parent_authorization_id"] = parent_id
+    request["stage"] = stage
+    if policy.capability_kind == CapabilityKind.IMPLEMENTATION_CORRECTION:
+        request.pop("stage", None)
+        target_occurrence = target.get("occurrence")
+        milestone_id = (
+            target_occurrence.get("milestone_id")
+            if isinstance(target_occurrence, Mapping)
+            else None
+        )
+        coordinated = coordinate_public_implementation_correction(
+            command=command,
+            target_milestone_id=milestone_id,
+            store=store,
+            repository_root=repository_root,
+            **request,
+        )
+    elif policy.required_authorization_class == AuthorizationClass.AUTHORING:
+        coordinated = coordinate_public_authoring_stage(
+            command=command,
+            store=store,
+            repository_root=repository_root,
+            **request,
+        )
+    else:
+        target_occurrence = target.get("occurrence")
+        target_milestone_id = (
+            target_occurrence.get("milestone_id")
+            if isinstance(target_occurrence, Mapping)
+            else None
+        )
+        coordinated = coordinate_public_implementation_stage(
+            command=command,
+            target_milestone_id=target_milestone_id,
+            store=store,
+            repository_root=repository_root,
+            **request,
+        )
+    projection = store.status()
+    result = _public_command_result(
+        projection,
+        stage_outcome=coordinated.route.status,
+    )
+    if coordinated.route.pause_reason is not None:
+        result["stop_reason"] = coordinated.route.pause_reason
+        result["human_decisions_required"] = [coordinated.route.pause_reason]
+        result["next_action"] = "explicit-user-decision"
+    elif coordinated.route.next_stage is not None:
+        result["next_action"] = coordinated.route.next_stage
+    elif coordinated.route.status in {"target-reached", "target-not-applicable"}:
+        result["next_action"] = "none"
+    return result
 
 
 def resume_target(
@@ -4132,6 +4577,7 @@ __all__ = [
     "NormalizedCommand",
     "PrePlanEvidence",
     "StageExecutionResult",
+    "authorize_public_run",
     "bind_target",
     "coordinate_one_stage",
     "coordinate_non_public_authoring_stage",
@@ -4160,6 +4606,7 @@ __all__ = [
     "resolve_proposal_correction_authority",
     "resolve_verification_readiness",
     "resolve_command_target",
+    "resume_public_run",
     "resume_target",
     "start_public_run",
 ]

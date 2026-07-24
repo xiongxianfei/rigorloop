@@ -76,6 +76,61 @@ MIGRATION_PROJECTION_RESULTS = frozenset({"equivalent"})
 CROSS_SPEC_DISPOSITIONS = frozenset(
     {"superseded", "preserved-unchanged", "preserved-rebound"}
 )
+CROSS_SPEC_AFFECTED_SELECTORS = frozenset(
+    (source, selector)
+    for source, selectors in (
+        (
+            "specs/workflow-stage-autoprogression.md",
+            """
+            R2b R2g R2b1 R2h R2j R2i R2k R2l R2m R2n R2o R2p R2q R2r
+            R2s R2t R2u R2v R2w R2x R2y R2z R2aa R2ab R2ac R2ad R2ae
+            R2af R2ag R2ah R2ai R2aj R2ak R2al R2am R2an R2ao R2ap R2aq
+            R2ar R2as R2at R2au R2av R2aw R2ax R2ay R2az R2ba R2bb R2bc
+            R2bd R2be R2bf R2bg R2bh R2bi R2bj R2bk R2bl R2bm R2bn R2bo
+            R2bp R2bq R2br R2bs R2bt R2bu R2bv R2bw R2bx R2by R2bz
+            WSA-INPUT-1 WSA-INPUT-2 WSA-INPUT-3 WSA-INPUT-4 WSA-OUTPUT-1
+            WSA-STATE-1 WSA-STATE-2 WSA-STATE-3 WSA-STATE-4 WSA-ERROR-1
+            WSA-ERROR-2 WSA-COMPAT-1 WSA-COMPAT-2 WSA-COMPAT-3 WSA-OBS-1
+            WSA-SEC-1 WSA-SEC-2 WSA-EC30 WSA-EC32 WSA-EC33 WSA-EC34
+            WSA-AC-A1 WSA-AC-A9 WSA-AC-I1 WSA-AC-A2 WSA-AC-A3
+            WSA-AC-A4 WSA-AC-A5 WSA-AC-A6 WSA-AC-A7 WSA-AC-A8
+            WSA-AC-A10 WSA-AC-A11 WSA-AC-A12 WSA-AC-I2 WSA-AC-I3
+            WSA-AC-I4 WSA-AC-I5 WSA-AC-I6 WSA-AC-I7 WSA-AC-I8
+            """.split(),
+        ),
+        (
+            "specs/rigorloop-workflow.md",
+            """
+            R7e R7ea R7ec R7eb R7ed R7ee R7ef R7eg R7eh R7ei R7ej R7ek
+            R7el R7em R7en R7eo R7ep R7eq R7er R7es R7et R7eu R7ev R7ew
+            R7ex R7ey R7ez R7faa R7fab R7fac R7fad RLW-INPUT-1 RLW-INPUT-2
+            RLW-STATE-1 RLW-STATE-2 RLW-ERROR-1 RLW-COMPAT-1 RLW-EC50
+            RLW-AC-A1 RLW-AC-A2 RLW-AC-A9 RLW-AC-A3 RLW-AC-A4 RLW-AC-A5
+            RLW-AC-A6 RLW-AC-A7 RLW-AC-A8
+            """.split(),
+        ),
+        (
+            "specs/review-fix-autoprogression.md",
+            """
+            R1 R2 R3 R4 R5 R6 R7 R8 R9 R9a R9b R9c R9d R9e R9f R10 R11
+            R12 R13 R14 R15 R16 R17 R18 R19 R20 R21 R22 R22a R22b R22c
+            R22d R22e R22f R22g R23 R24 R25 R26 R27 R28 R29 R30 R31 R32
+            R33 R34 R35 R36 R37 R38 R39 R40 R41 R42 R43 R44 R45
+            RFA-INPUT-1 RFA-OUTPUT-1 RFA-STATE-1 RFA-COMPAT-1 RFA-COMPAT-2
+            AC1 AC3 AC5 AC16 AC19 AC24 AC2 AC4 AC6 AC7 AC8 AC9 AC10 AC11
+            AC12 AC13 AC14 AC15 AC17 AC18 AC20 AC21 AC22 AC23 AC25 AC26
+            """.split(),
+        ),
+        (
+            "specs/review-finding-resolution-contract.md",
+            """
+            R1e R1f R1g R1h R1i R1j R1k R1l
+            RFR-AC-IMPLEMENTATION-1 RFR-AC-IMPLEMENTATION-2
+            """.split(),
+        ),
+    )
+    for selector in selectors
+)
 RETIRED_WRITER_NAMES = frozenset(
     {
         "authoring-through-plan-review",
@@ -265,15 +320,9 @@ def validate_repository_cross_spec_dispositions(repository_root: Path) -> list[s
     )
     if not rows:
         return ["cross-spec disposition ledger is missing or empty"]
-    required = {
-        (row["source"], row["selector"])
-        for row in rows
-        if isinstance(row.get("source"), str)
-        and isinstance(row.get("selector"), str)
-    }
     errors = validate_cross_spec_disposition_rows(
         rows,
-        required_selectors=required,
+        required_selectors=CROSS_SPEC_AFFECTED_SELECTORS,
     )
     if errors:
         return errors

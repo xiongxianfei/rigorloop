@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r1.md`
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M6 resolution and rereview
-- Next stage: review-resolution M6
+- Review status: review-requested; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M6 rereview
+- Next stage: code-review M6
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BRF-M6-CR1,BRF-M6-CR2,BRF-M6-CR3,BRF-M6-CR4
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -386,7 +386,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Atomically activate unified public commands, map compatibility aliases, prohibit every legacy writer, implement cross-spec contradiction checks, regenerate derived guidance, and prove the complete mechanism.
 - Requirements: `BRF-R002`-`BRF-R005`, `BRF-R087`-`BRF-R102`, including `BRF-R098a`-`BRF-R098i`
 - Files/components likely touched:
@@ -491,6 +491,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Progress
 
+- 2026-07-24: Resolved `BRF-M6-CR1` through `BRF-M6-CR4` with an independent immutable cross-spec selector registry, one-write legacy migration/cancellation with terminal idempotency, complete evidence-backed public result projection, explicit risk-boundary authorization and bounded correction authority, and a single public resume path used by authoring, correction, implementation, review, and verification proof. Focused automation suites pass; M6 is review-requested for R2.
+- 2026-07-24: M6 R1 review-resolution implementation started for `BRF-M6-CR1` through `BRF-M6-CR4`. The proof-first correction is limited to an independent selector registry, atomic legacy cancellation, complete tracked public results, and one deterministic public orchestration/resume composition.
 - 2026-07-24: Code-review M6 R1 requested changes in `BRF-M6-CR1` through `BRF-M6-CR4`: cross-spec completeness is self-derived, legacy off is a two-write nonterminal hazard and rejects terminal legacy state, public results omit tracked evidence, and public correction/composed deterministic proof is absent. M6 is resolution-needed. This direct review is isolated and did not start correction.
 - 2026-07-24: M6 implementation completed the atomic public cutover. Current and legacy command forms now resolve through the unified writer, authoring/implementation/verification authority remains risk-scoped, legacy status is read-only, legacy off migrates once before cancellation, exact cross-spec dispositions fail closed, public guidance uses one mechanism, and explicit-path CI deterministically selects all four automation proof suites. Canonical skills, temporary generated adapters, selected CI, selector regressions, and repository broad smoke pass; M6 is review-requested.
 - 2026-07-24: M6 implementation started from the approved test-spec handoff after M5 R8 closed the final non-public integration milestone. The scope is the atomic public cutover: unified current and legacy command routing, legacy-writer prohibition, exact cross-spec contradiction proof, public guidance alignment, temporary adapter generation, and composed integration validation.
@@ -661,6 +663,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- M6 R1 resolution failed proof-first for the missing independent selector, two-write legacy cancellation, terminal legacy error, absent public evidence, and missing public resume/authorization surfaces. The corrected slice passes 67 engine, 68 automation-validator, 60 state/recovery, and 16 policy tests plus Python compilation and diff checks. Review structure and closeout validate 61 reviews and all 96 findings resolved; change metadata and explicit lifecycle synchronization pass with the existing merge-language warning. Selected CI passes all 12 checks, and the final repository broad-smoke run passes all 12 checks in 241 seconds. No public skill, generated adapter, external-action, credential, network, PR, or publication surface changed in this correction.
 - 2026-07-24 code-review M6 R1: focused independent reruns passed 63 workflow-engine, 67 automation-validator, 60 state, and 16 policy tests. Temporary-repository challenges still reproduced four uncovered gaps: a deleted canonical ledger row passed, interrupted legacy off left an active unified run, terminal legacy off raised, and a public plan-review result had no canonical-position source or tracked transition/artifact evidence. Source/test inspection also found no public correction capability path or T28/T30 composed repeat/reverse-order proof.
 
 - M6 proof-first tests failed before the public composition APIs, unified control-command routing, compatibility adapter behavior, cross-spec ledger validation, and selector category existed. The completed cutover passes 63 engine, 67 automation-validator, 60 state/recovery, 259 skill-validator, 53 metadata-validator, 156 lifecycle, 104 review-artifact, 131 adapter-distribution, and 133 selector tests. Canonical skill validation and drift checks pass; manifest-derived v0.1.5 adapters build and validate in temporary output; selected CI passes 12 checks; Python compilation and diff checks pass; and the exact CMD32 repository broad-smoke command passes all 12 checks in 228 seconds after lifecycle synchronization. The public skill, workflow guide, README, and affected stage skills expose only target-driven `bounded-review-fix`; compatibility aliases remain read inputs and write only unified state; verification authority is never persisted before its concrete basis; no tracked generated adapter output, external action, PR action, credential use, or network mutation occurred.

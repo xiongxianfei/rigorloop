@@ -16,6 +16,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+import workflow_automation as workflow_automation_module
 from review_artifact_validation import REVIEW_FIX_BUDGET_LIMITS
 from workflow_automation import (
     ActivePlanContext,
@@ -687,9 +688,26 @@ Planned validation rule: proposal-exact-append
             run_id="run-public-001",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
+            pre_plan=PrePlanEvidence(
+                positions={"proposal": ("sha256:proposal",)},
+                review_outcomes={},
+                review_resolution_closed=True,
+                architecture_applicability="not-required",
+            ),
+            proposal_correction_budget=REVIEW_FIX_BUDGET_LIMITS,
         )
         state = store.read()
         self.assertEqual(started["structured_target"]["stage"], "plan-review")
+        self.assertEqual(
+            started["canonical_position_source"],
+            "authoritative-artifact-review-evidence",
+        )
+        self.assertEqual(
+            started["latest_evidence_identities"],
+            {"proposal": "sha256:proposal"},
+        )
+        self.assertEqual(started["transitions_attempted"], [])
+        self.assertEqual(started["artifacts_changed"], [])
         self.assertEqual(state.automation["mechanism"], "bounded-review-fix")
         self.assertEqual(
             [
@@ -697,6 +715,21 @@ Planned validation rule: proposal-exact-append
                 for parent in state.automation["parent_authorizations"].values()
             ],
             ["authoring"],
+        )
+        authoring_parent = next(
+            iter(state.automation["parent_authorizations"].values())
+        )
+        self.assertEqual(
+            authoring_parent["allowed_capability_kinds"],
+            [
+                "proposal-review",
+                "proposal-correction",
+                "post-proposal-authoring",
+            ],
+        )
+        self.assertEqual(
+            authoring_parent["correction_budget"],
+            REVIEW_FIX_BUDGET_LIMITS,
         )
         self.assertEqual(state.automation["effective_capabilities"], {})
         self.assertNotIn("autoprogression", state.document["workflow"])
@@ -710,6 +743,12 @@ Planned validation rule: proposal-exact-append
                 run_id="run-public-002",
                 actor="user",
                 occurred_at="2026-07-24T00:01:00Z",
+                pre_plan=PrePlanEvidence(
+                    positions={"proposal": ("sha256:proposal",)},
+                    review_outcomes={},
+                    review_resolution_closed=True,
+                    architecture_applicability="not-required",
+                ),
             )
 
         verify_temp = tempfile.TemporaryDirectory()
@@ -734,6 +773,12 @@ Planned validation rule: proposal-exact-append
             run_id="run-public-verify",
             actor="user",
             occurred_at="2026-07-24T00:03:00Z",
+            pre_plan=PrePlanEvidence(
+                positions={"proposal": ("sha256:proposal",)},
+                review_outcomes={},
+                review_resolution_closed=True,
+                architecture_applicability="not-required",
+            ),
         )
         verify_state = verify_store.read().automation
         self.assertEqual(verify_state["run"]["target"]["stage"], "verify")
@@ -773,8 +818,15 @@ Planned validation rule: proposal-exact-append
             run_id="run-public-basis",
             actor="user",
             occurred_at="2026-07-24T00:04:00Z",
+            pre_plan=PrePlanEvidence(
+                positions={"proposal": ("sha256:proposal",)},
+                review_outcomes={},
+                review_resolution_closed=True,
+                architecture_applicability="not-required",
+            ),
             implementation_basis=implementation_basis,
             implementation_path_roots=("scripts/", "tests/"),
+            implementation_correction_budget={"cycles": 1},
         )
         basis_state = basis_store.read().automation
         self.assertEqual(
@@ -784,12 +836,82 @@ Planned validation rule: proposal-exact-append
             ],
             ["implementation"],
         )
+        implementation_parent = next(
+            iter(basis_state["parent_authorizations"].values())
+        )
+        self.assertEqual(
+            implementation_parent["allowed_capability_kinds"],
+            ["implementation", "implementation-correction"],
+        )
         self.assertNotIn(
             "verification",
             [
                 parent["authorization_class"]
                 for parent in basis_state["parent_authorizations"].values()
             ],
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError,
+            "verification authorization basis is incomplete",
+        ):
+            workflow_automation_module.authorize_public_run(
+                verify_store,
+                "$workflow auto: verify",
+                authorization_id="authorization-verification-incomplete",
+                authorization_class="verification",
+                actor="user",
+                occurred_at="2026-07-24T00:05:00Z",
+                verification_basis={"closed_milestones_identity": "sha256:plan"},
+            )
+        with self.assertRaisesRegex(
+            AutomationContractError,
+            "legacy verify adapter must not infer authoring authority",
+        ):
+            workflow_automation_module.authorize_public_run(
+                verify_store,
+                "workflow auto-through: verify",
+                authorization_id="authorization-authoring-inferred",
+                authorization_class="authoring",
+                actor="user",
+                occurred_at="2026-07-24T00:05:30Z",
+            )
+        paused = verify_store.read()
+        paused_automation = copy.deepcopy(paused.automation)
+        paused_automation["run"]["status"] = "paused"
+        paused_automation["run"]["pause_reason"] = (
+            "verification-authorization-required"
+        )
+        verify_store.replace_automation(
+            paused_automation,
+            expected_document_identity=paused.document_identity,
+        )
+        verification_basis = {
+            "closed_milestones_identity": "sha256:closed",
+            "final_code_review_identity": "sha256:final-review",
+            "promotion_evidence_identity": "sha256:promotion",
+            "explanation_inputs_identity": "sha256:explanation",
+            "branch_state_identity": "sha256:branch",
+            "verification_commands_identity": "sha256:commands",
+        }
+        authorized = workflow_automation_module.authorize_public_run(
+            verify_store,
+            "$workflow auto: verify",
+            authorization_id="authorization-verification-current",
+            authorization_class="verification",
+            actor="user",
+            occurred_at="2026-07-24T00:06:00Z",
+            verification_basis=verification_basis,
+        )
+        self.assertEqual(authorized["stage_outcome"], "authorization-recorded")
+        resumed_state = verify_store.read().automation
+        self.assertEqual(resumed_state["run"]["status"], "active")
+        self.assertNotIn("pause_reason", resumed_state["run"])
+        self.assertEqual(
+            [
+                parent["authorization_class"]
+                for parent in resumed_state["parent_authorizations"].values()
+            ],
+            ["verification"],
         )
 
     def test_legacy_status_is_read_only_and_off_migrates_then_cancels_once(self) -> None:
@@ -845,6 +967,331 @@ Planned validation rule: proposal-exact-append
         self.assertEqual(
             snapshot.document["workflow"]["autoprogression"]["state"],
             "armed",
+        )
+
+    def test_legacy_off_is_atomic_when_the_old_second_step_would_fail(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "change.yaml"
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Atomic legacy cancellation fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                    "workflow": {
+                        "autoprogression": {
+                            "profile": "implementation-through-verify",
+                            "authorized_by": "user",
+                            "authorized_at": "2026-07-20T00:00:00Z",
+                            "change_id": "2026-07-20-example",
+                            "phase": "B",
+                            "state": "armed",
+                        }
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        store = WorkflowAutomationStateStore(path)
+
+        with patch.object(
+            store,
+            "cancel",
+            side_effect=AssertionError("legacy off must not use a second write"),
+        ):
+            result = execute_public_control_command(
+                store,
+                "workflow auto-through: off",
+                actor="user",
+                occurred_at="2026-07-24T00:01:00Z",
+            )
+
+        self.assertEqual(result["stage_outcome"], "cancelled")
+        self.assertEqual(store.read().automation["run"]["status"], "cancelled")
+
+    def test_terminal_legacy_off_is_read_only_and_idempotent(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "change.yaml"
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Terminal legacy cancellation fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                    "workflow": {
+                        "autoprogression": {
+                            "profile": "implementation-through-verify",
+                            "authorized_by": "user",
+                            "authorized_at": "2026-07-20T00:00:00Z",
+                            "change_id": "2026-07-20-example",
+                            "phase": "C",
+                            "state": "completed",
+                        }
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        store = WorkflowAutomationStateStore(path)
+        before = path.read_bytes()
+
+        result = execute_public_control_command(
+            store,
+            "workflow auto-through: off",
+            actor="user",
+            occurred_at="2026-07-24T00:01:00Z",
+        )
+
+        self.assertEqual(result["stage_outcome"], "already-completed")
+        self.assertEqual(result["run_status"], "completed")
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_public_resume_executes_stage_through_persisted_target_and_parent(
+        self,
+    ) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        change = root / "change.yaml"
+        change.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Public resume fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                }
+            ),
+            encoding="utf-8",
+        )
+        store = WorkflowAutomationStateStore(change, repository_root=root)
+        pre_plan = PrePlanEvidence(
+            positions={
+                "proposal": ("sha256:proposal",),
+                "proposal-review": ("sha256:proposal-review",),
+            },
+            review_outcomes={"proposal-review": "approved"},
+            review_resolution_closed=True,
+            architecture_applicability="not-required",
+        )
+        start_public_run(
+            store,
+            "$workflow auto: test-spec-review",
+            run_id="run-public-resume",
+            actor="user",
+            occurred_at="2026-07-24T00:00:00Z",
+            pre_plan=pre_plan,
+        )
+        basis = {
+            "proposal_identity": "sha256:proposal",
+            "approved_proposal_review_identity": "sha256:proposal-review",
+            "closed_review_resolution_identity": "sha256:resolution",
+            "stage_scope_identity": "sha256:scope",
+        }
+        inputs = {
+            **basis,
+            "proposal": "sha256:proposal",
+            "proposal-review": "sha256:proposal-review",
+        }
+
+        def invoke() -> StageExecutionResult:
+            relative = Path("specs/example.md")
+            artifact = root / relative
+            artifact.parent.mkdir(parents=True)
+            artifact.write_text(
+                (
+                    ROOT
+                    / "specs/single-bounded-review-fix-workflow-automation.md"
+                ).read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            evidence = ArtifactEvidence(
+                relative.as_posix(),
+                "sha256:" + hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            )
+            return StageExecutionResult((evidence,), {"spec": evidence})
+
+        result = workflow_automation_module.resume_public_run(
+            store,
+            "$workflow auto: test-spec-review",
+            repository_root=root,
+            stage="spec",
+            occurrence={"kind": "singleton"},
+            capability_id="cap-public-spec",
+            basis=basis,
+            affected_path_roots=("specs/",),
+            mutation_categories=("downstream-authoring-artifacts",),
+            derived_at="2026-07-24T00:01:00Z",
+            transition_id="transition-public-spec",
+            input_identities=inputs,
+            invoke_stage=invoke,
+            synchronize_canonical_state=lambda stage_result: CanonicalSyncResult(
+                "synchronized", stage_result.completion_evidence
+            ),
+            pre_plan=pre_plan,
+        )
+
+        self.assertEqual(result["stage_outcome"], "continue")
+        self.assertEqual(result["transitions_attempted"][0]["status"], "completed")
+        self.assertEqual(result["artifacts_changed"], ["specs/example.md"])
+        self.assertEqual(result["next_action"], "spec-review")
+
+    def test_public_composition_is_deterministic_and_order_independent(
+        self,
+    ) -> None:
+        def run_scenario(name: str) -> dict[str, object]:
+            with tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                path = root / "change.yaml"
+                if name == "legacy-cancel":
+                    document = {
+                        "change_id": "2026-07-20-example",
+                        "title": "Legacy deterministic fixture",
+                        "classification": "default",
+                        "risk": "medium",
+                        "review": {"status": "resolved", "unresolved_items": 0},
+                        "workflow": {
+                            "autoprogression": {
+                                "profile": "implementation-through-verify",
+                                "authorized_by": "user",
+                                "authorized_at": "2026-07-20T00:00:00Z",
+                                "change_id": "2026-07-20-example",
+                                "phase": "B",
+                                "state": "armed",
+                            }
+                        },
+                    }
+                else:
+                    document = {
+                        "change_id": "2026-07-20-example",
+                        "title": "Authoring deterministic fixture",
+                        "classification": "default",
+                        "risk": "medium",
+                        "review": {"status": "resolved", "unresolved_items": 0},
+                    }
+                path.write_text(dump_yaml(document), encoding="utf-8")
+                store = WorkflowAutomationStateStore(
+                    path, repository_root=root
+                )
+                if name == "legacy-cancel":
+                    result = execute_public_control_command(
+                        store,
+                        "workflow auto-through: off",
+                        actor="user",
+                        occurred_at="2026-07-24T00:00:00Z",
+                    )
+                else:
+                    pre_plan = PrePlanEvidence(
+                        positions={
+                            "proposal": ("sha256:proposal",),
+                            "proposal-review": ("sha256:proposal-review",),
+                        },
+                        review_outcomes={"proposal-review": "approved"},
+                        review_resolution_closed=True,
+                        architecture_applicability="not-required",
+                    )
+                    start_public_run(
+                        store,
+                        "$workflow auto: test-spec-review",
+                        run_id="run-deterministic",
+                        actor="user",
+                        occurred_at="2026-07-24T00:00:00Z",
+                        pre_plan=pre_plan,
+                    )
+                    basis = {
+                        "proposal_identity": "sha256:proposal",
+                        "approved_proposal_review_identity":
+                            "sha256:proposal-review",
+                        "closed_review_resolution_identity":
+                            "sha256:resolution",
+                        "stage_scope_identity": "sha256:scope",
+                    }
+
+                    def invoke() -> StageExecutionResult:
+                        relative = Path("specs/example.md")
+                        artifact = root / relative
+                        artifact.parent.mkdir(parents=True)
+                        artifact.write_text(
+                            (
+                                ROOT
+                                / "specs/single-bounded-review-fix-workflow-automation.md"
+                            ).read_text(encoding="utf-8"),
+                            encoding="utf-8",
+                        )
+                        evidence = ArtifactEvidence(
+                            relative.as_posix(),
+                            "sha256:"
+                            + hashlib.sha256(artifact.read_bytes()).hexdigest(),
+                        )
+                        return StageExecutionResult(
+                            (evidence,), {"spec": evidence}
+                        )
+
+                    result = workflow_automation_module.resume_public_run(
+                        store,
+                        "$workflow auto: test-spec-review",
+                        repository_root=root,
+                        stage="spec",
+                        occurrence={"kind": "singleton"},
+                        capability_id="cap-deterministic",
+                        basis=basis,
+                        affected_path_roots=("specs/",),
+                        mutation_categories=(
+                            "downstream-authoring-artifacts",
+                        ),
+                        derived_at="2026-07-24T00:01:00Z",
+                        transition_id="transition-deterministic",
+                        input_identities={
+                            **basis,
+                            "proposal": "sha256:proposal",
+                            "proposal-review": "sha256:proposal-review",
+                        },
+                        invoke_stage=invoke,
+                        synchronize_canonical_state=lambda stage_result:
+                            CanonicalSyncResult(
+                                "synchronized",
+                                stage_result.completion_evidence,
+                            ),
+                        pre_plan=pre_plan,
+                    )
+                status_before = path.read_bytes()
+                status = execute_public_control_command(
+                    store,
+                    "$workflow auto: status",
+                    actor="user",
+                    occurred_at="2026-07-24T00:02:00Z",
+                )
+                self.assertEqual(path.read_bytes(), status_before)
+                return {
+                    "result": result,
+                    "status": status,
+                    "automation": store.read().automation,
+                }
+
+        def run_order(order: tuple[str, ...]) -> dict[str, dict[str, object]]:
+            return {name: run_scenario(name) for name in order}
+
+        declared = ("authoring", "legacy-cancel")
+        first = run_order(declared)
+        repeated = run_order(declared)
+        reversed_result = run_order(tuple(reversed(declared)))
+
+        self.assertEqual(first, repeated)
+        self.assertEqual(first, reversed_result)
+        self.assertEqual(
+            first["authoring"]["result"]["external_actions"],
+            "prohibited",
+        )
+        self.assertEqual(
+            first["legacy-cancel"]["result"]["external_actions"],
+            "prohibited",
         )
 
     def test_target_occurrence_and_completion_are_bound_before_persistence(self) -> None:
@@ -2978,14 +3425,12 @@ Planned validation rule: proposal-exact-append
             )
             return StageExecutionResult((evidence,), {"proposal": evidence})
 
-        result = coordinate_non_public_authoring_stage(
-            invocation_context="non-public-test-harness",
-            target_stage="spec",
+        result = workflow_automation_module.resume_public_run(
             store=store,
+            command="$workflow auto: spec",
             repository_root=store.repository_root,
-            parent_authorization_id="auth-correction",
-            capability_id="cap-correction-transaction",
             stage="proposal",
+            capability_id="cap-correction-transaction",
             occurrence={"kind": "singleton"},
             basis=basis,
             affected_path_roots=("docs/proposals/",),
@@ -3004,7 +3449,13 @@ Planned validation rule: proposal-exact-append
                 architecture_applicability="not-required",
             ),
         )
-        self.assertEqual((result.coordination.status, result.route.next_stage), ("completed", "proposal-review"))
+        self.assertEqual(
+            (
+                result["transitions_attempted"][-1]["status"],
+                result["next_action"],
+            ),
+            ("completed", "proposal-review"),
+        )
         persisted = store.read().automation
         self.assertEqual(persisted["transition_receipts"]["transition-correction-001"]["status"], "completed")
         self.assertEqual(persisted["effective_capabilities"]["cap-correction-transaction"]["status"], "consumed")
@@ -3531,13 +3982,11 @@ Validation evidence: pending
             encoding="utf-8",
         )
 
-        result = coordinate_non_public_implementation_correction(
-            invocation_context="non-public-test-harness",
-            target_stage="code-review",
-            target_milestone_id="M2",
+        result = workflow_automation_module.resume_public_run(
             store=store,
+            command="$workflow auto: code-review",
             repository_root=store.repository_root,
-            parent_authorization_id=parent["authorization_id"],
+            stage="review-resolution",
             capability_id="cap-implementation-correction-m2-r1",
             review_record_path=review.relative_to(
                 store.repository_root
@@ -3569,12 +4018,11 @@ Validation evidence: pending
         self.assertIn("Open findings: None", review_log.read_text())
         self.assertEqual(
             (
-                result.coordination.status,
-                result.route.status,
-                result.route.next_stage,
-                result.route.next_milestone_id,
+                result["transitions_attempted"][-1]["status"],
+                result["stage_outcome"],
+                result["next_action"],
             ),
-            ("completed", "continue", "code-review", "M2"),
+            ("completed", "continue", "code-review"),
         )
         persisted = store.read().automation
         assert persisted is not None
@@ -4032,15 +4480,12 @@ Open findings: None
                 },
             )
 
-        result = coordinate_non_public_implementation_stage(
-            invocation_context="non-public-test-harness",
-            target_stage="verify",
-            target_milestone_id=None,
+        result = workflow_automation_module.resume_public_run(
             store=store,
+            command="$workflow auto: verify",
             repository_root=store.repository_root,
-            parent_authorization_id="authorization-authoring-001",
-            capability_id="capability-implementation-M2",
             stage="implement",
+            capability_id="capability-implementation-M2",
             occurrence={"kind": "milestone", "milestone_id": "M2"},
             basis=basis,
             affected_path_roots=("scripts/", "docs/plans/"),
@@ -4062,14 +4507,13 @@ Open findings: None
                 "synchronized", execution.completion_evidence
             ),
         )
-        self.assertEqual(result.coordination.status, "completed")
         self.assertEqual(
             (
-                result.route.status,
-                result.route.next_stage,
-                result.route.next_milestone_id,
+                result["transitions_attempted"][-1]["status"],
+                result["stage_outcome"],
+                result["next_action"],
             ),
-            ("continue", "code-review", "M2"),
+            ("completed", "continue", "code-review"),
         )
         persisted = store.read().automation
         assert persisted is not None
@@ -4188,15 +4632,12 @@ Open findings: None
                 },
             )
 
-        result = coordinate_non_public_implementation_stage(
-            invocation_context="non-public-test-harness",
-            target_stage="verify",
-            target_milestone_id=None,
+        result = workflow_automation_module.resume_public_run(
             store=store,
+            command="$workflow auto: verify",
             repository_root=store.repository_root,
-            parent_authorization_id="authorization-authoring-001",
-            capability_id="capability-code-review-M2",
             stage="code-review",
+            capability_id="capability-code-review-M2",
             occurrence={"kind": "milestone", "milestone_id": "M2"},
             basis=basis,
             affected_path_roots=(
@@ -4220,11 +4661,10 @@ Open findings: None
         )
         self.assertEqual(
             (
-                result.route.status,
-                result.route.next_stage,
-                result.route.next_milestone_id,
+                result["stage_outcome"],
+                result["next_action"],
             ),
-            ("continue", "implement", "M3"),
+            ("continue", "implement"),
         )
 
     def test_verify_integration_requires_holistic_closeout_and_stops_before_pr(self) -> None:
@@ -4619,15 +5059,12 @@ Open findings: None
                         "--show-toplevel",
                     )
                 )
-            result = coordinate_non_public_implementation_stage(
-                invocation_context="non-public-test-harness",
-                target_stage="verify",
-                target_milestone_id=None,
+            result = workflow_automation_module.resume_public_run(
                 store=store,
+                command="$workflow auto: verify",
                 repository_root=store.repository_root,
                 verification_basis_paths=verification_basis_paths,
                 code_state_provider=code_state_provider,
-                parent_authorization_id="authorization-verification-001",
                 capability_id="capability-verification-001",
                 stage="verify",
                 occurrence={"kind": "final"},
@@ -4645,12 +5082,12 @@ Open findings: None
             )
         self.assertEqual(
             (
-                result.coordination.status,
-                result.route.status,
-                result.route.next_stage,
-                result.route.external_action_performed,
+                result["transitions_attempted"][-1]["status"],
+                result["stage_outcome"],
+                result["next_action"],
+                result["external_actions"],
             ),
-            ("completed", "target-reached", "pr", False),
+            ("completed", "target-reached", "pr", "prohibited"),
         )
 
     def test_verify_failure_pauses_durably_without_automatic_repair(self) -> None:
