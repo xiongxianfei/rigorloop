@@ -2139,6 +2139,10 @@ def coordinate_non_public_implementation_stage(
         raise AutomationContractError(
             "non-public implementation harness is required"
         )
+    try:
+        repository_root = store.require_repository_root(repository_root)
+    except StateContractError as error:
+        raise AutomationContractError(str(error)) from error
     verification_readiness: VerificationReadiness | None = None
     if coordination.get("stage") in {
         WorkflowStage.EXPLAIN_CHANGE.value,

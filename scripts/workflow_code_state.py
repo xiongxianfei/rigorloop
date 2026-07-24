@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
@@ -413,6 +414,10 @@ class GitCodeStateAnchorResolver:
             "--verify",
             f"{reviewed_revision}^{{commit}}",
         ).decode("ascii").strip()
+        if reviewed_revision != reviewed:
+            raise CodeStateError(
+                "reviewed revision must be a canonical commit identity"
+            )
         base = GitCodeStateProvider._git(
             root, "merge-base", target, reviewed
         ).decode("ascii").strip()
@@ -454,27 +459,35 @@ def resolve_canonical_code_state(
     """Resolve Git state internally; allow injection only outside Git."""
 
     root = repository_root.resolve()
-    if test_provider is not None and not (root / ".git").exists():
-        if not getattr(test_provider, "test_only", False):
-            raise CodeStateError(
-                "non-Git repository requires an explicit test-only code-state provider"
-            )
-        snapshot = test_provider.snapshot(root)
-        if snapshot.reviewed_revision != reviewed_revision:
-            raise CodeStateError(
-                "test-only code-state provider reviewed revision is stale"
-            )
-        return snapshot
-    git_probe = subprocess.run(
-        ("git", "-C", str(root), "rev-parse", "--is-inside-work-tree"),
-        check=False,
-        capture_output=True,
-    )
+    try:
+        git_probe = subprocess.run(
+            ("git", "-C", str(root), "rev-parse", "--show-toplevel"),
+            check=False,
+            capture_output=True,
+            env={**os.environ, "LC_ALL": "C", "LANG": "C"},
+        )
+    except OSError as error:
+        raise CodeStateError(
+            "cannot classify repository for canonical code state"
+        ) from error
     if git_probe.returncode == 0:
+        try:
+            git_root_value = git_probe.stdout.decode("utf-8").strip()
+            if not git_root_value:
+                raise CodeStateError(
+                    "canonical Git repository root is invalid"
+                )
+            git_root = Path(git_root_value).resolve()
+        except (OSError, UnicodeError) as error:
+            raise CodeStateError(
+                "canonical Git repository root is invalid"
+            ) from error
         if test_provider is not None:
             raise CodeStateError(
                 "test-only code-state provider is prohibited for Git repositories"
             )
+        if git_root != root:
+            raise CodeStateError("repository root does not match Git root")
         anchor = GitCodeStateAnchorResolver().resolve(
             root,
             change_id=change_id,
@@ -483,6 +496,11 @@ def resolve_canonical_code_state(
             lifecycle_evidence_paths=lifecycle_evidence_paths,
         )
         return GitCodeStateProvider(anchor=anchor).snapshot(root)
+    diagnostic = git_probe.stderr.decode("utf-8", errors="replace").lower()
+    if "not a git repository" not in diagnostic:
+        raise CodeStateError(
+            "cannot classify repository for canonical code state"
+        )
     if test_provider is None or not getattr(test_provider, "test_only", False):
         raise CodeStateError(
             "non-Git repository requires an explicit test-only code-state provider"
