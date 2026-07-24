@@ -2358,6 +2358,7 @@ def coordinate_non_public_implementation_correction(
     derived_at: str,
     transition_id: str,
     active_plan: ActivePlanContext,
+    previously_observed: Mapping[str, str] | None = None,
 ) -> ImplementationCoordinationResult:
     """Execute one closed reviewer-owned correction and require fresh rereview."""
 
@@ -2632,6 +2633,7 @@ def coordinate_non_public_implementation_correction(
             ),
             repository_root=repository_root,
             active_plan=active_plan,
+            previously_observed=previously_observed,
         )
     except Exception:
         for path, content in reversed(tuple(original_bytes.items())):
@@ -3116,6 +3118,8 @@ def start_public_run(
     implementation_path_roots: Iterable[str] = (),
     implementation_correction_budget: Mapping[str, int] | None = None,
     verification_basis: Mapping[str, Any] | None = None,
+    verification_basis_paths: Mapping[str, Any] | None = None,
+    code_state_provider: CodeStateProvider | None = None,
 ) -> dict[str, Any]:
     """Persist one new public target and its currently valid consent envelope."""
 
@@ -3235,6 +3239,22 @@ def start_public_run(
             raise AutomationContractError(
                 "verification authorization basis is incomplete"
             )
+        if verification_basis_paths is None:
+            raise AutomationContractError(
+                "repository-backed verification basis is required"
+            )
+        try:
+            repository_root = store.require_repository_root(
+                store.repository_root
+            )
+        except StateContractError as error:
+            raise AutomationContractError(str(error)) from error
+        readiness = resolve_verification_readiness(
+            repository_root=repository_root,
+            basis=verification_basis,
+            basis_paths=verification_basis_paths,
+            code_state_provider=code_state_provider,
+        )
         authorization_id = f"authorization-verification-{run_id}"
         parents[authorization_id] = create_parent_authorization(
             authorization_id=authorization_id,
@@ -3246,7 +3266,7 @@ def start_public_run(
             allowed_capability_kinds=(CapabilityKind.VERIFICATION.value,),
             maximum_path_roots=(f"docs/changes/{change_id}/",),
             maximum_mutation_categories=("verification-evidence",),
-            verification_basis=verification_basis,
+            verification_basis=readiness.basis_identities,
         )
 
     automation = {
@@ -3298,6 +3318,9 @@ def authorize_public_run(
     implementation_path_roots: Iterable[str] = (),
     implementation_correction_budget: Mapping[str, int] | None = None,
     verification_basis: Mapping[str, Any] | None = None,
+    repository_root: Path | None = None,
+    verification_basis_paths: Mapping[str, Any] | None = None,
+    code_state_provider: CodeStateProvider | None = None,
 ) -> dict[str, Any]:
     """Add one current risk-class consent envelope to an existing public run."""
 
@@ -3424,6 +3447,20 @@ def authorize_public_run(
             raise AutomationContractError(
                 "verification authorization basis is incomplete"
             )
+        if repository_root is None or verification_basis_paths is None:
+            raise AutomationContractError(
+                "repository-backed verification basis is required"
+            )
+        try:
+            repository_root = store.require_repository_root(repository_root)
+        except StateContractError as error:
+            raise AutomationContractError(str(error)) from error
+        readiness = resolve_verification_readiness(
+            repository_root=repository_root,
+            basis=verification_basis,
+            basis_paths=verification_basis_paths,
+            code_state_provider=code_state_provider,
+        )
         parent = create_parent_authorization(
             authorization_id=authorization_id,
             authorization_class=auth_class.value,
@@ -3434,7 +3471,7 @@ def authorize_public_run(
             allowed_capability_kinds=(CapabilityKind.VERIFICATION.value,),
             maximum_path_roots=(f"docs/changes/{change_id}/",),
             maximum_mutation_categories=("verification-evidence",),
-            verification_basis=verification_basis,
+            verification_basis=readiness.basis_identities,
         )
     replacement = copy.deepcopy(snapshot.automation)
     replacement["parent_authorizations"][authorization_id] = parent
@@ -3530,44 +3567,74 @@ def resume_public_run(
         raise AutomationContractError(
             "public resume selects parent authorization from durable state"
         )
+    if "previously_observed" in request:
+        raise AutomationContractError(
+            "public resume selects observed identities from durable state"
+        )
+    observed = snapshot.automation.get("observed_identities")
+    if not isinstance(observed, Mapping) or any(
+        not isinstance(name, str)
+        or not isinstance(identity, str)
+        or not identity
+        for name, identity in observed.items()
+    ):
+        raise AutomationContractError(
+            "public resume durable observed identities are invalid"
+        )
     request["parent_authorization_id"] = parent_id
+    request["previously_observed"] = dict(observed)
     request["stage"] = stage
-    if policy.capability_kind == CapabilityKind.IMPLEMENTATION_CORRECTION:
-        request.pop("stage", None)
-        target_occurrence = target.get("occurrence")
-        milestone_id = (
-            target_occurrence.get("milestone_id")
-            if isinstance(target_occurrence, Mapping)
-            else None
-        )
-        coordinated = coordinate_public_implementation_correction(
-            command=command,
-            target_milestone_id=milestone_id,
-            store=store,
-            repository_root=repository_root,
-            **request,
-        )
-    elif policy.required_authorization_class == AuthorizationClass.AUTHORING:
-        coordinated = coordinate_public_authoring_stage(
-            command=command,
-            store=store,
-            repository_root=repository_root,
-            **request,
-        )
-    else:
-        target_occurrence = target.get("occurrence")
-        target_milestone_id = (
-            target_occurrence.get("milestone_id")
-            if isinstance(target_occurrence, Mapping)
-            else None
-        )
-        coordinated = coordinate_public_implementation_stage(
-            command=command,
-            target_milestone_id=target_milestone_id,
-            store=store,
-            repository_root=repository_root,
-            **request,
-        )
+    try:
+        if policy.capability_kind == CapabilityKind.IMPLEMENTATION_CORRECTION:
+            request.pop("stage", None)
+            target_occurrence = target.get("occurrence")
+            milestone_id = (
+                target_occurrence.get("milestone_id")
+                if isinstance(target_occurrence, Mapping)
+                else None
+            )
+            coordinated = coordinate_public_implementation_correction(
+                command=command,
+                target_milestone_id=milestone_id,
+                store=store,
+                repository_root=repository_root,
+                **request,
+            )
+        elif policy.required_authorization_class == AuthorizationClass.AUTHORING:
+            coordinated = coordinate_public_authoring_stage(
+                command=command,
+                store=store,
+                repository_root=repository_root,
+                **request,
+            )
+        else:
+            target_occurrence = target.get("occurrence")
+            target_milestone_id = (
+                target_occurrence.get("milestone_id")
+                if isinstance(target_occurrence, Mapping)
+                else None
+            )
+            coordinated = coordinate_public_implementation_stage(
+                command=command,
+                target_milestone_id=target_milestone_id,
+                store=store,
+                repository_root=repository_root,
+                **request,
+            )
+    except AutomationContractError as error:
+        if "canonical-state-mismatch:" not in str(error):
+            raise
+        replacement = copy.deepcopy(snapshot.automation)
+        replacement["run"]["status"] = "paused"
+        replacement["run"]["pause_reason"] = "canonical-state-mismatch"
+        try:
+            store.replace_automation(
+                replacement,
+                expected_document_identity=snapshot.document_identity,
+            )
+        except StateContractError as state_error:
+            raise AutomationContractError(str(state_error)) from state_error
+        raise
     projection = store.status()
     result = _public_command_result(
         projection,
