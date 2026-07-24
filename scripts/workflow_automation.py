@@ -68,8 +68,10 @@ from workflow_automation_state import (
     verify_transition_completion,
 )
 from workflow_code_state import (
+    CanonicalCodeState,
     CodeStateError,
     CodeStateProvider,
+    resolve_canonical_code_state,
 )
 
 
@@ -78,6 +80,9 @@ LEGACY_COMMAND_RE = re.compile(r"^workflow\s+auto-through:\s*(?P<value>[a-z][a-z
 MILESTONE_HEADER_RE = re.compile(r"^###\s+(?P<id>M[0-9]+)\.\s+(?P<title>.+?)\s*$")
 MILESTONE_STATE_RE = re.compile(r"^-\s+Milestone state:\s*(?P<state>[a-z-]+)\s*$")
 RFC3339_UTC_RE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$")
+CHANGE_ID_RE = re.compile(
+    r"^Change ID:\s*(?P<value>[a-zA-Z0-9][a-zA-Z0-9._-]+)\s*$"
+)
 
 LEGACY_TARGETS = frozenset({"plan-review", "verify"})
 TERMINAL_MILESTONE_STATES = frozenset({"closed"})
@@ -331,9 +336,8 @@ class VerificationReadiness:
 
 def _canonical_final_code_identity(
     *,
-    repository_root: Path,
     branch_state_path: Path,
-    code_state_provider: CodeStateProvider,
+    canonical: CanonicalCodeState,
 ) -> str:
     try:
         fields = parse_stage_evidence_fields(
@@ -343,13 +347,13 @@ def _canonical_final_code_identity(
                 "Status",
                 "Final code identity",
                 "Final code paths",
+                "Final code anchor identity",
                 "Final code base revision",
                 "Final code reviewed revision",
             },
         )
         paths = json.loads(fields["Final code paths"])
-        canonical = code_state_provider.snapshot(repository_root)
-    except (StateContractError, json.JSONDecodeError, CodeStateError) as error:
+    except (StateContractError, json.JSONDecodeError) as error:
         raise AutomationContractError(
             "verification basis branch state is incomplete"
         ) from error
@@ -367,6 +371,10 @@ def _canonical_final_code_identity(
     if tuple(sorted(paths)) != canonical.paths:
         raise AutomationContractError(
             "verification basis final code path projection is incomplete"
+        )
+    if fields.get("Final code anchor identity") != canonical.anchor_identity:
+        raise AutomationContractError(
+            "verification basis final code anchor projection is stale"
         )
     if (
         fields.get("Final code base revision") != canonical.base_revision
@@ -388,7 +396,7 @@ def resolve_verification_readiness(
     repository_root: Path,
     basis: Mapping[str, Any],
     basis_paths: Mapping[str, Any],
-    code_state_provider: CodeStateProvider,
+    code_state_provider: CodeStateProvider | None = None,
 ) -> VerificationReadiness:
     """Resolve verification authority only from current repository evidence."""
 
@@ -407,18 +415,16 @@ def resolve_verification_readiness(
         artifacts[name] = artifact
         identities[name] = identity
 
+    plan_text_value = artifacts["closed_milestones_identity"].read_text(
+        encoding="utf-8"
+    )
     plan = ActivePlanContext.from_text(
-        artifacts["closed_milestones_identity"].read_text(encoding="utf-8"),
+        plan_text_value,
         plan_identity=identities["closed_milestones_identity"],
     )
     if not _all_implementation_milestones_closed(plan):
         raise AutomationContractError("verification basis milestones are open")
 
-    final_code_identity = _canonical_final_code_identity(
-        repository_root=repository_root,
-        branch_state_path=artifacts["branch_state_identity"],
-        code_state_provider=code_state_provider,
-    )
     review_path = artifacts["final_code_review_identity"]
     occurrence = _canonical_review_occurrence(
         review_path,
@@ -446,6 +452,7 @@ def resolve_verification_readiness(
                 "final_validation_selection",
                 "generated_and_derived_artifacts",
                 "cross_milestone_scope",
+                "Reviewed commit",
                 "Final code identity",
             },
         )
@@ -453,6 +460,35 @@ def resolve_verification_readiness(
         raise AutomationContractError(
             "verification basis final review is incomplete"
         ) from error
+    change_ids = {
+        match.group("value")
+        for line in plan_text_value.splitlines()
+        if (match := CHANGE_ID_RE.match(line.strip())) is not None
+    }
+    if len(change_ids) != 1:
+        raise AutomationContractError(
+            "verification basis plan change identity is invalid"
+        )
+    try:
+        canonical = resolve_canonical_code_state(
+            repository_root=repository_root,
+            change_id=next(iter(change_ids)),
+            reviewed_revision=review_fields["Reviewed commit"],
+            final_review_id=review_fields["Review ID"],
+            lifecycle_evidence_paths=frozenset(
+                artifact.relative_to(repository_root.resolve()).as_posix()
+                for artifact in artifacts.values()
+            ),
+            test_provider=code_state_provider,
+        )
+    except (CodeStateError, ValueError) as error:
+        raise AutomationContractError(
+            "verification basis canonical code-state anchor is invalid"
+        ) from error
+    final_code_identity = _canonical_final_code_identity(
+        branch_state_path=artifacts["branch_state_identity"],
+        canonical=canonical,
+    )
     if (
         review.stage != WorkflowStage.CODE_REVIEW.value
         or review.status not in {"approved", "clean-with-notes"}
@@ -2112,7 +2148,6 @@ def coordinate_non_public_implementation_stage(
         if (
             not isinstance(basis, Mapping)
             or verification_basis_paths is None
-            or code_state_provider is None
         ):
             raise AutomationContractError(
                 "repository-backed verification basis is required"

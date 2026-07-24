@@ -83,6 +83,8 @@ FIXTURES = _load_fixtures()
 class FixtureCodeStateProvider:
     """Trusted non-Git provider whose path domain is fixture-owned."""
 
+    test_only = True
+
     def __init__(self, paths: tuple[str, ...]) -> None:
         self.paths = paths
 
@@ -99,6 +101,7 @@ class FixtureCodeStateProvider:
             for path in self.paths
         )
         return CanonicalCodeState(
+            anchor_identity="sha256:fixture-anchor",
             base_revision="fixture-base",
             reviewed_revision="fixture-reviewed",
             entries=entries,
@@ -3359,6 +3362,7 @@ review_resolutions: closed
 final_validation_selection: reviewed
 generated_and_derived_artifacts: current
 cross_milestone_scope: reviewed
+Reviewed commit: fixture-reviewed
 Final code identity: {final_code_identity}
 """,
         )
@@ -3393,6 +3397,7 @@ Open findings: None
             "Stage: branch-state\nStatus: current\n"
             f"Final code identity: {final_code_identity}\n"
             f"Final code paths: {json.dumps([source_path])}\n"
+            f"Final code anchor identity: {final_code_state.anchor_identity}\n"
             f"Final code base revision: {final_code_state.base_revision}\n"
             f"Final code reviewed revision: {final_code_state.reviewed_revision}\n",
         )
@@ -3425,6 +3430,30 @@ Open findings: None
         )
         self.assertTrue(readiness.final_review_clean)
         self.assertTrue(readiness.explanation_current)
+
+        branch_file = root / branch_path
+        original_branch = branch_file.read_text(encoding="utf-8")
+        branch_file.write_text(
+            original_branch.replace(
+                final_code_state.anchor_identity,
+                "sha256:stale-anchor",
+            ),
+            encoding="utf-8",
+        )
+        stale_anchor_basis = dict(basis)
+        stale_anchor_basis["branch_state_identity"] = (
+            "sha256:" + hashlib.sha256(branch_file.read_bytes()).hexdigest()
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError, "anchor projection is stale"
+        ):
+            resolve_verification_readiness(
+                repository_root=root,
+                basis=stale_anchor_basis,
+                basis_paths=paths,
+                code_state_provider=code_state_provider,
+            )
+        branch_file.write_text(original_branch, encoding="utf-8")
 
         omitted_path, _omitted_identity = artifact(
             "scripts/omitted-final-code.py",
@@ -4019,6 +4048,7 @@ review_resolutions: closed
 final_validation_selection: reviewed
 generated_and_derived_artifacts: current
 cross_milestone_scope: reviewed
+Reviewed commit: fixture-reviewed
 Final code identity: {final_code_identity}
 """,
         )
@@ -4053,6 +4083,7 @@ Open findings: None
             "Stage: branch-state\nStatus: current\n"
             f"Final code identity: {final_code_identity}\n"
             f"Final code paths: {json.dumps([final_source.path])}\n"
+            f"Final code anchor identity: {final_code_state.anchor_identity}\n"
             f"Final code base revision: {final_code_state.base_revision}\n"
             f"Final code reviewed revision: {final_code_state.reviewed_revision}\n",
         )

@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M5. Implementation Review, Correction, and Verification Integration
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M5. Implementation Review, Correction, and Verification Integration
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r4.md`
 - Review status: changes-requested; stage=code-review; round=r4
-- Remaining in-scope implementation milestones: M5 resolution and rereview, M6
-- Next stage: review-resolution M5
+- Remaining in-scope implementation milestones: M5 rereview, M6
+- Next stage: code-review M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M5-CR11
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -329,7 +329,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M5. Implementation Review, Correction, and Verification Integration
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Integrate ordered milestone implementation and code review, reviewer-owned correction, final holistic review, explanation, and verification behind the same non-public boundary.
 - Requirements: `BRF-R060`-`BRF-R067`, `BRF-R078`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -498,6 +498,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-24: Resolved `BRF-M5-CR10` with an independent Git-backed canonical code-state provider and a trusted injection seam for non-Git fixtures. Verification rejects incomplete branch projections and post-review committed, dirty, or untracked drift. Focused suites and lifecycle checks pass; the required 11-check broad smoke passes in 388 seconds on the final synchronized source. M5 is review-requested for R4 and M6 remains blocked.
 - 2026-07-24: Code-review M5 R4 classified `BRF-M5-CR10` as a failed remediation and opened `BRF-M5-CR11`. A direct tracked-branch probe showed that raw caller-selected provider anchors reduce the 96-path initiative diff to the 12-path correction commit while remaining internally valid. M5 is resolution-needed and M6 remains blocked.
 - 2026-07-24: Code-review M5 R4 recording validation passed review structure, lifecycle, metadata, guide, diff, and all 11 required repository broad-smoke checks in 414 seconds. The review remains isolated; `BRF-M5-CR11` requires review-resolution before rereview.
+- 2026-07-24: Resolved `BRF-M5-CR11` with repository-owned default-branch/merge-base anchor derivation, exact final-review commit binding, immutable anchor projection, target-ref drift detection, and Git-runtime rejection of test-provider substitution. Seven provider regressions and all automation suites pass; the final synchronized repository broad-smoke suite passes all 11 checks in 402 seconds. M5 is review-requested for R5 and M6 remains blocked.
 - 2026-07-24: Resolved `BRF-M5-CR1` through `BRF-M5-CR5` with an integrated reviewer-owned correction transaction, repository-derived verification readiness, fail-closed stage evidence and plan parsing, canonical latest-review containment, and truthful review-resolution gates. Focused suites and the selector-selected lifecycle/guide checks pass; final-source repository broad smoke passes all 12 checks in 271 seconds. M5 is review-requested for R2 and M6 remains blocked.
 - 2026-07-24: Code-review M5 R2 classified the attempted remediations for `BRF-M5-CR1`, `BRF-M5-CR2`, `BRF-M5-CR4`, and `BRF-M5-CR5` as failed and opened `BRF-M5-CR6` through `BRF-M5-CR9`. The executable correction path compresses the preserved recipe vocabulary and stage-policy mutation bound; verification currentness is not tied to final code and lacks T18's external-action traps; review chronology is title-sensitive; and correction can manufacture global resolution closeout. M5 is resolution-needed and M6 remains blocked.
 - 2026-07-24: M5 R1 review-resolution implementation started for the five accepted findings. The correction is proof-first and limited to repository-backed implementation correction, authoritative stage evidence, canonical review currentness and resolution, and identity-bound verification closeout; M6 public routing remains out of scope.

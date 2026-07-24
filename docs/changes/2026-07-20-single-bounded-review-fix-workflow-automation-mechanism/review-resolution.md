@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -47,11 +47,12 @@ Review closeout: code-review-m4-r15
 Review closeout: code-review-m5-r1
 Review closeout: code-review-m5-r2
 Review closeout: code-review-m5-r3
+Review closeout: code-review-m5-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`
-- Findings resolved: 88
-- Unresolved findings: 1
-- Current result: Code-review M5 R4 classified `BRF-M5-CR10` as a failed remediation and opened residual finding `BRF-M5-CR11`. M5 is resolution-needed and M6 remains blocked.
+- Findings resolved: 89
+- Unresolved findings: 0
+- Current result: The accepted correction for `BRF-M5-CR11` is implemented and validated. M5 is review-requested for code-review R5; M6 remains blocked pending that review.
 
 ## Resolution Overview
 
@@ -145,7 +146,7 @@ Review closeout: code-review-m5-r3
 | BRF-M5-CR8 | accepted | resolved | Canonical milestone-review chronology now compares normalized `M<n>` occurrence identity, so renamed display titles cannot hide a later review. |
 | BRF-M5-CR9 | accepted | resolved | Bounded correction closes only its accepted findings and keeps global resolution open whenever any unrelated resolution or review-log finding remains open. |
 | BRF-M5-CR10 | accepted | resolved | Final-code currentness now comes from an independent canonical provider and branch evidence must exactly project its revisions, paths, and identity. |
-| BRF-M5-CR11 | accepted | open | The provider accepts caller-selected Git anchors, so a later valid base can omit earlier in-scope changes while every projection still matches. |
+| BRF-M5-CR11 | accepted | resolved | A repository-owned resolver now derives the default-target merge base and final-review commit anchor; Git runtime callers cannot inject alternate providers or raw ranges. |
 
 ### code-review-m5-r4
 
@@ -153,7 +154,7 @@ Review closeout: code-review-m5-r3
 
 Finding ID: BRF-M5-CR11
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
@@ -163,7 +164,7 @@ Required outcome: Bind the canonical code-state range to independently derived a
 Chosen action: Add a trusted anchor resolver, bind its immutable identity into final-review and verification basis, and make the Git provider consume the resolved anchor rather than raw caller revisions.
 Safe resolution path: Derive the base from tracked change or target-branch state, bind the reviewed revision to the exact final holistic review target, restrict non-Git providers to the test-only adapter, derive evidence exclusions from closed stage outputs, and add later-base, wrong-reviewed-revision, partial-range, stale-anchor, and runtime-provider-substitution contrasts.
 Validation target: `BRF-R043c`, `BRF-R044`, `BRF-R085`, complete-final-diff obligations, T18, and the approved independent canonical code-state architecture.
-Validation evidence: pending
+Validation evidence: `GitCodeStateAnchorResolver` discovers the repository-owned default target ref, derives its merge base with the exact commit named by canonical final-review evidence, and binds change/review/target/evidence paths into an immutable anchor. `GitCodeStateProvider` consumes only that anchor and rejects target-ref drift. `resolve_canonical_code_state` rejects test-provider substitution in Git repositories. Branch evidence must project the anchor identity. The 7 provider regressions, 56 engine tests, 16 policy tests, 60 state tests, 65 automation-validator tests, Python compilation, direct tracked-branch merge-base proof, and diff checks pass. The plan-required repository broad-smoke suite passes all 11 checks in 402 seconds on the final synchronized M5 R4 resolution source.
 auto_fix_class: none
 
 ### code-review-m5-r3
