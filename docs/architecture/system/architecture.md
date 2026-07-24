@@ -390,6 +390,11 @@ Every immutable stage-policy record projects exactly these fields:
 - `correction_policy`;
 - `stop_behavior`.
 
+`permitted_mutation_category` is stored as a non-empty immutable set despite
+the historical singular field name. A capability's actual mutation categories
+must be a subset of both that stage-local set and its parent authorization;
+capability-kind scope alone is never sufficient.
+
 The approved workflow specifications remain normative. Planning may sequence implementation but cannot add, omit, or reinterpret policy fields. Exhaustive conformance tests prove that every automatable public or internal stage has exactly one complete policy and that missing, duplicate, unknown, unsupported, or spec-inconsistent values fail closed. The first version does not add a second hand-authored YAML or JSON policy registry.
 
 Modules other than `scripts/workflow_automation_state.py` return typed decisions such as transition, authorization, capability, reconciliation, and validation results. They do not edit `change.yaml` directly.

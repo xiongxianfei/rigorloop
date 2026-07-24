@@ -465,7 +465,7 @@ class StagePolicy:
     occurrence_rule: OccurrenceKind
     required_authorization_class: AuthorizationClass
     capability_kind: CapabilityKind
-    permitted_mutation_category: MutationCategory
+    permitted_mutation_category: frozenset[MutationCategory]
     applicability_rule: ApplicabilityRule
     prerequisite_rule: str
     required_input_identities: frozenset[str]
@@ -484,7 +484,7 @@ def _policy(
     occurrence: OccurrenceKind,
     authorization: AuthorizationClass,
     capability: CapabilityKind,
-    mutation: MutationCategory,
+    mutation: MutationCategory | frozenset[MutationCategory],
     applicability: ApplicabilityRule,
     prerequisite: str,
     inputs: tuple[str, ...],
@@ -516,7 +516,11 @@ def _policy(
         occurrence_rule=occurrence,
         required_authorization_class=authorization,
         capability_kind=capability,
-        permitted_mutation_category=mutation,
+        permitted_mutation_category=(
+            mutation
+            if isinstance(mutation, frozenset)
+            else frozenset({mutation})
+        ),
         applicability_rule=applicability,
         prerequisite_rule=prerequisite,
         required_input_identities=frozenset(inputs),
@@ -584,7 +588,7 @@ STAGE_POLICIES: tuple[StagePolicy, ...] = (
     _policy(S.TEST_SPEC_REVIEW, (W.TEST_SPEC,), "test-spec-review", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "test-spec identity is current", ("test-spec", "plan"), "formal test-spec review is recorded", ("test-spec-review",), (W.IMPLEMENT,), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
     _policy(S.IMPLEMENT, (W.TEST_SPEC_REVIEW, W.CODE_REVIEW), "implement", O.MILESTONE, A.IMPLEMENTATION, C.IMPLEMENTATION, M.PRODUCTION_CODE, P.REQUIRED, "bound plan milestone and implementation basis are current", ("plan", "plan-review", "test-spec", "test-spec-review", "milestone"), "bound implementation exists, validation passes, and plan requests review", ("implementation-diff", "validation", "plan-handoff"), (W.CODE_REVIEW,), R.MANUAL_RECOVERY, X.NONE, B.TARGET_AWARE),
     _policy(S.CODE_REVIEW, (W.IMPLEMENT, W.REVIEW_RESOLUTION), "code-review", O.MILESTONE, A.IMPLEMENTATION, C.IMPLEMENTATION, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "bound milestone is review-requested", ("plan", "milestone", "implementation-diff", "validation"), "milestone review is approved and resolution is closed", ("code-review", "review-resolution", "plan-handoff"), (W.IMPLEMENT, W.REVIEW_RESOLUTION, W.CI_MAINTENANCE, W.FINAL_HOLISTIC_CODE_REVIEW), R.RECONCILE_ONLY, X.REVIEWER_OWNED, B.PAUSE_ON_UNSATISFIED_GATE),
-    _policy(S.REVIEW_RESOLUTION, (W.CODE_REVIEW, W.FINAL_HOLISTIC_CODE_REVIEW), "review-resolution", O.SINGLETON, A.IMPLEMENTATION, C.IMPLEMENTATION_CORRECTION, M.CHANGE_LOCAL_EVIDENCE, P.TRIGGERED, "accepted implementation findings require resolution", ("review", "finding-set", "plan"), "required findings have final dispositions and evidence", ("review-resolution",), (W.CODE_REVIEW, W.FINAL_HOLISTIC_CODE_REVIEW), R.RECONCILE_ONLY, X.REVIEWER_OWNED, B.PAUSE_ON_UNSATISFIED_GATE),
+    _policy(S.REVIEW_RESOLUTION, (W.CODE_REVIEW, W.FINAL_HOLISTIC_CODE_REVIEW), "review-resolution", O.SINGLETON, A.IMPLEMENTATION, C.IMPLEMENTATION_CORRECTION, frozenset({M.TESTS, M.PRODUCTION_CODE, M.CHANGE_LOCAL_REVIEW_EVIDENCE, M.CHANGE_LOCAL_EVIDENCE}), P.TRIGGERED, "accepted implementation findings require resolution", ("review", "finding-set", "plan"), "required findings have final dispositions and evidence", ("review-resolution",), (W.CODE_REVIEW, W.FINAL_HOLISTIC_CODE_REVIEW), R.RECONCILE_ONLY, X.REVIEWER_OWNED, B.PAUSE_ON_UNSATISFIED_GATE),
     _policy(S.CI_MAINTENANCE, (W.CODE_REVIEW,), "ci-maintenance", O.SINGLETON, A.IMPLEMENTATION, C.IMPLEMENTATION, M.TESTS, P.TRIGGERED, "approved implementation scope requires CI maintenance", ("plan", "test-spec", "implementation-scope"), "required CI proof is current", ("ci-configuration", "ci-validation"), (W.FINAL_HOLISTIC_CODE_REVIEW,), R.MANUAL_RECOVERY, X.NONE, B.PAUSE_ON_FAILURE),
     _policy(S.FINAL_HOLISTIC_CODE_REVIEW, (W.CODE_REVIEW, W.CI_MAINTENANCE, W.REVIEW_RESOLUTION), "code-review", O.FINAL, A.IMPLEMENTATION, C.IMPLEMENTATION, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "all milestone reviews and resolution are closed", ("plan", "milestone-reviews", "review-resolution"), "final holistic code review is clean", ("final-code-review",), (W.REVIEW_RESOLUTION, W.EXPLAIN_CHANGE), R.RECONCILE_ONLY, X.REVIEWER_OWNED, B.PAUSE_ON_UNSATISFIED_GATE),
     _policy(S.EXPLAIN_CHANGE, (W.FINAL_HOLISTIC_CODE_REVIEW,), "explain-change", O.FINAL, A.VERIFICATION, C.VERIFICATION, M.VERIFICATION_EVIDENCE, P.REQUIRED, "verification basis is concrete", ("plan", "final-code-review", "implementation-diff"), "durable explanation is current", ("explain-change",), (W.VERIFY,), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_FAILURE),
@@ -611,7 +615,6 @@ def validate_policy_registry(policies: Iterable[StagePolicy]) -> list[str]:
         ("occurrence_rule", OccurrenceKind),
         ("required_authorization_class", AuthorizationClass),
         ("capability_kind", CapabilityKind),
-        ("permitted_mutation_category", MutationCategory),
         ("applicability_rule", ApplicabilityRule),
         ("retry_policy", RetryPolicy),
         ("correction_policy", CorrectionPolicy),
@@ -669,6 +672,24 @@ def validate_policy_registry(policies: Iterable[StagePolicy]) -> list[str]:
                             vocabulary_errors.append(
                                 f"policy[{index}].{field_name}.allowed_targets: unknown public target: {target}"
                             )
+        mutation_categories = policy.permitted_mutation_category
+        if (
+            not isinstance(mutation_categories, frozenset)
+            or not mutation_categories
+        ):
+            vocabulary_errors.append(
+                f"policy[{index}].permitted_mutation_category: expected non-empty immutable mutation category set"
+            )
+        else:
+            for category in mutation_categories:
+                error = _unknown_enum_error(
+                    index,
+                    "permitted_mutation_category",
+                    category,
+                    MutationCategory,
+                )
+                if error:
+                    vocabulary_errors.append(error)
     if vocabulary_errors:
         return vocabulary_errors
 
@@ -708,10 +729,17 @@ def validate_policy_registry(policies: Iterable[StagePolicy]) -> list[str]:
                 f"{policy.stage.value}.occurrence_rule: expected {expected_occurrence.value}"
             )
         allowed_mutations = CAPABILITY_MUTATION_CATEGORIES[policy.capability_kind]
-        if policy.permitted_mutation_category not in allowed_mutations:
+        if not policy.permitted_mutation_category.issubset(allowed_mutations):
+            values = ", ".join(
+                sorted(
+                    category.value
+                    for category in policy.permitted_mutation_category
+                    if isinstance(category, MutationCategory)
+                )
+            )
             errors.append(
                 f"{policy.stage.value}.permitted_mutation_category: "
-                f"{policy.permitted_mutation_category.value} exceeds {policy.capability_kind.value} capability"
+                f"{values} exceeds {policy.capability_kind.value} capability"
             )
 
     for policy in records:

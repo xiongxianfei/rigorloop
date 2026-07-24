@@ -173,6 +173,7 @@ Open findings: None
             review_r1.read_text(encoding="utf-8")
             .replace("code-review-m2-r1", "code-review-m2-r2")
             .replace("M2 R1", "M2 R2")
+            .replace("M2. Engine Slice", "M2. Renamed Engine Slice")
             .replace("Status: approved", "Status: inconclusive"),
             encoding="utf-8",
         )

@@ -474,6 +474,23 @@ def _milestone_state(path: Path, milestone_id: str) -> str | None:
     return states[0]
 
 
+def _review_applicability(
+    fields: dict[str, str],
+    *,
+    target: str,
+) -> tuple[str, str] | None:
+    reviewed_milestone = fields.get("Reviewed milestone")
+    if reviewed_milestone is not None:
+        match = re.match(r"^(M[0-9]+)(?:\.|$)", reviewed_milestone)
+        if match is None:
+            return None
+        return "milestone", match.group(1)
+    review_scope = fields.get("Review scope")
+    if review_scope is not None:
+        return "scope", review_scope
+    return "target", _strip_code(target)
+
+
 def _canonical_review_occurrence(
     review_path: Path,
     *,
@@ -530,13 +547,12 @@ def _canonical_review_occurrence(
     )
     if current_fields is None:
         return None
-    applicability = (
-        "milestone",
-        current_fields["Reviewed milestone"],
-    ) if "Reviewed milestone" in current_fields else (
-        "scope",
-        current_fields["Review scope"],
-    ) if "Review scope" in current_fields else ("target", _strip_code(review.target))
+    applicability = _review_applicability(
+        current_fields,
+        target=review.target,
+    )
+    if applicability is None:
+        return None
     for later in entries:
         if later.line <= entry.line or later.stage != review.stage:
             continue
@@ -556,16 +572,12 @@ def _canonical_review_occurrence(
         )
         if later_fields is None:
             return None
-        later_applicability = (
-            "milestone",
-            later_fields["Reviewed milestone"],
-        ) if "Reviewed milestone" in later_fields else (
-            "scope",
-            later_fields["Review scope"],
-        ) if "Review scope" in later_fields else (
-            "target",
-            _strip_code(later_review.target),
+        later_applicability = _review_applicability(
+            later_fields,
+            target=later_review.target,
         )
+        if later_applicability is None:
+            return None
         if later_applicability == applicability:
             return None
     return review, entry, resolved_log, _identity(resolved_log.read_bytes())
@@ -720,9 +732,66 @@ def _verify_implementation_stage_completion(
     if stage_name == "review-resolution":
         resolution = resolved_evidence["review-resolution"][1]
         parsed, findings = parse_formal_review_resolution(resolution)
-        if findings or parsed.closeout_status != "closed":
+        scope = capability.get("scope")
+        accepted_ids = (
+            scope.get("accepted_finding_ids")
+            if isinstance(scope, dict)
+            else None
+        )
+        review_log_relative = (
+            scope.get("review_log_path")
+            if isinstance(scope, dict)
+            else None
+        )
+        review_log = (
+            _resolve_repository_file(
+                Path(review_log_relative),
+                repository_root=repository_root,
+            )
+            if isinstance(review_log_relative, str)
+            else None
+        )
+        log_entries, log_findings = (
+            parse_formal_review_log(review_log)
+            if review_log is not None
+            else ((), ())
+        )
+        entries_by_id = {
+            entry.finding_id: entry for entry in parsed.entries
+        }
+        if (
+            findings
+            or log_findings
+            or not isinstance(accepted_ids, list)
+            or not accepted_ids
+            or len(set(accepted_ids)) != len(accepted_ids)
+            or set(accepted_ids) - set(entries_by_id)
+            or any(
+                entries_by_id[finding_id].disposition == "needs-decision"
+                or entries_by_id[finding_id].fields.get("Status") is None
+                or entries_by_id[finding_id].fields["Status"].value
+                != "resolved"
+                or entries_by_id[finding_id].fields.get(
+                    "Validation evidence"
+                )
+                is None
+                or entries_by_id[finding_id].fields[
+                    "Validation evidence"
+                ].value.strip()
+                in {"", "pending"}
+                for finding_id in accepted_ids
+            )
+            or any(
+                finding_id in entry.open_finding_ids
+                for entry in log_entries
+                for finding_id in accepted_ids
+            )
+        ):
             return None, "stage-native-review-resolution-invalid"
-        return {"review_resolution_closed": "true"}, None
+        return {
+            "review_resolution_closed": "true",
+            "global_review_resolution_status": str(parsed.closeout_status),
+        }, None
 
     if stage_name == "ci-maintenance":
         try:

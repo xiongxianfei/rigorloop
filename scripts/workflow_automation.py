@@ -325,6 +325,55 @@ class VerificationReadiness:
     explanation_current: bool
 
 
+def _final_code_identity_from_branch_evidence(
+    *,
+    repository_root: Path,
+    branch_state_path: Path,
+) -> str:
+    try:
+        fields = parse_stage_evidence_fields(
+            branch_state_path,
+            required_fields={
+                "Stage",
+                "Status",
+                "Final code identity",
+                "Final code paths",
+            },
+        )
+        paths = json.loads(fields["Final code paths"])
+    except (StateContractError, json.JSONDecodeError) as error:
+        raise AutomationContractError(
+            "verification basis branch state is incomplete"
+        ) from error
+    if (
+        fields.get("Stage") != "branch-state"
+        or fields.get("Status") != "current"
+        or not isinstance(paths, list)
+        or not paths
+        or not all(isinstance(path, str) and path for path in paths)
+        or len(set(paths)) != len(paths)
+    ):
+        raise AutomationContractError(
+            "verification basis branch state is invalid"
+        )
+    observed: list[dict[str, str]] = []
+    for relative_path in sorted(paths):
+        artifact = _resolve_repository_file(repository_root, relative_path)
+        observed.append(
+            {
+                "path": relative_path,
+                "identity": "sha256:"
+                + hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            }
+        )
+    identity = _structured_identity(observed)
+    if fields.get("Final code identity") != identity:
+        raise AutomationContractError(
+            "verification basis final code identity is stale"
+        )
+    return identity
+
+
 def resolve_verification_readiness(
     *,
     repository_root: Path,
@@ -355,6 +404,10 @@ def resolve_verification_readiness(
     if not _all_implementation_milestones_closed(plan):
         raise AutomationContractError("verification basis milestones are open")
 
+    final_code_identity = _final_code_identity_from_branch_evidence(
+        repository_root=repository_root,
+        branch_state_path=artifacts["branch_state_identity"],
+    )
     review_path = artifacts["final_code_review_identity"]
     occurrence = _canonical_review_occurrence(
         review_path,
@@ -382,6 +435,7 @@ def resolve_verification_readiness(
                 "final_validation_selection",
                 "generated_and_derived_artifacts",
                 "cross_milestone_scope",
+                "Final code identity",
             },
         )
     except StateContractError as error:
@@ -400,6 +454,7 @@ def resolve_verification_readiness(
         or review_fields.get("final_validation_selection") != "reviewed"
         or review_fields.get("generated_and_derived_artifacts") != "current"
         or review_fields.get("cross_milestone_scope") != "reviewed"
+        or review_fields.get("Final code identity") != final_code_identity
         or entry.material_finding_ids
         or entry.open_finding_ids
     ):
@@ -423,20 +478,19 @@ def resolve_verification_readiness(
         explanation.get("Stage") != "explain-change"
         or explanation.get("Status") != "current"
         or explanation.get("Final diff identity")
-        != identities["closed_milestones_identity"]
+        != final_code_identity
         or explanation.get("Final review identity")
         != identities["final_code_review_identity"]
     ):
         raise AutomationContractError("verification basis explanation is not current")
     for name, expected_stage, expected_status in (
         ("promotion_evidence_identity", "promotion", "valid"),
-        ("branch_state_identity", "branch-state", "current"),
         ("verification_commands_identity", "verification-commands", "current"),
     ):
         try:
             fields = parse_stage_evidence_fields(
                 artifacts[name],
-                required_fields={"Stage", "Status"},
+                required_fields={"Stage", "Status", "Final code identity"},
             )
         except StateContractError as error:
             raise AutomationContractError(
@@ -445,6 +499,7 @@ def resolve_verification_readiness(
         if (
             fields.get("Stage") != expected_stage
             or fields.get("Status") != expected_status
+            or fields.get("Final code identity") != final_code_identity
         ):
             raise AutomationContractError(
                 f"verification basis evidence is invalid: {name}"
@@ -498,6 +553,253 @@ def _parse_correction_json(value: str, *, label: str) -> Mapping[str, Any]:
             f"implementation correction {label} must be an object"
         )
     return parsed
+
+
+def _parse_correction_string_list(value: str, *, label: str) -> tuple[str, ...]:
+    stripped = value.strip()
+    if stripped.startswith("["):
+        try:
+            parsed = json.loads(stripped)
+        except json.JSONDecodeError as error:
+            raise AutomationContractError(
+                f"implementation correction {label} must be strict JSON"
+            ) from error
+        if (
+            not isinstance(parsed, list)
+            or not parsed
+            or not all(isinstance(item, str) and item.strip() for item in parsed)
+        ):
+            raise AutomationContractError(
+                f"implementation correction {label} must be a non-empty string list"
+            )
+        values = tuple(item.strip() for item in parsed)
+    else:
+        values = (stripped,)
+    if (
+        not values
+        or any(not value for value in values)
+        or len(set(values)) != len(values)
+    ):
+        raise AutomationContractError(
+            f"implementation correction {label} must be unique"
+        )
+    return values
+
+
+def _correction_objects(
+    value: Mapping[str, Any],
+    *,
+    singular_fields: frozenset[str],
+    collection_key: str,
+    label: str,
+) -> tuple[Mapping[str, Any], ...]:
+    if set(value) == singular_fields:
+        return (value,)
+    if set(value) != {collection_key}:
+        raise AutomationContractError(
+            f"implementation correction {label} has unknown fields"
+        )
+    items = value[collection_key]
+    if (
+        not isinstance(items, list)
+        or not items
+        or not all(isinstance(item, Mapping) for item in items)
+        or any(set(item) != singular_fields for item in items)
+    ):
+        raise AutomationContractError(
+            f"implementation correction {label} must contain closed objects"
+        )
+    return tuple(items)
+
+
+def _compile_implementation_correction_recipe(
+    finding_id: str,
+    fields: Mapping[str, str],
+) -> tuple[Mapping[str, Any], tuple[_ImplementationCorrectionOperation, ...]]:
+    """Compile one reviewer-owned finding into closed deterministic operations."""
+
+    classification = fields.get("auto_fix_class", "").strip()
+    if classification not in IMPLEMENTATION_AUTO_FIX_CLASSES - {"none"}:
+        raise AutomationContractError(
+            "implementation correction has no closed executable recipe"
+        )
+    affected_paths = _parse_correction_string_list(
+        fields.get("affected_paths", ""),
+        label="affected_paths",
+    )
+    if classification == "mechanical":
+        missing = [
+            name
+            for name in IMPLEMENTATION_MECHANICAL_FIELDS
+            if not fields.get(name, "").strip()
+        ]
+        if missing:
+            raise AutomationContractError(
+                "implementation correction mechanical recipe is incomplete"
+            )
+        kind = fields["auto_fix_kind"].strip()
+        if kind not in IMPLEMENTATION_MECHANICAL_AUTO_FIX_KINDS:
+            raise AutomationContractError(
+                "implementation correction has no closed executable recipe"
+            )
+        authority_label = "deterministic_authority"
+        validation_label = "required_validation"
+        normalized: dict[str, Any] = {
+            "auto_fix_class": classification,
+            "auto_fix_kind": kind,
+            "affected_paths": list(affected_paths),
+        }
+    else:
+        missing = [
+            name
+            for name in IMPLEMENTATION_DECLARED_SAFE_FIELDS
+            if not fields.get(name, "").strip()
+        ]
+        if missing:
+            raise AutomationContractError(
+                "implementation correction declared-safe recipe is incomplete"
+            )
+        for label in (
+            "named_inputs",
+            "named_outputs",
+            "forbidden_paths",
+            "acceptance_criteria",
+        ):
+            _parse_correction_string_list(fields[label], label=label)
+        if (
+            fields["scope_preservation_rule"].strip()
+            != "changed-paths-subset-of-affected-paths"
+            or fields["production_code_change"].strip() not in {"yes", "no"}
+            or (
+                fields["production_code_change"].strip() == "yes"
+                and not fields["behavior_test"].strip()
+            )
+        ):
+            raise AutomationContractError(
+                "implementation correction declared-safe guard is invalid"
+            )
+        forbidden = _parse_correction_string_list(
+            fields["forbidden_paths"],
+            label="forbidden_paths",
+        )
+        if any(
+            _path_is_within_roots(path, forbidden)
+            for path in affected_paths
+        ):
+            raise AutomationContractError(
+                "implementation correction affected path is forbidden"
+            )
+        authority_label = "resolution_recipe"
+        validation_label = "required_validation_commands"
+        normalized = {
+            "auto_fix_class": classification,
+            "affected_paths": list(affected_paths),
+            "resolution_recipe": _parse_correction_json(
+                fields[authority_label],
+                label=authority_label,
+            ),
+            "named_inputs": list(
+                _parse_correction_string_list(
+                    fields["named_inputs"], label="named_inputs"
+                )
+            ),
+            "named_outputs": list(
+                _parse_correction_string_list(
+                    fields["named_outputs"], label="named_outputs"
+                )
+            ),
+            "forbidden_paths": list(forbidden),
+            "acceptance_criteria": list(
+                _parse_correction_string_list(
+                    fields["acceptance_criteria"],
+                    label="acceptance_criteria",
+                )
+            ),
+            "required_validation_commands": _parse_correction_json(
+                fields[validation_label],
+                label=validation_label,
+            ),
+            "scope_preservation_rule": fields[
+                "scope_preservation_rule"
+            ].strip(),
+            "production_code_change": fields[
+                "production_code_change"
+            ].strip(),
+            "behavior_test": fields["behavior_test"].strip(),
+        }
+
+    authority = _parse_correction_json(
+        fields[authority_label],
+        label=authority_label,
+    )
+    validation = _parse_correction_json(
+        fields[validation_label],
+        label=validation_label,
+    )
+    operation_fields = frozenset(
+        {"operation", "path", "old", "new", "expected_replacements"}
+    )
+    validation_fields = frozenset({"operation", "path", "identity"})
+    authorities = _correction_objects(
+        authority,
+        singular_fields=operation_fields,
+        collection_key="operations",
+        label=authority_label,
+    )
+    validations = _correction_objects(
+        validation,
+        singular_fields=validation_fields,
+        collection_key="checks",
+        label=validation_label,
+    )
+    validation_by_path = {
+        item.get("path"): item for item in validations
+    }
+    if (
+        len(validation_by_path) != len(validations)
+        or len(authorities) != len(affected_paths)
+        or set(validation_by_path) != set(affected_paths)
+        or {item.get("path") for item in authorities} != set(affected_paths)
+    ):
+        raise AutomationContractError(
+            "implementation correction recipe paths do not match affected paths"
+        )
+    operations: list[_ImplementationCorrectionOperation] = []
+    for item in authorities:
+        path = item.get("path")
+        check = validation_by_path.get(path)
+        if (
+            item.get("operation") != "exact-text-replace"
+            or not isinstance(path, str)
+            or not isinstance(item.get("old"), str)
+            or not item["old"]
+            or not isinstance(item.get("new"), str)
+            or item["new"] == item["old"]
+            or not isinstance(item.get("expected_replacements"), int)
+            or isinstance(item.get("expected_replacements"), bool)
+            or item["expected_replacements"] <= 0
+            or not isinstance(check, Mapping)
+            or check.get("operation") != "sha256"
+            or not isinstance(check.get("identity"), str)
+            or not check["identity"].startswith("sha256:")
+        ):
+            raise AutomationContractError(
+                "implementation correction recipe is not closed and deterministic"
+            )
+        operations.append(
+            _ImplementationCorrectionOperation(
+                finding_id,
+                path,
+                item["old"],
+                item["new"],
+                item["expected_replacements"],
+                check["identity"],
+            )
+        )
+    if classification == "mechanical":
+        normalized["deterministic_authority"] = dict(authority)
+        normalized["required_validation"] = dict(validation)
+    return normalized, tuple(operations)
 
 
 def _load_implementation_correction_evidence(
@@ -595,64 +897,27 @@ def _load_implementation_correction_evidence(
     affected_paths: set[str] = set()
     for finding in findings:
         classification = _one_finding_field(finding, "auto_fix_class")
-        if classification != "mechanical":
-            raise AutomationContractError(
-                "implementation correction has no closed executable recipe"
-            )
-        if _one_finding_field(finding, "auto_fix_kind") != "exact-approved-rename":
-            raise AutomationContractError(
-                "implementation correction has no closed executable recipe"
-            )
-        path = _one_finding_field(finding, "affected_paths")
-        authority = _parse_correction_json(
-            _one_finding_field(finding, "deterministic_authority"),
-            label="deterministic_authority",
+        required_names = (
+            IMPLEMENTATION_MECHANICAL_FIELDS
+            if classification == "mechanical"
+            else IMPLEMENTATION_DECLARED_SAFE_FIELDS
+            if classification == "declared-safe"
+            else ()
         )
-        validation = _parse_correction_json(
-            _one_finding_field(finding, "required_validation"),
-            label="required_validation",
-        )
-        if (
-            set(authority)
-            != {"operation", "path", "old", "new", "expected_replacements"}
-            or authority.get("operation") != "exact-text-replace"
-            or authority.get("path") != path
-            or not isinstance(authority.get("old"), str)
-            or not authority["old"]
-            or not isinstance(authority.get("new"), str)
-            or authority["new"] == authority["old"]
-            or not isinstance(authority.get("expected_replacements"), int)
-            or isinstance(authority.get("expected_replacements"), bool)
-            or authority["expected_replacements"] <= 0
-            or set(validation) != {"operation", "path", "identity"}
-            or validation.get("operation") != "sha256"
-            or validation.get("path") != path
-            or not isinstance(validation.get("identity"), str)
-            or not validation["identity"].startswith("sha256:")
-        ):
-            raise AutomationContractError(
-                "implementation correction recipe is not closed and deterministic"
-            )
-        classifications[finding.finding_id] = classification
-        recipe = {
-            "auto_fix_class": classification,
-            "auto_fix_kind": "exact-approved-rename",
-            "affected_paths": [path],
-            "deterministic_authority": dict(authority),
-            "required_validation": dict(validation),
+        field_values = {
+            name: _one_finding_field(finding, name)
+            for name in ("auto_fix_class", *required_names)
         }
-        recipes[finding.finding_id] = recipe
-        affected_paths.add(path)
-        operations.append(
-            _ImplementationCorrectionOperation(
+        recipe, finding_operations = (
+            _compile_implementation_correction_recipe(
                 finding.finding_id,
-                path,
-                authority["old"],
-                authority["new"],
-                authority["expected_replacements"],
-                validation["identity"],
+                field_values,
             )
         )
+        classifications[finding.finding_id] = classification
+        recipes[finding.finding_id] = recipe
+        affected_paths.update(recipe["affected_paths"])
+        operations.extend(finding_operations)
     return _ImplementationCorrectionEvidence(
         review_identity="sha256:" + hashlib.sha256(review_path.read_bytes()).hexdigest(),
         review_id=review.review_id,
@@ -2167,6 +2432,13 @@ def coordinate_non_public_implementation_correction(
             )
             resolution_text = resolution.read_text(encoding="utf-8")
             original_bytes.setdefault(resolution, resolution.read_bytes())
+            parsed_resolution, resolution_errors = (
+                parse_formal_review_resolution(resolution)
+            )
+            if resolution_errors:
+                raise AutomationContractError(
+                    "implementation correction resolution is structurally invalid"
+                )
             for finding_id in evidence.finding_ids:
                 resolution_text = _replace_record_field(
                     resolution_text,
@@ -2190,17 +2462,40 @@ def coordinate_non_public_implementation_correction(
                 raise AutomationContractError(
                     "implementation correction closeout state is ambiguous"
                 )
-            resolution_text = resolution_text.replace(
-                "Closeout status: open", "Closeout status: closed", 1
+            other_resolution_open = any(
+                entry.finding_id not in evidence.finding_ids
+                and (
+                    entry.disposition == "needs-decision"
+                    or entry.fields.get("Status") is None
+                    or entry.fields["Status"].value != "resolved"
+                    or entry.fields.get("Validation evidence") is None
+                    or entry.fields["Validation evidence"].value.strip()
+                    in {"", "pending"}
+                )
+                for entry in parsed_resolution.entries
             )
+            review_log = _resolve_repository_file(
+                repository_root, evidence.review_log_path
+            )
+            parsed_log_entries, log_errors = parse_formal_review_log(review_log)
+            if log_errors:
+                raise AutomationContractError(
+                    "implementation correction review log is structurally invalid"
+                )
+            other_log_open = any(
+                finding_id not in evidence.finding_ids
+                for entry in parsed_log_entries
+                for finding_id in entry.open_finding_ids
+            )
+            if not other_resolution_open and not other_log_open:
+                resolution_text = resolution_text.replace(
+                    "Closeout status: open", "Closeout status: closed", 1
+                )
             _atomic_replace_regular_file(
                 resolution, resolution_text.encode("utf-8")
             )
             actual_changed_paths.add(evidence.review_resolution_path)
 
-            review_log = _resolve_repository_file(
-                repository_root, evidence.review_log_path
-            )
             log_text = review_log.read_text(encoding="utf-8")
             original_bytes.setdefault(review_log, review_log.read_bytes())
             open_value = ", ".join(evidence.finding_ids)
@@ -2808,8 +3103,7 @@ def derive_effective_capability(
     if not set(categories).issubset(set(parent.get("maximum_mutation_categories", []))):
         raise AutomationContractError("capability mutation categories exceed parent maximum")
     permitted = {
-        category.value
-        for category in CAPABILITY_MUTATION_CATEGORIES[policy.capability_kind]
+        category.value for category in policy.permitted_mutation_category
     }
     if not set(categories).issubset(permitted):
         raise AutomationContractError("capability mutation categories exceed stage policy")

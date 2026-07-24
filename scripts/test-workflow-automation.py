@@ -26,6 +26,7 @@ from workflow_automation import (
     StageExecutionResult,
     VerificationReadiness,
     bind_target,
+    _compile_implementation_correction_recipe,
     coordinate_one_stage,
     coordinate_non_public_authoring_stage,
     coordinate_non_public_implementation_correction,
@@ -130,6 +131,73 @@ Change ID: 2026-07-20-example
 
 
 class WorkflowAutomationEngineTests(unittest.TestCase):
+    def test_preserved_implementation_correction_recipe_vocabulary_compiles(self) -> None:
+        mechanical_kinds = {
+            "formatter-output",
+            "lint-autofix",
+            "generated-output-refresh",
+            "exact-approved-rename",
+            "unique-required-field-value",
+            "mechanical-state-projection-sync",
+            "deterministic-manifest-regeneration",
+        }
+        authority = json.dumps(
+            {
+                "operation": "exact-text-replace",
+                "path": "scripts/example.py",
+                "old": "old_name",
+                "new": "new_name",
+                "expected_replacements": 1,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        validation = json.dumps(
+            {
+                "operation": "sha256",
+                "path": "scripts/example.py",
+                "identity": "sha256:corrected",
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        for kind in mechanical_kinds:
+            with self.subTest(kind=kind):
+                recipe, operations = _compile_implementation_correction_recipe(
+                    "BRF-M5-TEST",
+                    {
+                        "auto_fix_class": "mechanical",
+                        "auto_fix_kind": kind,
+                        "affected_paths": "scripts/example.py",
+                        "deterministic_authority": authority,
+                        "required_validation": validation,
+                    },
+                )
+                self.assertEqual(recipe["auto_fix_kind"], kind)
+                self.assertEqual([operation.path for operation in operations], ["scripts/example.py"])
+
+        declared_recipe, declared_operations = _compile_implementation_correction_recipe(
+            "BRF-M5-DECLARED",
+            {
+                "auto_fix_class": "declared-safe",
+                "affected_paths": json.dumps(["scripts/example.py"]),
+                "resolution_recipe": authority,
+                "named_inputs": json.dumps(["scripts/example.py"]),
+                "named_outputs": json.dumps(["scripts/example.py"]),
+                "forbidden_paths": json.dumps(["specs/", "docs/architecture/"]),
+                "acceptance_criteria": json.dumps(["exact reviewed replacement"]),
+                "required_validation_commands": validation,
+                "scope_preservation_rule": "changed-paths-subset-of-affected-paths",
+                "production_code_change": "yes",
+                "behavior_test": "T13",
+            },
+        )
+        self.assertEqual(declared_recipe["auto_fix_class"], "declared-safe")
+        self.assertEqual(
+            [operation.path for operation in declared_operations],
+            ["scripts/example.py"],
+        )
+
     def make_store(self, automation: dict) -> WorkflowAutomationStateStore:
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
@@ -2288,6 +2356,12 @@ Planned validation rule: proposal-exact-append
         )
         for stage, relative, positions in cases:
             with self.subTest(stage=stage):
+                stage_mutation_category = sorted(
+                    category.value
+                    for category in STAGE_POLICY_BY_STAGE[
+                        stage
+                    ].permitted_mutation_category
+                )[0]
                 target = bind_target(
                     "plan", bound_at="2026-07-22T00:00:00Z"
                 )
@@ -2304,7 +2378,7 @@ Planned validation rule: proposal-exact-append
                         "docs/plans/",
                     ),
                     maximum_mutation_categories=(
-                        "downstream-authoring-artifacts",
+                        stage_mutation_category,
                     ),
                 )
                 state = copy.deepcopy(FIXTURES.valid_automation())
@@ -2387,7 +2461,7 @@ Planned validation rule: proposal-exact-append
                         else "docs/plans/",
                     ),
                     mutation_categories=(
-                        "downstream-authoring-artifacts",
+                        stage_mutation_category,
                     ),
                     derived_at="2026-07-22T00:01:00Z",
                     transition_id=f"transition-{stage}",
@@ -3044,7 +3118,7 @@ Evidence: old_name remains in the implementation
 Required outcome: apply the exact reviewed rename
 Safe resolution path: execute the closed reviewer recipe
 auto_fix_class: mechanical
-auto_fix_kind: exact-approved-rename
+auto_fix_kind: formatter-output
 affected_paths: scripts/example.py
 deterministic_authority: {authority}
 required_validation: {validation}
@@ -3085,6 +3159,18 @@ Rationale: the reviewer supplied a bounded deterministic rename
 Chosen action: execute the exact reviewer recipe
 Validation target: SHA-256 identity and independent rereview
 Validation evidence: pending
+
+### older-review
+
+Finding ID: OLDER-OPEN
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: older unrelated work remains open
+Chosen action: complete the older correction separately
+Validation target: older review validation
+Validation evidence: pending
 """,
             encoding="utf-8",
         )
@@ -3122,7 +3208,8 @@ Validation evidence: pending
         )
 
         self.assertEqual(source.read_bytes(), corrected)
-        self.assertIn("Closeout status: closed", resolution.read_text())
+        self.assertIn("Closeout status: open", resolution.read_text())
+        self.assertIn("Status: open", resolution.read_text())
         self.assertIn("Open findings: None", review_log.read_text())
         self.assertEqual(
             (
@@ -3209,6 +3296,17 @@ Validation evidence: pending
             path.write_text(content, encoding="utf-8")
             return relative, "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
 
+        source_path, source_identity = artifact(
+            "scripts/final-code.py",
+            "final_value = 1\n",
+        )
+        final_code_identity = "sha256:" + hashlib.sha256(
+            json.dumps(
+                [{"path": source_path, "identity": source_identity}],
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
         plan_path, plan_identity = artifact(
             "docs/plans/closed.md",
             plan_text(
@@ -3222,7 +3320,7 @@ Validation evidence: pending
         )
         review_path, review_identity = artifact(
             "docs/changes/2026-07-20-example/reviews/code-review-final-r1.md",
-            """# Final code review
+            f"""# Final code review
 
 Review ID: code-review-final-r1
 Stage: code-review
@@ -3239,6 +3337,7 @@ review_resolutions: closed
 final_validation_selection: reviewed
 generated_and_derived_artifacts: current
 cross_milestone_scope: reviewed
+Final code identity: {final_code_identity}
 """,
         )
         artifact(
@@ -3259,20 +3358,24 @@ Open findings: None
         explanation_path, explanation_identity = artifact(
             "docs/changes/2026-07-20-example/explain-change.md",
             "Stage: explain-change\nStatus: current\n"
-            f"Final diff identity: {plan_identity}\n"
+            f"Final diff identity: {final_code_identity}\n"
             f"Final review identity: {review_identity}\n",
         )
         promotion_path, promotion_identity = artifact(
             "docs/changes/2026-07-20-example/promotion-evidence.md",
-            "Stage: promotion\nStatus: valid\n",
+            "Stage: promotion\nStatus: valid\n"
+            f"Final code identity: {final_code_identity}\n",
         )
         branch_path, branch_identity = artifact(
             "docs/changes/2026-07-20-example/branch-state.md",
-            "Stage: branch-state\nStatus: current\n",
+            "Stage: branch-state\nStatus: current\n"
+            f"Final code identity: {final_code_identity}\n"
+            f"Final code paths: {json.dumps([source_path])}\n",
         )
         commands_path, commands_identity = artifact(
             "docs/changes/2026-07-20-example/verification-commands.md",
-            "Stage: verification-commands\nStatus: current\n",
+            "Stage: verification-commands\nStatus: current\n"
+            f"Final code identity: {final_code_identity}\n",
         )
         basis = {
             "closed_milestones_identity": plan_identity,
@@ -3298,6 +3401,18 @@ Open findings: None
         self.assertTrue(readiness.final_review_clean)
         self.assertTrue(readiness.explanation_current)
 
+        source_file = root / source_path
+        source_file.write_text("final_value = 2\n", encoding="utf-8")
+        with self.assertRaisesRegex(
+            AutomationContractError, "final code identity is stale"
+        ):
+            resolve_verification_readiness(
+                repository_root=root,
+                basis=basis,
+                basis_paths=paths,
+            )
+        source_file.write_text("final_value = 1\n", encoding="utf-8")
+
         review_file = root / review_path
         original_review = review_file.read_text(encoding="utf-8")
         review_file.write_text(
@@ -3315,7 +3430,7 @@ Open findings: None
         explanation_file = root / explanation_path
         explanation_file.write_text(
             "Stage: explain-change\nStatus: current\n"
-            f"Final diff identity: {plan_identity}\n"
+            f"Final diff identity: {final_code_identity}\n"
             f"Final review identity: {semantic_review_identity}\n",
             encoding="utf-8",
         )
@@ -3834,9 +3949,20 @@ Open findings: None
                 "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest(),
             )
 
+        final_source = write_evidence(
+            "scripts/final-code.py",
+            "final_value = 1\n",
+        )
+        final_code_identity = "sha256:" + hashlib.sha256(
+            json.dumps(
+                [{"path": final_source.path, "identity": final_source.identity}],
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
         final_review = write_evidence(
             "docs/changes/2026-07-20-example/reviews/code-review-final-r1.md",
-            """# Final code review
+            f"""# Final code review
 
 Review ID: code-review-final-r1
 Stage: code-review
@@ -3853,6 +3979,7 @@ review_resolutions: closed
 final_validation_selection: reviewed
 generated_and_derived_artifacts: current
 cross_milestone_scope: reviewed
+Final code identity: {final_code_identity}
 """,
         )
         write_evidence(
@@ -3873,20 +4000,24 @@ Open findings: None
         explanation = write_evidence(
             "docs/changes/2026-07-20-example/explain-change.md",
             "Stage: explain-change\nStatus: current\n"
-            f"Final diff identity: {plan_identity}\n"
+            f"Final diff identity: {final_code_identity}\n"
             f"Final review identity: {final_review.identity}\n",
         )
         promotion = write_evidence(
             "docs/changes/2026-07-20-example/promotion.md",
-            "Stage: promotion\nStatus: valid\n",
+            "Stage: promotion\nStatus: valid\n"
+            f"Final code identity: {final_code_identity}\n",
         )
         branch = write_evidence(
             "docs/changes/2026-07-20-example/branch-state.md",
-            "Stage: branch-state\nStatus: current\n",
+            "Stage: branch-state\nStatus: current\n"
+            f"Final code identity: {final_code_identity}\n"
+            f"Final code paths: {json.dumps([final_source.path])}\n",
         )
         commands = write_evidence(
             "docs/changes/2026-07-20-example/verification-commands.md",
-            "Stage: verification-commands\nStatus: current\n",
+            "Stage: verification-commands\nStatus: current\n"
+            f"Final code identity: {final_code_identity}\n",
         )
         verification_basis = {
             "closed_milestones_identity": plan_identity,
@@ -3922,29 +4053,43 @@ Open findings: None
                 {"verify-report": report, "validation": validation},
             )
 
-        result = coordinate_non_public_implementation_stage(
-            invocation_context="non-public-test-harness",
-            target_stage="verify",
-            target_milestone_id=None,
-            store=store,
-            repository_root=store.repository_root,
-            verification_basis_paths=verification_basis_paths,
-            parent_authorization_id="authorization-verification-001",
-            capability_id="capability-verification-001",
-            stage="verify",
-            occurrence={"kind": "final"},
-            basis=verification_basis,
-            affected_path_roots=("docs/changes/2026-07-20-example/",),
-            mutation_categories=("verification-evidence",),
-            derived_at="2026-07-24T00:01:00Z",
-            transition_id="transition-verification-001",
-            input_identities={**verification_basis, "plan": plan_identity},
-            invoke_stage=invoke,
-            active_plan=active_plan,
-            synchronize_canonical_state=lambda execution: CanonicalSyncResult(
-                "synchronized", execution.completion_evidence
-            ),
-        )
+        def prohibited_external_action(*_args, **_kwargs):
+            raise AssertionError("prohibited external action was invoked")
+
+        with patch(
+            "subprocess.run", side_effect=prohibited_external_action
+        ), patch(
+            "subprocess.Popen", side_effect=prohibited_external_action
+        ), patch(
+            "socket.create_connection", side_effect=prohibited_external_action
+        ), patch(
+            "urllib.request.urlopen", side_effect=prohibited_external_action
+        ), patch(
+            "os.system", side_effect=prohibited_external_action
+        ):
+            result = coordinate_non_public_implementation_stage(
+                invocation_context="non-public-test-harness",
+                target_stage="verify",
+                target_milestone_id=None,
+                store=store,
+                repository_root=store.repository_root,
+                verification_basis_paths=verification_basis_paths,
+                parent_authorization_id="authorization-verification-001",
+                capability_id="capability-verification-001",
+                stage="verify",
+                occurrence={"kind": "final"},
+                basis=verification_basis,
+                affected_path_roots=("docs/changes/2026-07-20-example/",),
+                mutation_categories=("verification-evidence",),
+                derived_at="2026-07-24T00:01:00Z",
+                transition_id="transition-verification-001",
+                input_identities={**verification_basis, "plan": plan_identity},
+                invoke_stage=invoke,
+                active_plan=active_plan,
+                synchronize_canonical_state=lambda execution: CanonicalSyncResult(
+                    "synchronized", execution.completion_evidence
+                ),
+            )
         self.assertEqual(
             (
                 result.coordination.status,
