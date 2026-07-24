@@ -12,6 +12,7 @@ flowchart LR
     coordinator["Transition coordinator"]:::component
     policy["Typed stage-policy registry"]:::component
     authority["Authorization and capability evaluator"]:::component
+    code_state["Canonical code-state provider"]:::component
     state["State store adapter"]:::component
     reconcile["Transition reconciler"]:::component
     compatibility["Legacy compatibility projector"]:::component
@@ -29,6 +30,8 @@ flowchart LR
   coordinator -->|requests executable authority from| authority
   authority -->|checks basis against| lifecycle
   authority -->|checks scope against| policy
+  authority -->|requires complete final-code identity from| code_state
+  code_state -->|derives reviewed diff and current worktree state from| lifecycle
   coordinator -->|persists through sole write boundary| state
   state -->|reads and writes| evidence
   coordinator -->|reconciles prepared transition through| reconcile

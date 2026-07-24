@@ -60,6 +60,7 @@ from workflow_automation_state import (
     dump_yaml,
     evaluate_receipt_recovery,
 )
+from workflow_code_state import CanonicalCodeState, CodeStateEntry
 from validate_workflow_automation import validate_workflow_automation
 
 
@@ -77,6 +78,31 @@ def _load_fixtures():
 
 
 FIXTURES = _load_fixtures()
+
+
+class FixtureCodeStateProvider:
+    """Trusted non-Git provider whose path domain is fixture-owned."""
+
+    def __init__(self, paths: tuple[str, ...]) -> None:
+        self.paths = paths
+
+    def snapshot(self, repository_root: Path) -> CanonicalCodeState:
+        entries = tuple(
+            CodeStateEntry(
+                status="M",
+                path=path,
+                identity="sha256:"
+                + hashlib.sha256(
+                    (repository_root / path).read_bytes()
+                ).hexdigest(),
+            )
+            for path in self.paths
+        )
+        return CanonicalCodeState(
+            base_revision="fixture-base",
+            reviewed_revision="fixture-reviewed",
+            entries=entries,
+        )
 
 
 def plan_text(
@@ -3300,13 +3326,9 @@ Validation evidence: pending
             "scripts/final-code.py",
             "final_value = 1\n",
         )
-        final_code_identity = "sha256:" + hashlib.sha256(
-            json.dumps(
-                [{"path": source_path, "identity": source_identity}],
-                sort_keys=True,
-                separators=(",", ":"),
-            ).encode()
-        ).hexdigest()
+        code_state_provider = FixtureCodeStateProvider((source_path,))
+        final_code_state = code_state_provider.snapshot(root)
+        final_code_identity = final_code_state.identity
         plan_path, plan_identity = artifact(
             "docs/plans/closed.md",
             plan_text(
@@ -3370,7 +3392,9 @@ Open findings: None
             "docs/changes/2026-07-20-example/branch-state.md",
             "Stage: branch-state\nStatus: current\n"
             f"Final code identity: {final_code_identity}\n"
-            f"Final code paths: {json.dumps([source_path])}\n",
+            f"Final code paths: {json.dumps([source_path])}\n"
+            f"Final code base revision: {final_code_state.base_revision}\n"
+            f"Final code reviewed revision: {final_code_state.reviewed_revision}\n",
         )
         commands_path, commands_identity = artifact(
             "docs/changes/2026-07-20-example/verification-commands.md",
@@ -3397,9 +3421,26 @@ Open findings: None
             repository_root=root,
             basis=basis,
             basis_paths=paths,
+            code_state_provider=code_state_provider,
         )
         self.assertTrue(readiness.final_review_clean)
         self.assertTrue(readiness.explanation_current)
+
+        omitted_path, _omitted_identity = artifact(
+            "scripts/omitted-final-code.py",
+            "omitted = True\n",
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError, "path projection is incomplete"
+        ):
+            resolve_verification_readiness(
+                repository_root=root,
+                basis=basis,
+                basis_paths=paths,
+                code_state_provider=FixtureCodeStateProvider(
+                    (source_path, omitted_path)
+                ),
+            )
 
         source_file = root / source_path
         source_file.write_text("final_value = 2\n", encoding="utf-8")
@@ -3410,6 +3451,7 @@ Open findings: None
                 repository_root=root,
                 basis=basis,
                 basis_paths=paths,
+                code_state_provider=code_state_provider,
             )
         source_file.write_text("final_value = 1\n", encoding="utf-8")
 
@@ -3444,6 +3486,7 @@ Open findings: None
                 repository_root=root,
                 basis=semantic_basis,
                 basis_paths=paths,
+                code_state_provider=code_state_provider,
             )
 
         review_file.write_text(original_review, encoding="utf-8")
@@ -3458,6 +3501,7 @@ Open findings: None
                 repository_root=root,
                 basis=basis,
                 basis_paths=paths,
+                code_state_provider=code_state_provider,
             )
 
     def test_implementation_milestones_and_reviews_remain_ordered_and_distinct(self) -> None:
@@ -3953,13 +3997,9 @@ Open findings: None
             "scripts/final-code.py",
             "final_value = 1\n",
         )
-        final_code_identity = "sha256:" + hashlib.sha256(
-            json.dumps(
-                [{"path": final_source.path, "identity": final_source.identity}],
-                sort_keys=True,
-                separators=(",", ":"),
-            ).encode()
-        ).hexdigest()
+        code_state_provider = FixtureCodeStateProvider((final_source.path,))
+        final_code_state = code_state_provider.snapshot(store.repository_root)
+        final_code_identity = final_code_state.identity
         final_review = write_evidence(
             "docs/changes/2026-07-20-example/reviews/code-review-final-r1.md",
             f"""# Final code review
@@ -4012,7 +4052,9 @@ Open findings: None
             "docs/changes/2026-07-20-example/branch-state.md",
             "Stage: branch-state\nStatus: current\n"
             f"Final code identity: {final_code_identity}\n"
-            f"Final code paths: {json.dumps([final_source.path])}\n",
+            f"Final code paths: {json.dumps([final_source.path])}\n"
+            f"Final code base revision: {final_code_state.base_revision}\n"
+            f"Final code reviewed revision: {final_code_state.reviewed_revision}\n",
         )
         commands = write_evidence(
             "docs/changes/2026-07-20-example/verification-commands.md",
@@ -4074,6 +4116,7 @@ Open findings: None
                 store=store,
                 repository_root=store.repository_root,
                 verification_basis_paths=verification_basis_paths,
+                code_state_provider=code_state_provider,
                 parent_authorization_id="authorization-verification-001",
                 capability_id="capability-verification-001",
                 stage="verify",
@@ -4123,6 +4166,7 @@ Open findings: None
                 stage="verify",
                 basis={},
                 verification_basis_paths={},
+                code_state_provider=FixtureCodeStateProvider(("unused",)),
             )
         automation = store.read().automation
         assert automation is not None
