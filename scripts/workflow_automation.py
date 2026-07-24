@@ -21,7 +21,15 @@ from os import replace as _replace_file
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Iterable, Mapping
 
-from lifecycle_state_sync import HandoffSummary, parse_handoff_summary
+from lifecycle_state_sync import (
+    AUTO_FIX_CLASSES as IMPLEMENTATION_AUTO_FIX_CLASSES,
+    DECLARED_SAFE_REQUIRED_FIELDS as IMPLEMENTATION_DECLARED_SAFE_FIELDS,
+    HandoffSummary,
+    IMPLEMENTATION_CORRECTION_ROUND_CAP,
+    MECHANICAL_AUTO_FIX_KINDS as IMPLEMENTATION_MECHANICAL_AUTO_FIX_KINDS,
+    MECHANICAL_REQUIRED_FIELDS as IMPLEMENTATION_MECHANICAL_FIELDS,
+    parse_handoff_summary,
+)
 from review_artifact_validation import (
     REVIEW_FIX_AUTO_RESOLUTION_CLASSES,
     REVIEW_FIX_BUDGET_LIMITS,
@@ -268,11 +276,327 @@ class AuthoringCoordinationResult:
 
 
 @dataclass(frozen=True)
+class ImplementationCoordinationResult:
+    coordination: CoordinationResult
+    route: ImplementationRouteDecision
+
+
+@dataclass(frozen=True)
 class AuthoringRouteDecision:
     status: str
     next_stage: str | None = None
     pause_reason: str | None = None
     record_not_applicable: bool = False
+
+
+@dataclass(frozen=True)
+class ImplementationCorrectionDecision:
+    status: str
+    pause_reason: str | None = None
+
+
+@dataclass(frozen=True)
+class ImplementationRouteDecision:
+    status: str
+    next_stage: str | None = None
+    next_milestone_id: str | None = None
+    pause_reason: str | None = None
+    automatic_repair: bool = False
+    external_action_performed: bool = False
+
+
+def evaluate_implementation_correction(
+    *,
+    findings: Mapping[str, Mapping[str, Any]],
+    previous_unresolved: Iterable[str],
+    current_unresolved: Iterable[str],
+    correction_rounds_completed: int,
+    correction_round_cap: int,
+    changed_paths: Iterable[str],
+    allowed_path_roots: Iterable[str],
+    evidence_current: bool,
+    deterministic_validation_passed: bool,
+    previous_classifications: Mapping[str, str] | None = None,
+    owner_decision_required: bool = False,
+    scope_expanded: bool = False,
+) -> ImplementationCorrectionDecision:
+    """Evaluate reviewer-owned implementation correction without legacy state."""
+
+    def pause(reason: str) -> ImplementationCorrectionDecision:
+        return ImplementationCorrectionDecision("paused", reason)
+
+    if owner_decision_required:
+        return pause("owner-decision-required")
+    if not evidence_current:
+        return pause("review-evidence-stale")
+    if (
+        not isinstance(correction_rounds_completed, int)
+        or not isinstance(correction_round_cap, int)
+        or correction_round_cap < 0
+        or correction_round_cap > IMPLEMENTATION_CORRECTION_ROUND_CAP
+        or correction_rounds_completed >= correction_round_cap
+    ):
+        return pause("correction-budget-exhausted")
+    if scope_expanded:
+        return pause("scope-expansion-required")
+
+    previous = frozenset(previous_unresolved)
+    current = frozenset(current_unresolved)
+    if not current.issubset(previous):
+        return pause("new-finding-or-class")
+    if len(current) >= len(previous):
+        return pause("unresolved-findings-did-not-shrink")
+    corrected = previous - current
+    if set(findings) != corrected:
+        return pause("finding-evidence-does-not-match-corrected-set")
+
+    declared_paths: set[str] = set()
+    for finding_id in sorted(corrected):
+        record = findings.get(finding_id)
+        if not isinstance(record, Mapping):
+            return pause("finding-evidence-invalid")
+        auto_fix_class = record.get("auto_fix_class") or "none"
+        if auto_fix_class not in IMPLEMENTATION_AUTO_FIX_CLASSES:
+            return pause("unknown-auto-fix-class")
+        if auto_fix_class == "none":
+            return pause("finding-not-auto-fixable")
+        if (
+            previous_classifications is not None
+            and previous_classifications.get(finding_id) != auto_fix_class
+        ):
+            return pause("new-finding-or-class")
+        required_fields = (
+            IMPLEMENTATION_MECHANICAL_FIELDS
+            if auto_fix_class == "mechanical"
+            else IMPLEMENTATION_DECLARED_SAFE_FIELDS
+        )
+        if any(not record.get(field_name) for field_name in required_fields):
+            return pause("reviewer-correction-recipe-incomplete")
+        if (
+            auto_fix_class == "mechanical"
+            and record.get("auto_fix_kind")
+            not in IMPLEMENTATION_MECHANICAL_AUTO_FIX_KINDS
+        ):
+            return pause("reviewer-correction-recipe-incomplete")
+        if (
+            auto_fix_class == "declared-safe"
+            and str(record.get("production_code_change", "")).lower() == "yes"
+            and not (
+                record.get("behavior_test") or record.get("test_spec_mapping")
+            )
+        ):
+            return pause("reviewer-correction-recipe-incomplete")
+        paths = record.get("affected_paths")
+        if (
+            not isinstance(paths, (list, tuple))
+            or not paths
+            or not all(isinstance(path, str) and path.strip() for path in paths)
+        ):
+            return pause("reviewer-correction-recipe-incomplete")
+        declared_paths.update(paths)
+
+    changed = frozenset(changed_paths)
+    if not changed or not changed.issubset(declared_paths):
+        return pause("correction-path-out-of-scope")
+    roots = tuple(allowed_path_roots)
+    if any(not _path_is_within_roots(path, roots) for path in changed):
+        return pause("correction-path-out-of-scope")
+    if not deterministic_validation_passed:
+        return pause("deterministic-validation-missing")
+    return ImplementationCorrectionDecision("authorized")
+
+
+def _milestone_by_id(
+    active_plan: ActivePlanContext,
+    milestone_id: str,
+) -> tuple[int, MilestoneRecord] | None:
+    for index, milestone in enumerate(active_plan.milestones):
+        if milestone.milestone_id == milestone_id:
+            return index, milestone
+    return None
+
+
+def _all_implementation_milestones_closed(
+    active_plan: ActivePlanContext | None,
+) -> bool:
+    return bool(active_plan and active_plan.milestones) and all(
+        milestone.state == "closed" for milestone in active_plan.milestones
+    )
+
+
+def evaluate_non_public_implementation_route(
+    *,
+    current_stage: str,
+    target_stage: str,
+    target_milestone_id: str | None,
+    capability_kind: str,
+    capability_status: str,
+    invocation_context: str,
+    occurrence_kind: str,
+    active_plan: ActivePlanContext | None,
+    milestone_id: str | None = None,
+    milestone_validation_passed: bool | None = None,
+    review_outcome: str | None = None,
+    review_resolution_closed: bool | None = None,
+    verification_authorized: bool = False,
+    final_review_clean: bool | None = None,
+    explanation_current: bool | None = None,
+    verification_passed: bool | None = None,
+    ci_maintenance_required: bool = False,
+) -> ImplementationRouteDecision:
+    """Route one verified M5 stage while the integration remains non-public."""
+
+    def pause(reason: str) -> ImplementationRouteDecision:
+        return ImplementationRouteDecision("paused", pause_reason=reason)
+
+    if invocation_context != "non-public-test-harness":
+        return pause("non-public-harness-required")
+    policy = STAGE_POLICY_BY_STAGE.get(current_stage)
+    if policy is None or current_stage not in {
+        WorkflowStage.IMPLEMENT.value,
+        WorkflowStage.CODE_REVIEW.value,
+        WorkflowStage.REVIEW_RESOLUTION.value,
+        WorkflowStage.CI_MAINTENANCE.value,
+        WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW.value,
+        WorkflowStage.EXPLAIN_CHANGE.value,
+        WorkflowStage.VERIFY.value,
+    }:
+        raise AutomationContractError(
+            f"unknown implementation integration stage: {current_stage}"
+        )
+    if (
+        capability_status != "active"
+        or capability_kind != policy.capability_kind.value
+    ):
+        return pause("effective-capability-required")
+    if occurrence_kind != policy.occurrence_rule.value:
+        raise AutomationContractError("stage occurrence does not match policy")
+    target = _target_stage(target_stage)
+    if occurrence_kind == OccurrenceKind.MILESTONE.value and not milestone_id:
+        raise AutomationContractError("milestone stage requires milestone identity")
+    if not can_operation_fit_target(WorkflowStage(current_stage), target):
+        raise AutomationContractError("implementation stage exceeds structured target")
+    if (
+        target in {WorkflowStage.IMPLEMENT, WorkflowStage.CODE_REVIEW}
+        and target_milestone_id != milestone_id
+    ):
+        raise AutomationContractError(
+            "implementation stage exceeds structured target occurrence"
+        )
+
+    if current_stage in {
+        WorkflowStage.IMPLEMENT.value,
+        WorkflowStage.CODE_REVIEW.value,
+    }:
+        if active_plan is None or milestone_id is None:
+            return pause("active-plan-required")
+        found = _milestone_by_id(active_plan, milestone_id)
+        if found is None:
+            return pause("bound-milestone-missing")
+        milestone_index, milestone = found
+        if any(
+            prior.state != "closed"
+            for prior in active_plan.milestones[:milestone_index]
+        ):
+            return pause("milestone-order-violation")
+
+        if current_stage == WorkflowStage.IMPLEMENT.value:
+            if milestone_validation_passed is not True:
+                return pause("milestone-validation-failed")
+            if milestone.state != "review-requested":
+                return pause("plan-handoff-not-review-requested")
+            if target == WorkflowStage.IMPLEMENT and target_milestone_id == milestone_id:
+                return ImplementationRouteDecision("target-reached")
+            return ImplementationRouteDecision(
+                "continue",
+                WorkflowStage.CODE_REVIEW.value,
+                milestone_id,
+            )
+
+        if review_outcome not in {"approved", "clean-with-notes"}:
+            if review_outcome == "changes-requested":
+                return ImplementationRouteDecision(
+                    "correction-loop",
+                    WorkflowStage.REVIEW_RESOLUTION.value,
+                    milestone_id,
+                )
+            return pause("milestone-review-not-approved")
+        if review_resolution_closed is not True:
+            return pause("review-resolution-open")
+        if milestone.state != "closed":
+            return pause("plan-milestone-not-closed")
+        if target == WorkflowStage.CODE_REVIEW and target_milestone_id == milestone_id:
+            return ImplementationRouteDecision("target-reached")
+        remaining = [
+            item
+            for item in active_plan.milestones[milestone_index + 1 :]
+            if item.state != "closed"
+        ]
+        if remaining:
+            next_milestone = remaining[0]
+            if any(
+                item.state != "closed"
+                for item in active_plan.milestones[: active_plan.milestones.index(next_milestone)]
+            ):
+                return pause("milestone-order-violation")
+            return ImplementationRouteDecision(
+                "continue",
+                WorkflowStage.IMPLEMENT.value,
+                next_milestone.milestone_id,
+            )
+        next_stage = (
+            WorkflowStage.CI_MAINTENANCE.value
+            if ci_maintenance_required
+            else WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW.value
+        )
+        return ImplementationRouteDecision("continue", next_stage)
+
+    if current_stage == WorkflowStage.REVIEW_RESOLUTION.value:
+        if review_resolution_closed is not True:
+            return pause("review-resolution-open")
+        next_stage = (
+            WorkflowStage.CODE_REVIEW.value
+            if milestone_id
+            else WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW.value
+        )
+        return ImplementationRouteDecision("continue", next_stage, milestone_id)
+    if current_stage == WorkflowStage.CI_MAINTENANCE.value:
+        return ImplementationRouteDecision(
+            "continue", WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW.value
+        )
+    if not _all_implementation_milestones_closed(active_plan):
+        return pause("implementation-milestones-open")
+    if current_stage == WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW.value:
+        if review_outcome not in {"approved", "clean-with-notes"}:
+            if review_outcome == "changes-requested":
+                return ImplementationRouteDecision(
+                    "correction-loop", WorkflowStage.REVIEW_RESOLUTION.value
+                )
+            return pause("final-holistic-review-not-clean")
+        if review_resolution_closed is not True:
+            return pause("review-resolution-open")
+        if not verification_authorized:
+            return pause("verification-authorization-required")
+        return ImplementationRouteDecision(
+            "continue", WorkflowStage.EXPLAIN_CHANGE.value
+        )
+    if not verification_authorized:
+        return pause("verification-authorization-required")
+    if current_stage == WorkflowStage.EXPLAIN_CHANGE.value:
+        if explanation_current is not True:
+            return pause("explanation-not-current")
+        return ImplementationRouteDecision("continue", WorkflowStage.VERIFY.value)
+    if final_review_clean is not True:
+        return pause("final-holistic-review-not-clean")
+    if explanation_current is not True:
+        return pause("explanation-not-current")
+    if verification_passed is not True:
+        return pause("verification-failed")
+    return ImplementationRouteDecision(
+        "target-reached",
+        "pr",
+        external_action_performed=False,
+    )
 
 
 def authorize_proposal_review_invocation(
@@ -1114,6 +1438,115 @@ def coordinate_non_public_authoring_stage(
     return AuthoringCoordinationResult(result, route)
 
 
+def coordinate_non_public_implementation_stage(
+    *,
+    invocation_context: str,
+    target_stage: str,
+    target_milestone_id: str | None,
+    store: WorkflowAutomationStateStore,
+    repository_root: Path,
+    verification_authorized: bool = False,
+    ci_maintenance_required: bool = False,
+    final_review_clean: bool | None = None,
+    explanation_current: bool | None = None,
+    **coordination: Any,
+) -> ImplementationCoordinationResult:
+    """Run one M5 transaction and route only from verifier-derived facts."""
+
+    if invocation_context != "non-public-test-harness":
+        raise AutomationContractError(
+            "non-public implementation harness is required"
+        )
+    try:
+        result = coordinate_one_stage(
+            store=store,
+            repository_root=repository_root,
+            **coordination,
+        )
+    except AutomationContractError as error:
+        if (
+            coordination.get("stage") == WorkflowStage.VERIFY.value
+            and "stage-native-verification-failed" in str(error)
+        ):
+            snapshot = store.read()
+            if snapshot.automation is not None:
+                replacement = copy.deepcopy(snapshot.automation)
+                replacement["run"]["status"] = "paused"
+                replacement["run"]["pause_reason"] = "verification-failed"
+                store.replace_automation(
+                    replacement,
+                    expected_document_identity=snapshot.document_identity,
+                )
+            raise AutomationContractError(
+                "verification failed; automatic repair is prohibited"
+            ) from error
+        raise
+    snapshot = store.read()
+    if snapshot.automation is None:
+        raise AutomationContractError("unified automation state does not exist")
+    capability = snapshot.automation["effective_capabilities"][
+        result.capability_id
+    ]
+    stage = capability["stage"]
+    occurrence = stage["occurrence"]
+    facts = result.verified_completion.stage_facts
+
+    route_plan = coordination.get("active_plan")
+    plan_evidence = result.verified_completion.canonical_evidence.get(
+        "plan-handoff"
+    )
+    if isinstance(plan_evidence, Mapping):
+        plan_path = _resolve_repository_file(
+            repository_root, plan_evidence.get("path")
+        )
+        plan_identity = result.verified_completion.observed_identities.get(
+            "plan-handoff"
+        )
+        route_plan = ActivePlanContext.from_text(
+            plan_path.read_text(encoding="utf-8"),
+            plan_identity=str(plan_identity),
+        )
+
+    route = evaluate_non_public_implementation_route(
+        current_stage=stage["name"],
+        target_stage=target_stage,
+        target_milestone_id=target_milestone_id,
+        capability_kind=capability["capability_kind"],
+        # This exact capability was active when the prepared receipt was
+        # written. Completion consumes it before routing.
+        capability_status="active",
+        invocation_context=invocation_context,
+        occurrence_kind=occurrence["kind"],
+        milestone_id=occurrence.get("milestone_id"),
+        active_plan=route_plan,
+        milestone_validation_passed=(
+            facts.get("milestone_validation_passed") == "true"
+        ),
+        review_outcome=facts.get("review_outcome"),
+        review_resolution_closed=(
+            facts.get("review_resolution_closed") == "true"
+        ),
+        verification_authorized=verification_authorized,
+        final_review_clean=(
+            facts.get("final_review_clean") == "true"
+            if "final_review_clean" in facts
+            else final_review_clean
+        ),
+        explanation_current=(
+            facts.get("explanation_current") == "true"
+            if "explanation_current" in facts
+            else explanation_current
+        ),
+        verification_passed=(
+            facts.get("verification_passed") == "true"
+            if "verification_passed" in facts
+            else None
+        ),
+        ci_maintenance_required=ci_maintenance_required,
+    )
+    return ImplementationCoordinationResult(result, route)
+
+
 def normalize_command(command: str) -> NormalizedCommand:
     """Normalize current and supported legacy forms without persisting state."""
 
@@ -1317,7 +1750,26 @@ def _resolve_pre_plan(evidence: PrePlanEvidence) -> CanonicalPosition:
 def _resolve_plan(plan: ActivePlanContext) -> CanonicalPosition:
     candidates = plan.current_candidates()
     if len(candidates) != 1:
-        raise AutomationContractError("active plan current milestone is ambiguous")
+        if candidates or not _all_implementation_milestones_closed(plan):
+            raise AutomationContractError("active plan current milestone is ambiguous")
+        final_predecessors = {
+            WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW.value: WorkflowPosition.CODE_REVIEW.value,
+            WorkflowStage.CI_MAINTENANCE.value: WorkflowPosition.CODE_REVIEW.value,
+            WorkflowStage.REVIEW_RESOLUTION.value: WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW.value,
+            WorkflowStage.EXPLAIN_CHANGE.value: WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW.value,
+            WorkflowStage.VERIFY.value: WorkflowPosition.EXPLAIN_CHANGE.value,
+            "pr": WorkflowPosition.VERIFY.value,
+        }
+        position = final_predecessors.get(plan.handoff.next_stage)
+        if position is None:
+            raise AutomationContractError(
+                "active plan final-closeout next stage is ambiguous"
+            )
+        return CanonicalPosition(
+            position,
+            "plan-current-handoff-summary",
+            {"plan": plan.plan_identity},
+        )
     current = candidates[0]
     state = current.state
     if state == "review-requested":
@@ -2147,12 +2599,18 @@ __all__ = [
     "bind_target",
     "coordinate_one_stage",
     "coordinate_non_public_authoring_stage",
+    "coordinate_non_public_implementation_stage",
     "create_parent_authorization",
     "derive_effective_capability",
+    "evaluate_implementation_correction",
+    "evaluate_non_public_implementation_route",
     "invalidate_effective_capabilities",
     "normalize_command",
     "persist_target",
     "ProposalCorrectionAuthority",
+    "ImplementationCorrectionDecision",
+    "ImplementationCoordinationResult",
+    "ImplementationRouteDecision",
     "record_plan_ownership_handoff",
     "resolve_canonical_position",
     "resolve_proposal_correction_authority",

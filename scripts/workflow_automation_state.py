@@ -25,6 +25,7 @@ from typing import Any, Callable
 from review_artifact_validation import (
     parse_formal_review_log,
     parse_formal_review_record,
+    parse_formal_review_resolution,
 )
 from artifact_lifecycle_validation import inspect_lifecycle_artifact
 from lifecycle_state_sync import parse_handoff_summary
@@ -70,7 +71,17 @@ LIFECYCLE_STAGE_CLASSES = {
 STAGE_NATIVE_VERIFIER_STAGES = frozenset(
     set(FORMAL_REVIEW_INPUT_IDENTITIES)
     | set(LIFECYCLE_STAGE_CLASSES)
-    | {"architecture-assessment", "plan"}
+    | {
+        "architecture-assessment",
+        "plan",
+        "implement",
+        "code-review",
+        "review-resolution",
+        "ci-maintenance",
+        "final-holistic-code-review",
+        "explain-change",
+        "verify",
+    }
 )
 _PLAIN_STRING_RESERVED = frozenset({"true", "false", "null", "[]", "{}"})
 _NUMBER_RE = re.compile(
@@ -382,6 +393,212 @@ def _resolve_completion_artifact(
     return artifact, observed_identity
 
 
+def _evidence_fields(path: Path) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        label = key.strip().lstrip("-").strip()
+        if label and label not in fields:
+            fields[label] = value.strip().strip("`")
+    return fields
+
+
+def _milestone_state(path: Path, milestone_id: str) -> str | None:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    header = re.compile(rf"^###\s+{re.escape(milestone_id)}\.\s+")
+    for index, line in enumerate(lines):
+        if header.match(line) is None:
+            continue
+        for candidate in lines[index + 1 :]:
+            if candidate.startswith(("### ", "## ")):
+                break
+            match = re.match(
+                r"^-\s+Milestone state:\s*(?P<state>[a-z-]+)\s*$",
+                candidate.strip(),
+            )
+            if match is not None:
+                return match.group("state")
+        return None
+    return None
+
+
+def _canonical_review_occurrence(
+    review_path: Path,
+    *,
+    repository_root: Path,
+) -> tuple[Any, Any, Path, str] | None:
+    review, review_findings = parse_formal_review_record(review_path)
+    if review is None or review_findings or review_path.parent.name != "reviews":
+        return None
+    change_root = review_path.parent.parent
+    review_log = change_root / "review-log.md"
+    if not review_log.is_file():
+        return None
+    entries, log_findings = parse_formal_review_log(review_log)
+    if log_findings:
+        return None
+    matches = [entry for entry in entries if entry.review_id == review.review_id]
+    if len(matches) != 1:
+        return None
+    entry = matches[0]
+    try:
+        expected_record = review_path.relative_to(change_root).as_posix()
+        review_log.relative_to(repository_root.resolve())
+    except ValueError:
+        return None
+    if (
+        entry.stage != review.stage
+        or entry.round != review.round
+        or entry.status != review.status
+        or _strip_code(entry.detailed_record) != expected_record
+    ):
+        return None
+    return review, entry, review_log, _identity(review_log.read_bytes())
+
+
+def _verify_implementation_stage_completion(
+    *,
+    stage_name: str,
+    capability: dict[str, Any],
+    resolved_evidence: dict[str, tuple[dict[str, str], Path, str]],
+    repository_root: Path,
+) -> tuple[dict[str, str] | None, str | None]:
+    stage = capability.get("stage")
+    occurrence = stage.get("occurrence") if isinstance(stage, dict) else None
+    milestone_id = (
+        occurrence.get("milestone_id")
+        if isinstance(occurrence, dict)
+        else None
+    )
+
+    if stage_name == "implement":
+        validation = _evidence_fields(resolved_evidence["validation"][1])
+        plan = resolved_evidence["plan-handoff"][1]
+        handoff, errors = parse_handoff_summary(plan.read_text(encoding="utf-8"))
+        if (
+            not isinstance(milestone_id, str)
+            or validation.get("Stage") != "implement"
+            or validation.get("Milestone") != milestone_id
+            or validation.get("Result") != "passed"
+            or handoff is None
+            or errors
+            or not handoff.current_milestone.startswith(f"{milestone_id}.")
+            or handoff.current_milestone_state != "review-requested"
+            or _milestone_state(plan, milestone_id) != "review-requested"
+        ):
+            return None, "stage-native-implementation-invalid"
+        return {
+            "milestone_id": milestone_id,
+            "milestone_validation_passed": "true",
+        }, None
+
+    if stage_name == "code-review":
+        review_path = resolved_evidence["code-review"][1]
+        occurrence_proof = _canonical_review_occurrence(
+            review_path, repository_root=repository_root
+        )
+        plan = resolved_evidence["plan-handoff"][1]
+        if occurrence_proof is None or not isinstance(milestone_id, str):
+            return None, "stage-native-code-review-invalid"
+        review, entry, review_log, review_log_identity = occurrence_proof
+        fields = _evidence_fields(review_path)
+        reviewed_milestone = fields.get("Reviewed milestone", "")
+        resolution_path = resolved_evidence["review-resolution"][1]
+        if (
+            review.stage != "code-review"
+            or review.status not in {"approved", "clean-with-notes"}
+            or not reviewed_milestone.startswith(milestone_id)
+            or entry.open_finding_ids
+            or resolution_path.resolve() != review_log.resolve()
+            or _milestone_state(plan, milestone_id) != "closed"
+        ):
+            return None, "stage-native-code-review-invalid"
+        return {
+            "milestone_id": milestone_id,
+            "review_outcome": review.status,
+            "review_resolution_closed": "true",
+            "review_log_identity": review_log_identity,
+        }, None
+
+    if stage_name == "review-resolution":
+        resolution = resolved_evidence["review-resolution"][1]
+        parsed, findings = parse_formal_review_resolution(resolution)
+        if findings or parsed.closeout_status != "closed":
+            return None, "stage-native-review-resolution-invalid"
+        return {"review_resolution_closed": "true"}, None
+
+    if stage_name == "ci-maintenance":
+        configuration = _evidence_fields(
+            resolved_evidence["ci-configuration"][1]
+        )
+        validation = _evidence_fields(resolved_evidence["ci-validation"][1])
+        if (
+            configuration.get("Stage") != "ci-maintenance"
+            or validation.get("Stage") != "ci-maintenance"
+            or validation.get("Result") != "passed"
+        ):
+            return None, "stage-native-ci-maintenance-invalid"
+        return {"ci_validation_passed": "true"}, None
+
+    if stage_name == "final-holistic-code-review":
+        review_path = resolved_evidence["final-code-review"][1]
+        occurrence_proof = _canonical_review_occurrence(
+            review_path, repository_root=repository_root
+        )
+        if occurrence_proof is None:
+            return None, "stage-native-final-review-invalid"
+        review, _entry, _review_log, review_log_identity = occurrence_proof
+        fields = _evidence_fields(review_path)
+        if (
+            review.stage != "code-review"
+            or review.status not in {"approved", "clean-with-notes"}
+            or fields.get("Review scope") != "final-holistic"
+        ):
+            return None, "stage-native-final-review-invalid"
+        return {
+            "review_outcome": review.status,
+            "review_resolution_closed": "true",
+            "final_review_clean": "true",
+            "review_log_identity": review_log_identity,
+        }, None
+
+    if stage_name == "explain-change":
+        fields = _evidence_fields(resolved_evidence["explain-change"][1])
+        if (
+            fields.get("Stage") != "explain-change"
+            or fields.get("Status") != "current"
+        ):
+            return None, "stage-native-explanation-invalid"
+        return {"explanation_current": "true"}, None
+
+    if stage_name == "verify":
+        report = _evidence_fields(resolved_evidence["verify-report"][1])
+        validation = _evidence_fields(resolved_evidence["validation"][1])
+        if (
+            report.get("Stage") == "verify"
+            and report.get("Result") == "failed"
+            and validation.get("Stage") == "verify"
+            and validation.get("Result") == "failed"
+        ):
+            return None, "stage-native-verification-failed"
+        if (
+            report.get("Stage") != "verify"
+            or report.get("Result") != "passed"
+            or report.get("Next stage") != "pr"
+            or report.get("External actions performed") != "no"
+            or validation.get("Stage") != "verify"
+            or validation.get("Result") != "passed"
+        ):
+            return None, "stage-native-verification-invalid"
+        return {
+            "verification_passed": "true",
+            "external_action_performed": "false",
+        }, None
+    return None, "stage-native-verifier-unavailable"
+
+
 def _verify_transition_completion(
     automation: dict[str, Any],
     receipt: dict[str, Any],
@@ -442,6 +659,41 @@ def _verify_transition_completion(
         if evidence not in outputs or observed_identities.get(evidence_name) != artifact_identity:
             return CompletionVerification(False, "stage-completion-identity-mismatch")
         resolved_evidence[evidence_name] = (evidence, artifact, artifact_identity)
+
+    if stage_name in {
+        "implement",
+        "code-review",
+        "review-resolution",
+        "ci-maintenance",
+        "final-holistic-code-review",
+        "explain-change",
+        "verify",
+    }:
+        stage_facts, error = _verify_implementation_stage_completion(
+            stage_name=stage_name,
+            capability=capability,
+            resolved_evidence=resolved_evidence,
+            repository_root=repository_root,
+        )
+        if error is not None or stage_facts is None:
+            return CompletionVerification(False, error or "stage-native-verifier-unavailable")
+        unique_outputs: dict[tuple[str, str], dict[str, str]] = {}
+        normalized_evidence: dict[str, Any] = {}
+        normalized_observed: dict[str, str] = {}
+        for name, (evidence, _artifact, identity) in resolved_evidence.items():
+            normalized_evidence[name] = copy.deepcopy(evidence)
+            normalized_observed[name] = identity
+            unique_outputs[(evidence["path"], identity)] = copy.deepcopy(evidence)
+        return CompletionVerification(
+            True,
+            "stage-completion-evidence-valid",
+            VerifiedCompletion(
+                outputs=tuple(unique_outputs.values()),
+                canonical_evidence=normalized_evidence,
+                observed_identities=normalized_observed,
+                stage_facts=stage_facts,
+            ),
+        )
 
     expected_input = FORMAL_REVIEW_INPUT_IDENTITIES.get(stage_name)
     if expected_input is None:

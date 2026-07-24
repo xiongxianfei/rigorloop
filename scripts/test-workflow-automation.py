@@ -27,9 +27,12 @@ from workflow_automation import (
     bind_target,
     coordinate_one_stage,
     coordinate_non_public_authoring_stage,
+    coordinate_non_public_implementation_stage,
     create_parent_authorization,
     derive_effective_capability,
     authorize_proposal_review_invocation,
+    evaluate_implementation_correction,
+    evaluate_non_public_implementation_route,
     evaluate_non_public_authoring_route,
     evaluate_proposal_correction,
     evaluate_proposal_review,
@@ -42,7 +45,11 @@ from workflow_automation import (
     resolve_proposal_correction_authority,
     resume_target,
 )
-from workflow_automation_policy import PUBLIC_TARGET_STAGES, STAGE_POLICY_BY_STAGE
+from workflow_automation_policy import (
+    PUBLIC_TARGET_STAGES,
+    STAGE_POLICY_BY_STAGE,
+    target_completion_predicate,
+)
 from workflow_automation_state import (
     StateContractError,
     WorkflowAutomationStateStore,
@@ -75,6 +82,7 @@ def plan_text(
     remaining: str = "M2, M3",
     next_stage: str = "implement M2",
     milestone_two_state: str | None = None,
+    milestone_three_state: str = "planned",
     duplicate_m2: bool = False,
 ) -> str:
     state = milestone_two_state or current_state
@@ -114,7 +122,7 @@ Change ID: 2026-07-20-example
 {duplicate}
 ### M3. Later Slice
 
-- Milestone state: planned
+- Milestone state: {milestone_three_state}
 """
 
 
@@ -2763,6 +2771,741 @@ Planned validation rule: proposal-exact-append
                     repository_root=store.repository_root,
                 )
         self.assertEqual(store.read().document_identity, before)
+
+    def test_implementation_correction_is_reviewer_owned_and_convergent(self) -> None:
+        finding = {
+            "BRF-M5-2": {
+                "auto_fix_class": "mechanical",
+                "auto_fix_kind": "formatter-output",
+                "affected_paths": ["scripts/example.py"],
+                "deterministic_authority": "ruff format",
+                "required_validation": "python -m py_compile scripts/example.py",
+            }
+        }
+        authorized = evaluate_implementation_correction(
+            findings=finding,
+            previous_unresolved={"BRF-M5-1", "BRF-M5-2"},
+            current_unresolved={"BRF-M5-1"},
+            correction_rounds_completed=0,
+            correction_round_cap=2,
+            changed_paths={"scripts/example.py"},
+            allowed_path_roots=("scripts/",),
+            evidence_current=True,
+            deterministic_validation_passed=True,
+        )
+        self.assertEqual(authorized.status, "authorized")
+
+        cases = (
+            (
+                "missing-class",
+                {"BRF-M5-2": {**finding["BRF-M5-2"], "auto_fix_class": ""}},
+                {"BRF-M5-1", "BRF-M5-2"},
+                {"BRF-M5-1"},
+                {"scripts/example.py"},
+                True,
+                True,
+                "finding-not-auto-fixable",
+            ),
+            (
+                "new-finding",
+                finding,
+                {"BRF-M5-2"},
+                {"BRF-M5-1"},
+                {"scripts/example.py"},
+                True,
+                True,
+                "new-finding-or-class",
+            ),
+            (
+                "non-shrinking",
+                finding,
+                {"BRF-M5-1"},
+                {"BRF-M5-1"},
+                {"scripts/example.py"},
+                True,
+                True,
+                "unresolved-findings-did-not-shrink",
+            ),
+            (
+                "scope-expansion",
+                finding,
+                {"BRF-M5-1", "BRF-M5-2"},
+                {"BRF-M5-1"},
+                {"docs/architecture/system/architecture.md"},
+                True,
+                True,
+                "correction-path-out-of-scope",
+            ),
+            (
+                "stale-evidence",
+                finding,
+                {"BRF-M5-1", "BRF-M5-2"},
+                {"BRF-M5-1"},
+                {"scripts/example.py"},
+                False,
+                True,
+                "review-evidence-stale",
+            ),
+            (
+                "missing-validation",
+                finding,
+                {"BRF-M5-1", "BRF-M5-2"},
+                {"BRF-M5-1"},
+                {"scripts/example.py"},
+                True,
+                False,
+                "deterministic-validation-missing",
+            ),
+        )
+        for (
+            label,
+            findings,
+            previous,
+            current,
+            changed,
+            evidence_current,
+            validation_passed,
+            reason,
+        ) in cases:
+            with self.subTest(case=label):
+                decision = evaluate_implementation_correction(
+                    findings=findings,
+                    previous_unresolved=previous,
+                    current_unresolved=current,
+                    correction_rounds_completed=0,
+                    correction_round_cap=2,
+                    changed_paths=changed,
+                    allowed_path_roots=("scripts/",),
+                    evidence_current=evidence_current,
+                    deterministic_validation_passed=validation_passed,
+                )
+                self.assertEqual((decision.status, decision.pause_reason), ("paused", reason))
+        unknown_class = evaluate_implementation_correction(
+            findings={
+                "BRF-M5-2": {
+                    **finding["BRF-M5-2"],
+                    "auto_fix_class": "future-class",
+                }
+            },
+            previous_unresolved={"BRF-M5-1", "BRF-M5-2"},
+            current_unresolved={"BRF-M5-1"},
+            correction_rounds_completed=0,
+            correction_round_cap=2,
+            changed_paths={"scripts/example.py"},
+            allowed_path_roots=("scripts/",),
+            evidence_current=True,
+            deterministic_validation_passed=True,
+        )
+        self.assertEqual(unknown_class.pause_reason, "unknown-auto-fix-class")
+        changed_class = evaluate_implementation_correction(
+            findings=finding,
+            previous_unresolved={"BRF-M5-1", "BRF-M5-2"},
+            current_unresolved={"BRF-M5-1"},
+            correction_rounds_completed=0,
+            correction_round_cap=2,
+            changed_paths={"scripts/example.py"},
+            allowed_path_roots=("scripts/",),
+            evidence_current=True,
+            deterministic_validation_passed=True,
+            previous_classifications={"BRF-M5-2": "declared-safe"},
+        )
+        self.assertEqual(changed_class.pause_reason, "new-finding-or-class")
+
+    def test_implementation_milestones_and_reviews_remain_ordered_and_distinct(self) -> None:
+        implementing = ActivePlanContext.from_text(
+            plan_text(
+                current="M2. Engine Slice",
+                current_state="review-requested",
+                remaining="M2, M3",
+                next_stage="code-review M2",
+            ),
+            plan_identity="sha256:plan-m2-review",
+        )
+        validation_failure = evaluate_non_public_implementation_route(
+            current_stage="implement",
+            target_stage="verify",
+            target_milestone_id=None,
+            capability_kind="implementation",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            occurrence_kind="milestone",
+            milestone_id="M2",
+            active_plan=implementing,
+            milestone_validation_passed=False,
+        )
+        self.assertEqual(
+            (validation_failure.status, validation_failure.pause_reason),
+            ("paused", "milestone-validation-failed"),
+        )
+        implementation_complete = evaluate_non_public_implementation_route(
+            current_stage="implement",
+            target_stage="verify",
+            target_milestone_id=None,
+            capability_kind="implementation",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            occurrence_kind="milestone",
+            milestone_id="M2",
+            active_plan=implementing,
+            milestone_validation_passed=True,
+        )
+        self.assertEqual(
+            (implementation_complete.status, implementation_complete.next_stage),
+            ("continue", "code-review"),
+        )
+        self.assertEqual(implementation_complete.next_milestone_id, "M2")
+
+        reviewed = ActivePlanContext.from_text(
+            plan_text(
+                current="M3. Later Slice",
+                current_state="planned",
+                remaining="M3",
+                next_stage="implement M3",
+                milestone_two_state="closed",
+            ),
+            plan_identity="sha256:plan-m3",
+        )
+        open_resolution = evaluate_non_public_implementation_route(
+            current_stage="code-review",
+            target_stage="verify",
+            target_milestone_id=None,
+            capability_kind="implementation",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            occurrence_kind="milestone",
+            milestone_id="M2",
+            active_plan=reviewed,
+            review_outcome="approved",
+            review_resolution_closed=False,
+        )
+        self.assertEqual(open_resolution.pause_reason, "review-resolution-open")
+        review_complete = evaluate_non_public_implementation_route(
+            current_stage="code-review",
+            target_stage="verify",
+            target_milestone_id=None,
+            capability_kind="implementation",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            occurrence_kind="milestone",
+            milestone_id="M2",
+            active_plan=reviewed,
+            review_outcome="approved",
+            review_resolution_closed=True,
+        )
+        self.assertEqual(
+            (
+                review_complete.status,
+                review_complete.next_stage,
+                review_complete.next_milestone_id,
+            ),
+            ("continue", "implement", "M3"),
+        )
+
+    def test_implementation_transaction_uses_stage_native_milestone_proof(self) -> None:
+        automation = copy.deepcopy(FIXTURES.valid_automation())
+        target = {
+            "stage": "verify",
+            "occurrence": {"kind": "final"},
+            "bound_at": "2026-07-24T00:00:00Z",
+            "completion": target_completion_predicate("verify"),
+        }
+        automation["run"]["target"] = copy.deepcopy(target)
+        parent = automation["parent_authorizations"]["authorization-authoring-001"]
+        parent.update(
+            {
+                "authorization_class": "implementation",
+                "maximum_target": copy.deepcopy(target),
+                "allowed_capability_kinds": ["implementation"],
+                "maximum_path_roots": ["scripts/", "docs/plans/"],
+                "maximum_mutation_categories": ["production-code"],
+            }
+        )
+        automation["effective_capabilities"] = {}
+        store = self.make_store(automation)
+
+        pre_plan_text = plan_text(
+            current="M2. Engine Slice",
+            current_state="implementing",
+            remaining="M2, M3",
+            next_stage="implement M2",
+        )
+        plan_relative = Path("docs/plans/m5-plan.md")
+        plan_path = store.repository_root / plan_relative
+        plan_path.parent.mkdir(parents=True, exist_ok=True)
+        plan_path.write_text(pre_plan_text, encoding="utf-8")
+        plan_identity = "sha256:" + hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        active_plan = ActivePlanContext.from_text(
+            pre_plan_text, plan_identity=plan_identity
+        )
+        basis = {
+            "plan_identity": plan_identity,
+            "plan_review_identity": "sha256:plan-review",
+            "test_spec_identity": "sha256:test-spec",
+            "test_spec_review_identity": "sha256:test-spec-review",
+            "milestone_identity": "sha256:M2",
+            "affected_paths_identity": "sha256:paths",
+            "mutation_categories_identity": "sha256:categories",
+            "validation_commands_identity": "sha256:commands",
+        }
+
+        def write_artifact(relative: str, content: str) -> ArtifactEvidence:
+            path = store.repository_root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+            return ArtifactEvidence(
+                relative,
+                "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest(),
+            )
+
+        def invoke() -> StageExecutionResult:
+            implementation = write_artifact(
+                "scripts/m5-implementation.txt", "M2 implementation\n"
+            )
+            validation = write_artifact(
+                "scripts/m5-validation.txt",
+                "Stage: implement\nMilestone: M2\nResult: passed\n",
+            )
+            plan = write_artifact(
+                plan_relative.as_posix(),
+                plan_text(
+                    current="M2. Engine Slice",
+                    current_state="review-requested",
+                    remaining="M2, M3",
+                    next_stage="code-review M2",
+                ),
+            )
+            return StageExecutionResult(
+                (implementation, validation, plan),
+                {
+                    "implementation-diff": implementation,
+                    "validation": validation,
+                    "plan-handoff": plan,
+                },
+            )
+
+        result = coordinate_non_public_implementation_stage(
+            invocation_context="non-public-test-harness",
+            target_stage="verify",
+            target_milestone_id=None,
+            store=store,
+            repository_root=store.repository_root,
+            parent_authorization_id="authorization-authoring-001",
+            capability_id="capability-implementation-M2",
+            stage="implement",
+            occurrence={"kind": "milestone", "milestone_id": "M2"},
+            basis=basis,
+            affected_path_roots=("scripts/", "docs/plans/"),
+            mutation_categories=("production-code",),
+            derived_at="2026-07-24T00:01:00Z",
+            transition_id="transition-implementation-M2",
+            input_identities={
+                **basis,
+                "plan": plan_identity,
+                "source_milestone_id": "M1",
+                "next_milestone_id": "M2",
+                "milestone_order_identity": "sha256:milestone-order",
+                "source_milestone_identity": "sha256:M1",
+                "next_milestone_identity": "sha256:M2",
+            },
+            invoke_stage=invoke,
+            active_plan=active_plan,
+            synchronize_canonical_state=lambda execution: CanonicalSyncResult(
+                "synchronized", execution.completion_evidence
+            ),
+        )
+        self.assertEqual(result.coordination.status, "completed")
+        self.assertEqual(
+            (
+                result.route.status,
+                result.route.next_stage,
+                result.route.next_milestone_id,
+            ),
+            ("continue", "code-review", "M2"),
+        )
+        persisted = store.read().automation
+        assert persisted is not None
+        self.assertEqual(
+            persisted["effective_capabilities"][
+                "capability-implementation-M2"
+            ]["status"],
+            "consumed",
+        )
+
+    def test_code_review_transaction_closes_only_its_bound_milestone(self) -> None:
+        automation = copy.deepcopy(FIXTURES.valid_automation())
+        target = {
+            "stage": "verify",
+            "occurrence": {"kind": "final"},
+            "bound_at": "2026-07-24T00:00:00Z",
+            "completion": target_completion_predicate("verify"),
+        }
+        automation["run"]["target"] = copy.deepcopy(target)
+        parent = automation["parent_authorizations"]["authorization-authoring-001"]
+        parent.update(
+            {
+                "authorization_class": "implementation",
+                "maximum_target": copy.deepcopy(target),
+                "allowed_capability_kinds": ["implementation"],
+                "maximum_path_roots": [
+                    "docs/changes/2026-07-20-example/",
+                    "docs/plans/",
+                ],
+                "maximum_mutation_categories": [
+                    "change-local-review-evidence"
+                ],
+            }
+        )
+        automation["effective_capabilities"] = {}
+        store = self.make_store(automation)
+        pre_text = plan_text(
+            current="M2. Engine Slice",
+            current_state="review-requested",
+            remaining="M2, M3",
+            next_stage="code-review M2",
+        )
+        plan_path = store.repository_root / "docs/plans/m5-review-plan.md"
+        plan_path.parent.mkdir(parents=True, exist_ok=True)
+        plan_path.write_text(pre_text, encoding="utf-8")
+        plan_identity = "sha256:" + hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        active_plan = ActivePlanContext.from_text(
+            pre_text, plan_identity=plan_identity
+        )
+        basis = {
+            "plan_identity": plan_identity,
+            "plan_review_identity": "sha256:plan-review",
+            "test_spec_identity": "sha256:test-spec",
+            "test_spec_review_identity": "sha256:test-spec-review",
+            "milestone_identity": "sha256:M2",
+            "affected_paths_identity": "sha256:paths",
+            "mutation_categories_identity": "sha256:categories",
+            "validation_commands_identity": "sha256:commands",
+        }
+
+        def evidence(relative: str, content: str) -> ArtifactEvidence:
+            path = store.repository_root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+            return ArtifactEvidence(
+                relative,
+                "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest(),
+            )
+
+        def invoke() -> StageExecutionResult:
+            review = evidence(
+                "docs/changes/2026-07-20-example/reviews/code-review-m2-r1.md",
+                """# Code review
+
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Reviewer: fixture reviewer
+Target: M2 implementation
+Status: approved
+Material findings: None
+Reviewed milestone: M2. Engine Slice
+""",
+            )
+            review_log = evidence(
+                "docs/changes/2026-07-20-example/review-log.md",
+                """# Review Log
+
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Status: approved
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+            )
+            plan = evidence(
+                "docs/plans/m5-review-plan.md",
+                plan_text(
+                    current="M3. Later Slice",
+                    current_state="planned",
+                    remaining="M3",
+                    next_stage="implement M3",
+                    milestone_two_state="closed",
+                ),
+            )
+            return StageExecutionResult(
+                (review, review_log, plan),
+                {
+                    "code-review": review,
+                    "review-resolution": review_log,
+                    "plan-handoff": plan,
+                },
+            )
+
+        result = coordinate_non_public_implementation_stage(
+            invocation_context="non-public-test-harness",
+            target_stage="verify",
+            target_milestone_id=None,
+            store=store,
+            repository_root=store.repository_root,
+            parent_authorization_id="authorization-authoring-001",
+            capability_id="capability-code-review-M2",
+            stage="code-review",
+            occurrence={"kind": "milestone", "milestone_id": "M2"},
+            basis=basis,
+            affected_path_roots=(
+                "docs/changes/2026-07-20-example/",
+                "docs/plans/",
+            ),
+            mutation_categories=("change-local-review-evidence",),
+            derived_at="2026-07-24T00:02:00Z",
+            transition_id="transition-code-review-M2",
+            input_identities={
+                **basis,
+                "plan": plan_identity,
+                "source_milestone_id": "M2",
+                "source_milestone_identity": "sha256:M2",
+            },
+            invoke_stage=invoke,
+            active_plan=active_plan,
+            synchronize_canonical_state=lambda execution: CanonicalSyncResult(
+                "synchronized", execution.completion_evidence
+            ),
+        )
+        self.assertEqual(
+            (
+                result.route.status,
+                result.route.next_stage,
+                result.route.next_milestone_id,
+            ),
+            ("continue", "implement", "M3"),
+        )
+
+    def test_verify_integration_requires_holistic_closeout_and_stops_before_pr(self) -> None:
+        closed_plan = ActivePlanContext.from_text(
+            plan_text(
+                current="M3. Later Slice",
+                current_state="closed",
+                remaining="M3",
+                next_stage="final-holistic-code-review",
+                milestone_two_state="closed",
+                milestone_three_state="closed",
+            ),
+            plan_identity="sha256:closed-plan",
+        )
+        missing_authority = evaluate_non_public_implementation_route(
+            current_stage="final-holistic-code-review",
+            target_stage="verify",
+            target_milestone_id=None,
+            capability_kind="implementation",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            occurrence_kind="final",
+            active_plan=closed_plan,
+            review_outcome="approved",
+            review_resolution_closed=True,
+            verification_authorized=False,
+        )
+        self.assertEqual(
+            (missing_authority.status, missing_authority.pause_reason),
+            ("paused", "verification-authorization-required"),
+        )
+        failed = evaluate_non_public_implementation_route(
+            current_stage="verify",
+            target_stage="verify",
+            target_milestone_id=None,
+            capability_kind="verification",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            occurrence_kind="final",
+            active_plan=closed_plan,
+            verification_passed=False,
+            verification_authorized=True,
+            final_review_clean=True,
+            explanation_current=True,
+        )
+        self.assertEqual((failed.status, failed.pause_reason), ("paused", "verification-failed"))
+        self.assertFalse(failed.automatic_repair)
+
+        passed = evaluate_non_public_implementation_route(
+            current_stage="verify",
+            target_stage="verify",
+            target_milestone_id=None,
+            capability_kind="verification",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            occurrence_kind="final",
+            active_plan=closed_plan,
+            verification_passed=True,
+            verification_authorized=True,
+            final_review_clean=True,
+            explanation_current=True,
+        )
+        self.assertEqual((passed.status, passed.next_stage), ("target-reached", "pr"))
+        self.assertFalse(passed.external_action_performed)
+
+    def test_verify_transaction_stops_before_pr_without_external_action(self) -> None:
+        automation = copy.deepcopy(FIXTURES.valid_automation())
+        target = {
+            "stage": "verify",
+            "occurrence": {"kind": "final"},
+            "bound_at": "2026-07-24T00:00:00Z",
+            "completion": target_completion_predicate("verify"),
+        }
+        verification_basis = {
+            "closed_milestones_identity": "sha256:closed-milestones",
+            "final_code_review_identity": "sha256:final-review",
+            "promotion_evidence_identity": "sha256:promotion",
+            "explanation_inputs_identity": "sha256:explanation",
+            "branch_state_identity": "sha256:branch",
+            "verification_commands_identity": "sha256:commands",
+        }
+        parent = create_parent_authorization(
+            authorization_id="authorization-verification-001",
+            authorization_class="verification",
+            change_id="2026-07-20-example",
+            authorized_by="user",
+            authorized_at="2026-07-24T00:00:00Z",
+            maximum_target=target,
+            allowed_capability_kinds=("verification",),
+            maximum_path_roots=("docs/changes/2026-07-20-example/",),
+            maximum_mutation_categories=("verification-evidence",),
+            verification_basis=verification_basis,
+        )
+        automation["run"]["target"] = copy.deepcopy(target)
+        automation["parent_authorizations"] = {
+            parent["authorization_id"]: parent
+        }
+        automation["effective_capabilities"] = {}
+        store = self.make_store(automation)
+        closed_text = plan_text(
+            current="M3. Later Slice",
+            current_state="closed",
+            remaining="M3",
+            next_stage="verify",
+            milestone_two_state="closed",
+            milestone_three_state="closed",
+        )
+        plan_path = store.repository_root / "docs/plans/m5-closed-plan.md"
+        plan_path.parent.mkdir(parents=True, exist_ok=True)
+        plan_path.write_text(closed_text, encoding="utf-8")
+        plan_identity = "sha256:" + hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        active_plan = ActivePlanContext.from_text(
+            closed_text, plan_identity=plan_identity
+        )
+
+        def write_evidence(relative: str, content: str) -> ArtifactEvidence:
+            path = store.repository_root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+            return ArtifactEvidence(
+                relative,
+                "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest(),
+            )
+
+        def invoke() -> StageExecutionResult:
+            report = write_evidence(
+                "docs/changes/2026-07-20-example/verify-report.md",
+                "Stage: verify\nResult: passed\nNext stage: pr\n"
+                "External actions performed: no\n",
+            )
+            validation = write_evidence(
+                "docs/changes/2026-07-20-example/verify-validation.md",
+                "Stage: verify\nResult: passed\n",
+            )
+            return StageExecutionResult(
+                (report, validation),
+                {"verify-report": report, "validation": validation},
+            )
+
+        result = coordinate_non_public_implementation_stage(
+            invocation_context="non-public-test-harness",
+            target_stage="verify",
+            target_milestone_id=None,
+            store=store,
+            repository_root=store.repository_root,
+            verification_authorized=True,
+            final_review_clean=True,
+            explanation_current=True,
+            parent_authorization_id="authorization-verification-001",
+            capability_id="capability-verification-001",
+            stage="verify",
+            occurrence={"kind": "final"},
+            basis=verification_basis,
+            affected_path_roots=("docs/changes/2026-07-20-example/",),
+            mutation_categories=("verification-evidence",),
+            derived_at="2026-07-24T00:01:00Z",
+            transition_id="transition-verification-001",
+            input_identities={**verification_basis, "plan": plan_identity},
+            invoke_stage=invoke,
+            active_plan=active_plan,
+            synchronize_canonical_state=lambda execution: CanonicalSyncResult(
+                "synchronized", execution.completion_evidence
+            ),
+        )
+        self.assertEqual(
+            (
+                result.coordination.status,
+                result.route.status,
+                result.route.next_stage,
+                result.route.external_action_performed,
+            ),
+            ("completed", "target-reached", "pr", False),
+        )
+
+    def test_verify_failure_pauses_durably_without_automatic_repair(self) -> None:
+        store = self.make_store(copy.deepcopy(FIXTURES.valid_automation()))
+        with patch(
+            "workflow_automation.coordinate_one_stage",
+            side_effect=AutomationContractError(
+                "stage-native completion verification failed: "
+                "stage-native-verification-failed"
+            ),
+        ), self.assertRaisesRegex(
+            AutomationContractError, "automatic repair is prohibited"
+        ):
+            coordinate_non_public_implementation_stage(
+                invocation_context="non-public-test-harness",
+                target_stage="verify",
+                target_milestone_id=None,
+                store=store,
+                repository_root=store.repository_root,
+                stage="verify",
+            )
+        automation = store.read().automation
+        assert automation is not None
+        self.assertEqual(
+            (automation["run"]["status"], automation["run"]["pause_reason"]),
+            ("paused", "verification-failed"),
+        )
+
+    def test_implementation_non_public_harness_rejects_every_public_entry(self) -> None:
+        closed_plan = ActivePlanContext.from_text(
+            plan_text(
+                current="M3. Later Slice",
+                current_state="closed",
+                remaining="M3",
+                next_stage="final-holistic-code-review",
+                milestone_two_state="closed",
+                milestone_three_state="closed",
+            ),
+            plan_identity="sha256:closed-plan",
+        )
+        for context in ("public-command", "direct-skill", "bugfix", "legacy-adapter"):
+            with self.subTest(context=context):
+                decision = evaluate_non_public_implementation_route(
+                    current_stage="verify",
+                    target_stage="verify",
+                    target_milestone_id=None,
+                    capability_kind="verification",
+                    capability_status="active",
+                    invocation_context=context,
+                    occurrence_kind="final",
+                    active_plan=closed_plan,
+                    verification_passed=True,
+                    verification_authorized=True,
+                )
+                self.assertEqual(
+                    (decision.status, decision.pause_reason),
+                    ("paused", "non-public-harness-required"),
+                )
 
     @staticmethod
     def proposal_pre_plan(proposal_identity: str = "sha256:proposal") -> PrePlanEvidence:

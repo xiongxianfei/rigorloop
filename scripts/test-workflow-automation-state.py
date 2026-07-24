@@ -80,7 +80,7 @@ def synchronized_evidence() -> dict[str, object]:
 
 
 class WorkflowAutomationStateTests(unittest.TestCase):
-    def test_authoring_stage_native_verifier_registry_is_complete(self) -> None:
+    def test_stage_native_verifier_registry_covers_internal_m5_stages(self) -> None:
         self.assertEqual(
             STAGE_NATIVE_VERIFIER_STAGES,
             frozenset(
@@ -96,6 +96,13 @@ class WorkflowAutomationStateTests(unittest.TestCase):
                     "plan-review",
                     "test-spec",
                     "test-spec-review",
+                    "implement",
+                    "code-review",
+                    "review-resolution",
+                    "ci-maintenance",
+                    "final-holistic-code-review",
+                    "explain-change",
+                    "verify",
                 }
             ),
         )
