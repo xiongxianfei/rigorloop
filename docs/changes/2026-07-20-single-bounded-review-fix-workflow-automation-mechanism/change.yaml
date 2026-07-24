@@ -1187,6 +1187,20 @@ validation:
     result: passed_11_checks_in_381_seconds_before_final_lifecycle_synchronization
   - command: bash scripts/ci.sh --mode broad-smoke
     result: passed_exact_CMD32_12_checks_in_228_seconds_after_lifecycle_synchronization
+  - command: code-review M6 R1 independent same-session context-reset requirement-fidelity and adversarial review
+    result: changes_requested_BRF_M6_CR1_BRF_M6_CR2_BRF_M6_CR3_BRF_M6_CR4
+  - command: temporary repository probes for cross-spec missing row, interrupted and terminal legacy off, and public result evidence
+    result: reproduced_missing_row_acceptance_active_intermediate_cancellation_terminal_legacy_error_and_absent_canonical_position
+  - command: python scripts/test-workflow-automation.py; python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-workflow-automation-policy.py
+    result: passed_63_engine_67_validator_60_state_16_policy_tests_during_code_review_M6_R1_but_did_not_cover_reproduced_gaps
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_61_reviews_96_findings_4_open_after_code_review_M6_R1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_code_review_M6_R1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M6 R1 evidence, active plan, and plan index
+    result: passed_five_artifact_files_with_pre_existing_merge_language_warning_only
+  - command: python scripts/validate-guide-system.py; git diff --check
+    result: passed_after_code_review_M6_R1_recording
 changed_files:
   - README.md
   - docs/workflows.md
@@ -1306,18 +1320,19 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r6.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r7.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r8.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r1.md
 review:
-  status: clean_with_notes
-  unresolved_items: 0
+  status: changes_requested
+  unresolved_items: 4
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
-  material_findings: 92
+  material_findings: 96
   closed_findings: 92
-  open_findings: 0
+  open_findings: 4
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
   plan_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
-  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r8.md
+  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r1.md
   review_log: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md

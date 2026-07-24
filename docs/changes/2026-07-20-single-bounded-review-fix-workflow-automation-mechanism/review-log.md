@@ -7,6 +7,18 @@ This ledger records formal lifecycle reviews for the single bounded review-fix w
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-m6-r1
+Stage: code-review
+Round: M6 R1
+Reviewed artifact: M6 implementation commit `02c3bc79`
+Reviewed milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
+Status: changes-requested
+Detailed record: reviews/code-review-m6-r1.md
+Resolution: review-resolution.md#code-review-m6-r1
+Material findings: BRF-M6-CR1, BRF-M6-CR2, BRF-M6-CR3, BRF-M6-CR4
+Open findings: BRF-M6-CR1, BRF-M6-CR2, BRF-M6-CR3, BRF-M6-CR4
+
+### Review entry
 Review ID: code-review-m5-r8
 Stage: code-review
 Round: M5 R8

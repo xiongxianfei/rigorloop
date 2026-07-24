@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -53,15 +53,19 @@ Review closeout: code-review-m5-r6
 Review closeout: code-review-m5-r7
 Review closeout: code-review-m5-r8
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`
 - Findings resolved: 92
-- Unresolved findings: 0
-- Current result: Code-review M5 R8 confirmed `BRF-M5-CR14`, `BRF-M5-CR13`, and the milestone-local `BRF-M5-CR7` proof resolved with no new material finding. M5 is closed and the next stage is implement M6.
+- Unresolved findings: 4
+- Current result: Code-review M6 R1 requested changes for `BRF-M6-CR1` through `BRF-M6-CR4`. M6 is resolution-needed; the next stage is review-resolution M6.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| BRF-M6-CR1 | accepted | open | Repository cross-spec validation derives its required selectors from the ledger under test instead of an independent closed registry. |
+| BRF-M6-CR2 | accepted | open | Legacy `off` can persist an active migrated run before cancellation and rejects terminal legacy state instead of returning a non-mutating terminal result. |
+| BRF-M6-CR3 | accepted | open | Public status and run results omit required tracked canonical-position, transition-history, decision, and artifact evidence. |
+| BRF-M6-CR4 | accepted | open | Public activation neither exposes bounded correction authorization nor proves the complete deterministic public composition required by T28 and T30. |
 | BRF-PR1 | accepted | resolved | Defined pre-plan derivation and the plan-creation ownership handoff; R2 confirmed resolution. |
 | BRF-PR2 | accepted | resolved | Bound grants to concrete reviewed identities, scope, and invalidation rules; R2 confirmed resolution. |
 | BRF-PR3 | accepted | resolved | Added write-ahead transition receipts and deterministic recovery; R2 confirmed resolution. |
@@ -154,6 +158,76 @@ Review closeout: code-review-m5-r8
 | BRF-M5-CR12 | accepted | resolved | Canonical Git classification now precedes provider selection, state-store root ownership precedes readiness, and the persisted reviewed revision must equal Git's full immutable commit identity. |
 | BRF-M5-CR13 | accepted | resolved | T18 now permits only the exact canonical-root Git discovery tuple with its expected invocation shape; all broader subprocess forms remain trapped. |
 | BRF-M5-CR14 | accepted | resolved | The guard now rejects non-exact command types before equality; tuple-subclass and comparison-side-effect contrasts prove the saved launcher remains unreachable. |
+
+### code-review-m6-r1
+
+#### BRF-M6-CR1 - Cross-spec validation has no independent closed selector registry
+
+Finding ID: BRF-M6-CR1
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: None; the approved specification already requires an independent closed affected-selector registry.
+Chosen action: Pending implementation.
+Rationale: The repository validator constructs its required selector set from the same parsed Markdown ledger it is intended to validate, so deleting a canonical disposition row can pass.
+Required outcome: Compare the canonical ledger against an independent immutable registry of every affected source selector and reject missing selectors before consistency inference.
+Safe resolution path: Add a typed registry separate from the ledger projection, validate source-selector uniqueness, compare exact sets, and add a temporary-repository missing-row regression.
+Validation target: `BRF-R098h`, `AC-BRF-SR5-1`, `AC-BRF-SR6-2`, T21, and focused repository cross-spec validation.
+Validation evidence: Code-review M6 R1 deleted the exact `R1e` row in a temporary canonical spec; `validate_repository_cross_spec_dispositions` returned no errors. Correction validation has not run.
+auto_fix_class: none
+
+#### BRF-M6-CR2 - Legacy off is not one recoverable terminal transaction
+
+Finding ID: BRF-M6-CR2
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: None; the approved cancellation and compatibility contracts define the required terminal behavior.
+Chosen action: Pending implementation.
+Rationale: Active legacy `off` writes a migrated active unified run before a second cancellation write, while terminal legacy state raises instead of returning a non-mutating terminal result.
+Required outcome: Legacy cancellation must have one recoverable terminal outcome, preserve legacy bytes, and handle terminal legacy state idempotently.
+Safe resolution path: Project active legacy state directly into one cancelled unified record with migration and cancellation evidence in one compare-and-swap write; add interruption, terminal, repeated-off, and byte-identity regressions.
+Validation target: `BRF-R007c`, `BRF-R098a`, T16, T19, and T20.
+Validation evidence: Code-review M6 R1 interrupted the second cancellation write and observed persisted `run.status: active`; a terminal legacy probe raised `AutomationContractError`. Correction validation has not run.
+auto_fix_class: none
+
+#### BRF-M6-CR3 - Public results omit required tracked workflow evidence
+
+Finding ID: BRF-M6-CR3
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: None; `BRF-R006`, `BRF-R099`, and T22 enumerate the required public output.
+Chosen action: Pending implementation.
+Rationale: New public runs persist no canonical-position source or observed identities, and public results cannot derive complete transition, fix, decision, or artifact history.
+Required outcome: Every public target, status, pause, cancellation, review, and completion result must project the complete tracked evidence contract.
+Safe resolution path: Resolve canonical position before persistence, retain observed identities, project finalized receipt history and stage evidence, define legacy read-only projection, and add field-by-field state tests.
+Validation target: `BRF-R006`, `BRF-R099`, `BRF-R100`, and T22.
+Validation evidence: Code-review M6 R1 started a public plan-review run and observed `canonical_position_source: None` with empty transition, fix, decision, and artifact collections. Correction validation has not run.
+auto_fix_class: none
+
+#### BRF-M6-CR4 - Public composition omits bounded correction authority and end-to-end proof
+
+Finding ID: BRF-M6-CR4
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: None; the approved public composition and deterministic proof are already specified.
+Chosen action: Pending implementation.
+Rationale: Public parent construction permits neither proposal-correction nor implementation-correction, and M6 tests do not execute the stage coordinators through the public entry point or implement T28/T30.
+Required outcome: Expose and prove one receipt-backed public path across bounded corrections, interruption, cancellation, migration, final verification, and stop-before-PR, with deterministic repeat and reverse-order evidence.
+Safe resolution path: Add one public orchestration/resume entry point with basis-valid, risk-scoped capability materialization, then execute all T28 scenarios twice and in reversed order with canonical state and external-action comparisons.
+Validation target: `BRF-R060` through `BRF-R067`, T25, T28, and T30.
+Validation evidence: Code-review M6 R1 found no M6 invocation of the public stage coordinators, no public correction capability creation, and no repeated/reversed-order composed test. Correction validation has not run.
+auto_fix_class: none
 
 ### code-review-m5-r8
 
