@@ -356,7 +356,11 @@ def configure_post_proposal_transition(
     parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
     parent["maximum_target"] = copy.deepcopy(target)  # type: ignore[index]
     parent["allowed_capability_kinds"] = ["post-proposal-authoring"]  # type: ignore[index]
-    parent["maximum_mutation_categories"] = ["downstream-authoring-artifacts"]  # type: ignore[index]
+    stage_mutation_category = sorted(
+        category.value
+        for category in STAGE_POLICY_BY_STAGE[stage_name].permitted_mutation_category
+    )[0]
+    parent["maximum_mutation_categories"] = [stage_mutation_category]  # type: ignore[index]
     capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
     capability["capability_kind"] = "post-proposal-authoring"  # type: ignore[index]
     capability["stage"] = {"name": stage_name, "occurrence": {"kind": "singleton"}}  # type: ignore[index]
@@ -366,7 +370,7 @@ def configure_post_proposal_transition(
         "closed_review_resolution_identity": "sha256:resolution",
         "stage_scope_identity": "sha256:scope",
     }
-    capability["scope"]["mutation_categories"] = ["downstream-authoring-artifacts"]  # type: ignore[index]
+    capability["scope"]["mutation_categories"] = [stage_mutation_category]  # type: ignore[index]
     receipt = add_valid_receipt(state)
     receipt["retry_policy"] = STAGE_POLICY_BY_STAGE[stage_name].retry_policy.value
     set_policy_postcondition(receipt, stage_name)
@@ -1289,6 +1293,19 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         errors = validate_workflow_automation(state)
         self.assertTrue(any("exceeds parent maximum" in error for error in errors), errors)
 
+    def test_capability_scope_must_be_subset_of_stage_policy(self) -> None:
+        state = valid_automation()
+        parent = state["parent_authorizations"]["authorization-authoring-001"]  # type: ignore[index]
+        parent["maximum_mutation_categories"].append("proposal-content")  # type: ignore[index]
+        capability = state["effective_capabilities"]["capability-proposal-review-001"]  # type: ignore[index]
+        capability["scope"]["mutation_categories"] = ["proposal-content"]  # type: ignore[index]
+        errors = validate_workflow_automation(state)
+        self.assertIn(
+            "workflow.automation.effective_capabilities.capability-proposal-review-001."
+            "scope.mutation_categories: exceeds proposal-review stage policy",
+            errors,
+        )
+
     def test_proposal_review_basis_does_not_require_prior_review(self) -> None:
         self.assertEqual(validate_workflow_automation(valid_automation()), [])
 
@@ -1561,6 +1578,69 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                         "scope"
                     ]["correction_budget_identity"]
                     recipes = capability["scope"]["reviewer_recipes"]  # type: ignore[index]
+                    mechanical_kinds = (
+                        "formatter-output",
+                        "lint-autofix",
+                        "generated-output-refresh",
+                        "exact-approved-rename",
+                        "unique-required-field-value",
+                        "mechanical-state-projection-sync",
+                        "deterministic-manifest-regeneration",
+                    )
+                    for mechanical_kind in mechanical_kinds:
+                        recipes["BRF-M5-CR1"]["auto_fix_kind"] = mechanical_kind
+                        capability["basis"][
+                            "reviewer_classification_identity"
+                        ] = structured(recipes)
+                        self.assertEqual(
+                            validate_workflow_automation(state),
+                            [],
+                            mechanical_kind,
+                        )
+                    recipes["BRF-M5-CR1"] = {
+                        "auto_fix_class": "declared-safe",
+                        "affected_paths": ["scripts/example.py"],
+                        "resolution_recipe": {
+                            "operation": "exact-text-replace",
+                            "path": "scripts/example.py",
+                            "old": "old_name",
+                            "new": "new_name",
+                            "expected_replacements": 1,
+                        },
+                        "named_inputs": ["scripts/example.py"],
+                        "named_outputs": ["scripts/example.py"],
+                        "forbidden_paths": ["specs/", "docs/architecture/"],
+                        "acceptance_criteria": ["exact reviewed replacement"],
+                        "required_validation_commands": {
+                            "operation": "sha256",
+                            "path": "scripts/example.py",
+                            "identity": "sha256:corrected",
+                        },
+                        "scope_preservation_rule": "changed-paths-subset-of-affected-paths",
+                        "production_code_change": "yes",
+                        "behavior_test": "T13",
+                    }
+                    capability["basis"][
+                        "reviewer_classification_identity"
+                    ] = structured(recipes)
+                    self.assertEqual(validate_workflow_automation(state), [])
+                    recipes["BRF-M5-CR1"] = {
+                        "auto_fix_class": "mechanical",
+                        "auto_fix_kind": "exact-approved-rename",
+                        "affected_paths": ["scripts/example.py"],
+                        "deterministic_authority": {
+                            "operation": "exact-text-replace",
+                            "path": "scripts/example.py",
+                            "old": "old_name",
+                            "new": "new_name",
+                            "expected_replacements": 1,
+                        },
+                        "required_validation": {
+                            "operation": "sha256",
+                            "path": "scripts/example.py",
+                            "identity": "sha256:corrected",
+                        },
+                    }
                     recipes["BRF-M5-CR1"]["deterministic_authority"][
                         "operation"
                     ] = "future-operation"

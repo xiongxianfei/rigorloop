@@ -403,6 +403,24 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
         }:
             self.assertEqual(occurrences[stage], OccurrenceKind.FINAL)
 
+    def test_review_resolution_policy_bounds_every_correction_mutation_category(self) -> None:
+        policy = next(
+            policy
+            for policy in STAGE_POLICIES
+            if policy.stage == WorkflowStage.REVIEW_RESOLUTION
+        )
+        self.assertEqual(
+            policy.permitted_mutation_category,
+            frozenset(
+                {
+                    MutationCategory.TESTS,
+                    MutationCategory.PRODUCTION_CODE,
+                    MutationCategory.CHANGE_LOCAL_REVIEW_EVIDENCE,
+                    MutationCategory.CHANGE_LOCAL_EVIDENCE,
+                }
+            ),
+        )
+
     def test_duplicate_policy_fails_closed(self) -> None:
         errors = validate_policy_registry((*STAGE_POLICIES, STAGE_POLICIES[0]))
         self.assertTrue(any("duplicate stage policy" in error for error in errors), errors)
@@ -413,7 +431,11 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
             ("occurrence_rule", "iteration", OccurrenceKind),
             ("required_authorization_class", "external", AuthorizationClass),
             ("capability_kind", "deploy", CapabilityKind),
-            ("permitted_mutation_category", "secrets", MutationCategory),
+            (
+                "permitted_mutation_category",
+                frozenset({"secrets"}),
+                MutationCategory,
+            ),
             ("applicability_rule", "sometimes", ApplicabilityRule),
             ("retry_policy", "retry-forever", RetryPolicy),
             ("correction_policy", "author-guesses", CorrectionPolicy),
@@ -496,7 +518,9 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
     def test_policy_mutation_scope_cannot_exceed_capability(self) -> None:
         widened = dataclasses.replace(
             STAGE_POLICIES[1],
-            permitted_mutation_category=MutationCategory.PRODUCTION_CODE,
+            permitted_mutation_category=frozenset(
+                {MutationCategory.PRODUCTION_CODE}
+            ),
         )
         errors = validate_policy_registry(
             tuple(widened if policy.stage == widened.stage else policy for policy in STAGE_POLICIES)

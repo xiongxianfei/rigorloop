@@ -14,6 +14,11 @@ import re
 from enum import Enum
 from typing import Any, Iterable
 
+from lifecycle_state_sync import (
+    DECLARED_SAFE_REQUIRED_FIELDS as IMPLEMENTATION_DECLARED_SAFE_FIELDS,
+    MECHANICAL_AUTO_FIX_KINDS as IMPLEMENTATION_MECHANICAL_AUTO_FIX_KINDS,
+    MECHANICAL_REQUIRED_FIELDS as IMPLEMENTATION_MECHANICAL_FIELDS,
+)
 from review_artifact_validation import (
     REVIEW_FIX_AUTO_RESOLUTION_CLASSES,
     REVIEW_FIX_BUDGET_LIMITS,
@@ -414,6 +419,125 @@ def _structured_identity(value: Any) -> str:
         value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
     ).encode("utf-8")
     return f"sha256:{hashlib.sha256(payload).hexdigest()}"
+
+
+def _closed_recipe_items(
+    value: Any,
+    *,
+    fields: frozenset[str],
+    collection_key: str,
+) -> list[dict[str, Any]] | None:
+    if not isinstance(value, dict):
+        return None
+    if set(value) == fields:
+        return [value]
+    if set(value) != {collection_key}:
+        return None
+    items = value[collection_key]
+    if (
+        not isinstance(items, list)
+        or not items
+        or not all(isinstance(item, dict) and set(item) == fields for item in items)
+    ):
+        return None
+    return items
+
+
+def _valid_implementation_correction_recipe(recipe: Any) -> bool:
+    if not isinstance(recipe, dict):
+        return False
+    classification = recipe.get("auto_fix_class")
+    affected = recipe.get("affected_paths")
+    if (
+        classification not in {"mechanical", "declared-safe"}
+        or not isinstance(affected, list)
+        or not affected
+        or not all(isinstance(path, str) and path for path in affected)
+        or len(set(affected)) != len(affected)
+    ):
+        return False
+    if classification == "mechanical":
+        if (
+            set(recipe)
+            != {"auto_fix_class", *IMPLEMENTATION_MECHANICAL_FIELDS}
+            or recipe.get("auto_fix_kind")
+            not in IMPLEMENTATION_MECHANICAL_AUTO_FIX_KINDS
+        ):
+            return False
+        authority = recipe.get("deterministic_authority")
+        validation = recipe.get("required_validation")
+    else:
+        if set(recipe) != {
+            "auto_fix_class",
+            *IMPLEMENTATION_DECLARED_SAFE_FIELDS,
+        }:
+            return False
+        for field in (
+            "named_inputs",
+            "named_outputs",
+            "forbidden_paths",
+            "acceptance_criteria",
+        ):
+            value = recipe.get(field)
+            if (
+                not isinstance(value, list)
+                or not value
+                or not all(isinstance(item, str) and item for item in value)
+                or len(set(value)) != len(value)
+            ):
+                return False
+        if (
+            recipe.get("scope_preservation_rule")
+            != "changed-paths-subset-of-affected-paths"
+            or recipe.get("production_code_change") not in {"yes", "no"}
+            or not isinstance(recipe.get("behavior_test"), str)
+            or not recipe["behavior_test"].strip()
+        ):
+            return False
+        forbidden = recipe["forbidden_paths"]
+        if any(
+            path == root.rstrip("/") or path.startswith(root.rstrip("/") + "/")
+            for path in affected
+            for root in forbidden
+        ):
+            return False
+        authority = recipe.get("resolution_recipe")
+        validation = recipe.get("required_validation_commands")
+    operation_fields = frozenset(
+        {"operation", "path", "old", "new", "expected_replacements"}
+    )
+    validation_fields = frozenset({"operation", "path", "identity"})
+    operations = _closed_recipe_items(
+        authority,
+        fields=operation_fields,
+        collection_key="operations",
+    )
+    checks = _closed_recipe_items(
+        validation,
+        fields=validation_fields,
+        collection_key="checks",
+    )
+    if operations is None or checks is None or len(operations) != len(affected):
+        return False
+    check_by_path = {check.get("path"): check for check in checks}
+    if len(check_by_path) != len(checks) or set(check_by_path) != set(affected):
+        return False
+    if {operation.get("path") for operation in operations} != set(affected):
+        return False
+    return all(
+        operation.get("operation") == "exact-text-replace"
+        and isinstance(operation.get("old"), str)
+        and bool(operation["old"])
+        and isinstance(operation.get("new"), str)
+        and operation["new"] != operation["old"]
+        and isinstance(operation.get("expected_replacements"), int)
+        and not isinstance(operation.get("expected_replacements"), bool)
+        and operation["expected_replacements"] > 0
+        and check_by_path[operation["path"]].get("operation") == "sha256"
+        and isinstance(check_by_path[operation["path"]].get("identity"), str)
+        and check_by_path[operation["path"]]["identity"].startswith("sha256:")
+        for operation in operations
+    )
 
 
 CAPABILITY_AUTHORIZATION_CLASSES = {
@@ -1533,72 +1657,7 @@ def _validate_capability(
                         f"{path}.scope.reviewer_recipes: must cover accepted findings exactly"
                     )
                 elif any(
-                    not isinstance(recipe, dict)
-                    or set(recipe)
-                    != {
-                        "auto_fix_class",
-                        "auto_fix_kind",
-                        "affected_paths",
-                        "deterministic_authority",
-                        "required_validation",
-                    }
-                    or recipe.get("auto_fix_class") != "mechanical"
-                    or recipe.get("auto_fix_kind") != "exact-approved-rename"
-                    or not isinstance(recipe.get("affected_paths"), list)
-                    or len(recipe["affected_paths"]) != 1
-                    or not isinstance(
-                        recipe.get("deterministic_authority"), dict
-                    )
-                    or not isinstance(recipe.get("required_validation"), dict)
-                    or set(recipe["deterministic_authority"])
-                    != {
-                        "operation",
-                        "path",
-                        "old",
-                        "new",
-                        "expected_replacements",
-                    }
-                    or recipe["deterministic_authority"].get("operation")
-                    != "exact-text-replace"
-                    or recipe["deterministic_authority"].get("path")
-                    != recipe["affected_paths"][0]
-                    or not isinstance(
-                        recipe["deterministic_authority"].get("old"), str
-                    )
-                    or not recipe["deterministic_authority"]["old"]
-                    or not isinstance(
-                        recipe["deterministic_authority"].get("new"), str
-                    )
-                    or recipe["deterministic_authority"]["new"]
-                    == recipe["deterministic_authority"]["old"]
-                    or not isinstance(
-                        recipe["deterministic_authority"].get(
-                            "expected_replacements"
-                        ),
-                        int,
-                    )
-                    or isinstance(
-                        recipe["deterministic_authority"].get(
-                            "expected_replacements"
-                        ),
-                        bool,
-                    )
-                    or recipe["deterministic_authority"][
-                        "expected_replacements"
-                    ]
-                    <= 0
-                    or set(recipe["required_validation"])
-                    != {"operation", "path", "identity"}
-                    or recipe["required_validation"].get("operation")
-                    != "sha256"
-                    or recipe["required_validation"].get("path")
-                    != recipe["affected_paths"][0]
-                    or not isinstance(
-                        recipe["required_validation"].get("identity"), str
-                    )
-                    or not recipe["required_validation"]["identity"].startswith(
-                        "sha256:"
-                    )
+                    not _valid_implementation_correction_recipe(recipe)
                     for recipe in recipes.values()
                 ):
                     errors.append(
@@ -1672,6 +1731,20 @@ def _validate_capability(
             ):
                 errors.append(
                     f"{path}.scope.mutation_categories: exceeds {kind} capability policy"
+                )
+            allowed_for_stage = (
+                {
+                    category.value
+                    for category in policy.permitted_mutation_category
+                }
+                if policy is not None
+                else set()
+            )
+            if isinstance(categories, list) and not all(
+                category in allowed_for_stage for category in categories
+            ):
+                errors.append(
+                    f"{path}.scope.mutation_categories: exceeds {stage_name} stage policy"
                 )
             if isinstance(categories, list) and not _is_sequence_subset(
                 categories, parent.get("maximum_mutation_categories")
