@@ -2256,7 +2256,7 @@ Open findings: BRF-EXAMPLE
         store, path = self.make_store(legacy=bounded)
         before = path.read_bytes()
         self.assertEqual(store.status()["source"], "legacy-read-only")
-        with self.assertRaisesRegex(StateContractError, "exactly one active source"):
+        with self.assertRaisesRegex(StateContractError, "terminal legacy state"):
             store.migrate_legacy(valid_automation(), migrated_at="2026-07-22T00:00:00Z")
         self.assertEqual(path.read_bytes(), before)
 

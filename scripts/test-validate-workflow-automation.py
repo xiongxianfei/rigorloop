@@ -7,6 +7,8 @@ import copy
 import hashlib
 import json
 import math
+import shutil
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -428,6 +430,45 @@ def configure_next_milestone_transition(
 class WorkflowAutomationVocabularyTests(unittest.TestCase):
     def test_repository_cross_spec_disposition_contract_is_consistent(self) -> None:
         self.assertEqual(validate_repository_cross_spec_dispositions(ROOT), [])
+
+    def test_repository_cross_spec_disposition_missing_canonical_row_fails(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            repository = Path(temporary)
+            (repository / "specs").mkdir()
+            for name in (
+                "single-bounded-review-fix-workflow-automation.md",
+                "workflow-stage-autoprogression.md",
+                "rigorloop-workflow.md",
+                "review-fix-autoprogression.md",
+                "review-finding-resolution-contract.md",
+            ):
+                shutil.copy2(ROOT / "specs" / name, repository / "specs" / name)
+            unified = (
+                repository
+                / "specs/single-bounded-review-fix-workflow-automation.md"
+            )
+            unified.write_text(
+                "\n".join(
+                    line
+                    for line in unified.read_text(encoding="utf-8").splitlines()
+                    if not line.startswith("| `R1e` |")
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            errors = validate_repository_cross_spec_dispositions(repository)
+
+        self.assertTrue(
+            any(
+                "specs/review-finding-resolution-contract.md#R1e: "
+                "missing disposition" in error
+                for error in errors
+            ),
+            errors,
+        )
 
     def test_cross_spec_disposition_rows_fail_closed_before_consistency(self) -> None:
         rows = [

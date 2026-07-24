@@ -1626,6 +1626,42 @@ def project_automation_status(automation: dict[str, Any]) -> dict[str, Any]:
         and value.get("status") == "active"
     ] if isinstance(capabilities, dict) else []
     prepared = _active_prepared_receipts(state)
+    receipts = state.get("transition_receipts")
+    transition_history = [
+        copy.deepcopy(receipt)
+        for receipt in receipts.values()
+        if isinstance(receipts, dict) and isinstance(receipt, dict)
+    ] if isinstance(receipts, dict) else []
+    artifacts_changed: list[str] = []
+    fixes_applied: list[str] = []
+    for receipt in transition_history:
+        if receipt.get("status") == "completed":
+            for output in receipt.get("outputs", []):
+                path = output.get("path") if isinstance(output, dict) else None
+                if isinstance(path, str) and path not in artifacts_changed:
+                    artifacts_changed.append(path)
+        capability_id = receipt.get("effective_capability_id")
+        capability = (
+            capabilities.get(capability_id)
+            if isinstance(capabilities, dict)
+            and isinstance(capability_id, str)
+            else None
+        )
+        if (
+            receipt.get("status") == "completed"
+            and isinstance(capability, dict)
+            and capability.get("capability_kind")
+            in {"proposal-correction", "implementation-correction"}
+        ):
+            fixes_applied.append(str(receipt.get("transition_id")))
+    latest_completed = next(
+        (
+            receipt
+            for receipt in reversed(transition_history)
+            if receipt.get("status") == "completed"
+        ),
+        None,
+    )
     return {
         "source": "unified",
         "mechanism": state.get("mechanism"),
@@ -1640,10 +1676,15 @@ def project_automation_status(automation: dict[str, Any]) -> dict[str, Any]:
         "in_flight_transition": (
             prepared[0].get("transition_id") if len(prepared) == 1 else None
         ),
+        "latest_completed_transition": copy.deepcopy(latest_completed),
+        "transition_history": transition_history,
+        "fixes_applied": fixes_applied,
+        "artifacts_changed": artifacts_changed,
         "pause_reason": run.get("pause_reason"),
         "stop_reason": run.get("stop_reason"),
         "latest_evidence_identities": copy.deepcopy(state.get("observed_identities", {})),
         "latest_review_result": copy.deepcopy(state.get("latest_review_result")),
+        "external_actions": state.get("external_actions"),
     }
 
 
@@ -2161,11 +2202,70 @@ class WorkflowAutomationStateStore:
         result = self.replace_automation(replacement, expected_document_identity=expected)
         return StateMutationResult("migrated", True, result.document_identity)
 
+    def cancel_legacy(
+        self,
+        automation: dict[str, Any],
+        *,
+        cancelled_at: str,
+        expected_document_identity: str | None = None,
+    ) -> StateMutationResult:
+        """Project one active legacy record directly into a cancelled unified run."""
+
+        snapshot = self.read()
+        if snapshot.automation is not None:
+            raise StateContractError("legacy cancellation requires legacy-only state")
+        workflow = snapshot.document.get("workflow")
+        legacy = workflow.get("autoprogression") if isinstance(workflow, dict) else None
+        if not isinstance(legacy, dict):
+            return StateMutationResult(
+                "no-active-run", False, snapshot.document_identity
+            )
+        mechanism, record = self._select_legacy_record(legacy)
+        state = record.get("state", record.get("status"))
+        if mechanism == "off" or state in TERMINAL_LEGACY_STATES:
+            status = (
+                "already-completed"
+                if state in {"completed", "complete"}
+                else "cancelled"
+            )
+            return StateMutationResult(status, False, snapshot.document_identity)
+        run = automation.get("run")
+        cancellation = automation.get("cancellation")
+        if (
+            not isinstance(run, dict)
+            or run.get("status") != "cancelled"
+            or not isinstance(cancellation, dict)
+            or cancellation.get("cancelled_at") != cancelled_at
+        ):
+            raise StateContractError(
+                "legacy cancellation requires a complete cancelled projection"
+            )
+        source_identity = _structured_identity(record)
+        migration_id = f"migration-{source_identity.split(':', 1)[1][:16]}"
+        replacement = copy.deepcopy(automation)
+        replacement["migration_receipts"] = {
+            migration_id: {
+                "migration_id": migration_id,
+                "source_mechanism": mechanism,
+                "source_record_identity": source_identity,
+                "migrated_at": cancelled_at,
+                "unified_run_id": run.get("run_id"),
+                "projection_result": "equivalent",
+                "legacy_read_only": True,
+            }
+        }
+        expected = expected_document_identity or snapshot.document_identity
+        result = self.replace_automation(
+            replacement,
+            expected_document_identity=expected,
+        )
+        return StateMutationResult("cancelled", True, result.document_identity)
+
     @staticmethod
     def _select_legacy_record(legacy: dict[str, Any]) -> tuple[str, dict[str, Any]]:
         if isinstance(legacy.get("profile"), str):
             return legacy["profile"], legacy
-        candidates = [
+        records = [
             (name.replace("_", "-"), record)
             for name in (
                 "authoring_through_plan_review",
@@ -2173,8 +2273,15 @@ class WorkflowAutomationStateStore:
                 "review_fix",
             )
             if isinstance((record := legacy.get(name)), dict)
-            and record.get("state", record.get("status")) not in TERMINAL_LEGACY_STATES
         ]
+        candidates = [
+            (name, record)
+            for name, record in records
+            if record.get("state", record.get("status"))
+            not in TERMINAL_LEGACY_STATES
+        ]
+        if not candidates and len(records) == 1:
+            candidates = records
         if len(candidates) != 1:
             raise StateContractError(
                 "legacy migration requires exactly one active source record"
