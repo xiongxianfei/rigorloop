@@ -8,6 +8,7 @@ import dataclasses
 import hashlib
 import json
 import importlib.util
+import os
 import re
 import subprocess
 import sys
@@ -294,6 +295,119 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         )
         return WorkflowAutomationStateStore(path)
 
+    def write_verification_readiness_evidence(
+        self,
+        store: WorkflowAutomationStateStore,
+    ) -> tuple[dict[str, str], dict[str, str], FixtureCodeStateProvider]:
+        root = store.repository_root
+
+        def artifact(relative: str, content: str) -> tuple[str, str]:
+            path = root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+            return (
+                relative,
+                "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest(),
+            )
+
+        source_path, _source_identity = artifact(
+            "scripts/final-code.py",
+            "final_value = 1\n",
+        )
+        provider = FixtureCodeStateProvider((source_path,))
+        code_state = provider.snapshot(root)
+        plan_path, plan_identity = artifact(
+            "docs/plans/closed.md",
+            plan_text(
+                current="M3. Later Slice",
+                current_state="closed",
+                remaining="M3",
+                next_stage="verify",
+                milestone_two_state="closed",
+                milestone_three_state="closed",
+            ),
+        )
+        review_path, review_identity = artifact(
+            "docs/changes/2026-07-20-example/reviews/code-review-final-r1.md",
+            f"""# Final code review
+
+Review ID: code-review-final-r1
+Stage: code-review
+Round: final R1
+Reviewer: fixture reviewer
+Target: final implementation
+Status: approved
+Material findings: None
+Review scope: final-holistic
+complete_final_diff: reviewed
+cross_milestone_interactions: reviewed
+governing_artifacts: reviewed
+review_resolutions: closed
+final_validation_selection: reviewed
+generated_and_derived_artifacts: current
+cross_milestone_scope: reviewed
+Reviewed commit: fixture-reviewed
+Final code identity: {code_state.identity}
+""",
+        )
+        artifact(
+            "docs/changes/2026-07-20-example/review-log.md",
+            """# Review Log
+
+### Review entry
+Review ID: code-review-final-r1
+Stage: code-review
+Round: final R1
+Status: approved
+Detailed record: reviews/code-review-final-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+        )
+        explanation_path, explanation_identity = artifact(
+            "docs/changes/2026-07-20-example/explain-change.md",
+            "Stage: explain-change\nStatus: current\n"
+            f"Final diff identity: {code_state.identity}\n"
+            f"Final review identity: {review_identity}\n",
+        )
+        promotion_path, promotion_identity = artifact(
+            "docs/changes/2026-07-20-example/promotion-evidence.md",
+            "Stage: promotion\nStatus: valid\n"
+            f"Final code identity: {code_state.identity}\n",
+        )
+        branch_path, branch_identity = artifact(
+            "docs/changes/2026-07-20-example/branch-state.md",
+            "Stage: branch-state\nStatus: current\n"
+            f"Final code identity: {code_state.identity}\n"
+            f"Final code paths: {json.dumps([source_path])}\n"
+            f"Final code anchor identity: {code_state.anchor_identity}\n"
+            f"Final code base revision: {code_state.base_revision}\n"
+            f"Final code reviewed revision: {code_state.reviewed_revision}\n",
+        )
+        commands_path, commands_identity = artifact(
+            "docs/changes/2026-07-20-example/verification-commands.md",
+            "Stage: verification-commands\nStatus: current\n"
+            f"Final code identity: {code_state.identity}\n",
+        )
+        basis = {
+            "closed_milestones_identity": plan_identity,
+            "final_code_review_identity": review_identity,
+            "promotion_evidence_identity": promotion_identity,
+            "explanation_inputs_identity": explanation_identity,
+            "branch_state_identity": branch_identity,
+            "verification_commands_identity": commands_identity,
+        }
+        paths = {
+            "closed_milestones_identity": plan_path,
+            "final_code_review_identity": review_path,
+            "promotion_evidence_identity": promotion_path,
+            "explanation_inputs_identity": explanation_path,
+            "branch_state_identity": branch_path,
+            "verification_commands_identity": commands_path,
+        }
+        return basis, paths, provider
+
     def write_proposal_correction_evidence(
         self,
         store: WorkflowAutomationStateStore,
@@ -382,6 +496,7 @@ Planned validation rule: proposal-exact-append
         *,
         transition_id: str,
         allow_rereview: bool = True,
+        store: WorkflowAutomationStateStore | None = None,
     ) -> dict[str, object]:
         accepted = ["BRF-1"]
         classifications = {"BRF-1": "mechanical"}
@@ -438,7 +553,15 @@ Planned validation rule: proposal-exact-append
         state["parent_authorizations"] = {"auth-correction": parent}
         state["effective_capabilities"] = {}
         state["transition_receipts"] = {}
-        store = self.make_store(state)
+        state["observed_identities"] = {}
+        if store is None:
+            store = self.make_store(state)
+        else:
+            snapshot = store.read()
+            store.replace_automation(
+                state,
+                expected_document_identity=snapshot.document_identity,
+            )
         relative = Path("docs/proposals/2026-07-20-example.md")
         proposal = store.repository_root / relative
         proposal.parent.mkdir(parents=True, exist_ok=True)
@@ -452,6 +575,16 @@ Planned validation rule: proposal-exact-append
                 store,
                 proposal_path=relative.as_posix(),
             )
+        )
+        state = store.read()
+        replacement = copy.deepcopy(state.automation)
+        replacement["observed_identities"] = {
+            "proposal": proposal_before,
+            "proposal-review": review_identity,
+        }
+        store.replace_automation(
+            replacement,
+            expected_document_identity=state.document_identity,
         )
         budget_identity = identity(budget)
         basis = {
@@ -885,14 +1018,11 @@ Planned validation rule: proposal-exact-append
             paused_automation,
             expected_document_identity=paused.document_identity,
         )
-        verification_basis = {
-            "closed_milestones_identity": "sha256:closed",
-            "final_code_review_identity": "sha256:final-review",
-            "promotion_evidence_identity": "sha256:promotion",
-            "explanation_inputs_identity": "sha256:explanation",
-            "branch_state_identity": "sha256:branch",
-            "verification_commands_identity": "sha256:commands",
-        }
+        (
+            verification_basis,
+            verification_basis_paths,
+            code_state_provider,
+        ) = self.write_verification_readiness_evidence(verify_store)
         authorized = workflow_automation_module.authorize_public_run(
             verify_store,
             "$workflow auto: verify",
@@ -901,6 +1031,9 @@ Planned validation rule: proposal-exact-append
             actor="user",
             occurred_at="2026-07-24T00:06:00Z",
             verification_basis=verification_basis,
+            repository_root=verify_store.repository_root,
+            verification_basis_paths=verification_basis_paths,
+            code_state_provider=code_state_provider,
         )
         self.assertEqual(authorized["stage_outcome"], "authorization-recorded")
         resumed_state = verify_store.read().automation
@@ -1142,15 +1275,320 @@ Planned validation rule: proposal-exact-append
         self.assertEqual(result["transitions_attempted"][0]["status"], "completed")
         self.assertEqual(result["artifacts_changed"], ["specs/example.md"])
         self.assertEqual(result["next_action"], "spec-review")
+        self.assertEqual(
+            store.read().automation["observed_identities"],
+            {
+                "proposal": "sha256:proposal",
+                "proposal-review": "sha256:proposal-review",
+                "spec": result["latest_evidence_identities"]["spec"],
+            },
+        )
+
+    def test_public_resume_uses_durable_observed_identities_and_pauses_on_drift(
+        self,
+    ) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        change = root / "change.yaml"
+        change.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Public resume drift fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                }
+            ),
+            encoding="utf-8",
+        )
+        store = WorkflowAutomationStateStore(change, repository_root=root)
+        original = PrePlanEvidence(
+            positions={
+                "proposal": ("sha256:proposal-v1",),
+                "proposal-review": ("sha256:proposal-review-v1",),
+            },
+            review_outcomes={"proposal-review": "approved"},
+            review_resolution_closed=True,
+            architecture_applicability="not-required",
+        )
+        start_public_run(
+            store,
+            "$workflow auto: test-spec-review",
+            run_id="run-public-drift",
+            actor="user",
+            occurred_at="2026-07-24T00:00:00Z",
+            pre_plan=original,
+        )
+        drifted = dataclasses.replace(
+            original,
+            positions={
+                "proposal": ("sha256:proposal-v2",),
+                "proposal-review": ("sha256:proposal-review-v2",),
+            },
+        )
+        invoked = 0
+
+        def invoke() -> StageExecutionResult:
+            nonlocal invoked
+            invoked += 1
+            raise AssertionError("stage must not run after canonical drift")
+
+        with self.assertRaisesRegex(
+            AutomationContractError, "canonical-state-mismatch: proposal"
+        ):
+            workflow_automation_module.resume_public_run(
+                store,
+                "$workflow auto: test-spec-review",
+                repository_root=root,
+                stage="spec",
+                occurrence={"kind": "singleton"},
+                capability_id="cap-public-drift",
+                basis={
+                    "proposal_identity": "sha256:proposal-v2",
+                    "approved_proposal_review_identity":
+                        "sha256:proposal-review-v2",
+                    "closed_review_resolution_identity": "sha256:resolution",
+                    "stage_scope_identity": "sha256:scope",
+                },
+                affected_path_roots=("specs/",),
+                mutation_categories=("downstream-authoring-artifacts",),
+                derived_at="2026-07-24T00:01:00Z",
+                transition_id="transition-public-drift",
+                input_identities={
+                    "proposal_identity": "sha256:proposal-v2",
+                    "approved_proposal_review_identity":
+                        "sha256:proposal-review-v2",
+                    "closed_review_resolution_identity": "sha256:resolution",
+                    "stage_scope_identity": "sha256:scope",
+                    "proposal": "sha256:proposal-v2",
+                    "proposal-review": "sha256:proposal-review-v2",
+                },
+                invoke_stage=invoke,
+                synchronize_canonical_state=lambda result:
+                    CanonicalSyncResult(
+                        "synchronized", result.completion_evidence
+                    ),
+                pre_plan=drifted,
+            )
+
+        automation = store.read().automation
+        assert automation is not None
+        self.assertEqual(invoked, 0)
+        self.assertEqual(
+            (automation["run"]["status"], automation["run"]["pause_reason"]),
+            ("paused", "canonical-state-mismatch"),
+        )
+        self.assertEqual(automation["effective_capabilities"], {})
+        self.assertEqual(automation["transition_receipts"], {})
+        self.assertEqual(
+            automation["observed_identities"],
+            {
+                "proposal": "sha256:proposal-v1",
+                "proposal-review": "sha256:proposal-review-v1",
+            },
+        )
+        self.assertFalse((root / "specs/example.md").exists())
+
+    def test_public_verification_authorization_rejects_unbacked_shaped_hashes(
+        self,
+    ) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        path = root / "change.yaml"
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Verification authorization fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                }
+            ),
+            encoding="utf-8",
+        )
+        store = WorkflowAutomationStateStore(path, repository_root=root)
+        start_public_run(
+            store,
+            "$workflow auto: verify",
+            run_id="run-public-unbacked-verify",
+            actor="user",
+            occurred_at="2026-07-24T00:00:00Z",
+            pre_plan=PrePlanEvidence(
+                positions={"proposal": ("sha256:proposal",)},
+                review_outcomes={},
+                review_resolution_closed=True,
+                architecture_applicability="not-required",
+            ),
+        )
+        shaped = {
+            "closed_milestones_identity": "sha256:closed",
+            "final_code_review_identity": "sha256:final-review",
+            "promotion_evidence_identity": "sha256:promotion",
+            "explanation_inputs_identity": "sha256:explanation",
+            "branch_state_identity": "sha256:branch",
+            "verification_commands_identity": "sha256:commands",
+        }
+        with self.assertRaisesRegex(
+            AutomationContractError,
+            "repository-backed verification basis is required",
+        ):
+            workflow_automation_module.authorize_public_run(
+                store,
+                "$workflow auto: verify",
+                authorization_id="authorization-verification-unbacked",
+                authorization_class="verification",
+                actor="user",
+                occurred_at="2026-07-24T00:01:00Z",
+                verification_basis=shaped,
+            )
+        automation = store.read().automation
+        assert automation is not None
+        self.assertEqual(automation["parent_authorizations"], {})
+
+    def test_public_verification_authorization_validates_each_closeout_gate(
+        self,
+    ) -> None:
+        cases = (
+            (
+                "closed_milestones_identity",
+                "- Milestone state: closed",
+                "- Milestone state: implementing",
+                "milestones are open",
+            ),
+            (
+                "final_code_review_identity",
+                "complete_final_diff: reviewed",
+                "complete_final_diff: future-value",
+                "final review is not clean",
+            ),
+            (
+                "promotion_evidence_identity",
+                "Status: valid",
+                "Status: stale",
+                "evidence is invalid: promotion_evidence_identity",
+            ),
+            (
+                "explanation_inputs_identity",
+                "Status: current",
+                "Status: stale",
+                "explanation is not current",
+            ),
+            (
+                "branch_state_identity",
+                "Status: current",
+                "Status: stale",
+                "branch state is invalid",
+            ),
+            (
+                "verification_commands_identity",
+                "Status: current",
+                "Status: stale",
+                "evidence is invalid: verification_commands_identity",
+            ),
+        )
+        for name, old, new, expected in cases:
+            with self.subTest(gate=name):
+                temp = tempfile.TemporaryDirectory()
+                self.addCleanup(temp.cleanup)
+                root = Path(temp.name)
+                path = root / "change.yaml"
+                path.write_text(
+                    dump_yaml(
+                        {
+                            "change_id": "2026-07-20-example",
+                            "title": "Verification gate fixture",
+                            "classification": "default",
+                            "risk": "medium",
+                            "review": {
+                                "status": "resolved",
+                                "unresolved_items": 0,
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                store = WorkflowAutomationStateStore(
+                    path, repository_root=root
+                )
+                start_public_run(
+                    store,
+                    "$workflow auto: verify",
+                    run_id=f"run-public-{name}",
+                    actor="user",
+                    occurred_at="2026-07-24T00:00:00Z",
+                    pre_plan=PrePlanEvidence(
+                        positions={"proposal": ("sha256:proposal",)},
+                        review_outcomes={},
+                        review_resolution_closed=True,
+                        architecture_applicability="not-required",
+                    ),
+                )
+                basis, paths, provider = (
+                    self.write_verification_readiness_evidence(store)
+                )
+                artifact = root / paths[name]
+                text = artifact.read_text(encoding="utf-8")
+                self.assertIn(old, text)
+                artifact.write_text(
+                    text.replace(old, new, 1),
+                    encoding="utf-8",
+                )
+                basis[name] = (
+                    "sha256:" + hashlib.sha256(artifact.read_bytes()).hexdigest()
+                )
+                if name == "final_code_review_identity":
+                    explanation = root / paths["explanation_inputs_identity"]
+                    explanation.write_text(
+                        explanation.read_text(encoding="utf-8").replace(
+                            next(
+                                line.split(": ", 1)[1]
+                                for line in explanation.read_text(
+                                    encoding="utf-8"
+                                ).splitlines()
+                                if line.startswith("Final review identity: ")
+                            ),
+                            basis[name],
+                        ),
+                        encoding="utf-8",
+                    )
+                    basis["explanation_inputs_identity"] = (
+                        "sha256:"
+                        + hashlib.sha256(explanation.read_bytes()).hexdigest()
+                    )
+                with self.assertRaisesRegex(
+                    AutomationContractError, expected
+                ):
+                    workflow_automation_module.authorize_public_run(
+                        store,
+                        "$workflow auto: verify",
+                        authorization_id=f"authorization-{name}",
+                        authorization_class="verification",
+                        actor="user",
+                        occurred_at="2026-07-24T00:01:00Z",
+                        verification_basis=basis,
+                        repository_root=root,
+                        verification_basis_paths=paths,
+                        code_state_provider=provider,
+                    )
+                automation = store.read().automation
+                assert automation is not None
+                self.assertEqual(automation["parent_authorizations"], {})
 
     def test_public_composition_is_deterministic_and_order_independent(
         self,
     ) -> None:
         def run_scenario(name: str) -> dict[str, object]:
-            with tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
+            temporary = tempfile.TemporaryDirectory()
+            root_path = Path(temporary.name)
+            external_calls: list[str] = []
+            try:
+                root = root_path
                 path = root / "change.yaml"
-                if name == "legacy-cancel":
+                if name in {"migration"}:
                     document = {
                         "change_id": "2026-07-20-example",
                         "title": "Legacy deterministic fixture",
@@ -1180,14 +1618,23 @@ Planned validation rule: proposal-exact-append
                 store = WorkflowAutomationStateStore(
                     path, repository_root=root
                 )
-                if name == "legacy-cancel":
-                    result = execute_public_control_command(
-                        store,
-                        "workflow auto-through: off",
-                        actor="user",
-                        occurred_at="2026-07-24T00:00:00Z",
+
+                def prohibited_external_action(*_args, **_kwargs):
+                    external_calls.append("called")
+                    raise AssertionError("prohibited external action was invoked")
+
+                real_popen = subprocess.Popen
+
+                def allow_root_probe(command, *args, **kwargs):
+                    return run_exact_read_only_git_probe(
+                        command,
+                        *args,
+                        expected_root=root,
+                        real_popen=real_popen,
+                        **kwargs,
                     )
-                else:
+
+                def run_authoring(*, interrupted: bool = False) -> dict[str, object]:
                     pre_plan = PrePlanEvidence(
                         positions={
                             "proposal": ("sha256:proposal",),
@@ -1214,7 +1661,7 @@ Planned validation rule: proposal-exact-append
                         "stage_scope_identity": "sha256:scope",
                     }
 
-                    def invoke() -> StageExecutionResult:
+                    def completed_invoke() -> StageExecutionResult:
                         relative = Path("specs/example.md")
                         artifact = root / relative
                         artifact.parent.mkdir(parents=True)
@@ -1234,6 +1681,42 @@ Planned validation rule: proposal-exact-append
                             (evidence,), {"spec": evidence}
                         )
 
+                    if interrupted:
+                        try:
+                            workflow_automation_module.resume_public_run(
+                                store,
+                                "$workflow auto: test-spec-review",
+                                repository_root=root,
+                                stage="spec",
+                                occurrence={"kind": "singleton"},
+                                capability_id="cap-deterministic",
+                                basis=basis,
+                                affected_path_roots=("specs/",),
+                                mutation_categories=(
+                                    "downstream-authoring-artifacts",
+                                ),
+                                derived_at="2026-07-24T00:01:00Z",
+                                transition_id="transition-interrupted",
+                                input_identities={
+                                    **basis,
+                                    "proposal": "sha256:proposal",
+                                    "proposal-review":
+                                        "sha256:proposal-review",
+                                },
+                                invoke_stage=lambda: (_ for _ in ()).throw(
+                                    RuntimeError("simulated interruption")
+                                ),
+                                synchronize_canonical_state=lambda result:
+                                    CanonicalSyncResult(
+                                        "synchronized",
+                                        result.completion_evidence,
+                                    ),
+                                pre_plan=pre_plan,
+                            )
+                        except RuntimeError as error:
+                            interruption = str(error)
+                        else:
+                            self.fail("simulated interruption was not raised")
                     result = workflow_automation_module.resume_public_run(
                         store,
                         "$workflow auto: test-spec-review",
@@ -1247,20 +1730,251 @@ Planned validation rule: proposal-exact-append
                             "downstream-authoring-artifacts",
                         ),
                         derived_at="2026-07-24T00:01:00Z",
-                        transition_id="transition-deterministic",
+                        transition_id=(
+                            "transition-resumed"
+                            if interrupted
+                            else "transition-deterministic"
+                        ),
                         input_identities={
                             **basis,
                             "proposal": "sha256:proposal",
                             "proposal-review": "sha256:proposal-review",
                         },
-                        invoke_stage=invoke,
+                        invoke_stage=completed_invoke,
                         synchronize_canonical_state=lambda stage_result:
                             CanonicalSyncResult(
                                 "synchronized",
                                 stage_result.completion_evidence,
-                            ),
+                        ),
                         pre_plan=pre_plan,
                     )
+                    if interrupted:
+                        result["interruption"] = interruption
+                    return result
+
+                with patch.dict(
+                    os.environ,
+                    {
+                        "TZ": "UTC",
+                        "LC_ALL": "C",
+                        "PATH": os.environ.get("PATH", ""),
+                    },
+                    clear=True,
+                ), patch(
+                    "subprocess.run", side_effect=allow_root_probe
+                ), patch(
+                    "subprocess.Popen", side_effect=prohibited_external_action
+                ), patch(
+                    "socket.create_connection",
+                    side_effect=prohibited_external_action,
+                ), patch(
+                    "urllib.request.urlopen",
+                    side_effect=prohibited_external_action,
+                ), patch(
+                    "os.system", side_effect=prohibited_external_action
+                ):
+                    sanitized_environment = {
+                        key: os.environ.get(key)
+                        for key in ("TZ", "LC_ALL")
+                    }
+                    self.assertEqual(
+                        sanitized_environment,
+                        {"TZ": "UTC", "LC_ALL": "C"},
+                    )
+                    if name == "clean":
+                        result = run_authoring()
+                    elif name == "interruption":
+                        result = run_authoring(interrupted=True)
+                    elif name == "cancellation":
+                        start_public_run(
+                            store,
+                            "$workflow auto: spec",
+                            run_id="run-cancel",
+                            actor="user",
+                            occurred_at="2026-07-24T00:00:00Z",
+                            pre_plan=PrePlanEvidence(
+                                positions={
+                                    "proposal": ("sha256:proposal",)
+                                },
+                                review_outcomes={},
+                                review_resolution_closed=True,
+                                architecture_applicability="not-required",
+                            ),
+                        )
+                        result = execute_public_control_command(
+                            store,
+                            "$workflow auto: off",
+                            actor="user",
+                            occurred_at="2026-07-24T00:01:00Z",
+                        )
+                    elif name == "migration":
+                        result = start_public_run(
+                            store,
+                            "workflow auto-through: verify",
+                            run_id="run-migration",
+                            actor="user",
+                            occurred_at="2026-07-24T00:00:00Z",
+                            pre_plan=PrePlanEvidence(
+                                positions={
+                                    "proposal": ("sha256:proposal",)
+                                },
+                                review_outcomes={},
+                                review_resolution_closed=True,
+                                architecture_applicability="not-required",
+                            ),
+                        )
+                    elif name == "missing-authority":
+                        start_public_run(
+                            store,
+                            "$workflow auto: verify",
+                            run_id="run-missing-authority",
+                            actor="user",
+                            occurred_at="2026-07-24T00:00:00Z",
+                            pre_plan=PrePlanEvidence(
+                                positions={
+                                    "proposal": ("sha256:proposal",)
+                                },
+                                review_outcomes={},
+                                review_resolution_closed=True,
+                                architecture_applicability="not-required",
+                            ),
+                        )
+                        try:
+                            workflow_automation_module.resume_public_run(
+                                store,
+                                "$workflow auto: verify",
+                                repository_root=root,
+                                stage="verify",
+                            )
+                        except AutomationContractError as error:
+                            result = {
+                                "stage_outcome": "paused",
+                                "stop_reason": str(error),
+                            }
+                        else:
+                            self.fail("missing authority did not stop resume")
+                    elif name == "correction":
+                        fixture = self.prepare_proposal_correction_transaction(
+                            transition_id="transition-correction",
+                            store=store,
+                        )
+                        request = dict(fixture["coordination"])
+                        for field in (
+                            "invocation_context",
+                            "target_stage",
+                            "store",
+                            "repository_root",
+                            "parent_authorization_id",
+                        ):
+                            request.pop(field)
+                        result = workflow_automation_module.resume_public_run(
+                            store,
+                            "$workflow auto: spec",
+                            repository_root=root,
+                            **request,
+                        )
+                    elif name == "final-success":
+                        basis, basis_paths, provider = (
+                            self.write_verification_readiness_evidence(store)
+                        )
+                        plan_path = root / basis_paths[
+                            "closed_milestones_identity"
+                        ]
+                        active_plan = ActivePlanContext.from_text(
+                            plan_path.read_text(encoding="utf-8"),
+                            plan_identity=basis[
+                                "closed_milestones_identity"
+                            ],
+                        )
+                        start_public_run(
+                            store,
+                            "$workflow auto: verify",
+                            run_id="run-final-success",
+                            actor="user",
+                            occurred_at="2026-07-24T00:00:00Z",
+                            plan=active_plan,
+                            verification_basis=basis,
+                            verification_basis_paths=basis_paths,
+                            code_state_provider=provider,
+                        )
+
+                        def verify_invoke() -> StageExecutionResult:
+                            report_path = (
+                                "docs/changes/2026-07-20-example/"
+                                "verify-report.md"
+                            )
+                            validation_path = (
+                                "docs/changes/2026-07-20-example/"
+                                "verify-validation.md"
+                            )
+                            report_file = root / report_path
+                            report_file.write_text(
+                                "Stage: verify\nResult: passed\n"
+                                "Next stage: pr\n"
+                                "External actions performed: no\n",
+                                encoding="utf-8",
+                            )
+                            validation_file = root / validation_path
+                            validation_file.write_text(
+                                "Stage: verify\nResult: passed\n",
+                                encoding="utf-8",
+                            )
+                            report = ArtifactEvidence(
+                                report_path,
+                                "sha256:"
+                                + hashlib.sha256(
+                                    report_file.read_bytes()
+                                ).hexdigest(),
+                            )
+                            validation = ArtifactEvidence(
+                                validation_path,
+                                "sha256:"
+                                + hashlib.sha256(
+                                    validation_file.read_bytes()
+                                ).hexdigest(),
+                            )
+                            return StageExecutionResult(
+                                (report, validation),
+                                {
+                                    "verify-report": report,
+                                    "validation": validation,
+                                },
+                            )
+
+                        result = workflow_automation_module.resume_public_run(
+                            store,
+                            "$workflow auto: verify",
+                            repository_root=root,
+                            verification_basis_paths=basis_paths,
+                            code_state_provider=provider,
+                            stage="verify",
+                            occurrence={"kind": "final"},
+                            capability_id="cap-final-success",
+                            basis=basis,
+                            affected_path_roots=(
+                                "docs/changes/2026-07-20-example/",
+                            ),
+                            mutation_categories=(
+                                "verification-evidence",
+                            ),
+                            derived_at="2026-07-24T00:01:00Z",
+                            transition_id="transition-final-success",
+                            input_identities={
+                                **basis,
+                                "plan": basis[
+                                    "closed_milestones_identity"
+                                ],
+                            },
+                            invoke_stage=verify_invoke,
+                            active_plan=active_plan,
+                            synchronize_canonical_state=lambda execution:
+                                CanonicalSyncResult(
+                                    "synchronized",
+                                    execution.completion_evidence,
+                                ),
+                        )
+                    else:
+                        self.fail(f"unknown deterministic scenario: {name}")
                 status_before = path.read_bytes()
                 status = execute_public_control_command(
                     store,
@@ -1269,30 +1983,43 @@ Planned validation rule: proposal-exact-append
                     occurred_at="2026-07-24T00:02:00Z",
                 )
                 self.assertEqual(path.read_bytes(), status_before)
-                return {
+                payload = {
                     "result": result,
                     "status": status,
                     "automation": store.read().automation,
+                    "environment": sanitized_environment,
+                    "external_action_calls": len(external_calls),
                 }
+            finally:
+                temporary.cleanup()
+            self.assertFalse(root_path.exists())
+            payload["teardown_complete"] = True
+            return payload
 
         def run_order(order: tuple[str, ...]) -> dict[str, dict[str, object]]:
             return {name: run_scenario(name) for name in order}
 
-        declared = ("authoring", "legacy-cancel")
+        declared = (
+            "clean",
+            "correction",
+            "interruption",
+            "cancellation",
+            "migration",
+            "missing-authority",
+            "final-success",
+        )
         first = run_order(declared)
         repeated = run_order(declared)
         reversed_result = run_order(tuple(reversed(declared)))
 
         self.assertEqual(first, repeated)
         self.assertEqual(first, reversed_result)
-        self.assertEqual(
-            first["authoring"]["result"]["external_actions"],
-            "prohibited",
-        )
-        self.assertEqual(
-            first["legacy-cancel"]["result"]["external_actions"],
-            "prohibited",
-        )
+        for evidence in first.values():
+            self.assertEqual(evidence["external_action_calls"], 0)
+            self.assertEqual(
+                evidence["environment"], {"TZ": "UTC", "LC_ALL": "C"}
+            )
+            self.assertTrue(evidence["teardown_complete"])
 
     def test_target_occurrence_and_completion_are_bound_before_persistence(self) -> None:
         plan = ActivePlanContext.from_text(plan_text(), plan_identity="sha256:plan-v1")
@@ -3363,6 +4090,16 @@ Planned validation rule: proposal-exact-append
                 proposal_path=relative.as_posix(),
             )
         )
+        snapshot = store.read()
+        replacement = copy.deepcopy(snapshot.automation)
+        replacement["observed_identities"] = {
+            "proposal": proposal_before,
+            "proposal-review": review_identity,
+        }
+        store.replace_automation(
+            replacement,
+            expected_document_identity=snapshot.document_identity,
+        )
         budget_identity = identity(budget)
         basis = {
             "reviewed_proposal_identity": proposal_before,
@@ -3870,6 +4607,9 @@ Planned validation rule: proposal-exact-append
         }
         automation["effective_capabilities"] = {}
         automation["transition_receipts"] = {}
+        automation["observed_identities"] = {
+            "plan": "sha256:plan-m2-resolution"
+        }
         store = self.make_store(automation)
         source = store.repository_root / "scripts/example.py"
         source.parent.mkdir(parents=True, exist_ok=True)
@@ -4434,6 +5174,16 @@ Open findings: None
         active_plan = ActivePlanContext.from_text(
             pre_plan_text, plan_identity=plan_identity
         )
+        snapshot = store.read()
+        replacement = copy.deepcopy(snapshot.automation)
+        replacement["canonical_position_source"] = (
+            "plan-current-handoff-summary"
+        )
+        replacement["observed_identities"] = {"plan": plan_identity}
+        store.replace_automation(
+            replacement,
+            expected_document_identity=snapshot.document_identity,
+        )
         basis = {
             "plan_identity": plan_identity,
             "plan_review_identity": "sha256:plan-review",
@@ -4518,6 +5268,13 @@ Open findings: None
         persisted = store.read().automation
         assert persisted is not None
         self.assertEqual(
+            persisted["observed_identities"],
+            {
+                "plan": "sha256:"
+                + hashlib.sha256(plan_path.read_bytes()).hexdigest()
+            },
+        )
+        self.assertEqual(
             persisted["effective_capabilities"][
                 "capability-implementation-M2"
             ]["status"],
@@ -4562,6 +5319,16 @@ Open findings: None
         plan_identity = "sha256:" + hashlib.sha256(plan_path.read_bytes()).hexdigest()
         active_plan = ActivePlanContext.from_text(
             pre_text, plan_identity=plan_identity
+        )
+        snapshot = store.read()
+        replacement = copy.deepcopy(snapshot.automation)
+        replacement["canonical_position_source"] = (
+            "plan-current-handoff-summary"
+        )
+        replacement["observed_identities"] = {"plan": plan_identity}
+        store.replace_automation(
+            replacement,
+            expected_document_identity=snapshot.document_identity,
         )
         basis = {
             "plan_identity": plan_identity,
@@ -4906,6 +5673,16 @@ Open findings: None
         plan_identity = "sha256:" + hashlib.sha256(plan_path.read_bytes()).hexdigest()
         active_plan = ActivePlanContext.from_text(
             closed_text, plan_identity=plan_identity
+        )
+        snapshot = store.read()
+        replacement = copy.deepcopy(snapshot.automation)
+        replacement["canonical_position_source"] = (
+            "plan-current-handoff-summary"
+        )
+        replacement["observed_identities"] = {"plan": plan_identity}
+        store.replace_automation(
+            replacement,
+            expected_document_identity=snapshot.document_identity,
         )
 
         def write_evidence(relative: str, content: str) -> ArtifactEvidence:

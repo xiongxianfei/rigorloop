@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -53,11 +53,12 @@ Review closeout: code-review-m5-r6
 Review closeout: code-review-m5-r7
 Review closeout: code-review-m5-r8
 Review closeout: code-review-m6-r1
+Review closeout: code-review-m6-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`, `code-review-m6-r2`
-- Findings resolved: 96
-- Unresolved findings: 3
-- Current result: Code-review M6 R2 classified `BRF-M6-CR4` as a failed remediation and opened residual `BRF-M6-CR7` plus new `BRF-M6-CR5` and `BRF-M6-CR6`. M6 is resolution-needed; the next stage is review-resolution M6.
+- Findings resolved: 99
+- Unresolved findings: 0
+- Current result: `BRF-M6-CR5` through `BRF-M6-CR7` are resolved with durable observed-identity enforcement, repository-backed verification authorization, and complete repeated/reversed public composition proof. M6 is review-requested for code-review R3.
 
 ## Resolution Overview
 
@@ -67,9 +68,9 @@ Review closeout: code-review-m6-r1
 | BRF-M6-CR2 | accepted | resolved | Legacy `off` now projects active legacy state directly to one cancelled unified record and treats terminal legacy state as a byte-preserving idempotent result. |
 | BRF-M6-CR3 | accepted | resolved | Public target, status, resume, pause, and cancellation results now project canonical position, observed identities, receipt history, fixes, decisions, and changed artifacts from durable state. |
 | BRF-M6-CR4 | accepted | resolved | R2 classified the attempted composed-proof remediation as failed and records the remaining proof defect under residual `BRF-M6-CR7`. |
-| BRF-M6-CR5 | accepted | open | Public resume ignores the run's persisted observed identities and permits mutation after canonical-state drift. |
-| BRF-M6-CR6 | accepted | open | Verification authorization accepts syntactically complete caller hashes without independently validating repository-backed closeout evidence. |
-| BRF-M6-CR7 | accepted | open | The repeated/reversed T30 registry omits interruption, final success, correction, missing authority, environment, teardown, and external-action-counter proof. |
+| BRF-M6-CR5 | accepted | resolved | Public resume now selects the prior identity baseline only from durable state, pauses before stage invocation on drift, and advances the baseline only from verified canonical synchronization. |
+| BRF-M6-CR6 | accepted | resolved | Public verification authorization now requires repository paths and independently validated closeout, review, promotion, explanation, branch, command, and final-code evidence. |
+| BRF-M6-CR7 | accepted | resolved | T28/T30 now repeats and reverses clean, correction, interruption/resume, cancellation, migration, missing-authority, and final-success public scenarios with state, status, environment, teardown, and external-action comparisons. |
 | BRF-PR1 | accepted | resolved | Defined pre-plan derivation and the plan-creation ownership handoff; R2 confirmed resolution. |
 | BRF-PR2 | accepted | resolved | Bound grants to concrete reviewed identities, scope, and invalidation rules; R2 confirmed resolution. |
 | BRF-PR3 | accepted | resolved | Added write-ahead transition receipts and deterministic recovery; R2 confirmed resolution. |
@@ -242,51 +243,51 @@ It classified `BRF-M6-CR4` as a failed remediation, recorded residual `BRF-M6-CR
 
 Finding ID: BRF-M6-CR5
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
 Decision needed: None; the approved canonical-state mismatch contract already requires a pause.
-Chosen action: Pending implementation.
+Chosen action: Load the persisted observed-identity baseline inside the public resume adapter, prohibit caller replacement, durably pause on mismatch, and advance the baseline only from verified completion evidence.
 Rationale: The public resume adapter does not pass persisted `observed_identities` into canonical re-evaluation, so caller-supplied current identities can replace the run's original evidence without reconciliation.
 Required outcome: Public resume must compare current canonical evidence with the run's durable observed identities and pause before capability, receipt, artifact, or state mutation on mismatch, except through an explicitly validated ownership or transition handoff.
 Safe resolution path: Load the baseline from validated unified state inside `resume_public_run`, apply one state-aware identity advancement policy, and add zero-mutation drift tests for both canonical epochs plus positive handoff tests.
 Validation target: `BRF-R023`, `BRF-R044`, `BRF-R100`, T22, and public resume integration.
-Validation evidence: R2 started a public spec run at proposal/review identities `p1/r1`, resumed at `p2/r2`, completed the transition, and observed that durable run evidence still recorded `p1/r1`.
+Validation evidence: The proof-first public drift regression failed by invoking the stage before correction. It now proves zero invocation, zero capability/receipt/artifact mutation, a durable `canonical-state-mismatch` pause, and preservation of the original identities. Clean pre-plan completion and plan-handoff tests prove deterministic identity advancement.
 auto_fix_class: none
 
 #### BRF-M6-CR7 - Composed deterministic proof remains incomplete
 
 Finding ID: BRF-M6-CR7
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
 Decision needed: None; the approved T28/T30 proof contract already enumerates the required scenarios and comparisons.
-Chosen action: Pending implementation.
+Chosen action: Expand the fixed public scenario registry and execute every declared scenario twice and in reverse order under fixed time/IDs, a sanitized environment, fresh roots, and fail-on-call external boundaries.
 Rationale: The only repeated/reversed public scenario registry contains authoring/status and legacy cancellation, so the claimed composed proof does not cover interruption, correction, missing authority, or final verification.
 Required outcome: T28 must execute every declared public scenario, and T30 must repeat and reverse the complete composed transaction, interruption, migration, status, and final-success set with state, receipt, output, teardown, and external-action comparisons.
 Safe resolution path: Build reusable fresh-root public scenario drivers, run the fixed registry twice and in reverse, and compare canonical state, receipts, status/results, teardown, sanitized environment, and prohibited-call counts.
 Validation target: T28, T30, `BRF-R060` through `BRF-R067`, `BRF-R100`, and CMD25.
-Validation evidence: R2 inspected `test_public_composition_is_deterministic_and_order_independent`; its declared scenario tuple is exactly `("authoring", "legacy-cancel")`.
+Validation evidence: `test_public_composition_is_deterministic_and_order_independent` now executes clean authoring, bounded proposal correction, interrupted then resumed authoring, cancellation, legacy migration, missing authority, and repository-backed final verification. Repeated and reversed runs compare results, status, canonical automation state, receipts, environment, teardown, and zero external-action calls.
 auto_fix_class: none
 
 #### BRF-M6-CR6 - Verification authorization trusts shaped hashes instead of closeout evidence
 
 Finding ID: BRF-M6-CR6
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
 Decision needed: None; the approved verification-authorization timing contract already requires independent validation.
-Chosen action: Pending implementation.
+Chosen action: Route both initial and later public verification authorization through `resolve_verification_readiness`, require repository-contained evidence paths and canonical code-state proof, and persist only its validated identity projection.
 Rationale: `authorize_public_run` checks only that six verification-basis fields are nonempty strings, persists the parent authorization, and reactivates the run without reading a plan, final review, promotion, explanation, branch, or command artifact.
 Required outcome: Verification parent authorization must remain absent and the run paused until all repository-backed closeout prerequisites independently validate and their current identities match the persisted basis.
 Safe resolution path: Route authorization through the repository-backed verification-readiness resolver with canonical basis paths and code-state evidence, bind its validated projection, and add per-prerequisite negative tests plus one real-artifact positive test.
 Validation target: `BRF-R043b` through `BRF-R043e`, `AC-BRF-SR3-2` through `AC-BRF-SR3-5`, T9, T18, T20, and T28.
-Validation evidence: The committed positive test authorizes and reactivates a verify-target run from arbitrary strings such as `sha256:closed` and `sha256:final-review`; no repository evidence exists or is inspected.
+Validation evidence: The shaped-hash regression failed before correction and now leaves verification authority absent. A real-artifact positive test authorizes successfully, while separate negative cases reject open milestones, an unclean final review, invalid promotion, stale explanation, invalid branch state, and stale verification commands.
 auto_fix_class: none
 
 ### code-review-m5-r8

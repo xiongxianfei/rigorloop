@@ -2008,6 +2008,10 @@ class WorkflowAutomationStateStore:
                 "evidence": copy.deepcopy(proof.canonical_evidence),
                 "observed_identities": copy.deepcopy(proof.observed_identities),
             }
+            if canonical_sync_observed_identities is None:
+                raise StateContractError(
+                    "completed transition requires canonical observed identities"
+                )
             capabilities = replacement.get("effective_capabilities")
             capability = (
                 capabilities.get(receipt.get("effective_capability_id"))
@@ -2016,6 +2020,32 @@ class WorkflowAutomationStateStore:
             )
             if not isinstance(capability, dict) or capability.get("status") != "active":
                 raise StateContractError("completed transition requires its active capability")
+            stage = capability.get("stage")
+            stage_name = stage.get("name") if isinstance(stage, dict) else None
+            if "plan-handoff" in canonical_sync_observed_identities:
+                replacement["observed_identities"] = {
+                    "plan": canonical_sync_observed_identities["plan-handoff"]
+                }
+            elif (
+                stage_name == "plan"
+                and "plan" in canonical_sync_observed_identities
+            ):
+                replacement["observed_identities"] = {
+                    "plan": canonical_sync_observed_identities["plan"]
+                }
+            elif replacement.get("canonical_position_source") == (
+                "plan-current-handoff-summary"
+            ):
+                plan_identity = canonical_sync_observed_identities.get("plan")
+                if not isinstance(plan_identity, str) or not plan_identity:
+                    raise StateContractError(
+                        "completed plan-owned transition requires plan identity"
+                    )
+                replacement["observed_identities"] = {"plan": plan_identity}
+            else:
+                replacement["observed_identities"] = copy.deepcopy(
+                    canonical_sync_observed_identities
+                )
             capability["status"] = "consumed"
             for activated in activated_capabilities:
                 if not isinstance(activated, dict):

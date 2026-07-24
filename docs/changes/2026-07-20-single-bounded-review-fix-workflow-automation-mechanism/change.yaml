@@ -1219,6 +1219,16 @@ validation:
     result: reproduced_mutation_after_persisted_identity_drift_and_arbitrary_hash_verification_authorization
   - command: python scripts/validate-review-artifacts.py --mode structure; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths; python scripts/validate-guide-system.py; git diff --check
     result: passed_62_reviews_99_findings_3_open_after_code_review_M6_R2_recording_with_pre_existing_merge_language_warning_only
+  - command: proof-first M6 R2 regressions for durable public resume identities, repository-backed verification authorization, and complete repeated/reversed public composition
+    result: failed_before_correction_and_passed_after_correction
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-policy.py
+    result: passed_70_engine_60_state_68_validator_16_policy_tests_after_M6_R2_resolution
+  - command: temporary adapter generation and validation through a scoped Python TemporaryDirectory wrapper
+    result: passed_v0_1_5_generation_validation_and_teardown_after_shell_cleanup_trap_was_rejected
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path schemas/change.schema.json --path scripts/workflow_automation.py --path scripts/workflow_automation_policy.py --path scripts/workflow_automation_state.py --path scripts/validate_workflow_automation.py
+    result: passed_12_selected_checks_after_M6_R2_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_11_checks_in_231_seconds_after_M6_R2_resolution_and_lifecycle_synchronization
 changed_files:
   - README.md
   - docs/workflows.md
@@ -1342,11 +1352,11 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r2.md
 review:
   status: changes_requested
-  unresolved_items: 3
+  unresolved_items: 0
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   material_findings: 99
-  closed_findings: 96
-  open_findings: 3
+  closed_findings: 99
+  open_findings: 0
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
