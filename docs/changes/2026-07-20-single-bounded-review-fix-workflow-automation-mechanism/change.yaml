@@ -1123,6 +1123,18 @@ validation:
     result: passed_7_provider_1_readiness_tests_but_direct_git_subdirectory_provider_injection_and_HEAD_review_anchor_probes_succeeded
   - command: review structure, lifecycle, metadata, guide-system, and diff validation after code-review M5 R5 recording
     result: passed_57_reviews_90_findings_1_open_with_known_nonblocking_merge_language_warning
+  - command: proof-first M5 R5 Git-subdirectory, linked-worktree, mutable-review-revision, true-non-Git, ambiguous-classification, and pre-readiness root-binding regressions
+    result: git_subdirectory_and_four_mutable_revision_contrasts_failed_before_correction_then_passed
+  - command: python scripts/test-workflow-code-state.py; python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-policy.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py after M5 R5 resolution
+    result: passed_12_provider_57_engine_16_policy_60_state_65_validator_tests
+  - command: Python compilation, selector inspection, and diff validation after M5 R5 resolution
+    result: passed_with_expected_manual_selector_routing_for_four_automation_python_paths_and_broad_smoke_selected_by_active_plan
+  - command: review closeout, lifecycle, metadata regression/direct validation, guide-system, and diff validation after M5 R5 resolution
+    result: passed_57_reviews_90_findings_0_open_with_known_nonblocking_merge_language_warning
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_424_seconds_on_synchronized_source_before_final_classifier_contrast
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped after final ambiguous-classification fail-closed contrast
+    result: passed_11_checks_in_404_seconds_on_final_M5_R5_resolution_source
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md
@@ -1223,11 +1235,11 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r5.md
 review:
   status: changes_requested
-  unresolved_items: 1
+  unresolved_items: 0
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   material_findings: 90
-  closed_findings: 89
-  open_findings: 1
+  closed_findings: 90
+  open_findings: 0
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md

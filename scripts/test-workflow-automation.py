@@ -9,6 +9,7 @@ import hashlib
 import json
 import importlib.util
 import re
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -4129,8 +4130,32 @@ Open findings: None
         def prohibited_external_action(*_args, **_kwargs):
             raise AssertionError("prohibited external action was invoked")
 
+        real_popen = subprocess.Popen
+
+        def allow_read_only_git_probe(command, *_args, **kwargs):
+            if (
+                isinstance(command, tuple)
+                and len(command) >= 5
+                and command[0] == "git"
+                and command[-2:] == ("rev-parse", "--show-toplevel")
+            ):
+                process = real_popen(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    env=kwargs.get("env"),
+                )
+                stdout, stderr = process.communicate()
+                return subprocess.CompletedProcess(
+                    command,
+                    process.returncode,
+                    stdout,
+                    stderr,
+                )
+            return prohibited_external_action(command, *_args, **kwargs)
+
         with patch(
-            "subprocess.run", side_effect=prohibited_external_action
+            "subprocess.run", side_effect=allow_read_only_git_probe
         ), patch(
             "subprocess.Popen", side_effect=prohibited_external_action
         ), patch(
@@ -4205,6 +4230,30 @@ Open findings: None
             (automation["run"]["status"], automation["run"]["pause_reason"]),
             ("paused", "verification-failed"),
         )
+
+    def test_verify_rejects_foreign_repository_before_readiness(self) -> None:
+        store = self.make_store(copy.deepcopy(FIXTURES.valid_automation()))
+        foreign = tempfile.TemporaryDirectory()
+        self.addCleanup(foreign.cleanup)
+
+        with patch(
+            "workflow_automation.resolve_verification_readiness"
+        ) as readiness, self.assertRaisesRegex(
+            AutomationContractError, "repository root does not match state store"
+        ):
+            coordinate_non_public_implementation_stage(
+                invocation_context="non-public-test-harness",
+                target_stage="verify",
+                target_milestone_id=None,
+                store=store,
+                repository_root=Path(foreign.name),
+                stage="verify",
+                basis={},
+                verification_basis_paths={},
+                code_state_provider=FixtureCodeStateProvider(("unused",)),
+            )
+
+        readiness.assert_not_called()
 
     def test_implementation_non_public_harness_rejects_every_public_entry(self) -> None:
         closed_plan = ActivePlanContext.from_text(

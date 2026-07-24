@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -48,11 +48,12 @@ Review closeout: code-review-m5-r1
 Review closeout: code-review-m5-r2
 Review closeout: code-review-m5-r3
 Review closeout: code-review-m5-r4
+Review closeout: code-review-m5-r5
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`
-- Findings resolved: 89
-- Unresolved findings: 1
-- Current result: Code-review M5 R5 classified `BRF-M5-CR11` as a failed remediation and opened residual finding `BRF-M5-CR12`. M5 is resolution-needed and M6 remains blocked.
+- Findings resolved: 90
+- Unresolved findings: 0
+- Current result: The accepted correction for `BRF-M5-CR12` is implemented and validated. M5 is review-requested for code-review R6; M6 remains blocked pending that review.
 
 ## Resolution Overview
 
@@ -147,7 +148,7 @@ Review closeout: code-review-m5-r4
 | BRF-M5-CR9 | accepted | resolved | Bounded correction closes only its accepted findings and keeps global resolution open whenever any unrelated resolution or review-log finding remains open. |
 | BRF-M5-CR10 | accepted | resolved | Final-code currentness now comes from an independent canonical provider and branch evidence must exactly project its revisions, paths, and identity. |
 | BRF-M5-CR11 | accepted | resolved | A repository-owned resolver now derives the default-target merge base and final-review commit anchor; Git runtime callers cannot inject alternate providers or raw ranges. |
-| BRF-M5-CR12 | accepted | open | Git-subdirectory roots bypass runtime provider rejection, and mutable review revision expressions can silently retarget the canonical reviewed commit. |
+| BRF-M5-CR12 | accepted | resolved | Canonical Git classification now precedes provider selection, state-store root ownership precedes readiness, and the persisted reviewed revision must equal Git's full immutable commit identity. |
 
 ### code-review-m5-r5
 
@@ -155,7 +156,7 @@ Review closeout: code-review-m5-r4
 
 Finding ID: BRF-M5-CR12
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
@@ -165,7 +166,7 @@ Required outcome: Determine Git membership and canonical repository-root ownersh
 Chosen action: Make provider selection follow canonical Git/root detection and make reviewed-commit validation reject symbolic or mutable revision expressions.
 Safe resolution path: Remove the `.git`-marker early return or place it behind a canonical root proof, preserve a true non-Git fixture path, require the persisted reviewed-commit value to equal Git's resolved canonical object ID, and add Git-subdirectory, linked-worktree, symbolic-revision, full-object-ID, and true non-Git contrasts.
 Validation target: `BRF-R043c`, `BRF-R044`, `BRF-R085`, T18, the approved canonical code-state architecture, and the accepted `BRF-M5-CR11` resolution.
-Validation evidence: pending
+Validation evidence: The Git classifier now uses `git rev-parse --show-toplevel` before provider selection, fails closed on ambiguous Git errors, rejects injected providers for top-level roots, subdirectories, and linked worktrees, and requires the discovered root to equal the state-store root before readiness. The anchor resolver requires the persisted reviewed revision to equal Git's resolved canonical commit object ID, rejecting `HEAD`, branches, tags, and revision operators. True non-Git fixtures retain an explicit test-only provider. Twelve provider regressions, 57 engine tests, 16 policy tests, 60 state tests, 65 automation-validator tests, 53 metadata regressions, review closeout, lifecycle, guide-system, Python compilation, selector inspection, and diff checks pass. The plan-required final-source repository broad-smoke suite passes all 11 checks in 404 seconds. The approved architecture and ADR remain unchanged because they already require this exact boundary; the active test spec remains unchanged because T18 already owns the verification-currentness and external-action proof.
 auto_fix_class: none
 
 ### code-review-m5-r4

@@ -7,9 +7,12 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from workflow_code_state import (
+    CanonicalCodeState,
     CodeStateError,
+    CodeStateEntry,
     GitCodeStateAnchorResolver,
     GitCodeStateProvider,
     resolve_canonical_code_state,
@@ -17,6 +20,28 @@ from workflow_code_state import (
 
 
 class GitCodeStateProviderTests(unittest.TestCase):
+    class TestOnlyProvider:
+        test_only = True
+
+        def __init__(self, reviewed_revision: str) -> None:
+            self.reviewed_revision = reviewed_revision
+            self.invoked = False
+
+        def snapshot(self, _repository_root: Path) -> CanonicalCodeState:
+            self.invoked = True
+            return CanonicalCodeState(
+                anchor_identity="sha256:test-only-anchor",
+                base_revision="test-only-base",
+                reviewed_revision=self.reviewed_revision,
+                entries=(
+                    CodeStateEntry(
+                        status="M",
+                        path="fixture.py",
+                        identity="sha256:test-only-fixture",
+                    ),
+                ),
+            )
+
     def git(self, root: Path, *args: str) -> str:
         result = subprocess.run(
             ("git", "-C", str(root), *args),
@@ -155,12 +180,7 @@ class GitCodeStateProviderTests(unittest.TestCase):
     def test_git_repository_rejects_test_only_provider_substitution(self) -> None:
         root, _base = self.make_repository()
         reviewed = self.git(root, "rev-parse", "HEAD")
-
-        class TestOnlyProvider:
-            test_only = True
-
-            def snapshot(self, _repository_root: Path):
-                raise AssertionError("fixture provider must not be invoked")
+        provider = self.TestOnlyProvider(reviewed)
 
         with self.assertRaisesRegex(
             CodeStateError, "test-only code-state provider"
@@ -171,8 +191,136 @@ class GitCodeStateProviderTests(unittest.TestCase):
                 reviewed_revision=reviewed,
                 final_review_id="code-review-final-r1",
                 lifecycle_evidence_paths=frozenset(),
-                test_provider=TestOnlyProvider(),
+                test_provider=provider,
             )
+        self.assertFalse(provider.invoked)
+
+    def test_git_subdirectory_rejects_test_only_provider_substitution(self) -> None:
+        root, _base = self.make_repository()
+        reviewed = self.git(root, "rev-parse", "HEAD")
+        provider = self.TestOnlyProvider(reviewed)
+
+        with self.assertRaisesRegex(
+            CodeStateError, "test-only code-state provider"
+        ):
+            resolve_canonical_code_state(
+                repository_root=root / "scripts",
+                change_id="2026-07-20-example",
+                reviewed_revision=reviewed,
+                final_review_id="code-review-final-r1",
+                lifecycle_evidence_paths=frozenset(),
+                test_provider=provider,
+            )
+        self.assertFalse(provider.invoked)
+
+    def test_linked_worktree_rejects_test_only_provider_substitution(self) -> None:
+        root, _base = self.make_repository()
+        linked_temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(linked_temporary.cleanup)
+        linked = Path(linked_temporary.name)
+        self.git(
+            root,
+            "worktree",
+            "add",
+            "-q",
+            "-b",
+            "linked-review",
+            str(linked),
+            "master",
+        )
+        self.addCleanup(
+            lambda: subprocess.run(
+                (
+                    "git",
+                    "-C",
+                    str(root),
+                    "worktree",
+                    "remove",
+                    "--force",
+                    str(linked),
+                ),
+                check=False,
+                capture_output=True,
+            )
+        )
+        reviewed = self.git(linked, "rev-parse", "HEAD")
+        provider = self.TestOnlyProvider(reviewed)
+
+        with self.assertRaisesRegex(
+            CodeStateError, "test-only code-state provider"
+        ):
+            resolve_canonical_code_state(
+                repository_root=linked,
+                change_id="2026-07-20-example",
+                reviewed_revision=reviewed,
+                final_review_id="code-review-final-r1",
+                lifecycle_evidence_paths=frozenset(),
+                test_provider=provider,
+            )
+        self.assertFalse(provider.invoked)
+
+    def test_resolver_rejects_mutable_review_revision_expressions(self) -> None:
+        root, _base = self.make_repository()
+        reviewed = self.git(root, "rev-parse", "HEAD")
+        self.git(root, "tag", "reviewed-tag", reviewed)
+
+        for revision in ("HEAD", "feature", "reviewed-tag", f"{reviewed}^{{commit}}"):
+            with self.subTest(revision=revision), self.assertRaisesRegex(
+                CodeStateError, "canonical commit identity"
+            ):
+                GitCodeStateAnchorResolver().resolve(
+                    root,
+                    change_id="2026-07-20-example",
+                    reviewed_revision=revision,
+                    final_review_id="code-review-final-r1",
+                    lifecycle_evidence_paths=frozenset(),
+                )
+
+    def test_true_non_git_fixture_accepts_test_only_provider(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        provider = self.TestOnlyProvider("fixture-reviewed")
+
+        snapshot = resolve_canonical_code_state(
+            repository_root=root,
+            change_id="2026-07-20-example",
+            reviewed_revision="fixture-reviewed",
+            final_review_id="code-review-final-r1",
+            lifecycle_evidence_paths=frozenset(),
+            test_provider=provider,
+        )
+
+        self.assertTrue(provider.invoked)
+        self.assertEqual(snapshot.anchor_identity, "sha256:test-only-anchor")
+
+    def test_ambiguous_git_classification_fails_before_test_provider(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        provider = self.TestOnlyProvider("fixture-reviewed")
+        ambiguous = subprocess.CompletedProcess(
+            ("git",),
+            1,
+            stdout=b"",
+            stderr=b"fatal: permission denied",
+        )
+
+        with patch(
+            "workflow_code_state.subprocess.run", return_value=ambiguous
+        ), self.assertRaisesRegex(
+            CodeStateError, "cannot classify repository"
+        ):
+            resolve_canonical_code_state(
+                repository_root=root,
+                change_id="2026-07-20-example",
+                reviewed_revision="fixture-reviewed",
+                final_review_id="code-review-final-r1",
+                lifecycle_evidence_paths=frozenset(),
+                test_provider=provider,
+            )
+
+        self.assertFalse(provider.invoked)
 
     def test_provider_rejects_target_branch_drift_after_anchor_resolution(self) -> None:
         root, _base = self.make_repository()
