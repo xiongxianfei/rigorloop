@@ -18,6 +18,8 @@ from workflow_automation_policy import (
     project_proposal_review_result,
 )
 from workflow_automation_state import (
+    _canonical_review_occurrence,
+    _review_resolution_gate,
     ConcurrentStateChange,
     StateContractError,
     WorkflowAutomationStateStore,
@@ -25,6 +27,7 @@ from workflow_automation_state import (
     dump_yaml,
     evaluate_receipt_recovery,
     project_automation_status,
+    parse_stage_evidence_fields,
     STAGE_NATIVE_VERIFIER_STAGES,
 )
 from validate_workflow_automation import proposal_review_route_binding
@@ -105,6 +108,169 @@ class WorkflowAutomationStateTests(unittest.TestCase):
                     "verify",
                 }
             ),
+        )
+
+    def test_stage_evidence_rejects_duplicate_and_conflicting_fields(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "validation.md"
+        path.write_text(
+            "Stage: implement\nMilestone: M2\nResult: passed\nResult: failed\n",
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(StateContractError, "duplicate evidence field"):
+            parse_stage_evidence_fields(
+                path,
+                required_fields={"Stage", "Milestone", "Result"},
+            )
+
+    def test_canonical_review_rejects_external_log_and_stale_occurrence(self) -> None:
+        store, _path = self.make_store(valid_automation())
+        root = store.repository_root
+        review_dir = root / "docs/changes/2026-07-20-example/reviews"
+        review_dir.mkdir(parents=True, exist_ok=True)
+        review_r1 = review_dir / "code-review-m2-r1.md"
+        review_r1.write_text(
+            """# Review
+
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Reviewer: reviewer
+Target: M2 implementation
+Status: approved
+Material findings: None
+Reviewed milestone: M2. Engine Slice
+""",
+            encoding="utf-8",
+        )
+        outside = Path(tempfile.mkdtemp()) / "review-log.md"
+        self.addCleanup(lambda: outside.parent.exists() and __import__("shutil").rmtree(outside.parent))
+        outside.write_text(
+            """# Review Log
+
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Status: approved
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+            encoding="utf-8",
+        )
+        review_log = review_dir.parent / "review-log.md"
+        review_log.symlink_to(outside)
+        self.assertIsNone(
+            _canonical_review_occurrence(review_r1, repository_root=root)
+        )
+
+        review_log.unlink()
+        review_r2 = review_dir / "code-review-m2-r2.md"
+        review_r2.write_text(
+            review_r1.read_text(encoding="utf-8")
+            .replace("code-review-m2-r1", "code-review-m2-r2")
+            .replace("M2 R1", "M2 R2")
+            .replace("Status: approved", "Status: inconclusive"),
+            encoding="utf-8",
+        )
+        review_log.write_text(
+            """# Review Log
+
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Status: approved
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: M2 R2
+Status: inconclusive
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+            encoding="utf-8",
+        )
+        self.assertIsNone(
+            _canonical_review_occurrence(review_r1, repository_root=root)
+        )
+
+    def test_review_resolution_gate_distinguishes_not_required_and_closed(self) -> None:
+        store, _path = self.make_store(valid_automation())
+        root = store.repository_root
+        change_root = root / "docs/changes/2026-07-20-example"
+        review_dir = change_root / "reviews"
+        review_dir.mkdir(parents=True, exist_ok=True)
+        clean = review_dir / "code-review-m2-r1.md"
+        clean.write_text(
+            """# Review
+
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Reviewer: reviewer
+Target: M2 implementation
+Status: approved
+Material findings: None
+Reviewed milestone: M2. Engine Slice
+""",
+            encoding="utf-8",
+        )
+        review_log = change_root / "review-log.md"
+        review_log.write_text(
+            """# Review Log
+
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Status: approved
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+            encoding="utf-8",
+        )
+        proof = _canonical_review_occurrence(clean, repository_root=root)
+        assert proof is not None
+        review, entry, _log, _identity = proof
+        self.assertEqual(
+            _review_resolution_gate(
+                review_path=clean,
+                review=review,
+                entry=entry,
+                review_log=review_log,
+                resolution_path=review_log,
+                repository_root=root,
+            ),
+            "not-required",
+        )
+
+        fake_resolution = change_root / "review-resolution.md"
+        fake_resolution.write_text(
+            "# Review Resolution\n\nCloseout status: closed\n",
+            encoding="utf-8",
+        )
+        self.assertIsNone(
+            _review_resolution_gate(
+                review_path=clean,
+                review=review,
+                entry=entry,
+                review_log=review_log,
+                resolution_path=fake_resolution,
+                repository_root=root,
+            )
         )
 
     def make_store(self, automation: dict | None = None, *, legacy: dict | None = None):

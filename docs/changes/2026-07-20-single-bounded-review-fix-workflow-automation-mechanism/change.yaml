@@ -1069,6 +1069,12 @@ validation:
     result: passed_52_engine_57_state_tests_but_direct_repository_backed_counterexamples_failed
   - command: review structure, metadata, guide, lifecycle, and diff validation after code-review M5 R1 recording
     result: structure_passed_53_reviews_83_findings_5_open_metadata_guide_lifecycle_diff_passed_with_known_nonblocking_merge_language_warning
+  - command: M5 R1 implementation correction focused engine, state, policy, schema, review, lifecycle, and skill suites
+    result: passed_55_engine_60_state_15_policy_64_schema_104_review_156_lifecycle_259_skill_tests
+  - command: python scripts/select-validation.py --mode explicit for M5 R1 correction paths with broad-smoke required
+    result: selected_lifecycle_guide_and_broad_smoke_with_expected_manual_routing_for_plan_owned_automation_scripts
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_271_seconds_on_final_M5_R1_resolution_source
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md
@@ -1163,11 +1169,11 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r1.md
 review:
   status: changes_requested
-  unresolved_items: 5
+  unresolved_items: 0
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   material_findings: 83
-  closed_findings: 78
-  open_findings: 5
+  closed_findings: 83
+  open_findings: 0
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md

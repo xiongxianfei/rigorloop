@@ -558,7 +558,12 @@ CAPABILITY_MUTATION_CATEGORIES = {
         }
     ),
     CapabilityKind.IMPLEMENTATION_CORRECTION: frozenset(
-        {MutationCategory.CHANGE_LOCAL_EVIDENCE}
+        {
+            MutationCategory.TESTS,
+            MutationCategory.PRODUCTION_CODE,
+            MutationCategory.CHANGE_LOCAL_REVIEW_EVIDENCE,
+            MutationCategory.CHANGE_LOCAL_EVIDENCE,
+        }
     ),
     CapabilityKind.VERIFICATION: frozenset({MutationCategory.VERIFICATION_EVIDENCE}),
 }

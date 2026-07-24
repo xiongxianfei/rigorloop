@@ -16,7 +16,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m5-r1.md
 Resolution: review-resolution.md#code-review-m5-r1
 Material findings: BRF-M5-CR1, BRF-M5-CR2, BRF-M5-CR3, BRF-M5-CR4, BRF-M5-CR5
-Open findings: BRF-M5-CR1, BRF-M5-CR2, BRF-M5-CR3, BRF-M5-CR4, BRF-M5-CR5
+Open findings: None
 
 ### Review entry
 Review ID: proposal-review-r1

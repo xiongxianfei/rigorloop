@@ -1399,16 +1399,13 @@ review:
             "### M2. Parser Fixture Harness\n\n- Milestone state: implementing\n\n"
             "### M2. Parser Fixture Harness\n\n- Milestone state: implementing",
         )
-        context = ActivePlanContext.from_text(text, plan_identity="sha256:plan")
-
         with self.assertRaisesRegex(
             AutomationContractError,
-            "cannot bind implement target: active plan does not identify exactly one",
+            "duplicate active plan milestone identity",
         ):
-            bind_target(
-                "implement",
-                bound_at="2026-07-22T00:00:00Z",
-                plan=context,
+            ActivePlanContext.from_text(
+                text,
+                plan_identity="sha256:plan",
             )
 
     def test_handoff_disagreeing_with_change_yaml_fails(self) -> None:

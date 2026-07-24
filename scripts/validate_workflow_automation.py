@@ -1316,8 +1316,7 @@ def _validate_capability(
                     f"{path}.scope.correction_budget_identity: required concrete identity"
                 )
             elif (
-                kind == CapabilityKind.PROPOSAL_CORRECTION.value
-                and isinstance(budget, dict)
+                isinstance(budget, dict)
                 and _structured_identity(budget) != budget_identity
             ):
                 errors.append(
@@ -1481,6 +1480,165 @@ def _validate_capability(
                     errors.append(
                         f"{path}.scope.proposal_review_basis: contains invalid evidence"
                     )
+            if kind == CapabilityKind.IMPLEMENTATION_CORRECTION.value:
+                required_correction_scope = {
+                    "review_record_path",
+                    "review_resolution_path",
+                    "review_log_path",
+                    "accepted_finding_ids",
+                    "reviewer_recipes",
+                    "reviewed_milestone_id",
+                }
+                for field in sorted(required_correction_scope):
+                    if field not in scope:
+                        errors.append(
+                            f"{path}.scope.{field}: required for implementation correction capability"
+                        )
+                for field in (
+                    "review_record_path",
+                    "review_resolution_path",
+                    "review_log_path",
+                ):
+                    value = scope.get(field)
+                    if (
+                        not isinstance(value, str)
+                        or not value
+                        or value.startswith("/")
+                        or ".." in value.split("/")
+                    ):
+                        errors.append(
+                            f"{path}.scope.{field}: expected repository-relative path"
+                        )
+                accepted = scope.get("accepted_finding_ids")
+                recipes = scope.get("reviewer_recipes")
+                milestone = scope.get("reviewed_milestone_id")
+                if (
+                    not isinstance(accepted, list)
+                    or not accepted
+                    or not all(
+                        isinstance(finding_id, str) and finding_id
+                        for finding_id in accepted
+                    )
+                    or len(set(accepted)) != len(accepted)
+                ):
+                    errors.append(
+                        f"{path}.scope.accepted_finding_ids: expected non-empty unique string list"
+                    )
+                if (
+                    not isinstance(recipes, dict)
+                    or not isinstance(accepted, list)
+                    or set(recipes) != set(accepted)
+                ):
+                    errors.append(
+                        f"{path}.scope.reviewer_recipes: must cover accepted findings exactly"
+                    )
+                elif any(
+                    not isinstance(recipe, dict)
+                    or set(recipe)
+                    != {
+                        "auto_fix_class",
+                        "auto_fix_kind",
+                        "affected_paths",
+                        "deterministic_authority",
+                        "required_validation",
+                    }
+                    or recipe.get("auto_fix_class") != "mechanical"
+                    or recipe.get("auto_fix_kind") != "exact-approved-rename"
+                    or not isinstance(recipe.get("affected_paths"), list)
+                    or len(recipe["affected_paths"]) != 1
+                    or not isinstance(
+                        recipe.get("deterministic_authority"), dict
+                    )
+                    or not isinstance(recipe.get("required_validation"), dict)
+                    or set(recipe["deterministic_authority"])
+                    != {
+                        "operation",
+                        "path",
+                        "old",
+                        "new",
+                        "expected_replacements",
+                    }
+                    or recipe["deterministic_authority"].get("operation")
+                    != "exact-text-replace"
+                    or recipe["deterministic_authority"].get("path")
+                    != recipe["affected_paths"][0]
+                    or not isinstance(
+                        recipe["deterministic_authority"].get("old"), str
+                    )
+                    or not recipe["deterministic_authority"]["old"]
+                    or not isinstance(
+                        recipe["deterministic_authority"].get("new"), str
+                    )
+                    or recipe["deterministic_authority"]["new"]
+                    == recipe["deterministic_authority"]["old"]
+                    or not isinstance(
+                        recipe["deterministic_authority"].get(
+                            "expected_replacements"
+                        ),
+                        int,
+                    )
+                    or isinstance(
+                        recipe["deterministic_authority"].get(
+                            "expected_replacements"
+                        ),
+                        bool,
+                    )
+                    or recipe["deterministic_authority"][
+                        "expected_replacements"
+                    ]
+                    <= 0
+                    or set(recipe["required_validation"])
+                    != {"operation", "path", "identity"}
+                    or recipe["required_validation"].get("operation")
+                    != "sha256"
+                    or recipe["required_validation"].get("path")
+                    != recipe["affected_paths"][0]
+                    or not isinstance(
+                        recipe["required_validation"].get("identity"), str
+                    )
+                    or not recipe["required_validation"]["identity"].startswith(
+                        "sha256:"
+                    )
+                    for recipe in recipes.values()
+                ):
+                    errors.append(
+                        f"{path}.scope.reviewer_recipes: expected closed reviewer recipes"
+                    )
+                if not isinstance(milestone, str) or not re.fullmatch(
+                    r"M[0-9]+", milestone
+                ):
+                    errors.append(
+                        f"{path}.scope.reviewed_milestone_id: expected milestone identity"
+                    )
+                if isinstance(basis, dict) and isinstance(accepted, list):
+                    if basis.get(
+                        "accepted_finding_set_identity"
+                    ) != _structured_identity(accepted):
+                        errors.append(
+                            f"{path}.scope.accepted_finding_ids: does not match capability basis"
+                        )
+                if isinstance(basis, dict) and isinstance(recipes, dict):
+                    if basis.get(
+                        "reviewer_classification_identity"
+                    ) != _structured_identity(recipes):
+                        errors.append(
+                            f"{path}.scope.reviewer_recipes: does not match capability basis"
+                        )
+                    affected_paths = sorted(
+                        {
+                            item
+                            for recipe in recipes.values()
+                            if isinstance(recipe, dict)
+                            for item in recipe.get("affected_paths", [])
+                            if isinstance(item, str)
+                        }
+                    )
+                    if basis.get(
+                        "affected_paths_identity"
+                    ) != _structured_identity(affected_paths):
+                        errors.append(
+                            f"{path}.scope.reviewer_recipes: affected paths do not match capability basis"
+                        )
 
     errors.extend(
         _validate_invalidation(
