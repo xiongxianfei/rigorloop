@@ -102,12 +102,12 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M5. Implementation Review, Correction, and Verification Integration
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r8.md`
-- Review status: approved; stage=code-review; round=r8
-- Remaining in-scope implementation milestones: M6
-- Next stage: implement M6
+- Review status: review-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M6 review
+- Next stage: code-review M6
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -386,7 +386,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Atomically activate unified public commands, map compatibility aliases, prohibit every legacy writer, implement cross-spec contradiction checks, regenerate derived guidance, and prove the complete mechanism.
 - Requirements: `BRF-R002`-`BRF-R005`, `BRF-R087`-`BRF-R102`, including `BRF-R098a`-`BRF-R098i`
 - Files/components likely touched:
@@ -491,6 +491,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Progress
 
+- 2026-07-24: M6 implementation completed the atomic public cutover. Current and legacy command forms now resolve through the unified writer, authoring/implementation/verification authority remains risk-scoped, legacy status is read-only, legacy off migrates once before cancellation, exact cross-spec dispositions fail closed, public guidance uses one mechanism, and explicit-path CI deterministically selects all four automation proof suites. Canonical skills, temporary generated adapters, selected CI, selector regressions, and repository broad smoke pass; M6 is review-requested.
+- 2026-07-24: M6 implementation started from the approved test-spec handoff after M5 R8 closed the final non-public integration milestone. The scope is the atomic public cutover: unified current and legacy command routing, legacy-writer prohibition, exact cross-spec contradiction proof, public guidance alignment, temporary adapter generation, and composed integration validation.
 - 2026-07-24: Code-review M5 R8 independently rejected equality-spoofing tuple and custom-comparison representations without comparison or launcher behavior, retained exactly one canonical positive launcher call, and found no new material issue. `BRF-M5-CR14`, `BRF-M5-CR13`, and the milestone-local external-action proof are resolved. M5 is closed; the isolated review hands off to implement M6 without starting it automatically.
 - 2026-07-24: Resolved `BRF-M5-CR14` by requiring an exact built-in tuple before any equality evaluation. Proof-first tuple-subclass and comparison-sentinel regressions now prove spoofed equality cannot reach the saved launcher and non-exact objects are rejected without invoking user-defined comparison. The approved spec, test spec, architecture, ADR, production code, public skills, legacy adapters, and generated output are unaffected because this is a test-proof hardening inside the existing T18 boundary. M5 is review-requested for R8 and M6 remains blocked.
 - 2026-07-24: Code-review M5 R7 classified `BRF-M5-CR13` as a failed remediation and opened `BRF-M5-CR14`. A direct equality-spoof probe passed a tuple subclass carrying `git -C /repo push origin HEAD` through the supposed exact-command gate to the saved launcher. M5 is resolution-needed and M6 remains blocked.
@@ -645,6 +647,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 | 2026-07-23 | Persist verifier-derived proposal-review facts separately from their routing projection and bind the single output to canonical evidence. | Review ID, outcome, and output identity must come from stage-native completion evidence rather than the route being validated. | Reconstructing a route from route-owned facts or accepting output/canonical identity disagreement. |
 | 2026-07-23 | Order completed proposal-review state by unique canonical review-log occurrence and project unified queries from the validated state snapshot. | Individually authentic receipts still need one canonical latest selector, and validation is meaningful only when reporting uses the same immutable read. | Receipt-map insertion order, persisted timestamps, whole-log hash freshness, or validating a second snapshot while returning an earlier parse. |
 | 2026-07-23 | Define review chronology by canonical source line and make one state-adapter snapshot authoritative for every query shape. | Record format must not reorder history, and a stale preliminary parse must never decide whether current unified state is validated. | Parser grouping index, conditional state-store reread, duplicate parsing, or weakening unified change-ID validation for compatibility. |
+| 2026-07-24 | Route every workflow-automation module through one complete selected-CI proof category. | Engine, policy, state, and validator behavior form one cutover boundary; an edit to any layer must not fall through to manual routing or validate only a subset. | Leaving the new scripts unsupported or marking unclassified checks parallel-safe without evidence. |
 
 ## Surprises and discoveries
 
@@ -657,6 +660,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- M6 proof-first tests failed before the public composition APIs, unified control-command routing, compatibility adapter behavior, cross-spec ledger validation, and selector category existed. The completed cutover passes 63 engine, 67 automation-validator, 60 state/recovery, 259 skill-validator, 53 metadata-validator, 156 lifecycle, 104 review-artifact, 131 adapter-distribution, and 133 selector tests. Canonical skill validation and drift checks pass; manifest-derived v0.1.5 adapters build and validate in temporary output; selected CI passes 12 checks; Python compilation and diff checks pass; and the exact CMD32 repository broad-smoke command passes all 12 checks in 228 seconds after lifecycle synchronization. The public skill, workflow guide, README, and affected stage skills expose only target-driven `bounded-review-fix`; compatibility aliases remain read inputs and write only unified state; verification authority is never persisted before its concrete basis; no tracked generated adapter output, external action, PR action, credential use, or network mutation occurred.
 - M5 R7 resolution failed proof-first on both required contrasts: an equality-spoofing tuple reached the fake launcher with `git push`, and a non-tuple comparison sentinel recorded `__ne__` execution before rejection. After exact-built-in-type-first correction, both pass with no comparison or launcher side effect. Twelve code-state, 59 full engine, 6 implementation-selected, 14 correction-selected, 5 milestone-selected, 7 verify-selected, 5 non-public-selected, 104 review-artifact, 156 lifecycle, 259 skill-validator, and 53 metadata-validator tests pass. Review closeout validates 59 reviews and 92 resolved findings; lifecycle synchronization passes with the existing merge-language warning; metadata, guide, compilation, and diff checks pass; and final-source repository broad smoke passes all 11 checks in 469 seconds. The selector reports expected manual routing for the unsupported automation test path, which the plan-owned engine commands cover directly.
 - M5 R6 resolution failed proof-first because the exact allowlist runner did not yet exist. After correction, 12 code-state, 58 full automation-engine, 6 implementation-selected, 14 correction-selected, 5 milestone-selected, 6 verify-selected, 5 non-public-selected, 104 review-artifact, 156 lifecycle, 259 skill-validator, and 53 metadata-validator tests pass. The exact positive command executes once; alternate-root, inserted-operation, extra-argument, list, string, shell, and direct-`Popen` contrasts fail before the saved process launcher is reached. Review closeout validates 58 reviews and 91 resolved findings; lifecycle synchronization passes with the existing merge-language warning; metadata, guide, compilation, and diff checks pass; and final-source repository broad smoke passes all 11 checks in 467 seconds. The selector reports expected manual routing for the unsupported automation test path, which the plan-owned engine commands cover directly.
 - Code-review M5 R3 used a direct isolated L1 same-session context reset, recorded its risk map before consulting validation summaries in the review pass, and reran 16 policy, 60 state/recovery, 56 engine, and 65 automation-validator tests. All passed. A separate adversarial fixture then established readiness from a one-file branch manifest, changed a second unlisted source file, and reproduced successful readiness. The correction recipe, stage-policy scope, milestone-title chronology, global closeout, and external-action trap remediations are resolved; final-code completeness remains open as `BRF-M5-CR10`.

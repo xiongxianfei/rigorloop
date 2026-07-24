@@ -137,7 +137,7 @@ Produce or update the plan body and, when starting or replanning, the `docs/plan
 - Normal next stage: `plan-review`.
 - Conditional next stages: return to `spec` or `architecture` when planning exposes a blocking gap; proceed to `test-spec` only after plan-review when the workflow allows it.
 - In a workflow-managed flow, successful `plan` completion hands off to `plan-review` when that review is next.
-- Only a clean `plan-review` can complete `authoring-through-plan-review`; this skill does not mark the profile completed and does not invoke `test-spec`.
+- Only a clean `plan-review` can satisfy that review gate in an automated `bounded-review-fix` run; this skill does not mark the run target reached and does not invoke `test-spec`.
 - For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
 ## Claims this skill must not make
@@ -183,7 +183,7 @@ Use `Readiness is not Done` as the default interpretation for handoff lines. Kee
 
 Each implementation milestone has exactly one `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
 
-For verify-bounded implementation autoprogression, record `auto-through: verify` only as separate authorization policy, not as live next-stage ownership. Plans that support `implementation-through-verify` must keep ordered implementation milestones, approved validation commands, phase, promotion evidence expectations, and stop-before-PR boundaries explicit.
+For a final `verify` automation target, record target selection separately from implementation and verification authorization; neither owns live next-stage state. Plans must keep ordered implementation milestones, approved validation commands, promotion evidence expectations, separate verification authority, and stop-before-PR boundaries explicit.
 
 Use `review-requested` after implementation and validation. Use `resolution-needed` for review-resolution, fixes, owner decision, or re-review. `implementation-complete` and `review-clean` are evidence descriptions, not milestone state values.
 

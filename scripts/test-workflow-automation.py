@@ -38,8 +38,11 @@ from workflow_automation import (
     evaluate_implementation_correction,
     evaluate_non_public_implementation_route,
     evaluate_non_public_authoring_route,
+    evaluate_public_authoring_route,
+    evaluate_public_implementation_route,
     evaluate_proposal_correction,
     evaluate_proposal_review,
+    execute_public_control_command,
     invalidate_effective_capabilities,
     normalize_command,
     persist_target,
@@ -49,6 +52,7 @@ from workflow_automation import (
     resolve_verification_readiness,
     resolve_proposal_correction_authority,
     resume_target,
+    start_public_run,
 )
 from workflow_automation_policy import (
     PUBLIC_TARGET_STAGES,
@@ -562,6 +566,286 @@ Planned validation rule: proposal-exact-append
         for command in ("workflow auto: future", "workflow auto-through: spec", "auto: verify"):
             with self.subTest(command=command), self.assertRaises(AutomationContractError):
                 normalize_command(command)
+
+    def test_public_routes_enter_only_through_the_unified_engine_adapter(self) -> None:
+        authoring = evaluate_public_authoring_route(
+            command="$workflow auto: spec-review",
+            current_stage="spec",
+            capability_kind="post-proposal-authoring",
+            capability_status="active",
+        )
+        self.assertEqual(
+            (authoring.status, authoring.next_stage),
+            ("continue", "spec-review"),
+        )
+
+        plan = ActivePlanContext.from_text(
+            plan_text(
+                current_state="review-requested",
+                next_stage="code-review M2",
+            ),
+            plan_identity="sha256:plan-v1",
+        )
+        implementation = evaluate_public_implementation_route(
+            command="$workflow auto: code-review",
+            current_stage="implement",
+            capability_kind="implementation",
+            capability_status="active",
+            active_plan=plan,
+            occurrence_kind="milestone",
+            target_milestone_id="M2",
+            milestone_id="M2",
+            milestone_validation_passed=True,
+        )
+        self.assertEqual(
+            (
+                implementation.status,
+                implementation.next_stage,
+                implementation.next_milestone_id,
+            ),
+            ("continue", "code-review", "M2"),
+        )
+
+        legacy = evaluate_public_implementation_route(
+            command="workflow auto-through: verify",
+            current_stage="verify",
+            capability_kind="verification",
+            capability_status="active",
+            active_plan=ActivePlanContext.from_text(
+                plan_text(
+                    current_state="closed",
+                    remaining="None",
+                    next_stage="verify",
+                    milestone_two_state="closed",
+                    milestone_three_state="closed",
+                ),
+                plan_identity="sha256:plan-v2",
+            ),
+            occurrence_kind="final",
+            verification_authorized=False,
+        )
+        self.assertEqual(
+            (legacy.status, legacy.pause_reason),
+            ("paused", "verification-authorization-required"),
+        )
+
+    def test_public_status_and_off_use_the_unified_state_store(self) -> None:
+        state = FIXTURES.valid_automation()
+        store = self.make_store(state)
+        before = store.metadata_path.read_bytes()
+
+        status = execute_public_control_command(
+            store,
+            "$workflow auto: status",
+            actor="user",
+            occurred_at="2026-07-24T00:00:00Z",
+        )
+        self.assertEqual(status["mechanism"], "bounded-review-fix")
+        self.assertEqual(status["stage_outcome"], "status")
+        self.assertEqual(before, store.metadata_path.read_bytes())
+
+        cancelled = execute_public_control_command(
+            store,
+            "workflow auto-through: off",
+            actor="user",
+            occurred_at="2026-07-24T00:01:00Z",
+        )
+        self.assertEqual(cancelled["stage_outcome"], "cancelled")
+        self.assertEqual(cancelled["stop_reason"], "run-cancelled")
+        self.assertEqual(store.read().automation["run"]["status"], "cancelled")
+        self.assertNotIn("autoprogression", store.read().document["workflow"])
+
+        repeated = execute_public_control_command(
+            store,
+            "$workflow auto: off",
+            actor="user",
+            occurred_at="2026-07-24T00:02:00Z",
+        )
+        self.assertEqual(repeated["stage_outcome"], "cancelled")
+
+    def test_public_target_creation_is_single_write_and_risk_bounded(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "change.yaml"
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Public cutover fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                }
+            ),
+            encoding="utf-8",
+        )
+        store = WorkflowAutomationStateStore(path)
+
+        started = start_public_run(
+            store,
+            "workflow auto-through: plan-review",
+            run_id="run-public-001",
+            actor="user",
+            occurred_at="2026-07-24T00:00:00Z",
+        )
+        state = store.read()
+        self.assertEqual(started["structured_target"]["stage"], "plan-review")
+        self.assertEqual(state.automation["mechanism"], "bounded-review-fix")
+        self.assertEqual(
+            [
+                parent["authorization_class"]
+                for parent in state.automation["parent_authorizations"].values()
+            ],
+            ["authoring"],
+        )
+        self.assertEqual(state.automation["effective_capabilities"], {})
+        self.assertNotIn("autoprogression", state.document["workflow"])
+
+        with self.assertRaisesRegex(
+            AutomationContractError, "active writable automation run"
+        ):
+            start_public_run(
+                store,
+                "$workflow auto: verify",
+                run_id="run-public-002",
+                actor="user",
+                occurred_at="2026-07-24T00:01:00Z",
+            )
+
+        verify_temp = tempfile.TemporaryDirectory()
+        self.addCleanup(verify_temp.cleanup)
+        verify_path = Path(verify_temp.name) / "change.yaml"
+        verify_path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Verify alias fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                }
+            ),
+            encoding="utf-8",
+        )
+        verify_store = WorkflowAutomationStateStore(verify_path)
+        start_public_run(
+            verify_store,
+            "workflow auto-through: verify",
+            run_id="run-public-verify",
+            actor="user",
+            occurred_at="2026-07-24T00:03:00Z",
+        )
+        verify_state = verify_store.read().automation
+        self.assertEqual(verify_state["run"]["target"]["stage"], "verify")
+        self.assertEqual(verify_state["run"]["target"]["occurrence"]["kind"], "final")
+        self.assertEqual(verify_state["parent_authorizations"], {})
+        self.assertEqual(verify_state["effective_capabilities"], {})
+
+        basis_temp = tempfile.TemporaryDirectory()
+        self.addCleanup(basis_temp.cleanup)
+        basis_path = Path(basis_temp.name) / "change.yaml"
+        basis_path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Basis-valid verify alias fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                }
+            ),
+            encoding="utf-8",
+        )
+        basis_store = WorkflowAutomationStateStore(basis_path)
+        implementation_basis = {
+            "plan_identity": "sha256:plan",
+            "plan_review_identity": "sha256:plan-review",
+            "test_spec_identity": "sha256:test-spec",
+            "test_spec_review_identity": "sha256:test-spec-review",
+            "milestone_identity": "sha256:M1",
+            "affected_paths_identity": "sha256:paths",
+            "mutation_categories_identity": "sha256:categories",
+            "validation_commands_identity": "sha256:commands",
+        }
+        start_public_run(
+            basis_store,
+            "workflow auto-through: verify",
+            run_id="run-public-basis",
+            actor="user",
+            occurred_at="2026-07-24T00:04:00Z",
+            implementation_basis=implementation_basis,
+            implementation_path_roots=("scripts/", "tests/"),
+        )
+        basis_state = basis_store.read().automation
+        self.assertEqual(
+            [
+                parent["authorization_class"]
+                for parent in basis_state["parent_authorizations"].values()
+            ],
+            ["implementation"],
+        )
+        self.assertNotIn(
+            "verification",
+            [
+                parent["authorization_class"]
+                for parent in basis_state["parent_authorizations"].values()
+            ],
+        )
+
+    def test_legacy_status_is_read_only_and_off_migrates_then_cancels_once(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "change.yaml"
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Legacy control fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                    "workflow": {
+                        "autoprogression": {
+                            "profile": "implementation-through-verify",
+                            "authorized_by": "user",
+                            "authorized_at": "2026-07-20T00:00:00Z",
+                            "change_id": "2026-07-20-example",
+                            "phase": "B",
+                            "state": "armed",
+                        }
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        store = WorkflowAutomationStateStore(path)
+        before = path.read_bytes()
+        status = execute_public_control_command(
+            store,
+            "workflow auto-through: status",
+            actor="user",
+            occurred_at="2026-07-24T00:00:00Z",
+        )
+        self.assertEqual(status["source"], "legacy-read-only")
+        self.assertEqual(path.read_bytes(), before)
+
+        cancelled = execute_public_control_command(
+            store,
+            "workflow auto-through: off",
+            actor="user",
+            occurred_at="2026-07-24T00:01:00Z",
+        )
+        snapshot = store.read()
+        self.assertEqual(cancelled["stage_outcome"], "cancelled")
+        self.assertEqual(snapshot.automation["run"]["status"], "cancelled")
+        self.assertEqual(
+            len(snapshot.automation["migration_receipts"]),
+            1,
+        )
+        self.assertEqual(
+            snapshot.document["workflow"]["autoprogression"]["state"],
+            "armed",
+        )
 
     def test_target_occurrence_and_completion_are_bound_before_persistence(self) -> None:
         plan = ActivePlanContext.from_text(plan_text(), plan_identity="sha256:plan-v1")

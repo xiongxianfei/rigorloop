@@ -246,7 +246,7 @@ For milestone-based plans, `implement` works on one in-scope implementation mile
 
 ## Implementation autoprogression
 
-When `implementation-through-verify` is active in a workflow-managed context, implement only the current approved milestone in order. Phase B can run implementation and reviewer-declared auto-fix loops, but it cannot run `explain-change`, `verify`, or `pr`.
+When unified workflow automation has valid implementation authority, implement only the current approved milestone in order. Implementation authority can run implementation and reviewer-declared auto-fix loops, but it cannot run `explain-change`, `verify`, or `pr`.
 
 When handing workflow-managed implementation work to automated `code-review`, hand off to the independent adversarial review gate. Provide tracked artifacts, the actual diff, governing contracts, and neutral routing metadata.
 

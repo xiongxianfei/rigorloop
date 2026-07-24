@@ -211,7 +211,7 @@ not-needed
 
 In a workflow-managed flow, successful `spec` completion hands off to `spec-review` when that review is next. If blockers prevent review-quality contract writing, stop and report them. This v1 contract does not imply `spec-review -> architecture` or `spec-review -> test-spec`; review-to-next-authoring transitions remain out of scope unless later approved.
 
-Only the explicitly armed workflow-managed `authoring-through-plan-review` profile can continue after the matching `spec-review`, and that continuation depends on a clean recorded review, recorded architecture assessment, and no stop condition.
+Only an explicitly authorized workflow-managed `bounded-review-fix` run can continue after the matching `spec-review`, and that continuation depends on a clean recorded review, recorded architecture assessment, a current authoring capability, and no stop condition.
 
 ## Evidence collection efficiency
 
