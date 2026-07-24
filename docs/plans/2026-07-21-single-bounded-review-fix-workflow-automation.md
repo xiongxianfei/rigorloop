@@ -101,15 +101,15 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Current milestone state: review-requested
+- Current milestone: M5. Implementation Review, Correction, and Verification Integration
+- Current milestone state: planned
 - Last reviewed milestone: M4. Authoring, Proposal Review, and Correction Integration
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r14.md`
-- Review status: review-requested; stage=code-review; round=r15
-- Remaining in-scope implementation milestones: M4 rereview, M5, M6
-- Next stage: code-review M4 R15
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r15.md`
+- Review status: approved; stage=code-review; round=r15
+- Remaining in-scope implementation milestones: M5, M6
+- Next stage: implement M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -273,7 +273,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M4. Authoring, Proposal Review, and Correction Integration
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Integrate proposal review, bounded proposal correction, and post-proposal authoring through `test-spec-review` behind a non-public harness while preserving formal review independence and clean-gate semantics.
 - Requirements: `BRF-R047`-`BRF-R062`, `BRF-R078`-`BRF-R080`, `BRF-R087`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -586,6 +586,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - 2026-07-23: Code-review M4 R14 classified `BRF-M4-CR20` and `BRF-M4-CR21` as failed remediations and opened `BRF-M4-CR22` plus `BRF-M4-CR23`. Mixed accepted review-log formats invert parser chronology, and a stale first query parse without automation bypasses newer valid or invalid unified tracked state. M4 is resolution-needed; M5 remains blocked.
 - 2026-07-23: The user accepted `BRF-M4-CR22` and `BRF-M4-CR23` for proof-first M4 resolution. Implementation started with source-position review chronology and one canonical query snapshot across unified, compact, and legacy shapes; M5/M6 remain out of scope.
 - 2026-07-23: Resolved `BRF-M4-CR22` and `BRF-M4-CR23` proof-first. The canonical review parser now source-sorts detailed and clean-table entries, durable occurrence proof binds source line, and every query uses one state-adapter snapshot while preserving legacy/compact error semantics. M4 is review-requested for R15; M5 remains blocked pending rereview.
+- 2026-07-24: Code-review M4 R15 independently confirmed `BRF-M4-CR22` and `BRF-M4-CR23` resolved with no new findings. An elevated second reviewer agreed with the clean result. M4 is closed and the next explicit stage is implement M5.
 
 ## Decision log
 
