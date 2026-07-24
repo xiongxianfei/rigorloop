@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M5. Implementation Review, Correction, and Verification Integration
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M5. Implementation Review, Correction, and Verification Integration
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r4.md`
-- Review status: changes-requested; stage=code-review; round=r4
-- Remaining in-scope implementation milestones: M5 rereview, M6
-- Next stage: code-review M5
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r5.md`
+- Review status: changes-requested; stage=code-review; round=r5
+- Remaining in-scope implementation milestones: M5 resolution and rereview, M6
+- Next stage: review-resolution M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M5-CR12
 
 ## Milestones
 
@@ -329,7 +329,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M5. Implementation Review, Correction, and Verification Integration
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Integrate ordered milestone implementation and code review, reviewer-owned correction, final holistic review, explanation, and verification behind the same non-public boundary.
 - Requirements: `BRF-R060`-`BRF-R067`, `BRF-R078`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -491,6 +491,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Progress
 
+- 2026-07-24: Code-review M5 R5 classified `BRF-M5-CR11` as a failed remediation and opened `BRF-M5-CR12`. Direct probes show that a Git-worktree subdirectory without its own `.git` marker accepts an injected test provider before Git membership is checked, and that mutable `Reviewed commit` expressions such as `HEAD` are accepted as the canonical final-review anchor. M5 is resolution-needed and M6 remains blocked.
 - 2026-07-24: M5 R2 review-resolution implementation started for `BRF-M5-CR6` through `BRF-M5-CR9`. The scope is proof-first correction-recipe and stage-policy authority, final-code-bound verification plus external-action traps, milestone-ID review chronology, and full-ledger resolution closeout. Public commands, compatibility aliases, skills, and generated adapters remain unaffected M6 scope.
 - 2026-07-24: Resolved `BRF-M5-CR6` through `BRF-M5-CR9` with the complete preserved correction vocabulary, immutable stage-local mutation sets, repository-derived final-code identity and external-action traps, milestone-ID review chronology, and full-ledger closeout preservation. Core automation, review, lifecycle, skill, metadata, compilation, selected lifecycle, guide, and diff checks pass. M5 is review-requested for R3; M6 remains blocked.
 - 2026-07-24: Code-review M5 R3 confirmed `BRF-M5-CR6`, `BRF-M5-CR8`, and `BRF-M5-CR9` resolved, classified `BRF-M5-CR7` as a failed remediation, and opened `BRF-M5-CR10`. A direct probe changed an unlisted repository source after final review while verification readiness still succeeded because branch evidence selects its own `Final code paths` identity domain. M5 is resolution-needed; M6 remains blocked.
