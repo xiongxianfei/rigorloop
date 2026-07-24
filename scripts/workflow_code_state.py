@@ -33,6 +33,7 @@ class CodeStateEntry:
 
 @dataclass(frozen=True)
 class CanonicalCodeState:
+    anchor_identity: str
     base_revision: str
     reviewed_revision: str
     entries: tuple[CodeStateEntry, ...]
@@ -49,6 +50,7 @@ class CanonicalCodeState:
     @property
     def identity(self) -> str:
         payload = {
+            "anchor_identity": self.anchor_identity,
             "base_revision": self.base_revision,
             "reviewed_revision": self.reviewed_revision,
             "entries": [
@@ -70,12 +72,43 @@ class CanonicalCodeState:
 
 
 class CodeStateProvider(Protocol):
+    test_only: bool
+
     def snapshot(self, repository_root: Path) -> CanonicalCodeState:
         """Return the independently derived complete final-code state."""
 
 
+@dataclass(frozen=True)
+class CodeStateAnchor:
+    change_id: str
+    target_ref: str
+    target_revision: str
+    base_revision: str
+    reviewed_revision: str
+    final_review_id: str
+    lifecycle_evidence_paths: tuple[str, ...]
+
+    @property
+    def identity(self) -> str:
+        payload = {
+            "change_id": self.change_id,
+            "target_ref": self.target_ref,
+            "target_revision": self.target_revision,
+            "base_revision": self.base_revision,
+            "reviewed_revision": self.reviewed_revision,
+            "final_review_id": self.final_review_id,
+            "lifecycle_evidence_paths": self.lifecycle_evidence_paths,
+        }
+        encoded = json.dumps(
+            payload, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        return "sha256:" + hashlib.sha256(encoded).hexdigest()
+
+
 class GitCodeStateProvider:
     """Derive final-code state from trusted Git revisions and live worktree."""
+
+    test_only = False
 
     _POST_REVIEW_EVIDENCE_PREFIXES = (
         "docs/changes/",
@@ -86,29 +119,14 @@ class GitCodeStateProvider:
     def __init__(
         self,
         *,
-        base_revision: str,
-        reviewed_revision: str,
-        allowed_post_review_evidence_paths: frozenset[str] = frozenset(),
+        anchor: CodeStateAnchor,
     ) -> None:
-        if not base_revision or not reviewed_revision:
-            raise CodeStateError("base and reviewed revisions are required")
-        self._base_revision = base_revision
-        self._reviewed_revision = reviewed_revision
-        allowed_paths: set[str] = set()
-        for path in allowed_post_review_evidence_paths:
-            relative_path = self._validate_relative_path(path)
-            if (
-                relative_path not in self._POST_REVIEW_EVIDENCE_PATHS
-                and not relative_path.startswith(
-                    self._POST_REVIEW_EVIDENCE_PREFIXES
-                )
-            ):
-                raise CodeStateError(
-                    "post-review exemption is not a lifecycle evidence path: "
-                    f"{relative_path}"
-                )
-            allowed_paths.add(relative_path)
-        self._allowed_post_review_paths = frozenset(allowed_paths)
+        if not isinstance(anchor, CodeStateAnchor):
+            raise CodeStateError("resolved code-state anchor is required")
+        self._anchor = anchor
+        self._allowed_post_review_paths = frozenset(
+            anchor.lifecycle_evidence_paths
+        )
 
     @staticmethod
     def _validate_relative_path(value: str) -> str:
@@ -260,8 +278,25 @@ class GitCodeStateProvider:
         if top != root:
             raise CodeStateError("repository root does not match Git root")
 
-        base = self._commit(root, self._base_revision)
-        reviewed = self._commit(root, self._reviewed_revision)
+        base = self._commit(root, self._anchor.base_revision)
+        reviewed = self._commit(root, self._anchor.reviewed_revision)
+        target = self._commit(root, self._anchor.target_revision)
+        current_target = self._commit(root, self._anchor.target_ref)
+        if (
+            base != self._anchor.base_revision
+            or reviewed != self._anchor.reviewed_revision
+            or target != self._anchor.target_revision
+        ):
+            raise CodeStateError("code-state anchor revision identity is stale")
+        if current_target != target:
+            raise CodeStateError(
+                "code-state anchor target branch identity is stale"
+            )
+        observed_base = self._git(
+            root, "merge-base", target, reviewed
+        ).decode("ascii").strip()
+        if observed_base != base:
+            raise CodeStateError("code-state anchor base is stale")
         head = self._commit(root, "HEAD")
         try:
             subprocess.run(
@@ -299,7 +334,162 @@ class GitCodeStateProvider:
             )
 
         return CanonicalCodeState(
+            anchor_identity=self._anchor.identity,
             base_revision=base,
             reviewed_revision=reviewed,
             entries=self._entries(root, base, reviewed),
         )
+
+
+class GitCodeStateAnchorResolver:
+    """Resolve immutable code-state anchors from repository-owned refs."""
+
+    def _default_branch_ref(self, root: Path) -> str:
+        symbolic = subprocess.run(
+            (
+                "git",
+                "-C",
+                str(root),
+                "symbolic-ref",
+                "--quiet",
+                "refs/remotes/origin/HEAD",
+            ),
+            check=False,
+            capture_output=True,
+        )
+        if symbolic.returncode == 0:
+            value = symbolic.stdout.decode("utf-8").strip()
+            if value:
+                return value
+        candidates: list[str] = []
+        for candidate in ("refs/heads/main", "refs/heads/master"):
+            result = subprocess.run(
+                (
+                    "git",
+                    "-C",
+                    str(root),
+                    "rev-parse",
+                    "--verify",
+                    "--quiet",
+                    f"{candidate}^{{commit}}",
+                ),
+                check=False,
+                capture_output=True,
+            )
+            if result.returncode == 0:
+                candidates.append(candidate)
+        if len(candidates) != 1:
+            raise CodeStateError(
+                "canonical default branch ref is missing or ambiguous"
+            )
+        return candidates[0]
+
+    def resolve(
+        self,
+        repository_root: Path,
+        *,
+        change_id: str,
+        reviewed_revision: str,
+        final_review_id: str,
+        lifecycle_evidence_paths: frozenset[str],
+    ) -> CodeStateAnchor:
+        root = repository_root.resolve()
+        if not all(
+            isinstance(value, str) and value
+            for value in (
+                change_id,
+                reviewed_revision,
+                final_review_id,
+            )
+        ):
+            raise CodeStateError("code-state anchor basis is incomplete")
+        target_ref = self._default_branch_ref(root)
+        target = GitCodeStateProvider._git(
+            root, "rev-parse", "--verify", f"{target_ref}^{{commit}}"
+        ).decode("ascii").strip()
+        reviewed = GitCodeStateProvider._git(
+            root,
+            "rev-parse",
+            "--verify",
+            f"{reviewed_revision}^{{commit}}",
+        ).decode("ascii").strip()
+        base = GitCodeStateProvider._git(
+            root, "merge-base", target, reviewed
+        ).decode("ascii").strip()
+        allowed_paths: set[str] = set()
+        for path in lifecycle_evidence_paths:
+            relative_path = GitCodeStateProvider._validate_relative_path(path)
+            if (
+                relative_path
+                not in GitCodeStateProvider._POST_REVIEW_EVIDENCE_PATHS
+                and not relative_path.startswith(
+                    GitCodeStateProvider._POST_REVIEW_EVIDENCE_PREFIXES
+                )
+            ):
+                raise CodeStateError(
+                    "post-review exemption is not a lifecycle evidence path: "
+                    f"{relative_path}"
+                )
+            allowed_paths.add(relative_path)
+        return CodeStateAnchor(
+            change_id=change_id,
+            target_ref=target_ref,
+            target_revision=target,
+            base_revision=base,
+            reviewed_revision=reviewed,
+            final_review_id=final_review_id,
+            lifecycle_evidence_paths=tuple(sorted(allowed_paths)),
+        )
+
+
+def resolve_canonical_code_state(
+    *,
+    repository_root: Path,
+    change_id: str,
+    reviewed_revision: str,
+    final_review_id: str,
+    lifecycle_evidence_paths: frozenset[str],
+    test_provider: CodeStateProvider | None = None,
+) -> CanonicalCodeState:
+    """Resolve Git state internally; allow injection only outside Git."""
+
+    root = repository_root.resolve()
+    if test_provider is not None and not (root / ".git").exists():
+        if not getattr(test_provider, "test_only", False):
+            raise CodeStateError(
+                "non-Git repository requires an explicit test-only code-state provider"
+            )
+        snapshot = test_provider.snapshot(root)
+        if snapshot.reviewed_revision != reviewed_revision:
+            raise CodeStateError(
+                "test-only code-state provider reviewed revision is stale"
+            )
+        return snapshot
+    git_probe = subprocess.run(
+        ("git", "-C", str(root), "rev-parse", "--is-inside-work-tree"),
+        check=False,
+        capture_output=True,
+    )
+    if git_probe.returncode == 0:
+        if test_provider is not None:
+            raise CodeStateError(
+                "test-only code-state provider is prohibited for Git repositories"
+            )
+        anchor = GitCodeStateAnchorResolver().resolve(
+            root,
+            change_id=change_id,
+            reviewed_revision=reviewed_revision,
+            final_review_id=final_review_id,
+            lifecycle_evidence_paths=lifecycle_evidence_paths,
+        )
+        return GitCodeStateProvider(anchor=anchor).snapshot(root)
+    if test_provider is None or not getattr(test_provider, "test_only", False):
+        raise CodeStateError(
+            "non-Git repository requires an explicit test-only code-state provider"
+        )
+    snapshot = test_provider.snapshot(root)
+    if snapshot.reviewed_revision != reviewed_revision:
+        raise CodeStateError(
+            "test-only code-state provider reviewed revision is stale"
+        )
+    return snapshot
