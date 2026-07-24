@@ -67,6 +67,10 @@ from workflow_automation_state import (
     parse_stage_evidence_fields,
     verify_transition_completion,
 )
+from workflow_code_state import (
+    CodeStateError,
+    CodeStateProvider,
+)
 
 
 CURRENT_COMMAND_RE = re.compile(r"^workflow\s+auto:\s*(?P<value>[a-z][a-z-]*)$")
@@ -325,10 +329,11 @@ class VerificationReadiness:
     explanation_current: bool
 
 
-def _final_code_identity_from_branch_evidence(
+def _canonical_final_code_identity(
     *,
     repository_root: Path,
     branch_state_path: Path,
+    code_state_provider: CodeStateProvider,
 ) -> str:
     try:
         fields = parse_stage_evidence_fields(
@@ -338,10 +343,13 @@ def _final_code_identity_from_branch_evidence(
                 "Status",
                 "Final code identity",
                 "Final code paths",
+                "Final code base revision",
+                "Final code reviewed revision",
             },
         )
         paths = json.loads(fields["Final code paths"])
-    except (StateContractError, json.JSONDecodeError) as error:
+        canonical = code_state_provider.snapshot(repository_root)
+    except (StateContractError, json.JSONDecodeError, CodeStateError) as error:
         raise AutomationContractError(
             "verification basis branch state is incomplete"
         ) from error
@@ -356,22 +364,23 @@ def _final_code_identity_from_branch_evidence(
         raise AutomationContractError(
             "verification basis branch state is invalid"
         )
-    observed: list[dict[str, str]] = []
-    for relative_path in sorted(paths):
-        artifact = _resolve_repository_file(repository_root, relative_path)
-        observed.append(
-            {
-                "path": relative_path,
-                "identity": "sha256:"
-                + hashlib.sha256(artifact.read_bytes()).hexdigest(),
-            }
+    if tuple(sorted(paths)) != canonical.paths:
+        raise AutomationContractError(
+            "verification basis final code path projection is incomplete"
         )
-    identity = _structured_identity(observed)
-    if fields.get("Final code identity") != identity:
+    if (
+        fields.get("Final code base revision") != canonical.base_revision
+        or fields.get("Final code reviewed revision")
+        != canonical.reviewed_revision
+    ):
+        raise AutomationContractError(
+            "verification basis final code revision projection is stale"
+        )
+    if fields.get("Final code identity") != canonical.identity:
         raise AutomationContractError(
             "verification basis final code identity is stale"
         )
-    return identity
+    return canonical.identity
 
 
 def resolve_verification_readiness(
@@ -379,6 +388,7 @@ def resolve_verification_readiness(
     repository_root: Path,
     basis: Mapping[str, Any],
     basis_paths: Mapping[str, Any],
+    code_state_provider: CodeStateProvider,
 ) -> VerificationReadiness:
     """Resolve verification authority only from current repository evidence."""
 
@@ -404,9 +414,10 @@ def resolve_verification_readiness(
     if not _all_implementation_milestones_closed(plan):
         raise AutomationContractError("verification basis milestones are open")
 
-    final_code_identity = _final_code_identity_from_branch_evidence(
+    final_code_identity = _canonical_final_code_identity(
         repository_root=repository_root,
         branch_state_path=artifacts["branch_state_identity"],
+        code_state_provider=code_state_provider,
     )
     review_path = artifacts["final_code_review_identity"]
     occurrence = _canonical_review_occurrence(
@@ -2082,6 +2093,7 @@ def coordinate_non_public_implementation_stage(
     store: WorkflowAutomationStateStore,
     repository_root: Path,
     verification_basis_paths: Mapping[str, Any] | None = None,
+    code_state_provider: CodeStateProvider | None = None,
     ci_maintenance_required: bool = False,
     **coordination: Any,
 ) -> ImplementationCoordinationResult:
@@ -2097,7 +2109,11 @@ def coordinate_non_public_implementation_stage(
         WorkflowStage.VERIFY.value,
     }:
         basis = coordination.get("basis")
-        if not isinstance(basis, Mapping) or verification_basis_paths is None:
+        if (
+            not isinstance(basis, Mapping)
+            or verification_basis_paths is None
+            or code_state_provider is None
+        ):
             raise AutomationContractError(
                 "repository-backed verification basis is required"
             )
@@ -2105,6 +2121,7 @@ def coordinate_non_public_implementation_stage(
             repository_root=repository_root,
             basis=basis,
             basis_paths=verification_basis_paths,
+            code_state_provider=code_state_provider,
         )
     try:
         result = coordinate_one_stage(

@@ -31,6 +31,7 @@ Physical ownership is:
 - `scripts/workflow_automation.py`: command adaptation, target and canonical-position resolution, authorization evaluation, and transition coordination;
 - `scripts/workflow_automation_policy.py`: frozen policies and closed enums;
 - `scripts/workflow_automation_state.py`: the only writer of `change.yaml#workflow.automation`, including state access and prepared-transition reconciliation;
+- `scripts/workflow_code_state.py`: independent canonical base-to-reviewed code-state derivation and post-review Git/worktree drift detection;
 - `scripts/validate_workflow_automation.py`: policy, run, authorization, capability, target, receipt, migration, and canonical-state consistency validation;
 - change-local evidence: ownership of the persisted automation data.
 
@@ -47,6 +48,15 @@ The engine is decomposed into these responsibilities:
 Automation state records observed evidence identities and receipts. It does not own an independent `current_stage` or `next_stage`. Stage-owning skills continue to own artifacts and formal review results. Review-finding classification remains stage-specific: proposal-side deterministic correction is driver-owned, implementation correction eligibility is reviewer-owned, and verification failure never authorizes automatic repair.
 
 Every prepared receipt records `effective_capability_id`. The effective capability is the executable authority and links to its non-executable parent authorization through `parent_authorization_id`. A receipt does not bind directly to a parent authorization, resume does not silently replace the recorded capability, and an invalidated capability pauses reconciliation.
+
+Verification currentness uses an independently owned canonical code-state
+provider. The Git provider derives the complete base-to-reviewed change set,
+including added, modified, deleted, and renamed paths, and rejects unapproved
+post-review commits, dirty tracked paths, and untracked paths. Branch-state
+evidence must project the provider's exact revisions, path set, and identity;
+it cannot select its own hashing domain. Non-Git fixtures may inject a trusted
+provider with the same contract. Post-review exclusions are restricted to exact
+change-local or plan lifecycle-evidence paths; code paths cannot be exempted.
 
 The engine permits a destination target beyond current authority, but target selection never implies blanket consent. Authoring, implementation, and verification use distinct parent authorizations and effective capabilities. Verification authority cannot be persisted contingently before its complete basis exists. PR creation, push, publication, deployment, merge, destructive Git operations, and other external actions are prohibited.
 

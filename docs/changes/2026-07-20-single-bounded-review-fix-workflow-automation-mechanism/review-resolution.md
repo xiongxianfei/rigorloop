@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -46,11 +46,12 @@ Review closeout: code-review-m4-r14
 Review closeout: code-review-m4-r15
 Review closeout: code-review-m5-r1
 Review closeout: code-review-m5-r2
+Review closeout: code-review-m5-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`
-- Findings resolved: 87
-- Unresolved findings: 1
-- Current result: Code-review M5 R3 confirmed `BRF-M5-CR6`, `BRF-M5-CR8`, and `BRF-M5-CR9` resolved, classified `BRF-M5-CR7` as a failed remediation, and opened residual finding `BRF-M5-CR10`. M5 is resolution-needed and M6 remains blocked.
+- Findings resolved: 88
+- Unresolved findings: 0
+- Current result: The accepted correction for `BRF-M5-CR10` is implemented and validated. M5 is review-requested for code-review R4; M6 remains blocked pending that review.
 
 ## Resolution Overview
 
@@ -143,7 +144,7 @@ Review closeout: code-review-m5-r2
 | BRF-M5-CR7 | accepted | resolved | Verification derives one deterministic final-code identity from repository files, binds every closeout input to it, rejects source drift, and proves subprocess, socket, URL, and shell external-action surfaces remain uncalled. |
 | BRF-M5-CR8 | accepted | resolved | Canonical milestone-review chronology now compares normalized `M<n>` occurrence identity, so renamed display titles cannot hide a later review. |
 | BRF-M5-CR9 | accepted | resolved | Bounded correction closes only its accepted findings and keeps global resolution open whenever any unrelated resolution or review-log finding remains open. |
-| BRF-M5-CR10 | accepted | open | Final-code currentness hashes only the evidence-declared path subset, so omitted changed code remains unobserved. |
+| BRF-M5-CR10 | accepted | resolved | Final-code currentness now comes from an independent canonical provider and branch evidence must exactly project its revisions, paths, and identity. |
 
 ### code-review-m5-r3
 
@@ -151,7 +152,7 @@ Review closeout: code-review-m5-r2
 
 Finding ID: BRF-M5-CR10
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
@@ -161,7 +162,7 @@ Required outcome: Bind verification authorization and final verification to a ca
 Chosen action: Replace the evidence-selected identity domain with an independently derived canonical code-state provider and require branch-state evidence to project that exact path set and identity.
 Safe resolution path: Use a tracked base-to-head diff/tree plus explicitly governed worktree state, or a trusted injected provider for non-Git fixtures; bind every final review, explanation, promotion, branch, and command artifact to the result; add omission, addition, deletion, rename, dirty-file, and untracked-file contrasts.
 Validation target: `BRF-R043c`, `BRF-R044`, `BRF-R085`, complete-final-diff obligations, and T18.
-Validation evidence: pending
+Validation evidence: `scripts/workflow_code_state.py` derives added, modified, deleted, and renamed paths from trusted Git revisions and rejects unapproved committed, dirty tracked, and untracked drift; code paths cannot be exempted as post-review lifecycle evidence. `resolve_verification_readiness` now requires an injected provider and rejects incomplete branch path/revision/identity projections. The 4 provider regressions, 56 engine tests, 16 policy tests, 60 state tests, 65 automation-validator tests, lifecycle, metadata, guide, review-structure, compilation, and diff checks pass. The plan-mandated broad smoke passes all 11 checks in 388 seconds on the final synchronized source.
 auto_fix_class: none
 
 ### code-review-m5-r2
