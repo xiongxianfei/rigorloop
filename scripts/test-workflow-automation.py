@@ -99,8 +99,8 @@ def run_exact_read_only_git_probe(
     )
     expected_keyword_names = {"check", "capture_output", "env"}
     if (
-        command != expected_command
-        or not isinstance(command, tuple)
+        type(command) is not tuple
+        or command != expected_command
         or args
         or set(kwargs) != expected_keyword_names
         or kwargs["check"] is not False
@@ -4028,6 +4028,13 @@ Open findings: None
             popen_calls.append(command)
             return FakeProcess()
 
+        class EqualitySpoofingTuple(tuple):
+            def __eq__(self, _other) -> bool:
+                return True
+
+            def __ne__(self, _other) -> bool:
+                return False
+
         result = run_exact_read_only_git_probe(
             expected_command,
             expected_root=repository_root,
@@ -4061,6 +4068,16 @@ Open findings: None
             (*expected_command, "--extra"),
             list(expected_command),
             "git -C /canonical/repository rev-parse --show-toplevel",
+            EqualitySpoofingTuple(
+                (
+                    "git",
+                    "-C",
+                    str(repository_root),
+                    "push",
+                    "origin",
+                    "HEAD",
+                )
+            ),
         )
         for command in rejected_commands:
             with self.subTest(command=command), self.assertRaisesRegex(
@@ -4088,6 +4105,34 @@ Open findings: None
                 shell=True,
             )
         self.assertEqual(popen_calls, [expected_command])
+
+    def test_verify_git_probe_rejects_before_custom_comparison(self) -> None:
+        comparison_calls: list[tuple[str, ...]] = []
+
+        class ComparisonSentinel:
+            def __eq__(self, other) -> bool:
+                comparison_calls.append(("eq", *other))
+                return False
+
+            def __ne__(self, other) -> bool:
+                comparison_calls.append(("ne", *other))
+                return True
+
+        def prohibited_popen(*_args, **_kwargs):
+            raise AssertionError("saved launcher was invoked")
+
+        with self.assertRaisesRegex(
+            AssertionError, "prohibited external action"
+        ):
+            run_exact_read_only_git_probe(
+                ComparisonSentinel(),
+                expected_root=Path("/canonical/repository"),
+                real_popen=prohibited_popen,
+                check=False,
+                capture_output=True,
+                env={"LC_ALL": "C", "LANG": "C"},
+            )
+        self.assertEqual(comparison_calls, [])
 
     def test_verify_transaction_stops_before_pr_without_external_action(self) -> None:
         automation = copy.deepcopy(FIXTURES.valid_automation())
