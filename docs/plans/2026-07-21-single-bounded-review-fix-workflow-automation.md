@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r1.md`
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M6 rereview
-- Next stage: code-review M6
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r2.md`
+- Review status: changes-requested; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M6 resolution and rereview
+- Next stage: review-resolution M6
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BRF-M6-CR5,BRF-M6-CR6,BRF-M6-CR7
 
 ## Milestones
 
@@ -386,7 +386,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Atomically activate unified public commands, map compatibility aliases, prohibit every legacy writer, implement cross-spec contradiction checks, regenerate derived guidance, and prove the complete mechanism.
 - Requirements: `BRF-R002`-`BRF-R005`, `BRF-R087`-`BRF-R102`, including `BRF-R098a`-`BRF-R098i`
 - Files/components likely touched:
@@ -491,6 +491,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Progress
 
+- 2026-07-24: Code-review M6 R2 resolved `BRF-M6-CR1` through `BRF-M6-CR3`, classified `BRF-M6-CR4` as a failed remediation, and opened residual `BRF-M6-CR7` plus new `BRF-M6-CR5` and `BRF-M6-CR6`. The deterministic composition still omits required T28/T30 scenarios, public resume ignores persisted canonical identities, and verification authorization trusts shaped hashes without repository-backed readiness validation. M6 is resolution-needed. This direct review is isolated and did not start correction.
 - 2026-07-24: Resolved `BRF-M6-CR1` through `BRF-M6-CR4` with an independent immutable cross-spec selector registry, one-write legacy migration/cancellation with terminal idempotency, complete evidence-backed public result projection, explicit risk-boundary authorization and bounded correction authority, and a single public resume path used by authoring, correction, implementation, review, and verification proof. Focused automation suites pass; M6 is review-requested for R2.
 - 2026-07-24: M6 R1 review-resolution implementation started for `BRF-M6-CR1` through `BRF-M6-CR4`. The proof-first correction is limited to an independent selector registry, atomic legacy cancellation, complete tracked public results, and one deterministic public orchestration/resume composition.
 - 2026-07-24: Code-review M6 R1 requested changes in `BRF-M6-CR1` through `BRF-M6-CR4`: cross-spec completeness is self-derived, legacy off is a two-write nonterminal hazard and rejects terminal legacy state, public results omit tracked evidence, and public correction/composed deterministic proof is absent. M6 is resolution-needed. This direct review is isolated and did not start correction.
@@ -663,6 +664,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- Code-review M6 R2 independently reran 67 engine, 68 automation-validator, 60 state/recovery, and 16 policy tests. All passed. Direct requirement-fidelity probes nevertheless completed a public spec transition after every run-observed proposal/review identity changed and confirmed that verification authorization accepts six arbitrary hashes without repository evidence. Test inspection confirmed the repeated/reversed T30 registry contains only authoring/status and legacy cancellation, not interruption or final success.
 - M6 R1 resolution failed proof-first for the missing independent selector, two-write legacy cancellation, terminal legacy error, absent public evidence, and missing public resume/authorization surfaces. The corrected slice passes 67 engine, 68 automation-validator, 60 state/recovery, and 16 policy tests plus Python compilation and diff checks. Review structure and closeout validate 61 reviews and all 96 findings resolved; change metadata and explicit lifecycle synchronization pass with the existing merge-language warning. Selected CI passes all 12 checks, and the final repository broad-smoke run passes all 12 checks in 241 seconds. No public skill, generated adapter, external-action, credential, network, PR, or publication surface changed in this correction.
 - 2026-07-24 code-review M6 R1: focused independent reruns passed 63 workflow-engine, 67 automation-validator, 60 state, and 16 policy tests. Temporary-repository challenges still reproduced four uncovered gaps: a deleted canonical ledger row passed, interrupted legacy off left an active unified run, terminal legacy off raised, and a public plan-review result had no canonical-position source or tracked transition/artifact evidence. Source/test inspection also found no public correction capability path or T28/T30 composed repeat/reverse-order proof.
 

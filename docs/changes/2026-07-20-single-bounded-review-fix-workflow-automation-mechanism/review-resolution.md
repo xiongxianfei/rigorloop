@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -54,10 +54,10 @@ Review closeout: code-review-m5-r7
 Review closeout: code-review-m5-r8
 Review closeout: code-review-m6-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`, `code-review-m6-r2`
 - Findings resolved: 96
-- Unresolved findings: 0
-- Current result: The accepted M6 R1 findings are resolved in implementation and focused proof. M6 is review-requested; the next stage is code-review M6 R2.
+- Unresolved findings: 3
+- Current result: Code-review M6 R2 classified `BRF-M6-CR4` as a failed remediation and opened residual `BRF-M6-CR7` plus new `BRF-M6-CR5` and `BRF-M6-CR6`. M6 is resolution-needed; the next stage is review-resolution M6.
 
 ## Resolution Overview
 
@@ -66,7 +66,10 @@ Review closeout: code-review-m6-r1
 | BRF-M6-CR1 | accepted | resolved | Repository validation now compares the canonical ledger with an independent immutable selector registry and rejects an omitted exact row. |
 | BRF-M6-CR2 | accepted | resolved | Legacy `off` now projects active legacy state directly to one cancelled unified record and treats terminal legacy state as a byte-preserving idempotent result. |
 | BRF-M6-CR3 | accepted | resolved | Public target, status, resume, pause, and cancellation results now project canonical position, observed identities, receipt history, fixes, decisions, and changed artifacts from durable state. |
-| BRF-M6-CR4 | accepted | resolved | Public activation now supports explicit risk-boundary authorization and bounded correction budgets, and all stage coordinators execute through one persisted-target public resume path with deterministic composed proof. |
+| BRF-M6-CR4 | accepted | resolved | R2 classified the attempted composed-proof remediation as failed and records the remaining proof defect under residual `BRF-M6-CR7`. |
+| BRF-M6-CR5 | accepted | open | Public resume ignores the run's persisted observed identities and permits mutation after canonical-state drift. |
+| BRF-M6-CR6 | accepted | open | Verification authorization accepts syntactically complete caller hashes without independently validating repository-backed closeout evidence. |
+| BRF-M6-CR7 | accepted | open | The repeated/reversed T30 registry omits interruption, final success, correction, missing authority, environment, teardown, and external-action-counter proof. |
 | BRF-PR1 | accepted | resolved | Defined pre-plan derivation and the plan-creation ownership handoff; R2 confirmed resolution. |
 | BRF-PR2 | accepted | resolved | Bound grants to concrete reviewed identities, scope, and invalidation rules; R2 confirmed resolution. |
 | BRF-PR3 | accepted | resolved | Added write-ahead transition receipts and deterministic recovery; R2 confirmed resolution. |
@@ -227,7 +230,63 @@ Rationale: Public parent construction permits neither proposal-correction nor im
 Required outcome: Expose and prove one receipt-backed public path across bounded corrections, interruption, cancellation, migration, final verification, and stop-before-PR, with deterministic repeat and reverse-order evidence.
 Safe resolution path: Add one public orchestration/resume entry point with basis-valid, risk-scoped capability materialization, then execute all T28 scenarios twice and in reversed order with canonical state and external-action comparisons.
 Validation target: `BRF-R060` through `BRF-R067`, T25, T28, and T30.
-Validation evidence: Public tests now reject incomplete or inferred verification authority, materialize basis-complete later authority, expose proposal and implementation correction only with explicit budgets, and invoke proposal correction, authoring, implementation, milestone review, implementation correction, and final verification through `resume_public_run`. Fresh-root composed runs repeat and reverse declared authoring/status and migration/cancellation scenarios with identical results and canonical state while external actions remain prohibited. The 67-test engine suite passes.
+Validation evidence: R2 confirmed public tests invoke each coordinator through `resume_public_run`, but the only repeated/reversed scenario registry contains authoring/status and legacy cancellation. T28/T30 interruption, final-success, correction, missing-authority, environment, teardown, and external-action-counter proof remains absent.
+auto_fix_class: none
+
+### code-review-m6-r2
+
+R2 reconciled `BRF-M6-CR1`, `BRF-M6-CR2`, and `BRF-M6-CR3` as resolved.
+It classified `BRF-M6-CR4` as a failed remediation, recorded residual `BRF-M6-CR7`, and recorded the two new findings below.
+
+#### BRF-M6-CR5 - Public resume ignores the durable observed-identity baseline
+
+Finding ID: BRF-M6-CR5
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: None; the approved canonical-state mismatch contract already requires a pause.
+Chosen action: Pending implementation.
+Rationale: The public resume adapter does not pass persisted `observed_identities` into canonical re-evaluation, so caller-supplied current identities can replace the run's original evidence without reconciliation.
+Required outcome: Public resume must compare current canonical evidence with the run's durable observed identities and pause before capability, receipt, artifact, or state mutation on mismatch, except through an explicitly validated ownership or transition handoff.
+Safe resolution path: Load the baseline from validated unified state inside `resume_public_run`, apply one state-aware identity advancement policy, and add zero-mutation drift tests for both canonical epochs plus positive handoff tests.
+Validation target: `BRF-R023`, `BRF-R044`, `BRF-R100`, T22, and public resume integration.
+Validation evidence: R2 started a public spec run at proposal/review identities `p1/r1`, resumed at `p2/r2`, completed the transition, and observed that durable run evidence still recorded `p1/r1`.
+auto_fix_class: none
+
+#### BRF-M6-CR7 - Composed deterministic proof remains incomplete
+
+Finding ID: BRF-M6-CR7
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: None; the approved T28/T30 proof contract already enumerates the required scenarios and comparisons.
+Chosen action: Pending implementation.
+Rationale: The only repeated/reversed public scenario registry contains authoring/status and legacy cancellation, so the claimed composed proof does not cover interruption, correction, missing authority, or final verification.
+Required outcome: T28 must execute every declared public scenario, and T30 must repeat and reverse the complete composed transaction, interruption, migration, status, and final-success set with state, receipt, output, teardown, and external-action comparisons.
+Safe resolution path: Build reusable fresh-root public scenario drivers, run the fixed registry twice and in reverse, and compare canonical state, receipts, status/results, teardown, sanitized environment, and prohibited-call counts.
+Validation target: T28, T30, `BRF-R060` through `BRF-R067`, `BRF-R100`, and CMD25.
+Validation evidence: R2 inspected `test_public_composition_is_deterministic_and_order_independent`; its declared scenario tuple is exactly `("authoring", "legacy-cancel")`.
+auto_fix_class: none
+
+#### BRF-M6-CR6 - Verification authorization trusts shaped hashes instead of closeout evidence
+
+Finding ID: BRF-M6-CR6
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: None; the approved verification-authorization timing contract already requires independent validation.
+Chosen action: Pending implementation.
+Rationale: `authorize_public_run` checks only that six verification-basis fields are nonempty strings, persists the parent authorization, and reactivates the run without reading a plan, final review, promotion, explanation, branch, or command artifact.
+Required outcome: Verification parent authorization must remain absent and the run paused until all repository-backed closeout prerequisites independently validate and their current identities match the persisted basis.
+Safe resolution path: Route authorization through the repository-backed verification-readiness resolver with canonical basis paths and code-state evidence, bind its validated projection, and add per-prerequisite negative tests plus one real-artifact positive test.
+Validation target: `BRF-R043b` through `BRF-R043e`, `AC-BRF-SR3-2` through `AC-BRF-SR3-5`, T9, T18, T20, and T28.
+Validation evidence: The committed positive test authorizes and reactivates a verify-target run from arbitrary strings such as `sha256:closed` and `sha256:final-review`; no repository evidence exists or is inspected.
 auto_fix_class: none
 
 ### code-review-m5-r8
