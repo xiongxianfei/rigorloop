@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M5. Implementation Review, Correction, and Verification Integration
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M5. Implementation Review, Correction, and Verification Integration
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r6.md`
 - Review status: changes-requested; stage=code-review; round=r6
-- Remaining in-scope implementation milestones: M5 resolution and rereview, M6
-- Next stage: review-resolution M5
+- Remaining in-scope implementation milestones: M5 rereview, M6
+- Next stage: code-review M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M5-CR13
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -329,7 +329,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M5. Implementation Review, Correction, and Verification Integration
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Integrate ordered milestone implementation and code review, reviewer-owned correction, final holistic review, explanation, and verification behind the same non-public boundary.
 - Requirements: `BRF-R060`-`BRF-R067`, `BRF-R078`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -491,6 +491,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Progress
 
+- 2026-07-24: Resolved `BRF-M5-CR13` with a test-local exact-command runner bound to the canonical state-store root and the precise `subprocess.run` keyword shape. Proof-first contrasts reject alternate roots, inserted Git operations, prefix/suffix arguments, list and string commands, shell mediation, and direct `Popen`; the positive verification transaction remains accepted. The approved spec, test spec, architecture, ADR, public skills, legacy adapters, and generated output are unaffected because this correction tightens the existing T18 external-action proof without changing production or public behavior. M5 is review-requested for R7 and M6 remains blocked.
 - 2026-07-24: Code-review M5 R6 confirmed `BRF-M5-CR12` resolved and opened `BRF-M5-CR13`. The production canonical anchor boundary passes, but the revised T18 subprocess exception accepts alternate roots and extra Git operations whenever the tuple ends in `rev-parse --show-toplevel`. M5 is resolution-needed and M6 remains blocked.
 - 2026-07-24: Resolved `BRF-M5-CR12` with canonical Git worktree/root classification before provider selection, immutable reviewed-commit object-ID equality, state-store root validation before readiness, and a selective read-only Git allowance in the external-action trap. Twelve provider regressions and all automation suites pass; the final-source broad-smoke suite passes all 11 checks in 404 seconds. The approved architecture, ADR, and test spec are unaffected because they already prescribe this boundary. M5 is review-requested for R6 and M6 remains blocked.
 - 2026-07-24: Code-review M5 R5 classified `BRF-M5-CR11` as a failed remediation and opened `BRF-M5-CR12`. Direct probes show that a Git-worktree subdirectory without its own `.git` marker accepts an injected test provider before Git membership is checked, and that mutable `Reviewed commit` expressions such as `HEAD` are accepted as the canonical final-review anchor. M5 is resolution-needed and M6 remains blocked.
@@ -653,6 +654,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- M5 R6 resolution failed proof-first because the exact allowlist runner did not yet exist. After correction, 12 code-state, 58 full automation-engine, 6 implementation-selected, 14 correction-selected, 5 milestone-selected, 6 verify-selected, 5 non-public-selected, 104 review-artifact, 156 lifecycle, 259 skill-validator, and 53 metadata-validator tests pass. The exact positive command executes once; alternate-root, inserted-operation, extra-argument, list, string, shell, and direct-`Popen` contrasts fail before the saved process launcher is reached. Review closeout validates 58 reviews and 91 resolved findings; lifecycle synchronization passes with the existing merge-language warning; metadata, guide, compilation, and diff checks pass; and final-source repository broad smoke passes all 11 checks in 467 seconds. The selector reports expected manual routing for the unsupported automation test path, which the plan-owned engine commands cover directly.
 - Code-review M5 R3 used a direct isolated L1 same-session context reset, recorded its risk map before consulting validation summaries in the review pass, and reran 16 policy, 60 state/recovery, 56 engine, and 65 automation-validator tests. All passed. A separate adversarial fixture then established readiness from a one-file branch manifest, changed a second unlisted source file, and reproduced successful readiness. The correction recipe, stage-policy scope, milestone-title chronology, global closeout, and external-action trap remediations are resolved; final-code completeness remains open as `BRF-M5-CR10`.
 - M5 R2 resolution failed proof-first for compressed correction recipes, stage-policy scope bypass, source-drift acceptance, missing external-action traps, title-sensitive review chronology, and manufactured global closeout. The corrected slice passes 16 policy, 60 state/recovery, 56 engine, 65 automation-validator, 104 review-artifact, 259 skill-validator, and 53 metadata-validator tests plus artifact-lifecycle tests, Python compilation, diff checks, closeout, selected lifecycle, and guide validation. The selector reported expected manual routing for the eight automation Python paths covered directly and required broad smoke; the final executable-source broad-smoke suite passes all 11 checks in 941 seconds. The approved spec and test spec, public skills and aliases, generated adapters, credentials, network behavior, and external-action authority are unchanged; the architecture and ADR only clarify the already-approved stage-local immutable mutation set.
 - M5 R1 resolution failed proof-first until the implementation-correction coordinator and repository-backed verification resolver existed. The corrected slice passes 55 engine, 60 state/recovery, 15 policy, 64 automation-validator, 104 review-artifact, 156 lifecycle, and 259 skill-validator tests, plus Python compilation, diff checks, selected lifecycle/guide validation, and final-source 12-check broad smoke in 271 seconds. The selector reported expected manual routing for seven plan-owned automation Python paths covered by the explicit suites. No public workflow skill, legacy alias, generated adapter, external action, credential, or network surface changed.
