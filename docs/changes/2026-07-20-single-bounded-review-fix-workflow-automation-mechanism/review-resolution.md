@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -51,10 +51,10 @@ Review closeout: code-review-m5-r4
 Review closeout: code-review-m5-r5
 Review closeout: code-review-m5-r6
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`
 - Findings resolved: 91
-- Unresolved findings: 0
-- Current result: The accepted correction for `BRF-M5-CR13` is implemented and validated. T18 now permits only the exact canonical-root Git discovery probe and rejects alternate roots, inserted operations, extra arguments, non-tuple commands, shell mediation, and direct `Popen`. M5 is review-requested for code-review R7; M6 remains blocked pending that review.
+- Unresolved findings: 1
+- Current result: Code-review M5 R7 classified `BRF-M5-CR13` as a failed remediation and opened `BRF-M5-CR14` because a tuple subclass can spoof command equality and reach the saved launcher with different Git arguments. M5 is resolution-needed and M6 remains blocked.
 
 ## Resolution Overview
 
@@ -151,6 +151,26 @@ Review closeout: code-review-m5-r6
 | BRF-M5-CR11 | accepted | resolved | A repository-owned resolver now derives the default-target merge base and final-review commit anchor; Git runtime callers cannot inject alternate providers or raw ranges. |
 | BRF-M5-CR12 | accepted | resolved | Canonical Git classification now precedes provider selection, state-store root ownership precedes readiness, and the persisted reviewed revision must equal Git's full immutable commit identity. |
 | BRF-M5-CR13 | accepted | resolved | T18 now permits only the exact canonical-root Git discovery tuple with its expected invocation shape; all broader subprocess forms remain trapped. |
+| BRF-M5-CR14 | accepted | open | Equality runs before exact type rejection, allowing a tuple subclass to spoof the permitted command while carrying different Git arguments. |
+
+### code-review-m5-r7
+
+#### BRF-M5-CR14 - Exact-command guard accepts equality-spoofing tuple subclasses
+
+Finding ID: BRF-M5-CR14
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: `command != expected_command` runs before the `isinstance` check, and tuple subclasses remain accepted. A tuple subclass can spoof equality while its actual elements name a broader Git operation.
+Required outcome: Reject every command that is not an exact built-in tuple before equality evaluation, then compare only the built-in tuple with the canonical-root probe.
+Chosen action: Enforce exact built-in type first and add spoofed-equality plus comparison-side-effect negative contrasts.
+Safe resolution path: Use `type(command) is tuple` as the first short-circuit condition, retain the exact tuple comparison, and assert tuple subclasses and custom comparison objects fail without reaching comparison or the saved launcher.
+Validation target: T18, `BRF-R090`, `BRF-AC022`, `BRF-M5-CR13`, the reopened `BRF-M5-CR7` boundary, full M5 suites, and broad smoke.
+Validation evidence: pending
+auto_fix_class: none
 
 ### code-review-m5-r6
 
