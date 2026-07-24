@@ -7,6 +7,18 @@ This ledger records formal lifecycle reviews for the single bounded review-fix w
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-m5-r4
+Stage: code-review
+Round: M5 R4
+Reviewed artifact: M5 correction commit `ed8c69cc`
+Reviewed milestone: M5. Implementation Review, Correction, and Verification Integration
+Status: changes-requested
+Detailed record: reviews/code-review-m5-r4.md
+Resolution: review-resolution.md#code-review-m5-r4
+Material findings: BRF-M5-CR11
+Open findings: BRF-M5-CR11
+
+### Review entry
 Review ID: code-review-m5-r3
 Stage: code-review
 Round: M5 R3
