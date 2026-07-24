@@ -51,11 +51,12 @@ Review closeout: code-review-m5-r4
 Review closeout: code-review-m5-r5
 Review closeout: code-review-m5-r6
 Review closeout: code-review-m5-r7
+Review closeout: code-review-m5-r8
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`
 - Findings resolved: 92
 - Unresolved findings: 0
-- Current result: The accepted correction for `BRF-M5-CR14` is implemented and validated. T18 now rejects every non-exact command type before equality evaluation, blocks equality-spoofing tuple subclasses, and retains the exact canonical-root positive probe. M5 is review-requested for code-review R8; M6 remains blocked pending that review.
+- Current result: Code-review M5 R8 confirmed `BRF-M5-CR14`, `BRF-M5-CR13`, and the milestone-local `BRF-M5-CR7` proof resolved with no new material finding. M5 is closed and the next stage is implement M6.
 
 ## Resolution Overview
 
@@ -153,6 +154,10 @@ Review closeout: code-review-m5-r7
 | BRF-M5-CR12 | accepted | resolved | Canonical Git classification now precedes provider selection, state-store root ownership precedes readiness, and the persisted reviewed revision must equal Git's full immutable commit identity. |
 | BRF-M5-CR13 | accepted | resolved | T18 now permits only the exact canonical-root Git discovery tuple with its expected invocation shape; all broader subprocess forms remain trapped. |
 | BRF-M5-CR14 | accepted | resolved | The guard now rejects non-exact command types before equality; tuple-subclass and comparison-side-effect contrasts prove the saved launcher remains unreachable. |
+
+### code-review-m5-r8
+
+No material findings; no additional review resolution is required.
 
 ### code-review-m5-r7
 
