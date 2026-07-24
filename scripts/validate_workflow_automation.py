@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed validation for ``workflow.automation`` durable state.
-
-M1 validates state only.  It intentionally exposes no mutation or routing API;
-the sole-writer transaction boundary is introduced by the next milestone.
-"""
+"""Fail-closed validation for unified automation state and policy projections."""
 
 from __future__ import annotations
 
@@ -11,8 +7,10 @@ import hashlib
 import json
 import math
 import re
+import sys
 from enum import Enum
-from typing import Any, Iterable
+from pathlib import Path
+from typing import Any, Iterable, Mapping
 
 from lifecycle_state_sync import (
     DECLARED_SAFE_REQUIRED_FIELDS as IMPLEMENTATION_DECLARED_SAFE_FIELDS,
@@ -75,6 +73,16 @@ LEGACY_SOURCE_MECHANISMS = frozenset(
     }
 )
 MIGRATION_PROJECTION_RESULTS = frozenset({"equivalent"})
+CROSS_SPEC_DISPOSITIONS = frozenset(
+    {"superseded", "preserved-unchanged", "preserved-rebound"}
+)
+RETIRED_WRITER_NAMES = frozenset(
+    {
+        "authoring-through-plan-review",
+        "implementation-through-verify",
+        "workflow.autoprogression.review_fix",
+    }
+)
 INVALIDATION_ACTIONS = frozenset({"pause", "invalidate"})
 PARENT_INVALIDATION_TRIGGERS = frozenset(
     {
@@ -113,6 +121,196 @@ CAPABILITY_STATUS_TRANSITIONS = {
     "consumed": frozenset(),
     "invalidated": frozenset(),
 }
+
+
+def validate_cross_spec_disposition_rows(
+    rows: Iterable[Mapping[str, Any]],
+    *,
+    required_selectors: set[tuple[str, str]] | frozenset[tuple[str, str]],
+) -> list[str]:
+    """Validate one exact affected-selector ledger in fail-closed order."""
+
+    normalized: list[tuple[str, str, str, str]] = []
+    vocabulary_errors: list[str] = []
+    for index, row in enumerate(rows):
+        source = row.get("source")
+        selector = row.get("selector")
+        disposition = row.get("disposition")
+        new_subject = row.get("new_subject")
+        if not all(
+            isinstance(value, str) and value.strip()
+            for value in (source, selector, disposition, new_subject)
+        ):
+            vocabulary_errors.append(
+                f"cross-spec disposition row {index}: required string field missing"
+            )
+            continue
+        assert isinstance(source, str)
+        assert isinstance(selector, str)
+        assert isinstance(disposition, str)
+        assert isinstance(new_subject, str)
+        if disposition not in CROSS_SPEC_DISPOSITIONS:
+            vocabulary_errors.append(
+                f"{source}#{selector}: unknown disposition {disposition!r}"
+            )
+        if re.fullmatch(
+            r"(?:(?:[A-Z]+-)*R[0-9]+[a-z]*|AC[0-9]+)-"
+            r"(?:(?:[A-Z]+-)*R?[0-9]+[a-z]*|AC[0-9]+)",
+            selector,
+        ):
+            vocabulary_errors.append(
+                f"{source}#{selector}: open-ended selector ranges are prohibited"
+            )
+        normalized.append((source, selector, disposition, new_subject))
+    if vocabulary_errors:
+        return vocabulary_errors
+
+    counts: dict[tuple[str, str], int] = {}
+    for source, selector, _disposition, _subject in normalized:
+        key = (source, selector)
+        counts[key] = counts.get(key, 0) + 1
+    duplicate_errors = [
+        f"{source}#{selector}: duplicate source selector"
+        for (source, selector), count in sorted(counts.items())
+        if count != 1
+    ]
+    if duplicate_errors:
+        return duplicate_errors
+
+    actual = set(counts)
+    errors = [
+        f"{source}#{selector}: missing disposition"
+        for source, selector in sorted(required_selectors - actual)
+    ]
+    errors.extend(
+        f"{source}#{selector}: selector is not in the closed affected set"
+        for source, selector in sorted(actual - required_selectors)
+    )
+    if errors:
+        return errors
+
+    for source, selector, disposition, subject in normalized:
+        if disposition != "preserved-rebound":
+            continue
+        lowered = subject.lower()
+        retired = [name for name in RETIRED_WRITER_NAMES if name in lowered]
+        unified_subject = any(
+            marker in lowered
+            for marker in (
+                "unified",
+                "bounded-review-fix",
+                "compatibility projection",
+                "legacy projection only",
+                "brf-r",
+            )
+        )
+        if retired and not unified_subject:
+            errors.append(
+                f"{source}#{selector}: preserved rule leaves a retired writer "
+                "as its only live subject"
+            )
+    return errors
+
+
+def parse_cross_spec_disposition_rows(
+    specification_text: str,
+) -> list[dict[str, str]]:
+    """Project the approved Markdown ledger into exact selector rows."""
+
+    marker = "### Cross-spec disposition contract"
+    end_marker = "\nLegacy phase projection is:"
+    if marker not in specification_text or end_marker not in specification_text:
+        return []
+    section = specification_text.split(marker, 1)[1].split(end_marker, 1)[0]
+    source: str | None = None
+    rows: list[dict[str, str]] = []
+    source_re = re.compile(r"^####\s+`(?P<source>specs/[^`]+)`\s*$")
+    for line in section.splitlines():
+        source_match = source_re.fullmatch(line.strip())
+        if source_match is not None:
+            source = source_match.group("source")
+            continue
+        if source is None or not line.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) != 3:
+            continue
+        disposition_codes = re.findall(r"`([^`]+)`", cells[1])
+        if len(disposition_codes) != 1:
+            continue
+        selector_codes = re.findall(r"`([^`]+)`", cells[0])
+        if re.match(r"^\s*`[^`]+`:", cells[0]):
+            selector_codes = selector_codes[:1]
+        for selector in selector_codes:
+            rows.append(
+                {
+                    "source": source,
+                    "selector": selector,
+                    "disposition": disposition_codes[0],
+                    "new_subject": cells[2],
+                }
+            )
+    return rows
+
+
+def validate_repository_cross_spec_dispositions(repository_root: Path) -> list[str]:
+    """Validate the canonical ledger and all four amendment/status surfaces."""
+
+    root = repository_root.resolve()
+    unified_path = root / "specs/single-bounded-review-fix-workflow-automation.md"
+    if not unified_path.is_file():
+        return ["cross-spec disposition owner is missing"]
+    rows = parse_cross_spec_disposition_rows(
+        unified_path.read_text(encoding="utf-8")
+    )
+    if not rows:
+        return ["cross-spec disposition ledger is missing or empty"]
+    required = {
+        (row["source"], row["selector"])
+        for row in rows
+        if isinstance(row.get("source"), str)
+        and isinstance(row.get("selector"), str)
+    }
+    errors = validate_cross_spec_disposition_rows(
+        rows,
+        required_selectors=required,
+    )
+    if errors:
+        return errors
+
+    sources = sorted({row["source"] for row in rows})
+    expected_sources = {
+        "specs/workflow-stage-autoprogression.md",
+        "specs/rigorloop-workflow.md",
+        "specs/review-fix-autoprogression.md",
+        "specs/review-finding-resolution-contract.md",
+    }
+    if set(sources) != expected_sources:
+        return [
+            "cross-spec disposition ledger must name the exact four affected specs"
+        ]
+    for source in sources:
+        path = root / source
+        if not path.is_file():
+            errors.append(f"{source}: affected spec is missing")
+            continue
+        text = path.read_text(encoding="utf-8")
+        if "## Unified automation amendment" not in text:
+            errors.append(f"{source}: unified automation amendment is missing")
+        if "single-bounded-review-fix-workflow-automation.md" not in text:
+            errors.append(f"{source}: unified owner reference is missing")
+        if source == "specs/review-fix-autoprogression.md":
+            if not re.search(r"## Status\s+superseded\s+", text):
+                errors.append(f"{source}: retired spec must be superseded")
+            if (
+                "superseded_by: "
+                "specs/single-bounded-review-fix-workflow-automation.md"
+                not in text
+            ):
+                errors.append(f"{source}: superseded_by target is incorrect")
+        elif not re.search(r"## Status\s+(?:-\s+)?approved\s+", text):
+            errors.append(f"{source}: retained spec must remain approved")
+    return errors
 STATUS_TRANSITION_TABLES = {
     "run": RUN_STATUS_TRANSITIONS,
     "parent-authorization": PARENT_STATUS_TRANSITIONS,
@@ -2326,13 +2524,34 @@ def has_read_only_legacy_migration(automation: Any) -> bool:
     )
 
 
+def main() -> int:
+    """Validate the repository-owned cross-spec automation contract."""
+
+    errors = validate_repository_cross_spec_dispositions(
+        Path(__file__).resolve().parents[1]
+    )
+    if errors:
+        for error in errors:
+            print(f"ERROR {error}", file=sys.stderr)
+        return 1
+    print("workflow automation cross-spec validation passed")
+    return 0
+
+
 __all__ = [
     "CAPABILITY_STATUS_TRANSITIONS",
     "PARENT_STATUS_TRANSITIONS",
     "RUN_STATUS_TRANSITIONS",
     "compute_transition_key",
     "has_read_only_legacy_migration",
+    "parse_cross_spec_disposition_rows",
     "resolve_active_proposal_correction_capability",
+    "validate_cross_spec_disposition_rows",
+    "validate_repository_cross_spec_dispositions",
     "validate_status_transition",
     "validate_workflow_automation",
 ]
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

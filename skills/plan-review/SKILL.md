@@ -106,7 +106,7 @@ must state:
 
 ## Authoring Profile Review Independence
 
-For `authoring-through-plan-review`, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any profile-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
+For automated `bounded-review-fix` authoring, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any automation-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
 
 ## Automated Manifest Pilot
 
@@ -124,7 +124,7 @@ Direct or review-only requests remain isolated by default.
 
 ## Implementation Profile Readiness
 
-When a plan is intended to support `implementation-through-verify`, review that implementation automation has separate authorization from authoring automation, explicit ordered milestones, approved commands, phase-aware boundaries, promotion evidence expectations, and a stop before PR. A clean plan-review does not authorize the implementation profile by itself.
+When a plan is intended to support a final `verify` automation target, review that implementation authority is separate from authoring and verification authority, milestones are explicitly ordered, commands are approved, promotion evidence is defined, and execution stops before PR. A clean plan-review does not authorize implementation by itself.
 
 ## Rules
 
@@ -138,8 +138,8 @@ When a plan is intended to support `implementation-through-verify`, review that 
 ## Workflow handoff behavior
 
 - Direct or review-only `plan-review` requests remain isolated by default.
-- Clean `plan-review` under `authoring-through-plan-review` marks the profile `completed` and reports `test-spec` as next without invoking `test-spec`.
-- A non-clean review, material finding, open `needs-decision`, recording failure, user pause, or cancellation pauses the profile instead of revising the plan or starting downstream work.
+- Clean `plan-review` under an authorized `bounded-review-fix` run satisfies the review gate and reports `test-spec` as next; it reaches the run target only when the structured target is `plan-review`.
+- A non-clean review, material finding, open `needs-decision`, recording failure, user pause, or cancellation pauses the unified run instead of revising the plan or starting downstream work.
 - Outside that explicitly armed workflow-managed profile, `plan-review` reports `Immediate next stage` and stops unless the user or workflow requests the next stage.
 
 ## Evidence collection efficiency

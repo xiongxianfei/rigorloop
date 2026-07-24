@@ -1640,6 +1640,7 @@ def project_automation_status(automation: dict[str, Any]) -> dict[str, Any]:
         "in_flight_transition": (
             prepared[0].get("transition_id") if len(prepared) == 1 else None
         ),
+        "pause_reason": run.get("pause_reason"),
         "stop_reason": run.get("stop_reason"),
         "latest_evidence_identities": copy.deepcopy(state.get("observed_identities", {})),
         "latest_review_result": copy.deepcopy(state.get("latest_review_result")),

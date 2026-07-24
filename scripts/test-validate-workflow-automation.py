@@ -8,12 +8,15 @@ import hashlib
 import json
 import math
 import unittest
+from pathlib import Path
 
 from validate_workflow_automation import validate_workflow_automation
 from validate_workflow_automation import (
     CAPABILITY_STATUS_TRANSITIONS,
     PARENT_STATUS_TRANSITIONS,
     RUN_STATUS_TRANSITIONS,
+    validate_cross_spec_disposition_rows,
+    validate_repository_cross_spec_dispositions,
     validate_status_transition,
 )
 from workflow_automation_policy import (
@@ -23,6 +26,9 @@ from workflow_automation_policy import (
     target_completion_predicate,
 )
 from workflow_automation_state import compute_transition_key
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def valid_automation() -> dict[str, object]:
@@ -420,6 +426,67 @@ def configure_next_milestone_transition(
 
 
 class WorkflowAutomationVocabularyTests(unittest.TestCase):
+    def test_repository_cross_spec_disposition_contract_is_consistent(self) -> None:
+        self.assertEqual(validate_repository_cross_spec_dispositions(ROOT), [])
+
+    def test_cross_spec_disposition_rows_fail_closed_before_consistency(self) -> None:
+        rows = [
+            {
+                "source": "specs/legacy.md",
+                "selector": "R1",
+                "disposition": "preserved-rebound",
+                "new_subject": "unified implementation capability",
+            },
+            {
+                "source": "specs/legacy.md",
+                "selector": "R2",
+                "disposition": "superseded",
+                "new_subject": "BRF-R001",
+            },
+        ]
+        required = {
+            ("specs/legacy.md", "R1"),
+            ("specs/legacy.md", "R2"),
+        }
+        self.assertEqual(
+            validate_cross_spec_disposition_rows(
+                rows,
+                required_selectors=required,
+            ),
+            [],
+        )
+
+        unknown = copy.deepcopy(rows)
+        unknown[0]["disposition"] = "keep"
+        errors = validate_cross_spec_disposition_rows(
+            unknown,
+            required_selectors=required,
+        )
+        self.assertEqual(len(errors), 1)
+        self.assertIn("unknown disposition", errors[0])
+
+        duplicate = rows + [copy.deepcopy(rows[0])]
+        errors = validate_cross_spec_disposition_rows(
+            duplicate,
+            required_selectors=required,
+        )
+        self.assertEqual(len(errors), 1)
+        self.assertIn("duplicate source selector", errors[0])
+
+        missing = validate_cross_spec_disposition_rows(
+            rows[:1],
+            required_selectors=required,
+        )
+        self.assertTrue(any("missing disposition" in error for error in missing))
+
+        retired = copy.deepcopy(rows)
+        retired[0]["new_subject"] = "implementation-through-verify profile"
+        errors = validate_cross_spec_disposition_rows(
+            retired,
+            required_selectors=required,
+        )
+        self.assertTrue(any("retired writer" in error for error in errors))
+
     def test_proposal_correction_unknown_value_classification_fails_closed(
         self,
     ) -> None:

@@ -139,49 +139,44 @@ Individual skills can also be used in isolation when the project does not need t
 Use automatic workflow only after the human-owned decision point is clean.
 RigorLoop treats automation as change-local authorization, not a project-wide default.
 
-### Authoring through plan review
+### Target-driven automation
 
-Use this when the proposal is accepted and you want the workflow to continue through deterministic authoring and review stages:
+Select the exact stage where automation should stop:
+
+```text
+$workflow auto: <target-stage>
+```
+
+Supported targets are:
+
+```text
+proposal-review, spec, spec-review, architecture, architecture-review,
+plan, plan-review, test-spec, test-spec-review, implement, code-review, verify
+```
+
+The mechanism persists one `bounded-review-fix` run under `workflow.automation`.
+The target is a destination, not blanket consent: authoring, implementation, and verification use separate authorization boundaries, and only a current effective capability authorizes one concrete stage operation.
+
+Use `$workflow auto: status` for a read-only status projection and `$workflow auto: off` to durably cancel the run while preserving receipts.
+
+Repeated `implement` and `code-review` targets bind the current plan milestone before persistence and never silently rebind on resume.
+A final `verify` target may be selected early, but verification authority is created only after implementation closeout, final review, promotion, explanation-input, branch-state, and verification-input evidence is concrete.
+
+### Legacy command compatibility
+
+Existing commands remain compatibility adapters during migration:
 
 ```text
 workflow auto-through: plan-review
-```
-
-Recommended sequence:
-
-1. Draft the proposal with `proposal`.
-2. Review the proposal manually for problem fit, scope, tradeoffs, risks, and intended outcome.
-3. Revise the proposal until it is the version you want judged.
-4. Run `proposal-review`.
-5. If proposal review records findings, pause and resolve them manually.
-6. After an accepted proposal and clean recorded proposal review, run `workflow auto-through: plan-review`.
-
-`auto-through: plan-review` maps to the bounded `authoring-through-plan-review` profile.
-In workflow-managed context it may run `spec`, `spec-review`, architecture assessment, conditional `architecture` and `architecture-review`, `plan`, and `plan-review`.
-It then stops and reports `test-spec` as the next stage.
-
-It does not start `test-spec`, implementation, verification, PR, release, deploy, merge, or automatic review-fix loops.
-
-### Implementation through verify
-
-Use this only after clean planning, an approved test-spec path, and explicit implementation authorization:
-
-```text
 workflow auto-through: verify
+workflow auto-through: status
+workflow auto-through: off
 ```
 
-`auto-through: verify` maps to the separately armed `implementation-through-verify` profile.
-It is not authorized by `auto-through: plan-review`.
+These aliases resolve to unified structured targets and write only `workflow.automation`.
+`plan-review` authorizes authoring only. `verify` creates only authority whose concrete basis already exists and never stores future-contingent verification consent.
 
-This profile is phase-gated:
-
-| Phase | What can run automatically | Stop point |
-| --- | --- | --- |
-| A | Audit-only evaluation | before executing stages |
-| B | test-spec settlement, ordered implementation milestones, independent code reviews, bounded reviewer-declared correction loops | after final clean code review |
-| C | `explain-change` and fresh `verify` after Phase B promotion evidence exists | before `pr` |
-
-The implementation profile pauses instead of guessing when reviewer findings need owner judgment, a new finding appears after an auto-fix, correction rounds stop shrinking, validation fails, unrelated dirty state exists, or a requested action would cross the PR boundary.
+Automation always stops before PR creation, push, publication, release, deployment, merge, destructive Git operations, credential access, or other external mutation.
 
 ### Safety rules
 

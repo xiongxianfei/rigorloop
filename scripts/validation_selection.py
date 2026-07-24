@@ -114,6 +114,26 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "change-record-query",
         parallel_safe=True,
     ),
+    "workflow_automation.engine_regression": CheckCatalogEntry(
+        "workflow_automation.engine_regression",
+        "python scripts/test-workflow-automation.py",
+        "workflow-automation",
+    ),
+    "workflow_automation.policy_regression": CheckCatalogEntry(
+        "workflow_automation.policy_regression",
+        "python scripts/test-workflow-automation-policy.py",
+        "workflow-automation",
+    ),
+    "workflow_automation.state_regression": CheckCatalogEntry(
+        "workflow_automation.state_regression",
+        "python scripts/test-workflow-automation-state.py",
+        "workflow-automation",
+    ),
+    "workflow_automation.validator_regression": CheckCatalogEntry(
+        "workflow_automation.validator_regression",
+        "python scripts/test-validate-workflow-automation.py",
+        "workflow-automation",
+    ),
     "release.validate": CheckCatalogEntry(
         "release.validate",
         "python scripts/validate-release-ci.py --version <version>",
@@ -1627,6 +1647,20 @@ def _apply_path_selection(
         )
         return
 
+    if category == "workflow-automation":
+        for check_id in (
+            "workflow_automation.engine_regression",
+            "workflow_automation.policy_regression",
+            "workflow_automation.state_regression",
+            "workflow_automation.validator_regression",
+        ):
+            _add_check(
+                selected,
+                check_id,
+                "Changed workflow automation tooling requires complete engine, policy, state, and validator regression proof.",
+            )
+        return
+
     if category == "validator-artifact-lifecycle":
         _add_check(
             selected,
@@ -2121,6 +2155,17 @@ def _path_category(path: str) -> str | None:
         "scripts/test-query-change-record.py",
     }:
         return "change-record-query"
+    if path in {
+        "scripts/workflow_automation.py",
+        "scripts/test-workflow-automation.py",
+        "scripts/workflow_automation_policy.py",
+        "scripts/test-workflow-automation-policy.py",
+        "scripts/workflow_automation_state.py",
+        "scripts/test-workflow-automation-state.py",
+        "scripts/validate_workflow_automation.py",
+        "scripts/test-validate-workflow-automation.py",
+    }:
+        return "workflow-automation"
     if path in {
         "scripts/build-skills.py",
         "scripts/validate-skills.py",

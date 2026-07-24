@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Non-public target-bound workflow automation coordinator.
+"""Target-bound workflow automation coordinator.
 
-This module contains the M3 executable boundary.  It normalizes commands,
+This module contains the unified executable boundary.  It normalizes commands,
 binds structured targets, resolves canonical workflow position, evaluates
 bounded authority, and coordinates one stage operation through the sole state
-writer.  Public command routing remains disabled until the approved cutover
-milestone.
+writer. Public commands enter through the M6 adapters; direct skill and raw
+context calls remain isolated.
 """
 
 from __future__ import annotations
@@ -85,6 +85,7 @@ CHANGE_ID_RE = re.compile(
 )
 
 LEGACY_TARGETS = frozenset({"plan-review", "verify"})
+PUBLIC_ENGINE_CONTEXT = "bounded-review-fix-engine"
 TERMINAL_MILESTONE_STATES = frozenset({"closed"})
 KNOWN_MILESTONE_STATES = frozenset(
     {"planned", "implementing", "review-requested", "resolution-needed", "closed"}
@@ -1132,7 +1133,7 @@ def evaluate_non_public_implementation_route(
         else review_resolution_closed is True
     )
 
-    if invocation_context != "non-public-test-harness":
+    if invocation_context not in {"non-public-test-harness", PUBLIC_ENGINE_CONTEXT}:
         return pause("non-public-harness-required")
     policy = STAGE_POLICY_BY_STAGE.get(current_stage)
     if policy is None or current_stage not in {
@@ -1813,7 +1814,7 @@ def evaluate_non_public_authoring_route(
 ) -> AuthoringRouteDecision:
     """Evaluate M4 authoring progression without exposing a public route."""
 
-    if invocation_context != "non-public-test-harness":
+    if invocation_context not in {"non-public-test-harness", PUBLIC_ENGINE_CONTEXT}:
         return AuthoringRouteDecision("paused", pause_reason="non-public-harness-required")
     target = _target_stage(target_stage)
     policy = STAGE_POLICY_BY_STAGE.get(current_stage)
@@ -1882,7 +1883,7 @@ def coordinate_non_public_authoring_stage(
 ) -> AuthoringCoordinationResult:
     """Run one M4 authoring stage transaction, then route from verified evidence."""
 
-    if invocation_context != "non-public-test-harness":
+    if invocation_context not in {"non-public-test-harness", PUBLIC_ENGINE_CONTEXT}:
         raise AutomationContractError("non-public authoring harness is required")
     stage_request = coordination.get("stage")
     correction_decision: ProposalCorrectionDecision | None = None
@@ -2135,7 +2136,7 @@ def coordinate_non_public_implementation_stage(
 ) -> ImplementationCoordinationResult:
     """Run one M5 transaction and route only from verifier-derived facts."""
 
-    if invocation_context != "non-public-test-harness":
+    if invocation_context not in {"non-public-test-harness", PUBLIC_ENGINE_CONTEXT}:
         raise AutomationContractError(
             "non-public implementation harness is required"
         )
@@ -2360,7 +2361,7 @@ def coordinate_non_public_implementation_correction(
 ) -> ImplementationCoordinationResult:
     """Execute one closed reviewer-owned correction and require fresh rereview."""
 
-    if invocation_context != "non-public-test-harness":
+    if invocation_context not in {"non-public-test-harness", PUBLIC_ENGINE_CONTEXT}:
         raise AutomationContractError(
             "non-public implementation harness is required"
         )
@@ -2648,6 +2649,63 @@ def coordinate_non_public_implementation_correction(
     )
 
 
+def coordinate_public_authoring_stage(
+    *,
+    command: str,
+    **coordination: Any,
+) -> AuthoringCoordinationResult:
+    """Execute one stage selected by a public authoring target command."""
+
+    normalized = normalize_command(command)
+    if normalized.action != "target" or normalized.target_stage is None:
+        raise AutomationContractError("public authoring execution requires a target")
+    return coordinate_non_public_authoring_stage(
+        invocation_context=PUBLIC_ENGINE_CONTEXT,
+        target_stage=normalized.target_stage,
+        **coordination,
+    )
+
+
+def coordinate_public_implementation_stage(
+    *,
+    command: str,
+    target_milestone_id: str | None,
+    **coordination: Any,
+) -> ImplementationCoordinationResult:
+    """Execute one stage selected by a public implementation target command."""
+
+    normalized = normalize_command(command)
+    if normalized.action != "target" or normalized.target_stage is None:
+        raise AutomationContractError(
+            "public implementation execution requires a target"
+        )
+    return coordinate_non_public_implementation_stage(
+        invocation_context=PUBLIC_ENGINE_CONTEXT,
+        target_stage=normalized.target_stage,
+        target_milestone_id=target_milestone_id,
+        **coordination,
+    )
+
+
+def coordinate_public_implementation_correction(
+    *,
+    command: str,
+    **coordination: Any,
+) -> ImplementationCoordinationResult:
+    """Execute reviewer-owned correction inside a public unified run."""
+
+    normalized = normalize_command(command)
+    if normalized.action != "target" or normalized.target_stage is None:
+        raise AutomationContractError(
+            "public implementation correction requires a target"
+        )
+    return coordinate_non_public_implementation_correction(
+        invocation_context=PUBLIC_ENGINE_CONTEXT,
+        target_stage=normalized.target_stage,
+        **coordination,
+    )
+
+
 def normalize_command(command: str) -> NormalizedCommand:
     """Normalize current and supported legacy forms without persisting state."""
 
@@ -2735,6 +2793,350 @@ def resolve_command_target(
     if normalized.action != "target" or normalized.target_stage is None:
         raise AutomationContractError("workflow command does not select a target")
     return bind_target(normalized.target_stage, bound_at=bound_at, plan=plan)
+
+
+def evaluate_public_authoring_route(
+    *,
+    command: str,
+    current_stage: str,
+    capability_kind: str,
+    capability_status: str,
+    review_outcome: str | None = None,
+    architecture_applicability: str | None = None,
+) -> AuthoringRouteDecision:
+    """Route one public authoring operation through the unified engine."""
+
+    normalized = normalize_command(command)
+    if normalized.action != "target" or normalized.target_stage is None:
+        raise AutomationContractError("public authoring route requires a target command")
+    return evaluate_non_public_authoring_route(
+        current_stage=current_stage,
+        target_stage=normalized.target_stage,
+        capability_kind=capability_kind,
+        capability_status=capability_status,
+        invocation_context=PUBLIC_ENGINE_CONTEXT,
+        review_outcome=review_outcome,
+        architecture_applicability=architecture_applicability,
+    )
+
+
+def evaluate_public_implementation_route(
+    *,
+    command: str,
+    current_stage: str,
+    capability_kind: str,
+    capability_status: str,
+    occurrence_kind: str,
+    active_plan: ActivePlanContext | None,
+    target_milestone_id: str | None = None,
+    milestone_id: str | None = None,
+    milestone_validation_passed: bool | None = None,
+    review_outcome: str | None = None,
+    review_resolution_closed: bool | None = None,
+    review_resolution_status: str | None = None,
+    verification_authorized: bool = False,
+    final_review_clean: bool | None = None,
+    explanation_current: bool | None = None,
+    verification_passed: bool | None = None,
+    ci_maintenance_required: bool = False,
+) -> ImplementationRouteDecision:
+    """Route one public implementation operation through the unified engine."""
+
+    normalized = normalize_command(command)
+    if normalized.action != "target" or normalized.target_stage is None:
+        raise AutomationContractError(
+            "public implementation route requires a target command"
+        )
+    return evaluate_non_public_implementation_route(
+        current_stage=current_stage,
+        target_stage=normalized.target_stage,
+        target_milestone_id=target_milestone_id,
+        capability_kind=capability_kind,
+        capability_status=capability_status,
+        invocation_context=PUBLIC_ENGINE_CONTEXT,
+        occurrence_kind=occurrence_kind,
+        active_plan=active_plan,
+        milestone_id=milestone_id,
+        milestone_validation_passed=milestone_validation_passed,
+        review_outcome=review_outcome,
+        review_resolution_closed=review_resolution_closed,
+        review_resolution_status=review_resolution_status,
+        verification_authorized=verification_authorized,
+        final_review_clean=final_review_clean,
+        explanation_current=explanation_current,
+        verification_passed=verification_passed,
+        ci_maintenance_required=ci_maintenance_required,
+    )
+
+
+def _public_command_result(
+    projection: Mapping[str, Any],
+    *,
+    stage_outcome: str,
+) -> dict[str, Any]:
+    review = projection.get("latest_review_result")
+    review_result = review if isinstance(review, Mapping) else {}
+    run_status = projection.get("run_status")
+    stop_reason = projection.get("stop_reason") or projection.get("pause_reason")
+    next_action = {
+        "cancelled": "explicit-stage-invocation",
+        "completed": "none",
+        "no-active-run": "select-target",
+    }.get(str(run_status), "evaluate-next-stage")
+    return {
+        "mechanism": projection.get("mechanism"),
+        "structured_target": copy.deepcopy(projection.get("target")),
+        "canonical_position_source": projection.get("canonical_position_source"),
+        "active_parent_authorization_class": copy.deepcopy(
+            projection.get("authorization_boundary")
+        ),
+        "effective_capability_kind": copy.deepcopy(
+            projection.get("effective_capability_kind")
+        ),
+        "stage_outcome": stage_outcome,
+        "review_outcome": review_result.get("outcome"),
+        "clean_gate_state": review_result.get("clean_gate"),
+        "transitions_attempted": (
+            [projection["in_flight_transition"]]
+            if projection.get("in_flight_transition")
+            else []
+        ),
+        "fixes_applied": [],
+        "human_decisions_required": (
+            [stop_reason]
+            if run_status == "paused" and isinstance(stop_reason, str)
+            else []
+        ),
+        "artifacts_changed": [],
+        "stop_reason": stop_reason,
+        "next_action": next_action,
+        **copy.deepcopy(dict(projection)),
+    }
+
+
+def execute_public_control_command(
+    store: WorkflowAutomationStateStore,
+    command: str,
+    *,
+    actor: str,
+    occurred_at: str,
+    completion_evidence: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Execute public ``status`` or ``off`` without a legacy write path."""
+
+    normalized = normalize_command(command)
+    if normalized.action not in {"status", "off"}:
+        raise AutomationContractError("public control command must be status or off")
+    if not isinstance(actor, str) or not actor.strip():
+        raise AutomationContractError("public control command actor is required")
+    if not RFC3339_UTC_RE.fullmatch(occurred_at):
+        raise AutomationContractError(
+            "public control command time must be RFC3339 UTC"
+        )
+    if normalized.action == "status":
+        return _public_command_result(store.status(), stage_outcome="status")
+
+    before = store.status()
+    if before.get("source") == "legacy-read-only":
+        legacy = before.get("legacy")
+        if not isinstance(legacy, dict):
+            raise AutomationContractError("legacy status projection is incomplete")
+        try:
+            mechanism, record = store._select_legacy_record(legacy)
+        except StateContractError as error:
+            raise AutomationContractError(str(error)) from error
+        target_stage = {
+            "authoring-through-plan-review": WorkflowStage.PLAN_REVIEW.value,
+            "implementation-through-verify": WorkflowStage.VERIFY.value,
+        }.get(mechanism)
+        if target_stage is None and mechanism == "bounded-review-fix":
+            candidate = record.get("target_stage")
+            if isinstance(candidate, str):
+                target_stage = candidate
+        if target_stage is None:
+            raise AutomationContractError(
+                f"unsupported legacy automation mechanism: {mechanism}"
+            )
+        source_identity = before.get("source_record_identity")
+        if not isinstance(source_identity, str) or ":" not in source_identity:
+            raise AutomationContractError("legacy source identity is missing")
+        start_public_run(
+            store,
+            f"$workflow auto: {target_stage}",
+            run_id=f"run-migrated-{source_identity.split(':', 1)[1][:16]}",
+            actor=actor,
+            occurred_at=occurred_at,
+        )
+
+    mutation = store.cancel(
+        cancelled_by=actor,
+        cancelled_at=occurred_at,
+        completion_evidence=(
+            copy.deepcopy(dict(completion_evidence))
+            if completion_evidence is not None
+            else None
+        ),
+    )
+    projection = store.status()
+    return _public_command_result(projection, stage_outcome=mutation.status)
+
+
+def start_public_run(
+    store: WorkflowAutomationStateStore,
+    command: str,
+    *,
+    run_id: str,
+    actor: str,
+    occurred_at: str,
+    plan: ActivePlanContext | None = None,
+    implementation_basis: Mapping[str, Any] | None = None,
+    implementation_path_roots: Iterable[str] = (),
+    verification_basis: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Persist one new public target and its currently valid consent envelope."""
+
+    normalized = normalize_command(command)
+    if normalized.action != "target" or normalized.target_stage is None:
+        raise AutomationContractError("public run creation requires a target command")
+    if not all(
+        isinstance(value, str) and value.strip()
+        for value in (run_id, actor)
+    ):
+        raise AutomationContractError("public run identity and actor are required")
+    if not RFC3339_UTC_RE.fullmatch(occurred_at):
+        raise AutomationContractError("public run time must be RFC3339 UTC")
+
+    snapshot = store.read(allow_legacy_without_change_id=True)
+    if snapshot.automation is not None:
+        raise AutomationContractError("active writable automation run already exists")
+    change_id = snapshot.document.get("change_id")
+    if not isinstance(change_id, str) or not change_id.strip():
+        raise AutomationContractError("change identity is required before automation")
+
+    target = bind_target(
+        normalized.target_stage,
+        bound_at=occurred_at,
+        plan=plan,
+    )
+    parents: dict[str, Any] = {}
+    target_policy = STAGE_POLICY_BY_STAGE[normalized.target_stage]
+    if target_policy.required_authorization_class == AuthorizationClass.AUTHORING:
+        authorization_id = f"authorization-authoring-{run_id}"
+        parent = create_parent_authorization(
+            authorization_id=authorization_id,
+            authorization_class=AuthorizationClass.AUTHORING.value,
+            change_id=change_id,
+            authorized_by=actor,
+            authorized_at=occurred_at,
+            maximum_target=target,
+            allowed_capability_kinds=(
+                CapabilityKind.PROPOSAL_REVIEW.value,
+                CapabilityKind.POST_PROPOSAL_AUTHORING.value,
+            ),
+            maximum_path_roots=(
+                "docs/proposals/",
+                "specs/",
+                "docs/architecture/",
+                "docs/adr/",
+                "docs/plans/",
+                f"docs/changes/{change_id}/",
+            ),
+            maximum_mutation_categories=(
+                "change-local-review-evidence",
+                "downstream-authoring-artifacts",
+                "change-local-evidence",
+            ),
+        )
+        parents[authorization_id] = parent
+    if normalized.target_stage in {
+        WorkflowStage.IMPLEMENT.value,
+        WorkflowStage.CODE_REVIEW.value,
+        WorkflowStage.VERIFY.value,
+    } and implementation_basis is not None:
+        if not _basis_complete(
+            CapabilityKind.IMPLEMENTATION.value,
+            implementation_basis,
+        ):
+            raise AutomationContractError(
+                "implementation authorization basis is incomplete"
+            )
+        implementation_roots = _require_nonempty_strings(
+            implementation_path_roots,
+            "implementation authorization path roots",
+        )
+        authorization_id = f"authorization-implementation-{run_id}"
+        parents[authorization_id] = create_parent_authorization(
+            authorization_id=authorization_id,
+            authorization_class=AuthorizationClass.IMPLEMENTATION.value,
+            change_id=change_id,
+            authorized_by=actor,
+            authorized_at=occurred_at,
+            maximum_target=target,
+            allowed_capability_kinds=(CapabilityKind.IMPLEMENTATION.value,),
+            maximum_path_roots=implementation_roots,
+            maximum_mutation_categories=(
+                "tests",
+                "production-code",
+                "change-local-review-evidence",
+            ),
+        )
+    if (
+        normalized.target_stage == WorkflowStage.VERIFY.value
+        and verification_basis is not None
+    ):
+        if not _basis_complete(
+            CapabilityKind.VERIFICATION.value,
+            verification_basis,
+        ):
+            raise AutomationContractError(
+                "verification authorization basis is incomplete"
+            )
+        authorization_id = f"authorization-verification-{run_id}"
+        parents[authorization_id] = create_parent_authorization(
+            authorization_id=authorization_id,
+            authorization_class=AuthorizationClass.VERIFICATION.value,
+            change_id=change_id,
+            authorized_by=actor,
+            authorized_at=occurred_at,
+            maximum_target=target,
+            allowed_capability_kinds=(CapabilityKind.VERIFICATION.value,),
+            maximum_path_roots=(f"docs/changes/{change_id}/",),
+            maximum_mutation_categories=("verification-evidence",),
+            verification_basis=verification_basis,
+        )
+
+    automation = {
+        "mechanism": "bounded-review-fix",
+        "schema_version": 1,
+        "run": {
+            "run_id": run_id,
+            "change_id": change_id,
+            "status": "active",
+            "policy_version": 1,
+            "target": target,
+        },
+        "parent_authorizations": parents,
+        "effective_capabilities": {},
+        "transition_receipts": {},
+        "external_actions": "prohibited",
+    }
+    workflow = snapshot.document.get("workflow")
+    legacy = workflow.get("autoprogression") if isinstance(workflow, Mapping) else None
+    try:
+        if isinstance(legacy, Mapping):
+            store.migrate_legacy(
+                automation,
+                migrated_at=occurred_at,
+                expected_document_identity=snapshot.document_identity,
+            )
+        else:
+            store.replace_automation(
+                automation,
+                expected_document_identity=snapshot.document_identity,
+            )
+    except StateContractError as error:
+        raise AutomationContractError(str(error)) from error
+    return _public_command_result(store.status(), stage_outcome="target-selected")
 
 
 def resume_target(
@@ -3735,10 +4137,16 @@ __all__ = [
     "coordinate_non_public_authoring_stage",
     "coordinate_non_public_implementation_correction",
     "coordinate_non_public_implementation_stage",
+    "coordinate_public_authoring_stage",
+    "coordinate_public_implementation_correction",
+    "coordinate_public_implementation_stage",
     "create_parent_authorization",
     "derive_effective_capability",
     "evaluate_implementation_correction",
     "evaluate_non_public_implementation_route",
+    "evaluate_public_authoring_route",
+    "evaluate_public_implementation_route",
+    "execute_public_control_command",
     "invalidate_effective_capabilities",
     "normalize_command",
     "persist_target",
@@ -3753,4 +4161,5 @@ __all__ = [
     "resolve_verification_readiness",
     "resolve_command_target",
     "resume_target",
+    "start_public_run",
 ]

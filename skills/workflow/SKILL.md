@@ -291,29 +291,25 @@ Classify the request into one of these contexts before deciding whether to conti
 
 Rules:
 
-- Workflow-managed autoprogression applies only where the workflow contract allows it, especially the bounded `authoring-through-plan-review` profile and the standard execution chain from `implement` through `pr`.
-- The `authoring-through-plan-review` profile is off by default. Treat profile states as `off`, `armed`, `active`, `paused`, or `completed`; unknown profile values fail closed.
-- Do not activate `authoring-through-plan-review` unless the invocation is workflow-managed, durable change-local authorization is persisted, the profile is armed, and the proposal gate is ready from tracked artifacts.
-- Proposal gate readiness is separate from user authorization. A proposal can be gate-ready while the profile remains `off`.
-- When active, route only through `spec -> spec-review -> recorded architecture assessment -> architecture/architecture-review when required -> plan -> plan-review -> stop`.
-- Architecture assessment records exactly one of `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; ambiguity pauses the profile.
-- Stop `authoring-through-plan-review` on non-clean review status, material finding, open `needs-decision`, user pause or cancellation, missing or malformed authorization persistence, contradictory workflow state, unreliable partial completion, exhausted transition budget, or any out-of-scope stage request.
+- Workflow-managed automation uses one target-driven `bounded-review-fix` mechanism under `workflow.automation`; legacy profile records are read-only compatibility inputs.
+- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
+- `$workflow auto: status` is read-only. `$workflow auto: off` durably cancels the unified run, revokes active parent authorizations, invalidates active capabilities, and preserves transition evidence.
+- The requested target is a destination, not blanket consent. Parent authorizations remain separate for authoring, implementation, and verification; only a current, basis-complete effective capability authorizes one stage operation.
+- The legacy commands `workflow auto-through: plan-review`, `workflow auto-through: verify`, `workflow auto-through: status`, and `workflow auto-through: off` remain adapters during migration and write only `workflow.automation`.
+- `auto-through: plan-review` maps to the singleton `plan-review` target and authoring authority only. `auto-through: verify` maps to the final `verify` target and creates only authority whose concrete basis already exists; it never stores future-contingent verification consent.
+- Proposal gate readiness remains separate from user authorization.
+- Authoring routes through `proposal-review -> spec -> spec-review -> recorded architecture assessment -> architecture/architecture-review when required -> plan -> plan-review -> test-spec -> test-spec-review`.
+- Architecture assessment records exactly one of `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; ambiguity pauses the unified run.
+- Stop the unified run on non-clean review status that cannot enter an authorized bounded correction, material finding requiring a decision, open `needs-decision`, user pause or cancellation, missing or stale authority, contradictory workflow state, unreliable partial completion, exhausted transition budget, or an out-of-scope stage request.
 - Resume uses tracked artifact and review evidence. Do not rerun completed artifacts or clean reviews, do not infer completion from file existence alone, and pause when completion evidence is ambiguous.
-- A clean `plan-review` completes the profile, reports `test-spec` as next, and does not invoke `test-spec`, implementation, review-fix loops, verification, or PR.
-- The review-fix profile uses `$workflow auto: <target-stage>` and canonical profile `bounded-review-fix` under `workflow.autoprogression.review_fix`.
-- `$workflow auto: status` reports current review-fix state without mutating artifacts.
-- `$workflow auto: off` clears or terminally cancels review-fix authorization.
-- Valid review-fix targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, and `test-spec-review`; unknown targets fail closed.
-- Activate review-fix only in workflow-managed context with durable user authorization, accepted proposal, approved recorded `proposal-review`, no open findings, closed resolution, clean current gate evidence, fresh artifact state, and unambiguous artifact placement.
-- Direct review invocations do not activate, resume, or advance review-fix, even when persisted state exists.
+- Reaching a target stops the run at that exact stage occurrence. Repeated `implement` and `code-review` targets bind the unique current plan milestone before persistence and never silently rebind on resume.
+- Direct review invocations do not activate, resume, or advance automation, even when persisted unified state exists.
 - After approved recorded `spec-review`, record exactly one architecture assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`. Required routes through architecture stages; not-required skips them; ambiguous pauses for owner decision.
 - If the user requested a skipped conditional target, stop with `target-not-applicable` rather than claiming the target was reached.
-- Review-fix never continues past the requested target and never invokes implementation, code-review, verify, PR, release, publication, network, destructive, or external-state operations.
-- Review-fix chat results report mode, target stage, current stage, review status, auto-applied fixes, human decisions required, artifacts changed, review rerun status, next stage run, and stop reason.
-- Existing `authoring-through-plan-review` and `implementation-through-verify` behavior remains unchanged unless a later approved spec explicitly changes those profiles.
-- The implementation profile is verify-bounded implementation autoprogression. User-facing `auto-through: verify` maps to canonical `implementation-through-verify` and requires separate change-local authorization from authoring autoprogression.
-- `implementation-through-verify` uses persisted phases. Phase `A` is audit-only. Phase `B` may run test-spec settlement, required test-spec-review, implementation milestones, independent code-review rounds, reviewer-declared correction loops, and final clean code-review; it must stop before `explain-change` or `verify`. Phase `C` may run `explain-change` and fresh `verify` only when promotion evidence is recorded, then stops before invoking `pr`.
-- Missing promotion evidence, unsupported phase values, unpersisted authorization, unrelated dirty state, owner decisions, new findings, non-shrinking correction loops, verify failure, or any attempt to cross the PR boundary pauses `implementation-through-verify`.
+- Implementation authority may run ordered milestone implementation, independent milestone review, reviewer-declared correction loops, triggered CI maintenance, and final holistic review. Verification authority is separate and may exist only when implementation closeout, final review, promotion, explanation-input, branch-state, and verification-input identities are concrete.
+- Missing promotion evidence, absent or stale capability basis, unrelated dirty state, owner decisions, new findings, non-shrinking correction loops, verify failure, or any attempt to cross the PR boundary pauses the unified run.
+- Every result reports mechanism, structured target, canonical position source, active authorization boundary, effective capability kind, stage outcome, review and clean-gate state when applicable, transitions, fixes, decisions, artifacts, stop reason, and next action.
+- The mechanism never opens a PR, pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
 - Autoprogressed `code-review` emits a first-pass review before any review-driven fix begins.
 - First-pass `blocked` and `inconclusive` stop instead of entering review-resolution.
 - A clean non-final milestone review continues to the next in-scope implementation milestone.

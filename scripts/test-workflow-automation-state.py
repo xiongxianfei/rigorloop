@@ -2104,6 +2104,7 @@ Open findings: BRF-EXAMPLE
         state = valid_automation()
         state["transition_receipts"] = {"transition-001": valid_receipt(state)}
         state["run"]["stop_reason"] = "authorization-required"
+        state["run"]["pause_reason"] = "authorization-required"
         state["canonical_position_source"] = "artifact-review-evidence"
         state["observed_identities"] = {"proposal": "sha256:proposal"}
         state["latest_review_result"] = {
@@ -2118,6 +2119,7 @@ Open findings: BRF-EXAMPLE
         self.assertEqual(projection["canonical_position_source"], "artifact-review-evidence")
         self.assertEqual(projection["latest_evidence_identities"], {"proposal": "sha256:proposal"})
         self.assertEqual(projection["in_flight_transition"], "transition-001")
+        self.assertEqual(projection["pause_reason"], "authorization-required")
         self.assertEqual(projection["latest_review_result"]["clean_gate"], "not-satisfied")
         self.assertEqual(state, before)
 
