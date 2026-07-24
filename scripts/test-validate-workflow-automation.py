@@ -1435,9 +1435,13 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     "mutation_categories": [category],
                 }
                 if kind in {"proposal-correction", "implementation-correction"}:
-                    budget_identity = basis.get(
-                        "correction_budget_identity", "sha256:budget"
-                    )
+                    budget_identity = "sha256:" + hashlib.sha256(
+                        json.dumps(
+                            {"max_cycles": 1},
+                            sort_keys=True,
+                            separators=(",", ":"),
+                        ).encode()
+                    ).hexdigest()
                     capability["basis"]["correction_budget_identity"] = budget_identity  # type: ignore[index]
                     capability["scope"].update(  # type: ignore[index]
                         {
@@ -1494,6 +1498,51 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                             },
                         }
                     )
+                if kind == "implementation-correction":
+                    accepted = ["BRF-M5-CR1"]
+                    recipes = {
+                        "BRF-M5-CR1": {
+                            "auto_fix_class": "mechanical",
+                            "auto_fix_kind": "exact-approved-rename",
+                            "affected_paths": ["scripts/example.py"],
+                            "deterministic_authority": {
+                                "operation": "exact-text-replace",
+                                "path": "scripts/example.py",
+                                "old": "old_name",
+                                "new": "new_name",
+                                "expected_replacements": 1,
+                            },
+                            "required_validation": {
+                                "operation": "sha256",
+                                "path": "scripts/example.py",
+                                "identity": "sha256:corrected",
+                            },
+                        }
+                    }
+                    structured = lambda value: "sha256:" + hashlib.sha256(
+                        json.dumps(
+                            value, sort_keys=True, separators=(",", ":")
+                        ).encode()
+                    ).hexdigest()
+                    capability["basis"].update(  # type: ignore[index]
+                        {
+                            "accepted_finding_set_identity": structured(accepted),
+                            "reviewer_classification_identity": structured(recipes),
+                            "affected_paths_identity": structured(
+                                ["scripts/example.py"]
+                            ),
+                        }
+                    )
+                    capability["scope"].update(  # type: ignore[index]
+                        {
+                            "review_record_path": "docs/changes/2026-07-20-example/reviews/code-review-m2-r1.md",
+                            "review_resolution_path": "docs/changes/2026-07-20-example/review-resolution.md",
+                            "review_log_path": "docs/changes/2026-07-20-example/review-log.md",
+                            "accepted_finding_ids": accepted,
+                            "reviewer_recipes": recipes,
+                            "reviewed_milestone_id": "M2",
+                        }
+                    )
                 self.assertEqual(validate_workflow_automation(state), [])
                 if kind == "implementation-correction":
                     capability["basis"].pop("correction_budget_identity")  # type: ignore[index]
@@ -1507,6 +1556,28 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                     self.assertTrue(
                         any("must match capability basis" in error for error in mismatch_errors),
                         mismatch_errors,
+                    )
+                    capability["basis"]["correction_budget_identity"] = capability[  # type: ignore[index]
+                        "scope"
+                    ]["correction_budget_identity"]
+                    recipes = capability["scope"]["reviewer_recipes"]  # type: ignore[index]
+                    recipes["BRF-M5-CR1"]["deterministic_authority"][
+                        "operation"
+                    ] = "future-operation"
+                    capability["basis"][
+                        "reviewer_classification_identity"
+                    ] = "sha256:" + hashlib.sha256(
+                        json.dumps(
+                            recipes, sort_keys=True, separators=(",", ":")
+                        ).encode()
+                    ).hexdigest()
+                    unknown_value_errors = validate_workflow_automation(state)
+                    self.assertTrue(
+                        any(
+                            "expected closed reviewer recipes" in error
+                            for error in unknown_value_errors
+                        ),
+                        unknown_value_errors,
                     )
 
     def test_parent_cannot_allow_cross_risk_capability_kind(self) -> None:

@@ -24,9 +24,11 @@ from workflow_automation import (
     PrePlanEvidence,
     ProposalCorrectionAuthority,
     StageExecutionResult,
+    VerificationReadiness,
     bind_target,
     coordinate_one_stage,
     coordinate_non_public_authoring_stage,
+    coordinate_non_public_implementation_correction,
     coordinate_non_public_implementation_stage,
     create_parent_authorization,
     derive_effective_capability,
@@ -42,6 +44,7 @@ from workflow_automation import (
     record_plan_ownership_handoff,
     resolve_canonical_position,
     resolve_command_target,
+    resolve_verification_readiness,
     resolve_proposal_correction_authority,
     resume_target,
 )
@@ -468,7 +471,9 @@ Planned validation rule: proposal-exact-append
             with self.subTest(plan=plan), self.assertRaisesRegex(AutomationContractError, diagnostic):
                 bind_target("implement", bound_at="2026-07-22T00:00:00Z", plan=plan)
 
-        with self.assertRaisesRegex(AutomationContractError, diagnostic):
+        with self.assertRaisesRegex(
+            AutomationContractError, "duplicate active plan milestone identity"
+        ):
             ambiguous = ActivePlanContext.from_text(
                 plan_text(duplicate_m2=True), plan_identity="sha256:plan"
             )
@@ -888,6 +893,32 @@ Planned validation rule: proposal-exact-append
             "correction_budget_identity": "sha256:implementation-budget",
             "affected_paths_identity": "sha256:paths",
         }
+        implementation_scope = {
+            "review_record_path": "docs/changes/2026-07-20-example/reviews/code-review-m2-r1.md",
+            "review_resolution_path": "docs/changes/2026-07-20-example/review-resolution.md",
+            "review_log_path": "docs/changes/2026-07-20-example/review-log.md",
+            "accepted_finding_ids": ["BRF-M5-CR1"],
+            "reviewer_recipes": {
+                "BRF-M5-CR1": {
+                    "auto_fix_class": "mechanical",
+                    "auto_fix_kind": "exact-approved-rename",
+                    "affected_paths": ["docs/changes/2026-07-20-example/example.py"],
+                    "deterministic_authority": {
+                        "operation": "exact-text-replace",
+                        "path": "docs/changes/2026-07-20-example/example.py",
+                        "old": "old_name",
+                        "new": "new_name",
+                        "expected_replacements": 1,
+                    },
+                    "required_validation": {
+                        "operation": "sha256",
+                        "path": "docs/changes/2026-07-20-example/example.py",
+                        "identity": "sha256:corrected",
+                    },
+                }
+            },
+            "reviewed_milestone_id": "M2",
+        }
         implementation_capability = derive_effective_capability(
             capability_id="cap-implementation-correction",
             parent=implementation_parent,
@@ -898,6 +929,7 @@ Planned validation rule: proposal-exact-append
             mutation_categories=("change-local-evidence",),
             correction_budget={"cycles": 1},
             correction_budget_identity="sha256:implementation-budget",
+            implementation_correction_scope=implementation_scope,
             derived_at="2026-07-22T00:01:00Z",
         )
         self.assertEqual(
@@ -2911,6 +2943,408 @@ Planned validation rule: proposal-exact-append
         )
         self.assertEqual(changed_class.pause_reason, "new-finding-or-class")
 
+    def test_implementation_correction_uses_review_recipe_and_prepared_receipt(
+        self,
+    ) -> None:
+        automation = copy.deepcopy(FIXTURES.valid_automation())
+        plan = ActivePlanContext.from_text(
+            plan_text(
+                current_state="resolution-needed",
+                next_stage="review-resolution M2",
+            ),
+            plan_identity="sha256:plan-m2-resolution",
+        )
+        target = bind_target(
+            "code-review",
+            bound_at="2026-07-24T00:00:00Z",
+            plan=plan,
+        )
+        budget = {"cycles": 1}
+        budget_identity = "sha256:" + hashlib.sha256(
+            json.dumps(
+                budget, sort_keys=True, separators=(",", ":")
+            ).encode("utf-8")
+        ).hexdigest()
+        parent = create_parent_authorization(
+            authorization_id="auth-implementation-correction",
+            authorization_class="implementation",
+            change_id="2026-07-20-example",
+            authorized_by="user",
+            authorized_at="2026-07-24T00:00:00Z",
+            maximum_target=target,
+            allowed_capability_kinds=("implementation-correction",),
+            maximum_path_roots=(
+                "scripts/",
+                "docs/changes/2026-07-20-example/",
+            ),
+            maximum_mutation_categories=(
+                "production-code",
+                "change-local-review-evidence",
+            ),
+            correction_budget=budget,
+        )
+        automation["run"]["target"] = target
+        automation["parent_authorizations"] = {
+            parent["authorization_id"]: parent
+        }
+        automation["effective_capabilities"] = {}
+        automation["transition_receipts"] = {}
+        store = self.make_store(automation)
+        source = store.repository_root / "scripts/example.py"
+        source.parent.mkdir(parents=True, exist_ok=True)
+        source.write_text("old_name = 1\n", encoding="utf-8")
+        corrected = b"new_name = 1\n"
+        corrected_identity = (
+            "sha256:" + hashlib.sha256(corrected).hexdigest()
+        )
+        change_root = (
+            store.repository_root / "docs/changes/2026-07-20-example"
+        )
+        review = change_root / "reviews/code-review-m2-r1.md"
+        review.parent.mkdir(parents=True, exist_ok=True)
+        authority = json.dumps(
+            {
+                "operation": "exact-text-replace",
+                "path": "scripts/example.py",
+                "old": "old_name",
+                "new": "new_name",
+                "expected_replacements": 1,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        validation = json.dumps(
+            {
+                "operation": "sha256",
+                "path": "scripts/example.py",
+                "identity": corrected_identity,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        review.write_text(
+            f"""# Code review M2 R1
+
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Reviewer: fixture reviewer
+Target: M2 implementation
+Reviewed milestone: M2. Implementation
+Status: changes-requested
+Material findings: CR-M2-1
+
+## Material Findings
+
+### CR-M2-1 - Exact rename
+
+Finding ID: CR-M2-1
+Severity: major
+Evidence: old_name remains in the implementation
+Required outcome: apply the exact reviewed rename
+Safe resolution path: execute the closed reviewer recipe
+auto_fix_class: mechanical
+auto_fix_kind: exact-approved-rename
+affected_paths: scripts/example.py
+deterministic_authority: {authority}
+required_validation: {validation}
+""",
+            encoding="utf-8",
+        )
+        review_log = change_root / "review-log.md"
+        review_log.write_text(
+            """# Review Log
+
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: CR-M2-1
+Open findings: CR-M2-1
+""",
+            encoding="utf-8",
+        )
+        resolution = change_root / "review-resolution.md"
+        resolution.write_text(
+            """# Review Resolution
+
+Closeout status: open
+Review closeout: code-review-m2-r1
+
+### code-review-m2-r1
+
+Finding ID: CR-M2-1
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: the reviewer supplied a bounded deterministic rename
+Chosen action: execute the exact reviewer recipe
+Validation target: SHA-256 identity and independent rereview
+Validation evidence: pending
+""",
+            encoding="utf-8",
+        )
+
+        result = coordinate_non_public_implementation_correction(
+            invocation_context="non-public-test-harness",
+            target_stage="code-review",
+            target_milestone_id="M2",
+            store=store,
+            repository_root=store.repository_root,
+            parent_authorization_id=parent["authorization_id"],
+            capability_id="cap-implementation-correction-m2-r1",
+            review_record_path=review.relative_to(
+                store.repository_root
+            ).as_posix(),
+            review_resolution_path=resolution.relative_to(
+                store.repository_root
+            ).as_posix(),
+            review_log_path=review_log.relative_to(
+                store.repository_root
+            ).as_posix(),
+            affected_path_roots=(
+                "scripts/",
+                "docs/changes/2026-07-20-example/",
+            ),
+            mutation_categories=(
+                "production-code",
+                "change-local-review-evidence",
+            ),
+            correction_budget=budget,
+            correction_budget_identity=budget_identity,
+            derived_at="2026-07-24T00:01:00Z",
+            transition_id="transition-implementation-correction-m2-r1",
+            active_plan=plan,
+        )
+
+        self.assertEqual(source.read_bytes(), corrected)
+        self.assertIn("Closeout status: closed", resolution.read_text())
+        self.assertIn("Open findings: None", review_log.read_text())
+        self.assertEqual(
+            (
+                result.coordination.status,
+                result.route.status,
+                result.route.next_stage,
+                result.route.next_milestone_id,
+            ),
+            ("completed", "continue", "code-review", "M2"),
+        )
+        persisted = store.read().automation
+        assert persisted is not None
+        receipt = persisted["transition_receipts"][
+            "transition-implementation-correction-m2-r1"
+        ]
+        self.assertEqual(receipt["status"], "completed")
+        self.assertEqual(
+            receipt["effective_capability_id"],
+            "cap-implementation-correction-m2-r1",
+        )
+        self.assertEqual(
+            persisted["effective_capabilities"][
+                "cap-implementation-correction-m2-r1"
+            ]["status"],
+            "consumed",
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError, "finding set is not current"
+        ):
+            coordinate_non_public_implementation_correction(
+                invocation_context="non-public-test-harness",
+                target_stage="code-review",
+                target_milestone_id="M2",
+                store=store,
+                repository_root=store.repository_root,
+                parent_authorization_id=parent["authorization_id"],
+                capability_id="cap-implementation-correction-m2-stale",
+                review_record_path=review.relative_to(
+                    store.repository_root
+                ).as_posix(),
+                review_resolution_path=resolution.relative_to(
+                    store.repository_root
+                ).as_posix(),
+                review_log_path=review_log.relative_to(
+                    store.repository_root
+                ).as_posix(),
+                affected_path_roots=(
+                    "scripts/",
+                    "docs/changes/2026-07-20-example/",
+                ),
+                mutation_categories=(
+                    "production-code",
+                    "change-local-review-evidence",
+                ),
+                correction_budget=budget,
+                correction_budget_identity=budget_identity,
+                derived_at="2026-07-24T00:02:00Z",
+                transition_id="transition-implementation-correction-m2-stale",
+                active_plan=plan,
+            )
+        paused = store.read().automation
+        assert paused is not None
+        self.assertEqual(
+            (paused["run"]["status"], paused["run"]["pause_reason"]),
+            ("paused", "implementation-correction-paused"),
+        )
+
+    def test_active_plan_rejects_duplicate_milestone_identity(self) -> None:
+        with self.assertRaisesRegex(
+            AutomationContractError, "duplicate active plan milestone"
+        ):
+            ActivePlanContext.from_text(
+                plan_text(duplicate_m2=True),
+                plan_identity="sha256:duplicate-plan",
+            )
+
+    def test_verification_readiness_is_repository_backed(self) -> None:
+        store = self.make_store(copy.deepcopy(FIXTURES.valid_automation()))
+        root = store.repository_root
+
+        def artifact(relative: str, content: str) -> tuple[str, str]:
+            path = root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+            return relative, "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+
+        plan_path, plan_identity = artifact(
+            "docs/plans/closed.md",
+            plan_text(
+                current="M3. Later Slice",
+                current_state="closed",
+                remaining="M3",
+                next_stage="verify",
+                milestone_two_state="closed",
+                milestone_three_state="closed",
+            ),
+        )
+        review_path, review_identity = artifact(
+            "docs/changes/2026-07-20-example/reviews/code-review-final-r1.md",
+            """# Final code review
+
+Review ID: code-review-final-r1
+Stage: code-review
+Round: final R1
+Reviewer: fixture reviewer
+Target: final implementation
+Status: approved
+Material findings: None
+Review scope: final-holistic
+complete_final_diff: reviewed
+cross_milestone_interactions: reviewed
+governing_artifacts: reviewed
+review_resolutions: closed
+final_validation_selection: reviewed
+generated_and_derived_artifacts: current
+cross_milestone_scope: reviewed
+""",
+        )
+        artifact(
+            "docs/changes/2026-07-20-example/review-log.md",
+            """# Review Log
+
+### Review entry
+Review ID: code-review-final-r1
+Stage: code-review
+Round: final R1
+Status: approved
+Detailed record: reviews/code-review-final-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+        )
+        explanation_path, explanation_identity = artifact(
+            "docs/changes/2026-07-20-example/explain-change.md",
+            "Stage: explain-change\nStatus: current\n"
+            f"Final diff identity: {plan_identity}\n"
+            f"Final review identity: {review_identity}\n",
+        )
+        promotion_path, promotion_identity = artifact(
+            "docs/changes/2026-07-20-example/promotion-evidence.md",
+            "Stage: promotion\nStatus: valid\n",
+        )
+        branch_path, branch_identity = artifact(
+            "docs/changes/2026-07-20-example/branch-state.md",
+            "Stage: branch-state\nStatus: current\n",
+        )
+        commands_path, commands_identity = artifact(
+            "docs/changes/2026-07-20-example/verification-commands.md",
+            "Stage: verification-commands\nStatus: current\n",
+        )
+        basis = {
+            "closed_milestones_identity": plan_identity,
+            "final_code_review_identity": review_identity,
+            "promotion_evidence_identity": promotion_identity,
+            "explanation_inputs_identity": explanation_identity,
+            "branch_state_identity": branch_identity,
+            "verification_commands_identity": commands_identity,
+        }
+        paths = {
+            "closed_milestones_identity": plan_path,
+            "final_code_review_identity": review_path,
+            "promotion_evidence_identity": promotion_path,
+            "explanation_inputs_identity": explanation_path,
+            "branch_state_identity": branch_path,
+            "verification_commands_identity": commands_path,
+        }
+        readiness = resolve_verification_readiness(
+            repository_root=root,
+            basis=basis,
+            basis_paths=paths,
+        )
+        self.assertTrue(readiness.final_review_clean)
+        self.assertTrue(readiness.explanation_current)
+
+        review_file = root / review_path
+        original_review = review_file.read_text(encoding="utf-8")
+        review_file.write_text(
+            original_review.replace(
+                "complete_final_diff: reviewed",
+                "complete_final_diff: future-value",
+            ),
+            encoding="utf-8",
+        )
+        semantic_basis = dict(basis)
+        semantic_review_identity = (
+            "sha256:" + hashlib.sha256(review_file.read_bytes()).hexdigest()
+        )
+        semantic_basis["final_code_review_identity"] = semantic_review_identity
+        explanation_file = root / explanation_path
+        explanation_file.write_text(
+            "Stage: explain-change\nStatus: current\n"
+            f"Final diff identity: {plan_identity}\n"
+            f"Final review identity: {semantic_review_identity}\n",
+            encoding="utf-8",
+        )
+        semantic_basis["explanation_inputs_identity"] = (
+            "sha256:" + hashlib.sha256(explanation_file.read_bytes()).hexdigest()
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError, "final review is not clean"
+        ):
+            resolve_verification_readiness(
+                repository_root=root,
+                basis=semantic_basis,
+                basis_paths=paths,
+            )
+
+        review_file.write_text(original_review, encoding="utf-8")
+        (root / explanation_path).write_text(
+            "Stage: explain-change\nStatus: current\n",
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError, "verification basis identity"
+        ):
+            resolve_verification_readiness(
+                repository_root=root,
+                basis=basis,
+                basis_paths=paths,
+            )
+
     def test_implementation_milestones_and_reviews_remain_ordered_and_distinct(self) -> None:
         implementing = ActivePlanContext.from_text(
             plan_text(
@@ -3400,6 +3834,79 @@ Open findings: None
                 "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest(),
             )
 
+        final_review = write_evidence(
+            "docs/changes/2026-07-20-example/reviews/code-review-final-r1.md",
+            """# Final code review
+
+Review ID: code-review-final-r1
+Stage: code-review
+Round: final R1
+Reviewer: fixture reviewer
+Target: final implementation
+Status: approved
+Material findings: None
+Review scope: final-holistic
+complete_final_diff: reviewed
+cross_milestone_interactions: reviewed
+governing_artifacts: reviewed
+review_resolutions: closed
+final_validation_selection: reviewed
+generated_and_derived_artifacts: current
+cross_milestone_scope: reviewed
+""",
+        )
+        write_evidence(
+            "docs/changes/2026-07-20-example/review-log.md",
+            """# Review Log
+
+### Review entry
+Review ID: code-review-final-r1
+Stage: code-review
+Round: final R1
+Status: approved
+Detailed record: reviews/code-review-final-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+        )
+        explanation = write_evidence(
+            "docs/changes/2026-07-20-example/explain-change.md",
+            "Stage: explain-change\nStatus: current\n"
+            f"Final diff identity: {plan_identity}\n"
+            f"Final review identity: {final_review.identity}\n",
+        )
+        promotion = write_evidence(
+            "docs/changes/2026-07-20-example/promotion.md",
+            "Stage: promotion\nStatus: valid\n",
+        )
+        branch = write_evidence(
+            "docs/changes/2026-07-20-example/branch-state.md",
+            "Stage: branch-state\nStatus: current\n",
+        )
+        commands = write_evidence(
+            "docs/changes/2026-07-20-example/verification-commands.md",
+            "Stage: verification-commands\nStatus: current\n",
+        )
+        verification_basis = {
+            "closed_milestones_identity": plan_identity,
+            "final_code_review_identity": final_review.identity,
+            "promotion_evidence_identity": promotion.identity,
+            "explanation_inputs_identity": explanation.identity,
+            "branch_state_identity": branch.identity,
+            "verification_commands_identity": commands.identity,
+        }
+        verification_basis_paths = {
+            "closed_milestones_identity": plan_path.relative_to(
+                store.repository_root
+            ).as_posix(),
+            "final_code_review_identity": final_review.path,
+            "promotion_evidence_identity": promotion.path,
+            "explanation_inputs_identity": explanation.path,
+            "branch_state_identity": branch.path,
+            "verification_commands_identity": commands.path,
+        }
+
         def invoke() -> StageExecutionResult:
             report = write_evidence(
                 "docs/changes/2026-07-20-example/verify-report.md",
@@ -3421,9 +3928,7 @@ Open findings: None
             target_milestone_id=None,
             store=store,
             repository_root=store.repository_root,
-            verification_authorized=True,
-            final_review_clean=True,
-            explanation_current=True,
+            verification_basis_paths=verification_basis_paths,
             parent_authorization_id="authorization-verification-001",
             capability_id="capability-verification-001",
             stage="verify",
@@ -3453,6 +3958,9 @@ Open findings: None
     def test_verify_failure_pauses_durably_without_automatic_repair(self) -> None:
         store = self.make_store(copy.deepcopy(FIXTURES.valid_automation()))
         with patch(
+            "workflow_automation.resolve_verification_readiness",
+            return_value=VerificationReadiness({}, True, True),
+        ), patch(
             "workflow_automation.coordinate_one_stage",
             side_effect=AutomationContractError(
                 "stage-native completion verification failed: "
@@ -3468,6 +3976,8 @@ Open findings: None
                 store=store,
                 repository_root=store.repository_root,
                 stage="verify",
+                basis={},
+                verification_basis_paths={},
             )
         automation = store.read().automation
         assert automation is not None

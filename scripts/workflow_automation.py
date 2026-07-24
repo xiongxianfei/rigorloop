@@ -59,10 +59,12 @@ from workflow_automation_policy import (
     target_completion_predicate,
 )
 from workflow_automation_state import (
+    _canonical_review_occurrence,
     StateContractError,
     VerifiedCompletion,
     WorkflowAutomationStateStore,
     compute_transition_key,
+    parse_stage_evidence_fields,
     verify_transition_completion,
 )
 
@@ -171,6 +173,17 @@ class ActivePlanContext:
         )
         if not milestones:
             raise AutomationContractError("active plan contains no implementation milestones")
+        milestone_ids = [milestone.milestone_id for milestone in milestones]
+        duplicates = sorted(
+            milestone_id
+            for milestone_id in set(milestone_ids)
+            if milestone_ids.count(milestone_id) > 1
+        )
+        if duplicates:
+            raise AutomationContractError(
+                "duplicate active plan milestone identity: "
+                + ", ".join(duplicates)
+            )
         return cls(plan_identity, handoff, tuple(milestones), in_scope)
 
     def current_candidates(self) -> tuple[MilestoneRecord, ...]:
@@ -303,6 +316,357 @@ class ImplementationRouteDecision:
     pause_reason: str | None = None
     automatic_repair: bool = False
     external_action_performed: bool = False
+
+
+@dataclass(frozen=True)
+class VerificationReadiness:
+    basis_identities: Mapping[str, str]
+    final_review_clean: bool
+    explanation_current: bool
+
+
+def resolve_verification_readiness(
+    *,
+    repository_root: Path,
+    basis: Mapping[str, Any],
+    basis_paths: Mapping[str, Any],
+) -> VerificationReadiness:
+    """Resolve verification authority only from current repository evidence."""
+
+    required = CAPABILITY_BASIS_FIELDS[CapabilityKind.VERIFICATION.value]
+    if set(basis) != set(required) or set(basis_paths) != set(required):
+        raise AutomationContractError("verification basis evidence is incomplete")
+    artifacts: dict[str, Path] = {}
+    identities: dict[str, str] = {}
+    for name in required:
+        artifact = _resolve_repository_file(repository_root, basis_paths[name])
+        identity = "sha256:" + hashlib.sha256(artifact.read_bytes()).hexdigest()
+        if basis.get(name) != identity:
+            raise AutomationContractError(
+                f"verification basis identity is stale: {name}"
+            )
+        artifacts[name] = artifact
+        identities[name] = identity
+
+    plan = ActivePlanContext.from_text(
+        artifacts["closed_milestones_identity"].read_text(encoding="utf-8"),
+        plan_identity=identities["closed_milestones_identity"],
+    )
+    if not _all_implementation_milestones_closed(plan):
+        raise AutomationContractError("verification basis milestones are open")
+
+    review_path = artifacts["final_code_review_identity"]
+    occurrence = _canonical_review_occurrence(
+        review_path,
+        repository_root=repository_root,
+    )
+    if occurrence is None:
+        raise AutomationContractError("verification basis final review is not canonical")
+    review, entry, _review_log, _review_log_identity = occurrence
+    try:
+        review_fields = parse_stage_evidence_fields(
+            review_path,
+            required_fields={
+                "Review ID",
+                "Stage",
+                "Round",
+                "Reviewer",
+                "Target",
+                "Status",
+                "Material findings",
+                "Review scope",
+                "complete_final_diff",
+                "cross_milestone_interactions",
+                "governing_artifacts",
+                "review_resolutions",
+                "final_validation_selection",
+                "generated_and_derived_artifacts",
+                "cross_milestone_scope",
+            },
+        )
+    except StateContractError as error:
+        raise AutomationContractError(
+            "verification basis final review is incomplete"
+        ) from error
+    if (
+        review.stage != WorkflowStage.CODE_REVIEW.value
+        or review.status not in {"approved", "clean-with-notes"}
+        or review_fields.get("Review scope") != "final-holistic"
+        or review_fields.get("complete_final_diff") != "reviewed"
+        or review_fields.get("cross_milestone_interactions") != "reviewed"
+        or review_fields.get("governing_artifacts") != "reviewed"
+        or review_fields.get("review_resolutions")
+        not in {"closed", "not-required"}
+        or review_fields.get("final_validation_selection") != "reviewed"
+        or review_fields.get("generated_and_derived_artifacts") != "current"
+        or review_fields.get("cross_milestone_scope") != "reviewed"
+        or entry.material_finding_ids
+        or entry.open_finding_ids
+    ):
+        raise AutomationContractError("verification basis final review is not clean")
+
+    try:
+        explanation = parse_stage_evidence_fields(
+            artifacts["explanation_inputs_identity"],
+            required_fields={
+                "Stage",
+                "Status",
+                "Final diff identity",
+                "Final review identity",
+            },
+        )
+    except StateContractError as error:
+        raise AutomationContractError(
+            "verification basis explanation is incomplete"
+        ) from error
+    if (
+        explanation.get("Stage") != "explain-change"
+        or explanation.get("Status") != "current"
+        or explanation.get("Final diff identity")
+        != identities["closed_milestones_identity"]
+        or explanation.get("Final review identity")
+        != identities["final_code_review_identity"]
+    ):
+        raise AutomationContractError("verification basis explanation is not current")
+    for name, expected_stage, expected_status in (
+        ("promotion_evidence_identity", "promotion", "valid"),
+        ("branch_state_identity", "branch-state", "current"),
+        ("verification_commands_identity", "verification-commands", "current"),
+    ):
+        try:
+            fields = parse_stage_evidence_fields(
+                artifacts[name],
+                required_fields={"Stage", "Status"},
+            )
+        except StateContractError as error:
+            raise AutomationContractError(
+                f"verification basis evidence is incomplete: {name}"
+            ) from error
+        if (
+            fields.get("Stage") != expected_stage
+            or fields.get("Status") != expected_status
+        ):
+            raise AutomationContractError(
+                f"verification basis evidence is invalid: {name}"
+            )
+    return VerificationReadiness(identities, True, True)
+
+
+@dataclass(frozen=True)
+class _ImplementationCorrectionOperation:
+    finding_id: str
+    path: str
+    old: str
+    new: str
+    expected_replacements: int
+    expected_identity: str
+
+
+@dataclass(frozen=True)
+class _ImplementationCorrectionEvidence:
+    review_identity: str
+    review_id: str
+    review_log_path: str
+    review_resolution_path: str
+    reviewed_milestone_id: str
+    finding_ids: tuple[str, ...]
+    classifications: Mapping[str, str]
+    recipes: Mapping[str, Mapping[str, Any]]
+    affected_paths: tuple[str, ...]
+    operations: tuple[_ImplementationCorrectionOperation, ...]
+
+
+def _one_finding_field(record: Any, label: str) -> str:
+    values = record.fields.get(label, ())
+    if len(values) != 1 or not values[0].value.strip():
+        raise AutomationContractError(
+            f"implementation correction finding {record.finding_id} "
+            f"requires exactly one {label}"
+        )
+    return values[0].value.strip()
+
+
+def _parse_correction_json(value: str, *, label: str) -> Mapping[str, Any]:
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError as error:
+        raise AutomationContractError(
+            f"implementation correction {label} must be strict JSON"
+        ) from error
+    if not isinstance(parsed, Mapping):
+        raise AutomationContractError(
+            f"implementation correction {label} must be an object"
+        )
+    return parsed
+
+
+def _load_implementation_correction_evidence(
+    *,
+    repository_root: Path,
+    review_record_path: Any,
+    review_resolution_path: Any,
+    review_log_path: Any,
+) -> _ImplementationCorrectionEvidence:
+    """Load the latest reviewer-owned correction authority from canonical files."""
+
+    review_path = _resolve_repository_file(repository_root, review_record_path)
+    resolution_path = _resolve_repository_file(
+        repository_root, review_resolution_path
+    )
+    log_path = _resolve_repository_file(repository_root, review_log_path)
+    change_root = review_path.parent.parent
+    if (
+        review_path.parent.name != "reviews"
+        or resolution_path != change_root / "review-resolution.md"
+        or log_path != change_root / "review-log.md"
+    ):
+        raise AutomationContractError(
+            "implementation correction evidence is not canonical change-local evidence"
+        )
+    occurrence = _canonical_review_occurrence(
+        review_path, repository_root=repository_root
+    )
+    review, log_entry, canonical_log, _log_identity = (
+        occurrence if occurrence is not None else (None, None, None, None)
+    )
+    parsed_review, findings, review_errors = parse_formal_review_findings(
+        review_path
+    )
+    try:
+        review_fields = parse_stage_evidence_fields(
+            review_path,
+            required_fields={"Reviewed milestone"},
+        )
+    except StateContractError as error:
+        raise AutomationContractError(
+            "implementation correction review milestone is invalid"
+        ) from error
+    reviewed_milestone_id = review_fields["Reviewed milestone"].split(".", 1)[0]
+    if not re.fullmatch(r"M[0-9]+", reviewed_milestone_id):
+        raise AutomationContractError(
+            "implementation correction review milestone is invalid"
+        )
+    resolution, resolution_errors = parse_formal_review_resolution(
+        resolution_path
+    )
+    if (
+        review is None
+        or parsed_review is None
+        or review_errors
+        or resolution_errors
+        or review.review_id != parsed_review.review_id
+        or review.stage != WorkflowStage.CODE_REVIEW.value
+        or review.status != "changes-requested"
+        or canonical_log != log_path
+    ):
+        raise AutomationContractError(
+            "implementation correction review evidence is stale or invalid"
+        )
+    finding_ids = tuple(sorted(finding.finding_id for finding in findings))
+    if (
+        not finding_ids
+        or tuple(sorted(log_entry.material_finding_ids)) != finding_ids
+        or tuple(sorted(log_entry.open_finding_ids)) != finding_ids
+    ):
+        raise AutomationContractError(
+            "implementation correction finding set is not current"
+        )
+    resolution_by_id = {
+        entry.finding_id: entry
+        for entry in resolution.entries
+        if entry.finding_id in finding_ids
+    }
+    if (
+        set(resolution_by_id) != set(finding_ids)
+        or any(
+            entry.disposition != "accepted"
+            or entry.fields.get("Status") is None
+            or entry.fields["Status"].value != "open"
+            for entry in resolution_by_id.values()
+        )
+    ):
+        raise AutomationContractError(
+            "implementation correction resolution is not open and accepted"
+        )
+
+    classifications: dict[str, str] = {}
+    recipes: dict[str, Mapping[str, Any]] = {}
+    operations: list[_ImplementationCorrectionOperation] = []
+    affected_paths: set[str] = set()
+    for finding in findings:
+        classification = _one_finding_field(finding, "auto_fix_class")
+        if classification != "mechanical":
+            raise AutomationContractError(
+                "implementation correction has no closed executable recipe"
+            )
+        if _one_finding_field(finding, "auto_fix_kind") != "exact-approved-rename":
+            raise AutomationContractError(
+                "implementation correction has no closed executable recipe"
+            )
+        path = _one_finding_field(finding, "affected_paths")
+        authority = _parse_correction_json(
+            _one_finding_field(finding, "deterministic_authority"),
+            label="deterministic_authority",
+        )
+        validation = _parse_correction_json(
+            _one_finding_field(finding, "required_validation"),
+            label="required_validation",
+        )
+        if (
+            set(authority)
+            != {"operation", "path", "old", "new", "expected_replacements"}
+            or authority.get("operation") != "exact-text-replace"
+            or authority.get("path") != path
+            or not isinstance(authority.get("old"), str)
+            or not authority["old"]
+            or not isinstance(authority.get("new"), str)
+            or authority["new"] == authority["old"]
+            or not isinstance(authority.get("expected_replacements"), int)
+            or isinstance(authority.get("expected_replacements"), bool)
+            or authority["expected_replacements"] <= 0
+            or set(validation) != {"operation", "path", "identity"}
+            or validation.get("operation") != "sha256"
+            or validation.get("path") != path
+            or not isinstance(validation.get("identity"), str)
+            or not validation["identity"].startswith("sha256:")
+        ):
+            raise AutomationContractError(
+                "implementation correction recipe is not closed and deterministic"
+            )
+        classifications[finding.finding_id] = classification
+        recipe = {
+            "auto_fix_class": classification,
+            "auto_fix_kind": "exact-approved-rename",
+            "affected_paths": [path],
+            "deterministic_authority": dict(authority),
+            "required_validation": dict(validation),
+        }
+        recipes[finding.finding_id] = recipe
+        affected_paths.add(path)
+        operations.append(
+            _ImplementationCorrectionOperation(
+                finding.finding_id,
+                path,
+                authority["old"],
+                authority["new"],
+                authority["expected_replacements"],
+                validation["identity"],
+            )
+        )
+    return _ImplementationCorrectionEvidence(
+        review_identity="sha256:" + hashlib.sha256(review_path.read_bytes()).hexdigest(),
+        review_id=review.review_id,
+        review_log_path=log_path.relative_to(repository_root.resolve()).as_posix(),
+        review_resolution_path=resolution_path.relative_to(
+            repository_root.resolve()
+        ).as_posix(),
+        reviewed_milestone_id=reviewed_milestone_id,
+        finding_ids=finding_ids,
+        classifications=classifications,
+        recipes=recipes,
+        affected_paths=tuple(sorted(affected_paths)),
+        operations=tuple(operations),
+    )
 
 
 def evaluate_implementation_correction(
@@ -438,6 +802,7 @@ def evaluate_non_public_implementation_route(
     milestone_validation_passed: bool | None = None,
     review_outcome: str | None = None,
     review_resolution_closed: bool | None = None,
+    review_resolution_status: str | None = None,
     verification_authorized: bool = False,
     final_review_clean: bool | None = None,
     explanation_current: bool | None = None,
@@ -448,6 +813,12 @@ def evaluate_non_public_implementation_route(
 
     def pause(reason: str) -> ImplementationRouteDecision:
         return ImplementationRouteDecision("paused", pause_reason=reason)
+
+    resolution_satisfied = (
+        review_resolution_status in {"not-required", "closed"}
+        if review_resolution_status is not None
+        else review_resolution_closed is True
+    )
 
     if invocation_context != "non-public-test-harness":
         return pause("non-public-harness-required")
@@ -521,7 +892,7 @@ def evaluate_non_public_implementation_route(
                     milestone_id,
                 )
             return pause("milestone-review-not-approved")
-        if review_resolution_closed is not True:
+        if not resolution_satisfied:
             return pause("review-resolution-open")
         if milestone.state != "closed":
             return pause("plan-milestone-not-closed")
@@ -552,7 +923,7 @@ def evaluate_non_public_implementation_route(
         return ImplementationRouteDecision("continue", next_stage)
 
     if current_stage == WorkflowStage.REVIEW_RESOLUTION.value:
-        if review_resolution_closed is not True:
+        if not resolution_satisfied:
             return pause("review-resolution-open")
         next_stage = (
             WorkflowStage.CODE_REVIEW.value
@@ -573,7 +944,7 @@ def evaluate_non_public_implementation_route(
                     "correction-loop", WorkflowStage.REVIEW_RESOLUTION.value
                 )
             return pause("final-holistic-review-not-clean")
-        if review_resolution_closed is not True:
+        if not resolution_satisfied:
             return pause("review-resolution-open")
         if not verification_authorized:
             return pause("verification-authorization-required")
@@ -1445,10 +1816,8 @@ def coordinate_non_public_implementation_stage(
     target_milestone_id: str | None,
     store: WorkflowAutomationStateStore,
     repository_root: Path,
-    verification_authorized: bool = False,
+    verification_basis_paths: Mapping[str, Any] | None = None,
     ci_maintenance_required: bool = False,
-    final_review_clean: bool | None = None,
-    explanation_current: bool | None = None,
     **coordination: Any,
 ) -> ImplementationCoordinationResult:
     """Run one M5 transaction and route only from verifier-derived facts."""
@@ -1456,6 +1825,21 @@ def coordinate_non_public_implementation_stage(
     if invocation_context != "non-public-test-harness":
         raise AutomationContractError(
             "non-public implementation harness is required"
+        )
+    verification_readiness: VerificationReadiness | None = None
+    if coordination.get("stage") in {
+        WorkflowStage.EXPLAIN_CHANGE.value,
+        WorkflowStage.VERIFY.value,
+    }:
+        basis = coordination.get("basis")
+        if not isinstance(basis, Mapping) or verification_basis_paths is None:
+            raise AutomationContractError(
+                "repository-backed verification basis is required"
+            )
+        verification_readiness = resolve_verification_readiness(
+            repository_root=repository_root,
+            basis=basis,
+            basis_paths=verification_basis_paths,
         )
     try:
         result = coordinate_one_stage(
@@ -1526,16 +1910,25 @@ def coordinate_non_public_implementation_stage(
         review_resolution_closed=(
             facts.get("review_resolution_closed") == "true"
         ),
-        verification_authorized=verification_authorized,
+        review_resolution_status=facts.get("review_resolution_status"),
+        verification_authorized=verification_readiness is not None,
         final_review_clean=(
             facts.get("final_review_clean") == "true"
             if "final_review_clean" in facts
-            else final_review_clean
+            else (
+                verification_readiness.final_review_clean
+                if verification_readiness is not None
+                else None
+            )
         ),
         explanation_current=(
             facts.get("explanation_current") == "true"
             if "explanation_current" in facts
-            else explanation_current
+            else (
+                verification_readiness.explanation_current
+                if verification_readiness is not None
+                else None
+            )
         ),
         verification_passed=(
             facts.get("verification_passed") == "true"
@@ -1545,6 +1938,363 @@ def coordinate_non_public_implementation_stage(
         ci_maintenance_required=ci_maintenance_required,
     )
     return ImplementationCoordinationResult(result, route)
+
+
+def _replace_record_field(
+    text: str,
+    *,
+    marker_label: str,
+    marker_value: str,
+    field_label: str,
+    expected_value: str,
+    replacement_value: str,
+) -> str:
+    """Replace one exact field inside one marker-delimited Markdown record."""
+
+    lines = text.splitlines(keepends=True)
+    marker = f"{marker_label}: {marker_value}"
+    starts = [
+        index for index, line in enumerate(lines) if line.strip() == marker
+    ]
+    if len(starts) != 1:
+        raise AutomationContractError(
+            f"implementation correction requires one {marker}"
+        )
+    start = starts[0]
+    end = len(lines)
+    for index in range(start + 1, len(lines)):
+        if lines[index].strip().startswith(f"{marker_label}: "):
+            end = index
+            break
+    expected = f"{field_label}: {expected_value}"
+    matches = [
+        index
+        for index in range(start, end)
+        if lines[index].strip() == expected
+    ]
+    if len(matches) != 1:
+        raise AutomationContractError(
+            f"implementation correction requires one {expected}"
+        )
+    index = matches[0]
+    prefix = lines[index][: len(lines[index]) - len(lines[index].lstrip())]
+    newline = "\n" if lines[index].endswith("\n") else ""
+    lines[index] = f"{prefix}{field_label}: {replacement_value}{newline}"
+    return "".join(lines)
+
+
+def _implementation_correction_artifact(
+    repository_root: Path, relative_path: str
+) -> ArtifactEvidence:
+    path = _resolve_repository_file(repository_root, relative_path)
+    return ArtifactEvidence(
+        relative_path,
+        "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest(),
+    )
+
+
+def _pause_implementation_correction(
+    store: WorkflowAutomationStateStore,
+    capability_id: str,
+) -> None:
+    snapshot = store.read()
+    if snapshot.automation is None:
+        return
+    replacement = copy.deepcopy(snapshot.automation)
+    if replacement.get("run", {}).get("status") != "active":
+        return
+    replacement["run"]["status"] = "paused"
+    replacement["run"]["pause_reason"] = "implementation-correction-paused"
+    capability = replacement.get("effective_capabilities", {}).get(
+        capability_id
+    )
+    if isinstance(capability, dict) and capability.get("status") == "active":
+        capability["status"] = "invalidated"
+        capability["invalidation_reason"] = "implementation-correction-paused"
+    store.replace_automation(
+        replacement,
+        expected_document_identity=snapshot.document_identity,
+    )
+
+
+def coordinate_non_public_implementation_correction(
+    *,
+    invocation_context: str,
+    target_stage: str,
+    target_milestone_id: str | None,
+    store: WorkflowAutomationStateStore,
+    repository_root: Path,
+    parent_authorization_id: str,
+    capability_id: str,
+    review_record_path: str,
+    review_resolution_path: str,
+    review_log_path: str,
+    affected_path_roots: Iterable[str],
+    mutation_categories: Iterable[str],
+    correction_budget: Mapping[str, int],
+    correction_budget_identity: str,
+    derived_at: str,
+    transition_id: str,
+    active_plan: ActivePlanContext,
+) -> ImplementationCoordinationResult:
+    """Execute one closed reviewer-owned correction and require fresh rereview."""
+
+    if invocation_context != "non-public-test-harness":
+        raise AutomationContractError(
+            "non-public implementation harness is required"
+        )
+    try:
+        repository_root = store.require_repository_root(repository_root)
+    except StateContractError as error:
+        raise AutomationContractError(str(error)) from error
+    try:
+        evidence = _load_implementation_correction_evidence(
+            repository_root=repository_root,
+            review_record_path=review_record_path,
+            review_resolution_path=review_resolution_path,
+            review_log_path=review_log_path,
+        )
+    except Exception:
+        _pause_implementation_correction(store, capability_id)
+        raise
+    if (
+        target_stage != WorkflowStage.CODE_REVIEW.value
+        or target_milestone_id != evidence.reviewed_milestone_id
+    ):
+        _pause_implementation_correction(store, capability_id)
+        raise AutomationContractError(
+            "implementation correction must return to its bound milestone review"
+        )
+    roots = tuple(affected_path_roots)
+    changed_paths = set(evidence.affected_paths) | {
+        evidence.review_resolution_path,
+        evidence.review_log_path,
+    }
+    if any(not _path_is_within_roots(path, roots) for path in changed_paths):
+        _pause_implementation_correction(store, capability_id)
+        raise AutomationContractError(
+            "implementation correction path exceeds capability roots"
+        )
+    budget_identity = _structured_identity(dict(correction_budget))
+    if budget_identity != correction_budget_identity:
+        _pause_implementation_correction(store, capability_id)
+        raise AutomationContractError(
+            "implementation correction budget identity is stale"
+        )
+    basis = {
+        "code_review_identity": evidence.review_identity,
+        "accepted_finding_set_identity": _structured_identity(
+            list(evidence.finding_ids)
+        ),
+        "reviewer_classification_identity": _structured_identity(
+            evidence.recipes
+        ),
+        "correction_budget_identity": correction_budget_identity,
+        "affected_paths_identity": _structured_identity(
+            list(evidence.affected_paths)
+        ),
+    }
+    correction_scope = {
+        "review_record_path": review_record_path,
+        "review_resolution_path": review_resolution_path,
+        "review_log_path": review_log_path,
+        "accepted_finding_ids": list(evidence.finding_ids),
+        "reviewer_recipes": copy.deepcopy(dict(evidence.recipes)),
+        "reviewed_milestone_id": evidence.reviewed_milestone_id,
+    }
+    snapshot = store.read()
+    if snapshot.automation is None:
+        raise AutomationContractError("unified automation state does not exist")
+    completed_rounds = sum(
+        1
+        for receipt in snapshot.automation.get("transition_receipts", {}).values()
+        if isinstance(receipt, Mapping)
+        and receipt.get("status") == "completed"
+        and isinstance(
+            snapshot.automation.get("effective_capabilities", {}).get(
+                receipt.get("effective_capability_id")
+            ),
+            Mapping,
+        )
+        and snapshot.automation["effective_capabilities"][
+            receipt["effective_capability_id"]
+        ].get("capability_kind")
+        == CapabilityKind.IMPLEMENTATION_CORRECTION.value
+        and snapshot.automation["effective_capabilities"][
+            receipt["effective_capability_id"]
+        ].get("parent_authorization_id")
+        == parent_authorization_id
+    )
+    round_cap = correction_budget.get("cycles")
+    if not isinstance(round_cap, int) or isinstance(round_cap, bool):
+        _pause_implementation_correction(store, capability_id)
+        raise AutomationContractError(
+            "implementation correction cycle budget is required"
+        )
+
+    original_bytes: dict[Path, bytes] = {}
+    actual_changed_paths: set[str] = set()
+
+    def invoke_closed_correction() -> StageExecutionResult:
+        try:
+            for operation in evidence.operations:
+                path = _resolve_repository_file(repository_root, operation.path)
+                before = path.read_bytes()
+                try:
+                    text = before.decode("utf-8")
+                except UnicodeDecodeError as error:
+                    raise AutomationContractError(
+                        "implementation correction target must be UTF-8 text"
+                    ) from error
+                if text.count(operation.old) != operation.expected_replacements:
+                    raise AutomationContractError(
+                        "implementation correction exact input no longer matches"
+                    )
+                after = text.replace(operation.old, operation.new).encode("utf-8")
+                actual_identity = (
+                    "sha256:" + hashlib.sha256(after).hexdigest()
+                )
+                if actual_identity != operation.expected_identity:
+                    raise AutomationContractError(
+                        "implementation correction deterministic validation failed"
+                    )
+                original_bytes.setdefault(path, before)
+                _atomic_replace_regular_file(path, after)
+                actual_changed_paths.add(operation.path)
+
+            resolution = _resolve_repository_file(
+                repository_root, evidence.review_resolution_path
+            )
+            resolution_text = resolution.read_text(encoding="utf-8")
+            original_bytes.setdefault(resolution, resolution.read_bytes())
+            for finding_id in evidence.finding_ids:
+                resolution_text = _replace_record_field(
+                    resolution_text,
+                    marker_label="Finding ID",
+                    marker_value=finding_id,
+                    field_label="Status",
+                    expected_value="open",
+                    replacement_value="resolved",
+                )
+                resolution_text = _replace_record_field(
+                    resolution_text,
+                    marker_label="Finding ID",
+                    marker_value=finding_id,
+                    field_label="Validation evidence",
+                    expected_value="pending",
+                    replacement_value=(
+                        "closed deterministic recipe and SHA-256 validation passed"
+                    ),
+                )
+            if resolution_text.count("Closeout status: open") != 1:
+                raise AutomationContractError(
+                    "implementation correction closeout state is ambiguous"
+                )
+            resolution_text = resolution_text.replace(
+                "Closeout status: open", "Closeout status: closed", 1
+            )
+            _atomic_replace_regular_file(
+                resolution, resolution_text.encode("utf-8")
+            )
+            actual_changed_paths.add(evidence.review_resolution_path)
+
+            review_log = _resolve_repository_file(
+                repository_root, evidence.review_log_path
+            )
+            log_text = review_log.read_text(encoding="utf-8")
+            original_bytes.setdefault(review_log, review_log.read_bytes())
+            open_value = ", ".join(evidence.finding_ids)
+            log_text = _replace_record_field(
+                log_text,
+                marker_label="Review ID",
+                marker_value=evidence.review_id,
+                field_label="Open findings",
+                expected_value=open_value,
+                replacement_value="None",
+            )
+            _atomic_replace_regular_file(review_log, log_text.encode("utf-8"))
+            actual_changed_paths.add(evidence.review_log_path)
+
+            decision = evaluate_implementation_correction(
+                findings=evidence.recipes,
+                previous_unresolved=evidence.finding_ids,
+                current_unresolved=(),
+                correction_rounds_completed=completed_rounds,
+                correction_round_cap=round_cap,
+                changed_paths=evidence.affected_paths,
+                allowed_path_roots=roots,
+                evidence_current=True,
+                deterministic_validation_passed=True,
+                previous_classifications=evidence.classifications,
+            )
+            if decision.status != "authorized":
+                raise AutomationContractError(
+                    "implementation correction paused: "
+                    + str(decision.pause_reason)
+                )
+            expected_changed = changed_paths
+            if actual_changed_paths != expected_changed:
+                raise AutomationContractError(
+                    "implementation correction changed an unexpected path set"
+                )
+            resolution_evidence = _implementation_correction_artifact(
+                repository_root, evidence.review_resolution_path
+            )
+            outputs = tuple(
+                _implementation_correction_artifact(repository_root, path)
+                for path in sorted(actual_changed_paths)
+            )
+            return StageExecutionResult(
+                outputs,
+                {"review-resolution": resolution_evidence},
+            )
+        except Exception:
+            for path, content in reversed(tuple(original_bytes.items())):
+                _atomic_replace_regular_file(path, content)
+            raise
+
+    try:
+        result = coordinate_one_stage(
+            store=store,
+            parent_authorization_id=parent_authorization_id,
+            capability_id=capability_id,
+            stage=WorkflowStage.REVIEW_RESOLUTION.value,
+            occurrence={"kind": "singleton"},
+            basis=basis,
+            affected_path_roots=roots,
+            mutation_categories=tuple(mutation_categories),
+            correction_budget=correction_budget,
+            correction_budget_identity=correction_budget_identity,
+            implementation_correction_scope=correction_scope,
+            derived_at=derived_at,
+            transition_id=transition_id,
+            input_identities={
+                **basis,
+                "plan": active_plan.plan_identity,
+                "review_outcome": "changes-requested",
+                "review_identity": evidence.review_identity,
+            },
+            invoke_stage=invoke_closed_correction,
+            synchronize_canonical_state=lambda stage_result: CanonicalSyncResult(
+                "synchronized", stage_result.completion_evidence
+            ),
+            repository_root=repository_root,
+            active_plan=active_plan,
+        )
+    except Exception:
+        for path, content in reversed(tuple(original_bytes.items())):
+            if path.exists() and path.read_bytes() != content:
+                _atomic_replace_regular_file(path, content)
+        _pause_implementation_correction(store, capability_id)
+        raise
+    return ImplementationCoordinationResult(
+        result,
+        ImplementationRouteDecision(
+            "continue",
+            WorkflowStage.CODE_REVIEW.value,
+            evidence.reviewed_milestone_id,
+        ),
+    )
 
 
 def normalize_command(command: str) -> NormalizedCommand:
@@ -2005,6 +2755,7 @@ def derive_effective_capability(
     derived_at: str,
     correction_budget: Mapping[str, int] | None = None,
     correction_budget_identity: str | None = None,
+    implementation_correction_scope: Mapping[str, Any] | None = None,
     basis_current: bool = True,
     existing_capabilities: Iterable[Mapping[str, Any]] = (),
 ) -> dict[str, Any]:
@@ -2129,6 +2880,30 @@ def derive_effective_capability(
     if bounded_budget is not None:
         capability["scope"]["correction_budget"] = bounded_budget
         capability["scope"]["correction_budget_identity"] = correction_budget_identity
+    if kind == CapabilityKind.IMPLEMENTATION_CORRECTION.value:
+        if implementation_correction_scope is None:
+            raise AutomationContractError(
+                "implementation correction scope is required"
+            )
+        required_scope = {
+            "review_record_path",
+            "review_resolution_path",
+            "review_log_path",
+            "accepted_finding_ids",
+            "reviewer_recipes",
+            "reviewed_milestone_id",
+        }
+        if set(implementation_correction_scope) != required_scope:
+            raise AutomationContractError(
+                "implementation correction scope is incomplete"
+            )
+        capability["scope"].update(
+            copy.deepcopy(dict(implementation_correction_scope))
+        )
+    elif implementation_correction_scope is not None:
+        raise AutomationContractError(
+            "implementation correction scope requires implementation-correction"
+        )
     return capability
 
 
@@ -2276,6 +3051,7 @@ def coordinate_one_stage(
     mutation_categories: Iterable[str] = (),
     correction_budget: Mapping[str, int] | None = None,
     correction_budget_identity: str | None = None,
+    implementation_correction_scope: Mapping[str, Any] | None = None,
     derived_at: str | None = None,
     transition_id: str | None = None,
     input_identities: Mapping[str, Any] | None = None,
@@ -2374,6 +3150,13 @@ def coordinate_one_stage(
             or not isinstance(scope, dict)
             or scope.get("affected_path_roots") != list(bounded_path_roots)
             or scope.get("mutation_categories") != list(bounded_mutation_categories)
+            or (
+                implementation_correction_scope is not None
+                and any(
+                    scope.get(name) != value
+                    for name, value in implementation_correction_scope.items()
+                )
+            )
         ):
             raise AutomationContractError(
                 "persisted effective capability does not match stage request"
@@ -2390,6 +3173,7 @@ def coordinate_one_stage(
             mutation_categories=bounded_mutation_categories,
             correction_budget=correction_budget,
             correction_budget_identity=correction_budget_identity,
+            implementation_correction_scope=implementation_correction_scope,
             derived_at=derived_at,
             existing_capabilities=existing,
         )
@@ -2599,6 +3383,7 @@ __all__ = [
     "bind_target",
     "coordinate_one_stage",
     "coordinate_non_public_authoring_stage",
+    "coordinate_non_public_implementation_correction",
     "coordinate_non_public_implementation_stage",
     "create_parent_authorization",
     "derive_effective_capability",
@@ -2611,9 +3396,11 @@ __all__ = [
     "ImplementationCorrectionDecision",
     "ImplementationCoordinationResult",
     "ImplementationRouteDecision",
+    "VerificationReadiness",
     "record_plan_ownership_handoff",
     "resolve_canonical_position",
     "resolve_proposal_correction_authority",
+    "resolve_verification_readiness",
     "resolve_command_target",
     "resume_target",
 ]

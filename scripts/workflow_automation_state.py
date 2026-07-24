@@ -23,6 +23,8 @@ from pathlib import Path
 from typing import Any, Callable
 
 from review_artifact_validation import (
+    finding_closure_state,
+    parse_formal_review_findings,
     parse_formal_review_log,
     parse_formal_review_record,
     parse_formal_review_resolution,
@@ -394,34 +396,82 @@ def _resolve_completion_artifact(
 
 
 def _evidence_fields(path: Path) -> dict[str, str]:
+    return parse_stage_evidence_fields(path, required_fields=set())
+
+
+def parse_stage_evidence_fields(
+    path: Path,
+    *,
+    required_fields: set[str] | frozenset[str],
+) -> dict[str, str]:
+    """Parse one closed stage-evidence record without first-value wins."""
+
     fields: dict[str, str] = {}
     for line in path.read_text(encoding="utf-8").splitlines():
         if ":" not in line:
             continue
         key, value = line.split(":", 1)
         label = key.strip().lstrip("-").strip()
-        if label and label not in fields:
-            fields[label] = value.strip().strip("`")
+        if not label:
+            continue
+        if label in fields:
+            raise StateContractError(f"duplicate evidence field: {label}")
+        fields[label] = value.strip().strip("`")
+    missing = sorted(field for field in required_fields if not fields.get(field))
+    if missing:
+        raise StateContractError(
+            "missing required evidence field: " + ", ".join(missing)
+        )
     return fields
+
+
+def _selected_fields(path: Path, labels: set[str] | frozenset[str]) -> dict[str, str] | None:
+    values: dict[str, list[str]] = {label: [] for label in labels}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        label = key.strip().lstrip("-").strip()
+        if label in values:
+            values[label].append(value.strip().strip("`"))
+    if any(len(found) > 1 for found in values.values()):
+        return None
+    return {
+        label: found[0]
+        for label, found in values.items()
+        if found and found[0]
+    }
 
 
 def _milestone_state(path: Path, milestone_id: str) -> str | None:
     lines = path.read_text(encoding="utf-8").splitlines()
     header = re.compile(rf"^###\s+{re.escape(milestone_id)}\.\s+")
-    for index, line in enumerate(lines):
-        if header.match(line) is None:
-            continue
-        for candidate in lines[index + 1 :]:
-            if candidate.startswith(("### ", "## ")):
-                break
-            match = re.match(
-                r"^-\s+Milestone state:\s*(?P<state>[a-z-]+)\s*$",
-                candidate.strip(),
-            )
-            if match is not None:
-                return match.group("state")
+    matching_indices = [
+        index for index, line in enumerate(lines) if header.match(line) is not None
+    ]
+    if len(matching_indices) != 1:
         return None
-    return None
+    index = matching_indices[0]
+    states: list[str] = []
+    for candidate in lines[index + 1 :]:
+        if candidate.startswith(("### ", "## ")):
+            break
+        match = re.match(
+            r"^-\s+Milestone state:\s*(?P<state>[a-z-]+)\s*$",
+            candidate.strip(),
+        )
+        if match is not None:
+            states.append(match.group("state"))
+    if len(states) != 1:
+        return None
+    handoff, errors = parse_handoff_summary(path.read_text(encoding="utf-8"))
+    if handoff is None or errors:
+        return None
+    if handoff.current_milestone.startswith(f"{milestone_id}.") and (
+        handoff.current_milestone_state != states[0]
+    ):
+        return None
+    return states[0]
 
 
 def _canonical_review_occurrence(
@@ -429,14 +479,33 @@ def _canonical_review_occurrence(
     *,
     repository_root: Path,
 ) -> tuple[Any, Any, Path, str] | None:
+    root = repository_root.resolve()
+    try:
+        review_relative = review_path.relative_to(root)
+    except ValueError:
+        return None
+    resolved_review = _resolve_repository_file(
+        review_relative,
+        repository_root=repository_root,
+    )
+    if resolved_review is None or resolved_review != review_path.resolve():
+        return None
     review, review_findings = parse_formal_review_record(review_path)
     if review is None or review_findings or review_path.parent.name != "reviews":
         return None
     change_root = review_path.parent.parent
     review_log = change_root / "review-log.md"
-    if not review_log.is_file():
+    try:
+        log_relative = review_log.relative_to(root)
+    except ValueError:
         return None
-    entries, log_findings = parse_formal_review_log(review_log)
+    resolved_log = _resolve_repository_file(
+        log_relative,
+        repository_root=repository_root,
+    )
+    if resolved_log is None:
+        return None
+    entries, log_findings = parse_formal_review_log(resolved_log)
     if log_findings:
         return None
     matches = [entry for entry in entries if entry.review_id == review.review_id]
@@ -445,7 +514,7 @@ def _canonical_review_occurrence(
     entry = matches[0]
     try:
         expected_record = review_path.relative_to(change_root).as_posix()
-        review_log.relative_to(repository_root.resolve())
+        resolved_log.relative_to(root)
     except ValueError:
         return None
     if (
@@ -455,7 +524,118 @@ def _canonical_review_occurrence(
         or _strip_code(entry.detailed_record) != expected_record
     ):
         return None
-    return review, entry, review_log, _identity(review_log.read_bytes())
+    current_fields = _selected_fields(
+        review_path,
+        frozenset({"Reviewed milestone", "Review scope"}),
+    )
+    if current_fields is None:
+        return None
+    applicability = (
+        "milestone",
+        current_fields["Reviewed milestone"],
+    ) if "Reviewed milestone" in current_fields else (
+        "scope",
+        current_fields["Review scope"],
+    ) if "Review scope" in current_fields else ("target", _strip_code(review.target))
+    for later in entries:
+        if later.line <= entry.line or later.stage != review.stage:
+            continue
+        later_relative = Path(_strip_code(later.detailed_record))
+        later_path = _resolve_repository_file(
+            change_root.relative_to(root) / later_relative,
+            repository_root=repository_root,
+        )
+        if later_path is None:
+            return None
+        later_review, later_findings = parse_formal_review_record(later_path)
+        if later_review is None or later_findings:
+            return None
+        later_fields = _selected_fields(
+            later_path,
+            frozenset({"Reviewed milestone", "Review scope"}),
+        )
+        if later_fields is None:
+            return None
+        later_applicability = (
+            "milestone",
+            later_fields["Reviewed milestone"],
+        ) if "Reviewed milestone" in later_fields else (
+            "scope",
+            later_fields["Review scope"],
+        ) if "Review scope" in later_fields else (
+            "target",
+            _strip_code(later_review.target),
+        )
+        if later_applicability == applicability:
+            return None
+    return review, entry, resolved_log, _identity(resolved_log.read_bytes())
+
+
+def _review_resolution_gate(
+    *,
+    review_path: Path,
+    review: Any,
+    entry: Any,
+    review_log: Path,
+    resolution_path: Path,
+    repository_root: Path,
+) -> str | None:
+    """Return a truthful review closeout state for one formal occurrence."""
+
+    parsed_review, review_findings, review_errors = parse_formal_review_findings(
+        review_path
+    )
+    entries, log_errors = parse_formal_review_log(review_log)
+    if (
+        parsed_review is None
+        or review_errors
+        or log_errors
+        or parsed_review.review_id != review.review_id
+    ):
+        return None
+    material_ids = frozenset(finding.finding_id for finding in review_findings)
+    if not material_ids:
+        if (
+            entry.material_finding_ids
+            or entry.open_finding_ids
+            or resolution_path.resolve() != review_log.resolve()
+        ):
+            return None
+        return "not-required"
+
+    expected = review_path.parent.parent / "review-resolution.md"
+    try:
+        expected_relative = expected.relative_to(repository_root.resolve())
+    except ValueError:
+        return None
+    canonical_resolution = _resolve_repository_file(
+        expected_relative,
+        repository_root=repository_root,
+    )
+    if (
+        canonical_resolution is None
+        or resolution_path.resolve() != canonical_resolution
+        or frozenset(entry.material_finding_ids) != material_ids
+        or entry.open_finding_ids
+    ):
+        return None
+    resolution, resolution_errors = parse_formal_review_resolution(
+        canonical_resolution
+    )
+    if resolution_errors or resolution.closeout_status != "closed":
+        return None
+    if any(
+        finding_closure_state(
+            finding_id,
+            entries,
+            resolution,
+            review_findings,
+        )
+        != "closed"
+        for finding_id in material_ids
+    ):
+        return None
+    return "closed"
 
 
 def _verify_implementation_stage_completion(
@@ -474,7 +654,13 @@ def _verify_implementation_stage_completion(
     )
 
     if stage_name == "implement":
-        validation = _evidence_fields(resolved_evidence["validation"][1])
+        try:
+            validation = parse_stage_evidence_fields(
+                resolved_evidence["validation"][1],
+                required_fields={"Stage", "Milestone", "Result"},
+            )
+        except StateContractError:
+            return None, "stage-native-implementation-invalid"
         plan = resolved_evidence["plan-handoff"][1]
         handoff, errors = parse_handoff_summary(plan.read_text(encoding="utf-8"))
         if (
@@ -503,22 +689,31 @@ def _verify_implementation_stage_completion(
         if occurrence_proof is None or not isinstance(milestone_id, str):
             return None, "stage-native-code-review-invalid"
         review, entry, review_log, review_log_identity = occurrence_proof
-        fields = _evidence_fields(review_path)
+        fields = _selected_fields(review_path, frozenset({"Reviewed milestone"}))
+        if fields is None:
+            return None, "stage-native-code-review-invalid"
         reviewed_milestone = fields.get("Reviewed milestone", "")
         resolution_path = resolved_evidence["review-resolution"][1]
+        resolution_status = _review_resolution_gate(
+            review_path=review_path,
+            review=review,
+            entry=entry,
+            review_log=review_log,
+            resolution_path=resolution_path,
+            repository_root=repository_root,
+        )
         if (
             review.stage != "code-review"
             or review.status not in {"approved", "clean-with-notes"}
             or not reviewed_milestone.startswith(milestone_id)
-            or entry.open_finding_ids
-            or resolution_path.resolve() != review_log.resolve()
+            or resolution_status not in {"not-required", "closed"}
             or _milestone_state(plan, milestone_id) != "closed"
         ):
             return None, "stage-native-code-review-invalid"
         return {
             "milestone_id": milestone_id,
             "review_outcome": review.status,
-            "review_resolution_closed": "true",
+            "review_resolution_status": resolution_status,
             "review_log_identity": review_log_identity,
         }, None
 
@@ -530,10 +725,17 @@ def _verify_implementation_stage_completion(
         return {"review_resolution_closed": "true"}, None
 
     if stage_name == "ci-maintenance":
-        configuration = _evidence_fields(
-            resolved_evidence["ci-configuration"][1]
-        )
-        validation = _evidence_fields(resolved_evidence["ci-validation"][1])
+        try:
+            configuration = parse_stage_evidence_fields(
+                resolved_evidence["ci-configuration"][1],
+                required_fields={"Stage"},
+            )
+            validation = parse_stage_evidence_fields(
+                resolved_evidence["ci-validation"][1],
+                required_fields={"Stage", "Result"},
+            )
+        except StateContractError:
+            return None, "stage-native-ci-maintenance-invalid"
         if (
             configuration.get("Stage") != "ci-maintenance"
             or validation.get("Stage") != "ci-maintenance"
@@ -549,23 +751,59 @@ def _verify_implementation_stage_completion(
         )
         if occurrence_proof is None:
             return None, "stage-native-final-review-invalid"
-        review, _entry, _review_log, review_log_identity = occurrence_proof
-        fields = _evidence_fields(review_path)
+        review, entry, review_log, review_log_identity = occurrence_proof
+        fields = _selected_fields(
+            review_path,
+            frozenset(
+                {
+                    "Review scope",
+                    "complete_final_diff",
+                    "cross_milestone_interactions",
+                    "governing_artifacts",
+                    "review_resolutions",
+                    "final_validation_selection",
+                    "generated_and_derived_artifacts",
+                    "cross_milestone_scope",
+                }
+            ),
+        )
         if (
-            review.stage != "code-review"
+            fields is None
+            or review.stage != "code-review"
             or review.status not in {"approved", "clean-with-notes"}
             or fields.get("Review scope") != "final-holistic"
+            or fields.get("complete_final_diff") != "reviewed"
+            or fields.get("cross_milestone_interactions") != "reviewed"
+            or fields.get("governing_artifacts") != "reviewed"
+            or fields.get("review_resolutions")
+            not in {"closed", "not-required"}
+            or fields.get("final_validation_selection") != "reviewed"
+            or fields.get("generated_and_derived_artifacts") != "current"
+            or fields.get("cross_milestone_scope") != "reviewed"
+            or entry.material_finding_ids
+            or entry.open_finding_ids
         ):
             return None, "stage-native-final-review-invalid"
         return {
             "review_outcome": review.status,
-            "review_resolution_closed": "true",
+            "review_resolution_status": "not-required",
             "final_review_clean": "true",
             "review_log_identity": review_log_identity,
         }, None
 
     if stage_name == "explain-change":
-        fields = _evidence_fields(resolved_evidence["explain-change"][1])
+        try:
+            fields = parse_stage_evidence_fields(
+                resolved_evidence["explain-change"][1],
+                required_fields={
+                    "Stage",
+                    "Status",
+                    "Final diff identity",
+                    "Final review identity",
+                },
+            )
+        except StateContractError:
+            return None, "stage-native-explanation-invalid"
         if (
             fields.get("Stage") != "explain-change"
             or fields.get("Status") != "current"
@@ -574,8 +812,17 @@ def _verify_implementation_stage_completion(
         return {"explanation_current": "true"}, None
 
     if stage_name == "verify":
-        report = _evidence_fields(resolved_evidence["verify-report"][1])
-        validation = _evidence_fields(resolved_evidence["validation"][1])
+        try:
+            report = parse_stage_evidence_fields(
+                resolved_evidence["verify-report"][1],
+                required_fields={"Stage", "Result"},
+            )
+            validation = parse_stage_evidence_fields(
+                resolved_evidence["validation"][1],
+                required_fields={"Stage", "Result"},
+            )
+        except StateContractError:
+            return None, "stage-native-verification-invalid"
         if (
             report.get("Stage") == "verify"
             and report.get("Result") == "failed"

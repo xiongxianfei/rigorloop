@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M5. Implementation Review, Correction, and Verification Integration
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M5. Implementation Review, Correction, and Verification Integration
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r1.md`
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M5 resolution and rereview, M6
-- Next stage: review-resolution M5
+- Review status: review-requested; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M5 rereview, M6
+- Next stage: code-review M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BRF-M5-CR1,BRF-M5-CR2,BRF-M5-CR3,BRF-M5-CR4,BRF-M5-CR5
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -329,7 +329,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M5. Implementation Review, Correction, and Verification Integration
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Integrate ordered milestone implementation and code review, reviewer-owned correction, final holistic review, explanation, and verification behind the same non-public boundary.
 - Requirements: `BRF-R060`-`BRF-R067`, `BRF-R078`-`BRF-R090`, `BRF-R099`-`BRF-R100`
 - Files/components likely touched:
@@ -491,6 +491,8 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Progress
 
+- 2026-07-24: Resolved `BRF-M5-CR1` through `BRF-M5-CR5` with an integrated reviewer-owned correction transaction, repository-derived verification readiness, fail-closed stage evidence and plan parsing, canonical latest-review containment, and truthful review-resolution gates. Focused suites and the selector-selected lifecycle/guide checks pass; final-source repository broad smoke passes all 12 checks in 271 seconds. M5 is review-requested for R2 and M6 remains blocked.
+- 2026-07-24: M5 R1 review-resolution implementation started for the five accepted findings. The correction is proof-first and limited to repository-backed implementation correction, authoritative stage evidence, canonical review currentness and resolution, and identity-bound verification closeout; M6 public routing remains out of scope.
 - 2026-07-24: Code-review M5 R1 requested changes in `BRF-M5-CR1` through `BRF-M5-CR5`: implementation correction is disconnected from transactions, verification closeout trusts caller assertions, stage evidence accepts contradictions, review currentness/containment is incomplete, and the review log is substituted for review resolution. M5 is resolution-needed; M6 is blocked.
 - 2026-07-24: M5 added reviewer-owned implementation-correction convergence checks, ordered milestone implementation/review routing, stage-native implementation and code-review completion proof, final-closeout plan-position resolution, verification authorization and evidence gates, durable verification-failure pause, and a hard stop before PR. The integration remains reachable only through the non-public harness and is ready for M5 code review.
 - 2026-07-24: M5 implementation started from the approved test-spec handoff. Scope is limited to the non-public implementation, milestone-review, reviewer-owned correction, final holistic review, explanation, and verification integration; public commands and compatibility aliases remain unchanged until M6.
@@ -639,6 +641,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- M5 R1 resolution failed proof-first until the implementation-correction coordinator and repository-backed verification resolver existed. The corrected slice passes 55 engine, 60 state/recovery, 15 policy, 64 automation-validator, 104 review-artifact, 156 lifecycle, and 259 skill-validator tests, plus Python compilation, diff checks, selected lifecycle/guide validation, and final-source 12-check broad smoke in 271 seconds. The selector reported expected manual routing for seven plan-owned automation Python paths covered by the explicit suites. No public workflow skill, legacy alias, generated adapter, external action, credential, or network surface changed.
 - Code-review M5 R1 used a fresh L2 blind-first reviewer after discarding one contaminated reviewer context. The reviewer and orchestrator reproduced the 52 engine and 57 state/recovery tests; the reviewer also reproduced 64 automation-validator, 15 policy, 104 review-artifact, and 156 lifecycle tests. Despite those green suites, direct probes accepted contradictory validation, duplicate milestones, label-only closeout evidence, an external review-log symlink, a stale approval after a later inconclusive review, and review-log substitution for review resolution. `BRF-M5-CR1` through `BRF-M5-CR5` are accepted/open; review-structure, change-metadata, guide-system, explicit lifecycle, and diff validation pass after recording.
 - M5 proof-first execution failed because reviewer-owned implementation-correction and implementation-stage routing interfaces did not exist. The completed slice passes all 52 engine tests, 57 state/recovery tests, 64 automation-validator tests, 15 policy tests, 104 review-artifact tests, 156 lifecycle tests, and 259 skill-validator tests, plus Python compilation, metadata, guide-system, review-closeout, explicit lifecycle, and diff checks. Direct transaction proof binds implementation completion to passed validation and a `review-requested` plan handoff, binds milestone closure to canonical formal review chronology and a closed plan milestone, durably pauses failed verification without repair, and stops successful verification before PR with no external action. The selector reported expected manual routing for the four plan-owned automation Python paths and selected the repository boundary gate; final broad smoke passed all 11 checks in 373 seconds. Public workflow commands, legacy aliases, skills, generated adapters, credentials, network access, and external systems are unchanged.
 - M4 R14 resolution failed proof-first for mixed clean-table/detailed chronology and both valid and invalid no-automation-first query snapshots. The corrected slice passes 104 review-parser, 57 state, 22 query, 64 automation-validator, 44 engine, 15 policy, 156 lifecycle, 259 skill-validator, and 53 metadata-validator tests plus Python compilation and diff checks. The selector chose review, metadata, and query checks and reported expected manual routing for the two automation-state paths; the plan-owned state/engine/validator suites covered them directly. Final repository broad smoke passes all 12 checks in 241 seconds. The approved spec, test spec, architecture, ADR, schema, public skills, adapters, M5/M6 behavior, and external-action boundary are unaffected because this correction completes existing parser chronology and state-adapter read contracts.
