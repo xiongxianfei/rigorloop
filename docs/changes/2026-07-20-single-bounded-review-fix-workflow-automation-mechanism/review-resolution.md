@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -45,10 +45,10 @@ Review closeout: code-review-m4-r13
 Review closeout: code-review-m4-r14
 Review closeout: code-review-m4-r15
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`
 - Findings resolved: 78
-- Unresolved findings: 0
-- Current result: Code-review M4 R15 independently confirmed `BRF-M4-CR22` and `BRF-M4-CR23` resolved with no new material findings. The elevated second-review gate agreed with the clean result. M4 is closed and the next stage is implement M5.
+- Unresolved findings: 5
+- Current result: Code-review M5 R1 recorded `BRF-M5-CR1` through `BRF-M5-CR5`. All five dispositions are accepted and open, all have `auto_fix_class: none`, M5 is resolution-needed, and M6 is blocked.
 
 ## Resolution Overview
 
@@ -132,6 +132,11 @@ Review closeout: code-review-m4-r15
 | BRF-M4-CR21 | accepted | resolved | Unified automation query projection now returns the exact repository-backed `StateSnapshot.document` that passed semantic validation. |
 | BRF-M4-CR22 | accepted | resolved | The canonical review parser source-sorts all accepted record formats and durable review proof binds the resulting source line. |
 | BRF-M4-CR23 | accepted | resolved | Query loading now unconditionally projects one state-adapter snapshot while unified state retains strict validation and non-unified legacy/compact shapes retain compatibility. |
+| BRF-M5-CR1 | accepted | open | Integrate reviewer-owned implementation correction through capability-bound prepared receipts and repository-backed convergence proof. |
+| BRF-M5-CR2 | accepted | open | Replace caller-selected verification readiness with current canonical final-review, explanation, verification-basis, and external-action proof. |
+| BRF-M5-CR3 | accepted | open | Replace permissive evidence compression with fail-closed authoritative artifact and active-plan parsing. |
+| BRF-M5-CR4 | accepted | open | Require contained non-symlink and latest-applicable formal review evidence for milestone and final review completion. |
+| BRF-M5-CR5 | accepted | open | Distinguish clean no-resolution reviews from material reviews requiring canonical closed review-resolution evidence. |
 
 ## Common Resolution Metadata
 
@@ -141,6 +146,93 @@ Review closeout: code-review-m4-r15
 - Validation evidence: Focused validation passed and proposal-review R4 approved with no material findings
 
 ## Finding Details
+
+### code-review-m5-r1
+
+#### BRF-M5-CR1 - Implementation correction is not integrated
+
+Finding ID: BRF-M5-CR1
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: The correction evaluator has no production caller, and a changes-requested review cannot pass stage-native completion to reach the advertised correction route.
+Required outcome: Execute only repository-backed reviewer-owned implementation-correction recipes through an exact capability and prepared receipt, with bounded paths, validation, convergence, stale-review invalidation, and rereview.
+Chosen action: Add an integrated implementation-correction coordinator and end-to-end T13 proof using canonical review and resolution artifacts.
+Safe resolution path: Bind the exact review, finding/classification set, correction budget, operation, paths, before/after identities, and validation into the transaction; require strict shrinkage and fresh independent rereview.
+Validation target: Integrated eligible correction plus every BRF-R065 pause condition, full engine/state/review/lifecycle suites, selector-chosen validation, broad smoke when selected, and code-review M5 R2.
+Validation evidence: pending
+auto_fix_class: none
+
+#### BRF-M5-CR2 - Verification readiness trusts caller assertions
+
+Finding ID: BRF-M5-CR2
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: Caller booleans and opaque nonempty identity strings can substitute for current final review, explanation, branch, commands, and verification authorization evidence.
+Required outcome: Derive every verification gate from current tracked artifacts and finalized receipts, prove complete holistic-review scope, and use a real external-action trap before reporting PR next.
+Chosen action: Remove transaction caller-boolean fallbacks and resolve the complete verification basis through stage-owned canonical evidence.
+Safe resolution path: Rehash and validate final review, review closeout, explanation, plan, branch, command, and verification inputs before capability derivation and again at completion.
+Validation target: Missing, stale, tampered, contradictory, and valid verification-basis contrasts; final-review/explanation transaction proof; external-action trap; full M5 validation and rereview.
+Validation evidence: pending
+auto_fix_class: none
+
+#### BRF-M5-CR3 - Stage-native evidence parsing fails open on contradictions
+
+Finding ID: BRF-M5-CR3
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: First-field and first-milestone parsing accepts conflicting results and duplicate milestone IDs as canonical completion evidence.
+Required outcome: Reject duplicate required fields, conflicting or unknown values, invalid structure, duplicate milestone IDs, and handoff/body contradictions before consistency checks.
+Chosen action: Replace ad hoc evidence and milestone readers with authoritative parsers or a closed exact evidence contract.
+Safe resolution path: Bind parsed validation to implementation and command identities and add direct unknown, duplicate, contradiction, recovery, and ordered-milestone regressions.
+Validation target: Proof-first contradictory result, duplicate field, duplicate milestone, handoff/body mismatch, and recovery tests plus full state/engine/lifecycle validation.
+Validation evidence: pending
+auto_fix_class: none
+
+#### BRF-M5-CR4 - Review completion accepts external and stale evidence
+
+Finding ID: BRF-M5-CR4
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: The M5 canonical-review helper follows a symlinked review log and accepts a requested approval even when a later applicable review is blocking or inconclusive.
+Required outcome: Require non-symlink canonical contained review evidence and the latest applicable occurrence for the bound artifact, review type, and milestone or final occurrence.
+Chosen action: Reuse the state adapter's repository-safe resolver and add currentness selection across canonical review-log source order.
+Safe resolution path: Reject external and internal symlinks, path escape, stale approvals, duplicate IDs, later non-approval outcomes, and identity drift for both milestone and final reviews.
+Validation target: Direct containment/currentness contrasts, full review/state/engine suites, broad smoke when selected, and code-review M5 R2.
+Validation evidence: pending
+auto_fix_class: none
+
+#### BRF-M5-CR5 - Review log is substituted for review resolution
+
+Finding ID: BRF-M5-CR5
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Decision owner: implementation author
+Decision needed: none
+Rationale: The code-review verifier requires `review-log.md` in the `review-resolution` evidence slot and derives closed resolution without parsing the canonical resolution artifact.
+Required outcome: Treat clean no-finding review and material-finding resolution as distinct gates; require canonical closed review-resolution evidence when material findings exist.
+Chosen action: Reuse formal review-resolution parsing and closeout validation, and project truthful `not-required` or `closed` evidence.
+Safe resolution path: Add clean/no-resolution, open, closed, needs-decision, stale, rejected/deferred, and older-open-finding contrasts.
+Validation target: Formal review/resolution transaction tests, full review/state/engine/lifecycle suites, and code-review M5 R2.
+Validation evidence: pending
+auto_fix_class: none
 
 ### code-review-m4-r15
 

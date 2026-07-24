@@ -1063,6 +1063,12 @@ validation:
     result: passed_104_review_57_state_22_query_tests_with_targeted_chronology_snapshot_compatibility_and_recovery_probes
   - command: review structure, closeout, metadata, guide, lifecycle, and diff validation after code-review M4 R15 recording
     result: structure_and_closeout_passed_52_reviews_78_findings_0_open_metadata_guide_lifecycle_diff_passed_with_known_nonblocking_merge_language_warning
+  - command: code-review M5 R1 L2 blind-first requirement-fidelity review with correction, evidence, review-currentness, resolution, and verification probes
+    result: changes_requested_BRF_M5_CR1_through_BRF_M5_CR5_open_M5_resolution_needed_M6_blocked
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py during code-review M5 R1
+    result: passed_52_engine_57_state_tests_but_direct_repository_backed_counterexamples_failed
+  - command: review structure, metadata, guide, lifecycle, and diff validation after code-review M5 R1 recording
+    result: structure_passed_53_reviews_83_findings_5_open_metadata_guide_lifecycle_diff_passed_with_known_nonblocking_merge_language_warning
 changed_files:
   - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
   - specs/single-bounded-review-fix-workflow-automation.md
@@ -1154,18 +1160,19 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r13.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r14.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r15.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r1.md
 review:
-  status: clean_with_notes
-  unresolved_items: 0
+  status: changes_requested
+  unresolved_items: 5
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
-  material_findings: 78
+  material_findings: 83
   closed_findings: 78
-  open_findings: 0
+  open_findings: 5
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
   plan_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
-  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r15.md
+  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r1.md
   review_log: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md
