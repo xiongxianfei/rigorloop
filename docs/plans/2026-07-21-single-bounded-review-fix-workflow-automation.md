@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
-- Current milestone state: review-requested
+- Current milestone state: closed
 - Last reviewed milestone: Final holistic M1-M6 closeout
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-final-r1.md`
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M6 final-holistic rereview
-- Next stage: final-holistic-code-review
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-final-r2.md`
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -386,7 +386,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Atomically activate unified public commands, map compatibility aliases, prohibit every legacy writer, implement cross-spec contradiction checks, regenerate derived guidance, and prove the complete mechanism.
 - Requirements: `BRF-R002`-`BRF-R005`, `BRF-R087`-`BRF-R102`, including `BRF-R098a`-`BRF-R098i`
 - Files/components likely touched:
@@ -493,6 +493,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Progress
 
+- 2026-07-25: Final holistic code-review R2 independently inspected the complete 126-file branch and focused `BRF-FH-CR1` remediation. All ten automation source/test paths classify into one category and select exactly five checks; both code-state paths execute all five; an unknown script remains blocked; and all 133 selector tests pass. No material issue was found. M6 and final code-review are closed; the next stage is `explain-change`.
 - 2026-07-25: Resolved final holistic finding `BRF-FH-CR1` proof-first. The selector now treats the Git-backed code-state provider and its tests as first-class workflow-automation paths and always selects the dedicated code-state regression with the engine, policy, state, and validator suites. All 133 selector tests pass; direct code-state selection passes five checks; the plan-selected command passes 13 checks; required broad smoke passes all 12 checks in 242 seconds. M6 is review-requested for final holistic R2.
 - 2026-07-25: Final holistic code-review R1 inspected the complete M1-M6 branch diff and challenged cross-milestone validation selection. Engine 73, state 60, code-state 12, validator 68, and selector 133 tests pass, but explicit selection of `scripts/workflow_code_state.py` and `scripts/test-workflow-code-state.py` exits 2 with `manual-routing-required`. `BRF-FH-CR1` is open; final closeout is paused for review-resolution and rereview.
 - 2026-07-25: Code-review M6 R6 independently challenged altered and omitted recovery timestamps, new-capability timestamp requirements, proposal replay, receipt replacement, and duplicate replacement authority. Five focused tests and the complete 73-test engine suite pass. No material issue was found; M6 is closed and final closeout begins with final holistic code-review.
@@ -676,6 +677,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- Final holistic code-review R2 directly projected all ten workflow-automation source/test paths: all classified as `workflow-automation`, selected exactly code-state, engine, policy, state, and validator checks, and reported no unclassified paths or registration debt. The unknown-script contrast exited 2 with `manual-routing-required`. All 133 selector tests and the five executed code-state-path checks pass. Recorded 13-check selected CI and 12-check broad smoke remain supporting evidence. No material finding was identified.
 - `BRF-FH-CR1` failed proof-first with 12 selector failures: the catalog lacked `workflow_automation.code_state_regression`, both code-state paths were unsupported, and the four existing automation path cases lacked the fifth required check. After correction, all 133 selector tests pass. `bash scripts/ci.sh --mode explicit --path scripts/workflow_code_state.py --path scripts/test-workflow-code-state.py` runs five checks successfully. The updated plan-selected M6 command runs 13 checks successfully, and required repository broad smoke passes all 12 checks in 242 seconds. The approved feature spec, architecture, ADR, test cases, public commands, runtime behavior, and generated adapters are unaffected because this correction changes only repository validation routing and its proof.
 - Final holistic code-review R1 reran 73 engine, 60 state, 12 code-state, 68 automation-validator, and 133 selector tests successfully. The direct selected-CI probe `bash scripts/ci.sh --mode explicit --path scripts/workflow_code_state.py --path scripts/test-workflow-code-state.py` exited 2 and classified both paths as unsupported manual routing. This is the direct proof for open `BRF-FH-CR1`; the review did not modify implementation.
 - Code-review M6 R6 independently reran five focused recovery/authority controls and all 73 engine tests. Altered and omitted resume timestamps preserve the persisted replacement-authority time; the new-capability branch still requires `derived_at`; both recovery variants retain same-receipt completion, no mutation replay, original-capability consumption, historical review preservation, and exactly one fresh proposal-review capability. No material issue was found. M6 is closed; final holistic code-review remains required before explanation or verification.
