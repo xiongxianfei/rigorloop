@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
-- Current milestone state: review-requested
+- Current milestone state: closed
 - Last reviewed milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
-- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r5.md`
-- Review status: changes-requested; stage=code-review; round=r5
-- Remaining in-scope implementation milestones: M6 rereview
-- Next stage: code-review M6
+- Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r6.md`
+- Review status: approved; stage=code-review; round=r6
+- Remaining in-scope implementation milestones: none
+- Next stage: final-holistic-code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -386,7 +386,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Atomically activate unified public commands, map compatibility aliases, prohibit every legacy writer, implement cross-spec contradiction checks, regenerate derived guidance, and prove the complete mechanism.
 - Requirements: `BRF-R002`-`BRF-R005`, `BRF-R087`-`BRF-R102`, including `BRF-R098a`-`BRF-R098i`
 - Files/components likely touched:
@@ -491,6 +491,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Progress
 
+- 2026-07-25: Code-review M6 R6 independently challenged altered and omitted recovery timestamps, new-capability timestamp requirements, proposal replay, receipt replacement, and duplicate replacement authority. Five focused tests and the complete 73-test engine suite pass. No material issue was found; M6 is closed and final closeout begins with final holistic code-review.
 - 2026-07-25: Resolved `BRF-M6-CR11` proof-first. Proposal-correction recovery now derives replacement proposal-review authority from the persisted correction capability, ignores altered resume timestamps, and does not require a resume timestamp when the effective capability already exists. The two recovery contrasts, 73 engine, 60 state/recovery, 68 automation-validator, and 16 policy tests pass; Python compilation, 12 selected CI checks, and final-source 11-check broad smoke pass. M6 is review-requested for R6.
 - 2026-07-25: Resolved `BRF-M6-CR8` and `BRF-M6-CR9` proof-first. Missing verification authority now persists the exact required pause through the sole state adapter and later repository-backed authorization reactivates it. Public prepared-receipt recovery retains the original transition/capability, verifies stage-owned evidence, finalizes without reinvocation, and does not rebind to advanced canonical position. T28/T30 uses public correction target/parent authorization and keeps status/state observation inside sanitized environment and external-action traps. The focused suites, 12 selected CI checks, and final-source 12-check broad smoke pass. M6 is review-requested for R4.
 - 2026-07-25: Code-review M6 R3 confirmed `BRF-M6-CR5` and `BRF-M6-CR6` resolved, classified `BRF-M6-CR7` as a failed remediation, and opened residual `BRF-M6-CR8` and `BRF-M6-CR9`. Missing verification authority leaves the canonical run active while the test fabricates a pause, and T28/T30 still substitutes failed-receipt retry plus out-of-bound status observation for prepared-receipt recovery and controlled composed proof. M6 is resolution-needed. This direct review is isolated and did not start correction.
@@ -670,6 +671,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- Code-review M6 R6 independently reran five focused recovery/authority controls and all 73 engine tests. Altered and omitted resume timestamps preserve the persisted replacement-authority time; the new-capability branch still requires `derived_at`; both recovery variants retain same-receipt completion, no mutation replay, original-capability consumption, historical review preservation, and exactly one fresh proposal-review capability. No material issue was found. M6 is closed; final holistic code-review remains required before explanation or verification.
 - `BRF-M6-CR11` failed proof-first in both required contrasts: an altered recovery timestamp minted replacement authority with `2099-01-01T00:00:00Z`, while omission raised `one-stage coordination missing: derived_at`. The correction reads replacement authority time from the persisted capability and requires `derived_at` only when deriving a new capability. Both contrasts preserve the original durable timestamp, finalize the same receipt without replay, consume the correction capability, and activate one fresh proposal-review capability. All 73 engine, 60 state/recovery, 68 automation-validator, and 16 policy tests pass; Python compilation passes; selected CI passes all 12 checks; broad smoke passes all 11 checks in 244 seconds.
 - Code-review M6 R5 classified `BRF-M6-CR10` as a failed remediation and opened residual `BRF-M6-CR11`. A direct crash/recovery probe changed only the new invocation's unbound `derived_at`; the original receipt completed and replacement proposal-review capability persisted the substituted `2099` timestamp. M6 is resolution-needed. This direct review is isolated and did not start correction.
 - `BRF-M6-CR10` proof-first recovery failed before production correction with `proposal correction paused: mutation escaped effective capability`. The corrected regression recreates the public coordinator after process loss, verifies the original prepared receipt and active capability, supplies independently serialized proposal evidence, traps any second atomic proposal write, and proves same-receipt completion, original-capability consumption, historical-review preservation, and exactly one fresh proposal-review capability.
