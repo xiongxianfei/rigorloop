@@ -59,11 +59,12 @@ Review closeout: code-review-m6-r4
 Review closeout: code-review-m6-r5
 Review closeout: code-review-m6-r6
 Review closeout: code-review-final-r1
+Review closeout: code-review-final-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`, `code-review-m6-r2`, `code-review-m6-r3`, `code-review-m6-r4`, `code-review-m6-r5`, `code-review-m6-r6`, `code-review-final-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`, `code-review-m6-r2`, `code-review-m6-r3`, `code-review-m6-r4`, `code-review-m6-r5`, `code-review-m6-r6`, `code-review-final-r1`, `code-review-final-r2`
 - Findings resolved: 104
 - Unresolved findings: 0
-- Current result: The accepted final holistic finding `BRF-FH-CR1` is resolved in implementation and selected-CI proof. M6 is review-requested for final holistic code-review R2.
+- Current result: Final holistic code-review R2 found no material issue in the complete branch or `BRF-FH-CR1` remediation. All six implementation milestones and review resolution are closed; the next stage is `explain-change`.
 
 ## Resolution Overview
 
@@ -2059,6 +2060,10 @@ Chosen action: Added an immutable `TransitionContext` and typed `TransitionEvalu
 Safe resolution path: Add typed predicate-evaluation inputs, require identity-bound branch and source-occurrence evidence, evaluate the selected rule before accepting the transition, and add complete positive and negative fixtures for architecture applicability and milestone ordering.
 Validation target: Targeted proof-first predicate-context tests, the full M1 command set, broad smoke, and code-review M1 R6.
 Validation evidence: Proof-first policy tests initially failed because the typed evaluator did not exist, and both complete-state validator regressions reproduced zero-error acceptance. After correction, all eight guarded paths have positive and missing-evidence contrasts; proposal correction, architecture applicability, identity-bound same-milestone review, unique next-milestone progression, wrong occurrence, and absent context are covered directly. The final validation passed 15 policy tests, 41 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, metadata validation, Python compilation, diff checks, and 12 repository broad-smoke checks in the final 231-second run.
+
+### code-review-final-r2
+
+No material findings; no additional review resolution is required.
 
 ### code-review-final-r1
 
