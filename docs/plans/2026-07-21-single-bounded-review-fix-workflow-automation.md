@@ -107,9 +107,9 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-final-r2.md`
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Next stage: pr
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -846,7 +846,9 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 - Implementation, milestone reviews, final holistic review, review resolution, and durable change explanation are complete.
 - The explanation-stage selected CI passed lifecycle, metadata regression, metadata, guide-system, documentation-prose, and required broad-smoke checks; broad smoke completed in 417.19 seconds.
-- Final verification and PR handoff remain pending.
+- Final verification is branch-ready: the exact reviewed-code anchor, MP2 external-action containment, all 25 PR-equivalent selected checks, and required broad smoke passed locally.
+- Post-report selected CI passed lifecycle, 53 metadata regressions, metadata, guide-system, and a fresh 487.01-second broad-smoke run over the final verification handoff surfaces.
+- Hosted CI remains unobserved; PR-body readiness and PR handoff remain pending.
 
 ## Readiness
 
