@@ -2081,7 +2081,7 @@ def coordinate_non_public_authoring_stage(
                     basis=fresh_basis,
                     affected_path_roots=tuple(review_roots),
                     mutation_categories=("change-local-review-evidence",),
-                    derived_at=str(coordination.get("derived_at", "")),
+                    derived_at=str(capability.get("derived_at", "")),
                     existing_capabilities=tuple(capabilities.values()),
                 )
             except AutomationContractError as error:
@@ -4396,7 +4396,6 @@ def coordinate_one_stage(
         "stage": stage,
         "occurrence": occurrence,
         "basis": basis,
-        "derived_at": derived_at,
         "transition_id": transition_id,
         "input_identities": input_identities,
         "invoke_stage": invoke_stage,
@@ -4414,7 +4413,6 @@ def coordinate_one_stage(
     assert stage is not None
     assert occurrence is not None
     assert basis is not None
-    assert derived_at is not None
     assert transition_id is not None
     assert input_identities is not None
     assert invoke_stage is not None
@@ -4501,6 +4499,10 @@ def coordinate_one_stage(
             )
         capability = copy.deepcopy(persisted_capability)
     else:
+        if derived_at is None:
+            raise AutomationContractError(
+                "one-stage coordination missing: derived_at"
+            )
         capability = derive_effective_capability(
             capability_id=capability_id,
             parent=parent,
