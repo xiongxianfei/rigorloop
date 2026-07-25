@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r4.md`
 - Review status: changes-requested; stage=code-review; round=r4
-- Remaining in-scope implementation milestones: M6 resolution and rereview
-- Next stage: review-resolution M6
+- Remaining in-scope implementation milestones: M6 rereview
+- Next stage: code-review M6
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BRF-M6-CR10
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -386,7 +386,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Atomically activate unified public commands, map compatibility aliases, prohibit every legacy writer, implement cross-spec contradiction checks, regenerate derived guidance, and prove the complete mechanism.
 - Requirements: `BRF-R002`-`BRF-R005`, `BRF-R087`-`BRF-R102`, including `BRF-R098a`-`BRF-R098i`
 - Files/components likely touched:
@@ -623,6 +623,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 | Date | Decision | Reason | Alternatives rejected |
 | --- | --- | --- | --- |
+| 2026-07-25 | Reconstruct proposal-correction settlement from the persisted reviewed identity, closed compiled payload, current proposal bytes, and verified completion proof. | Recovery must work in a new process without replaying mutation or trusting invocation-local changed-path and expected-identity variables. | Persisting transient callback state, silently rerunning the correction, or weakening exact reviewed-prefix verification. |
 | 2026-07-21 | Build the immutable model before enabling any new writer. | Closed policy and state contracts provide a safe base for transactional and routing behavior. | Editing public workflow guidance first would expose an unimplemented contract. |
 | 2026-07-21 | Establish the sole state writer before the transition engine. | Prepared receipts and recovery must exist before a coordinator can safely invoke stages. | Letting the engine write YAML directly would duplicate persistence and recovery logic. |
 | 2026-07-21 | Reserve public and legacy command cutover for M6. | Compatibility, retired-writer removal, and public guidance must activate atomically after internal behavior is proven. | Editing public routing during M4 or M5 could expose a partially migrated engine. |
@@ -668,6 +669,10 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- `BRF-M6-CR10` proof-first recovery failed before production correction with `proposal correction paused: mutation escaped effective capability`. The corrected regression recreates the public coordinator after process loss, verifies the original prepared receipt and active capability, supplies independently serialized proposal evidence, traps any second atomic proposal write, and proves same-receipt completion, original-capability consumption, historical-review preservation, and exactly one fresh proposal-review capability.
+- M6 R4 resolution passes all 72 engine, 60 state/recovery, 68 automation-validator, and 16 policy tests plus Python compilation. The plan-selected CI command passes all 12 selected checks, and required repository broad smoke passes all 12 checks in 279 seconds. Review structure, change metadata, explicit lifecycle state sync, guide-system validation, and diff checks are required again after final handoff synchronization.
+- Aligned-surface audit for `BRF-M6-CR10`: the approved specification and test specification already require universal evidence-first recovery through `BRF-R068`-`BRF-R077`, T28, and T30; the approved architecture and ADR already assign settlement to the existing coordinator/state boundary. Public skills, schemas, generated adapters, migration behavior, external actions, and other stage policies are unaffected because this correction removes transient state only from proposal-correction settlement and adds its missing regression.
+- The user accepted `BRF-M6-CR10`. M6 correction implementation started with a proof-first public crash-after-proposal-write regression. Scope is limited to restart-safe proposal-correction settlement, its focused proof, and lifecycle handoff; the approved spec, test spec, architecture, ADR, public command surface, migration contract, and external-action boundary remain unchanged.
 - M6 R3 resolution failed proof-first because the public boundary raised without durable pause and the public coordinator rejected the original prepared receipt. The corrected slice passes 71 engine, 60 state/recovery, 68 automation-validator, and 16 policy tests plus Python compilation. The exact final-source plan-selected CI command passes 12 checks, and required repository broad smoke passes all 12 checks in 285 seconds. Direct proof covers durable pause/reactivation, unchanged transition/capability identity, evidence-first reconciliation without stage reinvocation, advanced canonical evidence after interruption, public correction target/parent authorization, controlled status/state observation, teardown, and zero external calls. The approved spec, test spec, architecture, ADR, public skills, generated adapters, external-action boundary, and migration contract are unaffected because this correction implements their existing M6 requirements inside the selected engine, state adapter, and proof fixture.
 - Code-review M6 R4 confirmed `BRF-M6-CR8` resolved, classified `BRF-M6-CR9` as a failed remediation, and opened residual `BRF-M6-CR10`. A direct public crash-after-proposal-write probe preserved the original prepared receipt and capability but fresh recovery with valid evidence paused because proposal-correction post-completion validation depends on invocation-local changed-path and expected-identity variables. M6 is resolution-needed. This direct review is isolated and did not start correction.
 - Code-review M6 R3 independently ran the targeted T30 composition test and all 70 engine tests; both passed. A direct temporary public verify-target probe nevertheless raised for missing authority while leaving the durable run `active`. Source inspection showed the fixture synthesizes the missing pause, finalizes its interruption receipt as `failed` before starting a new transition, directly injects correction transaction state, and observes status after leaving the sanitized environment and external-action traps. `BRF-M6-CR8` and `BRF-M6-CR9` are open; review structure, change metadata, lifecycle state sync, guide-system, and diff checks pass after recording, with only the pre-existing merge-language warning.
