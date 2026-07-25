@@ -8,11 +8,15 @@ requirements:
   - Record a proposal for capability-preserving progressive disclosure before amending the published-skill contract.
   - Preserve every behavior-significant skill capability through an explicit layer and disposition.
   - Measure scenario-loaded context rather than only flat SKILL.md size.
+  - Incorporate merged automation-review evidence without treating raw finding count as a quality oracle.
+  - Map examples to general boundary capabilities or a separately owned capability gap.
   - Keep formal review, authority, safety, validation, stop, claim, and handoff boundaries available at the point of use.
   - Pilot the proposed reference pattern on code-review before broader rollout.
+  - Keep boundary-first proof-modeling behavior in a separately reviewed proposal and sequence it before pilot implementation.
   - Preserve public adapter portability and packaged-resource integrity.
 tests:
   - Proposal-review approves the direction or records material findings before spec work.
+  - Proposal-review confirms the capability-preserving refactor does not silently add or canonize boundary-modeling behavior.
   - Artifact lifecycle validation covers the draft proposal.
   - Change metadata validation covers the baseline proposal record.
 validation:
