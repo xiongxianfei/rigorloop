@@ -57,11 +57,12 @@ Review closeout: code-review-m6-r2
 Review closeout: code-review-m6-r3
 Review closeout: code-review-m6-r4
 Review closeout: code-review-m6-r5
+Review closeout: code-review-m6-r6
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`, `code-review-m6-r2`, `code-review-m6-r3`, `code-review-m6-r4`, `code-review-m6-r5`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`, `code-review-m6-r2`, `code-review-m6-r3`, `code-review-m6-r4`, `code-review-m6-r5`, `code-review-m6-r6`
 - Findings resolved: 103
 - Unresolved findings: 0
-- Current result: `BRF-M6-CR11` is resolved. Proposal-correction recovery now derives replacement proposal-review authority from the persisted correction capability and is invariant to altered or omitted resume timestamps. M6 is review-requested for code-review R6.
+- Current result: Code-review M6 R6 found no material issue in the `BRF-M6-CR11` correction. All six implementation milestones are closed; final closeout begins with final holistic code-review.
 
 ## Resolution Overview
 
@@ -382,6 +383,10 @@ needs-decision rationale: none
 Validation target: `BRF-R068` through `BRF-R077`, T28, T30, and public proposal-correction recovery.
 Validation evidence: Proof-first contrasts failed before correction: altered recovery time persisted `2099-01-01T00:00:00Z`, and omitted recovery time raised `one-stage coordination missing: derived_at`. After correction, both contrasts preserve `2026-07-22T00:01:00Z` from the persisted capability, complete the original receipt without replay, consume the original capability, and activate exactly one fresh review capability. All 73 engine, 60 state/recovery, 68 automation-validator, and 16 policy tests pass; Python compilation passes; selected CI passes 12 checks; broad smoke passes 11 checks in 244 seconds.
 auto_fix_class: none
+
+### code-review-m6-r6
+
+No material findings; no additional review resolution is required.
 
 ### code-review-m5-r8
 
