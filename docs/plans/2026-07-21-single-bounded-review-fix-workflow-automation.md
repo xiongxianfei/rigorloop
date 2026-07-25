@@ -8,7 +8,7 @@ Terminal disposition: none
 - Change ID: 2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
 - Owner: agent
 - Start date: 2026-07-21
-- Last updated: 2026-07-24
+- Last updated: 2026-07-25
 - Related issue or PR: none yet
 - Supersedes: none
 - broad_smoke_required: true
@@ -107,9 +107,9 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-final-r2.md`
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -844,7 +844,9 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Outcome and retrospective
 
-- Pending implementation, milestone reviews, final holistic review, explanation, verification, and PR handoff.
+- Implementation, milestone reviews, final holistic review, review resolution, and durable change explanation are complete.
+- The explanation-stage selected CI passed lifecycle, metadata regression, metadata, guide-system, documentation-prose, and required broad-smoke checks; broad smoke completed in 417.19 seconds.
+- Final verification and PR handoff remain pending.
 
 ## Readiness
 
