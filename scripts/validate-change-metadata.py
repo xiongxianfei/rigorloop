@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import shlex
@@ -16,6 +17,10 @@ from change_metadata_semantics import validate_requirement_fidelity_metadata
 from change_metadata_semantics import validate_review_gate_metadata
 from review_artifact_validation import summarize_review_evidence
 from review_artifact_validation import validate_change_root as validate_review_artifact_root
+from validate_workflow_automation import (
+    has_read_only_legacy_migration,
+    validate_workflow_automation,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -228,6 +233,11 @@ def parse_scalar(text: str) -> Any:
     if not value:
         return ""
     if value[0] == value[-1] and value[0] in {"'", '"'} and len(value) >= 2:
+        if value[0] == '"':
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError as exc:
+                raise MetadataValidationError(f"invalid quoted scalar: {exc.msg}") from exc
         return value[1:-1]
     if value in {"true", "false"}:
         return value == "true"
@@ -280,7 +290,7 @@ def parse_yaml_block(lines: list[Line], index: int, indent: int) -> tuple[Any, i
         raise MetadataValidationError(
             f"line {line.lineno}: expected indentation {indent}, found {line.indent}"
         )
-    if line.text.startswith("- "):
+    if line.text == "-" or line.text.startswith("- "):
         return parse_yaml_list(lines, index, indent)
     return parse_yaml_mapping(lines, index, indent)
 
@@ -295,7 +305,7 @@ def parse_yaml_mapping(lines: list[Line], index: int, indent: int) -> tuple[dict
             raise MetadataValidationError(
                 f"line {line.lineno}: unexpected indentation inside mapping"
             )
-        if line.text.startswith("- "):
+        if line.text == "-" or line.text.startswith("- "):
             raise MetadataValidationError(
                 f"line {line.lineno}: unexpected list item where mapping entry was expected"
             )
@@ -326,11 +336,11 @@ def parse_yaml_list(lines: list[Line], index: int, indent: int) -> tuple[list[An
             raise MetadataValidationError(
                 f"line {line.lineno}: unexpected indentation inside list"
             )
-        if not line.text.startswith("- "):
+        if line.text != "-" and not line.text.startswith("- "):
             raise MetadataValidationError(
                 f"line {line.lineno}: expected list item starting with '- '"
             )
-        remainder = line.text[2:].lstrip()
+        remainder = line.text[1:].lstrip()
         index += 1
         if not remainder:
             if index >= len(lines) or lines[index].indent <= indent:
@@ -378,7 +388,7 @@ def parse_inline_mapping_item(
             raise MetadataValidationError(
                 f"line {line.lineno}: unexpected indentation inside inline mapping item"
             )
-        if line.text.startswith("- "):
+        if line.text == "-" or line.text.startswith("- "):
             break
         key, value = split_mapping_entry(line.text, line.lineno)
         index += 1
@@ -501,6 +511,29 @@ def validate_metadata_semantics(data: Any, metadata_path: Path | None = None) ->
         return []
 
     errors: list[str] = []
+    workflow = data.get("workflow")
+    if isinstance(workflow, dict):
+        automation = workflow.get("automation")
+        if automation is not None:
+            errors.extend(
+                validate_workflow_automation(
+                    automation,
+                    top_level_change_id=data.get("change_id"),
+                )
+            )
+            if (
+                workflow.get("autoprogression") is not None
+                and not has_read_only_legacy_migration(automation)
+            ):
+                errors.append(
+                    "workflow: mixed writable workflow.automation and legacy workflow.autoprogression state"
+                )
+            elif workflow.get("autoprogression") is not None:
+                errors.extend(
+                    validate_legacy_migration_binding(
+                        automation, workflow["autoprogression"]
+                    )
+                )
     errors.extend(validate_autoprogression_policy(data))
     validation = data.get("validation")
     if isinstance(validation, list):
@@ -540,6 +573,52 @@ def validate_metadata_semantics(data: Any, metadata_path: Path | None = None) ->
                 f"use one of: {allowed_keys}"
             )
     return errors
+
+
+def validate_legacy_migration_binding(
+    automation: Any, autoprogression: Any
+) -> list[str]:
+    """Bind every read-only migration marker to its exact legacy source record."""
+
+    if not isinstance(automation, dict) or not isinstance(autoprogression, dict):
+        return ["workflow: migrated legacy and unified state must both be objects"]
+    migrations = automation.get("migration_receipts")
+    if not isinstance(migrations, dict):
+        return ["workflow.automation.migration_receipts: required for legacy read-only state"]
+
+    records: list[tuple[str, dict[str, Any]]] = []
+    if isinstance(autoprogression.get("profile"), str):
+        records.append((autoprogression["profile"], autoprogression))
+    else:
+        for key, expected_profile in sorted(AUTOPROGRESSION_NAMED_RECORDS.items()):
+            record = autoprogression.get(key)
+            if not isinstance(record, dict):
+                continue
+            state = record.get("state", record.get("status"))
+            if state in {"off", "completed", "cancelled"}:
+                continue
+            records.append((record.get("profile", expected_profile), record))
+    if len(records) != 1:
+        return ["workflow: migration must bind exactly one active legacy source record"]
+
+    mechanism, record = records[0]
+    payload = json.dumps(
+        record, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    expected_identity = f"sha256:{hashlib.sha256(payload).hexdigest()}"
+    matches = [
+        receipt
+        for receipt in migrations.values()
+        if isinstance(receipt, dict)
+        and receipt.get("source_mechanism") == mechanism
+        and receipt.get("source_record_identity") == expected_identity
+        and receipt.get("legacy_read_only") is True
+    ]
+    if len(matches) != 1:
+        return [
+            "workflow.automation.migration_receipts: legacy source mechanism and identity must match exactly"
+        ]
+    return []
 
 
 def validate_autoprogression_policy(data: dict[str, Any]) -> list[str]:

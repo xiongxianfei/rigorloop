@@ -13,6 +13,7 @@ import unittest
 from pathlib import Path
 
 from review_artifact_validation import finding_closure_state
+from review_artifact_validation import parse_formal_review_log
 from review_artifact_validation import summarize_review_evidence
 from review_artifact_validation import validate_change_root
 
@@ -937,6 +938,64 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             0,
             msg=f"stdout:\n{cli_result.stdout}\nstderr:\n{cli_result.stderr}",
         )
+
+    def test_review_log_parser_preserves_source_order_across_record_formats(
+        self,
+    ) -> None:
+        cases = {
+            "clean-then-detailed": """
+                # Review Log
+
+                | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
+                |---|---|---:|---|---|---|---:|---|
+                | proposal-review-r1 | proposal-review | r1 | `docs/proposals/example.md` | `reviews/proposal-review-r1.md` | approved | 0 | recorded |
+
+                ### Review entry
+                Review ID: proposal-review-r2
+                Stage: proposal-review
+                Round: r2
+                Status: blocked
+                Detailed record: reviews/proposal-review-r2.md
+                Resolution: none
+                Material findings: BRF-EXAMPLE
+                Open findings: BRF-EXAMPLE
+            """,
+            "detailed-then-clean": """
+                # Review Log
+
+                ### Review entry
+                Review ID: proposal-review-r1
+                Stage: proposal-review
+                Round: r1
+                Status: blocked
+                Detailed record: reviews/proposal-review-r1.md
+                Resolution: none
+                Material findings: BRF-EXAMPLE
+                Open findings: BRF-EXAMPLE
+
+                | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
+                |---|---|---:|---|---|---|---:|---|
+                | proposal-review-r2 | proposal-review | r2 | `docs/proposals/example.md` | `reviews/proposal-review-r2.md` | approved | 0 | recorded |
+            """,
+        }
+        for case, log_text in cases.items():
+            with self.subTest(case=case):
+                root = Path(tempfile.mkdtemp(prefix="review-log-order-"))
+                self.addCleanupTree(root)
+                review_log = root / "review-log.md"
+                write_text(review_log, log_text)
+
+                entries, findings = parse_formal_review_log(review_log)
+
+                self.assertFalse(
+                    findings,
+                    msg="\n".join(finding.message for finding in findings),
+                )
+                self.assertEqual(
+                    [entry.review_id for entry in entries],
+                    ["proposal-review-r1", "proposal-review-r2"],
+                )
+                self.assertLess(entries[0].line, entries[1].line)
 
     def test_clean_receipt_table_requires_matching_record_and_zero_material_count(self) -> None:
         root = self.clean_receipt_fixture()

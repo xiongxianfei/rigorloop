@@ -1365,6 +1365,16 @@ def _inspect_artifact(path: Path, root: Path, tracked_revision: str | None = Non
     )
 
 
+def inspect_lifecycle_artifact(path: Path, root: Path) -> ArtifactInspection | None:
+    """Return the canonical lifecycle inspection for one working-tree artifact.
+
+    Workflow automation uses this narrow public adapter so stage completion is
+    proven by the repository's lifecycle parser instead of a second parser.
+    """
+
+    return _inspect_artifact(path.resolve(), root.resolve())
+
+
 def _tracked_markdown_paths(root: Path, tracked_revision: str) -> list[Path]:
     result = subprocess.run(
         ["git", "-C", str(root), "ls-tree", "-r", "--name-only", "-z", tracked_revision],

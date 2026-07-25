@@ -13,10 +13,12 @@ flowchart TB
     token_bench["Token-cost benchmark fixtures and reports<br/>[Markdown, YAML, JSONL]"]:::container
     cli["RigorLoop CLI package<br/>[Node/npm package]"]:::container
     architecture["Canonical architecture package<br/>[Markdown and Mermaid]"]:::container
-    changes["Change-local evidence<br/>[Markdown and YAML]"]:::container
+    changes["Change-local evidence<br/>[Markdown and YAML, including change.yaml#workflow.automation]"]:::container
+    workflow_skill["Workflow skill<br/>[Markdown: public orchestration semantics]"]:::container
+    stage_skills["Stage-owning skills and adapter templates<br/>[Markdown and templates]"]:::container
+    automation["Workflow automation tooling<br/>[Python: scripts/workflow_automation*.py]"]:::container
     validation_cache["Local validation execution cache<br/>[Untracked local state]"]:::container
     templates["Templates and diagram styles<br/>[Markdown and Mermaid]"]:::container
-    skills["Canonical skills and adapter templates<br/>[Markdown and templates]"]:::container
     scripts["Validation and generation scripts<br/>[Python and shell]"]:::container
     generated["Generated runtime mirrors and adapters<br/>[Generated Markdown, metadata, commands, and release archives]"]:::container
     release["Release evidence<br/>[YAML, Markdown, checksums, smoke evidence]"]:::container
@@ -29,19 +31,27 @@ flowchart TB
   contributor -->|authors benchmark prompts, fixtures, reports, and metadata in| token_bench
   contributor -->|runs help, version, multi-adapter init, and new-change through| cli
   contributor -->|uses scaffolds from| templates
-  contributor -->|edits canonical sources in| skills
+  contributor -->|edits public automation semantics in| workflow_skill
+  contributor -->|edits canonical stage sources in| stage_skills
   reviewer -->|reviews selected architecture surface and ADR need in| architecture
   reviewer -->|reviews change-local reasoning and closeout when present in| changes
   governance -->|defines one standard workflow, manual-skill isolation, and source-of-truth rules for| lifecycle
   governance -->|defines lowest-sufficient architecture-surface rules for| architecture
-  governance -->|declares authored/generated boundaries for| skills
+  governance -->|declares authored/generated boundaries for| stage_skills
   lifecycle -->|routes architecture work to no-impact rationale, direct update, ADR, or proposal/spec gap| architecture
-  skills -->|project-map creates, refreshes, and audits| project_maps
+  stage_skills -->|project-map creates, refreshes, and audits| project_maps
   architecture -->|reads current-state orientation and evidence from| project_maps
   changes -->|may expose durable truth that must be represented in| architecture
   changes -->|record reviews, explanations, validation gaps, and final closeout evidence for| lifecycle
+  governance -->|defines normative stage, target, authority, and migration contracts for| workflow_skill
+  workflow_skill -->|invokes normalized automation commands through| automation
+  automation -->|derives canonical position from and invokes stage-owned work through| stage_skills
+  automation -->|reads lifecycle artifacts and active-plan state from| lifecycle
+  automation -->|reads and writes only change.yaml#workflow.automation through its state adapter in| changes
+  scripts -->|validate closed automation state and canonical evidence consistency for| automation
   templates -->|scaffold architecture and ADR records in| lifecycle
-  skills -->|are transformed by| scripts
+  workflow_skill -->|is transformed by| scripts
+  stage_skills -->|are transformed by| scripts
   scripts -->|generate temp output, tracked adapter output, and release artifacts for| generated
   scripts -->|runs benchmarks, analyzes JSONL, and validates metadata for| token_bench
   cli -->|uses bundled official adapter metadata, adapter descriptors, and small scaffolds from| release

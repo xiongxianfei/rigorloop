@@ -2,7 +2,17 @@
 
 ## Status
 
-approved
+superseded
+
+superseded_by: specs/single-bounded-review-fix-workflow-automation.md
+
+## Unified automation amendment
+
+Upon approval of [Single Bounded Review-Fix Workflow Automation](single-bounded-review-fix-workflow-automation.md), its exact cross-spec disposition ledger governs this spec's legacy writer, target, status, correction, compatibility, and acceptance surfaces.
+`superseded` entries no longer authorize `workflow.autoprogression.review_fix` writes.
+`preserved-rebound` entries remain mandatory under the corresponding unified stage policy or run and do not retain a second writer.
+The unified spec's closed affected-selector registry covers every normative requirement and acceptance surface in this spec.
+After the unified spec is approved and lifecycle state is synchronized, this spec becomes a historical compatibility source with `superseded_by: specs/single-bounded-review-fix-workflow-automation.md` and no independent live automation authority.
 
 ## Related proposal
 
@@ -184,7 +194,7 @@ R45. The feature MUST NOT expose partial user-visible review-fix autoprogression
 
 Inputs:
 
-- User command: `$workflow auto: <target-stage>`, `$workflow auto: status`, or `$workflow auto: off`.
+- `RFA-INPUT-1`: User command: `$workflow auto: <target-stage>`, `$workflow auto: status`, or `$workflow auto: off`.
 - Existing proposal-side artifacts and review records.
 - Change-local metadata under `docs/changes/<change-id>/`.
 - Existing authoring and review skill outputs.
@@ -192,7 +202,7 @@ Inputs:
 
 Outputs:
 
-- Updated `workflow.autoprogression.review_fix` state.
+- `RFA-OUTPUT-1`: Updated `workflow.autoprogression.review_fix` state.
 - Authored or reviewed proposal-side lifecycle artifacts.
 - Review records and `review-log.md` entries.
 - `review-resolution.md` disposition entries for auto-applied material findings.
@@ -200,7 +210,7 @@ Outputs:
 
 ## State and invariants
 
-- Review-fix authorization lives only under `workflow.autoprogression.review_fix`.
+- `RFA-STATE-1`: Review-fix authorization lives only under `workflow.autoprogression.review_fix`.
 - Review-fix state is profile-local evidence and does not own active plan state, branch readiness, PR readiness, or final workflow completion.
 - Review gates remain authoritative. The driver cannot treat a fix as approved until the same review reruns cleanly.
 - Direct review invocation isolation is preserved.
@@ -225,9 +235,9 @@ Outputs:
 
 ## Compatibility and migration
 
-This is an additive workflow profile. Existing manual skill invocations remain isolated by default. Existing `authoring-through-plan-review` and `implementation-through-verify` profiles keep their current semantics.
+`RFA-COMPAT-1`: This is an additive workflow profile. Existing manual skill invocations remain isolated by default. Existing `authoring-through-plan-review` and `implementation-through-verify` profiles keep their current semantics.
 
-Existing change records without `workflow.autoprogression.review_fix` state are treated as unarmed. No migration is required for historical reviews or proposals.
+`RFA-COMPAT-2`: Existing change records without `workflow.autoprogression.review_fix` state are treated as unarmed. No migration is required for historical reviews or proposals.
 
 When the feature is disabled or rolled back, review records and review-resolution history remain valid evidence. Disabling the feature removes automatic continuation and automatic safe-fix application, not recorded lifecycle artifacts.
 
@@ -340,4 +350,5 @@ None.
 
 ## Readiness
 
-Approved and ready for architecture.
+Superseded by [Single Bounded Review-Fix Workflow Automation](single-bounded-review-fix-workflow-automation.md).
+This artifact remains historical compatibility evidence and is not a current writable automation authority.

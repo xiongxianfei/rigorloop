@@ -4,14 +4,50 @@
 from __future__ import annotations
 
 import json
+import copy
+import hashlib
+import importlib.util
 import subprocess
+import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
+
+from workflow_automation_state import (
+    WorkflowAutomationStateStore,
+    compute_transition_key,
+    dump_yaml,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "query-change-record.py"
+
+
+def _load_automation_fixtures():
+    path = ROOT / "scripts" / "test-validate-workflow-automation.py"
+    spec = importlib.util.spec_from_file_location("query_automation_fixtures", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+AUTOMATION_FIXTURES = _load_automation_fixtures()
+
+
+def _load_query_module():
+    spec = importlib.util.spec_from_file_location(
+        "query_change_record_under_test",
+        SCRIPT,
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def run_query(*args: str, repo_root: Path | None = None) -> subprocess.CompletedProcess[str]:
@@ -126,6 +162,129 @@ changed_files:
   - scripts/query-change-record.py
 """
 
+    def unified_automation_yaml(self) -> str:
+        return self.legacy_change_yaml() + """workflow:
+  automation:
+    mechanism: bounded-review-fix
+    schema_version: 1
+    run:
+      run_id: run-001
+      change_id: 2026-05-22-legacy-query
+      status: paused
+      policy_version: 1
+      target:
+        stage: verify
+        occurrence:
+          kind: final
+        bound_at: 2026-07-22T00:00:00Z
+        completion:
+          rule: fresh verification passes
+      stop_reason: verification-authorization-required
+    parent_authorizations: {}
+    effective_capabilities: {}
+    transition_receipts: {}
+    canonical_position_source: plan-current-handoff-summary
+    observed_identities:
+      plan: sha256:plan
+    external_actions: prohibited
+"""
+
+    def make_completed_review_change(
+        self,
+    ) -> tuple[Path, Path, WorkflowAutomationStateStore]:
+        state = copy.deepcopy(AUTOMATION_FIXTURES.valid_automation())
+        receipt = AUTOMATION_FIXTURES.add_valid_receipt(state)
+        receipt["transition_key"] = compute_transition_key(receipt)
+        document = {
+            "change_id": "2026-07-20-example",
+            "title": "Completed review query fixture",
+            "classification": "default",
+            "risk": "medium",
+            "review": {"status": "resolved", "unresolved_items": 0},
+            "workflow": {"automation": state},
+        }
+        repo = self.make_change("2026-07-20-example", dump_yaml(document))
+        metadata_path = (
+            repo
+            / "docs/changes/2026-07-20-example/change.yaml"
+        )
+        store = WorkflowAutomationStateStore(metadata_path)
+
+        proposal = repo / "docs/proposals/example.md"
+        proposal.parent.mkdir(parents=True)
+        proposal.write_text("# Example proposal\n", encoding="utf-8")
+        proposal_identity = (
+            "sha256:" + hashlib.sha256(proposal.read_bytes()).hexdigest()
+        )
+        review = (
+            repo
+            / "docs/changes/2026-07-20-example/reviews/proposal-review-r1.md"
+        )
+        review.parent.mkdir(parents=True)
+        review.write_text(
+            """# Proposal review
+
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Reviewer: query fixture reviewer
+Target: docs/proposals/example.md
+Status: approved
+Material findings: None
+""",
+            encoding="utf-8",
+        )
+        review_identity = (
+            "sha256:" + hashlib.sha256(review.read_bytes()).hexdigest()
+        )
+        (review.parent.parent / "review-log.md").write_text(
+            """# Review Log
+
+### Review entry
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Status: approved
+Detailed record: reviews/proposal-review-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+""",
+            encoding="utf-8",
+        )
+        evidence = {
+            "path": review.relative_to(repo).as_posix(),
+            "identity": review_identity,
+        }
+        snapshot = store.read()
+        replacement = copy.deepcopy(snapshot.automation)
+        persisted_receipt = replacement["transition_receipts"][
+            "transition-001"
+        ]
+        persisted_receipt["input_identities"]["proposal"] = proposal_identity
+        persisted_receipt["transition_key"] = compute_transition_key(
+            persisted_receipt
+        )
+        replacement["effective_capabilities"][
+            persisted_receipt["effective_capability_id"]
+        ]["basis"]["proposal_identity"] = proposal_identity
+        store.replace_automation(
+            replacement,
+            expected_document_identity=snapshot.document_identity,
+        )
+        store.finalize_transition(
+            "transition-001",
+            status="completed",
+            outputs=[evidence],
+            canonical_sync_status="synchronized",
+            canonical_sync_evidence={"proposal-review": evidence},
+            canonical_sync_observed_identities={
+                "proposal-review": review_identity
+            },
+            expected_document_identity=store.read().document_identity,
+        )
+        return repo, metadata_path, store
+
     def compact_path_vars_change_yaml(
         self,
         *,
@@ -180,6 +339,225 @@ validation_summary:
         self.assertEqual(payload["open_blockers"], ["code-review-r1"])
         self.assertIn("validation_history", payload["detail_pointers"])
         self.assertNotIn("validation_events", payload)
+
+    def test_summary_reports_unified_automation_without_mutation(self) -> None:
+        repo = self.make_change(
+            "2026-05-22-legacy-query", self.unified_automation_yaml()
+        )
+        path = repo / "docs" / "changes" / "2026-05-22-legacy-query" / "change.yaml"
+        before = path.read_bytes()
+
+        result = run_query("2026-05-22-legacy-query", "summary", repo_root=repo)
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        policy = payload["automation_policy"]
+        self.assertEqual(policy["source"], "unified")
+        self.assertEqual(policy["target"]["stage"], "verify")
+        self.assertEqual(policy["canonical_position_source"], "plan-current-handoff-summary")
+        self.assertEqual(policy["stop_reason"], "verification-authorization-required")
+        self.assertEqual(policy["latest_evidence_identities"], {"plan": "sha256:plan"})
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_summary_rejects_invalid_unified_automation_without_mutation(self) -> None:
+        mutations = {
+            "run-status": lambda body: body.replace(
+                "      status: paused", "      status: impossible", 1
+            ),
+            "policy-version": lambda body: body.replace(
+                "      policy_version: 1", "      policy_version: 999", 1
+            ),
+            "receipt-status": lambda body: body.replace(
+                "    transition_receipts: {}",
+                "    transition_receipts:\n"
+                "      transition-unknown:\n"
+                "        status: impossible",
+                1,
+            ),
+            "migration-source": lambda body: body.replace(
+                "    canonical_position_source: plan-current-handoff-summary",
+                "    migration_receipts:\n"
+                "      migration-unknown:\n"
+                "        source_mechanism: impossible\n"
+                "    canonical_position_source: plan-current-handoff-summary",
+                1,
+            ),
+        }
+        for case, mutate in mutations.items():
+            with self.subTest(case=case):
+                body = mutate(self.unified_automation_yaml())
+                repo = self.make_change("2026-05-22-legacy-query", body)
+                path = (
+                    repo
+                    / "docs"
+                    / "changes"
+                    / "2026-05-22-legacy-query"
+                    / "change.yaml"
+                )
+                before = path.read_bytes()
+
+                result = run_query(
+                    "2026-05-22-legacy-query", "summary", repo_root=repo
+                )
+                payload = parse_json(result)
+
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(payload["code"], "invalid-automation-state")
+                self.assertIn("unknown value", payload["detail"])
+                self.assertEqual(path.read_bytes(), before)
+
+    def test_summary_rejects_stale_transition_key_without_mutation(self) -> None:
+        state = copy.deepcopy(AUTOMATION_FIXTURES.valid_automation())
+        receipt = AUTOMATION_FIXTURES.add_valid_receipt(state)
+        receipt["transition_key"] = compute_transition_key(receipt)
+        receipt["expected_postcondition"] = {
+            "review_occurrence": "tampered-after-key"
+        }
+        document = {
+            "change_id": "2026-07-20-example",
+            "title": "Stale transition key query fixture",
+            "classification": "default",
+            "risk": "medium",
+            "review": {"status": "resolved", "unresolved_items": 0},
+            "workflow": {"automation": state},
+        }
+        repo = self.make_change("2026-07-20-example", dump_yaml(document))
+        path = repo / "docs" / "changes" / "2026-07-20-example" / "change.yaml"
+        before = path.read_bytes()
+
+        result = run_query("2026-07-20-example", "summary", repo_root=repo)
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["code"], "invalid-automation-state")
+        self.assertIn("transition_key", payload["detail"])
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_summary_rejects_semantically_forged_review_state_without_mutation(
+        self,
+    ) -> None:
+        repo, metadata_path, store = self.make_completed_review_change()
+        document = copy.deepcopy(store.read().document)
+        automation = document["workflow"]["automation"]
+        receipt = automation["transition_receipts"]["transition-001"]
+        for surface in (
+            receipt["proposal_review_evidence"],
+            receipt["proposal_review_route"],
+            automation["latest_review_result"],
+        ):
+            surface["review_id"] = "proposal-review-forged"
+        metadata_path.write_text(dump_yaml(document), encoding="utf-8")
+        before = metadata_path.read_bytes()
+
+        result = run_query(
+            "2026-07-20-example",
+            "summary",
+            repo_root=repo,
+        )
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["code"], "invalid-automation-state")
+        self.assertIn("proposal-review semantic evidence", payload["detail"])
+        self.assertEqual(metadata_path.read_bytes(), before)
+
+    def test_load_projects_the_same_repository_snapshot_it_validates(
+        self,
+    ) -> None:
+        repo, metadata_path, store = self.make_completed_review_change()
+        forged = copy.deepcopy(store.read().document)
+        automation = forged["workflow"]["automation"]
+        receipt = automation["transition_receipts"]["transition-001"]
+        for surface in (
+            receipt["proposal_review_evidence"],
+            receipt["proposal_review_route"],
+            automation["latest_review_result"],
+        ):
+            surface["review_id"] = "proposal-review-forged"
+        before = metadata_path.read_bytes()
+        query_module = _load_query_module()
+
+        parser = mock.Mock()
+        parser.load_yaml.return_value = forged
+        with mock.patch.object(
+            query_module,
+            "load_metadata_parser",
+            return_value=parser,
+        ):
+            _, data, error = query_module.load_change_metadata(
+                repo,
+                "2026-07-20-example",
+            )
+
+        self.assertIsNone(error)
+        self.assertIsNotNone(data)
+        self.assertEqual(
+            data["workflow"]["automation"]["latest_review_result"][
+                "review_id"
+            ],
+            "proposal-review-r1",
+        )
+        self.assertEqual(metadata_path.read_bytes(), before)
+
+    def test_load_does_not_bypass_unified_state_when_first_parse_lacks_automation(
+        self,
+    ) -> None:
+        for tracked_state in ("valid", "invalid"):
+            with self.subTest(tracked_state=tracked_state):
+                repo, metadata_path, store = self.make_completed_review_change()
+                tracked = copy.deepcopy(store.read().document)
+                stale = copy.deepcopy(tracked)
+                stale["workflow"].pop("automation")
+                if tracked_state == "invalid":
+                    automation = tracked["workflow"]["automation"]
+                    receipt = automation["transition_receipts"][
+                        "transition-001"
+                    ]
+                    for surface in (
+                        receipt["proposal_review_evidence"],
+                        receipt["proposal_review_route"],
+                        automation["latest_review_result"],
+                    ):
+                        surface["review_id"] = "proposal-review-forged"
+                    metadata_path.write_text(
+                        dump_yaml(tracked),
+                        encoding="utf-8",
+                    )
+                before = metadata_path.read_bytes()
+                query_module = _load_query_module()
+                parser = mock.Mock()
+                parser.load_yaml.return_value = stale
+
+                with mock.patch.object(
+                    query_module,
+                    "load_metadata_parser",
+                    return_value=parser,
+                ):
+                    _, data, error = query_module.load_change_metadata(
+                        repo,
+                        "2026-07-20-example",
+                    )
+
+                if tracked_state == "valid":
+                    self.assertIsNone(error)
+                    self.assertIsNotNone(data)
+                    self.assertEqual(
+                        data["workflow"]["automation"][
+                            "latest_review_result"
+                        ]["review_id"],
+                        "proposal-review-r1",
+                    )
+                else:
+                    self.assertIsNone(data)
+                    self.assertEqual(
+                        error["code"],
+                        "invalid-automation-state",
+                    )
+                    self.assertIn(
+                        "proposal-review semantic evidence",
+                        error["detail"],
+                    )
+                self.assertEqual(metadata_path.read_bytes(), before)
 
     def test_summary_supports_legacy_metadata(self) -> None:
         repo = self.make_change("2026-05-22-legacy-query", self.legacy_change_yaml())

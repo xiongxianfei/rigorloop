@@ -1,0 +1,1474 @@
+change_id: 2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+title: Single Bounded Review-Fix Workflow Automation Mechanism
+classification: proposal
+risk: high
+artifacts:
+  proposal: docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
+  spec: specs/single-bounded-review-fix-workflow-automation.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md
+  plan: docs/plans/2026-07-21-single-bounded-review-fix-workflow-automation.md
+  test_spec: specs/single-bounded-review-fix-workflow-automation.test.md
+  explain_change: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/explain-change.md
+  verify_report: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/verify-report.md
+  review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md
+requirements:
+  - Record one decision-oriented proposal for bounded-review-fix as the only writable automation mechanism.
+  - Preserve formal proposal-review findings before review-driven proposal revision.
+  - Resolve canonical workflow position, identity-bound grants, interrupted-transition recovery, and repeated-stage target identity before specification.
+  - Include proposal-review through a non-circular identity-bound review capability without weakening review independence or later authorization boundaries.
+  - Separate bounded parent authorization from executable effective capability and use stage-appropriate basis identities.
+  - Separate proposal-review occurrence recording from clean-gate satisfaction and route every closed review outcome deterministically.
+  - Define one contract for structured targets, canonical workflow-position ownership, authorization and capability boundaries, transition recovery, stage routing, and legacy migration.
+  - Define closed target-occurrence, durable-state, verification-authorization, legacy-adapter, and exact cross-spec precedence contracts.
+  - Consolidate persisted automation authority into one canonical spec while preserving lifecycle ordering and reviewer-owned finding semantics in their existing contracts.
+  - Define the component boundaries, runtime recovery flow, deployment boundary, quality scenarios, migration risks, and durable ADR supersession for the unified mechanism.
+tests:
+  - Proposal lifecycle validation covers the revised proposal.
+  - Review artifact validation covers proposal-review R1 through R4, spec-review R1 through R3, and all thirteen recorded material findings.
+  - Change metadata validation covers the change-local review evidence pack.
+  - Proposal-review R4 rechecks the two-level authorization invariant and complete proposal-review outcome routing.
+  - Spec-review must challenge the unified mechanism contract before it becomes approved or supersedes conflicting legacy requirements.
+  - Spec-review R2 must recheck BRF-SR1 through BRF-SR5 against the revised spec and co-amended legacy specs.
+  - Spec-review R4 must recheck unique source selectors, the closed affected-selector registry, and sole automation-spec ownership.
+  - Architecture-review must challenge component ownership, canonical-state boundaries, authority separation, receipt recovery, migration, and external-action containment before planning.
+  - Architecture-review R2 must confirm complete stage-policy projection, one executable and persistence ownership boundary, and effective-capability receipt binding.
+  - Plan-review must challenge milestone sequencing, requirement coverage, migration safety, validation commands, and recovery before test-spec authoring.
+  - Test-spec-review must challenge the requirement, example, edge-case, command, fixture, and milestone proof maps before M1 implementation.
+  - M1 policy tests prove one immutable sixteen-field policy per public and internal automatable stage, including closed target occurrences and bounded mutation categories.
+  - M1 automation-state tests prove closed vocabularies, legal status transitions, non-executable parent authority, stage-relative capability basis, and parent-scope containment.
+  - Change-metadata regressions prove the unified namespace accepts only bounded-review-fix state, rejects live workflow ownership, and rejects mixed unified and legacy writable state.
+validation:
+  - command: proposal-review r1
+    result: changes_requested_BRF-PR1_BRF-PR2_BRF-PR3_BRF-PR4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_proposal_review_r4_closeout
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_after_proposal_review_r4_closeout
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_after_proposal_review_r4_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r1.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r2.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r3.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
+    result: passed_after_proposal_review_r4_closeout
+  - command: git diff --check
+    result: passed_after_proposal_review_r4_closeout
+  - command: proposal-review r2
+    result: changes_requested_BRF-PR5_prior_findings_resolved
+  - command: proposal-review r3
+    result: changes_requested_BRF-PR6_BRF-PR7_prior_findings_resolved
+  - command: proposal-review r4
+    result: approved_no_material_findings_all_prior_findings_resolved
+  - command: spec
+    result: completed_draft_pending_spec_review
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md --path specs/single-bounded-review-fix-workflow-automation.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
+    result: passed_selected_four_focused_checks_no_broad_smoke
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_4_findings_7
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md --path docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md --path specs/single-bounded-review-fix-workflow-automation.md
+    result: passed_spec_draft_lifecycle
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_spec_draft
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_draft
+  - command: git diff --check -- docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md specs/single-bounded-review-fix-workflow-automation.md docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_after_spec_draft
+  - command: spec-review r1
+    result: changes_requested_BRF-SR1_BRF-SR2_BRF-SR3_BRF-SR4_BRF-SR5
+  - command: python scripts/select-validation.py --mode explicit --path specs/single-bounded-review-fix-workflow-automation.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r1.md
+    result: passed_selected_four_focused_checks_no_broad_smoke_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_5_findings_12_open_findings_5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r1.md --path specs/single-bounded-review-fix-workflow-automation.md
+    result: passed_after_spec_review_r1_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_spec_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_review_r1_recording
+  - command: git diff --check -- specs/single-bounded-review-fix-workflow-automation.md docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_after_spec_review_r1_recording
+  - command: spec revision for BRF-SR1 through BRF-SR5
+    result: completed_pending_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_5_findings_12_open_findings_5_after_spec_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r1.md --path specs/review-finding-resolution-contract.md --path specs/review-fix-autoprogression.md --path specs/rigorloop-workflow.md --path specs/single-bounded-review-fix-workflow-automation.md --path specs/workflow-stage-autoprogression.md
+    result: passed_six_artifacts_with_existing_rigorloop_merge_language_warning
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_spec_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_revision
+  - command: git diff --check
+    result: passed_after_spec_revision
+  - command: spec-review r2
+    result: changes_requested_BRF-SR6_BRF-SR1_through_BRF-SR4_resolved_BRF-SR5_open
+  - command: spec-review r3
+    result: inconclusive_no_review_input_change_BRF-SR5_BRF-SR6_remain_open
+  - command: spec revision for BRF-SR5 and BRF-SR6
+    result: completed_pending_spec_review_r4
+  - command: source selector uniqueness audit across four affected specs
+    result: passed_no_duplicate_requirement_selectors
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_7_findings_13_after_consolidation_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for consolidation revision artifacts
+    result: passed_ten_artifacts_with_existing_merge_language_warnings
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_consolidation_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_consolidation_revision
+  - command: git diff --check --cached
+    result: passed_after_consolidation_revision
+  - command: spec-review r4
+    result: approved_no_material_findings_all_BRF-SR_findings_resolved
+  - command: spec lifecycle settlement after spec-review r4
+    result: unified_spec_approved_review_fix_spec_superseded
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_closeout_reviews_8_findings_13
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for settled spec artifacts
+    result: passed_ten_artifacts_with_existing_merge_language_warnings
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_review_r4_settlement
+  - command: git diff --check --cached
+    result: passed_after_spec_review_r4_settlement
+  - command: spec-review r5
+    result: approved_settlement_only_no_material_findings
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_9_findings_13_after_spec_review_r5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_closeout_reviews_9_findings_13_after_spec_review_r5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_review_r5
+  - command: git diff --check --cached
+    result: passed_after_spec_review_r5
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_7_findings_13_after_spec_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_spec_review_r3
+  - command: git diff --check --cached
+    result: passed_after_spec_review_r3
+  - command: architecture
+    result: completed_draft_canonical_update_component_diagram_and_superseding_adr_pending_architecture_review
+  - command: architecture-review r1
+    result: changes_requested_BRF-AR1_BRF-AR2_BRF-AR3
+  - command: architecture-review r2
+    result: inconclusive_no_architecture_input_change_BRF-AR1_BRF-AR2_BRF-AR3_remain_open
+  - command: architecture revision for BRF-AR1 through BRF-AR3
+    result: completed_pending_architecture_review_r3
+  - command: architecture-review r3
+    result: approved_no_material_findings_BRF-AR1_BRF-AR2_BRF-AR3_resolved_lifecycle_settlement_next
+  - command: architecture lifecycle settlement after architecture-review r3
+    result: canonical_architecture_approved_unified_ADR_accepted_three_predecessor_ADRs_superseded
+  - command: plan
+    result: created_five_milestones_pending_plan_review
+  - command: plan-review r1
+    result: changes_requested_BRF-PL1_BRF-PL2
+  - command: plan revision for BRF-PL1 and BRF-PL2
+    result: completed_six_milestones_atomic_M6_cutover_runnable_adapter_and_selected_CI_proof_pending_plan_review_r2
+  - command: bash scripts/ci.sh --mode explicit for revised plan and change-local plan-review evidence
+    result: passed_six_selected_checks_including_broad_smoke_377_30_seconds_after_plan_revision
+  - command: plan-review r2
+    result: approved_no_material_findings_BRF-PL1_BRF-PL2_resolved_plan_handoff_sync_next
+  - command: test-spec authoring
+    result: active_28_test_cases_32_command_ids_six_milestone_proof_rows_pending_test_spec_review
+  - command: test-spec-review r1
+    result: changes_requested_BRF-TSR1_BRF-TSR2_BRF-TSR3_implementation_handoff_not_allowed
+  - command: test-spec revision for BRF-TSR1 through BRF-TSR3
+    result: completed_29_test_cases_complete_MP1_MP3_pipe_free_CMD30_deterministic_fixture_contract_pending_test_spec_review_r2
+  - command: test-spec-review r2
+    result: changes_requested_BRF-TSR4_BRF-TSR1_through_BRF-TSR3_resolved_implementation_handoff_not_allowed
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_16_findings_22_open_findings_1_after_test_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_test_spec_review_r2_recording
+  - command: git diff --check for test-spec-review-r2 recording and lifecycle state
+    result: passed_after_test_spec_review_r2_recording
+  - command: test-spec revision for BRF-TSR4
+    result: completed_30_test_cases_split_M2_M6_determinism_explicit_progressive_activation_pending_test_spec_review_r3
+  - command: static test-spec authoring audit for BRF-TSR4
+    result: passed_30_tests_32_commands_14_progressive_entries_no_T29_CMD25_cross_boundary_mapping
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_16_findings_22_open_findings_1_after_BRF_TSR4_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_BRF_TSR4_revision
+  - command: git diff --check for BRF-TSR4 test-spec revision and lifecycle state
+    result: passed_after_BRF_TSR4_revision
+  - command: test-spec-review r3
+    result: changes_requested_existing_BRF_TSR4_remains_open_T26_M4_M6_activation_missing_no_new_finding
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_17_findings_22_open_findings_1_after_test_spec_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_test_spec_review_r3_recording
+  - command: git diff --check for test-spec-review-r3 recording and lifecycle state
+    result: passed_after_test_spec_review_r3_recording
+  - command: test-spec revision completing BRF-TSR4 after test-spec-review r3
+    result: completed_T26_M4_CMD17_M6_CMD25_progressive_activation_explicit_deferral_pending_test_spec_review_r4
+  - command: static test-spec authoring audit completing BRF-TSR4
+    result: passed_30_tests_32_commands_15_progressive_entries_T26_M4_M6_activation_current_plan_identity
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_17_findings_22_open_findings_1_after_final_BRF_TSR4_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_final_BRF_TSR4_revision
+  - command: git diff --check for final BRF-TSR4 test-spec revision and lifecycle state
+    result: passed_after_final_BRF_TSR4_revision
+  - command: test-spec-review r4
+    result: approved_no_material_findings_BRF_TSR1_through_BRF_TSR4_resolved_implementation_handoff_allowed
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_18_findings_22_open_findings_0_after_test_spec_review_r4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_closeout_reviews_18_findings_22_after_test_spec_review_r4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_test_spec_review_r4_recording
+  - command: git diff --check for test-spec-review-r4 recording and implementation handoff state
+    result: passed_after_test_spec_review_r4_recording
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_15_findings_21_open_findings_3_after_test_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_test_spec_review_r1_recording
+  - command: git diff --check for test-spec-review-r1 recording and lifecycle state
+    result: passed_after_test_spec_review_r1_recording
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_14_findings_18_after_plan_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_closeout_reviews_14_findings_18_after_plan_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_plan_review_r2_recording
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_13_findings_18_open_findings_2_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_plan_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for plan and upstream lifecycle settlement
+    result: passed_seven_artifact_files_after_plan_creation
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_plan_creation
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_plan_index_update
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_12_findings_16_after_architecture_review_r3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_closeout_reviews_12_findings_16_after_architecture_review_r3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for architecture-review-r3 artifacts
+    result: passed_four_artifact_files_with_existing_merge_language_warning_after_architecture_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_architecture_review_r3
+  - command: git diff --check --cached
+    result: passed_after_architecture_review_r3
+  - command: python scripts/select-validation.py --mode explicit for revised architecture package and change-local evidence
+    result: passed_selected_four_focused_checks_no_broad_smoke_after_architecture_revision
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_structure_reviews_11_findings_16_resolved_pending_rereview_3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for revised architecture artifacts
+    result: passed_four_artifact_files_with_existing_merge_language_warning_after_architecture_revision
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_architecture_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_architecture_revision
+  - command: git diff --check for revised architecture package and change-local evidence
+    result: passed_after_architecture_revision
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_11_findings_16_open_findings_3_after_architecture_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for architecture-review-r2 artifacts
+    result: passed_four_artifact_files_with_existing_merge_language_warning_after_architecture_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_architecture_review_r2
+  - command: git diff --check --cached
+    result: passed_after_architecture_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_10_findings_16_open_findings_3_after_architecture_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for architecture-review-r1 artifacts
+    result: passed_four_artifact_files_with_existing_merge_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_architecture_review_r1
+  - command: git diff --check --cached
+    result: passed_after_architecture_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/architecture/system/diagrams/component-workflow-automation.mmd --path docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_selected_three_focused_checks_no_broad_smoke_after_architecture
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_four_artifact_files_after_architecture
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_48_tests_after_architecture
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_architecture
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_7_tests_M1
+  - command: python scripts/test-validate-workflow-automation.py -k vocabulary
+    result: passed_3_selected_tests_M1
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_M1
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_M1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_M1_after_handoff_sync
+  - command: git diff --check
+    result: passed_M1_after_handoff_sync
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_11_tests_M1
+  - command: python scripts/validate-guide-system.py
+    result: passed_M1_handoff_sync
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for M1 handoff artifacts
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_7_tests_during_code_review_m1_r1
+  - command: python scripts/test-validate-workflow-automation.py -k vocabulary
+    result: passed_3_selected_tests_during_code_review_m1_r1
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_during_code_review_m1_r1
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_during_code_review_m1_r1
+  - command: direct in-memory malformed-state reproductions during code-review M1 R1
+    result: failed_expected_rejection_null_basis_wrong_internal_occurrence_incompatible_receipt_target_empty_invalidation_all_returned_no_errors
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_19_findings_26_open_findings_4_after_code_review_m1_r1
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r1_sync
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R1 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: git diff --check
+    result: passed_after_code_review_m1_r1_recording
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_9_tests_after_M1_review_resolution
+  - command: python scripts/test-validate-workflow-automation.py -k vocabulary
+    result: passed_5_selected_tests_after_M1_review_resolution
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_25_tests_after_M1_review_resolution
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_after_M1_review_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_after_M1_review_resolution
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M1 review-resolution paths
+    result: blocked_manual_routing_required_for_four_new_script_paths_selected_lifecycle_review_metadata_guide_and_broad_smoke
+  - command: python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before 52bdcbb329897225c22a593b8e04541409e2d315 --after 22b572326190fe753767c44344410039f6fee8d8
+    result: passed_16_artifacts_after_restoring_resolution_needed_during_open_finding_state_with_baseline_warnings
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 4
+    result: passed_11_checks_in_372_seconds_after_M1_review_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 4
+    result: passed_11_checks_in_367_seconds_after_final_consumed_capability_receipt_regression
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 4
+    result: passed_11_checks_in_376_seconds_after_final_parent_revocation_consistency_regression
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_9_tests_during_code_review_m1_r2
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_25_tests_during_code_review_m1_r2_but_direct_contrast_checks_found_semantic_gaps
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_during_code_review_m1_r2
+  - command: direct in-memory contrast checks during code-review M1 R2
+    result: found_valid_later_target_rejected_and_unbound_parent_null_postcondition_null_output_accepted
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_20_findings_29_open_findings_3_after_code_review_m1_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R2 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: git diff --check
+    result: passed_after_code_review_m1_r2_recording
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_30_tests_after_M1_R2_review_resolution
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_9_tests_after_M1_R2_review_resolution
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_after_M1_R2_review_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_after_M1_R2_review_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped --jobs 4
+    result: passed_11_checks_in_346_seconds_after_M1_R2_review_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure and --mode closeout for M1 R2 review resolution
+    result: passed_reviews_20_findings_29_open_findings_0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for M1 R2 handoff evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_M1_R2_handoff_sync
+  - command: git diff --check
+    result: passed_after_M1_R2_handoff_sync
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_9_tests_during_code_review_m1_r3
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_30_tests_during_code_review_m1_r3_but_direct_contrast_checks_found_semantic_gaps
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_during_code_review_m1_r3
+  - command: direct in-memory contrast checks during code-review M1 R3
+    result: found_unknown_backward_from_position_whitespace_nan_and_mutable_policy_cases_accepted
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_21_findings_31_open_findings_2_after_code_review_m1_r3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R3 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r3_sync
+  - command: git diff --check
+    result: passed_after_code_review_m1_r3_recording
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_11_tests_after_code_review_m1_r3_resolution
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_35_tests_after_code_review_m1_r3_resolution
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_after_code_review_m1_r3_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_after_code_review_m1_r3_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_final_230_second_run_after_code_review_m1_r3_resolution
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_11_tests_during_code_review_m1_r4
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_35_tests_during_code_review_m1_r4_but_direct_target_boundary_checks_found_semantic_gap
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_during_code_review_m1_r4
+  - command: direct complete-state contrast checks during code-review M1 R4
+    result: found_code_review_after_exact_implement_target_and_proposal_correction_after_exact_proposal_review_target_accepted
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_22_findings_32_open_findings_1_after_code_review_m1_r4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R4 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r4_sync
+  - command: git diff --check
+    result: passed_after_code_review_m1_r4_recording
+  - command: proof-first complete-state exact-target regressions
+    result: failed_before_correction_code_review_after_implement_target_and_proposal_correction_after_proposal_review_target
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_13_tests_after_code_review_m1_r4_resolution
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_37_tests_after_code_review_m1_r4_resolution
+  - command: python scripts/test-validate-workflow-automation.py -k vocabulary
+    result: passed_5_selected_tests_after_code_review_m1_r4_resolution
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_after_code_review_m1_r4_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_after_code_review_m1_r4_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_code_review_m1_r4_resolution
+  - command: python -m py_compile scripts/workflow_automation_policy.py scripts/validate_workflow_automation.py scripts/test-workflow-automation-policy.py scripts/test-validate-workflow-automation.py
+    result: passed_after_code_review_m1_r4_resolution
+  - command: git diff --check
+    result: passed_after_code_review_m1_r4_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_216_seconds_after_code_review_m1_r4_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_22_findings_32_open_findings_0_after_code_review_m1_r4_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_closeout_reviews_22_findings_32_after_code_review_m1_r4_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R4 resolution evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r4_resolution_sync
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_13_tests_during_code_review_m1_r5
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_37_tests_during_code_review_m1_r5_but_direct_predicate_context_checks_found_semantic_gap
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_during_code_review_m1_r5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_before_code_review_m1_r5_recording
+  - command: direct complete-state predicate-context checks during code-review M1 R5
+    result: found_architecture_skip_without_applicability_and_arbitrary_next_milestone_without_source_or_order_accepted
+  - command: git diff --check 0cc88d01..edfd5497
+    result: passed_during_code_review_m1_r5
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_23_findings_33_open_findings_1_after_code_review_m1_r5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R5 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r5_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_code_review_m1_r5_recording
+  - command: git diff --check
+    result: passed_after_code_review_m1_r5_recording
+  - command: proof-first transition predicate tests
+    result: failed_before_correction_missing_typed_evaluator_and_two_complete_context_gaps
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_15_tests_after_code_review_m1_r5_resolution
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_41_tests_after_code_review_m1_r5_resolution
+  - command: python scripts/test-validate-workflow-automation.py -k vocabulary
+    result: passed_5_selected_tests_after_code_review_m1_r5_resolution
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_after_code_review_m1_r5_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_after_code_review_m1_r5_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_code_review_m1_r5_resolution
+  - command: python -m py_compile scripts/workflow_automation_policy.py scripts/validate_workflow_automation.py scripts/test-workflow-automation-policy.py scripts/test-validate-workflow-automation.py
+    result: passed_after_code_review_m1_r5_resolution
+  - command: git diff --check
+    result: passed_after_code_review_m1_r5_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_final_231_second_run_after_identity_bound_code_review_m1_r5_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_23_findings_33_open_findings_0_after_code_review_m1_r5_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_closeout_reviews_23_findings_33_after_code_review_m1_r5_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R5 resolution evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r5_resolution_sync
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_15_tests_during_code_review_m1_r6
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_41_tests_during_code_review_m1_r6_but_direct_repeated_target_contrast_found_semantic_gap
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_during_code_review_m1_r6
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_during_code_review_m1_r6
+  - command: python -m py_compile scripts/workflow_automation_policy.py scripts/validate_workflow_automation.py scripts/test-workflow-automation-policy.py scripts/test-validate-workflow-automation.py
+    result: passed_during_code_review_m1_r6
+  - command: direct complete-context repeated-target contrasts during code-review M1 R6
+    result: found_next_M2_transition_rejected_for_implement_M2_and_code_review_M2_but_accepted_for_verify
+  - command: git diff --check edfd5497..ff270c41
+    result: passed_during_code_review_m1_r6
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_structure_reviews_24_findings_34_open_findings_1_after_code_review_m1_r6
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R6 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r6_sync
+  - command: proof-first repeated-target occurrence regressions for BRF-M1-CR12
+    result: failed_before_correction_valid_implement_M2_and_code_review_M2_targets_rejected
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_15_tests_after_code_review_m1_r6_resolution
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_42_tests_after_code_review_m1_r6_resolution
+  - command: python scripts/test-validate-workflow-automation.py -k vocabulary
+    result: passed_5_selected_tests_after_code_review_m1_r6_resolution
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_after_code_review_m1_r6_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_after_code_review_m1_r6_resolution
+  - command: python -m py_compile scripts/workflow_automation_policy.py scripts/validate_workflow_automation.py scripts/test-workflow-automation-policy.py scripts/test-validate-workflow-automation.py
+    result: passed_after_code_review_m1_r6_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_299_seconds_after_code_review_m1_r6_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure and --mode closeout for M1 R6 review resolution
+    result: passed_reviews_24_findings_34_open_findings_0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for M1 R6 handoff evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_code_review_m1_r6_resolution
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r6_resolution_sync
+  - command: git diff --check
+    result: passed_after_code_review_m1_r6_resolution
+  - command: direct repeated-target boundary matrix during code-review M1 R7
+    result: passed_bound_M2_verify_stale_M1_missing_target_unbound_M3_wrong_operation_and_source_equals_next_contrasts
+  - command: python scripts/test-workflow-automation-policy.py
+    result: passed_15_tests_during_code_review_m1_r7
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_42_tests_during_code_review_m1_r7
+  - command: python scripts/test-validate-workflow-automation.py -k vocabulary
+    result: passed_5_selected_tests_during_code_review_m1_r7
+  - command: python scripts/test-change-metadata-validator.py -k workflow_automation
+    result: passed_4_selected_tests_during_code_review_m1_r7
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_52_tests_during_code_review_m1_r7
+  - command: python -m py_compile scripts/workflow_automation_policy.py scripts/validate_workflow_automation.py scripts/test-workflow-automation-policy.py scripts/test-validate-workflow-automation.py
+    result: passed_during_code_review_m1_r7
+  - command: git diff --check ff270c41..04064d50
+    result: passed_during_code_review_m1_r7
+  - command: python scripts/validate-review-artifacts.py --mode structure and --mode closeout after code-review M1 R7
+    result: passed_reviews_25_findings_34_open_findings_0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M1 R7 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_code_review_m1_r7_recording
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_m1_r7_handoff_sync
+  - command: git diff --check
+    result: passed_after_code_review_m1_r7_recording
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_for_M2_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_for_M2_handoff_before_final_metadata_sync
+  - command: python scripts/test-workflow-automation-state.py
+    result: passed_24_tests_for_M2_handoff
+  - command: python scripts/test-validate-workflow-automation.py -k receipt
+    result: passed_15_selected_tests_for_M2_handoff
+  - command: python scripts/test-validate-workflow-automation.py -k migration
+    result: passed_3_selected_tests_for_M2_handoff
+  - command: python scripts/test-query-change-record.py
+    result: passed_17_tests_for_M2_handoff
+  - command: python -m py_compile scripts/workflow_automation_state.py scripts/validate_workflow_automation.py scripts/validate-change-metadata.py scripts/query-change-record.py
+    result: passed_for_M2_handoff
+  - command: git diff --check
+    result: passed_for_M2_handoff_before_final_metadata_sync
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_reviews_25_findings_34_open_findings_0_for_M2_handoff
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for M2 handoff evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_M2_handoff_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_M2_handoff_sync
+  - command: git diff --check
+    result: passed_after_M2_handoff_sync
+  - command: code-review M2 R1 direct recovery and status reproductions
+    result: changes_requested_BRF-M2-CR1_BRF-M2-CR2_BRF-M2-CR3_BRF-M2-CR4
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_during_code_review_M2_R1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_before_code_review_M2_R1_recording
+  - command: python scripts/test-workflow-automation-state.py
+    result: passed_24_tests_during_code_review_M2_R1
+  - command: python scripts/test-validate-workflow-automation.py -k receipt
+    result: passed_15_selected_tests_during_code_review_M2_R1
+  - command: python scripts/test-validate-workflow-automation.py -k migration
+    result: passed_3_selected_tests_during_code_review_M2_R1
+  - command: python scripts/test-query-change-record.py
+    result: passed_17_tests_during_code_review_M2_R1
+  - command: python -m py_compile scripts/workflow_automation_state.py scripts/validate_workflow_automation.py scripts/validate-change-metadata.py scripts/query-change-record.py
+    result: passed_during_code_review_M2_R1
+  - command: git diff --check 54b8569a..56a3f62a
+    result: passed_during_code_review_M2_R1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_reviews_26_findings_38_open_findings_4_after_code_review_M2_R1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M2 R1 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_M2_R1_handoff_sync
+  - command: python scripts/test-workflow-automation-state.py
+    result: passed_27_tests_after_M2_R1_resolution
+  - command: python scripts/test-validate-workflow-automation.py -k receipt
+    result: passed_17_selected_tests_after_M2_R1_resolution
+  - command: python scripts/test-validate-workflow-automation.py -k migration
+    result: passed_3_selected_tests_after_M2_R1_resolution
+  - command: python scripts/test-query-change-record.py
+    result: passed_18_tests_after_M2_R1_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_after_M2_R1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_before_M2_R1_resolution_handoff_sync
+  - command: python -m py_compile scripts/workflow_automation_state.py scripts/validate_workflow_automation.py scripts/query-change-record.py scripts/test-workflow-automation-state.py scripts/test-query-change-record.py scripts/test-validate-workflow-automation.py
+    result: passed_after_M2_R1_resolution
+  - command: git diff --check
+    result: passed_before_M2_R1_resolution_handoff_sync
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_reviews_26_findings_38_open_findings_0_after_M2_R1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for M2 R1 resolution handoff evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_M2_R1_resolution_handoff_sync
+  - command: code-review M2 R2 direct transition-key and retry-fixture reproductions
+    result: changes_requested_BRF-M2-CR5_BRF-M2-CR6_BRF-M2-CR2_failed_remediation
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_during_code_review_M2_R2
+  - command: python scripts/test-workflow-automation-state.py
+    result: passed_27_tests_during_code_review_M2_R2
+  - command: python scripts/test-validate-workflow-automation.py -k receipt
+    result: passed_17_selected_tests_during_code_review_M2_R2
+  - command: python scripts/test-validate-workflow-automation.py -k migration
+    result: passed_3_selected_tests_during_code_review_M2_R2
+  - command: python scripts/test-query-change-record.py
+    result: passed_18_tests_during_code_review_M2_R2
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_reviews_27_findings_40_open_findings_2_after_code_review_M2_R2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M2 R2 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_M2_R2_handoff_sync
+  - command: python scripts/test-workflow-automation-state.py
+    result: passed_30_tests_after_M2_R2_resolution
+  - command: python scripts/test-validate-workflow-automation.py -k receipt
+    result: passed_18_selected_tests_after_M2_R2_resolution
+  - command: python scripts/test-validate-workflow-automation.py -k migration
+    result: passed_3_selected_tests_after_M2_R2_resolution
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_49_tests_after_M2_R2_resolution
+  - command: python scripts/test-query-change-record.py
+    result: passed_19_tests_after_M2_R2_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_after_M2_R2_resolution
+  - command: python -m py_compile scripts/workflow_automation_state.py scripts/validate_workflow_automation.py scripts/query-change-record.py scripts/test-workflow-automation-state.py scripts/test-validate-workflow-automation.py scripts/test-query-change-record.py
+    result: passed_after_M2_R2_resolution
+  - command: git diff --check
+    result: passed_before_M2_R2_resolution_handoff_sync
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_408_seconds_after_M2_R2_resolution
+  - command: python scripts/test-workflow-automation-state.py
+    result: passed_30_tests_during_code_review_M2_R3
+  - command: python scripts/test-validate-workflow-automation.py -k receipt
+    result: passed_18_selected_tests_during_code_review_M2_R3
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_49_tests_during_code_review_M2_R3
+  - command: python scripts/test-query-change-record.py
+    result: passed_19_tests_during_code_review_M2_R3
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_during_code_review_M2_R3
+  - command: direct nine-field transition-key mutation matrix during code-review M2 R3
+    result: passed_all_9_bound_fields_changed_key_and_failed_validation
+  - command: python -m py_compile scripts/workflow_automation_state.py scripts/validate_workflow_automation.py scripts/query-change-record.py scripts/test-workflow-automation-state.py scripts/test-validate-workflow-automation.py scripts/test-query-change-record.py
+    result: passed_during_code_review_M2_R3
+  - command: git diff --check 1430d268..f9ba90d2
+    result: passed_during_code_review_M2_R3
+  - command: python scripts/validate-review-artifacts.py --mode structure and --mode closeout after code-review M2 R3
+    result: passed_reviews_28_findings_40_open_findings_0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M2 R3 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_M2_R3_handoff_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_code_review_M2_R1_recording
+  - command: git diff --check
+    result: passed_after_code_review_M2_R1_recording
+  - command: python scripts/test-workflow-automation.py -k target
+    result: passed_5_selected_tests_for_M3_handoff
+  - command: python scripts/test-workflow-automation.py -k position
+    result: passed_4_selected_tests_for_M3_handoff
+  - command: python scripts/test-workflow-automation.py -k capability
+    result: passed_7_selected_tests_for_M3_handoff
+  - command: python scripts/test-workflow-automation.py
+    result: passed_15_tests_for_M3_handoff
+  - command: python scripts/test-artifact-lifecycle-validator.py -k automation
+    result: passed_2_selected_tests_for_M3_handoff
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: passed_149_tests_for_M3_handoff
+  - command: python scripts/test-workflow-automation-state.py
+    result: passed_30_tests_for_M3_handoff
+  - command: python scripts/test-validate-workflow-automation.py
+    result: passed_49_tests_for_M3_handoff
+  - command: python -m py_compile scripts/workflow_automation.py scripts/test-workflow-automation.py scripts/test-artifact-lifecycle-validator.py
+    result: passed_for_M3_handoff
+  - command: python scripts/select-validation.py --mode explicit for M3 implementation and active plan
+    result: manual_routing_required_for_two_new_script_paths_plan_owned_CMD10_through_CMD14_executed_broad_smoke_required
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_401_seconds_for_M3_handoff
+  - command: git diff --check
+    result: passed_before_M3_handoff_sync
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_for_M3_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_for_M3_handoff_before_final_metadata_sync
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for M3 handoff evidence
+    result: passed_5_artifact_files
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_M3_handoff_sync
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/
+    result: passed_reviews_28_findings_40_open_findings_0_for_M3_handoff
+  - command: code-review M3 R1 direct target, canonical-evidence, authority, budget, and synchronization reproductions
+    result: changes_requested_BRF-M3-CR1_BRF-M3-CR2_BRF-M3-CR3_BRF-M3-CR4
+  - command: python scripts/test-workflow-automation.py -k target; -k position; -k capability during code-review M3 R1
+    result: passed_5_target_4_position_7_capability_selected_tests
+  - command: python scripts/test-artifact-lifecycle-validator.py -k automation and full suite during code-review M3 R1
+    result: passed_2_selected_tests_and_149_full_tests
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_during_code_review_M3_R1
+  - command: python scripts/validate-review-artifacts.py --mode structure after code-review M3 R1
+    result: passed_reviews_29_findings_44_open_findings_4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M3 R1 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-guide-system.py
+    result: passed_after_code_review_M3_R1_handoff_sync
+  - command: python scripts/test-workflow-automation.py -k target; -k position; -k capability
+    result: passed_5_target_4_position_10_capability_tests_after_M3_R1_resolution
+  - command: python scripts/test-workflow-automation.py
+    result: passed_18_tests_after_M3_R1_resolution
+  - command: python scripts/test-workflow-automation-policy.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py
+    result: passed_15_policy_30_state_50_validator_tests_after_M3_R1_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py -k automation; python scripts/test-artifact-lifecycle-validator.py
+    result: passed_2_selected_and_149_full_tests_after_M3_R1_resolution
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_53_tests_after_M3_R1_resolution
+  - command: python -m py_compile for M3 R1 correction Python surfaces; git diff --check
+    result: passed_after_M3_R1_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_11_checks_in_226_seconds_after_M3_R1_resolution
+  - command: python scripts/select-validation.py --mode explicit for M3 R1 resolution paths
+    result: manual_routing_required_for_six_M3_Python_paths_selected_review_lifecycle_metadata_and_guide_checks_executed_directly_broad_smoke_passed
+  - command: python scripts/validate-review-artifacts.py --mode structure and --mode closeout after M3 R1 resolution
+    result: passed_reviews_29_findings_44_open_findings_0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for M3 R1 resolution handoff
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml; python scripts/validate-guide-system.py
+    result: passed_after_M3_R1_resolution_handoff_sync
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_230_seconds_after_final_M3_R1_basis_binding
+  - command: python scripts/test-workflow-automation.py -k target; -k position; -k capability; full suite during code-review M3 R2
+    result: passed_5_target_4_position_10_capability_selected_and_18_full_tests_but_direct_reproductions_found_two_failed_remediations
+  - command: python scripts/test-validate-workflow-automation.py during code-review M3 R2
+    result: passed_50_tests_but_completed_receipt_fixture_accepts_missing_sync_evidence
+  - command: direct M3 R2 budget-identity and completion/synchronization reproductions
+    result: changes_requested_BRF-M3-CR5_BRF-M3-CR6
+  - command: git diff --check 1f36c0aa..a2b5f224
+    result: passed_during_code_review_M3_R2
+  - command: python scripts/validate-review-artifacts.py --mode structure after code-review M3 R2
+    result: passed_reviews_30_findings_46_open_findings_2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M3 R2 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml; python scripts/validate-guide-system.py
+    result: passed_after_code_review_M3_R2_handoff_sync
+  - command: python scripts/test-workflow-automation.py -k target; -k position; -k capability; full suite after M3 R2 resolution
+    result: passed_5_target_4_position_10_capability_selected_and_18_full_tests_with_missing_stale_and_valid_file_backed_evidence_contrasts
+  - command: python scripts/test-workflow-automation-policy.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py
+    result: passed_15_policy_30_state_writer_and_52_automation_validator_tests_after_M3_R2_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py -k automation; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-change-metadata-validator.py
+    result: passed_2_selected_149_full_lifecycle_and_53_metadata_validator_tests_after_M3_R2_resolution
+  - command: python -m py_compile for M3 R2 correction Python surfaces; git diff --check
+    result: passed_after_M3_R2_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_257_seconds_after_final_M3_R2_resolution_scope_binding
+  - command: python scripts/select-validation.py --mode explicit for M3 R2 resolution paths
+    result: manual_routing_required_for_five_M3_Python_paths_plan_owned_CMD10_CMD14_and_full_engine_state_validator_suites_executed_directly_selected_lifecycle_review_metadata_and_guide_checks_passed_broad_smoke_passed
+  - command: python scripts/test-workflow-automation.py -k capability during code-review M3 R3
+    result: passed_10_selected_tests_but_direct_semantic_artifact_reproduction_completed_from_arbitrary_non_review_bytes
+  - command: python scripts/test-workflow-automation-state.py during code-review M3 R3
+    result: passed_30_tests_but_direct_recovery_reproduction_reconciled_and_consumed_nonexistent_artifact_evidence
+  - command: python scripts/test-validate-workflow-automation.py during code-review M3 R3
+    result: passed_52_tests_but_durable_shape_validation_does_not_establish_stage_native_semantics
+  - command: git diff --check 0942c710^..0942c710
+    result: passed_during_code_review_M3_R3
+  - command: direct M3 R3 semantic completion and prepared recovery reproductions
+    result: changes_requested_BRF-M3-CR7_records_BRF-M3-CR6_failed_remediation
+  - command: python scripts/validate-review-artifacts.py --mode structure after code-review M3 R3
+    result: passed_reviews_31_findings_47_open_findings_1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M3 R3 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml; python scripts/validate-guide-system.py
+    result: passed_after_code_review_M3_R3_handoff_sync
+  - command: proof-first BRF-M3-CR7 arbitrary-review-bytes and nonexistent-recovery tests
+    result: failed_before_fix_then_passed_after_stage_native_verifier_and_canonical_reread
+  - command: python scripts/test-workflow-automation.py -k target; python scripts/test-workflow-automation.py -k position; python scripts/test-workflow-automation.py -k capability
+    result: passed_6_target_4_position_14_capability_tests_after_M3_R3_resolution
+  - command: python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-review-artifact-validator.py
+    result: passed_33_state_recovery_52_automation_validator_103_review_parser_tests_after_M3_R3_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py -k automation; python scripts/test-artifact-lifecycle-validator.py
+    result: passed_2_selected_and_149_full_lifecycle_tests_after_M3_R3_resolution
+  - command: python -m py_compile for M3 R3 resolution Python surfaces; git diff --check
+    result: passed_after_M3_R3_resolution
+  - command: python scripts/select-validation.py --mode explicit for M3 R3 resolution paths
+    result: manual_routing_required_for_four_automation_paths_plan_owned_CMD10_CMD14_passed_selected_review_lifecycle_metadata_and_guide_checks_passed_broad_smoke_required
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_436_seconds_after_M3_R3_resolution
+  - command: python scripts/test-workflow-automation.py -k capability during code-review M3 R4
+    result: passed_14_selected_tests_but_direct_symlink_escape_reproduction_accepted_external_canonical_review_log
+  - command: python scripts/test-workflow-automation-state.py during code-review M3 R4
+    result: passed_33_tests_but_direct_completed_recovery_reproduction_ignored_canonical_review_log_identity_drift
+  - command: python scripts/test-validate-workflow-automation.py during code-review M3 R4
+    result: passed_52_tests_but_durable_shape_does_not_bind_canonical_review_log_path_or_identity
+  - command: git diff --check 32a819e6^..32a819e6
+    result: passed_during_code_review_M3_R4
+  - command: direct M3 R4 canonical symlink and identity-drift reproductions
+    result: changes_requested_BRF-M3-CR8_records_BRF-M3-CR7_failed_remediation
+  - command: python scripts/validate-review-artifacts.py --mode structure after code-review M3 R4
+    result: passed_reviews_32_findings_48_open_findings_1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M3 R4 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml; python scripts/validate-guide-system.py
+    result: passed_after_code_review_M3_R4_handoff_sync
+  - command: python scripts/test-workflow-automation.py -k target; python scripts/test-workflow-automation.py -k position; python scripts/test-workflow-automation.py -k capability
+    result: passed_CMD10_6_CMD11_4_CMD12_14_after_M3_R4_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py -k automation; python scripts/test-artifact-lifecycle-validator.py
+    result: passed_CMD13_2_and_CMD14_149_after_M3_R4_resolution
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-review-artifact-validator.py
+    result: passed_22_engine_40_state_recovery_52_automation_validator_103_review_parser_tests_after_M3_R4_resolution
+  - command: python -m py_compile for M3 R4 resolution Python surfaces; git diff --check
+    result: passed_after_M3_R4_resolution
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M3 R4 resolution paths
+    result: manual_routing_required_for_two_automation_paths_plan_owned_CMD10_CMD14_passed_five_selected_focused_checks_passed_broad_smoke_required
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_445_seconds_after_final_M3_R4_resolution_run
+  - command: python scripts/test-workflow-automation.py -k capability during code-review M3 R5
+    result: passed_14_selected_tests_but_direct_cross_repository_root_reproduction_completed_canonical_state
+  - command: python scripts/test-workflow-automation-state.py during code-review M3 R5
+    result: passed_40_tests_but_no_store_root_binding_contrast
+  - command: python scripts/test-validate-workflow-automation.py during code-review M3 R5
+    result: passed_52_tests_but_durable_state_does_not_bind_evidence_repository_root
+  - command: git diff --check b4f64f32^..b4f64f32
+    result: passed_during_code_review_M3_R5
+  - command: direct M3 R5 cross-repository completion and handoff-state comparisons
+    result: changes_requested_BRF-M3-CR9_BRF-M3-CR10_records_BRF-M3-CR8_failed_remediation
+  - command: python scripts/validate-review-artifacts.py --mode structure after code-review M3 R5
+    result: passed_reviews_33_findings_50_open_findings_2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M3 R5 evidence
+    result: passed_5_artifact_files_with_existing_merge_dependent_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml; python scripts/validate-guide-system.py
+    result: passed_after_code_review_M3_R5_handoff_sync
+  - command: proof-first cross-repository completion and lifecycle reason-state regressions for M3 R5 resolution
+    result: failed_before_correction_then_passed_after_store_root_binding_and_semantic_state_sync
+  - command: python scripts/test-workflow-automation.py -k target; python scripts/test-workflow-automation.py -k position; python scripts/test-workflow-automation.py -k capability
+    result: passed_CMD10_6_CMD11_4_CMD12_15_after_M3_R5_resolution
+  - command: python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-review-artifact-validator.py
+    result: passed_43_state_recovery_52_automation_validator_103_review_parser_tests_after_M3_R5_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py -k automation; python scripts/test-artifact-lifecycle-validator.py
+    result: passed_CMD13_2_and_CMD14_151_after_M3_R5_resolution
+  - command: python -m py_compile for M3 R5 resolution Python surfaces; git diff --check
+    result: passed_after_M3_R5_resolution
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M3 R5 resolution paths
+    result: manual_routing_required_for_four_automation_paths_plan_owned_CMD10_CMD14_passed_lifecycle_selected_broad_smoke_required
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_443_seconds_after_M3_R5_resolution
+  - command: code-review M3 R6 focused new-test rerun and git diff --check 516f6956^..516f6956
+    result: focused_tests_and_diff_check_passed_but_adversarial_probes_found_BRF-M3-CR11_BRF-M3-CR12
+  - command: direct ancestor-root and canonical-metadata-symlink construction probes during code-review M3 R6
+    result: changes_requested_store_accepted_noncanonical_ancestor_and_foreign_symlink_target
+  - command: direct contradictory Current Handoff Summary bounded-detail probe during code-review M3 R6
+    result: changes_requested_zero_open_findings_with_detail_claiming_finding_remains_open_produced_zero_blockers
+  - command: proof-first canonical constructor and live review-state detail regressions for M3 R6 resolution
+    result: failed_before_correction_then_passed_after_lexical_root_binding_and_exact_review_state_projection
+  - command: python scripts/test-workflow-automation.py -k target; python scripts/test-workflow-automation.py -k position; python scripts/test-workflow-automation.py -k capability
+    result: passed_CMD10_6_CMD11_4_CMD12_15_after_M3_R6_resolution
+  - command: python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-review-artifact-validator.py
+    result: passed_47_state_recovery_52_automation_validator_103_review_parser_tests_after_M3_R6_resolution
+  - command: python scripts/test-artifact-lifecycle-validator.py -k automation; python scripts/test-artifact-lifecycle-validator.py
+    result: passed_CMD13_2_and_CMD14_153_after_M3_R6_resolution
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M3 R6 resolution paths
+    result: manual_routing_required_for_three_automation_paths_lifecycle_regression_selected_broad_smoke_required
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_400_seconds_after_M3_R6_resolution
+  - command: code-review M3 R7 focused state, lifecycle, target, position, capability, and diff checks
+    result: passed_47_state_153_lifecycle_6_target_4_position_15_capability_checks_but_direct_adversarial_probes_found_two_failed_remediations
+  - command: direct earlier-ancestor symlink and contradictory structured review-state probes during code-review M3 R7
+    result: changes_requested_store_followed_ancestor_symlink_and_full_lifecycle_validator_reported_zero_blockers_for_both_contradictory_state_cases
+  - command: review structure, closeout, metadata, lifecycle-state, and diff validation after code-review M3 R7 recording
+    result: structure_passed_35_reviews_54_findings_metadata_and_lifecycle_passed_closeout_correctly_blocked_by_two_open_findings_diff_check_passed
+  - command: proof-first earlier-ancestor symlink and duplicate/unstructured review-state field regressions for M3 R7 resolution
+    result: failed_before_correction_then_passed_after_full_lexical_chain_and_reserved_structured_field_enforcement
+  - command: python scripts/test-workflow-automation-state.py; python scripts/test-workflow-automation.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-validate-workflow-automation.py; python scripts/test-review-artifact-validator.py
+    result: passed_48_state_23_engine_154_lifecycle_52_automation_validator_103_review_parser_tests_after_M3_R7_resolution
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M3 R7 resolution paths
+    result: artifact_lifecycle_regression_and_broad_smoke_selected_manual_routing_required_for_two_unsupported_automation_state_paths_covered_by_explicit_suites
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_478_seconds_after_M3_R7_resolution
+  - command: code-review M3 R8 full state and lifecycle suites plus direct ancestor-symlink and review-state remainder probes
+    result: changes_requested_48_state_and_154_lifecycle_tests_passed_ancestor_symlink_rejected_but_three_remainder_bypasses_produced_zero_blockers
+  - command: review structure, metadata, lifecycle-state, and diff validation after code-review M3 R8 recording
+    result: passed_36_reviews_55_findings_one_open_finding_metadata_and_lifecycle_synchronized_diff_check_passed
+  - command: proof-first exact open/closed and alternate-key/plain-prose review-state regressions for M3 R8 resolution
+    result: failed_before_correction_then_passed_after_exact_complete_live_detail_projection
+  - command: python scripts/test-workflow-automation-state.py; python scripts/test-workflow-automation.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-validate-workflow-automation.py; python scripts/test-review-artifact-validator.py
+    result: passed_48_state_23_engine_156_lifecycle_52_automation_validator_103_review_parser_tests_after_M3_R8_resolution
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M3 R8 resolution paths
+    result: review_lifecycle_metadata_guide_and_broad_smoke_selected_no_unclassified_paths_or_registration_debt
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_455_seconds_after_M3_R8_resolution
+  - command: code-review M3 R9 direct exact open/closed, reported suffix, terminal-history, CMD10-CMD13, lifecycle, selector, and diff checks
+    result: clean_with_notes_BRF_M3_CR15_resolved_no_new_material_findings
+  - command: python scripts/test-workflow-automation.py -k proposal_review; python scripts/test-workflow-automation.py -k proposal_correction; python scripts/test-workflow-automation.py -k authoring; python scripts/test-workflow-automation.py -k non_public
+    result: passed_CMD15_3_CMD16_1_CMD17_3_CMD18_2_after_M4_implementation
+  - command: python scripts/test-artifact-lifecycle-validator.py; python scripts/test-review-artifact-validator.py; python scripts/test-skill-validator.py; python scripts/test-workflow-automation.py
+    result: passed_CMD14_156_CMD19_103_CMD20_259_and_30_engine_tests_after_M4_implementation
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M4 implementation paths; bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: manual_routing_required_for_two_automation_paths_plan_owned_CMD15_through_CMD18_executed_final_broad_smoke_passed_11_checks_in_409_seconds_after_capability_binding
+  - command: code-review M4 R1 diff-first inspection, CMD14-CMD20 rerun, call-site audit, stage-native verifier audit, and adversarial correction-authority probes
+    result: changes_requested_BRF_M4_CR1_BRF_M4_CR2_CMD14_through_CMD20_pass_but_M4_integration_and_identity_bound_correction_remain_incomplete
+  - command: review structure, metadata, guide-system, lifecycle state synchronization, closeout-blocking, and diff checks after code-review M4 R1 recording
+    result: structure_passed_38_reviews_57_findings_2_open_metadata_guide_lifecycle_diff_passed_closeout_correctly_blocked_by_two_open_findings
+  - command: proof-first completed non-review recovery, identity-stable routing, budget-content identity, canonical correction evidence, and post-mutation convergence regressions for M4 R2 resolution
+    result: failed_before_correction_then_passed_with_stage_generic_recovery_repository_derived_authority_durable_post_mutation_pause_and_fresh_review_capability
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py
+    result: passed_36_engine_51_state_recovery_and_54_automation_validator_tests_after_M4_R2_resolution_with_atomic_correction_capability_handoff
+  - command: CMD14 through CMD20; bash scripts/ci.sh --mode broad-smoke
+    result: passed_all_M4_commands_and_final_12_broad_smoke_checks_in_253_seconds
+  - command: code-review M4 R3 blind-first risk map, requirement-fidelity review, CMD15-CMD20, state/recovery, automation-validator, and direct correction-authority probes
+    result: changes_requested_BRF_M4_CR3_resolved_BRF_M4_CR4_failed_remediation_BRF_M4_CR5_BRF_M4_CR6_open
+  - command: proof-first current proposal/review identity binding and exact run pause-reason projection for M4 R5 resolution
+    result: failed_before_correction_then_passed_6_focused_proposal_review_cases_with_stale_review_stale_proposal_and_all_route_pause_projection
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-policy.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py
+    result: passed_43_engine_15_policy_51_state_recovery_56_automation_validator_tests_after_M4_R5_resolution
+  - command: python scripts/test-review-artifact-validator.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-skill-validator.py; python scripts/test-change-metadata-validator.py
+    result: passed_103_review_artifact_156_lifecycle_259_skill_validator_53_change_metadata_tests_after_M4_R5_resolution
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M4 R5 resolution paths
+    result: expected_manual_routing_for_six_automation_paths_selected_review_lifecycle_metadata_guide_and_broad_smoke_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_391_seconds_after_M4_R5_resolution
+  - command: code-review M4 R6 blind-first diff and requirement-fidelity review with current-authority, pause-projection, ambiguity, and composed review-to-correction probes
+    result: changes_requested_BRF_M4_CR11_BRF_M4_CR12_resolved_BRF_M4_CR13_new_composed_correction_cannot_finalize_after_capability_consumption
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py during code-review M4 R6
+    result: passed_43_engine_51_state_recovery_56_automation_validator_tests_but_composed_direct_probe_failed
+  - command: review structure, metadata, guide-system, lifecycle state synchronization, closeout-blocking, and diff checks after code-review M4 R6 recording
+    result: structure_passed_43_reviews_68_findings_1_open_metadata_guide_lifecycle_diff_passed_closeout_expected_to_block_on_BRF_M4_CR13
+  - command: proof-first composed active-to-consumed and inverse absent-to-active proposal-review route-stability regressions for M4 R6 resolution
+    result: failed_before_correction_then_passed_with_recorded_capability_basis_and_completed_review_receipt_validation
+  - command: CMD15 through CMD20; full engine, policy, state, automation-validator, and metadata suites; change metadata, review structure, guide-system, lifecycle, compilation, and diff checks
+    result: passed_7_proposal_review_8_proposal_correction_4_authoring_4_non_public_44_engine_15_policy_51_state_56_automation_validator_156_lifecycle_103_review_259_skill_53_metadata_tests
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_838_seconds_after_M4_R6_resolution
+  - command: code-review M4 R7 blind-first diff and requirement-fidelity review with historical route-binding inspection and retroactive rewrite probe
+    result: changes_requested_BRF_M4_CR13_active_to_consumed_liveness_fixed_BRF_M4_CR14_open_later_authority_can_retroactively_validate_correction_loop
+  - command: python scripts/test-workflow-automation.py -k proposal_review; python scripts/test-validate-workflow-automation.py -k proposal_review_result during code-review M4 R7
+    result: passed_7_engine_and_2_validator_tests_but_direct_retroactive_route_rewrite_probe_returned_zero_errors
+  - command: review structure, metadata, guide-system, lifecycle state synchronization, closeout-blocking, and diff checks after code-review M4 R7 recording
+    result: structure_passed_44_reviews_69_findings_1_open_metadata_guide_lifecycle_diff_passed_closeout_expected_to_block_on_BRF_M4_CR14
+  - command: proof-first retroactive pause-to-correction-loop rewrite after later matching authority for M4 R7 resolution
+    result: failed_before_correction_with_zero_validation_errors_then_passed_with_exact_source_transition_and_immutable_route_binding
+  - command: CMD14 through CMD20; full engine, policy, state, automation-validator, and metadata suites; change metadata, review structure, guide-system, lifecycle, compilation, and diff checks
+    result: passed_7_proposal_review_8_proposal_correction_4_authoring_4_non_public_44_engine_15_policy_51_state_56_automation_validator_156_lifecycle_103_review_259_skill_53_metadata_tests
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_416_seconds_after_M4_R7_resolution
+  - command: code-review M4 R8 blind-first diff, requirement-fidelity, cancellation-terminalization inspection, and direct prepared-proposal-review cancellation probe
+    result: changes_requested_BRF_M4_CR14_normal_finalization_fixed_BRF_M4_CR15_open_cancellation_completion_omits_route_binding_and_latest_occurrence
+  - command: review structure, metadata, guide-system, lifecycle state synchronization, and diff checks after code-review M4 R8 recording
+    result: structure_passed_45_reviews_70_findings_1_open_metadata_guide_lifecycle_diff_passed
+  - command: proof-first prepared proposal-review cancellation and missing latest occurrence regressions for BRF-M4-CR15
+    result: failed_before_correction_with_missing_proposal_review_route_and_zero_validation_errors_then_passed_with_shared_completion_projection
+  - command: CMD14 through CMD20; full engine, policy, state, automation-validator, and metadata suites; change metadata, review structure, guide-system, lifecycle, compilation, and diff checks
+    result: passed_7_cancellation_6_focused_proposal_review_validator_44_engine_15_policy_51_state_58_automation_validator_156_lifecycle_103_review_53_metadata_tests
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_392_seconds_after_M4_R8_resolution
+  - command: code-review M4 R9 blind-first diff, requirement-fidelity, cancellation-route inspection, and direct two-completed-receipt historical-route probe
+    result: changes_requested_BRF_M4_CR15_resolved_BRF_M4_CR16_open_non_latest_empty_route_validates_with_zero_errors
+  - command: python scripts/test-workflow-automation-state.py -k cancel; python scripts/test-validate-workflow-automation.py -k proposal_review during code-review M4 R9
+    result: passed_7_cancellation_and_6_proposal_review_validator_tests_but_direct_historical_route_probe_returned_zero_errors
+  - command: review structure, metadata, guide-system, lifecycle state synchronization, and diff checks after code-review M4 R9 recording
+    result: structure_passed_46_reviews_71_findings_1_open_metadata_guide_lifecycle_diff_passed
+  - command: proof-first two-completed-receipt route and authority-history regressions for BRF-M4-CR16
+    result: failed_before_correction_for_non_latest_route_tampering_then_passed_with_per_receipt_canonical_reconstruction
+  - command: CMD15 through CMD20; full engine, policy, state, automation-validator, lifecycle, review-artifact, and skill-validator suites; diff checks
+    result: passed_7_proposal_review_8_proposal_correction_4_authoring_4_non_public_44_engine_15_policy_51_state_61_automation_validator_156_lifecycle_103_review_259_skill_tests
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_401_seconds_after_M4_R9_resolution
+  - command: code-review M4 R10 L2 blind-first diff and requirement-fidelity review with historical review-ID, known-outcome, and output-identity probes
+    result: changes_requested_BRF_M4_CR16_failed_remediation_BRF_M4_CR17_open_route_owned_stage_facts_validate_with_zero_errors
+  - command: python scripts/test-validate-workflow-automation.py; focused proposal-review, proposal-correction, cancellation, and policy suites during code-review M4 R10
+    result: passed_61_validator_7_proposal_review_8_proposal_correction_7_cancellation_15_policy_tests_but_direct_stage_native_fact_probes_failed
+  - command: proof-first historical and latest review-ID, known-outcome, missing-evidence, and output-identity regressions for BRF-M4-CR17
+    result: failed_before_correction_then_passed_with_verifier_derived_stage_evidence_and_exact_output_binding
+  - command: CMD15 through CMD20; full engine, policy, state, automation-validator, lifecycle, review-artifact, skill-validator, and change-metadata suites
+    result: passed_7_proposal_review_8_proposal_correction_4_authoring_4_non_public_44_engine_15_policy_51_state_64_automation_validator_156_lifecycle_103_review_259_skill_53_metadata_tests
+  - command: python scripts/select-validation.py --mode explicit --broad-smoke for M4 R10 resolution paths
+    result: expected_manual_routing_for_four_automation_paths_selected_review_lifecycle_metadata_guide_and_broad_smoke_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_421_seconds_after_M4_R10_resolution
+  - command: code-review M4 R11 replacement L2 blind-first diff and requirement-fidelity review with coordinated receipt/result tampering and parser-backed recovery probes
+    result: changes_requested_BRF_M4_CR17_failed_remediation_BRF_M4_CR18_open_persisted_evidence_copy_not_bound_to_independently_reread_stage_facts
+  - command: python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-state.py; focused proposal-review and policy suites during code-review M4 R11
+    result: passed_64_validator_51_state_7_proposal_review_15_policy_tests_but_coordinated_tamper_and_recovery_contradiction_probes_failed
+  - command: proof-first coordinated proposal-review fact, route, latest-result, and coherent identity recovery regressions for BRF-M4-CR18
+    result: failed_before_correction_then_passed_with_parser_bound_evidence_and_projection_drift_pauses
+  - command: CMD14 through CMD20; full engine, policy, state, and automation-validator suites after M4 R11 resolution
+    result: passed_7_proposal_review_8_proposal_correction_4_authoring_4_non_public_44_engine_15_policy_54_state_64_automation_validator_156_lifecycle_103_review_259_skill_tests
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_686_seconds_against_final_source_after_M4_R11_resolution
+  - command: code-review M4 R12 L1 context-reset diff and requirement-fidelity review with repository-backed status-versus-recovery tamper probe
+    result: changes_requested_BRF_M4_CR18_failed_remediation_at_durable_status_boundary_BRF_M4_CR19_open
+  - command: python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; focused proposal-review and policy suites during code-review M4 R12
+    result: passed_54_state_64_validator_7_proposal_review_15_policy_tests_but_direct_status_probe_reported_forged_review_state
+  - command: proof-first repository-backed read, status, query, recovery, and append-only review-history regressions for BRF-M4-CR19
+    result: failed_before_correction_then_passed_with_shared_semantic_completed_review_validation
+  - command: full state, engine, automation-validator, query, policy, lifecycle, review-artifact, skill-validator, and change-metadata suites after M4 R12 resolution
+    result: passed_56_state_44_engine_64_automation_validator_20_query_15_policy_156_lifecycle_103_review_259_skill_53_metadata_tests
+  - command: python scripts/select-validation.py --mode explicit for M4 R12 resolution paths; bash scripts/ci.sh --mode broad-smoke
+    result: expected_manual_routing_for_two_automation_state_paths_covered_directly_and_11_broad_smoke_checks_passed_in_231_seconds
+  - command: code-review M4 R13 L2 blind-first requirement-fidelity review with canonical multi-receipt ordering and split query snapshot probes
+    result: changes_requested_BRF_M4_CR19_resolved_BRF_M4_CR20_BRF_M4_CR21_open
+  - command: full focused M4 state, query, validator, policy, engine, lifecycle, review-artifact, and skill suites during code-review M4 R13
+    result: passed_56_state_20_query_64_validator_15_policy_7_proposal_review_8_proposal_correction_4_authoring_4_non_public_156_lifecycle_103_review_259_skill_tests_but_two_direct_counterexamples_failed
+  - command: proof-first canonical multi-receipt ordering and single-snapshot query regressions for BRF-M4-CR20 and BRF-M4-CR21
+    result: failed_before_correction_then_passed_with_unique_canonical_occurrence_order_and_exact_validated_query_snapshot
+  - command: full state, query, engine, policy, automation-validator, lifecycle, review-artifact, skill-validator, and change-metadata suites after M4 R13 resolution
+    result: passed_57_state_21_query_44_engine_15_policy_64_automation_validator_156_lifecycle_103_review_259_skill_53_metadata_tests_and_python_compilation
+  - command: python scripts/select-validation.py --mode explicit for M4 R13 resolution paths; bash scripts/ci.sh --mode broad-smoke
+    result: expected_manual_routing_for_two_automation_state_paths_covered_directly_and_12_broad_smoke_checks_passed_in_541_seconds
+  - command: code-review M4 R14 L2 blind-first requirement-fidelity review with mixed-format chronology and both query race directions
+    result: changes_requested_BRF_M4_CR20_BRF_M4_CR21_failed_remediation_BRF_M4_CR22_BRF_M4_CR23_open
+  - command: python scripts/test-workflow-automation-state.py; python scripts/test-query-change-record.py; python scripts/test-validate-workflow-automation.py during code-review M4 R14
+    result: passed_57_state_21_query_64_validator_tests_but_mixed_format_order_and_no_automation_first_direct_probes_failed
+  - command: review structure, closeout, metadata, guide, lifecycle, and diff validation after code-review M4 R14 recording
+    result: structure_passed_51_reviews_78_findings_2_open_metadata_guide_lifecycle_diff_passed_closeout_correctly_blocked_by_two_open_findings
+  - command: proof-first mixed-format source chronology and no-automation-first valid/invalid query regressions for BRF-M4-CR22 and BRF-M4-CR23
+    result: failed_before_correction_then_passed_with_source_line_chronology_and_one_canonical_query_snapshot
+  - command: full review-parser, state, query, engine, policy, automation-validator, lifecycle, skill-validator, and change-metadata suites after M4 R14 resolution
+    result: passed_104_review_57_state_22_query_44_engine_15_policy_64_automation_validator_156_lifecycle_259_skill_53_metadata_tests_and_python_compilation
+  - command: python scripts/select-validation.py --mode explicit for M4 R14 resolution paths; bash scripts/ci.sh --mode broad-smoke
+    result: selected_review_metadata_query_checks_expected_manual_routing_for_two_state_paths_covered_directly_and_12_broad_smoke_checks_passed_in_241_seconds
+  - command: code-review M4 R15 L2 blind-first requirement-fidelity review and elevated independent second review
+    result: clean_with_notes_BRF_M4_CR22_BRF_M4_CR23_resolved_no_new_findings_second_review_agree_clean_M4_closed
+  - command: python scripts/test-review-artifact-validator.py; python scripts/test-workflow-automation-state.py; python scripts/test-query-change-record.py during code-review M4 R15
+    result: passed_104_review_57_state_22_query_tests_with_targeted_chronology_snapshot_compatibility_and_recovery_probes
+  - command: review structure, closeout, metadata, guide, lifecycle, and diff validation after code-review M4 R15 recording
+    result: structure_and_closeout_passed_52_reviews_78_findings_0_open_metadata_guide_lifecycle_diff_passed_with_known_nonblocking_merge_language_warning
+  - command: code-review M5 R1 L2 blind-first requirement-fidelity review with correction, evidence, review-currentness, resolution, and verification probes
+    result: changes_requested_BRF_M5_CR1_through_BRF_M5_CR5_open_M5_resolution_needed_M6_blocked
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py during code-review M5 R1
+    result: passed_52_engine_57_state_tests_but_direct_repository_backed_counterexamples_failed
+  - command: review structure, metadata, guide, lifecycle, and diff validation after code-review M5 R1 recording
+    result: structure_passed_53_reviews_83_findings_5_open_metadata_guide_lifecycle_diff_passed_with_known_nonblocking_merge_language_warning
+  - command: M5 R1 implementation correction focused engine, state, policy, schema, review, lifecycle, and skill suites
+    result: passed_55_engine_60_state_15_policy_64_schema_104_review_156_lifecycle_259_skill_tests
+  - command: python scripts/select-validation.py --mode explicit for M5 R1 correction paths with broad-smoke required
+    result: selected_lifecycle_guide_and_broad_smoke_with_expected_manual_routing_for_plan_owned_automation_scripts
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_271_seconds_on_final_M5_R1_resolution_source
+  - command: code-review M5 R2 context-reset requirement-fidelity review with correction, review-currentness, closeout, verification-currentness, and external-boundary probes
+    result: changes_requested_BRF_M5_CR6_through_BRF_M5_CR9_open_M5_resolution_needed_M6_blocked
+  - command: focused correction, verify, non-public, state/recovery, policy, Python compilation, and diff validation during code-review M5 R2
+    result: selected_suites_passed_but_direct_source_drift_title_drift_unrelated_open_closeout_and_policy_projection_counterexamples_failed
+  - command: proof-first M5 R2 correction recipe, stage-policy scope, final-code identity, external-action trap, milestone occurrence, and full-ledger closeout regressions
+    result: counterexamples_failed_before_correction_then_passed
+  - command: full workflow automation policy, state, engine, and durable-state validator suites after M5 R2 resolution
+    result: passed_16_policy_60_state_56_engine_65_validator_tests
+  - command: review-artifact, artifact-lifecycle, skill-validator, change-metadata, Python compilation, selected lifecycle, guide-system, and diff validation after M5 R2 resolution
+    result: passed_104_review_259_skill_53_metadata_tests_and_all_other_named_checks
+  - command: python scripts/select-validation.py --mode explicit for M5 R2 resolution paths
+    result: selected_lifecycle_guide_and_broad_smoke_with_expected_manual_routing_for_automation_scripts_covered_directly
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_941_seconds_on_final_M5_R2_resolution_source
+  - command: code-review M5 R3 independent same-session context-reset requirement-fidelity review with direct final-code omission probe
+    result: changes_requested_BRF_M5_CR6_BRF_M5_CR8_BRF_M5_CR9_resolved_BRF_M5_CR7_failed_remediation_BRF_M5_CR10_open
+  - command: python scripts/test-workflow-automation-policy.py; python scripts/test-workflow-automation-state.py; python scripts/test-workflow-automation.py; python scripts/test-validate-workflow-automation.py during code-review M5 R3
+    result: passed_16_policy_60_state_56_engine_65_validator_tests_but_direct_unlisted_source_drift_probe_bypassed_verification_currentness
+  - command: python scripts/test-workflow-code-state.py; python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-policy.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py after M5 R3 resolution
+    result: passed_4_code_state_56_engine_16_policy_60_state_65_validator_tests
+  - command: review structure, lifecycle, metadata, guide, Python compilation, and diff validation after M5 R3 resolution
+    result: passed_with_known_nonblocking_merge_language_warning
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_388_seconds_on_final_synchronized_M5_R3_resolution_source
+  - command: code-review M5 R4 independent same-session context-reset requirement-fidelity review with direct canonical-anchor probe
+    result: changes_requested_BRF_M5_CR10_failed_remediation_BRF_M5_CR11_open
+  - command: python scripts/test-workflow-code-state.py; python scripts/test-workflow-automation.py -k verification_readiness; python scripts/test-workflow-automation.py -k verify during code-review M5 R4
+    result: passed_4_provider_1_readiness_4_verify_tests_but_direct_partial_range_probe_reduced_96_initiative_paths_to_12_caller_scoped_paths
+  - command: review structure, lifecycle, metadata regression/direct validation, guide, and diff validation after code-review M5 R4 recording
+    result: passed_56_reviews_89_findings_1_open_with_known_nonblocking_merge_language_warning
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_414_seconds_after_code_review_M5_R4_recording
+  - command: proof-first M5 R4 canonical-anchor, later-base, target-ref-drift, anchor-projection, and Git provider-substitution regressions
+    result: later_base_and_target_ref_drift_failed_before_correction_then_passed
+  - command: python scripts/test-workflow-code-state.py; python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-policy.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py after M5 R4 resolution
+    result: passed_7_provider_56_engine_16_policy_60_state_65_validator_tests
+  - command: Python compilation, direct tracked-branch default-target merge-base proof, and diff validation after M5 R4 resolution
+    result: passed_anchor_base_52bdcbb329897225c22a593b8e04541409e2d315_matches_main_merge_base
+  - command: review closeout, lifecycle, metadata, guide, selector, and diff validation after M5 R4 resolution
+    result: passed_with_expected_manual_selector_routing_for_four_automation_python_paths_and_known_nonblocking_merge_language_warning
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_402_seconds_on_final_synchronized_M5_R4_resolution_source
+  - command: code-review M5 R5 independent same-session context-reset requirement-fidelity review with direct provider-substitution and mutable-review-anchor probes
+    result: changes_requested_BRF_M5_CR11_failed_remediation_BRF_M5_CR12_open
+  - command: python scripts/test-workflow-code-state.py; python scripts/test-workflow-automation.py -k verification_readiness during code-review M5 R5
+    result: passed_7_provider_1_readiness_tests_but_direct_git_subdirectory_provider_injection_and_HEAD_review_anchor_probes_succeeded
+  - command: review structure, lifecycle, metadata, guide-system, and diff validation after code-review M5 R5 recording
+    result: passed_57_reviews_90_findings_1_open_with_known_nonblocking_merge_language_warning
+  - command: proof-first M5 R5 Git-subdirectory, linked-worktree, mutable-review-revision, true-non-Git, ambiguous-classification, and pre-readiness root-binding regressions
+    result: git_subdirectory_and_four_mutable_revision_contrasts_failed_before_correction_then_passed
+  - command: python scripts/test-workflow-code-state.py; python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-policy.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py after M5 R5 resolution
+    result: passed_12_provider_57_engine_16_policy_60_state_65_validator_tests
+  - command: Python compilation, selector inspection, and diff validation after M5 R5 resolution
+    result: passed_with_expected_manual_selector_routing_for_four_automation_python_paths_and_broad_smoke_selected_by_active_plan
+  - command: review closeout, lifecycle, metadata regression/direct validation, guide-system, and diff validation after M5 R5 resolution
+    result: passed_57_reviews_90_findings_0_open_with_known_nonblocking_merge_language_warning
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_424_seconds_on_synchronized_source_before_final_classifier_contrast
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped after final ambiguous-classification fail-closed contrast
+    result: passed_11_checks_in_404_seconds_on_final_M5_R5_resolution_source
+  - command: code-review M5 R6 independent same-session context-reset requirement-fidelity review with exact-subprocess-allowlist challenge
+    result: changes_requested_BRF_M5_CR12_resolved_BRF_M5_CR13_open
+  - command: python scripts/test-workflow-code-state.py; python scripts/test-workflow-automation.py -k verify during code-review M5 R6
+    result: passed_12_provider_5_verify_tests_but_direct_predicate_probe_allowed_alternate_root_and_extra_git_operation
+  - command: review structure, lifecycle, metadata, guide-system, and diff validation after code-review M5 R6 recording
+    result: passed_58_reviews_91_findings_1_open_with_pre_existing_merge_language_warning_only
+  - command: proof-first exact canonical-root Git probe allowlist regression for BRF-M5-CR13
+    result: failed_before_helper_existed_then_passed_with_alternate_root_operation_argument_type_shell_and_direct_Popen_contrasts
+  - command: M5 targeted suites and full workflow automation engine after BRF-M5-CR13 correction
+    result: passed_12_code_state_58_engine_6_implementation_14_correction_5_milestone_6_verify_5_non_public_104_review_156_lifecycle_259_skill_tests
+  - command: selector, review closeout, lifecycle, metadata regression/direct, guide, compilation, and diff validation after BRF-M5-CR13 correction
+    result: passed_with_expected_manual_routing_for_test_workflow_automation_and_existing_merge_language_warning_only
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped after BRF-M5-CR13 correction
+    result: passed_11_checks_in_467_seconds_on_final_synchronized_source
+  - command: code-review M5 R7 blind-first exact-type and equality-spoof challenge
+    result: changes_requested_BRF_M5_CR13_failed_remediation_BRF_M5_CR14_open
+  - command: direct tuple-subclass equality-spoof probe during code-review M5 R7
+    result: reproduced_saved_launcher_receiving_git_push_while_committed_exact_allowlist_and_6_verify_tests_passed
+  - command: review structure, lifecycle, metadata regression/direct, guide-system, and diff validation after code-review M5 R7 recording
+    result: passed_59_reviews_92_findings_1_open_with_pre_existing_merge_language_warning_only
+  - command: proof-first tuple-subclass and comparison-side-effect regressions for BRF-M5-CR14
+    result: failed_before_exact_type_first_guard_then_passed_without_comparison_or_saved_launcher_invocation
+  - command: M5 targeted suites and full workflow automation engine after BRF-M5-CR14 correction
+    result: passed_12_code_state_59_engine_6_implementation_14_correction_5_milestone_7_verify_5_non_public_104_review_156_lifecycle_259_skill_tests
+  - command: selector, review closeout, lifecycle, metadata regression/direct, guide, compilation, and diff validation after BRF-M5-CR14 correction
+    result: passed_with_expected_manual_routing_for_test_workflow_automation_and_existing_merge_language_warning_only
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped after BRF-M5-CR14 correction
+    result: passed_11_checks_in_469_seconds_on_final_synchronized_source
+  - command: code-review M5 R8 independent same-session context-reset exact-type and requirement-fidelity review
+    result: clean_with_notes_BRF_M5_CR14_resolved_no_new_material_findings
+  - command: direct equality-spoof_comparison-sentinel_positive-launcher probes and 7 verify-selected tests during code-review M5 R8
+    result: passed_non_exact_types_rejected_without_comparison_or_launcher_and_exact_probe_called_once
+  - command: review closeout, lifecycle, metadata regression, guide-system, and diff validation after code-review M5 R8 recording
+    result: passed_60_reviews_92_findings_0_open_with_pre_existing_merge_language_warning_only
+  - command: python scripts/test-workflow-automation.py; python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-state.py
+    result: passed_63_engine_67_validator_60_state_tests_after_M6_public_cutover
+  - command: python scripts/test-skill-validator.py; python scripts/validate-skills.py; python scripts/build-skills.py --check
+    result: passed_259_skill_tests_validation_and_generated_skill_drift_check
+  - command: python scripts/test-change-metadata-validator.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-review-artifact-validator.py
+    result: passed_53_metadata_156_lifecycle_104_review_artifact_tests
+  - command: python scripts/test-adapter-distribution.py
+    result: passed_131_adapter_distribution_tests
+  - command: manifest-derived v0.1.5 temporary adapter build and validation
+    result: passed_without_tracked_generated_output_or_publication
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path schemas/change.schema.json --path scripts/workflow_automation.py --path scripts/workflow_automation_policy.py --path scripts/workflow_automation_state.py --path scripts/validate_workflow_automation.py
+    result: passed_12_selected_checks_after_deterministic_workflow_automation_selector_routing
+  - command: python scripts/test-select-validation.py
+    result: passed_133_selector_tests
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: passed_11_checks_in_381_seconds_before_final_lifecycle_synchronization
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_exact_CMD32_12_checks_in_228_seconds_after_lifecycle_synchronization
+  - command: code-review M6 R1 independent same-session context-reset requirement-fidelity and adversarial review
+    result: changes_requested_BRF_M6_CR1_BRF_M6_CR2_BRF_M6_CR3_BRF_M6_CR4
+  - command: temporary repository probes for cross-spec missing row, interrupted and terminal legacy off, and public result evidence
+    result: reproduced_missing_row_acceptance_active_intermediate_cancellation_terminal_legacy_error_and_absent_canonical_position
+  - command: python scripts/test-workflow-automation.py; python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-workflow-automation-policy.py
+    result: passed_63_engine_67_validator_60_state_16_policy_tests_during_code_review_M6_R1_but_did_not_cover_reproduced_gaps
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism
+    result: passed_61_reviews_96_findings_4_open_after_code_review_M6_R1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+    result: passed_after_code_review_M6_R1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths for code-review M6 R1 evidence, active plan, and plan index
+    result: passed_five_artifact_files_with_pre_existing_merge_language_warning_only
+  - command: python scripts/validate-guide-system.py; git diff --check
+    result: passed_after_code_review_M6_R1_recording
+  - command: proof-first M6 R1 regressions for exact missing cross-spec selector, interrupted and terminal legacy off, public evidence, bounded correction authority, and public resume
+    result: failed_before_correction_and_passed_after_correction
+  - command: python scripts/test-workflow-automation.py; python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-workflow-automation-policy.py; python -m py_compile scripts/workflow_automation.py scripts/workflow_automation_state.py scripts/validate_workflow_automation.py
+    result: passed_67_engine_68_validator_60_state_16_policy_tests_and_compilation_after_M6_R1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure and --mode closeout; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    result: passed_61_reviews_96_findings_0_open_metadata_and_lifecycle_with_pre_existing_merge_language_warning_only
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path schemas/change.schema.json --path scripts/workflow_automation.py --path scripts/workflow_automation_policy.py --path scripts/workflow_automation_state.py --path scripts/validate_workflow_automation.py
+    result: passed_12_selected_checks_after_M6_R1_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_241_seconds_after_M6_R1_resolution_and_lifecycle_synchronization
+  - command: code-review M6 R2 isolated actual-diff and requirement-fidelity review of commit 8fadb828
+    result: changes_requested_BRF_M6_CR4_failed_remediation_BRF_M6_CR5_BRF_M6_CR6_BRF_M6_CR7_residual
+  - command: python scripts/test-workflow-automation.py; python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-workflow-automation-policy.py
+    result: passed_67_engine_68_validator_60_state_16_policy_tests_during_code_review_M6_R2_but_did_not_cover_reproduced_gaps
+  - command: direct temporary public-resume canonical-identity drift probe and verification-authorization source/test inspection
+    result: reproduced_mutation_after_persisted_identity_drift_and_arbitrary_hash_verification_authorization
+  - command: python scripts/validate-review-artifacts.py --mode structure; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths; python scripts/validate-guide-system.py; git diff --check
+    result: passed_62_reviews_99_findings_3_open_after_code_review_M6_R2_recording_with_pre_existing_merge_language_warning_only
+  - command: proof-first M6 R2 regressions for durable public resume identities, repository-backed verification authorization, and complete repeated/reversed public composition
+    result: failed_before_correction_and_passed_after_correction
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-policy.py
+    result: passed_70_engine_60_state_68_validator_16_policy_tests_after_M6_R2_resolution
+  - command: temporary adapter generation and validation through a scoped Python TemporaryDirectory wrapper
+    result: passed_v0_1_5_generation_validation_and_teardown_after_shell_cleanup_trap_was_rejected
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path schemas/change.schema.json --path scripts/workflow_automation.py --path scripts/workflow_automation_policy.py --path scripts/workflow_automation_state.py --path scripts/validate_workflow_automation.py
+    result: passed_12_selected_checks_after_M6_R2_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_11_checks_in_231_seconds_after_M6_R2_resolution_and_lifecycle_synchronization
+  - command: code-review M6 R3 isolated actual-diff and requirement-fidelity review of commit cdf27205
+    result: changes_requested_BRF_M6_CR7_failed_remediation_BRF_M6_CR8_BRF_M6_CR9_residual
+  - command: direct temporary public verify-target missing-authority probe
+    result: reproduced_public_error_with_durable_run_still_active
+  - command: python scripts/test-workflow-automation.py WorkflowAutomationEngineTests.test_public_composition_is_deterministic_and_order_independent; python scripts/test-workflow-automation.py
+    result: passed_targeted_T30_and_70_engine_tests_but_did_not_cover_reproduced_pause_and_recovery_gaps
+  - command: python scripts/validate-review-artifacts.py --mode structure; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths; python scripts/validate-guide-system.py; git diff --check
+    result: passed_63_reviews_101_findings_2_open_after_code_review_M6_R3_recording_with_pre_existing_merge_language_warning_only
+  - command: proof-first M6 R3 regressions for durable missing-verification-authority pause and original prepared-receipt recovery
+    result: failed_before_correction_and_passed_after_correction
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-policy.py; python -m py_compile scripts/workflow_automation.py scripts/workflow_automation_state.py scripts/test-workflow-automation.py
+    result: passed_71_engine_60_state_68_validator_16_policy_tests_and_compilation_after_M6_R3_resolution
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path schemas/change.schema.json --path scripts/workflow_automation.py --path scripts/workflow_automation_policy.py --path scripts/workflow_automation_state.py --path scripts/validate_workflow_automation.py
+    result: passed_12_selected_checks_after_M6_R3_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_285_seconds_against_final_M6_R3_resolution_source
+  - command: code-review M6 R4 isolated actual-diff and requirement-fidelity review of commit d59bd2b1
+    result: changes_requested_BRF_M6_CR9_failed_remediation_BRF_M6_CR10_residual
+  - command: direct temporary public proposal-correction crash-after-write and same-receipt recovery probe
+    result: reproduced_valid_completion_evidence_pausing_with_original_receipt_prepared_and_capability_active
+  - command: python scripts/test-workflow-automation.py WorkflowAutomationEngineTests.test_public_verify_missing_authority_pauses_durably_and_reactivates WorkflowAutomationEngineTests.test_public_composition_is_deterministic_and_order_independent WorkflowAutomationEngineTests.test_proposal_correction_executes_bound_recipe_without_caller_callback
+    result: passed_3_focused_controls_during_code_review_M6_R4_but_did_not_cover_reproduced_correction_restart_gap
+  - command: proof-first public proposal-correction crash-after-write recovery regression
+    result: failed_before_correction_with_mutation_escaped_effective_capability_and_passed_after_restart_safe_settlement
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-policy.py; python -m py_compile scripts/workflow_automation.py scripts/test-workflow-automation.py
+    result: passed_72_engine_60_state_68_validator_16_policy_tests_and_compilation_after_M6_R4_resolution
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path schemas/change.schema.json --path scripts/workflow_automation.py --path scripts/workflow_automation_policy.py --path scripts/workflow_automation_state.py --path scripts/validate_workflow_automation.py
+    result: passed_12_selected_checks_after_M6_R4_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_279_seconds_after_M6_R4_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths; python scripts/validate-guide-system.py; git diff --check
+    result: passed_65_reviews_103_findings_and_M6_R5_resolution_needed_handoff_with_pre_existing_merge_language_warning_only
+  - command: code-review M6 R5 isolated actual-diff and requirement-fidelity review of commit b57fd9df
+    result: changes_requested_BRF_M6_CR10_failed_remediation_BRF_M6_CR11_residual
+  - command: direct public proposal-correction recovery with substituted derived_at
+    result: reproduced_same_receipt_completion_and_fresh_capability_with_unbound_2099_timestamp
+  - command: python scripts/test-workflow-automation.py WorkflowAutomationEngineTests.test_public_proposal_correction_recovers_after_process_loss_without_replay WorkflowAutomationEngineTests.test_proposal_correction_executes_bound_recipe_without_caller_callback
+    result: passed_2_focused_controls_during_code_review_M6_R5_but_did_not_cover_recovery_timestamp_substitution
+  - command: proof-first altered and omitted proposal-correction recovery derived_at contrasts
+    result: failed_before_correction_with_unbound_2099_timestamp_and_missing_derived_at_then_passed_with_persisted_capability_timestamp
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-workflow-automation-policy.py; python -m py_compile scripts/workflow_automation.py scripts/test-workflow-automation.py
+    result: passed_73_engine_60_state_68_validator_16_policy_tests_and_compilation_after_M6_R5_resolution
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path schemas/change.schema.json --path scripts/workflow_automation.py --path scripts/workflow_automation_policy.py --path scripts/workflow_automation_state.py --path scripts/validate_workflow_automation.py
+    result: passed_12_selected_checks_after_M6_R5_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_11_checks_in_244_seconds_after_M6_R5_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure; python scripts/validate-review-artifacts.py --mode closeout; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths; python scripts/validate-guide-system.py; git diff --check
+    result: passed_66_reviews_103_resolved_findings_and_final_holistic_review_handoff_with_pre_existing_merge_language_warning_only
+  - command: code-review M6 R6 isolated actual-diff and requirement-fidelity review of commit df0ca693
+    result: clean_with_notes_no_material_findings_M6_closed
+  - command: python scripts/test-workflow-automation.py WorkflowAutomationEngineTests.test_public_proposal_correction_recovery_ignores_altered_resume_timestamp WorkflowAutomationEngineTests.test_public_proposal_correction_recovery_does_not_require_resume_timestamp WorkflowAutomationEngineTests.test_capability_derivation_requires_current_complete_subset_basis WorkflowAutomationEngineTests.test_capability_one_stage_coordination_persists_receipt_before_invocation WorkflowAutomationEngineTests.test_proposal_correction_executes_bound_recipe_without_caller_callback; python scripts/test-workflow-automation.py
+    result: passed_5_focused_controls_and_73_engine_tests_during_code_review_M6_R6
+  - command: final holistic code-review R1 of complete branch diff 52bdcbb329897225c22a593b8e04541409e2d315..962bdc4a
+    result: changes_requested_BRF_FH_CR1
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-workflow-code-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-select-validation.py
+    result: passed_73_engine_60_state_12_code_state_68_validator_133_selector_tests_during_final_holistic_review_R1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/workflow_code_state.py --path scripts/test-workflow-code-state.py
+    result: blocked_exit_2_manual_routing_required_for_both_code_state_paths_BRF_FH_CR1
+  - command: python scripts/validate-review-artifacts.py --mode structure; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths; git diff --check
+    result: passed_67_reviews_104_findings_one_open_final_holistic_finding_and_synchronized_review_resolution_handoff_with_pre_existing_merge_language_warning_only
+  - command: proof-first python scripts/test-select-validation.py before BRF-FH-CR1 correction
+    result: failed_12_cases_for_missing_code_state_catalog_path_classification_and_complete_category_check_as_expected
+  - command: python scripts/test-select-validation.py
+    result: passed_133_tests_after_BRF_FH_CR1_resolution
+  - command: bash scripts/ci.sh --mode explicit --path scripts/workflow_code_state.py --path scripts/test-workflow-code-state.py
+    result: passed_5_workflow_automation_checks_including_code_state_regression_after_BRF_FH_CR1_resolution
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path schemas/change.schema.json --path scripts/workflow_automation.py --path scripts/workflow_code_state.py --path scripts/test-workflow-code-state.py --path scripts/workflow_automation_policy.py --path scripts/workflow_automation_state.py --path scripts/validate_workflow_automation.py
+    result: passed_13_selected_checks_after_BRF_FH_CR1_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_242_seconds_after_BRF_FH_CR1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure; python scripts/validate-review-artifacts.py --mode closeout; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths; git diff --check
+    result: passed_67_reviews_104_resolved_findings_and_final_holistic_R2_handoff_with_pre_existing_merge_language_warning_only
+  - command: final holistic code-review R2 of complete branch diff 52bdcbb329897225c22a593b8e04541409e2d315..b4f08b56
+    result: clean_with_notes_no_material_findings_all_104_prior_findings_resolved
+  - command: python scripts/select-validation.py --mode explicit over all ten workflow automation source and test paths
+    result: passed_all_ten_paths_classified_exactly_five_checks_no_registration_debt
+  - command: python scripts/select-validation.py --mode explicit --path scripts/unknown-workflow-automation.py
+    result: blocked_exit_2_manual_routing_required_as_expected_during_final_holistic_R2
+  - command: python scripts/test-select-validation.py; bash scripts/ci.sh --mode explicit --path scripts/workflow_code_state.py --path scripts/test-workflow-code-state.py
+    result: passed_133_selector_tests_and_5_executed_automation_checks_during_final_holistic_R2
+  - command: python scripts/validate-review-artifacts.py --mode structure; python scripts/validate-review-artifacts.py --mode closeout; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths; git diff --check
+    result: passed_68_reviews_104_resolved_findings_and_explain_change_handoff_with_pre_existing_merge_language_warning_only
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/explain-change.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/plans/2026-07-21-single-bounded-review-fix-workflow-automation.md --path docs/plan.md
+    result: passed_lifecycle_53_metadata_regressions_metadata_guide_documentation_prose_and_broad_smoke_in_417_19_seconds
+  - command: canonical code-state verification against full reviewed commit b4f08b567d4e2b4d1e3fc77a458a67d9c1da3212
+    result: passed_126_reviewed_entries_exact_anchor_and_declared_post_review_lifecycle_evidence_only
+  - command: python scripts/test-workflow-automation.py -k verify; python scripts/test-workflow-code-state.py; python scripts/validate-skills.py; python scripts/build-skills.py --check; git diff --check
+    result: passed_8_focused_verify_12_code_state_24_skill_validation_generated_skill_drift_and_diff_checks
+  - command: bash scripts/ci.sh --mode pr --base 52bdcbb329897225c22a593b8e04541409e2d315 --head HEAD
+    result: passed_all_25_selected_checks_and_required_broad_smoke_in_405_85_seconds_local_only
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/verify-report.md --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/plans/2026-07-21-single-bounded-review-fix-workflow-automation.md --path docs/plan.md
+    result: passed_lifecycle_53_metadata_regressions_metadata_guide_and_broad_smoke_in_487_01_seconds_after_verify_report
+  - command: gh pr create --base main --head proposal/single-bounded-review-fix-automation
+    result: opened_PR_124_https_github_com_xiongxianfei_rigorloop_pull_124_hosted_ci_pending
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml --path docs/plans/2026-07-21-single-bounded-review-fix-workflow-automation.md --path docs/plan.md --path docs/plan-archive.md
+    result: passed_lifecycle_53_metadata_regressions_metadata_guide_and_broad_smoke_in_381_25_seconds_after_PR_124_handoff
+changed_files:
+  - README.md
+  - docs/workflows.md
+  - scripts/test-select-validation.py
+  - scripts/test-skill-validator.py
+  - scripts/validation_selection.py
+  - skills/architecture-review/SKILL.md
+  - skills/architecture/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/explain-change/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/proposal-review/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/spec/SKILL.md
+  - skills/test-spec/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/workflow/SKILL.md
+  - docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md
+  - specs/single-bounded-review-fix-workflow-automation.md
+  - specs/workflow-stage-autoprogression.md
+  - specs/rigorloop-workflow.md
+  - specs/review-fix-autoprogression.md
+  - specs/review-finding-resolution-contract.md
+  - specs/workflow-stage-autoprogression.test.md
+  - specs/single-bounded-review-fix-workflow-automation.test.md
+  - docs/plans/2026-04-21-workflow-stage-autoprogression.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/architecture/system/diagrams/component-workflow-automation.mmd
+  - docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md
+  - docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md
+  - docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md
+  - docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md
+  - docs/plans/2026-07-21-single-bounded-review-fix-workflow-automation.md
+  - docs/plan.md
+  - docs/plan-archive.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/explain-change.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/verify-report.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r4.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r4.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r5.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r6.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m1-r7.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m2-r3.md
+  - schemas/change.schema.json
+  - scripts/workflow_automation_policy.py
+  - scripts/workflow_automation_state.py
+  - scripts/validate_workflow_automation.py
+  - scripts/validate-change-metadata.py
+  - scripts/query-change-record.py
+  - scripts/test-review-artifact-validator.py
+  - scripts/test-workflow-automation-policy.py
+  - scripts/test-workflow-automation-state.py
+  - scripts/test-validate-workflow-automation.py
+  - scripts/test-change-metadata-validator.py
+  - scripts/test-query-change-record.py
+  - scripts/workflow_automation.py
+  - scripts/test-workflow-automation.py
+  - scripts/workflow_code_state.py
+  - scripts/test-workflow-code-state.py
+  - scripts/review_artifact_validation.py
+  - scripts/lifecycle_state_sync.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r4.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r5.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r6.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r7.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r8.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m3-r9.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r4.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r5.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r6.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r7.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r8.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r9.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r10.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r11.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r12.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r13.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r14.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m4-r15.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r4.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r5.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r6.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r7.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m5-r8.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r2.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r3.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r4.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r5.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r6.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-final-r1.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-final-r2.md
+review:
+  status: clean_with_notes
+  unresolved_items: 0
+  location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
+  material_findings: 104
+  closed_findings: 104
+  open_findings: 0
+  proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
+  spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
+  architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
+  plan_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
+  test_spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
+  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-final-r2.md
+  review_log: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
+  review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md

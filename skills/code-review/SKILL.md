@@ -341,7 +341,7 @@ A clean review of one non-final implementation milestone is not proof that the w
 
 ## Implementation autoprogression review
 
-Under `implementation-through-verify`, every implementation milestone receives an independent review with context-reset evidence. Material findings must include reviewer-owned `auto_fix_class`; missing classification is treated as `none` and pauses automatic correction.
+Under unified workflow automation, every implementation milestone receives an independent review with context-reset evidence. Material findings must include reviewer-owned `auto_fix_class`; missing classification is treated as `none` and pauses automatic correction.
 
 Use `mechanical` only for closed deterministic fix kinds with affected paths, deterministic authority, and required validation. Use `declared-safe` only when the review record provides a deterministic recipe, named inputs and outputs, forbidden paths, acceptance criteria, required validation commands, and no owner decision. The orchestrator must not upgrade unclassified findings.
 

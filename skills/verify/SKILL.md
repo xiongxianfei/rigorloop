@@ -119,7 +119,7 @@ In workflow-managed final closeout, `verify` runs after:
 
 Then `verify` hands off to `pr` when branch-ready evidence is complete.
 
-Under `implementation-through-verify`, automatic final verification is Phase C behavior only. It requires fresh actual-run evidence for correctness-bearing, security-sensitive, release-sensitive, artifact lifecycle, review closeout, change metadata, generated-output, and required test-suite checks.
+Under unified workflow automation, automatic final verification requires a separate, basis-complete verification capability and fresh actual-run evidence for correctness-bearing, security-sensitive, release-sensitive, artifact lifecycle, review closeout, change metadata, generated-output, and required test-suite checks.
 
 cache hits may support only purely informational sub-checks when their timestamps are after the activation baseline and the audit record names the sub-check and cache timestamp. A verify failure pauses the profile and does not trigger automatic repair. A successful Phase C verify computes branch readiness from recorded evidence, reports `pr` next, records that human authorization for `pr` is required, and does not invoke `pr`.
 

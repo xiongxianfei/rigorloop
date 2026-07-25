@@ -18,6 +18,7 @@ from lifecycle_state_sync import evaluate_automated_review_gate_route
 from lifecycle_state_sync import evaluate_implementation_autoprogression_route
 from lifecycle_state_sync import evaluate_implementation_correction_guardrails
 from lifecycle_state_sync import evaluate_review_fix_autoprogression_route
+from workflow_automation import ActivePlanContext, AutomationContractError, bind_target
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -401,7 +402,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         next_stage: str = "code-review M2",
         final_closeout_readiness: str = "not ready",
         readiness: str = "- See `Current Handoff Summary`.\n- Readiness is not Done.",
-        reason: str = "implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 awaits review and later closeout gates remain.",
+        reason: str = "implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none",
         change_id: str = "2026-06-23-workflow-state-fixture",
         plan_index_state: str | None = None,
         plan_index_next_stage: str | None = None,
@@ -619,7 +620,7 @@ Terminal disposition: none
 - Remaining in-scope implementation milestones: M1
 - Next stage: {next_stage}
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M1 is awaiting review and final closeout gates remain.
+- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -751,7 +752,7 @@ No blocked plans.
             current_milestone_state="review-requested",
             review_status="review-requested; stage=test-spec-review; round=r1",
             next_stage="test-spec-review",
-            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — test-spec-review is pending before implementation.",
+            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none",
         )
         result, messages = self.validate_workflow_state_fixture(test_spec_review_root)
         self.assertFalse(result.blocking_findings, msg=messages)
@@ -1149,12 +1150,133 @@ review:
             current_milestone_state="resolution-needed",
             review_status="changes-requested; stage=code-review; round=r1",
             next_stage="review-resolution / implement M2 fixes",
-            reason="implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
+            reason="implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=WSS-F1",
         )
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
 
         self.assertFalse(result.blocking_findings, msg=messages)
+
+    def test_workflow_state_open_review_finding_requires_matching_reason_code(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-open-review-reason-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=True,
+            review_unresolved_items=1,
+            current_milestone_state="resolution-needed",
+            review_status="changes-requested; stage=code-review; round=r1",
+            next_stage="review-resolution / implement M2 fixes",
+            reason="implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("review-findings-open", messages)
+
+    def test_workflow_state_closed_review_rejects_open_findings_reason_code(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-closed-review-reason-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=False,
+            review_unresolved_items=0,
+            reason="implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — The review is closed and later closeout gates remain.",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("review-findings-open", messages)
+
+    def test_workflow_state_open_review_rejects_closed_or_wrong_detail_projection(self) -> None:
+        cases = {
+            "closed-prose": "review-state=open; open-count=1; open-findings=WSS-F1; no findings remain; later gates remain.",
+            "wrong-count": "review-state=open; open-count=2; open-findings=WSS-F1; later gates remain.",
+            "wrong-id": "review-state=open; open-count=1; open-findings=WSS-F2; later gates remain.",
+            "missing-projection": "WSS-F1 remains open and later gates remain.",
+            "second-review-state": "review-state=open; open-count=1; open-findings=WSS-F1; review-state=closed; nothing remains open.",
+            "plain-contradiction": "review-state=open; open-count=1; open-findings=WSS-F1; nothing remains open.",
+            "underscore-field": "review-state=open; open-count=1; open-findings=WSS-F1; review_state=closed.",
+            "prefixed-field": "review-state=open; open-count=1; open-findings=WSS-F1; _review-state=closed.",
+        }
+        for name, detail in cases.items():
+            fixture_root = Path(tempfile.mkdtemp(prefix=f"workflow-state-open-detail-{name}-"))
+            self.addCleanupTree(fixture_root)
+            self.write_workflow_state_fixture(
+                fixture_root,
+                include_open_review_finding=True,
+                review_unresolved_items=1,
+                current_milestone_state="resolution-needed",
+                review_status="changes-requested; stage=code-review; round=r1",
+                next_stage="review-resolution / implement M2 fixes",
+                reason=f"implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — {detail}",
+            )
+
+            result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+            self.assertTrue(result.blocking_findings, msg=f"{name} should fail")
+            self.assertIn("review-state", messages)
+
+    def test_workflow_state_closed_review_rejects_unstructured_open_finding_detail(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-closed-detail-open-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=False,
+            review_unresolved_items=0,
+            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("review-state", messages)
+
+    def test_workflow_state_closed_review_rejects_unstructured_state_fields(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-closed-detail-fields-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=False,
+            review_unresolved_items=0,
+            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review_state=open; open_count=1; open_items=WSS item",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("review-state", messages)
+
+    def test_workflow_state_closed_review_accepts_exact_projection(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-closed-detail-exact-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=False,
+            review_unresolved_items=0,
+            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertFalse(result.blocking_findings, msg=messages)
+
+    def test_workflow_state_closed_review_requires_exact_projection(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-closed-detail-missing-"))
+        self.addCleanupTree(fixture_root)
+        self.write_workflow_state_fixture(
+            fixture_root,
+            include_open_review_finding=False,
+            review_unresolved_items=0,
+            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 awaits review and later closeout gates remain.",
+        )
+
+        result, messages = self.validate_workflow_state_fixture(fixture_root)
+
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("review-state", messages)
 
     def test_workflow_state_index_only_catches_next_stage_drift(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-index-drift-"))
@@ -1236,6 +1358,55 @@ review:
         result, messages = self.validate_workflow_state_fixture(fixture_root)
 
         self.assertFalse(result.blocking_findings, msg=messages)
+
+    def test_automation_active_plan_context_reuses_canonical_handoff(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-automation-plan-context-"))
+        self.addCleanupTree(fixture_root)
+        plan_path, _, _ = self.write_workflow_state_fixture(
+            fixture_root,
+            current_milestone_state="implementing",
+            review_status="approved; stage=code-review; round=r1",
+            next_stage="implement M2",
+            milestone_projection_state="implementing",
+        )
+
+        context = ActivePlanContext.from_text(
+            plan_path.read_text(encoding="utf-8"),
+            plan_identity="sha256:plan",
+        )
+        target = bind_target(
+            "implement",
+            bound_at="2026-07-22T00:00:00Z",
+            plan=context,
+        )
+
+        self.assertEqual(target["occurrence"]["milestone_id"], "M2")
+        self.assertEqual(target["plan_identity"], "sha256:plan")
+
+    def test_automation_active_plan_context_rejects_ambiguous_current_milestone(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-automation-plan-ambiguous-"))
+        self.addCleanupTree(fixture_root)
+        plan_path, _, _ = self.write_workflow_state_fixture(
+            fixture_root,
+            current_milestone_state="implementing",
+            review_status="approved; stage=code-review; round=r1",
+            next_stage="implement M2",
+            milestone_projection_state="implementing",
+        )
+        text = plan_path.read_text(encoding="utf-8")
+        text = text.replace(
+            "### M2. Parser Fixture Harness\n\n- Milestone state: implementing",
+            "### M2. Parser Fixture Harness\n\n- Milestone state: implementing\n\n"
+            "### M2. Parser Fixture Harness\n\n- Milestone state: implementing",
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError,
+            "duplicate active plan milestone identity",
+        ):
+            ActivePlanContext.from_text(
+                text,
+                plan_identity="sha256:plan",
+            )
 
     def test_handoff_disagreeing_with_change_yaml_fails(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-cross-surface-drift-"))

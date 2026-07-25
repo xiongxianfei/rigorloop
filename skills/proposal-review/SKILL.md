@@ -283,7 +283,7 @@ must state:
 
 ## Authoring Profile Review Independence
 
-For `authoring-through-plan-review`, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any profile-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
+For automated `bounded-review-fix` authoring, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any automation-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
 
 ## Rules
 
@@ -298,8 +298,8 @@ For `authoring-through-plan-review`, reset review context to the tracked artifac
 
 - Direct or review-only `proposal-review` requests remain isolated by default.
 - In v1, `proposal-review` is a gate, not a default automatic handoff into `spec`; report approval, revision needs, or blocker state without implying `spec` auto-starts.
-- `authoring-through-plan-review` is the only approved review-to-next-authoring exception. In workflow-managed execution, when the profile is durably armed and the proposal gate is ready, a clean recorded proposal-review may report `Immediate next stage: spec` for the workflow router.
-- Outside that explicitly armed workflow-managed profile, continuing into `spec` requires a separate workflow or user request rather than this review stage auto-continuing on its own.
+- Only an explicitly authorized workflow-managed `bounded-review-fix` run may continue from review into the next authoring stage. When its authoring capability is current and the proposal gate is ready, a clean recorded proposal-review may report `Immediate next stage: spec` for the workflow router.
+- Outside that authorized unified run, continuing into `spec` requires a separate workflow or user request rather than this review stage auto-continuing on its own.
 
 Closed enum: recording status
 

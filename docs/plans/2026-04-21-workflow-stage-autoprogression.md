@@ -179,7 +179,7 @@ The implementation must stay inside the approved v1 boundary:
 - Goal:
   - Make the stage-local behavior for full-feature execution match the approved `implement`-through-`pr` autoprogression contract.
 - Requirements:
-  - `R1`, `R1b`-`R1d`, `R2`, `R2a`, `R2b`, `R2ba`, `R3`-`R3f`, `R5`, `R6`-`R6c`, `R7`, `R8a`-`R8d`, `R9`
+  - `R1`, `R1b`-`R1d`, `R2`, `R2a`, `R2b`, `R2b1`, `R3`-`R3f`, `R5`, `R6`-`R6c`, `R7`, `R8a`-`R8d`, `R9`
 - Files/components likely touched:
   - `skills/workflow/SKILL.md`
   - `skills/implement/SKILL.md`

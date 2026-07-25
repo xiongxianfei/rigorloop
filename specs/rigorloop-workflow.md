@@ -3,6 +3,14 @@
 ## Status
 - approved
 
+## Unified automation amendment
+
+Upon approval of [Single Bounded Review-Fix Workflow Automation](single-bounded-review-fix-workflow-automation.md), its exact cross-spec disposition ledger governs every requirement and acceptance surface in this spec that names a retired automation profile.
+`superseded` entries no longer authorize new execution or writes.
+`preserved-rebound` entries remain mandatory with the unified subject named by that ledger and do not keep a retired profile writable.
+Only selectors explicitly listed in the unified spec's closed affected-selector registry are amended.
+Requirements outside that registry remain current lifecycle and artifact-ordering requirements of this spec and receive no implicit migration disposition.
+
 ## Related proposal
 
 - [RigorLoop Project Direction](../docs/proposals/2026-04-19-rigorloop-project-direction.md)
@@ -983,7 +991,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - stage-obligation metadata;
 - repo-local lifecycle state in plans, lifecycle-managed artifacts, review-resolution closeout, readiness wording, and change-local artifacts;
 - change-local autoprogression profile policy and user authorization when present;
-- durable authorization persistence result for `authoring-through-plan-review` activation, including fallback path evidence when `workflow-policy.yaml` is used;
+- `RLW-INPUT-1`: durable authorization persistence result for `authoring-through-plan-review` activation, including fallback path evidence when `workflow-policy.yaml` is used;
 - proposal status, proposal-review evidence, review-log state, and review-resolution closeout when proposal-gate activation is evaluated;
 - recorded architecture assessment outcome when authoring autoprogression reaches post-spec-review routing;
 - change artifacts and PR text;
@@ -1000,7 +1008,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - contributor-visible lifecycle warnings for tracked merge-dependent language;
 - PR summary and validation notes;
 - machine-readable change metadata for non-trivial work at `docs/changes/<change-id>/change.yaml`;
-- profile state and authoring autoprogression audit evidence when `authoring-through-plan-review` is armed, paused, active, or completed;
+- `RLW-INPUT-2`: profile state and authoring autoprogression audit evidence when `authoring-through-plan-review` is armed, paused, active, or completed;
 - `authorization-not-persisted` stop evidence when durable profile authorization is missing, malformed, incomplete, or cannot be written;
 - recorded architecture assessment result when authoring autoprogression evaluates architecture need;
 - generated adapter distribution content;
@@ -1018,8 +1026,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Manual skill invocations are allowed but remain isolated by default.
 - Direct review-only invocations remain isolated by default even when a change has an armed authoring profile.
 - Manual skill output is not proof that the full standard workflow is complete.
-- `authoring-through-plan-review` is a distinct, explicitly armed profile and does not alter default behavior when profile is `off`.
-- `authoring-through-plan-review` completes at clean `plan-review` and cannot start `test-spec` or implementation.
+- `RLW-STATE-1`: `authoring-through-plan-review` is a distinct, explicitly armed profile and does not alter default behavior when profile is `off`.
+- `RLW-STATE-2`: `authoring-through-plan-review` completes at clean `plan-review` and cannot start `test-spec` or implementation.
 - Profile policy metadata is an audit and authorization surface, not a live workflow-state owner.
 - Durable profile policy metadata is required before any profile-driven transition.
 - Complete workflow delivery remains traceable from proposal/spec direction through durable reasoning, final verification evidence, and PR summary.
@@ -1035,7 +1043,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A complete workflow claim without evidence from the relevant standard workflow stages MUST be considered incomplete.
 - An authoring autoprogression activation without both an armed profile and a gate-ready proposal MUST be considered incomplete and must not enter `spec`.
 - An authoring autoprogression activation without a durable authorization record, with a malformed or incomplete authorization record, or with a failed authorization-persistence write MUST pause with an authorization-persistence stop condition before any profile-driven transition.
-- An unknown profile value, contradictory profile state, ambiguous architecture assessment, non-clean review, material finding, open owner decision, missing or malformed authorization persistence, authorization persistence write failure, or exhausted transition budget MUST pause the profile.
+- `RLW-ERROR-1`: An unknown profile value, contradictory profile state, ambiguous architecture assessment, non-clean review, material finding, open owner decision, missing or malformed authorization persistence, authorization persistence write failure, or exhausted transition budget MUST pause the profile.
 - A paused profile MUST NOT resume from manual file changes alone.
 - A planned milestone closed without the completion evidence required by `R8a` or without the standardized milestone commit subject required by `R8b` MUST be considered incomplete.
 - A milestone-based plan with an open in-scope implementation milestone, a `review-requested` milestone that has not been reviewed, a `resolution-needed` milestone, ambiguous remaining implementation scope, or stale final-closeout readiness wording MUST be considered incomplete for final closeout.
@@ -1071,7 +1079,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - For new non-trivial work, the default standalone durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`. Approved legacy top-level explain artifacts under `docs/explain/` remain valid until migrated or retired.
 - In-flight work SHOULD use the current standard workflow at the next handoff. If an active plan has not yet reached final verification, it uses `explain-change -> verify -> pr`.
 - Existing change records without durable autoprogression profile policy remain profile `off` unless the user re-asserts authorization and the workflow records it durably before activation.
-- Existing workflow-managed and isolated flows remain compatible because `authoring-through-plan-review` requires explicit change-local user authorization and gate readiness.
+- `RLW-COMPAT-1`: Existing workflow-managed and isolated flows remain compatible because `authoring-through-plan-review` requires explicit change-local user authorization and gate readiness.
 - If the downstream change-metadata spec rejects workflow policy in `change.yaml`, the policy surface for this profile migrates to `docs/changes/<change-id>/workflow-policy.yaml` without changing live state ownership, and the fallback decision must be visible in the activation audit trail.
 - If in-flight work already ran verification before `explain-change`, that verification evidence is preliminary. Final `verify` MUST rerun after the durable explain-change artifact exists and is current.
 - Active plans affected by this transition MUST record the short transition note defined in `R6m` and `R6n` rather than carrying a detailed historical explanation of the old order.
@@ -1172,7 +1180,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 47. An armed profile with proposal status still `draft` pauses before `spec` until upstream status settlement makes the proposal `accepted`.
 48. An active authoring profile with `architecture-required` runs architecture and architecture-review; an active profile with `architecture-not-required` routes to plan; `architecture-ambiguous` pauses.
 49. A direct `proposal-review`, `spec-review`, `architecture-review`, or `plan-review` invocation remains isolated unless the user invokes workflow-managed resume.
-50. A clean `plan-review` under `authoring-through-plan-review` marks the profile completed and reports `test-spec` next without invoking it.
+50. `RLW-EC50`: A clean `plan-review` under `authoring-through-plan-review` marks the profile completed and reports `test-spec` next without invoking it.
 51. Manual edits after a paused profile do not resume the profile until the user explicitly authorizes resume.
 
 ## Non-goals
@@ -1250,15 +1258,15 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A reviewer can distinguish portable published skill surfaces from RigorLoop repository-internal surfaces.
 - A workflow guide created or refreshed by the `workflow` skill includes the required sections without becoming a competing workflow spec.
 - An affected active plan records the short transition note before using final `explain-change -> verify -> pr`.
-- A contributor can identify when `authoring-through-plan-review` is off, armed, active, paused, or completed.
-- A contributor can tell that `auto-through: plan-review` maps to `autoprogression.profile: authoring-through-plan-review`.
-- A reviewer can verify that the proposal gate is separate from user authorization and that activation requires `armed && gate-ready`.
-- A reviewer can verify that direct review requests remain isolated despite an armed profile.
-- A reviewer can verify that architecture assessment is recorded and that ambiguity pauses the profile.
-- A reviewer can verify that the profile stops after clean plan-review and does not invoke test-spec or implementation.
-- A reviewer can verify that profile policy metadata does not own live workflow state.
-- A reviewer can verify that profile authorization is recorded durably before activation and that missing, malformed, incomplete, or failed authorization persistence pauses the profile before any profile-driven transition.
-- A reviewer can verify that future profiles require separate proposal and spec amendments.
+- `RLW-AC-A1`: A contributor can identify when `authoring-through-plan-review` is off, armed, active, paused, or completed.
+- `RLW-AC-A2`: A contributor can tell that `auto-through: plan-review` maps to `autoprogression.profile: authoring-through-plan-review`.
+- `RLW-AC-A3`: A reviewer can verify that the proposal gate is separate from user authorization and that activation requires `armed && gate-ready`.
+- `RLW-AC-A4`: A reviewer can verify that direct review requests remain isolated despite an armed profile.
+- `RLW-AC-A5`: A reviewer can verify that architecture assessment is recorded and that ambiguity pauses the profile.
+- `RLW-AC-A6`: A reviewer can verify that the profile stops after clean plan-review and does not invoke test-spec or implementation.
+- `RLW-AC-A7`: A reviewer can verify that profile policy metadata does not own live workflow state.
+- `RLW-AC-A8`: A reviewer can verify that profile authorization is recorded durably before activation and that missing, malformed, incomplete, or failed authorization persistence pauses the profile before any profile-driven transition.
+- `RLW-AC-A9`: A reviewer can verify that future profiles require separate proposal and spec amendments.
 
 ## Open questions
 

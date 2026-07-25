@@ -2,7 +2,11 @@
 
 ## Status
 
-accepted
+superseded
+
+## Superseded by
+
+superseded_by: `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`
 
 ## Context
 
@@ -93,3 +97,7 @@ Rejected for this profile because those stages cross into different risk surface
 - Plan implementation of the profile, durable authorization persistence, recorded architecture assessment, stop conditions, audit trail, and fixture-backed transition tests.
 - Update canonical skills and generated adapters after implementation changes skill guidance.
 - Use measured adoption evidence before proposing any future `authoring-through-test-spec` or implementation profile.
+
+## Closeout
+
+Superseded by `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`. This ADR remains historical compatibility context and no longer authorizes an independently writable automation profile.

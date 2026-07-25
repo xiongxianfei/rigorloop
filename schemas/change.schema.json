@@ -107,6 +107,241 @@
     "workflow": {
       "type": "object",
       "properties": {
+        "automation": {
+          "type": "object",
+          "required": [
+            "mechanism",
+            "schema_version",
+            "run",
+            "parent_authorizations",
+            "effective_capabilities",
+            "transition_receipts",
+            "external_actions"
+          ],
+          "properties": {
+            "mechanism": {
+              "type": "string",
+              "enum": [
+                "bounded-review-fix"
+              ]
+            },
+            "schema_version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "run": {
+              "type": "object",
+              "required": [
+                "run_id",
+                "change_id",
+                "status",
+                "policy_version",
+                "target"
+              ],
+              "properties": {
+                "run_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "change_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "active",
+                    "paused",
+                    "completed",
+                    "cancelled"
+                  ]
+                },
+                "policy_version": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "target": {
+                  "type": "object",
+                  "required": [
+                    "stage",
+                    "occurrence",
+                    "bound_at",
+                    "completion"
+                  ],
+                  "properties": {
+                    "stage": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "occurrence": {
+                      "type": "object",
+                      "required": [
+                        "kind"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "milestone_id": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "bound_at": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "completion": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
+                    "plan_identity": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "effective_capability_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "stop_reason": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "parent_authorizations": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "authorization_id",
+                  "authorization_class",
+                  "policy_version",
+                  "change_id",
+                  "authorized_by",
+                  "authorized_at",
+                  "maximum_target",
+                  "allowed_capability_kinds",
+                  "maximum_path_roots",
+                  "maximum_mutation_categories",
+                  "status",
+                  "revocation",
+                  "invalidation",
+                  "external_actions"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "effective_capabilities": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "capability_id",
+                  "capability_kind",
+                  "parent_authorization_id",
+                  "policy_version",
+                  "change_id",
+                  "stage",
+                  "basis",
+                  "scope",
+                  "derived_at",
+                  "status",
+                  "invalidation"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "transition_receipts": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "migration_receipts": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "migration_id",
+                  "source_mechanism",
+                  "source_record_identity",
+                  "migrated_at",
+                  "unified_run_id",
+                  "projection_result",
+                  "legacy_read_only"
+                ],
+                "properties": {
+                  "migration_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_mechanism": {
+                    "type": "string",
+                    "enum": [
+                      "authoring-through-plan-review",
+                      "bounded-review-fix",
+                      "implementation-through-verify"
+                    ]
+                  },
+                  "source_record_identity": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "migrated_at": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "unified_run_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "projection_result": {
+                    "type": "string",
+                    "enum": [
+                      "equivalent"
+                    ]
+                  },
+                  "legacy_read_only": {
+                    "const": true
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "observed_identities": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "canonical_position_source": {
+              "type": "string",
+              "minLength": 1
+            },
+            "latest_review_result": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "cancellation": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "external_actions": {
+              "type": "string",
+              "enum": [
+                "prohibited"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
         "autoprogression": {
           "type": "object",
           "properties": {

@@ -4808,16 +4808,14 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 with self.subTest(path=relative_path, stale=term):
                     self.assertNotIn(term, body)
 
-    def test_implementation_through_verify_public_skill_surfaces_expose_phase_boundaries(self) -> None:
+    def test_unified_workflow_public_skill_surfaces_expose_authority_boundaries(self) -> None:
         required_by_skill = {
             "workflow": [
-                "verify-bounded implementation autoprogression",
-                "`auto-through: verify`",
-                "`implementation-through-verify`",
-                "Phase `B`",
-                "Phase `C`",
+                "one target-driven `bounded-review-fix` mechanism",
+                "`workflow auto-through: verify`",
+                "Verification authority is separate",
                 "promotion evidence",
-                "stops before invoking `pr`",
+                "never opens a PR",
             ],
             "test-spec": [
                 "test-spec settlement",
@@ -4825,9 +4823,9 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 "first milestone's code-review",
             ],
             "implement": [
-                "`implementation-through-verify`",
+                "valid implementation authority",
                 "reviewer-declared auto-fix",
-                "Phase B",
+                "cannot run `explain-change`, `verify`, or `pr`",
             ],
             "code-review": [
                 "`auto_fix_class`",
@@ -4837,7 +4835,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 "final full code-review",
             ],
             "explain-change": [
-                "Phase C",
+                "valid verification capability",
                 "final reviewed diff",
                 "does not open `pr`",
             ],
@@ -4849,15 +4847,14 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 "human authorization for `pr`",
             ],
             "plan": [
-                "`auto-through: verify`",
-                "separate authorization",
-                "phase",
+                "final `verify` automation target",
+                "separately from implementation and verification authorization",
                 "promotion evidence",
             ],
             "plan-review": [
-                "`implementation-through-verify`",
-                "separate authorization",
-                "phase",
+                "final `verify` automation target",
+                "implementation authority is separate from authoring and verification authority",
+                "stops before PR",
             ],
         }
         for skill_name, required_terms in required_by_skill.items():
@@ -5209,18 +5206,18 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
 
-    def test_authoring_profile_stage_skill_alignment(self) -> None:
-        """Affected stage skills describe the bounded authoring profile without widening direct reviews."""
+    def test_unified_authoring_stage_skill_alignment(self) -> None:
+        """Affected stage skills describe unified authoring without widening direct reviews."""
 
         required_by_skill = {
             "proposal-review": [
-                "`authoring-through-plan-review` is the only approved review-to-next-authoring exception",
+                "Only an explicitly authorized workflow-managed `bounded-review-fix` run may continue",
                 "`Immediate next stage: spec`",
                 "Direct or review-only `proposal-review` requests remain isolated by default.",
             ],
             "spec": [
                 "successful `spec` completion hands off to `spec-review`",
-                "Only the explicitly armed workflow-managed `authoring-through-plan-review` profile can continue after the matching `spec-review`",
+                "Only an explicitly authorized workflow-managed `bounded-review-fix` run can continue after the matching `spec-review`",
             ],
             "spec-review": [
                 "recorded architecture assessment",
@@ -5231,19 +5228,19 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             ],
             "architecture": [
                 "successful `architecture` completion hands off to `architecture-review`",
-                "Only the explicitly armed workflow-managed `authoring-through-plan-review` profile can continue after the matching `architecture-review`",
+                "Only an explicitly authorized workflow-managed `bounded-review-fix` run can continue after the matching `architecture-review`",
             ],
             "architecture-review": [
-                "`authoring-through-plan-review` is the only approved review-to-next-authoring exception",
+                "Only an explicitly authorized workflow-managed `bounded-review-fix` run may continue",
                 "Direct or review-only `architecture-review` requests remain isolated by default.",
             ],
             "plan": [
                 "successful `plan` completion hands off to `plan-review`",
-                "Only a clean `plan-review` can complete `authoring-through-plan-review`",
+                "Only a clean `plan-review` can satisfy that review gate",
             ],
             "plan-review": [
-                "Clean `plan-review` under `authoring-through-plan-review` marks the profile `completed`",
-                "reports `test-spec` as next without invoking `test-spec`",
+                "Clean `plan-review` under an authorized `bounded-review-fix` run satisfies the review gate",
+                "reports `test-spec` as next",
                 "Direct or review-only `plan-review` requests remain isolated by default.",
             ],
         }
@@ -5253,12 +5250,12 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
 
-    def test_authoring_profile_review_independence_guidance(self) -> None:
+    def test_unified_authoring_review_independence_guidance(self) -> None:
         """Formal review skills preserve independent tracked-artifact review under automatic progression."""
 
         required_terms = [
-            "For `authoring-through-plan-review`, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing.",
-            "Record the review result before any profile-driven downstream action.",
+            "For automated `bounded-review-fix` authoring, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing.",
+            "Record the review result before any automation-driven downstream action.",
             "Do not rely on hidden authoring reasoning from the preceding stage.",
             "Do not edit the reviewed artifact during review.",
         ]
@@ -5268,29 +5265,29 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
 
-    def test_review_fix_workflow_command_guidance(self) -> None:
-        """Workflow guidance exposes the bounded review-fix command contract."""
+    def test_unified_workflow_command_guidance(self) -> None:
+        """Workflow guidance exposes the unified command and authority contract."""
 
         required_by_surface = {
             "skills/workflow/SKILL.md": [
                 "$workflow auto: <target-stage>",
                 "$workflow auto: status",
                 "$workflow auto: off",
-                "canonical profile `bounded-review-fix` under `workflow.autoprogression.review_fix`",
-                "Valid review-fix targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, and `test-spec-review`",
-                "`$workflow auto: status` reports current review-fix state without mutating artifacts.",
-                "`$workflow auto: off` clears or terminally cancels review-fix authorization.",
-                "mode, target stage, current stage, review status, auto-applied fixes, human decisions required, artifacts changed, review rerun status, next stage run, and stop reason",
+                "`bounded-review-fix` mechanism under `workflow.automation`",
+                "Supported targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`",
+                "`$workflow auto: status` is read-only.",
+                "`$workflow auto: off` durably cancels the unified run",
+                "mechanism, structured target, canonical position source",
             ],
             "docs/workflows.md": [
                 "$workflow auto: <target-stage>",
                 "$workflow auto: status",
                 "$workflow auto: off",
-                "profile `bounded-review-fix`",
-                "Valid review-fix target stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, and `test-spec-review`",
-                "`$workflow auto: status` reports current review-fix state without mutating artifacts.",
-                "`$workflow auto: off` clears or terminally cancels review-fix authorization.",
-                "mode, target stage, current stage, review status, auto-applied fixes, human decisions required, artifacts changed, review rerun status, next stage run, and stop reason",
+                "`bounded-review-fix` mechanism under `docs/changes/<change-id>/change.yaml#workflow.automation`",
+                "Supported stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`",
+                "`$workflow auto: status` is read-only.",
+                "`$workflow auto: off` durably cancels the unified run",
+                "mechanism, structured target, canonical position source",
             ],
         }
         for relative_path, terms in required_by_surface.items():
@@ -5317,15 +5314,15 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 self.assertNotIn("Direct review invocations activate `bounded-review-fix`", body)
                 self.assertNotIn("Direct review invocations resume `bounded-review-fix`", body)
 
-    def test_review_fix_profile_boundaries_preserve_existing_autoprogression(self) -> None:
-        """Review-fix guidance remains proposal-side and does not widen existing profiles."""
+    def test_unified_mechanism_retires_writable_profile_guidance(self) -> None:
+        """Public guidance exposes one writer and retains only legacy command adapters."""
 
         workflow_body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
         workflow_docs = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
         required_terms = [
-            "Review-fix never continues past the requested target and never invokes implementation, code-review, verify, PR, release, publication, network, destructive, or external-state operations.",
-            "The implementation profile is verify-bounded implementation autoprogression.",
-            "Existing `authoring-through-plan-review` and `implementation-through-verify` behavior remains unchanged unless a later approved spec explicitly changes those profiles.",
+            "legacy commands `workflow auto-through: plan-review`, `workflow auto-through: verify`, `workflow auto-through: status`, and `workflow auto-through: off`",
+            "write only",
+            "never opens a PR",
         ]
         for surface_name, body in {
             "skills/workflow/SKILL.md": workflow_body,
@@ -5334,6 +5331,13 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in required_terms:
                 with self.subTest(surface=surface_name, term=term):
                     self.assertIn(term, body)
+            for retired in (
+                "authoring-through-plan-review",
+                "implementation-through-verify",
+                "workflow.autoprogression.review_fix",
+            ):
+                with self.subTest(surface=surface_name, retired=retired):
+                    self.assertNotIn(retired, body)
 
     def test_review_independence_m3_code_review_pilot_guidance(self) -> None:
         """Automated code-review guidance includes the blind-first independent gate pilot."""

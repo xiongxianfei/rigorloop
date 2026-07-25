@@ -429,36 +429,26 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 ## Autoprogression
 
 - Distinguish `workflow-managed` completion flows from isolated stage requests.
-- Change-local autoprogression profiles are off unless explicitly and durably authorized. The canonical policy record is `docs/changes/<change-id>/change.yaml` at `workflow.autoprogression`; `docs/changes/<change-id>/workflow-policy.yaml` is only a fallback when the change-metadata contract rejects policy data, and that fallback decision must be auditable.
-- Profile policy records are authorization evidence only. They do not own current stage, next stage, review status, branch readiness, PR readiness, or active plan state.
-- `authoring-through-plan-review` uses profile states `off`, `armed`, `active`, `paused`, and `completed`. Activation requires workflow-managed context, durable authorization, an armed profile, and a proposal gate ready from tracked artifacts.
-- Proposal gate readiness is artifact/review readiness only; user authorization is checked separately as the armed profile state.
-- When active, `authoring-through-plan-review` routes through `spec`, `spec-review`, recorded architecture assessment, conditional `architecture` and `architecture-review`, `plan`, and `plan-review`, then stops.
+- New workflow automation writes one `bounded-review-fix` mechanism under `docs/changes/<change-id>/change.yaml#workflow.automation`. Legacy `workflow.autoprogression` records are read-only compatibility inputs.
+- `$workflow auto: <target-stage>` selects a structured target. Supported stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
+- `$workflow auto: status` is read-only. `$workflow auto: off` durably cancels the unified run, revokes active parent authorizations, invalidates active capabilities, and preserves transition evidence.
+- Target selection and executable authority are separate. Parent authorizations bound maximum authoring, implementation, or verification consent; only an effective capability with complete current basis authorizes one stage operation.
+- The legacy commands `workflow auto-through: plan-review`, `workflow auto-through: verify`, `workflow auto-through: status`, and `workflow auto-through: off` remain adapters throughout migration and write only unified state.
+- `auto-through: plan-review` maps to a singleton plan-review target and authoring authority only. `auto-through: verify` maps to a final verify target and creates only currently basis-valid authority; it never stores future-contingent verification consent.
+- Proposal gate readiness is artifact/review readiness only and remains separate from user authorization.
+- Authoring may route through proposal review, spec, spec review, architecture assessment, conditional architecture and architecture review, plan and plan review, test spec, and test-spec review when the structured target and current authoring capability permit it.
 - Architecture assessment records `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; ambiguity pauses instead of guessing.
-- Review stages inside `authoring-through-plan-review` remain independent formal reviews: reset to the tracked artifact, governing sources, formal criteria, and relevant recorded findings; record the result before downstream routing; do not rely on hidden authoring reasoning or edit the reviewed artifact during review.
-- Stop or pause `authoring-through-plan-review` on non-clean reviews, material findings, `needs-decision`, user pause or cancellation, missing or malformed authorization persistence, contradictory workflow state, unreliable partial completion, exhausted transition budget, direct review-only invocation, or an out-of-scope stage request.
+- Automated review stages remain independent formal reviews: reset to the tracked artifact, governing sources, formal criteria, and relevant recorded findings; record the result before downstream routing; do not rely on hidden authoring reasoning or edit the reviewed artifact during review.
+- Stop or pause on an unsatisfied review gate without authorized bounded correction, material findings requiring a decision, `needs-decision`, user pause or cancellation, missing or stale authority, contradictory workflow state, unreliable partial completion, exhausted transition budget, direct review-only invocation, or an out-of-scope stage request.
 - Resume must use tracked artifact and review evidence. Do not recreate completed artifacts, rerun clean reviews without an explicit rereview event, or infer completion from file existence alone.
-- Clean `plan-review` completes this profile and reports `test-spec` next without invoking `test-spec`, implementation, review-fix loops, verification, or PR.
-- The bounded review-fix profile uses the command form `$workflow auto: <target-stage>` and persists authorization as `workflow.autoprogression.review_fix` with profile `bounded-review-fix`.
-- `$workflow auto: status` reports current review-fix state without mutating artifacts.
-- `$workflow auto: off` clears or terminally cancels review-fix authorization.
-- Valid review-fix target stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, and `test-spec-review`; unknown targets fail closed before routing.
-- Review-fix activation requires workflow-managed context, durable user authorization, accepted proposal, approved recorded `proposal-review`, no open findings, closed resolution, clean current gate evidence, current review evidence, fresh artifact state, and unambiguous artifact placement.
-- Direct review invocations do not activate, resume, or advance `bounded-review-fix`, even when persisted review-fix state exists.
-- After approved recorded `spec-review`, review-fix routing requires exactly one architecture assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`. `architecture-required` routes through `architecture` and `architecture-review`; `architecture-not-required` skips those conditional stages; `architecture-ambiguous` pauses for owner decision.
+- Reaching the exact structured target stops the run. `implement` and `code-review` targets bind the unique current plan milestone before persistence and never silently rebind on resume.
+- Direct review invocations do not activate, resume, or advance automation, even when persisted state exists.
+- After approved recorded `spec-review`, routing requires exactly one architecture assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`. `architecture-required` routes through architecture and architecture review; `architecture-not-required` skips them; `architecture-ambiguous` pauses for owner decision.
 - If `architecture-not-required` skips a user-requested conditional target such as `architecture` or `architecture-review`, stop with `target-not-applicable` instead of claiming that target was reached.
-- `bounded-review-fix` never routes past the requested target and never invokes `implement`, `code-review`, `verify`, `pr`, release, publication, network, destructive, or external-state operations.
-- Review-fix never continues past the requested target and never invokes implementation, code-review, verify, PR, release, publication, network, destructive, or external-state operations.
-- Review-fix chat results report mode, target stage, current stage, review status, auto-applied fixes, human decisions required, artifacts changed, review rerun status, next stage run, and stop reason.
-- The implementation profile is verify-bounded implementation autoprogression.
-- Existing `authoring-through-plan-review` and `implementation-through-verify` behavior remains unchanged unless a later approved spec explicitly changes those profiles.
-- In v1, workflow-managed autoprogression applies only to:
-  - `proposal -> proposal-review`
-  - `proposal-review -> spec -> spec-review -> architecture assessment -> architecture/architecture-review when required -> plan -> plan-review -> stop`, only under the explicitly armed `authoring-through-plan-review` profile
-  - `$workflow auto: <target-stage>` through the proposal-side path ending no later than `test-spec-review`, only under the explicitly armed `bounded-review-fix` profile
-  - `spec -> spec-review`
-  - `architecture -> architecture-review` when that review stage is the next mandatory or triggered downstream step
-  - standard workflow execution from `implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+- Implementation authority may run ordered milestone implementation, independent milestone review, reviewer-owned bounded correction, triggered CI maintenance, and final holistic review.
+- Verification authority is separate and may exist only after its implementation-closeout, final-review, promotion, explanation-input, branch-state, and verification-input basis is concrete.
+- Successful verify reports `pr` as next but never opens a PR. The mechanism never pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
+- Results report mechanism, structured target, canonical position source, maximum authorization boundary, effective capability kind, stage outcome, review and clean-gate state, transitions, fixes, decisions, artifacts, stop reason, and next action.
 - In workflow-managed standard workflow runs, `code-review` first emits a first-pass review record grounded in the actual diff, upstream artifacts, checklist coverage, and validation evidence before any review-driven fixes begin.
 - Workflow-managed automated `code-review` uses the independent adversarial review gate. The orchestrator creates the neutral review invocation manifest and initial packet before invoking review, and it withholds validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.
 - Workflow-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`.
