@@ -4,6 +4,7 @@ classification: proposal
 risk: high
 artifacts:
   proposal: docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md
+  review_resolution: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-resolution.md
 requirements:
   - Record a proposal before changing lifecycle proof-modeling behavior or published skills.
   - Make examples subordinate to named rules, partitions, regressions, discovery gaps, or explicit non-normative roles.
@@ -16,8 +17,14 @@ requirements:
   - Amend the existing workflow and skill contracts instead of creating a competing boundary-modeling spec or lifecycle stage.
   - Apply the contract prospectively without invalidating accepted historical artifacts.
   - Establish the boundary capability baseline before resuming capability-preserving progressive disclosure.
+  - Limit the first release to the eight-skill spec-to-proof-to-review chain plus its required governing and portability surfaces.
+  - Separate mandatory closed core dimensions from optional namespaced feature-specific extensions.
+  - Activate the public contract prospectively with grandfathering and synchronized all-or-nothing opt-in.
+  - Gate rollout on seeded pre-code-review detection, behavior preservation, false-blocking, ownership, artifact-count, and simple-fixture overhead evidence.
 tests:
   - Proposal-review approves the direction or records material findings before spec work.
+  - Proposal-review records the first-release baseline, taxonomy extension, adoption cutover, and measurable-success gaps before proposal revision.
+  - Proposal-review R2 confirms all four R1 findings resolved before proposal acceptance.
   - Proposal-review confirms examples are preserved without owning completeness.
   - Proposal-review confirms the proposal does not require an exhaustive Cartesian product.
   - Proposal-review confirms lifecycle and public-skill ownership are distinct and non-duplicative.
@@ -34,9 +41,21 @@ validation:
     result: pass
   - command: git diff --check -- docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
     result: pass
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-log.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-resolution.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r1.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r2.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
+    result: pass
+  - command: git diff --check -- docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+    result: pass
 changed_files:
   - docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-log.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-resolution.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r1.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r2.md
 review:
-  status: pending
+  status: approved
   unresolved_items: 0
