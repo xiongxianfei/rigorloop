@@ -265,7 +265,7 @@ Required sections are listed above. Do not emit unfilled placeholders.
 - Do not treat downstream implementation readiness as a substitute for approved spec-review findings and concrete plan context.
 - When changed boundaries still require approved architecture or ADR input, return the work to the appropriate upstream gate instead of guessing.
 - Formal workflow-managed test specs route to `test-spec-review` before implementation.
-- Under `implementation-through-verify`, the workflow may run deterministic test-spec settlement after authoring. Settlement records coverage, uncovered gaps, validation commands, and input artifact identities; it does not replace required `test-spec-review`.
+- Under a unified run with valid implementation authority, the workflow may run deterministic test-spec settlement after authoring. Settlement records coverage, uncovered gaps, validation commands, and input artifact identities; it does not replace required `test-spec-review`.
 - If settlement or `test-spec-review` reveals upstream ambiguity or stale inputs, pause instead of authorizing implementation. The first milestone's code-review rechecks the recorded input artifact identities before accepting the implementation review surface.
 
 ## Evidence collection efficiency

@@ -65,8 +65,6 @@ FIELD_PATTERN = re.compile(r"^\s*-?\s*(?P<label>[A-Za-z][A-Za-z -]*):\s*(?P<valu
 HANDOFF_FIELD_PATTERN = re.compile(r"^\s*-\s*(?P<label>[A-Za-z][A-Za-z -]*):\s*(?P<value>.+?)\s*$")
 MARKDOWN_LINK_PATTERN = re.compile(r"^\[(?P<text>[^\]]+)\]\((?P<target>[^)]+)\)$")
 READINESS_STAGE_CLAIM_PATTERN = re.compile(r"\b(?:ready for|next stage|current stage|current round)\b", re.IGNORECASE)
-
-
 @dataclass(frozen=True)
 class StateSyncFinding:
     path: Path
@@ -312,6 +310,27 @@ def _validate_final_closeout(readiness: str, reason: str) -> list[str]:
         if not codes:
             errors.append("Reason final closeout is or is not ready must include non-ready reason codes when readiness is not ready")
     return errors
+
+
+def _review_state_detail_errors(
+    reason: str,
+    *,
+    open_finding_ids: tuple[str, ...],
+) -> list[str]:
+    detail = reason.split("\u2014", 1)[1].strip() if "\u2014" in reason else ""
+    expected_state = "open" if open_finding_ids else "closed"
+    expected_count = len(open_finding_ids)
+    expected_findings = ",".join(open_finding_ids) if open_finding_ids else "none"
+    expected_detail = (
+        f"review-state={expected_state}; open-count={expected_count}; "
+        f"open-findings={expected_findings}"
+    )
+    if detail == expected_detail:
+        return []
+    return [
+        "Final closeout reason detail must equal formal review-state projection: "
+        f"{expected_detail}"
+    ]
 
 
 AUTHORING_PROFILE = "authoring-through-plan-review"
@@ -1700,7 +1719,27 @@ def validate_workflow_state_sync(
                 )
 
         for plan_path, state in matching_plan_states:
-            if review_summary.open_count and state.handoff is not None:
+            if state.handoff is None:
+                continue
+            reason_codes = {
+                code.strip()
+                for code in state.handoff.final_closeout_reason.split("\u2014", 1)[0].split(",")
+                if code.strip()
+            }
+            if state.lifecycle_state in LIVE_INDEX_STATES:
+                for error in _review_state_detail_errors(
+                    state.handoff.final_closeout_reason,
+                    open_finding_ids=review_summary.open_finding_ids,
+                ):
+                    findings.append(StateSyncFinding(plan_path, error))
+            if review_summary.open_count:
+                if "review-findings-open" not in reason_codes:
+                    findings.append(
+                        StateSyncFinding(
+                            plan_path,
+                            "Final closeout reason must include review-findings-open while accepted material findings remain open",
+                        )
+                    )
                 if state.handoff.current_milestone_state != "resolution-needed":
                     findings.append(
                         StateSyncFinding(
@@ -1723,5 +1762,12 @@ def validate_workflow_state_sync(
                             "Review status must not be review-requested while required finding dispositions remain unresolved",
                         )
                     )
+            elif "review-findings-open" in reason_codes:
+                findings.append(
+                    StateSyncFinding(
+                        plan_path,
+                        "Final closeout reason must not include review-findings-open when no accepted material findings remain open",
+                    )
+                )
 
     return findings

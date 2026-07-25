@@ -539,6 +539,48 @@ class ReviewEvidenceSummary:
         return self.material_count - self.open_count
 
 
+def parse_formal_review_record(
+    path: Path,
+) -> tuple[ReviewRecord | None, tuple[ValidationFinding, ...]]:
+    """Parse one formal review through the repository-owned review grammar."""
+
+    review, _finding_records, findings = _parse_review_file(path.resolve(), "structure")
+    return review, tuple(findings)
+
+
+def parse_formal_review_findings(
+    path: Path,
+) -> tuple[
+    ReviewRecord | None,
+    tuple[FindingRecord, ...],
+    tuple[ValidationFinding, ...],
+]:
+    """Parse one formal review and its material findings through the canonical grammar."""
+
+    review, finding_records, findings = _parse_review_file(
+        path.resolve(), "structure"
+    )
+    return review, tuple(finding_records), tuple(findings)
+
+
+def parse_formal_review_log(
+    path: Path,
+) -> tuple[tuple[ReviewLogEntry, ...], tuple[ValidationFinding, ...]]:
+    """Parse the canonical review log through the repository-owned grammar."""
+
+    entries, findings = _parse_review_log(path.resolve(), "structure")
+    return tuple(entries), tuple(findings)
+
+
+def parse_formal_review_resolution(
+    path: Path,
+) -> tuple[ReviewResolution, tuple[ValidationFinding, ...]]:
+    """Parse review-resolution evidence through the canonical grammar."""
+
+    resolution, findings = _parse_review_resolution(path.resolve(), "structure")
+    return resolution, tuple(findings)
+
+
 def finding_closure_state(
     finding_id: str,
     review_log: list[ReviewLogEntry] | tuple[ReviewLogEntry, ...],
@@ -2501,6 +2543,7 @@ def _parse_review_log(path: Path, mode: str) -> tuple[list[ReviewLogEntry], list
 
     table_entries, table_findings = _parse_clean_receipt_log_table(path, lines, mode)
     entries.extend(table_entries)
+    entries.sort(key=lambda entry: entry.line)
     findings.extend(table_findings)
     return entries, findings
 

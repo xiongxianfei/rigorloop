@@ -9,6 +9,12 @@ import sys
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+from workflow_automation_state import (
+    AutomationStateContractError,
+    WorkflowAutomationStateStore,
+    project_automation_status,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATION_HELPER = ROOT / "scripts" / "validate-change-metadata.py"
@@ -100,8 +106,19 @@ def load_change_metadata(repo_root: Path, change_id: str) -> tuple[Path, dict[st
             detail_pointers={"expected_change_metadata": repo_relative(path, repo_root)},
         )
     try:
-        parser = load_metadata_parser()
-        data = parser.load_yaml(path)
+        data = WorkflowAutomationStateStore(path).read(
+            allow_legacy_without_change_id=True,
+        ).document
+    except AutomationStateContractError as exc:
+        return path, None, error_payload(
+            "invalid-automation-state",
+            "change metadata contains invalid workflow automation state",
+            change_id=change_id,
+            detail=str(exc),
+            detail_pointers={
+                "change_metadata": repo_relative(path, repo_root)
+            },
+        )
     except Exception as exc:  # noqa: BLE001 - diagnostics must not leak parser stack.
         return path, None, error_payload(
             "unsupported-shape",
@@ -377,6 +394,16 @@ def profile_policy(
     return policy
 
 
+def automation_policy(data: dict[str, Any]) -> dict[str, Any] | None:
+    """Return the unified status projection without mutating or inferring state."""
+
+    workflow = data.get("workflow")
+    automation = workflow.get("automation") if isinstance(workflow, dict) else None
+    if not isinstance(automation, dict):
+        return None
+    return project_automation_status(automation)
+
+
 def detail_pointers(change_id: str, metadata_path: Path, repo_root: Path) -> dict[str, str]:
     return {
         "change_metadata": repo_relative(metadata_path, repo_root),
@@ -395,6 +422,7 @@ def query_summary(change_id: str, metadata_path: Path, data: dict[str, Any], rep
         "metadata_shape": metadata_shape(data),
         "artifact_paths": artifact_paths(data),
         "review_state": review_state(data, change_id),
+        "automation_policy": automation_policy(data),
         "profile_policy": profile_policy(data, metadata_path, repo_root),
         "latest_validation": latest_validation_slice(data),
         "open_blockers": open_blockers(data),

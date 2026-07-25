@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import os
@@ -328,6 +329,117 @@ review:
       last_updated_evidence: docs/changes/2026-06-24-policy-fixture/change.yaml
       change_id: 2026-06-24-policy-fixture
 {extra}"""
+
+    def valid_workflow_automation(self, *, extra_automation: str = "") -> str:
+        extra = f"{extra_automation}\n" if extra_automation else ""
+        return f"""workflow:
+  automation:
+    mechanism: bounded-review-fix
+    schema_version: 1
+    run:
+      run_id: run-001
+      change_id: 2026-06-24-policy-fixture
+      status: active
+      policy_version: 1
+      target:
+        stage: proposal-review
+        occurrence:
+          kind: singleton
+        bound_at: 2026-06-24T12:00:00Z
+        completion:
+          rule: formal review occurrence is recorded
+    parent_authorizations: {{}}
+    effective_capabilities: {{}}
+    transition_receipts: {{}}
+    external_actions: prohibited
+{extra}"""
+
+    def test_workflow_automation_valid_minimum_passes(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-workflow-automation-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=self.valid_workflow_automation(),
+            )
+            self.assertPathPasses(target)
+
+    def test_workflow_automation_unknown_mechanism_fails(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-workflow-automation-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=self.valid_workflow_automation().replace(
+                    "mechanism: bounded-review-fix", "mechanism: legacy-profile"
+                ),
+            )
+            self.assertPathFails(
+                target,
+                "workflow.automation.mechanism: unknown value 'legacy-profile'; expected one of: bounded-review-fix",
+            )
+
+    def test_workflow_automation_rejects_live_state_ownership(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-workflow-automation-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=self.valid_workflow_automation(extra_automation="    next_stage: spec"),
+            )
+            self.assertPathFails(
+                target,
+                "workflow.automation.next_stage: automation state must not own live workflow state",
+            )
+
+    def test_workflow_automation_rejects_mixed_legacy_state(self) -> None:
+        block = self.valid_workflow_automation() + """  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+"""
+        with tempfile.TemporaryDirectory(prefix="change-metadata-workflow-automation-") as temp_dir:
+            target = self.write_policy_fixture(Path(temp_dir), workflow_block=block)
+            self.assertPathFails(
+                target,
+                "workflow: mixed writable workflow.automation and legacy workflow.autoprogression state",
+            )
+
+    def test_workflow_automation_accepts_read_only_legacy_after_migration(self) -> None:
+        legacy_record = {
+            "profile": "authoring-through-plan-review",
+            "authorized_by": "user",
+            "authorized_at": "2026-06-24T12:00:00Z",
+            "change_id": "2026-06-24-policy-fixture",
+        }
+        source_identity = "sha256:" + hashlib.sha256(
+            json.dumps(
+                legacy_record, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+            ).encode("utf-8")
+        ).hexdigest()
+        migration = f"""    migration_receipts:
+      migration-001:
+        migration_id: migration-001
+        source_mechanism: authoring-through-plan-review
+        source_record_identity: {source_identity}
+        migrated_at: 2026-07-22T00:00:00Z
+        unified_run_id: run-001
+        projection_result: equivalent
+        legacy_read_only: true"""
+        block = self.valid_workflow_automation(extra_automation=migration) + """  autoprogression:
+    profile: authoring-through-plan-review
+    authorized_by: user
+    authorized_at: 2026-06-24T12:00:00Z
+    change_id: 2026-06-24-policy-fixture
+"""
+        with tempfile.TemporaryDirectory(prefix="change-metadata-workflow-automation-") as temp_dir:
+            target = self.write_policy_fixture(Path(temp_dir), workflow_block=block)
+            self.assertPathPasses(target)
+
+        with tempfile.TemporaryDirectory(prefix="change-metadata-workflow-automation-") as temp_dir:
+            target = self.write_policy_fixture(
+                Path(temp_dir),
+                workflow_block=block.replace(source_identity, "sha256:" + "0" * 64),
+            )
+            self.assertPathFails(
+                target,
+                "legacy source mechanism and identity must match exactly",
+            )
 
     def test_valid_basic_fixture_passes(self) -> None:
         self.assertPathPasses(FIXTURES / "valid-basic" / "change.yaml")

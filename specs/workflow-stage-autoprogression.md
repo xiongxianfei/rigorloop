@@ -3,6 +3,15 @@
 ## Status
 - approved
 
+## Unified automation amendment
+
+Upon approval of [Single Bounded Review-Fix Workflow Automation](single-bounded-review-fix-workflow-automation.md), its exact cross-spec disposition ledger governs every legacy profile requirement and acceptance surface in this spec.
+`superseded` entries no longer authorize new execution or writes.
+`preserved-rebound` entries remain mandatory with the unified stage policy, authorization class, capability kind, run, or compatibility projection named by that ledger as their subject.
+They do not keep `authoring-through-plan-review` or `implementation-through-verify` writable.
+Only selectors explicitly listed in the unified spec's closed affected-selector registry are amended.
+Requirements outside that registry remain current lifecycle-routing requirements of this spec and receive no implicit migration disposition.
+
 ## Related proposal
 
 - [Workflow stage autoprogression](../docs/proposals/2026-04-21-workflow-stage-autoprogression.md)
@@ -267,7 +276,7 @@ R2a. Autoprogression MUST follow the current workflow state's next mandatory or 
 
 R2b. This autoprogression contract applies only to standard workflow execution flow, authoring-to-review handoffs, and the separately armed `authoring-through-plan-review` profile. It MUST NOT change manual skill invocation or bugfix skill invocation downstream behavior by implication.
 
-R2ba. In v1, standard workflow execution-flow autoprogression begins at `implement` and continues through `pr`.
+R2b1. In v1, standard workflow execution-flow autoprogression begins at `implement` and continues through `pr`.
 
 R2c. When the current workflow state includes `proposal-review` as the next mandatory or triggered downstream stage, successful `proposal` completion MUST continue into `proposal-review` unless a stop condition applies.
 
@@ -556,10 +565,10 @@ Inputs:
 - the current completed stage and its outcome
 - whether workflow-managed context is present
 - the active autoprogression profile, if any
-- user authorization for `auto-through: plan-review`, when supplied
-- user authorization for `auto-through: verify`, when supplied
-- durable authorization policy record and write outcome for the active change-local surface, when `authoring-through-plan-review` is armed or activating
-- durable implementation-profile authorization policy record, phase, state, baseline, and write outcome when `implementation-through-verify` is armed or activating
+- `WSA-INPUT-1`: user authorization for `auto-through: plan-review`, when supplied
+- `WSA-INPUT-2`: user authorization for `auto-through: verify`, when supplied
+- `WSA-INPUT-3`: durable authorization policy record and write outcome for the active change-local surface, when `authoring-through-plan-review` is armed or activating
+- `WSA-INPUT-4`: durable implementation-profile authorization policy record, phase, state, baseline, and write outcome when `implementation-through-verify` is armed or activating
 - explicit user stop or continue instructions
 - current validation and review results
 - proposal status, proposal-review result, review recording status, and open review findings for proposal-gate evaluation
@@ -571,7 +580,7 @@ Inputs:
 Outputs:
 
 - the next downstream stage entered automatically, when continuation is allowed
-- profile state: `off`, armed, active, paused, or completed, when a profile is involved
+- `WSA-OUTPUT-1`: profile state: `off`, armed, active, paused, or completed, when a profile is involved
 - a blocker or pause result when continuation stops
 - architecture assessment result when the authoring profile evaluates architecture need
 - for `pr`, either an opened PR URL or an explicit readiness blocker
@@ -587,10 +596,10 @@ Outputs:
 - In a milestone-based plan, `code-review` sets the reviewed milestone to `closed` when review is clean and no review-resolution is required, or to `resolution-needed` when findings require review-resolution, fixes, owner decision, or re-review.
 - In a milestone-based plan, final closeout is available only after all in-scope implementation milestones are closed and no required review-resolution remains open.
 - Review-to-next-authoring-stage transitions remain outside default autoprogression.
-- `authoring-through-plan-review` is the only review-to-next-authoring profile defined by this amendment.
-- `authoring-through-plan-review` starts only after `armed && gate-ready` and ends at clean `plan-review`.
-- `implementation-through-verify` is separately authorized from `authoring-through-plan-review`.
-- `implementation-through-verify` never opens a PR, publishes, deploys, releases, merges, or performs destructive Git actions.
+- `WSA-STATE-1`: `authoring-through-plan-review` is the only review-to-next-authoring profile defined by this amendment.
+- `WSA-STATE-2`: `authoring-through-plan-review` starts only after `armed && gate-ready` and ends at clean `plan-review`.
+- `WSA-STATE-3`: `implementation-through-verify` is separately authorized from `authoring-through-plan-review`.
+- `WSA-STATE-4`: `implementation-through-verify` never opens a PR, publishes, deploys, releases, merges, or performs destructive Git actions.
 - Reviewer-declared auto-fix authority cannot be inferred or upgraded by the orchestrator.
 - Implementation-profile correction loops are bounded, shrinking, path-local, independent, and auditable.
 - Profile policy metadata records authorization only; live stage and readiness ownership remains with existing workflow artifacts.
@@ -609,13 +618,13 @@ Outputs:
 - If durable authorization is missing, malformed, partially written, or cannot be written at activation time, the workflow MUST pause with stop reason `authorization-not-persisted`.
 - If the proposal gate is incomplete, the authoring profile MUST remain armed or off according to its current policy state and MUST NOT enter `spec`.
 - If architecture assessment records `architecture-ambiguous`, the authoring profile MUST pause rather than selecting `architecture` or `plan`.
-- If implementation-profile phase does not authorize a transition, the workflow MUST refuse that transition and pause or stop at the phase boundary.
+- `WSA-ERROR-1`: If implementation-profile phase does not authorize a transition, the workflow MUST refuse that transition and pause or stop at the phase boundary.
 - If test-spec settlement is incomplete, contradictory, or stale, the implementation profile MUST pause before implementation.
 - If any code-review finding under the implementation profile is unclassified or `auto_fix_class=none`, the profile MUST pause.
 - If a correction round fails to shrink findings, introduces a new finding ID or class, exceeds the per-milestone cap, touches unauthorized paths, or requires substantive governing-artifact edits, the implementation profile MUST pause.
 - If final verify fails under the implementation profile, the profile MUST pause without automatic repair.
 - If a profile pause is caused by non-clean review, material finding, or owner decision, manual correction MUST NOT auto-resume the profile.
-- If a cancellation request cannot be durably recorded, the workflow MUST pause and leave the prior durable profile state unchanged.
+- `WSA-ERROR-2`: If a cancellation request cannot be durably recorded, the workflow MUST pause and leave the prior durable profile state unchanged.
 - If a profile is already partially executed and reliable completion evidence is missing, the workflow MUST pause rather than duplicate or skip the stage.
 - If validation fails after `implement`, the workflow MUST stop before downstream review stages and report the failing proof surface.
 - If workflow-managed context is absent for a directly invoked stage, the workflow MUST treat the invocation as isolated rather than inferring automatic downstream continuation. Direct `pr` still performs the `pr` stage itself when readiness passes.
@@ -631,11 +640,11 @@ Outputs:
 - This change is a workflow-behavior clarification, not a product-runtime compatibility change.
 - Existing stage order remains intact; the change affects default continuation behavior between stages, not which stages exist.
 - Default behavior remains unchanged when profile is `off`.
-- Existing workflow-managed `proposal -> proposal-review`, `spec -> spec-review`, `architecture -> architecture-review`, and implementation-to-PR behavior remains unchanged when `authoring-through-plan-review` is not armed.
+- `WSA-COMPAT-1`: Existing workflow-managed `proposal -> proposal-review`, `spec -> spec-review`, `architecture -> architecture-review`, and implementation-to-PR behavior remains unchanged when `authoring-through-plan-review` is not armed.
 - Direct review requests remain isolated even when a change has an armed profile, unless invoked through workflow-managed resume context.
 - Existing change records without autoprogression profile policy are treated as `off`.
-- Existing change records without durable autoprogression profile policy cannot activate `authoring-through-plan-review`; they remain `off` unless the user re-asserts authorization and the workflow records it durably.
-- Existing change records without durable `implementation-through-verify` policy cannot activate that profile; they remain off unless the user explicitly authorizes the implementation profile and the workflow records it durably.
+- `WSA-COMPAT-2`: Existing change records without durable autoprogression profile policy cannot activate `authoring-through-plan-review`; they remain `off` unless the user re-asserts authorization and the workflow records it durably.
+- `WSA-COMPAT-3`: Existing change records without durable `implementation-through-verify` policy cannot activate that profile; they remain off unless the user explicitly authorizes the implementation profile and the workflow records it durably.
 - Phase C behavior remains unavailable until Phase B promotion evidence exists and the persisted phase is `C`.
 - Review-only requests remain compatible because they stay isolated unless the user asks to continue.
 - Existing milestone-free plans remain compatible with the ordinary standard workflow continuation sequence. Touched milestone-based plans MUST use milestone-aware handoff wording and the `explain-change -> verify -> pr` final order when current review or readiness state changes.
@@ -647,7 +656,7 @@ Outputs:
 - The agent SHOULD announce when it is continuing automatically into the next stage.
 - When continuation stops, the agent SHOULD state whether the reason is user pause, blocker, missing prerequisite, or external-tool limitation.
 - Profile-managed output MUST state why each automatic stage ran and why the profile paused or completed.
-- Profile-managed output MUST report last completed stage, stopped stage, stop reason, required next action, and profile state when continuation pauses.
+- `WSA-OBS-1`: Profile-managed output MUST report last completed stage, stopped stage, stop reason, required next action, and profile state when continuation pauses.
 - When activation pauses because authorization persistence is absent, malformed, partial, or failed to write, profile-managed output MUST report `authorization-not-persisted`.
 - When `workflow-policy.yaml` is used instead of `change.yaml`, the audit trail MUST state that the change-metadata contract rejected policy data and record the fallback path.
 - The recorded architecture assessment MUST be inspectable as audit evidence for why architecture was run or skipped.
@@ -661,8 +670,8 @@ Outputs:
 ## Security and privacy
 
 - Automatic continuation MUST NOT expand into destructive or externally publishing actions beyond PR creation by default.
-- `authoring-through-plan-review` MUST NOT start implementation, run code, open pull requests, publish packages, release, deploy, merge, or perform destructive Git actions.
-- `implementation-through-verify` MUST NOT open pull requests, publish packages, push branches, post to external systems, release, deploy, merge, or perform destructive Git actions.
+- `WSA-SEC-1`: `authoring-through-plan-review` MUST NOT start implementation, run code, open pull requests, publish packages, release, deploy, merge, or perform destructive Git actions.
+- `WSA-SEC-2`: `implementation-through-verify` MUST NOT open pull requests, publish packages, push branches, post to external systems, release, deploy, merge, or perform destructive Git actions.
 - Automatic CI maintenance in the implementation profile MUST pause on credential, secret, deploy-target, or hosted-runner privilege ambiguity.
 - Profile metadata MUST NOT include secrets or credentials and MUST NOT expose private user data beyond ordinary workflow attribution such as `authorized_by: user`.
 - Profile authorization metadata MUST be limited to workflow policy fields such as profile name, `authorized_by`, authorization timestamp, change ID, profile status, and fallback-path evidence.
@@ -782,26 +791,26 @@ EC39. Phase C verify passes. The profile reports `pr` next and human authorizati
 - The spec routes final closeout through `ci-maintenance` when triggered, then `explain-change`, then `verify`, then `pr`.
 - The spec keeps `ci-maintenance` scoped to automation or platform configuration changes rather than validation execution.
 - The spec keeps direct `verify` isolated by default and does not auto-continue to `pr` unless workflow-managed context or explicit continuation exists.
-- The spec defines `authoring-through-plan-review` as a closed, change-local, explicitly armed profile.
-- The spec makes durable authorization persistence mandatory before the profile can activate once a change-local surface exists.
-- The spec defines proposal-gate preconditions separately from user authorization.
-- The spec makes `armed && gate-ready` the activation condition.
-- The spec requires recorded architecture assessment before architecture or plan routing after `spec-review`.
-- The spec pauses on architecture ambiguity, non-clean review results, material findings, owner decisions, contradictory workflow state, unreliable partial completion, and transition-budget exhaustion.
-- The spec stops cleanly after `plan-review` and reports but does not invoke `test-spec`.
-- The spec preserves isolated direct review behavior even when a profile is armed.
-- The spec preserves current behavior when the profile is `off`.
-- The spec requires review independence and formal review recording for automatic review stages.
-- The spec defines transition-budget and resume behavior well enough for fixture-backed tests.
-- The spec pauses with `authorization-not-persisted` when authorization is absent, malformed, partially written, missing required fields, or cannot be written.
-- The spec defines `implementation-through-verify` as a separate explicitly armed profile.
-- The spec requires implementation-profile phase persistence and refuses transitions outside the persisted phase.
-- The spec requires deterministic test-spec settlement and first-review settlement identity recheck.
-- The spec makes missing `auto_fix_class` fail closed.
-- The spec bounds mechanical and declared-safe auto-fixes with path, command, validation, and scope controls.
-- The spec limits correction rounds to three per milestone and pauses on non-shrinking or new-finding rounds.
-- The spec blocks substantive governing-artifact edits during automatic review-driven fixes.
-- The spec allows automatic closeout through fresh verify only in Phase C and stops before PR.
+- `WSA-AC-A1`: The spec defines `authoring-through-plan-review` as a closed, change-local, explicitly armed profile.
+- `WSA-AC-A2`: The spec makes durable authorization persistence mandatory before the profile can activate once a change-local surface exists.
+- `WSA-AC-A3`: The spec defines proposal-gate preconditions separately from user authorization.
+- `WSA-AC-A4`: The spec makes `armed && gate-ready` the activation condition.
+- `WSA-AC-A5`: The spec requires recorded architecture assessment before architecture or plan routing after `spec-review`.
+- `WSA-AC-A6`: The spec pauses on architecture ambiguity, non-clean review results, material findings, owner decisions, contradictory workflow state, unreliable partial completion, and transition-budget exhaustion.
+- `WSA-AC-A7`: The spec stops cleanly after `plan-review` and reports but does not invoke `test-spec`.
+- `WSA-AC-A8`: The spec preserves isolated direct review behavior even when a profile is armed.
+- `WSA-AC-A9`: The spec preserves current behavior when the profile is `off`.
+- `WSA-AC-A10`: The spec requires review independence and formal review recording for automatic review stages.
+- `WSA-AC-A11`: The spec defines transition-budget and resume behavior well enough for fixture-backed tests.
+- `WSA-AC-A12`: The spec pauses with `authorization-not-persisted` when authorization is absent, malformed, partially written, missing required fields, or cannot be written.
+- `WSA-AC-I1`: The spec defines `implementation-through-verify` as a separate explicitly armed profile.
+- `WSA-AC-I2`: The spec requires implementation-profile phase persistence and refuses transitions outside the persisted phase.
+- `WSA-AC-I3`: The spec requires deterministic test-spec settlement and first-review settlement identity recheck.
+- `WSA-AC-I4`: The spec makes missing `auto_fix_class` fail closed.
+- `WSA-AC-I5`: The spec bounds mechanical and declared-safe auto-fixes with path, command, validation, and scope controls.
+- `WSA-AC-I6`: The spec limits correction rounds to three per milestone and pauses on non-shrinking or new-finding rounds.
+- `WSA-AC-I7`: The spec blocks substantive governing-artifact edits during automatic review-driven fixes.
+- `WSA-AC-I8`: The spec allows automatic closeout through fresh verify only in Phase C and stops before PR.
 
 ## Open questions
 
