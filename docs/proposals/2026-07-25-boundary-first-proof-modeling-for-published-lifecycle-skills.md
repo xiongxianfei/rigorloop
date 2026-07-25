@@ -2,7 +2,7 @@
 
 ## Status
 
-draft
+accepted
 
 ## Problem
 
@@ -127,7 +127,8 @@ review or turning the workflow into mechanical ceremony.
 | Rule-to-example traceability | core to this proposal | This directly prevents examples from becoming the contract. |
 | Spec and test-spec boundary/proof ownership | core to this proposal | Normative behavior and executable proof need distinct owners. |
 | Review-stage completeness and sibling-boundary audits | core to this proposal | Independent review must detect omissions and incomplete remediation. |
-| Published lifecycle skill behavior updates | same-slice dependency | The policy has no effect unless the stage-owning skills consume it. |
+| First-release updates to `spec`, `spec-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, `verify`, and `workflow` | same-slice dependency | These eight skills form the smallest end-to-end contract, proof, implementation, review, and routing chain that solves the observed problem. |
+| `proposal`, `proposal-review`, `architecture`, `architecture-review`, `plan`, and `plan-review` skill updates | separate implementation slice | Their long-term responsibilities remain visible, but their published-skill behavior is not required to establish the first boundary-proof baseline. |
 | Workflow and skill-contract amendments | same-slice dependency | Existing canonical contracts should own the new behavior without a competing spec. |
 | Deterministic structural validation | first-slice candidate | Stable fields and closed vocabularies can be checked mechanically after the spec settles their shape. |
 | Qualitative boundary judgment | core to this proposal | Applicability, meaningful partitions, and interaction hazards require review judgment. |
@@ -213,6 +214,66 @@ settle boundary-first behavior
 ```
 
 This prevents behavior parity from canonizing a known omission.
+
+### First-release surface
+
+The first release is closed to these public skills:
+
+```text
+spec
+spec-review
+test-spec
+test-spec-review
+implement
+code-review
+verify
+workflow
+```
+
+It also includes only the support surfaces required to make those skill
+behaviors authoritative and portable:
+
+```text
+specs/rigorloop-workflow.md
+specs/skill-contract.md
+their matching test specs
+templates or packaged resources consumed by the eight skills
+deterministic validators, fixtures, and validation-selector registration
+generated public adapters and canonical-to-installed parity proof
+the selected automation-incident replay corpus
+```
+
+The responsibility table later in this proposal remains the intended lifecycle
+model.
+It does not silently add the other six lifecycle skills to the first release.
+Updates to `proposal`, `proposal-review`, `architecture`,
+`architecture-review`, `plan`, and `plan-review` require a separately reviewed
+implementation slice after the first-release evidence is available.
+
+### Capability-baseline completion
+
+The first boundary-proof capability baseline is established only when all of
+these facts are current:
+
+- the workflow and published-skill contract amendments are approved;
+- matching test specifications are active and have clean required reviews;
+- all eight first-release skills implement the approved behavior;
+- required templates, validators, fixtures, selectors, and canonical skill
+  resources agree with those contracts;
+- generated public adapters have canonical-to-installed resource and behavior
+  parity;
+- every selected seeded omission class is detected no later than its owning
+  pre-code-review gate;
+- selected validation and any authoritatively triggered broader validation
+  pass;
+- required implementation and final code reviews are clean;
+- review resolution has no open material findings;
+- final verification passes.
+
+This complete predicate is the sole capability dependency for resuming
+capability-preserving progressive-disclosure proposal review.
+Proposal acceptance, spec approval, partial skill updates, or passing structural
+validation alone do not establish the baseline.
 
 ## Options Considered
 
@@ -332,8 +393,8 @@ The method has six connected parts:
 
 ### Boundary Completeness Model
 
-The first contract should define a closed core inventory of boundary
-dimensions.
+The first contract should define a closed mandatory core inventory of boundary
+dimensions plus a separate extension namespace.
 Each behavior-changing specification should classify every core dimension as
 applicable or not applicable with a concise rationale.
 
@@ -353,6 +414,37 @@ The initial inventory should cover:
 | Compatibility and migration | How are old inputs read and new state written? | old, mixed, unsupported, one-way migration, rollback |
 | Outcomes and stop behavior | Which outcomes continue, pause, block, or terminate? | success, changes requested, blocked, inconclusive, unknown |
 | Evidence, observability, and claims | What proves completion and what may be reported? | current proof, missing proof, stale proof, overclaim |
+
+The core taxonomy and extension taxonomy have different compatibility rules:
+
+```text
+core dimension IDs:
+  closed and mandatory
+
+core applicability:
+  applicable
+  not-applicable with rationale
+
+feature-specific extensions:
+  optional
+  separately represented
+  stable namespaced identity
+  rationale and governing rule links required
+```
+
+An extension cannot replace, rename, or satisfy a core dimension.
+A generic `other` value cannot satisfy either taxonomy.
+Unknown core dimension IDs and unknown core applicability values fail closed
+before consistency checks.
+A structurally valid feature-specific extension remains subject to semantic
+review rather than being rejected merely because its stable identity is not in
+the core vocabulary.
+
+When one extension recurs across unrelated changes and appears generally
+applicable, promotion into the core requires a separately approved contract
+amendment.
+The spec should define the exact extension identity and field shape without
+changing this compatibility boundary.
 
 The specification stage should be exhaustive at the declared boundary:
 
@@ -480,6 +572,11 @@ After adoption:
 - unknown closed-vocabulary values fail closed before consistency behavior;
 - simple behavior changes use the same workflow and record non-applicable
   dimensions rather than entering a reduced workflow lane;
+- feature-specific dimensions use the extension namespace without weakening
+  mandatory core classification;
+- newly created or substantively revised behavior specs after public activation
+  use boundary-model version `v1`;
+- grandfathered active initiatives cannot claim partial adoption;
 - progressive-disclosure work remains paused until this capability baseline is
   accepted and implemented.
 
@@ -568,6 +665,49 @@ The corpus should prove that the new process surfaces the missing class before
 code-review handoff where the governing evidence is available.
 It should not rewrite the historical review record.
 
+### First-release success and stop gates
+
+The first release succeeds only when:
+
+- every selected seeded omission class is detected no later than the owning
+  pre-code-review gate;
+- no seeded direct-proof escape reaches code review;
+- no seeded sibling-bypass case is closed by fixing only the reported example;
+- all existing first-release skill behavior, claim-boundary, review-recording,
+  isolation, and handoff fixtures continue to pass;
+- canonical skill resources and generated adapters remain equivalent;
+- the model introduces no new universal artifact or lifecycle stage;
+- every normative boundary has one owner;
+- a simple-change fixture records core non-applicability once in one compact
+  spec table, while its test spec maps only applicable proof obligations;
+- no simple-change fixture requires more than one additional author-review
+  correction cycle solely to satisfy boundary-model structure.
+
+The evaluation should report:
+
+```text
+detection stage by seeded boundary class
+direct-proof escape rate
+failed-remediation rate
+false blocking rate for valid fixtures
+duplicate normative-owner count
+new mandatory artifact count
+simple-fixture structure-only correction cycles
+```
+
+Raw material-finding count is contextual evidence, not a pass threshold.
+
+The rollout stops for proposal or specification revision if:
+
+- any seeded omission unexpectedly reaches code review;
+- a claimed remediation leaves a seeded sibling bypass;
+- an existing valid behavior fixture regresses;
+- valid simple-change fixtures are falsely blocked;
+- non-applicability must be duplicated across normative artifacts;
+- a validator claims semantic completeness;
+- review independence, formal recording, isolation, or claim boundaries weaken;
+- the first release requires a new universal artifact or lifecycle stage.
+
 ### Validation layering
 
 Run the repository selector for touched paths, execute selected focused checks,
@@ -594,9 +734,21 @@ Roll out in this order:
 Compatibility behavior:
 
 - accepted historical artifacts remain valid;
-- new behavior-changing work uses the contract after its adoption point;
-- active work at adoption records whether it adopts the new proof model or
-  finishes under its already approved contract;
+- this initiative uses the boundary-first model in its own approved spec and
+  test spec as the pre-activation proof case;
+- public activation occurs in the first released RigorLoop baseline containing
+  the complete capability-baseline predicate;
+- behavior specs created or substantively revised after that release use
+  boundary-model version `v1`;
+- initiatives with already approved specs at activation are grandfathered and
+  may finish under their reviewed contract;
+- the initiative owner may opt a grandfathered initiative into `v1` only
+  through synchronized spec and test-spec revision, their required reviews, and
+  active-plan synchronization when a plan exists;
+- partial adoption is invalid: an initiative cannot claim `v1` when only its
+  spec, test spec, public skill behavior, or validation evidence has adopted it;
+- the feature spec and matching test spec record the same boundary-model
+  version, and contradictory or missing adoption evidence pauses the new gate;
 - published adapters remain generated from canonical `skills/` sources;
 - no user is required to add a new artifact merely because this proposal
   exists.
@@ -625,6 +777,10 @@ Rollback:
 | The workflow overfits one automation incident. | Use the incident as a corpus while defining model-neutral dimensions applicable to other stateful behavior. |
 | Historical work appears invalid. | Apply the contract prospectively and preserve historical artifacts as evidence. |
 | Multiple specs become contradictory. | Keep workflow behavior and public-skill projection with their existing owners and add an exact cross-spec ownership ledger. |
+| A closed core blocks legitimate domain boundaries. | Keep core IDs closed and mandatory while admitting separately represented namespaced extensions subject to semantic review. |
+| Adoption produces mixed old and new gates. | Use prospective release activation, explicit grandfathering, synchronized opt-in, and fail-closed version parity. |
+| The first release becomes another all-skill rewrite. | Limit it to the eight-skill end-to-end chain and route the other lifecycle skills through a separate implementation slice. |
+| The process adds ceremony without earlier detection. | Apply seeded detection, preservation, false-blocking, duplicate-owner, artifact-count, and simple-fixture correction-cycle stop gates. |
 | Progressive disclosure resumes too early. | Require an explicit resume decision after the boundary capability baseline is accepted and implemented. |
 
 ## Open Questions
@@ -634,16 +790,18 @@ None block proposal review.
 The specification should settle:
 
 1. the exact closed IDs and required fields for the core boundary dimensions;
-2. the closed vocabulary for applicability and interaction-selection rationale;
-3. which behavior changes trigger a detailed boundary table versus a concise
+2. the exact namespaced extension identity and field shape;
+3. the closed vocabulary for applicability and interaction-selection rationale;
+4. which behavior changes trigger a detailed boundary table versus a concise
    embedded classification;
-4. the exact trace-link shape among requirements, boundary entries, examples,
+5. the exact trace-link shape among requirements, boundary entries, examples,
    and test cases;
-5. which structural checks are deterministic enough for repository validators;
-6. the minimum incident-replay corpus for behavior-preservation evidence;
-7. the exact cross-spec ownership ledger between
+6. which structural checks are deterministic enough for repository validators;
+7. the exact seeded fixtures selected for the incident-replay corpus;
+8. the exact cross-spec ownership ledger between
    `specs/rigorloop-workflow.md` and `specs/skill-contract.md`;
-8. the adoption rule for active initiatives at the implementation boundary.
+9. the exact version fields, evaluation-report shape, and validation check IDs
+   that implement the decided adoption and success policies.
 
 ## Decision Log
 
@@ -658,6 +816,11 @@ The specification should settle:
 | 2026-07-25 | Preserve independent review. | Earlier self-audit reduces churn but cannot replace adversarial review. | Treat a completed author checklist as approval. |
 | 2026-07-25 | Use automation findings as an evaluation corpus, not a quality oracle. | Root-cause classes are reusable; raw counts are not directly comparable. | Set a finding-count target. |
 | 2026-07-25 | Avoid a new lifecycle skill or stage. | Existing stages already have the necessary artifact and review owners. | Add `boundary-review`. |
+| 2026-07-25 | Limit the first release to eight skills. | `spec` through `code-review`, plus `verify` and `workflow`, form the smallest end-to-end chain that can establish and enforce the new capability baseline. | Update all lifecycle skills at once; omit final coherence and routing. |
+| 2026-07-25 | Make capability-baseline completion a closed evidence predicate. | Progressive disclosure needs a deterministic complete baseline rather than proposal acceptance or partial implementation. | Resume after spec approval; resume after selected tests pass. |
+| 2026-07-25 | Separate the closed mandatory core from namespaced extensions. | Universal omissions must fail closed without preventing feature-specific boundary discovery. | Make the entire taxonomy open; use a generic `other`; prohibit extensions. |
+| 2026-07-25 | Activate prospectively at the first complete public release. | Public skills, validators, fixtures, and adapters must become available together while already approved initiatives remain stable. | Apply retroactively; cut over at proposal acceptance; allow partial opt-in. |
+| 2026-07-25 | Use seeded detection, preservation, and ceremony stop gates. | The release must show earlier boundary detection without raw finding quotas or unbounded artifact overhead. | Measure only finding count; ship without a stop rule. |
 
 ## Next Artifacts
 
@@ -681,18 +844,25 @@ code-review
 explain-change
 verify
 pr
+separate implementation proposal or slice:
+  proposal and proposal-review skill integration
+  architecture and architecture-review skill integration
+  plan and plan-review skill integration
 resume decision:
   capability-preserving progressive disclosure
 ```
 
 ## Follow-on Artifacts
 
-None yet
+- [Proposal review R1](../changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r1.md)
+  requested four direction-level corrections.
+- [Proposal review R2](../changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r2.md)
+  approved the revised direction and confirmed all R1 findings resolved.
 
 ## Readiness
 
-Ready for `proposal-review`.
+Accepted after approved `proposal-review-r2`.
 
-The proposal does not claim acceptance, specification readiness,
-implementation readiness, review efficiency improvement, or progressive-
-disclosure readiness.
+Ready for a separate `spec` invocation.
+The proposal does not claim specification completion, implementation readiness,
+review efficiency improvement, or progressive-disclosure readiness.
