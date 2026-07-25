@@ -1,0 +1,34 @@
+change_id: 2026-07-25-capability-preserving-progressive-disclosure
+title: Capability-preserving progressive disclosure for published skills
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-07-25-capability-preserving-progressive-disclosure.md
+requirements:
+  - Record a proposal for capability-preserving progressive disclosure before amending the published-skill contract.
+  - Preserve every behavior-significant skill capability through an explicit layer and disposition.
+  - Measure scenario-loaded context rather than only flat SKILL.md size.
+  - Keep formal review, authority, safety, validation, stop, claim, and handoff boundaries available at the point of use.
+  - Pilot the proposed reference pattern on code-review before broader rollout.
+  - Preserve public adapter portability and packaged-resource integrity.
+tests:
+  - Proposal-review approves the direction or records material findings before spec work.
+  - Artifact lifecycle validation covers the draft proposal.
+  - Change metadata validation covers the baseline proposal record.
+validation:
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-07-25-capability-preserving-progressive-disclosure.md --path docs/changes/2026-07-25-capability-preserving-progressive-disclosure/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-25-capability-preserving-progressive-disclosure.md
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-25-capability-preserving-progressive-disclosure/change.yaml
+    result: pass
+  - command: git diff --check -- docs/proposals/2026-07-25-capability-preserving-progressive-disclosure.md docs/changes/2026-07-25-capability-preserving-progressive-disclosure/change.yaml
+    result: pass
+changed_files:
+  - docs/proposals/2026-07-25-capability-preserving-progressive-disclosure.md
+  - docs/changes/2026-07-25-capability-preserving-progressive-disclosure/change.yaml
+review:
+  status: pending
+  unresolved_items: 0
