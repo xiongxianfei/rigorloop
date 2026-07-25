@@ -114,6 +114,11 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "change-record-query",
         parallel_safe=True,
     ),
+    "workflow_automation.code_state_regression": CheckCatalogEntry(
+        "workflow_automation.code_state_regression",
+        "python scripts/test-workflow-code-state.py",
+        "workflow-automation",
+    ),
     "workflow_automation.engine_regression": CheckCatalogEntry(
         "workflow_automation.engine_regression",
         "python scripts/test-workflow-automation.py",
@@ -1649,6 +1654,7 @@ def _apply_path_selection(
 
     if category == "workflow-automation":
         for check_id in (
+            "workflow_automation.code_state_regression",
             "workflow_automation.engine_regression",
             "workflow_automation.policy_regression",
             "workflow_automation.state_regression",
@@ -1657,7 +1663,7 @@ def _apply_path_selection(
             _add_check(
                 selected,
                 check_id,
-                "Changed workflow automation tooling requires complete engine, policy, state, and validator regression proof.",
+                "Changed workflow automation tooling requires complete code-state, engine, policy, state, and validator regression proof.",
             )
         return
 
@@ -2156,6 +2162,8 @@ def _path_category(path: str) -> str | None:
     }:
         return "change-record-query"
     if path in {
+        "scripts/workflow_code_state.py",
+        "scripts/test-workflow-code-state.py",
         "scripts/workflow_automation.py",
         "scripts/test-workflow-automation.py",
         "scripts/workflow_automation_policy.py",

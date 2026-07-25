@@ -71,6 +71,7 @@ EXPECTED_CATALOG = {
     "change_metadata.validate": "python scripts/validate-change-metadata.py <change-yaml>...",
     "change_record_query.regression": "python scripts/test-query-change-record.py",
     "workflow_automation.engine_regression": "python scripts/test-workflow-automation.py",
+    "workflow_automation.code_state_regression": "python scripts/test-workflow-code-state.py",
     "workflow_automation.policy_regression": "python scripts/test-workflow-automation-policy.py",
     "workflow_automation.state_regression": "python scripts/test-workflow-automation-state.py",
     "workflow_automation.validator_regression": "python scripts/test-validate-workflow-automation.py",
@@ -2031,6 +2032,31 @@ raise SystemExit({exit_code})
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
+                    "workflow_automation.code_state_regression",
+                    "workflow_automation.engine_regression",
+                    "workflow_automation.policy_regression",
+                    "workflow_automation.state_regression",
+                    "workflow_automation.validator_regression",
+                },
+            },
+            {
+                "path": "scripts/workflow_code_state.py",
+                "category": "workflow-automation",
+                "status": "ok",
+                "checks": {
+                    "workflow_automation.code_state_regression",
+                    "workflow_automation.engine_regression",
+                    "workflow_automation.policy_regression",
+                    "workflow_automation.state_regression",
+                    "workflow_automation.validator_regression",
+                },
+            },
+            {
+                "path": "scripts/test-workflow-code-state.py",
+                "category": "workflow-automation",
+                "status": "ok",
+                "checks": {
+                    "workflow_automation.code_state_regression",
                     "workflow_automation.engine_regression",
                     "workflow_automation.policy_regression",
                     "workflow_automation.state_regression",
@@ -2042,6 +2068,7 @@ raise SystemExit({exit_code})
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
+                    "workflow_automation.code_state_regression",
                     "workflow_automation.engine_regression",
                     "workflow_automation.policy_regression",
                     "workflow_automation.state_regression",
@@ -2053,6 +2080,7 @@ raise SystemExit({exit_code})
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
+                    "workflow_automation.code_state_regression",
                     "workflow_automation.engine_regression",
                     "workflow_automation.policy_regression",
                     "workflow_automation.state_regression",
@@ -2064,6 +2092,7 @@ raise SystemExit({exit_code})
                 "category": "workflow-automation",
                 "status": "ok",
                 "checks": {
+                    "workflow_automation.code_state_regression",
                     "workflow_automation.engine_regression",
                     "workflow_automation.policy_regression",
                     "workflow_automation.state_regression",

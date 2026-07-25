@@ -7,6 +7,18 @@ This ledger records formal lifecycle reviews for the single bounded review-fix w
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-final-r1
+Stage: code-review
+Round: Final R1
+Reviewed artifact: Complete branch diff `52bdcbb329897225c22a593b8e04541409e2d315..962bdc4a`
+Reviewed milestone: Final holistic M1-M6 closeout
+Status: changes-requested
+Detailed record: reviews/code-review-final-r1.md
+Resolution: review-resolution.md#code-review-final-r1
+Material findings: BRF-FH-CR1
+Open findings: None
+
+### Review entry
 Review ID: code-review-m6-r6
 Stage: code-review
 Round: M6 R6

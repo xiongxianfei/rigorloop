@@ -1281,6 +1281,26 @@ validation:
     result: clean_with_notes_no_material_findings_M6_closed
   - command: python scripts/test-workflow-automation.py WorkflowAutomationEngineTests.test_public_proposal_correction_recovery_ignores_altered_resume_timestamp WorkflowAutomationEngineTests.test_public_proposal_correction_recovery_does_not_require_resume_timestamp WorkflowAutomationEngineTests.test_capability_derivation_requires_current_complete_subset_basis WorkflowAutomationEngineTests.test_capability_one_stage_coordination_persists_receipt_before_invocation WorkflowAutomationEngineTests.test_proposal_correction_executes_bound_recipe_without_caller_callback; python scripts/test-workflow-automation.py
     result: passed_5_focused_controls_and_73_engine_tests_during_code_review_M6_R6
+  - command: final holistic code-review R1 of complete branch diff 52bdcbb329897225c22a593b8e04541409e2d315..962bdc4a
+    result: changes_requested_BRF_FH_CR1
+  - command: python scripts/test-workflow-automation.py; python scripts/test-workflow-automation-state.py; python scripts/test-workflow-code-state.py; python scripts/test-validate-workflow-automation.py; python scripts/test-select-validation.py
+    result: passed_73_engine_60_state_12_code_state_68_validator_133_selector_tests_during_final_holistic_review_R1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/workflow_code_state.py --path scripts/test-workflow-code-state.py
+    result: blocked_exit_2_manual_routing_required_for_both_code_state_paths_BRF_FH_CR1
+  - command: python scripts/validate-review-artifacts.py --mode structure; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths; git diff --check
+    result: passed_67_reviews_104_findings_one_open_final_holistic_finding_and_synchronized_review_resolution_handoff_with_pre_existing_merge_language_warning_only
+  - command: proof-first python scripts/test-select-validation.py before BRF-FH-CR1 correction
+    result: failed_12_cases_for_missing_code_state_catalog_path_classification_and_complete_category_check_as_expected
+  - command: python scripts/test-select-validation.py
+    result: passed_133_tests_after_BRF_FH_CR1_resolution
+  - command: bash scripts/ci.sh --mode explicit --path scripts/workflow_code_state.py --path scripts/test-workflow-code-state.py
+    result: passed_5_workflow_automation_checks_including_code_state_regression_after_BRF_FH_CR1_resolution
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path schemas/change.schema.json --path scripts/workflow_automation.py --path scripts/workflow_code_state.py --path scripts/test-workflow-code-state.py --path scripts/workflow_automation_policy.py --path scripts/workflow_automation_state.py --path scripts/validate_workflow_automation.py
+    result: passed_13_selected_checks_after_BRF_FH_CR1_resolution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: passed_12_checks_in_242_seconds_after_BRF_FH_CR1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure; python scripts/validate-review-artifacts.py --mode closeout; python scripts/validate-change-metadata.py; python scripts/validate-artifact-lifecycle.py --mode explicit-paths; git diff --check
+    result: passed_67_reviews_104_resolved_findings_and_final_holistic_R2_handoff_with_pre_existing_merge_language_warning_only
 changed_files:
   - README.md
   - docs/workflows.md
@@ -1406,18 +1426,19 @@ changed_files:
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r4.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r5.md
   - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r6.md
+  - docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-final-r1.md
 review:
-  status: clean_with_notes
+  status: changes_requested
   unresolved_items: 0
   location: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
-  material_findings: 103
-  closed_findings: 103
+  material_findings: 104
+  closed_findings: 104
   open_findings: 0
   proposal_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/proposal-review-r4.md
   spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md
   architecture_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/architecture-review-r3.md
   plan_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/plan-review-r2.md
   test_spec_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/test-spec-review-r4.md
-  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r6.md
+  code_review: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-final-r1.md
   review_log: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-log.md
   review_resolution: docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/review-resolution.md

@@ -58,16 +58,18 @@ Review closeout: code-review-m6-r3
 Review closeout: code-review-m6-r4
 Review closeout: code-review-m6-r5
 Review closeout: code-review-m6-r6
+Review closeout: code-review-final-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`, `code-review-m6-r2`, `code-review-m6-r3`, `code-review-m6-r4`, `code-review-m6-r5`, `code-review-m6-r6`
-- Findings resolved: 103
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`, `code-review-m6-r2`, `code-review-m6-r3`, `code-review-m6-r4`, `code-review-m6-r5`, `code-review-m6-r6`, `code-review-final-r1`
+- Findings resolved: 104
 - Unresolved findings: 0
-- Current result: Code-review M6 R6 found no material issue in the `BRF-M6-CR11` correction. All six implementation milestones are closed; final closeout begins with final holistic code-review.
+- Current result: The accepted final holistic finding `BRF-FH-CR1` is resolved in implementation and selected-CI proof. M6 is review-requested for final holistic code-review R2.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| BRF-FH-CR1 | accepted | resolved | Both code-state paths now select the complete workflow-automation category, including the dedicated code-state regression suite. |
 | BRF-M6-CR1 | accepted | resolved | Repository validation now compares the canonical ledger with an independent immutable selector registry and rejects an omitted exact row. |
 | BRF-M6-CR2 | accepted | resolved | Legacy `off` now projects active legacy state directly to one cancelled unified record and treats terminal legacy state as a byte-preserving idempotent result. |
 | BRF-M6-CR3 | accepted | resolved | Public target, status, resume, pause, and cancellation results now project canonical position, observed identities, receipt history, fixes, decisions, and changed artifacts from durable state. |
@@ -2057,3 +2059,19 @@ Chosen action: Added an immutable `TransitionContext` and typed `TransitionEvalu
 Safe resolution path: Add typed predicate-evaluation inputs, require identity-bound branch and source-occurrence evidence, evaluate the selected rule before accepting the transition, and add complete positive and negative fixtures for architecture applicability and milestone ordering.
 Validation target: Targeted proof-first predicate-context tests, the full M1 command set, broad smoke, and code-review M1 R6.
 Validation evidence: Proof-first policy tests initially failed because the typed evaluator did not exist, and both complete-state validator regressions reproduced zero-error acceptance. After correction, all eight guarded paths have positive and missing-evidence contrasts; proposal correction, architecture applicability, identity-bound same-milestone review, unique next-milestone progression, wrong occurrence, and absent context are covered directly. The final validation passed 15 policy tests, 41 automation-validator tests, 5 selected vocabulary tests, 4 focused metadata tests, all 52 metadata tests, metadata validation, Python compilation, diff checks, and 12 repository broad-smoke checks in the final 231-second run.
+
+### code-review-final-r1
+
+#### BRF-FH-CR1 - Canonical code-state proof is absent from selected-CI routing
+
+Finding ID: BRF-FH-CR1
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution
+Rationale: Final holistic review proved that both the Git-backed code-state provider and its dedicated regression path fall through to `manual-routing-required`, even though the public verification boundary depends on this provider and the plan requires every workflow-automation module to enter one complete selected-CI category.
+Required outcome: Classify both code-state paths deterministically and select their dedicated regression suite whenever workflow-automation proof is required.
+Chosen action: Added a stable `workflow_automation.code_state_regression` catalog entry, included it in the complete workflow-automation category, classified both code-state source and test paths, expanded the independent selector expectations, and added both paths to the plan-owned M6 selected-CI command.
+Safe resolution path: Add a `workflow_automation.code_state_regression` catalog entry, include it in the workflow-automation category, classify both source and test paths, add exact selector contrasts, update enumerated selected-CI artifact contracts, and rerun dedicated, all-path, selected-CI, and broad-smoke proof.
+Validation target: `python scripts/test-workflow-code-state.py`, `python scripts/test-select-validation.py`, explicit selection over every changed workflow-automation source/test path, the plan-selected CI command, required broad smoke, and final holistic rereview.
+Validation evidence: Proof-first selector execution failed 12 cases before implementation, including the missing catalog ID, both unsupported code-state paths, and the absent fifth check on existing automation paths. After correction, all 133 selector tests pass. Direct explicit selection of the two code-state paths runs five automation checks successfully; the plan-selected M6 command runs 13 checks successfully, including `workflow_automation.code_state_regression`; and required broad smoke passes all 12 checks in 242 seconds.
