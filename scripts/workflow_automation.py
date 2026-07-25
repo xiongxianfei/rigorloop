@@ -1405,6 +1405,31 @@ def _compile_proposal_correction_operation(
     )
 
 
+def _verify_applied_proposal_correction(
+    *,
+    proposal_path: Path,
+    reviewed_proposal_identity: str,
+    operations: Iterable[_ProposalCorrectionOperation],
+) -> str:
+    """Reconstruct one applied correction from durable authority and live bytes."""
+
+    payload = b"".join(operation.payload for operation in operations)
+    current = proposal_path.read_bytes()
+    if not payload or len(current) < len(payload) or not current.endswith(payload):
+        raise AutomationContractError(
+            "proposal correction does not match compiled operation"
+        )
+    reviewed = current[: -len(payload)]
+    reconstructed_reviewed_identity = (
+        "sha256:" + hashlib.sha256(reviewed).hexdigest()
+    )
+    if reconstructed_reviewed_identity != reviewed_proposal_identity:
+        raise AutomationContractError(
+            "proposal correction does not match reviewed proposal"
+        )
+    return "sha256:" + hashlib.sha256(current).hexdigest()
+
+
 def _atomic_replace_regular_file(path: Path, content: bytes) -> None:
     """Replace one non-symlink regular file without exposing partial bytes."""
 
@@ -1888,10 +1913,9 @@ def coordinate_non_public_authoring_stage(
         raise AutomationContractError("non-public authoring harness is required")
     stage_request = coordination.get("stage")
     correction_decision: ProposalCorrectionDecision | None = None
-    actual_changed_paths: frozenset[str] = frozenset()
-    expected_proposal_identity_after: str | None = None
     proposal_path_for_rollback: Path | None = None
     proposal_content_before: bytes | None = None
+    proposal_mutation_completed = False
     post_completion_capabilities: Callable[
         [VerifiedCompletion, Mapping[str, Any], Mapping[str, Any]],
         Iterable[Mapping[str, Any]],
@@ -1940,22 +1964,19 @@ def coordinate_non_public_authoring_stage(
         )
 
         def invoke_bounded_proposal_correction() -> StageExecutionResult:
-            nonlocal actual_changed_paths
-            nonlocal expected_proposal_identity_after
             nonlocal proposal_content_before
+            nonlocal proposal_mutation_completed
             before = proposal_path.read_bytes()
             after = before + b"".join(operation.payload for operation in operations)
             proposal_content_before = before
             _atomic_replace_regular_file(proposal_path, after)
-            expected_proposal_identity_after = (
+            proposal_mutation_completed = True
+            proposal_identity_after = (
                 "sha256:" + hashlib.sha256(after).hexdigest()
-            )
-            actual_changed_paths = frozenset(
-                {authority.reviewed_proposal_path}
             )
             evidence = ArtifactEvidence(
                 authority.reviewed_proposal_path,
-                expected_proposal_identity_after,
+                proposal_identity_after,
             )
             return StageExecutionResult(
                 (evidence,),
@@ -1990,16 +2011,25 @@ def coordinate_non_public_authoring_stage(
             if (
                 not isinstance(proposal_proof, Mapping)
                 or proposal_proof.get("path") != authority.reviewed_proposal_path
-                or actual_changed_paths
-                != frozenset({authority.reviewed_proposal_path})
             ):
                 pause("mutation escaped effective capability")
             proposal_before = str(
                 capability["basis"].get("reviewed_proposal_identity", "")
             )
             proposal_after = proof.observed_identities.get("proposal", "")
+            try:
+                expected_proposal_identity_after = (
+                    _verify_applied_proposal_correction(
+                        proposal_path=proposal_path,
+                        reviewed_proposal_identity=proposal_before,
+                        operations=operations,
+                    )
+                )
+            except AutomationContractError as error:
+                pause(str(error))
             if proposal_after != expected_proposal_identity_after:
-                pause("proposal correction does not match compiled operation")
+                pause("proposal correction completion identity mismatch")
+            affected_paths = frozenset({authority.reviewed_proposal_path})
             post_decision = evaluate_proposal_correction(
                 authority=authority,
                 finding_classifications=authority.finding_classifications,
@@ -2009,7 +2039,7 @@ def coordinate_non_public_authoring_stage(
                 current_review_identity=post_evidence.review_identity,
                 unresolved_before=authority.accepted_finding_ids,
                 unresolved_after=(),
-                affected_paths=actual_changed_paths,
+                affected_paths=affected_paths,
                 proposal_identity_before=proposal_before,
                 proposal_identity_after=proposal_after,
                 deterministic_validation_passed=True,
@@ -2069,7 +2099,7 @@ def coordinate_non_public_authoring_stage(
     except Exception as error:
         if (
             correction_decision is not None
-            and expected_proposal_identity_after is not None
+            and proposal_mutation_completed
             and proposal_path_for_rollback is not None
             and proposal_content_before is not None
         ):

@@ -4508,6 +4508,167 @@ Planned validation rule: proposal-exact-append
             "completed",
         )
 
+    def test_public_proposal_correction_recovers_after_process_loss_without_replay(
+        self,
+    ) -> None:
+        class SimulatedProcessLoss(BaseException):
+            pass
+
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        change = root / "docs/changes/2026-07-20-example/change.yaml"
+        change.parent.mkdir(parents=True)
+        change.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "Proposal correction recovery fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                }
+            ),
+            encoding="utf-8",
+        )
+        store = WorkflowAutomationStateStore(change, repository_root=root)
+        fixture = self.prepare_proposal_correction_transaction(
+            transition_id="transition-correction-recovery",
+            store=store,
+            public_authorization=True,
+        )
+        proposal = fixture["proposal"]
+        proposal_before = proposal.read_bytes()
+        review_record = root / fixture["review_path"]
+        review_before = review_record.read_bytes()
+        public_request = dict(fixture["coordination"])
+        for field in (
+            "invocation_context",
+            "target_stage",
+            "store",
+            "repository_root",
+            "parent_authorization_id",
+        ):
+            public_request.pop(field)
+
+        real_replace = workflow_automation_module._atomic_replace_regular_file
+
+        def interrupt_after_proposal_write(path: Path, content: bytes) -> None:
+            real_replace(path, content)
+            raise SimulatedProcessLoss("process lost after proposal replacement")
+
+        with patch(
+            "workflow_automation._atomic_replace_regular_file",
+            side_effect=interrupt_after_proposal_write,
+        ):
+            with self.assertRaisesRegex(
+                SimulatedProcessLoss,
+                "process lost after proposal replacement",
+            ):
+                workflow_automation_module.resume_public_run(
+                    store,
+                    "$workflow auto: spec",
+                    repository_root=root,
+                    **public_request,
+                )
+
+        proposal_after = proposal.read_bytes()
+        proposal_after_identity = (
+            "sha256:" + hashlib.sha256(proposal_after).hexdigest()
+        )
+        prepared = store.read().automation
+        receipt = prepared["transition_receipts"][
+            "transition-correction-recovery"
+        ]
+        self.assertEqual(receipt["status"], "prepared")
+        self.assertEqual(
+            prepared["effective_capabilities"][
+                "cap-correction-transaction"
+            ]["status"],
+            "active",
+        )
+        self.assertEqual(proposal_after, proposal_before + b"\n")
+
+        recovery_completion_evidence = {
+            "input_identities": copy.deepcopy(receipt["input_identities"]),
+            "expected_postcondition": copy.deepcopy(
+                receipt["expected_postcondition"]
+            ),
+            "outputs": [
+                {
+                    "path": fixture["proposal_relative"].as_posix(),
+                    "identity": proposal_after_identity,
+                }
+            ],
+            "canonical_sync": {
+                "status": "synchronized",
+                "evidence": {
+                    "proposal": {
+                        "path": fixture["proposal_relative"].as_posix(),
+                        "identity": proposal_after_identity,
+                    }
+                },
+                "observed_identities": {
+                    "proposal": proposal_after_identity,
+                },
+            },
+        }
+        public_request["recovery_completion_evidence"] = (
+            recovery_completion_evidence
+        )
+
+        with patch(
+            "workflow_automation._atomic_replace_regular_file",
+            side_effect=AssertionError(
+                "recovery replayed the proposal correction"
+            ),
+        ):
+            result = workflow_automation_module.resume_public_run(
+                store,
+                "$workflow auto: spec",
+                repository_root=root,
+                **public_request,
+            )
+
+        recovered = store.read().automation
+        recovered_receipt = recovered["transition_receipts"][
+            "transition-correction-recovery"
+        ]
+        self.assertEqual(
+            list(recovered["transition_receipts"]),
+            ["transition-correction-recovery"],
+        )
+        self.assertEqual(recovered_receipt["status"], "completed")
+        self.assertEqual(
+            recovered_receipt["canonical_sync"]["observed_identities"][
+                "proposal"
+            ],
+            proposal_after_identity,
+        )
+        self.assertEqual(
+            recovered["effective_capabilities"][
+                "cap-correction-transaction"
+            ]["status"],
+            "consumed",
+        )
+        fresh_review_capabilities = [
+            capability
+            for capability in recovered["effective_capabilities"].values()
+            if capability["capability_kind"] == "proposal-review"
+            and capability["status"] == "active"
+        ]
+        self.assertEqual(len(fresh_review_capabilities), 1)
+        self.assertEqual(
+            fresh_review_capabilities[0]["basis"]["proposal_identity"],
+            proposal_after_identity,
+        )
+        self.assertEqual(proposal.read_bytes(), proposal_after)
+        self.assertEqual(review_record.read_bytes(), review_before)
+        self.assertEqual(
+            result["transitions_attempted"][-1]["transition_id"],
+            "transition-correction-recovery",
+        )
+
     def test_proposal_correction_atomic_replace_failure_leaves_no_mutation(
         self,
     ) -> None:

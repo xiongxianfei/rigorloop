@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -58,9 +58,9 @@ Review closeout: code-review-m6-r3
 Review closeout: code-review-m6-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`, `code-review-m6-r2`, `code-review-m6-r3`, `code-review-m6-r4`
-- Findings resolved: 101
-- Unresolved findings: 1
-- Current result: Code-review M6 R4 confirmed `BRF-M6-CR8` resolved, classified `BRF-M6-CR9` as a failed remediation, and opened residual `BRF-M6-CR10`. Public proposal-correction recovery depends on invocation-local state and cannot reconcile valid completion evidence after process loss. M6 is resolution-needed.
+- Findings resolved: 102
+- Unresolved findings: 0
+- Current result: `BRF-M6-CR10` is resolved with restart-safe proposal-correction settlement derived from durable capability authority, the current proposal bytes, and verified completion evidence. M6 is review-requested for code-review R5.
 
 ## Resolution Overview
 
@@ -75,7 +75,7 @@ Review closeout: code-review-m6-r4
 | BRF-M6-CR7 | accepted | resolved | R3 classified the attempted composed-proof remediation as failed and records the remaining defects under residual `BRF-M6-CR8` and `BRF-M6-CR9`. |
 | BRF-M6-CR8 | accepted | resolved | Missing verification authority now atomically pauses the durable run with the required reason and can reactivate only after repository-backed authorization validates. |
 | BRF-M6-CR9 | accepted | resolved | T28/T30 now preserves and reconciles the original prepared receipt, uses public correction target/parent authorization, and observes status/state inside the deterministic controls. |
-| BRF-M6-CR10 | needs-decision | open | Public proposal-correction recovery cannot reconstruct post-completion validation after process loss because it depends on invocation-local changed-path and expected-identity variables. |
+| BRF-M6-CR10 | accepted | resolved | Proposal-correction settlement now reconstructs the exact compiled mutation from durable authority and current bytes and recovers the original receipt without replay. |
 | BRF-PR1 | accepted | resolved | Defined pre-plan derivation and the plan-creation ownership handoff; R2 confirmed resolution. |
 | BRF-PR2 | accepted | resolved | Bound grants to concrete reviewed identities, scope, and invalidation rules; R2 confirmed resolution. |
 | BRF-PR3 | accepted | resolved | Added write-ahead transition receipts and deterministic recovery; R2 confirmed resolution. |
@@ -342,19 +342,20 @@ It classified `BRF-M6-CR9` as a failed remediation and recorded the residual fin
 #### BRF-M6-CR10 - Proposal-correction recovery depends on transient state from the lost invocation
 
 Finding ID: BRF-M6-CR10
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept or reject the recorded restart-safe correction-recovery remediation before implementation changes begin.
-Stop state: M6 remains resolution-needed; do not begin correction or downstream final closeout until the owner dispositions this finding.
+Decision needed: None; the user accepted the recorded safe resolution.
+Chosen action: Reconstruct the exact proposal correction and affected path from durable capability authority plus current repository bytes, then prove fresh-process reconciliation of the original receipt without mutation replay.
+Stop state: resolved; M6 returned to review-requested for code-review R5.
 Rationale: Generic same-receipt recovery works for the simple `spec` fixture, but proposal correction reconstructs its coordinator with empty invocation-local changed-path and expected-identity values. Valid completion evidence therefore pauses instead of finalizing the original transaction.
 Required outcome: Reconstruct all proposal-correction completion validation and fresh-rereview capability activation from durable capability/receipt state, current repository evidence, and verified completion proof without repeating the proposal mutation.
 Safe resolution path: Refactor proposal-correction post-completion derivation into a restart-safe operation; deterministically recompute or pre-persist the compiled result and exact affected path projection; add a public crash-after-write regression that recreates the coordinator, finalizes the same receipt/capability without reinvocation, and atomically activates one fresh proposal-review capability; audit other post-completion hooks for transient dependencies.
-needs-decision rationale: The correction is within approved scope and has a deterministic safe path, but this isolated review does not authorize implementation.
+needs-decision rationale: none
 Validation target: `BRF-R068` through `BRF-R077`, T28, T30, public proposal-correction recovery, and the deterministic fixture contract.
-Validation evidence: A direct temporary public run interrupted immediately after the atomic proposal replacement. The same receipt remained `prepared` and capability `active`; fresh public resume with valid evidence for the exact written proposal failed with `proposal correction paused: mutation escaped effective capability`, leaving the run paused and the original transaction unresolved.
+Validation evidence: The proof-first public crash-after-write regression failed with `proposal correction paused: mutation escaped effective capability` before production changes. It now recreates the coordinator, supplies independently serialized evidence, traps mutation replay, finalizes the original receipt, consumes the original correction capability, preserves historical review bytes, and atomically activates exactly one fresh proposal-review capability. All 72 engine, 60 state/recovery, 68 automation-validator, and 16 policy tests pass; Python compilation passes; selected CI passes 12 checks; broad smoke passes 12 checks in 279 seconds.
 auto_fix_class: none
 
 ### code-review-m5-r8

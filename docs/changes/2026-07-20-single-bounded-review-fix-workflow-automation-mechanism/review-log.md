@@ -16,7 +16,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m6-r4.md
 Resolution: review-resolution.md#code-review-m6-r4
 Material findings: BRF-M6-CR10
-Open findings: BRF-M6-CR10
+Open findings: None
 
 ### Review entry
 Review ID: code-review-m6-r3
