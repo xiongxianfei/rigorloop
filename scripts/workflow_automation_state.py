@@ -2175,6 +2175,31 @@ class WorkflowAutomationStateStore:
         result = self.replace_automation(replacement, expected_document_identity=expected)
         return StateMutationResult("cancelled", True, result.document_identity)
 
+    def pause_run(
+        self,
+        *,
+        reason: str,
+        expected_document_identity: str,
+    ) -> StateMutationResult:
+        """Persist one run-level pause without changing authority or receipts."""
+
+        if not isinstance(reason, str) or not reason:
+            raise StateContractError("run pause requires a reason")
+        snapshot = self.read()
+        if snapshot.automation is None:
+            raise StateContractError("unified automation state does not exist")
+        run = snapshot.automation.get("run")
+        if not isinstance(run, dict) or run.get("status") != "active":
+            raise StateContractError("only an active automation run may pause")
+        replacement = copy.deepcopy(snapshot.automation)
+        replacement["run"]["status"] = "paused"
+        replacement["run"]["pause_reason"] = reason
+        result = self.replace_automation(
+            replacement,
+            expected_document_identity=expected_document_identity,
+        )
+        return StateMutationResult("paused", True, result.document_identity)
+
     def status(self) -> dict[str, Any]:
         snapshot = self.read()
         if snapshot.automation is not None:

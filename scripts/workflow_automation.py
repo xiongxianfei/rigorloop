@@ -60,6 +60,7 @@ from workflow_automation_policy import (
 )
 from workflow_automation_state import (
     _canonical_review_occurrence,
+    evaluate_receipt_recovery,
     StateContractError,
     VerifiedCompletion,
     WorkflowAutomationStateStore,
@@ -3553,6 +3554,28 @@ def resume_public_run(
         and policy.capability_kind.value
         in parent.get("allowed_capability_kinds", [])
     ] if isinstance(parents, Mapping) else []
+    if (
+        len(candidates) == 0
+        and policy.required_authorization_class
+        == AuthorizationClass.VERIFICATION
+    ):
+        try:
+            store.pause_run(
+                reason="verification-authorization-required",
+                expected_document_identity=snapshot.document_identity,
+            )
+        except StateContractError as error:
+            raise AutomationContractError(str(error)) from error
+        result = _public_command_result(
+            store.status(),
+            stage_outcome="paused",
+        )
+        result["stop_reason"] = "verification-authorization-required"
+        result["human_decisions_required"] = [
+            "verification-authorization-required"
+        ]
+        result["next_action"] = "explicit-user-decision"
+        return result
     if len(candidates) != 1:
         raise AutomationContractError(
             "public resume requires exactly one matching active parent authorization"
@@ -4325,6 +4348,7 @@ def coordinate_one_stage(
     pre_plan: PrePlanEvidence | None = None,
     active_plan: ActivePlanContext | None = None,
     previously_observed: Mapping[str, str] | None = None,
+    recovery_completion_evidence: Mapping[str, Any] | None = None,
     parent_authorization: Mapping[str, Any] | None = None,
     post_completion_capabilities: Callable[
         [VerifiedCompletion, Mapping[str, Any], Mapping[str, Any]],
@@ -4373,17 +4397,6 @@ def coordinate_one_stage(
     bounded_path_roots = tuple(affected_path_roots)
     bounded_mutation_categories = tuple(mutation_categories)
 
-    canonical = resolve_canonical_position(
-        pre_plan=pre_plan,
-        active_plan=active_plan,
-        previously_observed=previously_observed,
-    )
-    _bind_canonical_evidence(
-        canonical,
-        basis=basis,
-        input_identities=input_identities,
-    )
-
     snapshot = store.read()
     if snapshot.automation is None:
         raise AutomationContractError("unified automation state does not exist")
@@ -4392,8 +4405,39 @@ def coordinate_one_stage(
         for receipt in snapshot.automation.get("transition_receipts", {}).values()
         if isinstance(receipt, dict) and receipt.get("status") == "prepared"
     ]
-    if prepared:
-        raise AutomationContractError("transition already in flight")
+    if len(prepared) > 1:
+        raise AutomationContractError("multiple transitions are already in flight")
+    prepared_receipt = prepared[0] if prepared else None
+    if (
+        prepared_receipt is None
+        and recovery_completion_evidence is not None
+    ):
+        raise AutomationContractError(
+            "recovery completion evidence requires a prepared transition"
+        )
+    if (
+        prepared_receipt is not None
+        and (
+            prepared_receipt.get("transition_id") != transition_id
+            or prepared_receipt.get("effective_capability_id")
+            != capability_id
+        )
+    ):
+        raise AutomationContractError(
+            "transition already in flight and does not match requested recovery"
+        )
+    canonical = None
+    if prepared_receipt is None or recovery_completion_evidence is None:
+        canonical = resolve_canonical_position(
+            pre_plan=pre_plan,
+            active_plan=active_plan,
+            previously_observed=previously_observed,
+        )
+        _bind_canonical_evidence(
+            canonical,
+            basis=basis,
+            input_identities=input_identities,
+        )
     parents = snapshot.automation.get("parent_authorizations")
     parent = parents.get(parent_authorization_id) if isinstance(parents, dict) else None
     if not isinstance(parent, dict):
@@ -4452,7 +4496,11 @@ def coordinate_one_stage(
         "policy_version": capability["policy_version"],
         "run_id": snapshot.automation["run"]["run_id"],
         "change_id": capability["change_id"],
-        "from_position": canonical.position,
+        "from_position": (
+            prepared_receipt["from_position"]
+            if prepared_receipt is not None
+            else canonical.position
+        ),
         "target": copy.deepcopy(snapshot.automation["run"]["target"]),
         "effective_capability_id": capability_id,
         "retry_policy": policy.retry_policy.value,
@@ -4464,26 +4512,100 @@ def coordinate_one_stage(
     }
     receipt["transition_key"] = compute_transition_key(receipt)
 
-    replacement = copy.deepcopy(snapshot.automation)
-    replacement["effective_capabilities"][capability_id] = capability
-    replacement["transition_receipts"][transition_id] = copy.deepcopy(receipt)
-    preflight_errors = validate_workflow_automation(
-        replacement, top_level_change_id=capability["change_id"]
-    )
-    if preflight_errors:
-        raise AutomationContractError(
-            "one-stage coordination preflight failed: " + "; ".join(preflight_errors)
+    recovering_prepared = prepared_receipt is not None
+    if recovering_prepared:
+        assert prepared_receipt is not None
+        if prepared_receipt.get("transition_key") != receipt["transition_key"]:
+            raise AutomationContractError(
+                "prepared transition inputs do not match the requested recovery"
+            )
+        decision = evaluate_receipt_recovery(
+            snapshot.automation,
+            transition_id,
+            completion_evidence=(
+                copy.deepcopy(dict(recovery_completion_evidence))
+                if recovery_completion_evidence is not None
+                else None
+            ),
+            repository_root=repository_root,
         )
+        if decision.action == "reconcile-completed":
+            proof = decision.verified_completion
+            if proof is None:
+                raise AutomationContractError(
+                    "prepared transition recovery proof is missing"
+                )
+            activated_capabilities: tuple[dict[str, Any], ...] = ()
+            if post_completion_capabilities is not None:
+                activated_capabilities = tuple(
+                    copy.deepcopy(dict(item))
+                    for item in post_completion_capabilities(
+                        proof,
+                        snapshot.automation,
+                        capability,
+                    )
+                )
+            store.finalize_transition(
+                transition_id,
+                status="completed",
+                outputs=[copy.deepcopy(item) for item in proof.outputs],
+                canonical_sync_status="synchronized",
+                canonical_sync_evidence=copy.deepcopy(
+                    proof.canonical_evidence
+                ),
+                canonical_sync_observed_identities=copy.deepcopy(
+                    proof.observed_identities
+                ),
+                activated_capabilities=activated_capabilities,
+                expected_document_identity=snapshot.document_identity,
+            )
+            return CoordinationResult(
+                "completed",
+                transition_id,
+                capability_id,
+                tuple(copy.deepcopy(item) for item in proof.outputs),
+                proof,
+            )
+        if decision.action == "fail-closed":
+            raise AutomationContractError(
+                "prepared transition recovery failed closed: "
+                + decision.reason
+            )
+        if decision.action != "retry" or not decision.invoke_stage:
+            try:
+                store.pause_run(
+                    reason=decision.reason,
+                    expected_document_identity=snapshot.document_identity,
+                )
+            except StateContractError as error:
+                raise AutomationContractError(str(error)) from error
+            raise AutomationContractError(
+                "prepared transition recovery paused: " + decision.reason
+            )
+        receipt = copy.deepcopy(prepared_receipt)
 
-    capability_only = copy.deepcopy(snapshot.automation)
-    capability_only["effective_capabilities"][capability_id] = capability
-    store.replace_automation(
-        capability_only, expected_document_identity=snapshot.document_identity
-    )
-    prepared_snapshot = store.read()
-    store.prepare_transition(
-        receipt, expected_document_identity=prepared_snapshot.document_identity
-    )
+    if not recovering_prepared:
+        replacement = copy.deepcopy(snapshot.automation)
+        replacement["effective_capabilities"][capability_id] = capability
+        replacement["transition_receipts"][transition_id] = copy.deepcopy(receipt)
+        preflight_errors = validate_workflow_automation(
+            replacement, top_level_change_id=capability["change_id"]
+        )
+        if preflight_errors:
+            raise AutomationContractError(
+                "one-stage coordination preflight failed: "
+                + "; ".join(preflight_errors)
+            )
+
+        capability_only = copy.deepcopy(snapshot.automation)
+        capability_only["effective_capabilities"][capability_id] = capability
+        store.replace_automation(
+            capability_only, expected_document_identity=snapshot.document_identity
+        )
+        prepared_snapshot = store.read()
+        store.prepare_transition(
+            receipt, expected_document_identity=prepared_snapshot.document_identity
+        )
     try:
         stage_result = invoke_stage()
     except Exception:
@@ -4532,6 +4654,10 @@ def coordinate_one_stage(
         name: _serialize_evidence(evidence)
         for name, evidence in sync_result.evidence.items()
     }
+    if canonical is None:
+        raise AutomationContractError(
+            "retry requires current canonical workflow evidence"
+        )
     observed_identities = dict(canonical.observed_identities)
     observed_identities.update(
         {name: evidence.identity for name, evidence in sync_result.evidence.items()}
