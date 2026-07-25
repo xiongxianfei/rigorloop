@@ -95,7 +95,7 @@ Final verification did not reopen them because no behavior-bearing code or gener
 
 ## Validation Commands
 
-All commands ran from `/home/xiongxianfei/data/20260419-rigorloop`.
+All commands ran from the repository root.
 
 | Command | Result |
 | --- | --- |
