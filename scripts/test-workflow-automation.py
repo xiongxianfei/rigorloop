@@ -4508,8 +4508,10 @@ Planned validation rule: proposal-exact-append
             "completed",
         )
 
-    def test_public_proposal_correction_recovers_after_process_loss_without_replay(
+    def assert_public_proposal_correction_recovers_after_process_loss_without_replay(
         self,
+        *,
+        recovery_derived_at: str | None,
     ) -> None:
         class SimulatedProcessLoss(BaseException):
             pass
@@ -4616,6 +4618,10 @@ Planned validation rule: proposal-exact-append
         public_request["recovery_completion_evidence"] = (
             recovery_completion_evidence
         )
+        if recovery_derived_at is None:
+            public_request.pop("derived_at")
+        else:
+            public_request["derived_at"] = recovery_derived_at
 
         with patch(
             "workflow_automation._atomic_replace_regular_file",
@@ -4662,11 +4668,29 @@ Planned validation rule: proposal-exact-append
             fresh_review_capabilities[0]["basis"]["proposal_identity"],
             proposal_after_identity,
         )
+        self.assertEqual(
+            fresh_review_capabilities[0]["derived_at"],
+            "2026-07-22T00:01:00Z",
+        )
         self.assertEqual(proposal.read_bytes(), proposal_after)
         self.assertEqual(review_record.read_bytes(), review_before)
         self.assertEqual(
             result["transitions_attempted"][-1]["transition_id"],
             "transition-correction-recovery",
+        )
+
+    def test_public_proposal_correction_recovery_ignores_altered_resume_timestamp(
+        self,
+    ) -> None:
+        self.assert_public_proposal_correction_recovers_after_process_loss_without_replay(
+            recovery_derived_at="2099-01-01T00:00:00Z",
+        )
+
+    def test_public_proposal_correction_recovery_does_not_require_resume_timestamp(
+        self,
+    ) -> None:
+        self.assert_public_proposal_correction_recovers_after_process_loss_without_replay(
+            recovery_derived_at=None,
         )
 
     def test_proposal_correction_atomic_replace_failure_leaves_no_mutation(
