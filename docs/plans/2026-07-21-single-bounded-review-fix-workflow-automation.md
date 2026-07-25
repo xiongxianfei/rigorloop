@@ -102,14 +102,14 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 ## Current Handoff Summary
 
 - Current milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
 - Latest review evidence: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/code-review-m6-r3.md`
 - Review status: changes-requested; stage=code-review; round=r3
-- Remaining in-scope implementation milestones: M6 resolution and rereview
-- Next stage: review-resolution M6
+- Remaining in-scope implementation milestones: M6 rereview
+- Next stage: code-review M6
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BRF-M6-CR8,BRF-M6-CR9
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -386,7 +386,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ### M6. Atomic Public Cutover, Legacy Adapters, and Integration Proof
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Atomically activate unified public commands, map compatibility aliases, prohibit every legacy writer, implement cross-spec contradiction checks, regenerate derived guidance, and prove the complete mechanism.
 - Requirements: `BRF-R002`-`BRF-R005`, `BRF-R087`-`BRF-R102`, including `BRF-R098a`-`BRF-R098i`
 - Files/components likely touched:
@@ -491,6 +491,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Progress
 
+- 2026-07-25: Resolved `BRF-M6-CR8` and `BRF-M6-CR9` proof-first. Missing verification authority now persists the exact required pause through the sole state adapter and later repository-backed authorization reactivates it. Public prepared-receipt recovery retains the original transition/capability, verifies stage-owned evidence, finalizes without reinvocation, and does not rebind to advanced canonical position. T28/T30 uses public correction target/parent authorization and keeps status/state observation inside sanitized environment and external-action traps. The focused suites, 12 selected CI checks, and final-source 12-check broad smoke pass. M6 is review-requested for R4.
 - 2026-07-25: Code-review M6 R3 confirmed `BRF-M6-CR5` and `BRF-M6-CR6` resolved, classified `BRF-M6-CR7` as a failed remediation, and opened residual `BRF-M6-CR8` and `BRF-M6-CR9`. Missing verification authority leaves the canonical run active while the test fabricates a pause, and T28/T30 still substitutes failed-receipt retry plus out-of-bound status observation for prepared-receipt recovery and controlled composed proof. M6 is resolution-needed. This direct review is isolated and did not start correction.
 - 2026-07-24: Resolved `BRF-M6-CR5` through `BRF-M6-CR7`. Public resume now enforces and safely advances its durable canonical-identity baseline; verification authorization is derived only from independently validated repository evidence; and T28/T30 repeats and reverses seven complete public scenarios with fixed inputs, sanitized environment, teardown, and zero external-action proof. The focused suites, temporary adapter validation, 12 selected CI checks, and 11-check broad smoke pass. M6 is review-requested for R3.
 - 2026-07-24: M6 R2 review-resolution implementation started for `BRF-M6-CR5` through `BRF-M6-CR7`. The proof-first correction is limited to durable observed-identity enforcement on public resume, repository-backed verification authorization, and the complete deterministic T28/T30 public scenario registry.
@@ -667,6 +668,7 @@ Until the final public-cutover milestone, the unified engine is reachable only t
 
 ## Validation notes
 
+- M6 R3 resolution failed proof-first because the public boundary raised without durable pause and the public coordinator rejected the original prepared receipt. The corrected slice passes 71 engine, 60 state/recovery, 68 automation-validator, and 16 policy tests plus Python compilation. The exact final-source plan-selected CI command passes 12 checks, and required repository broad smoke passes all 12 checks in 285 seconds. Direct proof covers durable pause/reactivation, unchanged transition/capability identity, evidence-first reconciliation without stage reinvocation, advanced canonical evidence after interruption, public correction target/parent authorization, controlled status/state observation, teardown, and zero external calls. The approved spec, test spec, architecture, ADR, public skills, generated adapters, external-action boundary, and migration contract are unaffected because this correction implements their existing M6 requirements inside the selected engine, state adapter, and proof fixture.
 - Code-review M6 R3 independently ran the targeted T30 composition test and all 70 engine tests; both passed. A direct temporary public verify-target probe nevertheless raised for missing authority while leaving the durable run `active`. Source inspection showed the fixture synthesizes the missing pause, finalizes its interruption receipt as `failed` before starting a new transition, directly injects correction transaction state, and observes status after leaving the sanitized environment and external-action traps. `BRF-M6-CR8` and `BRF-M6-CR9` are open; review structure, change metadata, lifecycle state sync, guide-system, and diff checks pass after recording, with only the pre-existing merge-language warning.
 - Code-review M6 R2 independently reran 67 engine, 68 automation-validator, 60 state/recovery, and 16 policy tests. All passed. Direct requirement-fidelity probes nevertheless completed a public spec transition after every run-observed proposal/review identity changed and confirmed that verification authorization accepts six arbitrary hashes without repository evidence. Test inspection confirmed the repeated/reversed T30 registry contains only authoring/status and legacy cancellation, not interruption or final success.
 - M6 R1 resolution failed proof-first for the missing independent selector, two-write legacy cancellation, terminal legacy error, absent public evidence, and missing public resume/authorization surfaces. The corrected slice passes 67 engine, 68 automation-validator, 60 state/recovery, and 16 policy tests plus Python compilation and diff checks. Review structure and closeout validate 61 reviews and all 96 findings resolved; change metadata and explicit lifecycle synchronization pass with the existing merge-language warning. Selected CI passes all 12 checks, and the final repository broad-smoke run passes all 12 checks in 241 seconds. No public skill, generated adapter, external-action, credential, network, PR, or publication surface changed in this correction.

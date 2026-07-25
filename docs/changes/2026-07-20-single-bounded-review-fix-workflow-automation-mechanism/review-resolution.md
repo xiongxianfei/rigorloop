@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
@@ -54,11 +54,12 @@ Review closeout: code-review-m5-r7
 Review closeout: code-review-m5-r8
 Review closeout: code-review-m6-r1
 Review closeout: code-review-m6-r2
+Review closeout: code-review-m6-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `architecture-review-r3`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m1-r5`, `code-review-m1-r6`, `code-review-m1-r7`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m3-r8`, `code-review-m3-r9`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`, `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`, `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`, `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-m5-r3`, `code-review-m5-r4`, `code-review-m5-r5`, `code-review-m5-r6`, `code-review-m5-r7`, `code-review-m5-r8`, `code-review-m6-r1`, `code-review-m6-r2`, `code-review-m6-r3`
-- Findings resolved: 99
-- Unresolved findings: 2
-- Current result: Code-review M6 R3 confirmed `BRF-M6-CR5` and `BRF-M6-CR6` resolved, classified `BRF-M6-CR7` as a failed remediation, and opened residual `BRF-M6-CR8` and `BRF-M6-CR9`. M6 is resolution-needed.
+- Findings resolved: 101
+- Unresolved findings: 0
+- Current result: `BRF-M6-CR8` and `BRF-M6-CR9` are resolved with a durable verification-authority pause, same-receipt evidence-first recovery, public correction authorization setup, and controlled status/state observation. M6 is review-requested for code-review R4.
 
 ## Resolution Overview
 
@@ -71,8 +72,8 @@ Review closeout: code-review-m6-r2
 | BRF-M6-CR5 | accepted | resolved | Public resume now selects the prior identity baseline only from durable state, pauses before stage invocation on drift, and advances the baseline only from verified canonical synchronization. |
 | BRF-M6-CR6 | accepted | resolved | Public verification authorization now requires repository paths and independently validated closeout, review, promotion, explanation, branch, command, and final-code evidence. |
 | BRF-M6-CR7 | accepted | resolved | R3 classified the attempted composed-proof remediation as failed and records the remaining defects under residual `BRF-M6-CR8` and `BRF-M6-CR9`. |
-| BRF-M6-CR8 | needs-decision | open | Public resume rejects missing verification authority without durably pausing the run, and the deterministic test synthesizes a paused result. |
-| BRF-M6-CR9 | needs-decision | open | T28/T30 substitutes failed-receipt/new-transition retry and out-of-bound status observation for prepared-receipt recovery and controlled composed proof. |
+| BRF-M6-CR8 | accepted | resolved | Missing verification authority now atomically pauses the durable run with the required reason and can reactivate only after repository-backed authorization validates. |
+| BRF-M6-CR9 | accepted | resolved | T28/T30 now preserves and reconciles the original prepared receipt, uses public correction target/parent authorization, and observes status/state inside the deterministic controls. |
 | BRF-PR1 | accepted | resolved | Defined pre-plan derivation and the plan-creation ownership handoff; R2 confirmed resolution. |
 | BRF-PR2 | accepted | resolved | Bound grants to concrete reviewed identities, scope, and invalidation rules; R2 confirmed resolution. |
 | BRF-PR3 | accepted | resolved | Added write-ahead transition receipts and deterministic recovery; R2 confirmed resolution. |
@@ -300,35 +301,35 @@ It classified `BRF-M6-CR7` as a failed remediation and recorded the residual fin
 #### BRF-M6-CR8 - Missing verification authority does not durably pause the public run
 
 Finding ID: BRF-M6-CR8
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the contract-preserving correction and implement the durable verification-boundary pause.
-Chosen action: Pending review-resolution.
+Decision needed: None; the approved contract defines the durable pause.
+Chosen action: Add one state-adapter pause operation and route zero matching verification authority through it before returning a public paused result.
 Rationale: Public resume raises before its pause path, while the deterministic fixture fabricates a paused result that is absent from canonical state.
 Required outcome: Persist `run.status: paused` and `pause_reason: verification-authorization-required`, report available basis, and invoke no verification work.
 Safe resolution path: Add one state-adapter pause at the zero-match verification boundary, retain fail-closed duplicate/malformed handling, and prove stored state, result output, zero invocation, and later authorization reactivation.
 Validation target: `BRF-R043e`, T22, T28, and T30.
-Validation evidence: R3 direct probe observed the public error and then read the stored run back as `active`; all 70 engine tests still passed.
+Validation evidence: The proof-first public regression initially raised before persisting a pause. It now proves `paused` plus `verification-authorization-required`, reports the tracked available basis, creates no capability or receipt, invokes no stage, and reactivates only after repository-backed verification authorization. All 71 engine tests pass.
 auto_fix_class: none
 
 #### BRF-M6-CR9 - T28/T30 does not prove prepared-receipt recovery or controlled status observation
 
 Finding ID: BRF-M6-CR9
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Decision owner: implementation author
-Decision needed: Accept the contract-preserving proof correction and replace the substituted scenarios with direct public evidence.
-Chosen action: Pending review-resolution.
+Decision needed: None; T28, T30, and the receipt-recovery contract define the required proof.
+Chosen action: Preserve `prepared` across a simulated process interruption, evaluate stage-owned completion evidence against the original receipt/capability, finalize that receipt without reinvocation, and keep public status/state observation inside the deterministic controls.
 Rationale: The named interruption is finalized as failed and retried under a new transition, correction begins from direct store replacement, and status/state observation occurs after the sanitized environment and external-action traps exit.
 Required outcome: Prove original prepared-receipt recovery, supported public correction setup, and status/canonical-state observation inside the controlled T30 boundary.
 Safe resolution path: Add a post-prepare crash seam, resume the original receipt/capability through the public path, construct correction authority from supported public inputs, and keep all status/state observation under the deterministic environment and fail-on-call traps.
 Validation target: `BRF-R068` through `BRF-R077`, T28, T30, and the deterministic fixture contract.
-Validation evidence: R3 source inspection and the passing targeted T30 test show the current assertions compare deterministic substitutions rather than the required recovery and isolation behavior.
+Validation evidence: The proof-first T30 revision initially failed because public resume rejected the prepared receipt. The final scenario leaves `transition-interrupted` prepared, supplies independently serialized stage-owned evidence, resumes the same transition/capability, asserts zero reinvocation and no replacement receipt, and observes status/state before leaving the sanitized environment and external-action traps. Public target and parent authorization now set up the correction scenario; only documented stage-owned review/classification capability evidence is fixture-projected. The targeted T30 test, all 71 engine tests, 60 state tests, 68 validator tests, 16 policy tests, 12 selected CI checks, and final-source 12-check broad smoke pass.
 auto_fix_class: none
 
 ### code-review-m5-r8
