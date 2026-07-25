@@ -12,13 +12,14 @@ for capable agents and supports progressive disclosure through packaged
 
 The current published surface nevertheless remains expensive to load across a
 long lifecycle.
-The 24 canonical `SKILL.md` files contain about 45,500 words and 6,100 lines.
+The 24 canonical `SKILL.md` files contain 45,502 words and 6,136 lines on the
+merged baseline.
 The largest individual bodies are approximately:
 
 | Skill | Words | Lines |
 | --- | ---: | ---: |
-| `code-review` | 4,068 | 486 |
-| `workflow` | 4,017 | 474 |
+| `code-review` | 4,070 | 486 |
+| `workflow` | 3,980 | 470 |
 | `implement` | 3,121 | 377 |
 
 Nineteen skills repeat the same evidence-collection block.
@@ -56,6 +57,18 @@ that every behavior-significant capability remains available at the point of
 use?
 ```
 
+The merged single bounded review-fix automation change adds a second,
+closely related lesson.
+Its 104 material findings included 82 implementation code-review findings.
+The dominant preventable pattern was not weak strategic direction; it was
+translating examples into individual fixes without first enumerating the
+complete trust, state, transaction, recovery, and composed-command boundaries.
+
+That is a capability gap, not a context-layout defect.
+This proposal should ensure progressive disclosure does not preserve or amplify
+example-driven reasoning, but it should not silently add a new workflow proof
+contract under the label of context reduction.
+
 ## Goals
 
 - Reduce common-path context loaded by published lifecycle skills.
@@ -64,6 +77,10 @@ use?
 - Give every behavior-significant instruction one clear owning context layer.
 - Prefer expressive resource and tool interfaces over repeated tutorials and
   examples.
+- Preserve the distinction between examples as discovery inputs and boundary
+  models as proof-coverage owners.
+- Record newly discovered capability gaps without treating current omissions as
+  the desired behavior-parity baseline.
 - Load detailed rubrics, variants, and edge-case matrices only when their
   trigger applies.
 - Measure scenario-specific loaded context rather than only `SKILL.md` size.
@@ -92,8 +109,9 @@ use?
 - Do not introduce build-time partials or a repository-wide shared-reference
   mechanism in the first slice.
 - Do not modify `workflow`, `implement`, or `verify` in the first pilot.
-- Do not overlap implementation with an active change that already modifies
-  `code-review` unless the later plan records a safe ownership boundary.
+- Do not introduce a required boundary-proof artifact or change lifecycle gate
+  semantics under this context-layout proposal.
+- Do not treat an example set as an exhaustive boundary model or proof oracle.
 
 ## Vision fit
 
@@ -116,6 +134,7 @@ resumability.
 | Apply the new context-engineering lesson to RigorLoop's published skills | in scope | Problem, Context, Recommended Direction |
 | Improve published skills through progressive disclosure | in scope | Goals, Layer Ownership Model |
 | Preserve existing skill capabilities | in scope | Capability Preservation Contract |
+| Address example-driven implementation by modeling boundaries | deferred follow-up | Merged Automation Evidence, Scope Budget, Next Artifacts |
 | Follow repository best practices rather than copying a vendor target | in scope | Non-goals, Testing and Verification Strategy |
 | Change every published skill immediately | rejected option | Non-goals, Options Considered |
 
@@ -128,9 +147,11 @@ resumability.
 | Scenario-specific loaded-context measurement | core to this proposal | Flat file size can reward ineffective deferral. |
 | `code-review` reference pilot | first-slice candidate | It is the largest deliberative skill and an already-recorded reference candidate. |
 | `code-review` assets and resource-map alignment | same-slice dependency | The pilot must remove body/asset duplication without changing output shape. |
+| Boundary-capability preservation cases | same-slice dependency | The refactor must not lose existing negative, stale, trust, recovery, or sibling-boundary reasoning. |
+| Boundary-first proof-modeling contract | separate proposal | It adds workflow behavior and artifact obligations rather than merely preserving context. |
 | Skill and adapter validation updates | same-slice dependency | Deferred resources must remain packaged, mapped, and current. |
 | Behavior-parity and transcript evaluation | same-slice dependency | Structural and token checks cannot prove capability preservation. |
-| `workflow` context reduction | separate proposal | It is an orchestration surface and may overlap the active automation initiative. |
+| `workflow` context reduction | separate proposal | Its orchestration and automation scenarios need a distinct model after the deliberative pilot. |
 | `implement` and `verify` reduction | deferable follow-up | Expand only after the deliberative pilot is proven. |
 | Shared cross-skill reference or build-time partial system | separate proposal | It changes package and source ownership beyond one skill. |
 | Model-specific prompt variants | out of scope | Published skills must remain portable. |
@@ -178,6 +199,48 @@ RigorLoop should adopt the model-neutral parts of this lesson.
 Its published packages serve Codex, Claude Code, opencode, and future adapters,
 so capability claims must be demonstrated on RigorLoop's own artifacts and
 evaluation corpus.
+
+### Merged automation evidence
+
+The merged [Single Bounded Review-Fix Finding Volume learn
+session](../learn/sessions/2026-07-25-single-bounded-review-fix-finding-volume.md)
+records:
+
+| Review family | Findings |
+| --- | ---: |
+| Proposal and spec review | 13 |
+| All pre-implementation review | 22 |
+| Implementation code review | 82 |
+| Total | 104 |
+
+The stage counts identify where findings were discovered, not exact causal
+attribution.
+They nevertheless show that independent review became the first exhaustive
+boundary audit for several implementation milestones.
+
+The recurring classes were:
+
+- caller-provided evidence accepted instead of deriving canonical truth;
+- shape checks without semantic or cross-record validation;
+- one reported negative example fixed while a sibling bypass remained;
+- helper proof without composed public-command proof;
+- success-path proof without interruption, rollback, or reconciliation;
+- one narrow fixture substituted for a closed vocabulary or transition matrix.
+
+The reusable transformation is:
+
+```text
+example
+-> boundary dimensions
+-> valid and invalid partitions or transitions
+-> trust, time, and interruption interactions
+-> direct proof obligations
+```
+
+This proposal uses those cases to evaluate preservation.
+A separate boundary-first proof-modeling proposal should decide whether the
+workflow requires a new boundary matrix, which artifact owns it, and how
+`spec-review`, `test-spec`, `implement`, and `code-review` consume it.
 
 ### Current context layers
 
@@ -311,6 +374,11 @@ The method should have five parts:
    improvement;
 5. stop the rollout if quality or capability evidence regresses.
 
+Before implementing the `code-review` pilot, settle the separately owned
+boundary-first proof-modeling direction.
+Otherwise the pilot could faithfully preserve a known example-driven gap and
+make that omission harder to correct later.
+
 ### Capability Preservation Contract
 
 For each changed skill, create a capability ledger covering:
@@ -320,6 +388,7 @@ For each changed skill, create a capability ledger covering:
 | Routing | positive triggers, near misses, competing skills |
 | Procedure | normal execution sequence and escalation points |
 | Judgment | rubrics, decision matrices, severity or applicability rules |
+| Boundary modeling | partitions, transitions, trust sources, interruption points, sibling-class coverage |
 | Authority and safety | permitted actions, destructive boundaries, trust sources |
 | Recording and output | required artifacts, fields, formats, durable evidence |
 | Validation | required checks, proof sources, failure interpretation |
@@ -336,12 +405,22 @@ preserved-script-or-tool
 removed-duplicate
 removed-obsolete
 behavior-change-requires-separate-approval
+observed-gap-separate-owner
 ```
 
 `removed-duplicate` should identify the remaining owner.
 `removed-obsolete` should cite the higher-priority artifact or current behavior
 that proves it is obsolete.
+`observed-gap-separate-owner` should identify the action-owning proposal or
+other tracked follow-up and must not be counted as preserved capability.
 An unclassified behavior-significant instruction should block rollout.
+
+Examples may reveal capabilities, but examples are not the capability ledger.
+For each example retained, moved, or removed, the ledger should identify the
+general rule, boundary class, output shape, or judgment behavior that the
+example illustrates.
+An example with no general owner is evidence of either unnecessary prose or an
+unresolved capability gap.
 
 ### Layer Ownership Model
 
@@ -376,6 +455,11 @@ Skill authors should distinguish:
 | Repeated output structure | asset |
 | Closed mechanical decision | script, schema, enum, or tool interface |
 
+The pilot should preserve boundary reasoning through rules and decision
+interfaces rather than through a growing catalog of incident-specific examples.
+Representative examples remain useful evaluation fixtures, but they should not
+define the coverage universe.
+
 ### `code-review` pilot boundary
 
 The first slice should modify only:
@@ -395,6 +479,8 @@ The pilot should preserve inline:
 - the compact independent-review procedure;
 - minimum evidence and actual-diff requirement;
 - formal review status and recording boundary;
+- existing boundary, negative-proof, trust-source, stale-evidence, recovery, and
+  composed-path review behavior;
 - authority, stop, claim, and handoff boundaries;
 - resource load conditions;
 - compact result contract.
@@ -492,6 +578,7 @@ shared-resource owner, context-loading runtime, or package boundary.
 | Proof area | Expected evidence |
 | --- | --- |
 | Capability ledger completeness | Every behavior-significant baseline item has exactly one disposition and destination. |
+| Example-to-capability mapping | Every retained or moved example identifies its general rule, boundary class, or separately owned gap. |
 | Resource integrity | Every mapped reference exists and survives canonical-to-installed parity. |
 | Load contract | Every reference has a specific trigger and intended scenarios. |
 | Duplicate ownership | Closed enums, full templates, and copied normative blocks do not acquire a second pilot owner. |
@@ -513,6 +600,16 @@ Use representative historical review artifacts and fresh fixtures covering:
 - missing or stale governing evidence;
 - automated review routing;
 - generated or governance Markdown.
+
+The corpus should include adjacent variants that were not named by the original
+example:
+
+- unknown closed-vocabulary values;
+- illegal neighboring transitions;
+- stale, substituted, and caller-controlled identities;
+- partial-write and resume points;
+- helper success with composed-path failure;
+- sibling inputs that exercise the same bypass class.
 
 For every scenario, compare:
 
@@ -575,13 +672,15 @@ shuffling.
 3. Review the amended spec.
 4. Assess whether existing package architecture is sufficient.
 5. Create and review an execution plan and matching test spec.
-6. Capture the current `code-review` capability ledger, scenario corpus, and
+6. Settle or explicitly sequence the separate boundary-first proof-modeling
+   proposal so the pilot baseline does not canonize the known gap.
+7. Capture the current `code-review` capability ledger, scenario corpus, and
    context baseline before editing the skill.
-7. Perform the single-skill reference pilot.
-8. Run structural, resource-integrity, adapter, behavior-parity, transcript,
+8. Perform the single-skill reference pilot.
+9. Run structural, resource-integrity, adapter, behavior-parity, transcript,
    and scenario-context proof.
-9. Stop or revise the pilot if parity or improvement gates fail.
-10. After verified closeout, decide through a separate proposal or explicit
+10. Stop or revise the pilot if parity or improvement gates fail.
+11. After verified closeout, decide through a separate proposal or explicit
     follow-on whether another skill family should adopt the pattern.
 
 ### Rollback
@@ -607,7 +706,7 @@ shuffling.
 | Review performance becomes less thorough. | Include material-finding recall, negative proof, stale evidence, and final handoff in the evaluation corpus. |
 | References are missing from installed packages. | Reuse existing path, raw-byte parity, and clean-install checks. |
 | A new semantic validator becomes brittle. | Keep static checks structural and use bounded transcript or human review for qualitative behavior. |
-| The pilot overlaps active `code-review` work. | Start implementation only after the overlapping change settles or records a safe ownership boundary. |
+| Behavior parity canonizes the known example-driven gap. | Settle the boundary-first direction before implementation and classify discovered gaps separately from preserved capability. |
 | Shared duplication remains after one pilot. | Record it as follow-on evidence; do not introduce shared-resource architecture implicitly. |
 
 ## Open Questions
@@ -621,7 +720,9 @@ The spec should settle:
 3. which candidate `code-review` sections are truly conditional;
 4. the deterministic boundary between duplicate-owner lint and qualitative
    review;
-5. the available cross-model or cross-adapter transcript matrix for the pilot.
+5. the available cross-model or cross-adapter transcript matrix for the pilot;
+6. how the capability ledger represents discovered gaps without treating them
+   as preserved behavior.
 
 ## Decision Log
 
@@ -634,11 +735,16 @@ The spec should settle:
 | 2026-07-25 | Pilot `code-review` only. | It is the largest deliberative skill, already uses assets, and was identified by prior work as a reference candidate. | Rewrite all skills; pilot `workflow`; reopen `plan`. |
 | 2026-07-25 | Use a RigorLoop-specific improvement gate. | Anthropic's 80-percent result is not portable evidence for all models or skills. | Adopt 80 percent as a universal target. |
 | 2026-07-25 | Defer shared-resource architecture. | A one-skill pilot can use existing package boundaries. | Introduce build-time partials or global shared references now. |
+| 2026-07-25 | Incorporate merged automation review evidence. | The 104-finding lifecycle provides direct evidence that examples and narrow fixtures can substitute for complete boundary models. | Treat context size as the only published-skill quality problem. |
+| 2026-07-25 | Keep boundary-first proof modeling separately owned. | Adding a required proof artifact or lifecycle gate is a behavior change, not a capability-preserving refactor. | Silently add boundary-matrix requirements to this proposal. |
+| 2026-07-25 | Sequence boundary settlement before the `code-review` pilot. | Behavior parity should not canonize a known missing capability. | Optimize the current baseline first and repair boundary behavior later. |
 
 ## Next Artifacts
 
 ```text
 proposal-review
+separate proposal: boundary-first proof modeling for published lifecycle skills
+proposal-review: boundary-first proof modeling
 spec amendment: specs/skill-contract.md
 spec-review
 architecture assessment
@@ -663,3 +769,5 @@ Ready for `proposal-review`.
 
 The proposal does not claim acceptance, spec readiness, implementation
 readiness, behavior parity, or context improvement.
+Spec authoring and pilot implementation should wait until the separately owned
+boundary-first direction is accepted or explicitly sequenced.
