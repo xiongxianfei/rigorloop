@@ -10,7 +10,7 @@ flowchart LR
   prepared_receipt["Prepared publication receipt<br/>[Fsynced recovery evidence]"]:::container
   current_pointer["Current run pointer<br/>[Atomic file replacement]"]:::container
   isolated_workspace["Isolated scenario workspace<br/>[Ephemeral filesystem]"]:::container
-  child_runtime["Child agent runtime<br/>[Fresh config + identified executable/model]"]:::external
+  child_runtime["Codex app-server<br/>[Fresh home + runtime-owned thread metadata]"]:::external
   model_control_plane["Model service control plane<br/>[Runtime-only transport]"]:::external
   credential_channel["Opaque credential channel<br/>[Execution-environment boundary: private runtime home]"]:::external
   release["Release notes<br/>[Activation identity]"]:::container
@@ -21,7 +21,7 @@ flowchart LR
     evaluator["Capability evaluator<br/>[Pure aggregate]"]:::component
     harness["Standalone behavior harness<br/>[One workflow invocation]"]:::component
     assembler["Package + workspace assembler<br/>[Manifest-bound inputs]"]:::component
-    runtime_adapter["Child-runtime adapter<br/>[Parent-observed sandbox attestation]"]:::component
+    runtime_adapter["Child-runtime adapter<br/>[Permission profile + app-server + parent probes]"]:::component
     publisher["Immutable run publisher<br/>[Run → receipt → atomic pointer]"]:::component
     validator["Boundary validator + report writer<br/>[Structure + serialization]"]:::component
     selector["Validation selector<br/>[Six check IDs]"]:::component
@@ -44,10 +44,10 @@ flowchart LR
   harness --> runtime_adapter
   runtime_adapter -->|provisions runtime-only auth| credential_channel
   credential_channel -->|authenticates runtime outside tool sandbox| child_runtime
-  runtime_adapter -->|one workflow invocation| child_runtime
+  runtime_adapter -->|thread/start + one workflow turn over stdio| child_runtime
   child_runtime -->|model execution only| model_control_plane
   child_runtime -->|events| harness
-  runtime_adapter -->|parent-observed transient sandbox audit| harness
+  runtime_adapter -->|schema + effective config/inventories + managed-profile probes| harness
   isolated_workspace -->|workspace-only child tools| child_runtime
   harness -->|validated event bundle| publisher
   publisher -->|1. install validated run| immutable_run
