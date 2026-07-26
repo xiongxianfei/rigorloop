@@ -82,7 +82,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r4.md
 - Review status: changes-requested; stage=spec-review; round=r4
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: spec revision for fresh evidence and phased workflow proof
+- Next stage: spec-review R5 for fresh evidence and phased workflow proof
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=10; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-SR3-1,BFP-SR3-2,BFP-SR3-3
 
@@ -304,6 +304,7 @@ implementation authorization is requested.
 - 2026-07-26: Spec-review R3 requested exact incident rules, trace formulas, and operation-bound evidence receipts before M1 correction.
 - 2026-07-26: The R4 candidate freezes incident derivation, operation-bound evidence receipts, a closed stage-event grammar, and deterministic simple-change metrics.
 - 2026-07-26: Spec-review R4 retained the R3 findings and required fresh operation recomputation plus phase-appropriate workflow proof.
+- 2026-07-26: The R5 candidate replaces caller-authored receipts with fresh closed-registry execution, makes incident triggers unique, and phases real skill behavior after M1's synthetic engine proof.
 
 ## Decision log
 

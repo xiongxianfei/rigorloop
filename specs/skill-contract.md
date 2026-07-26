@@ -1030,9 +1030,14 @@ false-blocking, or correction-cycle result.
 The shared structural evaluator derives those observations from a stage trace
 through `spec`, `spec-review`, `test-spec`, and `test-spec-review`, including
 current input and output identities.
-The trace grammar, linkage invariants, operation-bound evidence receipts, and
+The trace grammar, linkage invariants, freshly computed operation results, and
 metric formulas are exactly those in R28y; skills MUST NOT introduce an
 alternate trace or evidence schema.
+M1 proves only the shared snapshot, trace, gate, and formula engine with
+synthetic event inputs and MUST NOT claim published-skill preservation.
+M2 first runs the upstream simple-change behavior after the four upstream
+skills implement the contract; M3 adds downstream preservation evidence; M4
+reruns and aggregates the complete current baseline.
 Skill behavior-preservation review remains responsible for semantic,
 instruction-following, isolation, and handoff equivalence that deterministic
 structural replay cannot establish.
