@@ -7,6 +7,7 @@ Closeout status: open
 - Review closeout: code-review-m1-r1 open
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
+- Review closeout: spec-review-r5 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -18,9 +19,9 @@ Closeout status: open
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`
-- Findings resolved: 14
-- Unresolved findings: 10
-- Current result: `spec-review-r4` kept BFP-SR3-1 through BFP-SR3-3 open and required fresh recomputation plus phase-appropriate proof.
+- Findings resolved: 15
+- Unresolved findings: 9
+- Current result: `spec-review-r5` resolved BFP-SR3-1; BFP-SR3-2 and BFP-SR3-3 remain open.
 
 ## Resolution Overview
 
@@ -47,7 +48,7 @@ Closeout status: open
 | BFP-M1-CR5 | accepted | open | Canonicalize capability-report serialization. |
 | BFP-M1-CR6 | accepted | open | Use a closed boundary-state envelope evaluated independently of fixture labels by the shared stage-gate evaluator. |
 | BFP-M1-CR7 | accepted | open | Derive simple-change measurements from a structural stage trace owned by the shared evaluator. |
-| BFP-SR3-1 | accepted | open | Freeze an independently executable incident rule table and contrasts. |
+| BFP-SR3-1 | accepted | resolved | Incident derivation now requires exactly one field/value trigger and a trigger-free contrast. |
 | BFP-SR3-2 | accepted | open | Define a closed trace and deterministic observation formulas. |
 | BFP-SR3-3 | accepted | open | Bind current artifact bytes to the exact evaluated row through a receipt. |
 
@@ -320,13 +321,19 @@ Rationale: Direct probes accepted unrelated known requirements and malformed or 
 Validation target: code-review-m1-r2
 Validation evidence: pending
 
+### spec-review-r5
+
+No new material findings.
+`spec-review-r5` resolved `BFP-SR3-1` and kept `BFP-SR3-2` and
+`BFP-SR3-3` open for exact snapshot and operation-registry closure.
+
 ### spec-review-r3
 
 #### BFP-SR3-1 - Incident replay derivation is incomplete
 
 Finding ID: BFP-SR3-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec revision
 Decision owner: approved incident-replay direction
@@ -334,8 +341,8 @@ Decision needed: none
 Required outcome: Freeze field/value triggers, valid contrasts, first gates, and diagnostic families.
 Chosen action: Add one exact incident rule table and make fixture labels non-authoritative expectations.
 Rationale: The first amendment still required evaluator-authored mappings.
-Validation target: spec-review-r4
-Validation evidence: pending
+Validation target: spec-review-r5
+Validation evidence: `spec-review-r5` confirmed exact-one trigger lookup, trigger-free contrast, current/non-current identity, and exact diagnostic equality.
 
 ### spec-review-r4
 
