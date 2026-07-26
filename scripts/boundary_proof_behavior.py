@@ -1175,7 +1175,14 @@ def _feature_model_schema() -> dict[str, object]:
     )
     example_row = _closed_object_schema(
         {
-            "example_id": {"type": "string"},
+            "example_id": {
+                "type": "string",
+                "enum": [
+                    "text.example.trim",
+                    "text.example.preserve",
+                    "text.example.unknown",
+                ],
+            },
             "role": {
                 "type": "string",
                 "enum": [
@@ -1210,9 +1217,22 @@ def _feature_model_schema() -> dict[str, object]:
                 "minItems": 12,
                 "maxItems": 12,
             },
-            "extensions": {"type": "array", "items": boundary_row},
-            "examples": {"type": "array", "items": example_row},
-            "interactions": {"type": "array", "items": interaction_row},
+            "extensions": {
+                "type": "array",
+                "items": boundary_row,
+                "maxItems": 0,
+            },
+            "examples": {
+                "type": "array",
+                "items": example_row,
+                "minItems": 3,
+                "maxItems": 3,
+            },
+            "interactions": {
+                "type": "array",
+                "items": interaction_row,
+                "maxItems": 0,
+            },
         }
     )
 
@@ -1220,7 +1240,15 @@ def _feature_model_schema() -> dict[str, object]:
 def _proof_map_schema() -> dict[str, object]:
     proof_row = _closed_object_schema(
         {
-            "proof_obligation_id": {"type": "string"},
+            "proof_obligation_id": {
+                "type": "string",
+                "enum": [
+                    "text.proof.canonical",
+                    "text.proof.mode",
+                    "text.proof.outcome",
+                    "text.proof.evidence",
+                ],
+            },
             "governing_requirement_ids": _string_array_schema(),
             "boundary_or_interaction_ids": _string_array_schema(),
             "test_case_ids": _string_array_schema(),
