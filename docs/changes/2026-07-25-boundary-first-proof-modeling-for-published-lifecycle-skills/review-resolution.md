@@ -2124,7 +2124,7 @@ evidence; pending spec-review-r33.
 
 Finding ID: BFP-SR-R33-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y global discovery
@@ -2133,13 +2133,17 @@ Required outcome: Make the constrained malformed-temp cleanup reachable without 
 Chosen action: Validate transient names first and add one unique lease/run/recovery-bound recoverable-malformed-temp discovery class.
 Rationale: A recovery route is useless when an earlier generic validator always intercepts it.
 Validation target: spec-review-r34
-Validation evidence: pending
+Validation evidence: global discovery now validates names before content and
+defines exactly one well-named, unique lease/run/recovery-bound
+`recoverable-malformed-basis-temp` class that reaches locked cleanup; all
+ambiguous or canonical corruption stays closed; T51 proves reachability and
+unlink/fsync resume; pending spec-review-r34.
 
 #### BFP-SR-R33-2 - Retain value-free unknown-event shape
 
 Finding ID: BFP-SR-R33-2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y diagnostic evidence
@@ -2148,13 +2152,16 @@ Required outcome: Make unknown-event shape identity independently recomputable w
 Chosen action: Store the canonical path/type projection and require its hash equality.
 Rationale: An ungrounded hash is not proof.
 Validation target: spec-review-r34
-Validation evidence: pending
+Validation evidence: classification-invalid evidence now retains the complete
+value-free path/JSON-type projection, exact canonicalization, and recomputed
+identity while excluding values and raw logs; T52 mutates projection and hash
+independently; pending spec-review-r34.
 
 #### BFP-SR-R33-3 - Derive output roles from policy paths
 
 Finding ID: BFP-SR-R33-3
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y output evaluator
@@ -2163,13 +2170,16 @@ Required outcome: Remove unauthenticated observed roles and define exact matchin
 Chosen action: Capture only observed path/identity and project roles from the unique required path mapping.
 Rationale: Filesystem observation cannot assert semantic role independently.
 Validation target: spec-review-r34
-Validation evidence: pending
+Validation evidence: raw observed output descriptors now contain only path and
+identity; exact normalized path plus identity-rule matching projects roles
+solely from the unique required policy list; malformed role-bearing and
+unmatched cases are explicit in T52; pending spec-review-r34.
 
 #### BFP-SR-R33-4 - Preserve non-output diagnostics during liveness pause
 
 Finding ID: BFP-SR-R33-4
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y transport routing
@@ -2178,7 +2188,10 @@ Required outcome: Keep every prior non-output observation while output remains u
 Chosen action: Define the liveness tuple family as liveness, ordered zero-or-more non-output diagnostics, and timeout, excluding output diagnostics.
 Rationale: Failed termination does not erase already observed protocol or identity failures.
 Validation target: spec-review-r34
-Validation evidence: pending
+Validation evidence: the liveness routing family now retains zero or more
+ordered prior non-output diagnostics between liveness and timeout, forbids
+output diagnostics with uninspected output, and always pauses; T52 covers the
+cross-products; pending spec-review-r34.
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 

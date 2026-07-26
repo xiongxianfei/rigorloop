@@ -909,4 +909,4 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r33.md
 Resolution: review-resolution.md#spec-review-r33
 Material findings: BFP-SR-R33-1, BFP-SR-R33-2, BFP-SR-R33-3, BFP-SR-R33-4
-Open findings: BFP-SR-R33-1, BFP-SR-R33-2, BFP-SR-R33-3, BFP-SR-R33-4
+Open findings: None

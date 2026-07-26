@@ -49,12 +49,12 @@ Boundary model scope: R28-R28z
 | --- | --- | --- | --- |
 | Feature spec | `specs/rigorloop-workflow.md` | draft; focused spec-review pending | pending after approval |
 | Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion to the draft workflow amendment | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r32.md` | changes-requested; R32 findings resolved in the R33 candidate | `sha256:51414e94baf28316232e6e555655eeae2d6c7ededea9179c6e0188e171234a3b` |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r33.md` | changes-requested; R33 findings resolved in the R34 candidate | `sha256:54c0df8263c71eda9fd2aa12f02b75a0bcbcf6c93a7e6d0eb5ae76f698e0cde1` |
 | Architecture | `docs/architecture/system/architecture.md` | draft; focused architecture-review pending | pending after approval |
 | Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r13.md` | approved | `sha256:47571b7555fe6470de8e78a9c8b180c09fbdb627e8e641ab1c6915e0d9044288` |
 | ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | proposed amendment | pending after acceptance |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; spec-review R33 is the next gate | `sha256:c12dc73192ae5c82713d223077f327a8b06c3ba74c0667d2c90fc7697d220357` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; spec-review R34 is the next gate | `sha256:e3a54ad63cc50e21869d02f6a3a85c778cbafe6a527d411640b525f7eec1af1a` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
 
 ## Testing strategy
@@ -1512,16 +1512,20 @@ Boundary model scope: R28-R28z
   canonical basis; test matching and conflicting temporary/canonical bases and
   crash during temporary cleanup and its parent fsync. Crash immediately
   before and after quarantine rename; inject partial or identity-changed
-  quarantine and completed recovery with unexpected quarantine state. Attempt quarantine
-  cleanup and prove the first version rejects it without mutation; prove
-  preserved quarantine is excluded from artifact-count inventories and cannot
-  satisfy canonical behavior evidence. Mutate every
+  quarantine and completed recovery with unexpected quarantine state. Attempt
+  quarantine cleanup and prove the first version rejects it without mutation;
+  prove preserved quarantine is excluded from artifact-count inventories and
+  cannot satisfy canonical behavior evidence. Mutate every
   immutable recovery-basis field and every non-state state-record field across
   resume; test lease-only fsync against the simple-change root. For normal
   cleanup, prove pointer-parent, receipt-parent, and lease-parent fsync before
   success. Create, persist, and reuse `publisher.lock` across runs and prove
   its separately validated control path never changes artifact counts or
-  canonical behavior evidence.
+  canonical behavior evidence. Prove global discovery classifies one
+  well-named lease/basis-bound malformed temp as recoverable and reaches the
+  cleanup route, while malformed names, multiple temps, ambiguous leases,
+  cross-run temps, and canonical corruption stop before mutation. Interrupt
+  unlink and parent fsync independently and prove idempotent resume.
 - Expected result: Resume reconciles valid evidence without reinvoking skills,
   never installs or points at a partial run, never installs without a durable
   exclusive receipt, never loses the prior immutable pointer, and fails closed
@@ -1573,11 +1577,18 @@ Boundary model scope: R28-R28z
   deadline; equal and unequal runtime identities; schema-accepted and
   schema-rejected shape projections; known prohibited, known permitted, and
   unknown protocol event kinds, including exact
-  `protocol-item-classification-invalid` evidence; and empty required lists,
+  `protocol-item-classification-invalid` evidence. Mutate every value-free
+  event-shape projection path, type, ordering, and identity independently and
+  prove raw values and logs remain absent. Cross liveness uncertainty with
+  every prior non-output diagnostic and reject every output diagnostic while
+  output is uninspected. Exercise empty required lists,
   absent, complete, nonempty proper subset, extra, identity-conflicting,
-  identical duplicate, same-identity duplicate-role, duplicate-path,
-  mutually-exclusive, and mixed missing-plus-extra output lists. Combine
-  overlapping output conditions and prove the closed
+  identical duplicate-path, mutually-exclusive, and mixed missing-plus-extra
+  output lists. Require raw observations to contain only normalized path and
+  identity; reject role-bearing or malformed descriptors. Test exact
+  path/identity matching, unmatched paths, exact-identity mismatch, and role
+  projection solely from the required path map. Combine overlapping output
+  conditions and prove the closed
   contradictory-before-extra-before-partial precedence without deduplication.
   Run validation repeatedly.
 - Expected result: One fresh immutable run contains current output snapshots,

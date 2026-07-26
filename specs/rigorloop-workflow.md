@@ -2135,11 +2135,31 @@ An immutable recovery basis with a missing, `authorized`, or
 `orphan-detached` state record is active and owns its run candidate.
 A single valid temporary basis is also active recovery intent for its bound
 lease/run and must be installed or reconciled before any other routing.
-Every discovered transient name is parsed and every present object is
-validated before consistency routing.
-Unknown transient names, symlinks, malformed objects, multiple active recovery
-records, or transient objects naming more than one run are `global-conflict`
-and fail closed without lifecycle invocation.
+Global discovery validates in this fixed order:
+
+1. parse every transient basename against the closed path grammar;
+2. validate the publisher lease and any canonical recovery basis/state;
+3. select the unique run/recovery context those valid durable objects bind;
+4. validate remaining object content;
+5. route the resulting global tuple.
+
+One exception to generic malformed-content rejection is
+`recoverable-malformed-basis-temp`.
+It requires exactly one regular non-symlink temporary-basis path whose basename
+encodes the selected `run_id` and `recovery_id`, plus either:
+
+- the matching valid lease, H-false lease-only/working/staging state, no
+  canonical basis, no state file, and no other recovery temp; or
+- the matching valid canonical basis and state binding and no other recovery
+  temp.
+
+Its unreadable, truncated, or schema-invalid content is not inspected for
+candidate identity and routes only to the constrained locked cleanup procedure
+below.
+Malformed names, multiple temps, cross-run or cross-recovery names, ambiguous
+lease/basis context, symlinks, malformed canonical objects, multiple active
+recoveries, or transient objects naming more than one run are
+`global-conflict` and fail closed without lifecycle invocation.
 
 Global candidate selection is closed:
 
@@ -2584,9 +2604,13 @@ The closed transport routing matrix is:
 | `confirmed-stopped` | valid confirmed-stopped receipt | `absent` | `[stage-output-absent, stage-turn-timeout]` | 2 | `fail-closed` |
 | `confirmed-stopped` | valid confirmed-stopped receipt | `partial`, `extra`, or `contradictory` | `[matching-output-diagnostic, stage-turn-timeout]` | 1 or 2 | `fail-closed` |
 | `confirmed-stopped` | valid confirmed-stopped receipt | any inspected output | tuple containing one or more non-output diagnostics, followed by any independently detected matching output diagnostic and `stage-turn-timeout` | 1 or 2 | `fail-closed` |
-| `liveness-uncertain` | null | `uninspected` | `[stage-liveness-uncertain, stage-turn-timeout]` | 1 or 2 | `pause` |
+| `liveness-uncertain` | null | `uninspected` | `[stage-liveness-uncertain, zero or more previously observed non-output diagnostics in precedence order, stage-turn-timeout]` | 1 or 2 | `pause` |
 
 The rows are mutually exclusive.
+The liveness row forbids every output diagnostic because output remains
+uninspected, but retains each protocol-classification, protocol-shape,
+prohibited-event, or runtime-identity condition observed before termination
+was requested.
 Every vocabulary-valid tuple not listed in the matrix fails closed as
 `invalid-transport-tuple` before decision routing; that validator diagnostic
 does not become a row value.
@@ -2624,7 +2648,7 @@ Each value has one exact role-specific shape:
 | `stage-turn-timeout` | `kind: deadline-observation-v1`, `deadline_ms`, `elapsed_ms`, `runtime_thread_id` |
 | `stage-liveness-uncertain` | `kind: liveness-observation-v1`, `termination_requested: true`, `wait_completed: false`, `runtime_process_id` |
 | `stage-output-absent`, `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: output-inventory-v1`, exact output `root`, `required_outputs`, `observed_outputs`, and canonical `inventory_identity` |
-| `protocol-item-classification-invalid` | `kind: protocol-classification-observation-v1`, `event_kind`, `protocol_classification_identity`, `lookup_result: unknown`, `event_shape_identity` |
+| `protocol-item-classification-invalid` | `kind: protocol-classification-observation-v1`, `event_kind`, `protocol_classification_identity`, `lookup_result: unknown`, `event_shape_projection`, `event_shape_identity` |
 | `protocol-shape-incompatible` | `kind: protocol-observation-v1`, `event_kind`, `schema_path`, `observed_shape_projection`, `observed_shape_identity` |
 | `unexpected-prohibited-event` | `kind: prohibited-event-observation-v1`, `event_kind`, `event_identity`, `protocol_classification_identity` |
 | `runtime-identity-unstable` | `kind: runtime-identity-observation-v1`, `expected_identity`, `observed_identity` |
@@ -2645,8 +2669,16 @@ The role predicates are exact:
   `protocol_classification_identity` to equal the exact bound classification,
   lookup of `event_kind` in that classification to return no member, and
   `lookup_result` to be `unknown`.
-  `event_shape_identity` is the canonical field-name/JSON-type projection of
-  the bounded event envelope and does not require a schema path.
+  `event_shape_projection` is the complete value-free path-sorted list of
+  `{path, json_type}` members from the bounded event envelope.
+  Paths use normalized JSON Pointer; `json_type` is exactly `null`, `boolean`,
+  `number`, `string`, `array`, or `object`.
+  Canonical JSON serialization uses UTF-8, sorted object keys, compact
+  separators, and list order as recorded.
+  `event_shape_identity` is the SHA-256 of those canonical bytes and MUST be
+  recomputed equal during validation.
+  No event value or raw protocol log is retained, and no schema path is
+  required.
 - `protocol-shape-incompatible` requires `schema_path` to resolve inside the
   exact bound schema bundle. `observed_shape_projection` is the complete
   path-sorted field-name and JSON-type projection with values omitted;
@@ -2665,9 +2697,20 @@ Its roles and paths are independently unique; an empty list or duplicate role
 or path is an invalid stage policy and fails before invocation.
 `identity_rule` is either `any-current` or one exact bound identity.
 `observed_outputs` is the raw complete path-sorted list of
-`{role, path, identity}` descriptors captured from the output root.
+`{path, identity}` descriptors captured from filesystem paths and raw bytes.
+It contains no semantic role field.
 It is not deduplicated or converted to a set before classification.
 Let `E` be the required list and `O` the raw observed list.
+An observed descriptor matches a required descriptor if and only if their
+normalized paths are byte-equal and either the required `identity_rule` is
+`any-current` or the observed identity equals its exact bound identity.
+The required descriptor's role is projected onto a matched observation only
+after this comparison.
+An unmatched observed path is extra.
+An expected role is satisfied only by one matching observed path.
+Any role field, missing path/identity, additional field, nonstandard identity,
+or nonnormalized path in an observed descriptor is malformed and fails before
+classification.
 The evaluator applies this closed, disjoint order:
 
 ```text
@@ -2675,10 +2718,10 @@ absent:
   O is empty
 
 contradictory:
-  O is nonempty and contains any duplicate role or path regardless of
-  identity, violates an exact bound identity, contains roles declared mutually
-  exclusive by the stage policy, or both has an unexpected member and leaves
-  one or more required members unsatisfied
+  O is nonempty and contains any duplicate path regardless of identity,
+  violates an exact bound identity, projects roles declared mutually exclusive
+  by the stage policy, or both has an unmatched member and leaves one or more
+  required members unsatisfied
 
 extra:
   not contradictory, every member of E is satisfied exactly once, and one or
@@ -2695,8 +2738,7 @@ complete:
 No observation may satisfy more than one state.
 The nonempty and uniqueness preconditions plus contradiction-first order make
 the five outcomes exhaustive, including identical duplicates,
-same-identity duplicate roles on different paths, and mixed missing-plus-extra
-observations.
+and mixed missing-plus-extra observations.
 `inventory_identity` is the canonical identity of exactly
 `{root, required_outputs, observed_outputs}`.
 The timeout and liveness records are cross-checked against the row's runtime
