@@ -2,7 +2,7 @@
 
 ## Status
 
-- approved
+- draft
 
 ## Related artifacts
 
@@ -124,8 +124,9 @@
 - Single Bounded Review-Fix Workflow Automation change metadata: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml`
 - Boundary-First Proof Modeling proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Boundary-First Proof Modeling spec amendments: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Boundary-First Proof Modeling spec-review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r36.md`
+- Boundary-First Proof Modeling spec-review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r40.md`
 - Boundary-First Proof Modeling ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md`
+- Stage-Authored Artifact Envelope Transport ADR: `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
@@ -384,9 +385,11 @@ for the component view.
 | --- | --- | --- |
 | Boundary model constants and parser | `scripts/boundary_proof_model.py` | Projects closed IDs, marker and scope rules, row schemas, reference integrity, fixture identities, result vocabularies, and report aggregation from approved specs. |
 | Capability evaluator | Pure functions in `scripts/boundary_proof_model.py` | Computes the six-check, fixture, preservation, parity, overhead, and final capability outcomes from validated typed inputs; it performs no filesystem writes. |
-| Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, invokes the public workflow once, captures stage-created files without rendering normative content, and coordinates transport, output reconciliation, and immutable publication. |
-| Child-runtime adapter | Functions in `scripts/boundary_proof_behavior.py` | Resolves and identities the exact supported Codex runtime projection, starts app-server over stdio, binds runtime metadata and the active permission profile, independently probes the same profile through `codex sandbox`, provisions opaque control-plane authentication outside child authority, enforces the closed checkpoint-to-phase matrix, and emits only bounded typed diagnostics. |
-| Transport and output reconciler | Functions in `scripts/boundary_proof_behavior.py` | Applies the manifest-bound positive turn and termination-wait deadlines, binds every attempt to one fresh logical thread/process pair, classifies the complete closed diagnostic tuple, terminates and reaps expired children, inspects only bound stage-output roots, and permits the single absent-output retry while failing closed or pausing every other unsafe tuple. |
+| Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, invokes the public workflow once, and coordinates envelope transport, exact-byte materialization, structural content validation, output reconciliation, and immutable publication without authoring semantic content. |
+| Child-runtime adapter and candidate collector | Functions in `scripts/boundary_proof_behavior.py` | Resolves and identities the exact supported Codex runtime projection, starts app-server over stdio, binds runtime metadata and the active permission profile, independently probes the same profile through `codex sandbox`, provisions opaque control-plane authentication outside child authority, enforces the closed checkpoint-to-phase matrix, and captures at most the policy-bounded set of schema-constrained agent-message candidates, including candidates observed before timeout. It emits only closed value-free candidate observations and retains raw candidate bytes transiently only as permitted by the selected policy. |
+| Envelope transport and output reconciler | Functions in `scripts/boundary_proof_behavior.py` | Applies the manifest-bound positive turn and termination-wait deadlines plus the parent-selected artifact policy, binds every attempt to one fresh logical thread/process pair, classifies candidate sets and the complete closed diagnostic tuple, terminates and reaps expired children, validates the closed envelope and exact raw/canonical byte limits, and permits the single confirmed-stopped absent-output retry while failing closed or pausing every other unsafe tuple. |
+| Exact-byte materializer | Functions in `scripts/boundary_proof_behavior.py` | Accepts only one complete policy-matching `boundary-stage-artifact-envelope-v1`, writes each stage-authored `content_utf8` value unchanged below the isolated output root, rereads the complete leaf set, and emits a value-free materialization observation proving exact path, byte identity, byte count, and entry-kind equality. It cannot create, normalize, complete, or repair semantic content. |
+| Lifecycle content validator | Functions in `scripts/boundary_proof_behavior.py` | Applies the closed manifest-bound structural validators to exactly materialized artifacts, records a value-free content-validation observation, and rejects record, occurrence, review-outcome, finding-set, resolution-state, reviewed-identity, or content-state disagreement. It checks structure and agreement only; it cannot create or change review judgment. |
 | Isolated workspace assembler | Functions in `scripts/boundary_proof_behavior.py` | Copies only manifest-bound skills, mapped resources, applicable instructions, contracts, scenario inputs, and candidate oracles into a fresh workspace, exposes one writable behavior-output root, and keeps the private runtime home and credentials outside sandbox-readable roots. |
 | Immutable run publisher and reconciler | Functions in `scripts/boundary_proof_behavior.py` | Acquires the persistent publisher lock, validates global publication/recovery state, creates a run-bound publisher lease, builds a deterministic non-authoritative staged run, writes the durable exclusive receipt before installation or pointer mutation, and reconciles every interruption without reinvoking lifecycle skills. Completed recovery history is preserved but excluded from active candidacy. |
 | Boundary validator | `scripts/validate-boundary-proof.py` | Validates scoped feature specs, matching test specs, fixture evidence, and the capability report without scoring semantic adequacy. |
@@ -406,6 +409,10 @@ The standalone harness imports only standard-library modules and
 `boundary_proof_model`; the model imports only standard-library modules.
 The harness does not import the workflow-automation engine, lifecycle
 validators, test drivers, or third-party packages.
+The harness carries its own closed structural projections for the artifact
+variants required by the approved workflow spec; those projections validate
+stage-owned bytes and do not invoke repository lifecycle validators or become a
+second source of lifecycle semantics.
 Selector code routes checks but does not parse boundary records.
 Skill validation may import the model but cannot carry a second vocabulary.
 Only `scripts/validate-boundary-proof.py` serializes or replaces the canonical
@@ -1085,7 +1092,10 @@ general child-tool network access remains denied.
 
 The transport coordinator is an internal responsibility of the standalone
 harness, not a workflow engine or stage-content author.
-Its policy is immutable input from the behavior implementation manifest.
+Its transport and lifecycle artifact policies are immutable inputs from the
+behavior implementation manifest. The separate materialization-canary policy
+is parent-selected before preflight and identity-bound in the runtime
+attestation.
 Callers cannot select, shorten, remove, or make either deadline unbounded.
 
 Every transport attempt binds one logical child process and one runtime
@@ -1101,11 +1111,42 @@ primary diagnostic is presentation only. Runtime-identity evidence binds the
 attested launcher or package to one closed checkpoint/phase. Conditional
 remote-control evidence retains only a rule ID, event kind, and two booleans.
 
-The harness inspects only the bound output root after normal completion or
-confirmed stop. Stage skills own the complete normative bytes. The harness may
-validate paths, identities, and structure, but never fills requirements,
-reviews, tests, commands, or judgments. Only absent output after a confirmed
-timeout may retry once, with fresh process and thread identities.
+Stage skills own every semantic byte and return one schema-constrained
+`boundary-stage-artifact-envelope-v1` candidate through the agent-message
+channel. The child-runtime adapter retains at most the parent-policy-bounded
+candidate set, including messages observed before timeout. It emits a complete
+value-free candidate observation and retains raw candidate bytes transiently
+only for the sole complete candidate until exact materialization and snapshot
+capture.
+
+The transport reconciler validates candidate cardinality, raw message and
+canonical envelope byte limits, policy/stage/occurrence/variant identity, exact
+ordered roles and paths, per-artifact and aggregate byte limits, and every
+closed envelope field before mutation. Unknown, malformed, oversized,
+overflowing, partial, extra, contradictory, or policy-incompatible candidates
+are never materialized.
+
+The exact-byte materializer writes accepted `content_utf8` bytes unchanged
+below the bound output root, rereads the complete leaf set, and records only
+path, entry kind, byte identity, byte count, and comparison result. The
+harness then applies closed structural lifecycle projections and records a
+value-free content-validation observation. It may reject inconsistent record,
+outcome, finding, resolution, reviewed-identity, occurrence, or content-state
+data, but never fills requirements, reviews, tests, commands, judgments, or
+resolution prose.
+
+After normal completion, one complete valid candidate is accepted. After a
+confirmed stop and reap, one complete valid candidate is reconciled without
+reinvocation. Only zero candidates with no independently observed non-output
+failure may retry once with fresh process and thread identities. Uncertain
+liveness pauses without candidate inspection; every other unsafe tuple fails
+closed.
+
+Preflight exercises this actual channel through `workflow` and `spec` with the
+separate noncanonical `materialization-canary-v1` policy. It proves envelope
+validation, exact-byte materialization, and reread equality, then discards the
+canary workspace and semantic bytes. A command-level workspace-write probe
+alone does not satisfy stage-envelope feasibility.
 
 ### Publication and recovery boundary
 
@@ -1307,6 +1348,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 ## Architecture Decisions
 
 - [ADR-20260725-boundary-first-proof-modeling](../../adr/ADR-20260725-boundary-first-proof-modeling.md) - Use a spec-normative typed projection, copied packaged reference, structural validator, frozen incident registry, and report-hash release activation for boundary-model `v1`.
+- [ADR-20260726-stage-authored-artifact-envelope-transport](../../adr/ADR-20260726-stage-authored-artifact-envelope-transport.md) - Preserve stage ownership of semantic bytes while using a parent-policy-bound envelope collector and exact-byte materializer for the isolated behavior harness.
 - [ADR-20260726-codex-permission-profile-boundary-harness](../../adr/ADR-20260726-codex-permission-profile-boundary-harness.md) - Proposed app-server, named permission-profile, exact experimental-schema, effective-config/inventory, managed-policy, and parent-probe refinement for the M2 child-runtime boundary.
 
 - `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
@@ -1385,8 +1427,9 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Capability-stable resume | A prepared transition is resumed after its effective capability becomes invalid. | Resume retains the recorded `effective_capability_id`, pauses reconciliation, and never silently binds replacement authority. |
 | Authorization-bound execution | A run targets a later stage across risk boundaries. | Only a basis-complete effective capability within an active parent authorization can invoke the current stage; missing implementation or verification authority pauses without widening consent. |
 | Interrupted-transition recovery | Execution stops after a prepared receipt and before finalization. | Resume inspects stage-owned evidence before retry, reconciles valid completion without rerun, retries only declared idempotent stages, and pauses on contradiction or partial output. |
-| Isolated stage-output ownership | The boundary harness asks `workflow` to execute an upstream stage. | `workflow` routes to the stage-owning skill, that skill writes one complete artifact below the isolated output root through the approved workspace-write capability, and the harness snapshots it before the next stage without rendering or completing normative content. |
-| Isolated stage timeout recovery | A stage turn expires after it may have written output. | The stage coordinator inspects the bound output root first: one complete valid artifact is reconciled without reinvocation, no artifact permits one fresh-runtime retry, and partial, extra, stale, or contradictory output fails closed. Protocol or security failures are never retried. |
+| Isolated stage-output ownership | The boundary harness asks `workflow` to execute an upstream stage. | `workflow` routes to the stage-owning skill, that skill authors every semantic byte in one policy-bound schema envelope, and the adapter materializes those exact bytes below the isolated output root before structural validation and snapshot capture. Neither the adapter nor harness renders, normalizes, repairs, or completes normative content. |
+| Isolated stage timeout recovery | A stage turn expires after emitting zero or more candidate messages. | After the exact child is confirmed stopped and reaped, the coordinator derives the bounded candidate observation: one complete valid envelope is reconciled and materialized without reinvocation; zero candidates and no independent non-output failure permit one fresh-runtime retry; partial, extra, contradictory, malformed, oversized, overflowing, policy-incompatible, protocol, or security evidence fails closed. |
+| Stage-envelope materialization feasibility | Runtime preflight has passed generic filesystem and network probes. | A separate `materialization-canary-v1` turn through `workflow` and `spec` must return one valid noncanonical envelope whose exact UTF-8 bytes are materialized and reread identically. The canary workspace and semantic bytes are discarded and cannot become lifecycle evidence. |
 | Repeated-target identity | `code-review@M2` resumes after the active plan has advanced to M3. | The run remains bound to M2 and cannot silently reinterpret the target as M3. |
 | External-action containment | Unified automation completes fresh verification. | The run stops at the verify target and performs no PR creation, push, publication, deployment, merge, destructive Git operation, or other external action. |
 | Automated review independence | A workflow-managed profile invokes an automated review. | The review can advance only when the orchestrator records a valid manifest, verifiable initial packet, non-L0 independence level, phase receipts, risk-tier classification, stage-native verdict, and normalized `review_gate_outcome`. |
