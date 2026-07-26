@@ -1,7 +1,7 @@
 # RigorLoop Workflow
 
 ## Status
-- draft
+- approved
 Boundary model version: v1
 Boundary model scope: R28-R28z
 
@@ -3411,6 +3411,6 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
 ## Readiness
 
 - The retained workflow contract remains approved.
-- The boundary-first `R28` through `R28z` amendment is ready for independent
-  `spec-review` and MUST NOT be relied on for implementation until that review
-  approves it.
+- The boundary-first `R28` through `R28z` amendment was approved by
+  `spec-review-r36`. Architecture, plan, and test-spec synchronization remain
+  mandatory before implementation relies on the focused amendment.

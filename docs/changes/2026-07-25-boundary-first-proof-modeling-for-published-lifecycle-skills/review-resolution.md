@@ -2339,6 +2339,14 @@ policy, canonical validation reconstructs its three fields and identity and
 checks the immutable-run binding, and T48 proves policy closure and
 substitution contrasts; pending spec-review-r36.
 
+### spec-review-r36
+
+No new material findings. R36 independently confirmed BFP-SR-R35-1 through
+BFP-SR-R35-3 resolved and approved the focused R28y specification amendment.
+The recorded architecture assessment is `architecture-required`; architecture
+synchronization and review remain mandatory before test-spec approval or
+implementation resumes.
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
