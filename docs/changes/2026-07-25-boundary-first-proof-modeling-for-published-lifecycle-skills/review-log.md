@@ -19,6 +19,28 @@ Material findings: BFP-PR1, BFP-PR2, BFP-PR3, BFP-PR4
 Open findings: None
 
 ### Review entry
+Review ID: code-review-m2-preflight-r1
+Stage: code-review
+Round: M2 preflight R1
+Reviewed artifact: initial M2 preflight working-tree candidate
+Status: changes-requested
+Detailed record: reviews/code-review-m2-preflight-r1.md
+Resolution: review-resolution.md#code-review-m2-preflight-r1
+Material findings: BFP-M2-CR1, BFP-M2-CR2
+Open findings: None
+
+### Review entry
+Review ID: code-review-m2-preflight-r2
+Stage: code-review
+Round: M2 preflight R2
+Reviewed artifact: corrected M2 preflight working-tree candidate
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-preflight-r2.md
+Resolution: review-resolution.md#code-review-m2-preflight-r2
+Material findings: None
+Open findings: None
+
+### Review entry
 Review ID: proposal-review-r2
 Stage: proposal-review
 Round: 2

@@ -8,6 +8,8 @@ Closeout status: open
 - Review closeout: code-review-m1-r2
 - Review closeout: code-review-m1-r3
 - Review closeout: code-review-m1-r4
+- Review closeout: code-review-m2-preflight-r1
+- Review closeout: code-review-m2-preflight-r2
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
@@ -36,10 +38,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
-- Findings resolved: 31
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m2-preflight-r1`, `code-review-m2-preflight-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
+- Findings resolved: 33
 - Unresolved findings: 0
-- Current result: M1 is approved and closed by independent code-review R4; M2 preflight is next.
+- Current result: M2 preflight implementation is approved, but the live environment gate failed safely and routes the initiative to architecture.
 
 ## Resolution Overview
 
@@ -99,6 +101,44 @@ M1 R4 found no material issues. It confirmed BFP-M1-CR1 through
 BFP-M1-CR7 resolved, closed M1, and authorized the handoff to M2's mandatory
 environment-feasibility preflight. Real lifecycle-skill behavior remains
 unclaimed until M2.
+
+### code-review-m2-preflight-r1
+
+#### BFP-M2-CR1 — CLI help text was treated as effective enforcement
+
+Finding ID: BFP-M2-CR1
+Disposition: accepted
+Status: resolved
+Owner: M2 preflight implementation
+Owning stage: review-resolution M2 preflight
+Decision owner: accepted hermetic architecture
+Decision needed: none
+Required outcome: Never accept advertised controls as effective parent-observed confinement.
+Chosen action: Removed the help-based positive path. The current adapter fails with `effective-profile-attestation-unavailable` until an approved authoritative interface exists.
+Rationale: Discoverability is not enforcement evidence.
+Validation target: code-review-m2-preflight-r2
+Validation evidence: Advertised-but-unattested controls fail closed; live preflight exits 2.
+
+#### BFP-M2-CR2 — executable identity was not bound across probes
+
+Finding ID: BFP-M2-CR2
+Disposition: accepted
+Status: resolved
+Owner: M2 preflight implementation
+Owning stage: review-resolution M2 preflight
+Decision owner: accepted hermetic architecture
+Decision needed: none
+Required outcome: Bind one stable runtime executable identity around all probes and fail safely on identity errors.
+Chosen action: Captured device, inode, size, timestamps, and raw-byte SHA-256 before and after each probe, with bounded failure diagnostics.
+Rationale: Path identity alone is vulnerable to replacement and unhandled read failure.
+Validation target: code-review-m2-preflight-r2
+Validation evidence: Unreadable, removed, and replaced executable regressions pass.
+
+### code-review-m2-preflight-r2
+
+No material findings. The preflight implementation is approved. Its live
+`environment-unavailable` result is an architecture feasibility stop, not an
+implementation review failure.
 
 ### proposal-review-r1
 

@@ -136,13 +136,16 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r2.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r3.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r4.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-preflight-r1.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-preflight-r2.md
 review:
   status: clean_with_notes
   unresolved_items: 0
-  material_findings: 31
+  material_findings: 33
   open_findings: 0
-  closed_findings: 31
-  code_review: reviews/code-review-m1-r4.md
+  closed_findings: 33
+  code_review: reviews/code-review-m2-preflight-r2.md
   review_log: review-log.md
 workflow:
   automation:
@@ -151,7 +154,7 @@ workflow:
     run:
       run_id: run-20260725-boundary-first-verify
       change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
-      status: active
+      status: paused
       policy_version: 1
       target:
         stage: verify
