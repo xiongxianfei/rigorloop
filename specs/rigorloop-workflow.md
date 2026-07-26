@@ -1419,7 +1419,8 @@ The closed operation registry is:
 | `preservation-review-recording` | skill behavior harness | canonical preservation manifest and every reference selected by it | review-recording result | `preservation.review-recording` |
 | `preservation-isolation` | skill behavior harness | canonical preservation manifest and every reference selected by it | isolation result | `preservation.isolation` |
 | `preservation-handoff` | skill behavior harness | canonical preservation manifest and every reference selected by it | handoff result | `preservation.handoff` |
-| `simple-change-behavior` | simple-change behavior harness and evaluator | exact candidate corpus, current four upstream skills and mapped resources, and invocation-owned pre-run HEAD | immutable run, atomic current pointer, behavior-output snapshots, trace, and metric result | `simple_change` |
+| `behavior-implementation-manifest` | boundary model validator | every execution-affecting component and environment field in the closed manifest below | exact `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json` | `support.behavior-implementation-manifest` |
+| `simple-change-behavior` | simple-change behavior harness and evaluator | exact candidate corpus, current four upstream skills and mapped resources, current behavior-implementation manifest, and invocation-owned pre-run HEAD | immutable run, atomic current pointer, behavior-output snapshots, trace, and metric result | `simple_change` |
 | `canonical-skill-resource-manifest` | skill validator | current exact eight R28m skills and every mapped boundary-proof resource | exact `docs/changes/<change-id>/evidence/canonical-skill-resource-manifest.json` | `support.canonical-skill-resource-manifest` |
 | `adapter-parity` | adapter validator | exact current `scripts/adapter_distribution.py`, `scripts/build-adapters.py`, `scripts/validate-adapters.py`, `dist/adapters/manifest.yaml`, and canonical skill/resource manifest | durable current four-surface parity manifest set | `adapter_parity` |
 | `boundary-adapter-parity` | adapter validator | current `adapter-parity` typed result | aggregate adapter check result | `checks.boundary-adapter-parity` |
@@ -1471,6 +1472,40 @@ boundary-proof resource for each skill.
 Missing, extra, duplicate, stale, unmapped, or substituted entries fail
 closed.
 
+The canonical behavior-implementation manifest path is exactly
+`docs/changes/<change-id>/evidence/behavior-implementation-manifest.json`.
+It contains exactly `manifest_id`, `execution_environment`, and `components`.
+`manifest_id` is `boundary-behavior-implementation-v1`.
+`execution_environment` contains exactly `agent_runtime`, `model_id`,
+`python_implementation`, and `python_version`; every value is a non-empty
+harness-derived string.
+`components` is a path-sorted list of current standard path-and-identity
+references containing exactly:
+
+```text
+skills/workflow/SKILL.md
+every mapped resource loaded by workflow for this harness
+scripts/boundary_proof_behavior.py
+scripts/boundary_proof_model.py
+scripts/validate-boundary-proof.py
+scripts/workflow_automation.py
+scripts/workflow_automation_policy.py
+scripts/workflow_automation_state.py
+specs/rigorloop-workflow.md
+specs/rigorloop-workflow.test.md
+specs/skill-contract.md
+specs/skill-contract.test.md
+```
+
+The four stage-owning skills and their resources remain in
+`skill_resource_refs`; they are not duplicated here.
+`scripts/test-boundary-proof.py` and `scripts/workflow_code_state.py` are
+explicitly excluded because canonical generation and validation do not import,
+execute, or consult them.
+If implementation later loads another harness, orchestrator, capture,
+serialization, or evaluation component, this closed manifest and its governing
+spec MUST be amended before that component may affect canonical evidence.
+
 The adapter validator creates all three non-canonical manifests in a fresh
 temporary root during the current invocation.
 Each parity manifest contains exactly `surface` and `files`;
@@ -1489,6 +1524,7 @@ For pass/fail, `blocking_reason` is null.
 
 - each preservation category depends on `preservation-manifest`;
 - `boundary-incident-replay` depends on all eight fixture operations;
+- `simple-change-behavior` depends on `behavior-implementation-manifest`;
 - `adapter-parity` depends on `canonical-skill-resource-manifest`;
 - `boundary-adapter-parity` depends on `adapter-parity`;
 - `boundary-capability-baseline` depends on every other registry operation.
@@ -1544,6 +1580,10 @@ byte; reconstructs its events and typed
 `simple-change-behavior` result, freshly executes deterministic registry
 operations, recomputes dependencies and aggregate formulas, and compares the
 complete reconstructed report with the recorded canonical report.
+For `behavior-implementation-manifest`, generation captures the execution
+environment and current component references once; validation checks that
+record's closed shape and every component's current identity without replacing
+the recorded behavior-generation environment with the validator's environment.
 A changed input-set identity is stale evidence and requires canonical
 generation; validation MUST NOT silently reuse or rewrite it.
 Validation does not replace the recorded baseline commit with the later
@@ -1694,7 +1734,7 @@ scenario_ref
 baseline_commit
 skill_resource_refs
 oracle_refs
-harness_contract_refs
+implementation_manifest_ref
 ```
 
 `schema_version` is `simple-change-input-v1`.
@@ -1705,11 +1745,10 @@ harness_contract_refs
 the four upstream `SKILL.md` files and every mapped boundary-proof resource.
 `oracle_refs` is the complete path-sorted current reference set for every
 candidate file.
-`harness_contract_refs` is the complete path-sorted current reference set for
-`specs/rigorloop-workflow.md`, `specs/rigorloop-workflow.test.md`,
-`specs/skill-contract.md`, `specs/skill-contract.test.md`,
-`scripts/boundary_proof_model.py`, and
-`scripts/validate-boundary-proof.py`.
+`implementation_manifest_ref` is the one current standard reference to the
+canonical behavior-implementation manifest.
+The input-set evaluator also validates every component and environment field
+inside that manifest before accepting its identity.
 `input_set_identity` is the `sha256:<64 lowercase hexadecimal characters>` of
 canonical JSON serialization of `input_set`.
 Missing, extra, reordered, stale, substituted, or caller-selected input-set
@@ -1732,9 +1771,11 @@ Run-ID/path, input-set, or identity mismatch fails closed.
 Before pointer replacement, the harness writes
 `docs/changes/<change-id>/evidence/simple-change/prepared.json`.
 That receipt contains exactly `run_id`, `input_set_identity`, `manifest_ref`,
-and `prior_pointer_ref`.
-`prior_pointer_ref` is null for the first publication or the standard current
-reference to the prior pointer.
+and `prior_pointer`.
+`prior_pointer` is null for the first publication or an immutable inline copy
+of the prior pointer's exact `run_id`, `input_set_identity`, and
+`manifest_ref` values.
+It is historical comparison data, not a current path-and-identity reference.
 The receipt is fsynced only after the immutable run validates.
 The harness writes and fsyncs a sibling temporary pointer, atomically replaces
 the pointer file with the platform's same-filesystem atomic file-replace
@@ -1746,7 +1787,7 @@ validation:
 
 - if the pointer names the prepared run, validate the run and finish receipt
   cleanup;
-- if the pointer still names `prior_pointer_ref`, validate the prepared run
+- if the pointer exactly equals the inline `prior_pointer`, validate the prepared run
   against its recorded and current input-set identity, complete pointer
   publication, and finish cleanup;
 - any other pointer, missing staged run, corrupt receipt, or input mismatch
