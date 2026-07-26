@@ -1474,30 +1474,43 @@ Boundary model scope: R28-R28z
 - Command IDs: CMD-BFP-9, CMD-BFP-11, CMD-BFP-12
 - Fixture/setup: Crash injection before and after run installation, receipt
   fsync, pointer replacement, parent-directory fsync, and receipt cleanup;
-  exact `clean`, `staged-unreceipted`, `prepared-staged`,
-  `prepared-installed`, `prepared-pointer-temporary`, `prepared-pointed`,
-  `published`, `conflict`, and `corrupt` fixtures scoped to one candidate run.
+  exact global discovery fixtures and `clean`, `generating`,
+  `staged-unreceipted`, `prepared-staged`, `prepared-installed`,
+  `prepared-pointer-temporary`, `prepared-pointed`, `published-owned`,
+  `published`, `conflict`, and `corrupt` candidate fixtures.
 - Steps: Interrupt before receipt creation, after durable receipt but before
   immutable installation, after installation/fsync, after installed-run
   validation, after pointer replacement, after parent-directory fsync, and
   after receipt cleanup. Resume against the original inputs; inspect
   deterministic staging, installed run, prepared receipt, current pointer, and
-  directory durability; distinguish the current staged-manifest reference from
-  the prospective immutable target descriptor; test a null prior pointer for
-  first publication; attempt a second in-flight publication. Exercise the
-  exact predicate and action of all nine durable states, including simultaneous
+  directory durability; distinguish the historical staged-manifest snapshot
+  from the prospective immutable target descriptor; test a null prior pointer
+  for first publication; attempt a second in-flight publication. Exercise the
+  exact predicate and action of every durable state, including simultaneous
   staging and target, staging with a target pointer, temporary pointer without
   receipt, unpointed target without receipt, missing candidate bytes, malformed
   object, symlink, identity mismatch, other current pointer, and changed input.
-  For orphan staging, prove automated stop, separately durable owner authority,
-  confirmed-stopped termination receipt, exact recovery-record schema,
-  discard-only behavior, staging-parent fsync, and no adoption. For cleanup,
-  prove pointer-parent and receipt-parent fsync before success.
+  Before run allocation, enumerate global receipt, lease, working, staging,
+  temporary-pointer, active/completed recovery, unrelated-run, multi-run, and
+  unknown-transient combinations; prove only the receipt/lease/recovery-owned
+  run can become a candidate and no lifecycle stage runs first. Rename staging
+  to immutable storage and prove the receipt's historical staged snapshot
+  remains valid against the installed target while no nonexistent staging path
+  is treated as current evidence. For working, staging, and lease-only orphans,
+  prove exclusive publisher-lock acquisition, publisher-instance and lease
+  binding, separately durable owner authority, exact recovery-record schema,
+  discard-only behavior, and no adoption. Interrupt before and after orphan
+  deletion, orphan-parent fsync, recovery-state replacement, lease deletion,
+  lease-parent fsync, and completion replacement; exercise every recovery row
+  and invalid tuple. For normal cleanup, prove pointer-parent, receipt-parent,
+  and lease-parent fsync before success.
 - Expected result: Resume reconciles valid evidence without reinvoking skills,
   never installs or points at a partial run, never installs without a durable
   exclusive receipt, never loses the prior immutable pointer, and fails closed
-  on every orphan, conflict, corrupt, unknown, or changed-input state. Every
-  non-corrupt durable tuple matches exactly one named state and route.
+  before generation on every unrelated, orphan, active-recovery, conflict,
+  corrupt, unknown, or changed-input state. Every non-corrupt durable tuple
+  matches exactly one named publication or recovery route; recovery resumes
+  idempotently after every interruption.
 - Failure proves: A crash can duplicate nondeterministic work or publish an
   incomplete/stale run.
 - Evidence artifact: controlled publication-recovery fixtures
@@ -1520,15 +1533,22 @@ Boundary model scope: R28-R28z
   with absent, complete, partial, extra, and contradictory output plus
   uncertain liveness and every closed non-output diagnostic. Enumerate every
   admissible transport tuple and representative vocabulary-valid unlisted
-  tuples. Assert lifecycle correction attempt and transport attempt remain
-  distinct; every row has the exact R28y fields; confirmed-stopped rows bind
-  the exact termination receipt; liveness-uncertain rows are uninspected; and
-  attempt 2 exists if and only if attempt 1 decides retry, uses a fresh runtime
-  identity, and terminates without retry. Reject missing, extra, duplicate,
-  unknown, out-of-order, post-terminal, multiple-terminal, and inconsistent
-  rows. Prove complete output references, empty absent/uninspected references,
-  bounded noncanonical partial/extra/contradictory references, and the exact
-  test-owned failure-fixture schema. Run validation repeatedly.
+  tuples. Combine each partial, extra, and contradictory output with every
+  protocol, prohibited-event, and runtime-identity diagnostic plus timeout
+  where applicable. Assert the closed precedence derives one primary
+  diagnostic and retains the complete ordered unique diagnostic list and
+  bounded evidence for every detected condition without changing output state.
+  Assert lifecycle correction attempt and transport attempt remain distinct;
+  a prospective event key remains valid when no lifecycle event is created;
+  every row has the exact R28y fields; confirmed-stopped rows bind the exact
+  termination receipt; liveness-uncertain rows are uninspected; and attempt 2
+  exists if and only if attempt 1 decides retry, uses a fresh runtime identity,
+  and terminates without retry. Reject missing, extra, duplicate, unknown,
+  suppressed, reordered, out-of-order, post-terminal, multiple-terminal, and
+  inconsistent rows. Prove complete output references, empty
+  absent/uninspected references, bounded noncanonical
+  partial/extra/contradictory references, diagnostic-evidence parity, and the
+  exact test-owned failure-fixture schema. Run validation repeatedly.
 - Expected result: One fresh immutable run contains current output snapshots,
   terminal branches, review-event evidence unions, and computed simple-change
   observations. Complete output reconciles without reinvocation, absent output
