@@ -1419,7 +1419,7 @@ The closed operation registry is:
 | `preservation-review-recording` | skill behavior harness | canonical preservation manifest and every reference selected by it | review-recording result | `preservation.review-recording` |
 | `preservation-isolation` | skill behavior harness | canonical preservation manifest and every reference selected by it | isolation result | `preservation.isolation` |
 | `preservation-handoff` | skill behavior harness | canonical preservation manifest and every reference selected by it | handoff result | `preservation.handoff` |
-| `behavior-implementation-manifest` | boundary model validator | exact standalone harness components, five participating skill packages, applicable repository instructions, contract inputs, closed invocation profile, closed transport policy, and bounded recorded runtime attestation below | exact `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json` | `support.behavior-implementation-manifest` |
+| `behavior-implementation-manifest` | boundary model validator | exact standalone harness components, five participating skill packages, applicable repository instructions, contract inputs, closed invocation profile, closed transport policy, closed lifecycle artifact policy, and bounded recorded runtime attestation below | exact `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json` | `support.behavior-implementation-manifest` |
 | `simple-change-behavior` | standalone simple-change behavior harness and evaluator | exact candidate corpus, current five participating skill packages, current behavior-implementation manifest, and invocation-owned pre-run HEAD | immutable run, atomic current pointer, behavior-output snapshots, trace, and metric result | `simple_change` |
 | `canonical-skill-resource-manifest` | skill validator | current exact eight R28m skills and every mapped boundary-proof resource | exact `docs/changes/<change-id>/evidence/canonical-skill-resource-manifest.json` | `support.canonical-skill-resource-manifest` |
 | `adapter-parity` | adapter validator | exact current `scripts/adapter_distribution.py`, `scripts/build-adapters.py`, `scripts/validate-adapters.py`, `dist/adapters/manifest.yaml`, and canonical skill/resource manifest | durable current four-surface parity manifest set | `adapter_parity` |
@@ -1476,7 +1476,8 @@ The canonical behavior-implementation manifest path is exactly
 `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json`.
 It contains exactly `manifest_id`, `harness_component_refs`,
 `skill_package_refs`, `instruction_refs`, `contract_refs`, and
-`invocation_profile`, `transport_policy`, and `runtime_attestation`.
+`invocation_profile`, `transport_policy`, `artifact_policy`, and
+`runtime_attestation`.
 `manifest_id` is `boundary-behavior-implementation-v1`.
 
 `transport_policy` contains exactly `schema_version`, `turn_deadline_ms`, and
@@ -1495,6 +1496,18 @@ not CLI parameters or caller-selectable values.
 this exact object.
 Changing, omitting, substituting, or accepting a nonpositive or unbounded value
 invalidates the behavior-implementation manifest and every dependent run.
+
+`artifact_policy` is the exact `lifecycle-stage-artifacts-v1` canonical object
+defined below.
+Generation selects it before the first lifecycle invocation.
+The behavior-manifest identity, `implementation_manifest_ref`, input-set
+identity, immutable run, current pointer, and report selector bind it
+transitively.
+Canonical validation independently reconstructs the complete object and its
+identity.
+Missing, additional, duplicate, reordered, stale, or substituted policy,
+occurrence, variant, content-state, artifact, or limit data fails before
+invocation or current-run acceptance.
 
 `harness_component_refs` is the path-sorted current reference list containing
 exactly:
@@ -1985,6 +1998,7 @@ Canonical validation MUST NOT reinvoke a lifecycle skill.
 It recomputes the input-set identity from the recorded baseline commit plus
 the current referenced scenario, complete participating skill packages,
 instructions, contracts, invocation profile, closed transport policy,
+closed lifecycle artifact policy,
 recorded runtime attestation,
 oracles, and standalone harness components; validates the pointed immutable run and every current referenced
 byte; reconstructs its events and typed
@@ -1992,7 +2006,8 @@ byte; reconstructs its events and typed
 operations, recomputes dependencies and aggregate formulas, and compares the
 complete reconstructed report with the recorded canonical report.
 For `behavior-implementation-manifest`, generation captures the invocation
-profile, transport policy, runtime attestation, and current references once.
+profile, transport policy, lifecycle artifact policy, runtime attestation, and
+current references once.
 Validation checks that record's closed shape, import policy, exact derived
 resource and instruction sets, bounded attestation shape and identities, and
 every current identity without replacing the recorded behavior-generation
@@ -2000,6 +2015,10 @@ profile or attestation with the validator's environment.
 It independently reconstructs the exact closed transport-policy object,
 recomputes `transport_policy_identity`, and requires all three policy fields
 and the transitive identity used by the immutable run to match.
+It independently reconstructs the exact closed lifecycle artifact-policy
+object, recomputes its identity, and requires the complete occurrence,
+variant, content-state, artifact, ordering, limit, and transitive immutable-run
+binding to match.
 A changed input-set identity is stale evidence and requires canonical
 generation; validation MUST NOT silently reuse or rewrite it.
 Validation does not replace the recorded baseline commit with the later
@@ -2619,8 +2638,23 @@ returned.
 
 The first-version lifecycle policy ID is
 `lifecycle-stage-artifacts-v1`.
-Its canonical policy object contains exactly `policy_id`, the complete stage
-and occurrence matrix below, and the three byte limits above.
+Its canonical policy object contains exactly `policy_id`,
+`stage_occurrences`, `per_artifact_byte_limit`,
+`aggregate_artifact_byte_limit`, and `envelope_byte_limit`.
+The three limits are exactly `262144`, `524288`, and `786432`.
+`stage_occurrences` is an ordered list whose rows contain exactly `stage`,
+`attempt`, and `variants`.
+Rows are ordered by stage in the closed order `spec`, `spec-review`,
+`test-spec`, `test-spec-review`, then by numeric attempt.
+There are exactly eight rows, one for each stage and attempt 1 or 2.
+`variants` is an ordered nonempty list whose rows contain exactly
+`artifact_set_variant`, `content_state_id`, and `artifacts`.
+Variant order is the order shown for that occurrence in the readable matrix
+below.
+`artifacts` is the exact ordered nonempty list of rows containing only `role`
+and `path`.
+No object or list is normalized, sorted, or deduplicated before policy
+validation or identity computation.
 Its identity is the standard SHA-256 identity of that exact canonical-JSON
 object and is reconstructed independently during generation and validation.
 
@@ -2639,20 +2673,47 @@ The lifecycle artifact-set matrix is closed.
 `reviews/test-spec-review.md`, `review-log/test-spec-review.md`, and
 `review-resolution/test-spec-review.md`.
 
-| Stage occurrence | Artifact-set variant | Exact ordered artifacts | Required content state |
-| --- | --- | --- | --- |
-| `spec#1` | `spec-initial` | FR | Authored feature spec |
-| `spec#2` | `spec-correction` | FR, SX | Distinct corrected feature spec; open resolution updated with accepted correction and validation evidence |
-| `spec-review#1` | `spec-review-approved-initial` | SR, SL | Review and log agree on `approved`; no resolution |
-| `spec-review#1` or `spec-review#2` | `spec-review-changes-requested` | SR, SL, SX | Review and log agree on `changes-requested`; nonempty findings; open resolution |
-| `spec-review#1` or `spec-review#2` | `spec-review-blocked` | SR, SL, SX | Review and log agree on `blocked`; nonempty findings; open resolution |
-| `spec-review#2` | `spec-review-approved-rereview` | SR, SL, SX | Review and log agree on `approved`; prior findings have final dispositions and resolution is closed |
-| `test-spec#1` | `test-spec-initial` | TR | Authored test spec |
-| `test-spec#2` | `test-spec-correction` | TR, TRX | Distinct corrected test spec; open resolution updated with accepted correction and validation evidence |
-| `test-spec-review#1` | `test-spec-review-approved-initial` | TRR, TRL | Review and log agree on `approved`; no resolution |
-| `test-spec-review#1` or `test-spec-review#2` | `test-spec-review-changes-requested` | TRR, TRL, TRX | Review and log agree on `changes-requested`; nonempty findings; open resolution |
-| `test-spec-review#1` or `test-spec-review#2` | `test-spec-review-blocked` | TRR, TRL, TRX | Review and log agree on `blocked`; nonempty findings; open resolution |
-| `test-spec-review#2` | `test-spec-review-approved-rereview` | TRR, TRL, TRX | Review and log agree on `approved`; prior findings have final dispositions and resolution is closed |
+| Stage occurrence | Artifact-set variant | Content-state ID | Exact ordered artifacts | Required content state |
+| --- | --- | --- | --- | --- |
+| `spec#1` | `spec-initial` | `feature-spec-initial-v1` | FR | Authored feature spec |
+| `spec#2` | `spec-correction` | `feature-spec-correction-v1` | FR, SX | Distinct corrected feature spec; open resolution updated with accepted correction and validation evidence |
+| `spec-review#1` | `spec-review-approved-initial` | `spec-review-approved-initial-v1` | SR, SL | Review and log agree on `approved`; no resolution |
+| `spec-review#1` or `spec-review#2` | `spec-review-changes-requested` | `spec-review-changes-requested-v1` | SR, SL, SX | Review and log agree on `changes-requested`; nonempty findings; open resolution |
+| `spec-review#1` or `spec-review#2` | `spec-review-blocked` | `spec-review-blocked-v1` | SR, SL, SX | Review and log agree on `blocked`; nonempty findings; open resolution |
+| `spec-review#2` | `spec-review-approved-rereview` | `spec-review-approved-rereview-v1` | SR, SL, SX | Review and log agree on `approved`; prior findings have final dispositions and resolution is closed |
+| `test-spec#1` | `test-spec-initial` | `test-spec-initial-v1` | TR | Authored test spec |
+| `test-spec#2` | `test-spec-correction` | `test-spec-correction-v1` | TR, TRX | Distinct corrected test spec; open resolution updated with accepted correction and validation evidence |
+| `test-spec-review#1` | `test-spec-review-approved-initial` | `test-spec-review-approved-initial-v1` | TRR, TRL | Review and log agree on `approved`; no resolution |
+| `test-spec-review#1` or `test-spec-review#2` | `test-spec-review-changes-requested` | `test-spec-review-changes-requested-v1` | TRR, TRL, TRX | Review and log agree on `changes-requested`; nonempty findings; open resolution |
+| `test-spec-review#1` or `test-spec-review#2` | `test-spec-review-blocked` | `test-spec-review-blocked-v1` | TRR, TRL, TRX | Review and log agree on `blocked`; nonempty findings; open resolution |
+| `test-spec-review#2` | `test-spec-review-approved-rereview` | `test-spec-review-approved-rereview-v1` | TRR, TRL, TRX | Review and log agree on `approved`; prior findings have final dispositions and resolution is closed |
+
+For rows that apply to both review attempts, the identical variant row occurs
+in each applicable occurrence's `variants` list.
+The exact occurrence-specific variant order is:
+
+```text
+spec#1: spec-initial
+spec#2: spec-correction
+spec-review#1:
+  spec-review-approved-initial
+  spec-review-changes-requested
+  spec-review-blocked
+spec-review#2:
+  spec-review-approved-rereview
+  spec-review-changes-requested
+  spec-review-blocked
+test-spec#1: test-spec-initial
+test-spec#2: test-spec-correction
+test-spec-review#1:
+  test-spec-review-approved-initial
+  test-spec-review-changes-requested
+  test-spec-review-blocked
+test-spec-review#2:
+  test-spec-review-approved-rereview
+  test-spec-review-changes-requested
+  test-spec-review-blocked
+```
 
 The authoring stage skill owns FR or TR plus the correction update to SX or
 TRX for its correction occurrence.
@@ -2684,8 +2745,10 @@ or substitute for its materialized files.
 The runtime collector retains every bounded agent-message candidate observed
 for the current turn even when terminal turn completion is not observed before
 the deadline.
-It retains at most two candidate messages and at most 1572864 aggregate
-candidate-message UTF-8 bytes.
+It accepts at most two candidate messages and 1572864 aggregate
+candidate-message UTF-8 bytes before overflow.
+Overflowing raw bytes are hashed and counted through the first overflow but
+are not retained after the bounded observation row is formed.
 It counts candidate messages through the first overflowing message, so
 `candidate_count` is zero through three; three means count overflow was
 observed and collection stopped.
@@ -2704,25 +2767,40 @@ precedence when the same newly observed message would satisfy both overflow
 conditions.
 `candidates` retains at most the first two rows.
 Each row contains exactly `ordinal`, `message_identity`,
-`message_byte_count`, `parse_state`, `shape_projection`,
+`message_byte_count`, `parse_state`, `malformation_kind`, `shape_projection`,
 `shape_projection_identity`, `schema_version`, `artifact_policy_id`,
 `completed`, `last_stage`, `artifact_set_variant`, and
 `artifact_projection`.
 `ordinal` starts at one and is contiguous.
 `parse_state` is `parsed`, `malformed`, or `oversized`.
-For `parsed`, `shape_projection` is empty; the five envelope fields are the
-parsed values, including `completed: true`; and `artifact_projection`
-preserves artifact order with rows containing exactly `role`, `path`,
-`byte_identity`, and `byte_count`.
-For `malformed`, the five envelope fields are null,
-`artifact_projection` is empty, and `shape_projection` is the complete
-value-free path-and-JSON-type projection of the bounded message.
-For `oversized`, all parsed fields and projections are empty or null.
-`shape_projection_identity` is null unless `parse_state` is `malformed`; when
-present it is the canonical identity of the complete projection.
+`malformation_kind` is null for `parsed` and `oversized`; for `malformed` it
+is exactly `invalid-json`, `non-object-json`, or `schema-invalid`.
+The collector applies the per-message byte limit before JSON parsing.
+A message above that limit is `oversized` even if its prefix or complete bytes
+would otherwise parse.
+
+The serialization matrix is exact:
+
+| Parse state | Malformation kind | Shape projection | Shape identity | Five envelope fields | Artifact projection |
+| --- | --- | --- | --- | --- | --- |
+| `parsed` | null | empty list | null | exact parsed values, including `completed: true` | exact ordered `{role, path, byte_identity, byte_count}` rows |
+| `malformed` | `invalid-json` | empty list | null | all null | empty list |
+| `malformed` | `non-object-json` | complete value-free JSON path/type projection | canonical projection identity | all null | empty list |
+| `malformed` | `schema-invalid` | complete value-free JSON path/type projection | canonical projection identity | all null | empty list |
+| `oversized` | null | empty list | null | all null | empty list |
+
+The five envelope fields are `schema_version`, `artifact_policy_id`,
+`completed`, `last_stage`, and `artifact_set_variant`.
+`schema-invalid` means syntactically valid object JSON that fails the exact
+envelope schema before policy comparison.
+The shape projection uses normalized JSON Pointer and the closed JSON types
+`null`, `boolean`, `number`, `string`, `array`, and `object`, ordered by path.
 The observation never persists `content_utf8` or raw candidate-message bytes.
 All counts and identities are independently recomputed from the transient
 messages.
+`aggregate_message_bytes` is the exact sum of complete candidate-message
+UTF-8 byte lengths through and including the first message that causes either
+overflow condition.
 
 Output state is derived from the complete candidate-set observation:
 
@@ -2786,8 +2864,9 @@ Every transport-attempt row contains exactly:
 `transport_policy_identity`, `artifact_policy_identity`,
 `termination_state`, `termination_receipt`, `output_state`,
 `stage_envelope_identity`, `artifact_set_variant`,
-`candidate_observation`, `primary_diagnostic_id`, `diagnostic_ids`,
-`decision`, `evidence_refs`, and `diagnostic_evidence`.
+`candidate_observation`, `materialization_observation`,
+`content_validation_observation`, `primary_diagnostic_id`,
+`diagnostic_ids`, `decision`, `evidence_refs`, and `diagnostic_evidence`.
 `event_key` is the prospective lifecycle event identity `<stage>#<attempt>`.
 It is reserved before transport begins and remains a correlation key when a
 pause or failure prevents creation of the lifecycle event.
@@ -2807,6 +2886,10 @@ the preflight row.
 complete bounded observation above.
 `stage_envelope_identity` and `artifact_set_variant` are non-null only for
 `complete`, and equal the sole accepted or reconciled candidate.
+`materialization_observation` is null unless one structurally complete
+candidate reached materialization.
+`content_validation_observation` is null unless materialization comparison
+passed and lifecycle content validation ran.
 Rows are ordered first by lifecycle-event order and then by transport attempt.
 
 `termination_state` is exactly `completed`, `confirmed-stopped`, or
@@ -2841,6 +2924,52 @@ Only a `complete` envelope may be materialized.
 After materialization, the adapter independently requires the bound
 stage-output root to contain exactly the envelope paths and exact returned
 bytes; a mismatch is `stage-output-contradictory` and cannot be accepted.
+
+`materialization_observation` contains exactly `schema_version`,
+`expected_outputs`, `reread_outputs`, `comparison_result`, and
+`observation_identity`.
+`schema_version` is `stage-materialization-observation-v1`.
+Both output lists preserve policy order and contain rows with exactly `path`,
+`entry_kind`, `byte_identity`, and `byte_count`.
+`entry_kind` is `regular-file`, `symlink`, or `other`.
+Expected rows always use `regular-file`.
+Reread regular files have standard identities and non-negative byte counts;
+all other reread entry kinds have null identity and byte count.
+`expected_outputs` comes from the sole complete candidate.
+`reread_outputs` lists each existing expected path in policy order, followed
+by every additional non-directory leaf path in bytewise path order; missing
+expected paths are absent and ordinary parent directories are excluded.
+It is the complete leaf observation and is not deduplicated or repaired
+before comparison.
+`comparison_result` is `pass` only for exact ordered path, identity, and byte
+count equality, otherwise `fail`.
+`observation_identity` is the canonical identity of the other four fields.
+The record contains no artifact content.
+
+`content_validation_observation` contains exactly `schema_version`,
+`validators`, `artifacts`, `outcome`, `diagnostic_ids`, and
+`observation_identity`.
+`schema_version` is `stage-content-validation-observation-v1`.
+`validators` is an ordered nonempty list of rows containing exactly
+`validator_id` and `validator_identity`.
+The closed validator IDs are `feature-spec-structure-v1`,
+`test-spec-structure-v1`, `formal-review-record-v1`,
+`review-log-consistency-v1`, `review-resolution-consistency-v1`, and
+`artifact-set-content-state-v1`; only validators applicable to the selected
+variant occur, in that order.
+Each validator identity is the canonical identity of exactly
+`{validator_id, implementation_manifest_ref, contract_refs}` using the
+current bound manifest and its complete contract references.
+`artifacts` is the policy-ordered list of materialized `{role, path,
+byte_identity}` rows.
+`outcome` is `pass` or `fail`.
+`diagnostic_ids` is `[none]` for pass; for fail it is the nonempty unique
+ordered subset of `artifact-structure-invalid`, `review-outcome-mismatch`,
+`finding-set-mismatch`, `resolution-state-mismatch`,
+`reviewed-identity-mismatch`, and `occurrence-mismatch`.
+`observation_identity` is the canonical identity of the other five fields.
+No raw content or review prose is retained in either observation.
+
 Every member of `diagnostic_ids` and `primary_diagnostic_id` is one of:
 
 ```text
@@ -2973,7 +3102,7 @@ Each value has one exact role-specific shape:
 | --- | --- |
 | `stage-turn-timeout` | `kind: deadline-observation-v1`, `transport_policy_identity`, `deadline_ms`, `elapsed_ms`, `runtime_thread_id` |
 | `stage-liveness-uncertain` | `kind: liveness-observation-v1`, `transport_policy_identity`, `termination_requested: true`, `wait_deadline_ms`, `wait_elapsed_ms`, `wait_completed: false`, `runtime_process_id` |
-| `stage-output-absent`, `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: candidate-output-observation-v1`, `artifact_policy_identity`, `required_outputs`, `candidate_observation_identity`, and exact `output_state` |
+| `stage-output-absent`, `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: candidate-output-observation-v1`, `artifact_policy_identity`, `required_outputs`, `candidate_observation_identity`, `materialization_observation_identity`, `content_validation_observation_identity`, and exact `output_state` |
 | `stage-output-candidate-overflow` | `kind: candidate-overflow-observation-v1`, `candidate_observation_identity`, `overflow`, `candidate_count`, and `aggregate_message_bytes` |
 | `stage-envelope-invalid` | `kind: stage-envelope-observation-v1`, `candidate_observation_identity`, and nonempty ordered `invalidity_reasons` |
 | `protocol-item-classification-invalid` | `kind: protocol-classification-observation-v1`, `event_kind`, `protocol_classification_identity`, `lookup_result: unknown`, `event_shape_projection`, `event_shape_identity` |
@@ -3004,6 +3133,9 @@ The role predicates are exact:
   the bound artifact policy and occurrence.
   The candidate-output evidence state equals the independently derived row
   state.
+  Its materialization and content-validation identities are null exactly when
+  the corresponding row observations are null and otherwise equal their
+  canonical identities.
   Overflow evidence exactly repeats the observation's non-`none` overflow,
   count, and aggregate byte count.
   `invalidity_reasons` uses only `malformed`, `oversized`,
@@ -3201,11 +3333,27 @@ or:
 blocked:
   any valid prefix ending in a review event with observed_result blocked
 
+correction budget exhausted:
+  spec#1 -> spec-review#1(changes-requested)
+  -> spec#2 -> spec-review#2(changes-requested)
+
+or:
+  spec#1 -> spec-review#1(approved)
+  -> test-spec#1 -> test-spec-review#1(changes-requested)
+  -> test-spec#2 -> test-spec-review#2(changes-requested)
+
 authoring failure:
   any valid prefix ending in an authoring event with structural_result fail
 ```
 
-No event may follow blocked or an authoring structural failure.
+No event may follow blocked, correction-budget-exhausted, or an authoring
+structural failure.
+The second changes-requested review preserves its open resolution, permits no
+third authoring attempt, and terminates `simple-change-behavior` as `fail`
+with run diagnostic `correction-budget-exhausted`.
+Its review event still uses the structural/observed diagnostic matrix above;
+the terminal run diagnostic is separate and cannot replace structural
+evidence.
 Every authoring output identity MUST equal the following review's reviewed
 snapshot identity.
 Attempt 2 MUST produce a distinct corrected behavior-output path and identity.
