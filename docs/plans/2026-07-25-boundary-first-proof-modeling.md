@@ -80,11 +80,11 @@ resource through generated, packed, and installed outputs.
 - Current milestone: M1. Typed model, validator, fixtures, and report core
 - Current milestone state: resolution-needed
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r1.md
-- Review status: changes-requested; stage=code-review; round=M1 R1
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: owner decision for BFP-M1-CR4, BFP-M1-CR6, and BFP-M1-CR7
+- Next stage: spec-review R3 for the M1 contract-gap amendment
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-findings-open, owner-decisions-required, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7; spec-rereview-required
 
 ## Milestones
 
@@ -300,6 +300,7 @@ implementation authorization is requested.
 - 2026-07-25: Matching workflow and skill-contract test specs were amended with v1 proof maps, fixtures, commands, and milestone gates.
 - 2026-07-26: M1 added the immutable typed model, deterministic validator CLI, frozen incident registry, compact simple-change fixture, and synthetic capability aggregation proof.
 - 2026-07-26: M1 code-review R1 recorded seven findings; BFP-M1-CR4, BFP-M1-CR6, and BFP-M1-CR7 require owner decisions before correction.
+- 2026-07-26: The user authorized the recommended contract-first resolution; the workflow and skill specs now define identity-bound evidence, boundary-state incident replay, and computed simple-change traces pending spec-review R3.
 
 ## Decision log
 

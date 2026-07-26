@@ -1,7 +1,7 @@
 # RigorLoop Workflow
 
 ## Status
-- approved
+- draft
 Boundary model version: v1
 Boundary model scope: R28-R28z
 
@@ -1287,6 +1287,32 @@ R28x. The first-release seeded fixture registry is:
 The fixture IDs, seeded omission classes, and owning gates are closed for the
 first release.
 
+Every incident fixture MUST contain exactly:
+`fixture_id`, `seeded_omission`, `expected_gate`, `boundary_state`, and
+`expected_diagnostic`.
+`boundary_state` is one complete stage-gate input with exactly these closed
+fields:
+
+```text
+canonical_source: owner-derived | caller-asserted
+vocabulary_state: known | unknown
+transition_state: legal | illegal | not-applicable
+identity_state: current | stale | substituted
+mutation_state: complete | partial | not-applicable
+recovery_state: reconciled | repeated | not-applicable
+composition_state: complete | helper-only | not-applicable
+sibling_state: complete | one-only | not-applicable
+```
+
+Each seeded fixture MUST differ from its valid contrast in the one boundary
+state named by `seeded_omission`.
+The executable stage-gate evaluator MUST derive the first detecting stage and
+diagnostic from `boundary_state`; it MUST NOT select an outcome from
+`fixture_id`, `expected_gate`, or `expected_diagnostic`.
+The fixture passes replay only when the derived stage is no later than
+`expected_gate`, the expected diagnostic matches, the omission does not escape
+to code review, and the sibling state does not retain a bypass.
+
 R28y. The canonical first-release report path is:
 
 ```text
@@ -1304,16 +1330,47 @@ Every check and fixture result uses exactly `pass`, `fail`, or `not-run`.
 The `checks` mapping contains exactly the six IDs from `R28p`;
 `boundary-skill-contract` includes routing, claim-boundary, review-recording,
 isolation, validation, and handoff preservation.
+Every check, preservation, adapter-parity, and fixture result row contains
+`result`, `evidence_refs`, and `blocking_reason`.
 Each fixture row also records `expected_gate`, `detected_stage`,
 `escaped_to_code_review`, `sibling_bypass_remaining`, and non-empty
-`evidence_refs`.
+`evidence_refs` when its result is `pass` or `fail`.
 The two escape fields are YAML booleans.
 `expected_gate` uses exactly `spec`, `spec-review`, `test-spec`,
 `test-spec-review`, or `implement`.
 `detected_stage` uses one of those values or `not-detected`.
 Gate ordering is the standard workflow order shown in that list.
-Every `pass` or `fail` row MUST cite repository-visible evidence; `not-run`
-MUST cite its blocking reason.
+Every evidence reference contains exactly:
+
+```yaml
+path: <normalized repository-relative POSIX path>
+identity: sha256:<64 lowercase hexadecimal characters>
+```
+
+The path MUST resolve beneath the repository root to a tracked or
+change-local regular file, MUST NOT traverse a symbolic link, and the identity
+MUST equal the SHA-256 of the file's current raw bytes.
+
+For `pass` and `fail`, `evidence_refs` MUST be non-empty and
+`blocking_reason` MUST be null.
+For `not-run`, `evidence_refs` MUST be empty and `blocking_reason` MUST contain
+exactly `code` and `detail`.
+`code` is exactly `prerequisite-unsatisfied`, `authorization-required`,
+`environment-unavailable`, or `upstream-failure`; `detail` is a non-empty
+diagnostic.
+Unknown evidence fields, unsafe paths, missing or non-regular files, symbolic
+links, stale identities, substituted content, missing blocking reasons, and
+blocking reasons attached to executed rows fail closed.
+
+The compact simple-change fixture contains an initial feature model, its
+reviewed feature model, and its test-spec proof map.
+The same structural stage-gate evaluator MUST compute a trace through
+`spec`, `spec-review`, `test-spec`, and `test-spec-review`.
+The computed trace records input and output identities, result, diagnostic,
+and whether an author-review correction occurred at each stage.
+Artifact count, false-blocking count, applicable-only proof mapping, and
+structural correction cycles MUST be derived from that trace and repository
+outputs; fixture-supplied aggregate counters are forbidden.
 
 `overall_result` is computed as `pass` only when every required check and
 fixture is `pass`, every `detected_stage` is no later than its expected gate,

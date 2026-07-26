@@ -2,7 +2,7 @@
 
 ## Status
 
-- approved
+- draft
 Boundary model version: v1
 Boundary model scope: R56-R56q
 
@@ -1006,6 +1006,14 @@ omission for every exact fixture ID in
 The workflow-owned fixture registry supplies each omission class and expected
 gate; this skill contract owns its projection into the eight skill behavior
 fixtures and MUST NOT rename or replace those IDs.
+The shared executable boundary-state evaluator owns structural replay for all
+eight fixtures.
+Published skills own the corresponding stage instruction and stop behavior;
+they MUST NOT duplicate a second fixture-outcome table or infer success from
+the fixture ID.
+Behavior fixtures MUST prove that the skill's named gate consumes the same
+closed boundary-state fields and produces the same diagnostic family as the
+shared evaluator.
 
 R56p. A valid simple-change fixture MUST exercise the same workflow while
 recording the twelve core classifications once in one compact feature-spec
@@ -1013,6 +1021,14 @@ table.
 Its test spec MUST map only applicable proof obligations, it MUST create no new
 universal artifact, and satisfying structure alone MUST require no more than
 one author-review correction cycle.
+The simple-change fixture MUST NOT supply its own artifact-count,
+false-blocking, or correction-cycle result.
+The shared structural evaluator derives those observations from a stage trace
+through `spec`, `spec-review`, `test-spec`, and `test-spec-review`, including
+current input and output identities.
+Skill behavior-preservation review remains responsible for semantic,
+instruction-following, isolation, and handoff equivalence that deterministic
+structural replay cannot establish.
 
 R56q. Public activation and rollback MUST update the eight skills, required
 resources, validators, fixtures, selector registrations, and generated

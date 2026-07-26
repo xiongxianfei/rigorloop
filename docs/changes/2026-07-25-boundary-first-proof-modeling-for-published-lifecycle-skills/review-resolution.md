@@ -41,10 +41,10 @@ Closeout status: open
 | BFP-M1-CR1 | accepted | open | Enforce stable unique example evidence IDs and per-reference requirement ownership. |
 | BFP-M1-CR2 | accepted | open | Freeze exact incident ID, omission class, and owning gate. |
 | BFP-M1-CR3 | accepted | open | Enforce the complete legacy/v1 marker and scope matrix. |
-| BFP-M1-CR4 | needs-decision | open | Select the repository-visible current-evidence representation. |
+| BFP-M1-CR4 | accepted | open | Use repository-relative path plus current raw-byte SHA-256 evidence references and closed not-run blockers. |
 | BFP-M1-CR5 | accepted | open | Canonicalize capability-report serialization. |
-| BFP-M1-CR6 | needs-decision | open | Select the executable incident payload and owning-gate harness. |
-| BFP-M1-CR7 | needs-decision | open | Select the simple-change workflow trace and harness owner. |
+| BFP-M1-CR6 | accepted | open | Use a closed boundary-state envelope evaluated independently of fixture labels by the shared stage-gate evaluator. |
+| BFP-M1-CR7 | accepted | open | Derive simple-change measurements from a structural stage trace owned by the shared evaluator. |
 
 ## Finding Details
 
@@ -348,14 +348,14 @@ Validation evidence: pending
 #### BFP-M1-CR4 - Report evidence identity is undefined
 
 Finding ID: BFP-M1-CR4
-Disposition: needs-decision
+Disposition: accepted
 Status: open
 Owner: initiative owner
 Owning stage: owner decision before review-resolution M1
 Decision owner: initiative owner
-Decision needed: Select the repository-visible current-evidence representation for pass/fail rows and the closed blocking-reason representation for not-run rows.
+Decision needed: none; the user authorized the best contract correction on 2026-07-26.
 Required outcome: Evidence validation rejects missing, unsafe, stale, substituted, non-regular, and wrong-kind references.
-Chosen action: pending owner decision
+Chosen action: Use `{path, identity}` evidence references bound to repository-relative regular files and current raw-byte SHA-256; use a closed `{code, detail}` blocker for not-run rows.
 Rationale: The approved implementation contract requires current evidence but does not define its persisted identity or blocking-reason shape.
 Validation target: code-review-m1-r2
 Validation evidence: pending
@@ -378,14 +378,14 @@ Validation evidence: pending
 #### BFP-M1-CR6 - Incident corpus is not executable
 
 Finding ID: BFP-M1-CR6
-Disposition: needs-decision
+Disposition: accepted
 Status: open
 Owner: initiative owner
 Owning stage: owner decision before review-resolution M1
 Decision owner: initiative owner
-Decision needed: Select the executable incident payload representation and owning-gate harness.
+Decision needed: none; the user authorized the best contract correction on 2026-07-26.
 Required outcome: Every exact incident is detected no later than its owning gate with escape and sibling-bypass evidence.
-Chosen action: pending owner decision
+Chosen action: Use the closed R28x boundary-state envelope and a shared evaluator that derives stage and diagnostic without reading expected fixture labels.
 Rationale: The approved implementation contract freezes the incidents but does not assign a payload or harness owner.
 Validation target: code-review-m1-r2
 Validation evidence: pending
@@ -393,14 +393,14 @@ Validation evidence: pending
 #### BFP-M1-CR7 - Simple-change workflow evidence is asserted
 
 Finding ID: BFP-M1-CR7
-Disposition: needs-decision
+Disposition: accepted
 Status: open
 Owner: initiative owner
 Owning stage: owner decision before review-resolution M1
 Decision owner: initiative owner
-Decision needed: Select the simple-change trace representation and harness owner.
+Decision needed: none; the user authorized the best contract correction on 2026-07-26.
 Required outcome: Derive applicable-only proof mapping, artifact count, false blocking, and correction cycles from the same workflow path.
-Chosen action: pending owner decision
+Chosen action: Use the shared structural evaluator to compute a four-stage trace with identities, diagnostics, correction events, artifact count, false blocking, and applicable-only proof mapping.
 Rationale: The approved implementation contract states the measurements but not the executable trace boundary.
 Validation target: code-review-m1-r2
 Validation evidence: pending
