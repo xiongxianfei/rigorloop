@@ -2490,6 +2490,8 @@ def generate_behavior(
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
     def invoke(request: Mapping[str, object]) -> tuple[dict[str, object], dict[str, object]]:
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(f"stage-start:{request.get('stage')}", file=sys.stderr)
         generated: list[dict[str, object]] = []
         observed_attestation = _collect_runtime_attestation(
             command,
@@ -2499,6 +2501,8 @@ def generate_behavior(
         )
         if len(generated) != 1:
             raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(f"stage-complete:{request.get('stage')}", file=sys.stderr)
         return observed_attestation, generated[0]
 
     attestation, route_result = invoke(_route_request(str(scenario["request"])))
@@ -3307,6 +3311,11 @@ class _AppServer:
             if classification is None or classification == (
                 "prohibited-capability-event"
             ):
+                if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                    print(
+                        f"turn-event:{source}:{method}:{classification}",
+                        file=sys.stderr,
+                    )
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
@@ -3346,6 +3355,8 @@ class _AppServer:
                         )
                     messages.append(text)
                 elif item_type not in {"userMessage", "reasoning"}:
+                    if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                        print(f"turn-item:{item_type}", file=sys.stderr)
                     raise BoundaryRuntimeError(
                         "unexpected-prohibited-event", "in-turn"
                     )
@@ -3361,6 +3372,28 @@ class _AppServer:
                     or turn.get("error") is not None
                     or len(messages) != 1
                 ):
+                    if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                        print(
+                            "turn-completed:",
+                            repr(
+                                {
+                                    "thread_match": params.get("threadId")
+                                    == thread_id,
+                                    "turn_status": (
+                                        turn.get("status")
+                                        if isinstance(turn, dict)
+                                        else None
+                                    ),
+                                    "turn_error": (
+                                        turn.get("error")
+                                        if isinstance(turn, dict)
+                                        else None
+                                    ),
+                                    "message_count": len(messages),
+                                }
+                            ),
+                            file=sys.stderr,
+                        )
                     raise BoundaryRuntimeError(
                         "unexpected-prohibited-event", "in-turn"
                     )
