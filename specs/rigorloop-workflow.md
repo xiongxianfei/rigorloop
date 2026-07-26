@@ -1581,7 +1581,7 @@ any lifecycle output is accepted and matches
 `orchestration_mode` is `workflow-auto-isolated-v1`.
 `instruction_profile` is
 `repository-instructions-plus-runtime-default-v1`.
-`tool_profile` is `isolated-workspace-no-network-v1`.
+`tool_profile` is `isolated-workspace-readonly-no-network-v1`.
 `python_implementation` is lowercased
 `platform.python_implementation()` and matches `^[a-z][a-z0-9-]*$`;
 `python_version` is `sys.version_info` normalized to `major.minor.micro`.
@@ -1706,7 +1706,7 @@ record and identity preimage. No heuristic secret-name judgment is permitted.
 The launcher and runtime-package identities are verified with unchanged
 filesystem identity before and after every schema-generation, sandbox-probe,
 app-server, and accepted-turn boundary.
-`active_permission_profile` is exactly `boundary-proof-v1`.
+`active_permission_profile` is exactly `boundary-proof-stage-readonly-v1`.
 
 `thread_metadata` contains exactly `cli_version`, `model_id`,
 `model_provider`, `active_permission_profile`, `workspace_root_roles`,
@@ -1716,7 +1716,7 @@ For the exact Codex `0.145.0` projection, `workspace_root_roles` records the
 empty list returned by `thread/start`; the same request and the accepted
 `turn/start` request both bind `runtimeWorkspaceRoots` to exactly the isolated
 workspace before lifecycle output is accepted. The parent independently proves
-that named profile's workspace read/write and all deny probes before
+that named profile's workspace read and transitive write-denial probes before
 `turn/start`. A later runtime that reports non-empty thread-start roots requires
 a new version/schema-bound mapping rather than being silently normalized.
 `cwd_role` is `isolated-workspace`; and `instruction_source_refs` is the
@@ -1764,8 +1764,9 @@ resolve to its exact projected classification. Unknown or
 when it reports `status: disabled` and a null environment identity; every
 other value stops the turn.
 
-`probe_results` contains exactly `workspace_read`, `workspace_write`,
-`unmanifested_source_denied`, `private_auth_denied`, `network_denied`, and
+`probe_results` contains exactly `workspace_read`, `workspace_write_denied`,
+`descendant_workspace_write_denied`, `unmanifested_source_denied`,
+`private_auth_denied`, `network_denied`, and
 `stage_envelope_materialization`.
 `credential_isolation_results` contains exactly `environment_names_closed`,
 `canary_absent_from_environment`, `canary_absent_from_argv`,
@@ -1782,6 +1783,27 @@ Every result value is `pass`; failed or unavailable proof prevents manifest
 creation. No raw configuration, inventory response, canary, credential,
 environment value, private path, or raw protocol log is recorded.
 
+The stage-turn permission profile grants child tools read-only access to the
+isolated workspace and no writable root.
+The exact effective configuration and both parent-owned probe paths must agree
+on that empty write-root set.
+`workspace_write_denied` attempts a regular-file create, overwrite, removal,
+and permission-mode change through the identified sandbox surface and requires
+all four to fail with the workspace unchanged.
+`descendant_workspace_write_denied` starts one sandboxed command that creates a
+descendant, proves through a parent-owned pipe that the descendant is ready,
+lets the direct command exit, then has the descendant attempt the same four
+mutations and report only four denial booleans through that pipe.
+The parent requires all denial booleans, unchanged workspace identity, and
+bounded descendant exit/reap within `termination_wait_deadline_ms`.
+The probe records only `pass`.
+The permission enforcement is inherited by command descendants and applies
+equally to runtime file-change/apply-patch handling.
+A writable child root, successful mutation, absent or ambiguous descendant
+result, or incomplete reap is `environment-unavailable` before the canary.
+The exact-byte materializer executes in the parent outside child tool authority
+and is the only component with write access to the behavior-output root.
+
 `stage_envelope_materialization` is proved by one noncanonical preflight turn
 through `workflow` and `spec` after runtime negotiation and the direct sandbox
 probes succeed.
@@ -1790,7 +1812,8 @@ Before the turn, the parent selects the separate
 into the turn request, output schema, and runtime attestation.
 That policy contains exactly `policy_id`, `stage`, `artifact_set_variant`,
 `artifacts`, `per_artifact_byte_limit`, `aggregate_artifact_byte_limit`,
-`candidate_message_byte_limit`, and `envelope_byte_limit`.
+`candidate_message_byte_limit`, `envelope_byte_limit`, and
+`workspace_integrity_policy`.
 Its values are:
 
 ```text
@@ -1804,6 +1827,14 @@ per_artifact_byte_limit: 4096
 aggregate_artifact_byte_limit: 4096
 candidate_message_byte_limit: 16384
 envelope_byte_limit: 16384
+workspace_integrity_policy:
+  schema_version: stage-workspace-integrity-policy-v1
+  baseline_entry_limit: 128
+  encountered_entry_limit: 129
+  path_byte_limit: 256
+  aggregate_path_byte_limit: 32768
+  observation_byte_limit: 65536
+  scan_deadline_ms: 2000
 ```
 
 The policy identity is the standard SHA-256 identity of this exact
@@ -1821,7 +1852,7 @@ discarded after deriving the pass-only probe result.
 The canary is never a lifecycle artifact, behavior snapshot, candidate oracle,
 or canonical evidence output.
 A missing, malformed, partial, additional, substituted, oversized,
-child-mutated-workspace, or non-byte-equal canary fails as
+child-mutated-workspace, workspace-inspection-failed, or non-byte-equal canary fails as
 `stage-envelope-canary-failed`.
 A canary envelope under a lifecycle policy, a lifecycle envelope under the
 canary policy, a response-selected policy, or a policy identity not equal to
@@ -1869,6 +1900,7 @@ mapped phase, and `attestation_ref` is null:
 | `config-equivalence-mismatch` | `pre-turn-start` |
 | `sandbox-probe-failed` | `pre-turn-start` |
 | `credential-isolation-failed` | `pre-turn-start` |
+| `workspace-baseline-invalid` | `pre-turn-start` |
 | `stage-envelope-canary-failed` | `in-turn` |
 | `unexpected-prohibited-event` | `in-turn` |
 
@@ -1913,7 +1945,9 @@ evidence.
 
 The child runtime uses a fresh configuration home, receives no caller-supplied
 system or developer instruction, has no connectors or subagents, has network
-disabled, and may read or write only the isolated scenario workspace.
+disabled, and may read only the isolated scenario workspace.
+It has no child-tool writable root; parent materialization is outside that
+profile.
 The exact harness prompt, repository instruction chain, skill packages, and
 tool profile and bounded runtime attestation are manifest-bound inputs.
 Runtime-built-in instructions that are not exposed as invocation inputs are
@@ -2628,7 +2662,7 @@ lifecycle event, snapshot, evidence reference, or current pointer.
 Protocol file-change observations and child narration cannot substitute for
 the independent filesystem comparison.
 Only `comparison_result: pass` authorizes materialization.
-When the integrity result fails, every retained raw candidate message is
+When the integrity result is not `pass`, every retained raw candidate message is
 discarded after the value-free candidate and workspace observations are
 derived.
 
@@ -2668,8 +2702,27 @@ The first-version lifecycle policy ID is
 Its canonical policy object contains exactly `policy_id`,
 `stage_occurrences`, `per_artifact_byte_limit`,
 `aggregate_artifact_byte_limit`, `candidate_message_byte_limit`, and
-`envelope_byte_limit`.
+`envelope_byte_limit`, and `workspace_integrity_policy`.
 The four limits are exactly `262144`, `524288`, `786432`, and `786432`.
+The lifecycle `workspace_integrity_policy` is exactly:
+
+```text
+schema_version: stage-workspace-integrity-policy-v1
+baseline_entry_limit: 4096
+encountered_entry_limit: 4097
+path_byte_limit: 512
+aggregate_path_byte_limit: 1048576
+observation_byte_limit: 2097152
+scan_deadline_ms: 10000
+```
+
+Every workspace-integrity limit is a positive integer.
+`encountered_entry_limit` is exactly `baseline_entry_limit + 1`.
+The policy is parent-selected and identity-bound as part of its containing
+artifact policy; callers and stage output cannot widen or substitute it.
+Equality with any byte, entry, or time limit is accepted.
+The first value greater than a limit takes the closed failure route defined
+below.
 `stage_occurrences` is an ordered list whose rows contain exactly `stage`,
 `attempt`, and `variants`.
 Rows are ordered by stage in the closed order `spec`, `spec-review`,
@@ -2959,6 +3012,13 @@ tool call and protocol item for that turn is terminal before workspace
 inspection begins; the parent sends no later request on that thread.
 Missing, additional, or still-active turn work is a protocol-shape failure,
 not a completed quiescence boundary.
+Workspace-writer quiescence is established independently by the attested
+read-only stage profile and its direct and descendant denial probes, not by
+assuming every process has exited.
+Any surviving descendant retains the same no-write and no-network enforcement
+and therefore cannot race parent scan or materialization.
+If transitive enforcement is unavailable or ambiguous, the environment fails
+before the canary and no stage turn is accepted.
 
 `output_state` is exactly `uninspected`, `absent`, `complete`, `partial`,
 `extra`, or `contradictory`.
@@ -2972,63 +3032,154 @@ evidence is `contradictory` with its independently retained non-output
 diagnostic.
 Only a `complete` envelope with
 `workspace_integrity_observation.comparison_result: pass` may be materialized.
+Materialization resolves and creates every path relative to the same retained
+root descriptor; pathname re-resolution of the workspace root is forbidden.
 After materialization, the adapter independently requires the bound
 stage-output root to contain exactly the envelope paths and exact returned
 bytes; a mismatch is `stage-output-contradictory` and cannot be accepted.
 
 `workspace_integrity_observation` contains exactly `schema_version`,
-`baseline_entries`, `baseline_inventory_identity`, `scan_state`,
-`observed_entries`, `observed_inventory_identity`, `changes`,
-`comparison_result`, and `observation_identity`.
+`policy_identity`, `baseline_entries`, `baseline_inventory_identity`,
+`scan_state`, `baseline_path_results`, `unexpected_entries`,
+`failure_reasons`, `comparison_result`, and `observation_identity`.
 `schema_version` is `stage-workspace-integrity-observation-v1`.
+`policy_identity` is the canonical identity of the selected artifact policy's
+exact nested workspace-integrity policy.
 
-`baseline_entries` is the complete bytewise path-sorted pre-turn inventory of
-every descendant of the isolated workspace root; the root itself is excluded.
-Each row contains exactly `path`, `entry_kind`, `byte_identity`, `byte_count`,
-and `permission_mode`.
-`path` is normalized and relative.
-`entry_kind` is `directory`, `regular-file`, `symlink`, or `other`.
-`permission_mode` is the non-negative integer returned by
-`stat.S_IMODE(lstat_result.st_mode)`.
-Regular files have their exact raw-byte identity and non-negative byte count.
-Directories, symlinks, and other entries have null identity and byte count.
-Baseline capture does not follow symlinks and fails before `turn/start` unless
-every row is a directory or regular file.
+The scanner opens the isolated workspace root once with directory and
+no-follow semantics and retains that root descriptor through baseline capture,
+the turn, post-turn inspection, and accepted materialization.
+Every descendant operation is relative to a retained directory descriptor.
+Directory enumeration uses raw name bytes transiently, rejects names that are
+not strict UTF-8 or whose normalized relative path violates the artifact path
+grammar, and never follows symlinks.
+A regular file is opened relative to its parent descriptor with no-follow
+semantics; `fstat` must agree with the no-follow entry observation before
+hashing; hashing uses only the opened descriptor; and a second `fstat` must
+match the first on device, inode, kind, mode, size, modification time, and
+change time.
+Directory descriptors receive equivalent before/after stability checks around
+enumeration.
+Device, inode, and timestamps are transient comparison inputs and are never
+serialized.
+Unavailable root-anchored or no-follow primitives are
+`environment-unavailable`; pathname-based fallback is forbidden.
+
+`baseline_entries` is the complete path-sorted pre-turn inventory of every
+descendant; the root itself is excluded.
+Each row contains exactly `path`, `path_identity`, `path_byte_count`,
+`component_count`, `entry_kind`, `byte_identity`, `byte_count`, and
+`permission_mode`.
+`path` is the trusted normalized relative parent-authored path.
+`path_identity` is its raw UTF-8 byte identity.
+`path_byte_count` and `component_count` are positive integers.
+`entry_kind` is `directory` or `regular-file`.
+`permission_mode` is the non-negative `stat.S_IMODE` integer.
+Regular files have their exact raw-byte identity and non-negative byte count;
+directories have null byte identity and count.
+The list is accepted only when entry count, every path byte count, aggregate
+path bytes, scan elapsed milliseconds, and its minimal valid serialized
+observation are at or below the selected policy limits.
+A symlink, other entry kind, unstable or unreadable entry, invalid path, limit
+overflow, or scan failure before `turn/start` returns
+`workspace-baseline-invalid` with the first closed reason below, creates no
+transport row, and performs no stage invocation.
+For preflight it is the corresponding `environment-unavailable` diagnostic;
+for generation it stops the run as `environment-unavailable` before the
+prospective event begins.
 `baseline_inventory_identity` is the canonical identity of
 `baseline_entries`.
 
-Post-turn scanning uses `lstat`, does not follow symlinks, visits entries in
-bytewise path order, and records at most
-`len(baseline_entries) + 1` rows.
-`scan_state` is `complete` when traversal finishes within that bound and
-`overflow` when the additional row proves the tree grew beyond the bound.
-For `complete`, `observed_entries` is the complete path-sorted inventory and
-`observed_inventory_identity` is its canonical identity.
-For `overflow`, `observed_entries` is the deterministic first
-`len(baseline_entries) + 1` rows, `observed_inventory_identity` is null, and
-`changes` is null.
+Post-turn traversal counts every encountered entry before classification and
+stops as soon as `encountered_entry_limit`, `path_byte_limit`,
+`aggregate_path_byte_limit`, or `scan_deadline_ms` is exceeded.
+It does not enumerate or sort the remainder.
+Within all limits, transient raw paths are compared against the trusted
+baseline path set.
 
-For a complete scan, `changes` is the path-sorted exact diff.
-Each row contains exactly `path`, `change_kinds`, `before`, and `after`.
-`before` and `after` are null when absent and otherwise the complete
-corresponding inventory row.
-`change_kinds` is the nonempty ordered subset of `created`, `removed`,
-`kind-changed`, `content-changed`, and `mode-changed` in that precedence.
-`created` and `removed` occur alone.
-`kind-changed` excludes `content-changed`.
-`content-changed` applies only when both rows are regular files whose identity
-or byte count differs.
-`mode-changed` may accompany `kind-changed` or `content-changed` and occurs
-whenever permission modes differ.
-Applying `changes` to `baseline_entries` must reproduce `observed_entries`
-exactly.
+`baseline_path_results` is path-sorted by the trusted baseline and contains one
+row per baseline entry for a complete scan.
+Each row contains exactly `path`, `before`, `after`, and `change_kinds`.
+`path` and `before` repeat the trusted baseline values.
+`after` is null when absent and otherwise contains every baseline row field
+except `path`, which is not duplicated.
+Its `entry_kind` additionally permits `symlink` or `other`; both have null
+byte identity and byte count and always produce `kind-changed`.
+`change_kinds` is the ordered subset of `removed`, `kind-changed`,
+`content-changed`, and `mode-changed`.
+It is empty when unchanged.
+`removed` occurs alone; `kind-changed` excludes `content-changed`;
+`content-changed` applies only to two regular-file observations whose identity
+or byte count differs; and `mode-changed` accompanies any applicable
+non-removed result when permission modes differ.
 
-`comparison_result` is `pass` only when `scan_state` is `complete`,
-`changes` is empty, and both inventory identities are equal.
-Every other result is `fail`.
-`observation_identity` is the canonical identity of the other eight fields.
+`unexpected_entries` never persists a child-authored path.
+For each unexpected encountered entry it contains exactly `path_identity`,
+`path_byte_count`, `component_count`, `path_shape`, `entry_kind`, and
+`permission_mode`.
+`path_shape` is `valid-relative`, `invalid-encoding`, or `invalid-structure`.
+`entry_kind` is `directory`, `regular-file`, `symlink`, or `other`.
+Rows whose paths are valid are ordered by transient raw path bytes; invalid
+rows retain encounter order only until the terminal invalid observation is
+formed.
+Before serialization all unexpected rows are sorted by
+`path_identity`; duplicate identities fail as `observation-inconsistent`.
+Raw unexpected path bytes are discarded immediately after this value-free row
+is derived.
+No unexpected file content or symlink target is read or retained.
+
+`scan_state` is `complete`, `overflow`, or `invalid`.
+`complete` requires traversal and every stable inspection to finish within all
+limits.
+`overflow` applies only when encountered entry count exceeds the policy limit;
+it stores no partial `baseline_path_results` or `unexpected_entries`.
+`invalid` applies to every other inspection or evidence-construction failure
+and also stores both result lists as null.
+
+`failure_reasons` is empty for `complete`.
+For `overflow` it is exactly `[entry-limit-exceeded]`.
+For `invalid` it is the nonempty unique ordered subset of:
+
+```text
+path-byte-limit-exceeded
+aggregate-path-byte-limit-exceeded
+observation-byte-limit-exceeded
+scan-deadline-exceeded
+path-encoding-invalid
+path-structure-invalid
+root-identity-mismatch
+enumeration-failed
+lstat-failed
+nofollow-open-failed
+descriptor-mismatch
+read-failed
+entry-unstable
+unsupported-entry-kind
+observation-inconsistent
+```
+
+That order is precedence order.
+Only the first reached limit or failure and every independently observed
+earlier failure are retained; raw exception text, errno text, and raw path
+bytes are discarded.
+
+`comparison_result` is `pass`, `fail`, or `indeterminate`.
+It is `pass` only for a complete scan in which every baseline result is
+unchanged and `unexpected_entries` is empty.
+It is `fail` for a complete scan with any changed baseline row or unexpected
+entry, and for `overflow`.
+It is `indeterminate` only for `invalid`.
+
+Before persistence, the canonical serialized observation is checked against
+`observation_byte_limit`.
+If it is one byte over, the adapter replaces both result lists with null, sets
+`scan_state: invalid`, `comparison_result: indeterminate`, and
+`failure_reasons: [observation-byte-limit-exceeded]`.
+Policy validation independently requires the complete trusted baseline plus
+this minimal invalid projection to fit at or below the limit before the turn.
+`observation_identity` is the canonical identity of the other nine fields.
 The observation contains no file content, symlink target, private absolute
-path, raw protocol value, or child-authored prose.
+path, raw exception, raw protocol value, or unexpected child-authored path.
 
 `materialization_observation` contains exactly `schema_version`,
 `expected_outputs`, `reread_outputs`, `comparison_result`, and
@@ -3092,6 +3243,7 @@ stage-output-contradictory
 protocol-shape-incompatible
 unexpected-prohibited-event
 runtime-identity-unstable
+stage-workspace-inspection-failed
 stage-workspace-mutated
 ```
 
@@ -3107,20 +3259,22 @@ condition, ordered by this closed precedence:
 6. protocol-conditional-policy-violation
 7. unexpected-prohibited-event
 8. runtime-identity-unstable
-9. stage-workspace-mutated
-10. stage-output-absent
-11. stage-output-partial
-12. stage-output-extra
-13. stage-output-contradictory
-14. stage-turn-timeout
-15. none
+9. stage-workspace-inspection-failed
+10. stage-workspace-mutated
+11. stage-output-absent
+12. stage-output-partial
+13. stage-output-extra
+14. stage-output-contradictory
+15. stage-turn-timeout
+16. none
 ```
 
 `none` occurs only as the sole member when no other condition was detected.
 `primary_diagnostic_id` equals the first member.
 The adapter derives `output_state` independently and MUST retain simultaneous
-protocol, prohibited-event, runtime-identity, output-integrity, and timeout
-conditions in `diagnostic_ids`.
+protocol, prohibited-event, runtime-identity, workspace-inspection,
+workspace-mutation, output-integrity, and timeout conditions in
+`diagnostic_ids`.
 Missing, additional, duplicated, reordered, suppressed, or inconsistent
 detected conditions fail closed.
 `decision` is exactly `accept`, `reconcile`, `retry`, `pause`, or
@@ -3143,6 +3297,7 @@ non-output-diagnostic:
   protocol-conditional-policy-violation
   unexpected-prohibited-event
   runtime-identity-unstable
+  stage-workspace-inspection-failed
   stage-workspace-mutated
 
 pre-output-non-output-diagnostic:
@@ -3221,6 +3376,7 @@ Each value has one exact role-specific shape:
 | `protocol-conditional-policy-violation` | `kind: protocol-policy-observation-v1`, `rule_id`, `event_kind`, `status_is_disabled`, `environment_identity_is_null`, `policy_result: violation` |
 | `unexpected-prohibited-event` | `kind: prohibited-event-observation-v1`, `event_kind`, `event_identity`, `protocol_classification_identity` |
 | `runtime-identity-unstable` | `kind: runtime-identity-observation-v1`, `identity_kind`, `checkpoint`, `expected_identity`, `observed_identity` |
+| `stage-workspace-inspection-failed` | `kind: workspace-inspection-failure-v1`, `workspace_integrity_observation_identity`, `scan_state: invalid`, and `failure_reasons` |
 | `stage-workspace-mutated` | `kind: workspace-mutation-observation-v1`, `workspace_integrity_observation_identity`, `scan_state`, `change_count`, and `change_count_is_lower_bound` |
 
 All listed numeric fields are non-negative integers; every identity uses the
@@ -3259,13 +3415,19 @@ The role predicates are exact:
   It contains every detected reason in this precedence order and no other
   value.
 - `stage-workspace-mutated` requires the row's
-  `workspace_integrity_observation` to have `comparison_result: fail`.
+  `workspace_integrity_observation` to have `comparison_result: fail` and
+  `scan_state` equal to `complete` or `overflow`.
   Its observation identity and scan state exactly match the row.
-  For `complete`, `change_count` equals the nonzero length of `changes` and
+  For `complete`, `change_count` equals the number of baseline-path rows with
+  nonempty `change_kinds` plus the length of `unexpected_entries`, and
   `change_count_is_lower_bound` is `false`.
   For `overflow`, `change_count` is `1` and
   `change_count_is_lower_bound` is `true`, proving at least one additional
   entry without claiming a complete diff or count.
+- `stage-workspace-inspection-failed` requires the row's observation to have
+  `scan_state: invalid`, `comparison_result: indeterminate`, and the same
+  exact nonempty ordered `failure_reasons`.
+  It never co-occurs with `stage-workspace-mutated`.
 - `runtime-identity-unstable` requires `identity_kind` to be exactly
   `runtime-launcher` or `runtime-package`.
   `checkpoint` is exactly `before-schema-generation`,
@@ -3889,6 +4051,10 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
   content-state-inconsistent.
   Failed candidate sets retain bounded value-free replay evidence, and the
   noncanonical canary policy cannot be substituted for lifecycle policy.
+  Child stage turns have no workspace write authority; root-anchored
+  integrity inspection is bounded by the parent-selected policy, persists no
+  unexpected raw path, and distinguishes confirmed mutation from inspection
+  failure before materialization.
 
 ## Open questions
 
