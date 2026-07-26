@@ -1,44 +1,12 @@
 {
   "fixtures": [
-    {
-      "fixture_id": "BFP-FX-CANONICAL-001",
-      "seeded_omission": "caller assertion accepted instead of canonical evidence",
-      "expected_gate": "spec-review"
-    },
-    {
-      "fixture_id": "BFP-FX-VOCAB-001",
-      "seeded_omission": "unknown closed-vocabulary value is not rejected",
-      "expected_gate": "test-spec-review"
-    },
-    {
-      "fixture_id": "BFP-FX-TRANSITION-001",
-      "seeded_omission": "illegal state transition is unmodeled",
-      "expected_gate": "test-spec-review"
-    },
-    {
-      "fixture_id": "BFP-FX-IDENTITY-001",
-      "seeded_omission": "stale or substituted identity is accepted",
-      "expected_gate": "test-spec-review"
-    },
-    {
-      "fixture_id": "BFP-FX-ATOMICITY-001",
-      "seeded_omission": "partial durable write is unproved",
-      "expected_gate": "test-spec-review"
-    },
-    {
-      "fixture_id": "BFP-FX-RECOVERY-001",
-      "seeded_omission": "retry repeats work instead of reconciling",
-      "expected_gate": "test-spec-review"
-    },
-    {
-      "fixture_id": "BFP-FX-COMPOSITION-001",
-      "seeded_omission": "helper proof omits the composed public path",
-      "expected_gate": "test-spec-review"
-    },
-    {
-      "fixture_id": "BFP-FX-SIBLING-001",
-      "seeded_omission": "reported bypass is fixed while a sibling bypass remains",
-      "expected_gate": "implement"
-    }
+    {"fixture_id": "BFP-FX-CANONICAL-001", "path": "tests/fixtures/boundary-proof/incidents/BFP-FX-CANONICAL-001.json"},
+    {"fixture_id": "BFP-FX-VOCAB-001", "path": "tests/fixtures/boundary-proof/incidents/BFP-FX-VOCAB-001.json"},
+    {"fixture_id": "BFP-FX-TRANSITION-001", "path": "tests/fixtures/boundary-proof/incidents/BFP-FX-TRANSITION-001.json"},
+    {"fixture_id": "BFP-FX-IDENTITY-001", "path": "tests/fixtures/boundary-proof/incidents/BFP-FX-IDENTITY-001.json"},
+    {"fixture_id": "BFP-FX-ATOMICITY-001", "path": "tests/fixtures/boundary-proof/incidents/BFP-FX-ATOMICITY-001.json"},
+    {"fixture_id": "BFP-FX-RECOVERY-001", "path": "tests/fixtures/boundary-proof/incidents/BFP-FX-RECOVERY-001.json"},
+    {"fixture_id": "BFP-FX-COMPOSITION-001", "path": "tests/fixtures/boundary-proof/incidents/BFP-FX-COMPOSITION-001.json"},
+    {"fixture_id": "BFP-FX-SIBLING-001", "path": "tests/fixtures/boundary-proof/incidents/BFP-FX-SIBLING-001.json"}
   ]
 }

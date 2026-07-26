@@ -1,0 +1,8 @@
+{
+  "fixture_id": "BFP-FX-SIBLING-001",
+  "seeded_omission": "reported bypass is fixed while a sibling bypass remains",
+  "expected_gate": "implement",
+  "expected_diagnostic": "bfp-sibling-bypass-remains",
+  "boundary_state": {"canonical_source": "owner-derived", "vocabulary_state": "known", "transition_state": "legal", "identity_state": "current", "mutation_state": "complete", "recovery_state": "reconciled", "composition_state": "complete", "sibling_state": "one-only"},
+  "valid_contrast_state": {"canonical_source": "owner-derived", "vocabulary_state": "known", "transition_state": "legal", "identity_state": "current", "mutation_state": "complete", "recovery_state": "reconciled", "composition_state": "complete", "sibling_state": "complete"}
+}

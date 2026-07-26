@@ -30,6 +30,19 @@
       {"proof_obligation_id": "simple.proof.evidence", "governing_requirement_ids": ["R1"], "boundary_or_interaction_ids": ["simple.evidence.present", "simple.evidence.missing"], "test_case_ids": ["T4"], "automation_level": "automated", "manual_procedure_ids": []}
     ]
   },
-  "new_universal_artifact_count": 0,
-  "structure_only_correction_cycles": 0
+  "simple_trace": {
+    "events": [
+      {"stage": "spec", "attempt": 1, "structural_result": "pass", "observed_result": "produced", "diagnostic_id": "none"},
+      {"stage": "spec-review", "attempt": 1, "structural_result": "pass", "observed_result": "approved", "diagnostic_id": "none"},
+      {"stage": "test-spec", "attempt": 1, "structural_result": "pass", "observed_result": "produced", "diagnostic_id": "none"},
+      {"stage": "test-spec-review", "attempt": 1, "structural_result": "pass", "observed_result": "approved", "diagnostic_id": "none"}
+    ],
+    "before_inventory": [],
+    "after_inventory": [
+      {"path": "artifacts/feature-spec/simple.md", "artifact_kind": "feature-spec"},
+      {"path": "artifacts/review-evidence/spec-review.md", "artifact_kind": "review-evidence"},
+      {"path": "artifacts/test-spec/simple.test.md", "artifact_kind": "test-spec"},
+      {"path": "artifacts/review-evidence/test-spec-review.md", "artifact_kind": "review-evidence"}
+    ]
+  }
 }

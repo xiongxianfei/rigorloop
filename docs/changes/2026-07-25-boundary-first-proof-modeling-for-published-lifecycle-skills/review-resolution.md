@@ -4,7 +4,7 @@
 
 Closeout status: open
 
-- Review closeout: code-review-m1-r1 open
+- Review closeout: code-review-m1-r1
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
@@ -34,9 +34,9 @@ Closeout status: open
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
-- Findings resolved: 24
-- Unresolved findings: 7
-- Current result: `test-spec-review-r4` approved the field-complete M1-M4 proof map for implementation.
+- Findings resolved: 31
+- Unresolved findings: 0
+- Current result: M1 corrections for BFP-M1-CR1 through BFP-M1-CR7 are validated and await independent code-review R2.
 
 ## Resolution Overview
 
@@ -56,13 +56,13 @@ Closeout status: open
 | BFP-PL3 | accepted | resolved | R28y report pass and R28o resumption are separate closeout predicates. |
 | BFP-TSR1 | accepted | resolved | Canonical report validation begins in M4; M1 uses synthetic report fixtures. |
 | BFP-TSR2 | accepted | resolved | Every manual procedure ID now resolves to a complete bounded proof contract. |
-| BFP-M1-CR1 | accepted | open | Enforce stable unique example evidence IDs and per-reference requirement ownership. |
-| BFP-M1-CR2 | accepted | open | Freeze exact incident ID, omission class, and owning gate. |
-| BFP-M1-CR3 | accepted | open | Enforce the complete legacy/v1 marker and scope matrix. |
-| BFP-M1-CR4 | accepted | open | Use repository-relative path plus current raw-byte SHA-256 evidence references and closed not-run blockers. |
-| BFP-M1-CR5 | accepted | open | Canonicalize capability-report serialization. |
-| BFP-M1-CR6 | accepted | open | Use a closed boundary-state envelope evaluated independently of fixture labels by the shared stage-gate evaluator. |
-| BFP-M1-CR7 | accepted | open | Derive simple-change measurements from a structural stage trace owned by the shared evaluator. |
+| BFP-M1-CR1 | accepted | resolved | Enforce stable unique example evidence IDs and per-reference requirement ownership. |
+| BFP-M1-CR2 | accepted | resolved | Freeze exact incident ID, omission class, and owning gate. |
+| BFP-M1-CR3 | accepted | resolved | Enforce the complete legacy/v1 marker and scope matrix. |
+| BFP-M1-CR4 | accepted | resolved | Use repository-relative path plus current raw-byte SHA-256 evidence references and closed not-run blockers. |
+| BFP-M1-CR5 | accepted | resolved | Canonicalize capability-report serialization. |
+| BFP-M1-CR6 | accepted | resolved | Use a closed boundary-state envelope evaluated independently of fixture labels by the shared stage-gate evaluator. |
+| BFP-M1-CR7 | accepted | resolved | Derive simple-change measurements from a structural stage trace owned by the shared evaluator. |
 | BFP-SR3-1 | accepted | resolved | Incident derivation now requires exactly one field/value trigger and a trigger-free contrast. |
 | BFP-SR3-2 | accepted | resolved | Trace observations, formal-review bundles, output capture, inventory, and terminal branches are deterministic. |
 | BFP-SR3-3 | accepted | resolved | Filesystem inputs, typed dependencies, manifests, result identities, and report projection are bound losslessly. |
@@ -341,7 +341,7 @@ Required outcome: Bind proof requirements to referenced boundary ownership and e
 Chosen action: Apply the reviewer-provided declared-safe recipe after all M1 decisions are settled.
 Rationale: Direct probes accepted unrelated known requirements and malformed or duplicate example evidence IDs.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Stable/duplicate ID, unrelated-known requirement, and mixed-reference negative regressions pass in `scripts/test-boundary-proof.py`.
 
 ### spec-review-r5
 
@@ -603,7 +603,7 @@ Validation evidence: pending
 
 Finding ID: BFP-M1-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution M1
 Decision owner: approved R28x registry
@@ -612,13 +612,13 @@ Required outcome: Freeze exact incident IDs, omission classes, and gates.
 Chosen action: Replace the gate-only mapping with the exact immutable R28x registry and add per-field mutation tests.
 Rationale: A changed non-empty omission description currently passes.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Every closed omission/gate/diagnostic mutation fails in the focused suite.
 
 #### BFP-M1-CR3 - Legacy parity accepts partial marker state
 
 Finding ID: BFP-M1-CR3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution M1
 Decision owner: approved R28r matrix
@@ -627,13 +627,13 @@ Required outcome: Synchronize marker presence, version, scope presence, and scop
 Chosen action: Implement the complete closed parity matrix and contrast tests.
 Rationale: Partial and mismatched legacy records currently pass.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: The full marker/scope contrast matrix passes in the focused suite.
 
 #### BFP-M1-CR4 - Report evidence identity is undefined
 
 Finding ID: BFP-M1-CR4
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: initiative owner
 Owning stage: owner decision before review-resolution M1
 Decision owner: initiative owner
@@ -642,13 +642,13 @@ Required outcome: Evidence validation rejects missing, unsafe, stale, substitute
 Chosen action: Use `{path, identity}` evidence references bound to repository-relative regular files and current raw-byte SHA-256; use a closed `{code, detail}` blocker for not-run rows.
 Rationale: The approved implementation contract requires current evidence but does not define its persisted identity or blocking-reason shape.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Missing, unsafe, stale, substituted, wrong-shape, and invalid-blocker regressions pass.
 
 #### BFP-M1-CR5 - Report bytes depend on caller mapping order
 
 Finding ID: BFP-M1-CR5
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution M1
 Decision owner: approved deterministic report contract
@@ -657,13 +657,13 @@ Required outcome: Serialize semantically equivalent reports to identical bytes.
 Chosen action: Canonicalize report mapping order and add permutation tests.
 Rationale: Reordering an accepted checks mapping changes output bytes.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Reordered equivalent mappings serialize byte-identically.
 
 #### BFP-M1-CR6 - Incident corpus is not executable
 
 Finding ID: BFP-M1-CR6
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: initiative owner
 Owning stage: owner decision before review-resolution M1
 Decision owner: initiative owner
@@ -672,13 +672,13 @@ Required outcome: Every exact incident is detected no later than its owning gate
 Chosen action: Use the closed R28x boundary-state envelope and a shared evaluator that derives stage and diagnostic without reading expected fixture labels.
 Rationale: The approved implementation contract freezes the incidents but does not assign a payload or harness owner.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Eight canonical incident envelopes replay through the shared state evaluator; label changes do not drive results.
 
 #### BFP-M1-CR7 - Simple-change workflow evidence is asserted
 
 Finding ID: BFP-M1-CR7
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: initiative owner
 Owning stage: owner decision before review-resolution M1
 Decision owner: initiative owner
@@ -687,4 +687,4 @@ Required outcome: Derive applicable-only proof mapping, artifact count, false bl
 Chosen action: Use the shared structural evaluator to compute a four-stage trace with identities, diagnostics, correction events, artifact count, false blocking, and applicable-only proof mapping.
 Rationale: The approved implementation contract states the measurements but not the executable trace boundary.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Synthetic trace tests derive zero/one correction, false-blocking, artifact-count, terminal, and multi-correction outcomes.

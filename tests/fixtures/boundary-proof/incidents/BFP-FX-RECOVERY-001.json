@@ -1,0 +1,8 @@
+{
+  "fixture_id": "BFP-FX-RECOVERY-001",
+  "seeded_omission": "retry repeats work instead of reconciling",
+  "expected_gate": "test-spec-review",
+  "expected_diagnostic": "bfp-repeat-without-reconcile",
+  "boundary_state": {"canonical_source": "owner-derived", "vocabulary_state": "known", "transition_state": "legal", "identity_state": "current", "mutation_state": "complete", "recovery_state": "repeated", "composition_state": "complete", "sibling_state": "complete"},
+  "valid_contrast_state": {"canonical_source": "owner-derived", "vocabulary_state": "known", "transition_state": "legal", "identity_state": "current", "mutation_state": "complete", "recovery_state": "reconciled", "composition_state": "complete", "sibling_state": "complete"}
+}

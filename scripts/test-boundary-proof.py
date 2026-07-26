@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import dataclasses
+import copy
+import hashlib
 import json
 import subprocess
 import sys
@@ -19,15 +21,19 @@ from boundary_proof_model import (
     EVALUATED_SKILLS,
     EXAMPLE_ROLES,
     FIXTURE_GATES,
+    INCIDENT_RULES,
     INTERACTION_RATIONALES,
     RESULT_VALUES,
     BoundaryProofError,
     CoreBoundaryEntry,
     capability_report_result,
+    evaluate_boundary_state,
+    evaluate_simple_change_trace,
     normalize_feature_model,
     normalize_proof_map,
     validate_capability_report,
     validate_incident_registry,
+    validate_incident_fixture,
     validate_version_parity,
 )
 
@@ -139,7 +145,21 @@ def _proof_map() -> dict[str, object]:
 
 
 def _report(result: str = "pass") -> dict[str, object]:
-    evidence = ["docs/evidence.md"]
+    evidence_path = ROOT / "specs" / "rigorloop-workflow.md"
+    evidence = [
+        {
+            "path": "specs/rigorloop-workflow.md",
+            "identity": "sha256:" + hashlib.sha256(evidence_path.read_bytes()).hexdigest(),
+        }
+    ]
+    blocking_reason = (
+        {
+            "code": "prerequisite-unsatisfied",
+            "detail": "M1 synthetic proof does not claim published-skill behavior.",
+        }
+        if result == "not-run"
+        else None
+    )
     fixtures = [
         {
             "fixture_id": fixture_id,
@@ -148,7 +168,8 @@ def _report(result: str = "pass") -> dict[str, object]:
             "detected_stage": expected_gate if result != "not-run" else "not-detected",
             "escaped_to_code_review": False,
             "sibling_bypass_remaining": False,
-            "evidence_refs": evidence if result != "not-run" else ["blocked: fixture not run"],
+            "evidence_refs": evidence if result != "not-run" else [],
+            "blocking_reason": blocking_reason,
         }
         for fixture_id, expected_gate in FIXTURE_GATES.items()
     ]
@@ -158,12 +179,20 @@ def _report(result: str = "pass") -> dict[str, object]:
         "evaluated_skills": list(EVALUATED_SKILLS),
         "required_check_ids": list(CHECK_IDS),
         "checks": {
-            check_id: {"result": result, "evidence_refs": evidence}
+            check_id: {
+                "result": result,
+                "evidence_refs": evidence if result != "not-run" else [],
+                "blocking_reason": blocking_reason,
+            }
             for check_id in CHECK_IDS
         },
         "fixtures": fixtures,
         "preservation_results": {
-            key: {"result": result, "evidence_refs": evidence}
+            key: {
+                "result": result,
+                "evidence_refs": evidence if result != "not-run" else [],
+                "blocking_reason": blocking_reason,
+            }
             for key in (
                 "behavior",
                 "claim-boundary",
@@ -172,7 +201,11 @@ def _report(result: str = "pass") -> dict[str, object]:
                 "handoff",
             )
         },
-        "adapter_parity": {"result": result, "evidence_refs": evidence},
+        "adapter_parity": {
+            "result": result,
+            "evidence_refs": evidence if result != "not-run" else [],
+            "blocking_reason": blocking_reason,
+        },
         "false_blocking_count": 0,
         "duplicate_normative_owner_count": 0,
         "new_universal_artifact_count": 0,
@@ -325,6 +358,23 @@ class BoundaryProofModelTests(unittest.TestCase):
         with self.assertRaisesRegex(BoundaryProofError, "at least two"):
             normalize_feature_model(bad_interaction)
 
+        invalid_regression = _feature_model()
+        invalid_regression["examples"][1]["regression_id"] = "Not Stable!"  # type: ignore[index]
+        with self.assertRaisesRegex(BoundaryProofError, "invalid regression ID"):
+            normalize_feature_model(invalid_regression)
+
+        duplicate_regression = _feature_model()
+        duplicate_row = copy.deepcopy(duplicate_regression["examples"][1])  # type: ignore[index]
+        duplicate_row["example_id"] = "sample.example.regression-two"
+        duplicate_regression["examples"].append(duplicate_row)  # type: ignore[union-attr]
+        with self.assertRaisesRegex(BoundaryProofError, "duplicate regression ID"):
+            normalize_feature_model(duplicate_regression)
+
+        invalid_gap = _feature_model()
+        invalid_gap["examples"][2]["discovery_gap"] = "not stable"  # type: ignore[index]
+        with self.assertRaisesRegex(BoundaryProofError, "invalid discovery gap ID"):
+            normalize_feature_model(invalid_gap)
+
     def test_proof_map_requires_version_scope_and_complete_references(self) -> None:
         feature = normalize_feature_model(_feature_model())
         proof = normalize_proof_map(_proof_map(), feature)
@@ -356,6 +406,26 @@ class BoundaryProofModelTests(unittest.TestCase):
         unapproved["proof_obligations"][0]["governing_requirement_ids"] = ["R999"]  # type: ignore[index]
         with self.assertRaisesRegex(BoundaryProofError, "unapproved governing requirement"):
             normalize_proof_map(unapproved, feature)
+
+        unrelated_known = _feature_model()
+        unrelated_known["core_dimensions"][0]["governing_requirement_ids"] = ["R1"]  # type: ignore[index]
+        unrelated_known["core_dimensions"][1]["governing_requirement_ids"] = ["R2"]  # type: ignore[index]
+        unrelated_known["examples"][1]["governing_requirement_ids"] = ["R2"]  # type: ignore[index]
+        unrelated_feature = normalize_feature_model(unrelated_known)
+        unrelated_proof = _proof_map()
+        unrelated_proof["proof_obligations"][1]["governing_requirement_ids"] = ["R2"]  # type: ignore[index]
+        unrelated_proof["proof_obligations"][0]["governing_requirement_ids"] = ["R2"]  # type: ignore[index]
+        with self.assertRaisesRegex(BoundaryProofError, "does not own cited reference"):
+            normalize_proof_map(unrelated_proof, unrelated_feature)
+
+        mixed = _proof_map()
+        mixed["proof_obligations"][0]["boundary_or_interaction_ids"] = [  # type: ignore[index]
+            "sample.canonical-trust",
+            "sample.identity-freshness",
+        ]
+        mixed["proof_obligations"][0]["governing_requirement_ids"] = ["R1"]  # type: ignore[index]
+        with self.assertRaisesRegex(BoundaryProofError, "lacks governing requirement overlap"):
+            normalize_proof_map(mixed, unrelated_feature)
 
     def test_legacy_and_v1_version_parity_is_prospective(self) -> None:
         self.assertEqual(
@@ -398,21 +468,97 @@ class BoundaryProofModelTests(unittest.TestCase):
                 public_activation=False,
                 explicitly_reviewed_opt_in=False,
             )
+        for arguments, message in (
+            ((None, "R1-R9", None, None), "markerless legacy"),
+            ((None, None, "legacy", "R1-R9"), "marker presence mismatch"),
+            (("legacy", "R1-R9", "legacy", "R2-R9"), "scope mismatch"),
+            (("legacy", None, "legacy", None), "scope is invalid"),
+        ):
+            with self.subTest(arguments=arguments):
+                with self.assertRaisesRegex(BoundaryProofError, message):
+                    validate_version_parity(
+                        *arguments,
+                        public_activation=False,
+                        explicitly_reviewed_opt_in=False,
+                    )
+        self.assertEqual(
+            validate_version_parity(
+                "legacy",
+                "R1-R9",
+                "legacy",
+                "R1-R9",
+                public_activation=False,
+                explicitly_reviewed_opt_in=False,
+            ),
+            "legacy",
+        )
 
     def test_incident_registry_is_exact_and_evidence_bound(self) -> None:
         payload = json.loads((FIXTURES / "incident-registry.json").read_text())
-        validate_incident_registry(payload)
+        results = validate_incident_registry(payload)
+        self.assertEqual(len(results), 8)
+        self.assertTrue(all(not result.escaped_to_code_review for result in results))
+        self.assertTrue(all(not result.sibling_bypass_remaining for result in results))
         payload["fixtures"][0]["fixture_id"] = "BFP-FX-UNKNOWN-001"
         with self.assertRaisesRegex(BoundaryProofError, "unknown fixture"):
             validate_incident_registry(payload)
+
+    def test_each_incident_derives_from_state_not_fixture_labels(self) -> None:
+        for fixture_id, rule in INCIDENT_RULES.items():
+            with self.subTest(fixture_id=fixture_id):
+                path = FIXTURES / "incidents" / f"{fixture_id}.json"
+                fixture = json.loads(path.read_text())
+                result = validate_incident_fixture(fixture)
+                self.assertEqual(result.detected_stage, rule[4])
+                self.assertEqual(result.diagnostic_id, rule[5])
+
+                for field, replacement in (
+                    ("seeded_omission", "different omission"),
+                    ("expected_gate", "spec"),
+                    ("expected_diagnostic", "different-diagnostic"),
+                ):
+                    changed = copy.deepcopy(fixture)
+                    changed[field] = replacement
+                    with self.assertRaisesRegex(BoundaryProofError, "closed registry mismatch"):
+                        validate_incident_fixture(changed)
+
+                state_only = evaluate_boundary_state(fixture["boundary_state"])
+                relabeled = copy.deepcopy(fixture)
+                relabeled["fixture_id"] = next(
+                    candidate for candidate in INCIDENT_RULES if candidate != fixture_id
+                )
+                self.assertEqual(
+                    evaluate_boundary_state(relabeled["boundary_state"]),
+                    state_only,
+                )
+
+                multi = copy.deepcopy(fixture["boundary_state"])
+                other = next(
+                    value
+                    for value in INCIDENT_RULES.values()
+                    if value[1] != rule[1]
+                )
+                multi[other[1]] = other[2]
+                with self.assertRaisesRegex(BoundaryProofError, "multiple seeded triggers"):
+                    evaluate_boundary_state(multi)
 
     def test_capability_report_result_is_computed_not_asserted(self) -> None:
         passing = _report()
         self.assertEqual(capability_report_result(passing), "pass")
         validate_capability_report(passing)
 
+        def not_run(report: dict[str, object]) -> None:
+            report["checks"]["boundary-traceability"].update(  # type: ignore[index]
+                result="not-run",
+                evidence_refs=[],
+                blocking_reason={
+                    "code": "prerequisite-unsatisfied",
+                    "detail": "Synthetic prerequisite omitted.",
+                },
+            )
+
         for mutation in (
-            lambda report: report["checks"]["boundary-traceability"].update(result="not-run"),  # type: ignore[index]
+            not_run,
             lambda report: report["fixtures"][0].update(escaped_to_code_review=True),  # type: ignore[index]
             lambda report: report["fixtures"][1].update(sibling_bypass_remaining=True),  # type: ignore[index]
             lambda report: report["fixtures"][2].update(detected_stage="not-detected"),  # type: ignore[index]
@@ -439,13 +585,93 @@ class BoundaryProofModelTests(unittest.TestCase):
         with self.assertRaisesRegex(BoundaryProofError, "evidence_refs"):
             validate_capability_report(report)
 
+        missing = _report()
+        missing["checks"]["boundary-traceability"]["evidence_refs"] = [  # type: ignore[index]
+            {
+                "path": "docs/does-not-exist.md",
+                "identity": "sha256:" + "0" * 64,
+            }
+        ]
+        with self.assertRaisesRegex(BoundaryProofError, "missing"):
+            validate_capability_report(missing)
+
+        stale = _report()
+        stale["checks"]["boundary-traceability"]["evidence_refs"][0]["identity"] = (  # type: ignore[index]
+            "sha256:" + "0" * 64
+        )
+        with self.assertRaisesRegex(BoundaryProofError, "stale or substituted"):
+            validate_capability_report(stale)
+
+        unsafe = _report()
+        unsafe["checks"]["boundary-traceability"]["evidence_refs"][0]["path"] = "../outside"  # type: ignore[index]
+        with self.assertRaisesRegex(BoundaryProofError, "unsafe evidence path"):
+            validate_capability_report(unsafe)
+
+        bad_not_run = _report("not-run")
+        bad_not_run["checks"]["boundary-traceability"]["blocking_reason"] = None  # type: ignore[index]
+        with self.assertRaisesRegex(BoundaryProofError, "expected object"):
+            validate_capability_report(bad_not_run)
+
+        unknown_blocker = _report("not-run")
+        unknown_blocker["checks"]["boundary-traceability"]["blocking_reason"]["code"] = "later"  # type: ignore[index]
+        with self.assertRaisesRegex(BoundaryProofError, "unknown blocking reason"):
+            validate_capability_report(unknown_blocker)
+
     def test_simple_fixture_is_compact_and_requires_at_most_one_cycle(self) -> None:
         payload = json.loads((FIXTURES / "simple-change.json").read_text())
         feature = normalize_feature_model(payload["feature_model"])
         normalize_proof_map(payload["proof_map"], feature)
         self.assertEqual(len(feature.core_dimensions), 12)
-        self.assertEqual(payload["new_universal_artifact_count"], 0)
-        self.assertLessEqual(payload["structure_only_correction_cycles"], 1)
+        metrics = evaluate_simple_change_trace(payload["simple_trace"])
+        self.assertEqual(metrics.new_universal_artifact_count, 0)
+        self.assertEqual(metrics.false_blocking_count, 0)
+        self.assertLessEqual(metrics.structure_only_correction_cycles, 1)
+
+        one_correction = copy.deepcopy(payload["simple_trace"])
+        one_correction["events"] = [  # type: ignore[index]
+            {"stage": "spec", "attempt": 1, "structural_result": "pass", "observed_result": "produced", "diagnostic_id": "none"},
+            {"stage": "spec-review", "attempt": 1, "structural_result": "fail", "observed_result": "changes-requested", "diagnostic_id": "missing-boundary"},
+            {"stage": "spec", "attempt": 2, "structural_result": "pass", "observed_result": "produced", "diagnostic_id": "none"},
+            {"stage": "spec-review", "attempt": 2, "structural_result": "pass", "observed_result": "approved", "diagnostic_id": "none"},
+            {"stage": "test-spec", "attempt": 1, "structural_result": "pass", "observed_result": "produced", "diagnostic_id": "none"},
+            {"stage": "test-spec-review", "attempt": 1, "structural_result": "pass", "observed_result": "approved", "diagnostic_id": "none"},
+        ]
+        self.assertEqual(
+            evaluate_simple_change_trace(one_correction).structure_only_correction_cycles,
+            1,
+        )
+
+        two_corrections = copy.deepcopy(one_correction)
+        two_corrections["events"][-1].update(  # type: ignore[index]
+            structural_result="fail",
+            observed_result="changes-requested",
+            diagnostic_id="missing-proof",
+        )
+        with self.assertRaisesRegex(BoundaryProofError, "more than one correction"):
+            evaluate_simple_change_trace(two_corrections)
+
+        false_block = copy.deepcopy(payload["simple_trace"])
+        false_block["events"][1].update(  # type: ignore[index]
+            observed_result="blocked",
+            diagnostic_id="review-blocked",
+        )
+        false_block["events"] = false_block["events"][:2]  # type: ignore[index]
+        self.assertEqual(
+            evaluate_simple_change_trace(false_block).false_blocking_count,
+            1,
+        )
+
+        universal = copy.deepcopy(payload["simple_trace"])
+        universal["after_inventory"].append(  # type: ignore[union-attr]
+            {
+                "path": "docs/changes/example/new-required.md",
+                "artifact_kind": "other-lifecycle",
+            }
+        )
+        self.assertEqual(
+            evaluate_simple_change_trace(universal).new_universal_artifact_count,
+            1,
+        )
 
     def test_validator_help_and_fixture_validation(self) -> None:
         result = subprocess.run(
@@ -480,6 +706,28 @@ class BoundaryProofModelTests(unittest.TestCase):
             self.assertEqual(rendered.count("```yaml"), 1)
             self.assertEqual(rendered.count("```"), 2)
             self.assertIn('"overall_result": "pass"', rendered)
+
+            reordered_source = root / "report-reordered.json"
+            reordered_output = root / "report-reordered.md"
+            report = _report()
+            report["checks"] = dict(  # type: ignore[assignment]
+                reversed(list(report["checks"].items()))  # type: ignore[union-attr]
+            )
+            reordered_source.write_text(json.dumps(report), encoding="utf-8")
+            reordered = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-boundary-proof.py"),
+                    str(reordered_source),
+                    "--write-report",
+                    str(reordered_output),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(reordered.returncode, 0, reordered.stderr)
+            self.assertEqual(output.read_bytes(), reordered_output.read_bytes())
 
 
 if __name__ == "__main__":
