@@ -426,3 +426,36 @@ Detailed record: reviews/architecture-review-r8.md
 Resolution: review-resolution.md#architecture-review-r8
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: plan-review-r6
+Stage: plan-review
+Round: 6
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: changes-requested
+Detailed record: reviews/plan-review-r6.md
+Resolution: review-resolution.md#plan-review-r6
+Material findings: BFP-PL6-1, BFP-PL6-2, BFP-PL6-3
+Open findings: None
+
+### Review entry
+Review ID: plan-review-r7
+Stage: plan-review
+Round: 7
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: changes-requested
+Detailed record: reviews/plan-review-r7.md
+Resolution: review-resolution.md#plan-review-r7
+Material findings: BFP-PL7-1
+Open findings: None
+
+### Review entry
+Review ID: plan-review-r8
+Stage: plan-review
+Round: 8
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: approved
+Detailed record: reviews/plan-review-r8.md
+Resolution: review-resolution.md#plan-review-r8
+Material findings: None
+Open findings: None

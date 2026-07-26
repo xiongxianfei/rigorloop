@@ -14,6 +14,9 @@ Closeout status: open
 - Review closeout: architecture-review-r6
 - Review closeout: architecture-review-r7
 - Review closeout: architecture-review-r8
+- Review closeout: plan-review-r6
+- Review closeout: plan-review-r7
+- Review closeout: plan-review-r8
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
@@ -43,9 +46,9 @@ Closeout status: open
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m2-preflight-r1`, `code-review-m2-preflight-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `architecture-review-r5`, `architecture-review-r6`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
-- Findings resolved: 39
+- Findings resolved: 43
 - Unresolved findings: 0
-- Current result: Architecture-review R8 approved the runtime boundary; plan and test-spec projection are next.
+- Current result: Plan-review R8 approved the M2 plan; matching test-spec revision is next.
 
 ## Resolution Overview
 
@@ -88,6 +91,10 @@ Closeout status: open
 | BFP-AR8 | accepted | resolved | The runtime ADR and complete attestation conjunction are projected into canonical architecture and C4 views. |
 | BFP-AR9 | accepted | resolved | A fully paginated feature inventory and exhaustive classification establish the closed built-in tool boundary before turn start. |
 | BFP-AR10 | accepted | resolved | Complete schema vocabulary is classified separately from effective enablement; prohibited capabilities must be disabled pre-turn and remain event-inactive. |
+| BFP-PL6-1 | accepted | resolved | Launcher and runtime-package identities are checked across every runtime execution boundary. |
+| BFP-PL6-2 | accepted | resolved | Exact command tools and exactly-once feature/item classification are projected into M2. |
+| BFP-PL6-3 | accepted | resolved | The current review gate and feature-pagination behavior are unambiguous. |
+| BFP-PL7-1 | accepted | resolved | Feature enablement and protocol-event classifications use separate closed vocabularies and independent exactly-once proof. |
 
 ## Finding Details
 
@@ -864,3 +871,73 @@ Validation evidence: pending architecture-review-r8
 No material findings.
 Architecture-review R8 confirmed BFP-AR5 through BFP-AR10 resolved and approved
 the runtime-attestation architecture for plan and test-spec projection.
+
+### plan-review-r6
+
+#### BFP-PL6-1 - Runtime identity is not bound across every execution boundary
+
+Finding ID: BFP-PL6-1
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan revision
+Decision owner: accepted runtime ADR
+Decision needed: none
+Required outcome: Bind one launcher and runtime package across all M2 execution boundaries.
+Chosen action: Add raw-byte/filesystem checks before and after schema generation, probes, app-server negotiation, and lifecycle invocation, plus mutation contrasts and failure stops.
+Rationale: One-time resolution cannot detect replacement between trust-boundary operations.
+Validation target: plan-review-r7
+Validation evidence: pending plan-review-r7
+
+### plan-review-r7
+
+#### BFP-PL7-1 - Feature and protocol-item classification vocabularies are merged
+
+Finding ID: BFP-PL7-1
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan revision
+Decision owner: accepted runtime ADR
+Decision needed: none
+Required outcome: Preserve distinct exactly-once feature-row and protocol-item mappings.
+Chosen action: Split the feature enablement and protocol traffic vocabularies and require independent negative contrasts.
+Rationale: A feature row is neither protocol traffic nor a side effect.
+Validation target: plan-review-r8
+Validation evidence: pending plan-review-r8
+
+### plan-review-r8
+
+No material findings.
+Plan-review R8 confirmed BFP-PL6-1 through BFP-PL7-1 resolved and approved the
+M2 plan for matching test-spec revision.
+
+#### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
+
+Finding ID: BFP-PL6-2
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan revision
+Decision owner: accepted runtime ADR
+Decision needed: none
+Required outcome: Freeze the exact permitted tools and exhaustive feature/item classification.
+Chosen action: Name the three command tools, isolated file-change events, three mapping classes, and missing/duplicate/unknown/unclassified contrasts.
+Rationale: Open-ended mapping permits silent capability broadening.
+Validation target: plan-review-r7
+Validation evidence: pending plan-review-r7
+
+#### BFP-PL6-3 - Lifecycle and protocol descriptions are stale or ambiguous
+
+Finding ID: BFP-PL6-3
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan revision
+Decision owner: current workflow state and accepted runtime ADR
+Decision needed: none
+Required outcome: Correct the review pointer and pagination semantics.
+Chosen action: Point to plan-review R6 and reserve full pagination for `experimentalFeature/list`, with exact closed results from the other runtime methods.
+Rationale: Implementation handoff must not infer protocol behavior from ambiguous prose.
+Validation target: plan-review-r7
+Validation evidence: pending plan-review-r7
