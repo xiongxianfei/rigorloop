@@ -1156,15 +1156,12 @@ def _string_array_schema() -> dict[str, object]:
 
 
 def _exact_string_array_schema(values: Sequence[str]) -> dict[str, object]:
-    item_schema: dict[str, object] = {"type": "string"}
-    if values:
-        item_schema["enum"] = list(values)
-    return {
-        "type": "array",
-        "items": item_schema,
-        "minItems": len(values),
-        "maxItems": len(values),
-    }
+    return _closed_object_schema(
+        {
+            value: {"type": "boolean", "const": True}
+            for value in values
+        }
+    )
 
 
 def _feature_model_schema() -> dict[str, object]:
@@ -1284,15 +1281,27 @@ def _expand_stage_feature_model(record: Mapping[str, object]) -> dict[str, objec
     examples = record.get("examples")
     if not isinstance(dimensions, dict) or not isinstance(examples, dict):
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    def expand_row(row: Mapping[str, object]) -> dict[str, object]:
+        expanded = dict(row)
+        for field in ("governing_requirement_ids", "boundary_ids"):
+            values = expanded.get(field)
+            if not isinstance(values, dict) or set(values.values()) != {True}:
+                if values != {}:
+                    raise BoundaryRuntimeError(
+                        "unexpected-prohibited-event", "in-turn"
+                    )
+            expanded[field] = list(values)
+        return expanded
+
     return {
         **{key: value for key, value in record.items() if key not in {"core_dimensions", "examples"}},
         "core_dimensions": [
-            {"dimension_id": dimension_id, **row}
+            {"dimension_id": dimension_id, **expand_row(row)}
             for dimension_id, row in dimensions.items()
             if isinstance(row, dict)
         ],
         "examples": [
-            {"example_id": example_id, **row}
+            {"example_id": example_id, **expand_row(row)}
             for example_id, row in examples.items()
             if isinstance(row, dict)
         ],
@@ -1303,13 +1312,29 @@ def _expand_stage_proof_map(record: Mapping[str, object]) -> dict[str, object]:
     obligations = record.get("proof_obligations")
     if not isinstance(obligations, dict):
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    expanded_rows = []
+    for proof_id, row in obligations.items():
+        if not isinstance(row, dict):
+            continue
+        expanded = dict(row)
+        for field in (
+            "governing_requirement_ids",
+            "boundary_or_interaction_ids",
+            "test_case_ids",
+            "manual_procedure_ids",
+        ):
+            values = expanded.get(field)
+            if not isinstance(values, dict) or (
+                values and set(values.values()) != {True}
+            ):
+                raise BoundaryRuntimeError(
+                    "unexpected-prohibited-event", "in-turn"
+                )
+            expanded[field] = list(values)
+        expanded_rows.append({"proof_obligation_id": proof_id, **expanded})
     return {
         **{key: value for key, value in record.items() if key != "proof_obligations"},
-        "proof_obligations": [
-            {"proof_obligation_id": proof_id, **row}
-            for proof_id, row in obligations.items()
-            if isinstance(row, dict)
-        ],
+        "proof_obligations": expanded_rows,
     }
 
 
