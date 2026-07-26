@@ -80,10 +80,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M1. Deterministic core correction
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r3.md
-- Review status: changes-requested; stage=plan-review; round=r3
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r4.md
+- Review status: changes-requested; stage=plan-review; round=r4
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: plan-review R4
+- Next stage: plan-review R5
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=9; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-PL4,BFP-PL5
 
@@ -183,7 +183,12 @@ resource through generated, packed, and installed outputs.
   - Resource-map, raw-byte-copy, trigger, stop, claim, handoff, complete review-bundle, and isolation tests
   - Example-only spec/test-spec rejection and valid compact simple-change cases
 - Implementation steps:
-  - Implement the read-only environment preflight, then run `check-environment` before any harness or skill mutation. Record only bounded non-secret results in `validation-m2.md`; on `environment-unavailable`, stop and route to architecture without a weaker fallback.
+  - Implement only the minimal read-only `check-environment` preflight as the
+    first bounded M2 slice.
+  - Before any other harness mutation or any participating-skill mutation, run
+    that preflight and record only bounded non-secret results in
+    `validation-m2.md`. On `environment-unavailable`, stop M2 and route to
+    architecture without a weaker fallback.
   - Create and validate `evidence/boundary-proof-baseline.json` from the harness-derived current HEAD before the first participating-skill edit. If an immutable baseline already exists with a different value, stop.
   - Freeze the two-module AST import policy and exact manifest/input-set schemas.
   - Assemble the five skill packages, applicable instructions, contracts, scenario, and candidates into a fresh isolated workspace.
@@ -303,8 +308,16 @@ resource through generated, packed, and installed outputs.
   - `scripts/validate-adapters.py`
   - `scripts/test-adapter-distribution.py`
   - `scripts/validate-release.py`
+  - `scripts/test-release-transaction.py`
+  - `dist/adapters/manifest.yaml`
   - `scripts/test-boundary-proof.py`
-  - `tests/fixtures/boundary-proof/release/`
+  - `tests/fixtures/boundary-proof/release/valid-activation/release-notes.md`
+  - `tests/fixtures/boundary-proof/release/invalid-partial-activation/release-notes.md`
+  - `tests/fixtures/boundary-proof/release/valid-rollback/release-notes.md`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/adapter-parity/canonical.json`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/adapter-parity/generated.json`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/adapter-parity/packed.json`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/adapter-parity/installed.json`
   - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`
 - Dependencies:
   - M1-M3 closed with clean code reviews
@@ -316,21 +329,31 @@ resource through generated, packed, and installed outputs.
   - No-new-universal-artifact and simple-fixture overhead assertions
 - Implementation steps:
   - Register exact affected paths and checks in the selector.
-  - Extend existing generation and resource-integrity proof for all supported adapters.
+  - Extend existing generation and resource-integrity proof for all supported adapters, using `dist/adapters/manifest.yaml` as the tracked support matrix.
+  - Copy the validated canonical, generated, packed, and installed parity maps
+    to the four exact durable `evidence/adapter-parity/*.json` paths before
+    aggregating them.
   - Freshly execute the closed deterministic operation registry, consume the current immutable and preservation results, and serialize the report only through `validate-boundary-proof.py generate-report`.
-  - Add release-note activation validation without writing an activation marker in this non-release change.
+  - Add valid activation, partial-activation rejection, and rollback release-note
+    fixtures to the release transaction suite without writing an activation
+    marker in this non-release change.
 - Validation commands:
   - `python scripts/test-select-validation.py`
   - `python scripts/test-adapter-distribution.py`
   - `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5`
+  - `python scripts/test-release-transaction.py`
+  - `python scripts/validate-release.py --version v0.3.6`
   - `python scripts/test-boundary-proof.py`
   - `python scripts/validate-boundary-proof.py generate-report --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --output docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`
   - `python scripts/validate-boundary-proof.py validate-report docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`
 - Promotion evidence:
   - current canonical skill/resource manifest
-  - durable canonical/generated/packed/installed parity manifest set
+  - exact durable `evidence/adapter-parity/canonical.json`,
+    `generated.json`, `packed.json`, and `installed.json` manifest set
   - freshly generated passing capability report and raw-byte identity
   - exact selector routing proof for all six check IDs
+  - passing activation, partial-activation, rollback, and current v0.3.6
+    non-publishing release validation
   - clean M4 code review before final holistic review
 - Failure stop:
   - Stop on any not-run/fail operation, stale dependency identity, parity mismatch, selector gap, asserted result, activation mismatch, or failed report validation; do not write release activation.
@@ -384,7 +407,10 @@ resource through generated, packed, and installed outputs.
 - Risk: Release activation could be claimed from branch-local evidence.
   - Recovery: Validate activation only in tracked release notes against an actual release tag and report byte identity.
 - Risk: The selected runtime cannot prove its effective sandbox or isolate credentials from child tools.
-  - Recovery: Stop at M1 with `environment-unavailable`, record bounded evidence in `validation-m1.md`, and route to architecture revision; do not add an unreviewed weaker execution mode.
+  - Recovery: Stop M2 with `environment-unavailable`, record bounded evidence
+    in `validation-m2.md`, and route to architecture revision; do not proceed
+    beyond the minimal preflight implementation or add an unreviewed weaker
+    execution mode.
 - Risk: Nondeterministic generation could be mistaken for deterministic validation.
   - Recovery: Keep generation and validation commands separate; validation never invokes lifecycle skills and a stale input identity requires a new explicit generation.
 
@@ -392,7 +418,9 @@ resource through generated, packed, and installed outputs.
 
 - Plan-review approval before test-spec authoring.
 - Matching test-spec amendments and clean test-spec review before implementation.
-- M1 runtime feasibility and deterministic correction before full harness work.
+- M1 deterministic correction before M2.
+- In M2, implement only the minimal feasibility probe first; require its pass
+  before any other harness or participating-skill mutation.
 - M2 harness and recovery proof before any canonical published-skill behavior generation.
 - M3 before M4 so downstream skills consume a stable upstream record contract and current immutable run.
 - M1-M3 before M4 computes capability outcomes.
@@ -437,6 +465,10 @@ resource through generated, packed, and installed outputs.
 - 2026-07-26: The plan R3 candidate replaces the stale four-milestone sequence with five reviewed boundaries: runtime feasibility and core correction, standalone harness and recovery, upstream behavior generation, downstream preservation, and portable capability aggregation.
 - 2026-07-26: Plan-review R3 requested restoration of normative R28y M1-M4 ownership and exact production, validation, promotion, baseline, and recovery commands.
 - 2026-07-26: The plan R4 candidate restores normative M1-M4 ownership, makes runtime feasibility and baseline capture the first M2 gates, and names exact controlled/canonical generation, validation, preservation, aggregation, promotion, and failure-stop commands and artifacts.
+- 2026-07-26: Plan-review R4 confirmed phase ownership and retained BFP-PL4 for inconsistent M2 feasibility wording and BFP-PL5 for missing exact release/parity paths and commands.
+- 2026-07-26: The plan R5 candidate makes the minimal preflight the first bounded
+  M2 implementation slice and freezes M4 adapter, parity, release-fixture, and
+  release-validation surfaces.
 
 ## Decision log
 
