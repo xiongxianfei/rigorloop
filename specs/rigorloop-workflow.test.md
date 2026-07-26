@@ -2,14 +2,15 @@
 
 ## Status
 
-- active
+- draft
 
 Boundary model version: v1
 Boundary model scope: R28-R28z
 
 ## Related spec and plan
 
-- Spec: [RigorLoop Workflow](rigorloop-workflow.md), approved.
+- Spec: [RigorLoop Workflow](rigorloop-workflow.md), draft pending focused
+  spec-review of the boundary publication and transport-attempt amendment.
 - Proposal: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md), accepted.
 - Historical plan: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md), done.
 - Related follow-on spec: [Learn Artifact Model](learn-artifact-model.md), approved.
@@ -32,10 +33,11 @@ Boundary model scope: R28-R28z
 - Historical workflow-refactor architecture: not required for that completed
   slice.
 - Boundary-first architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md),
-  approved by `architecture-review-r13`, with
+  draft pending focused architecture rereview, with
   [ADR-20260725](../docs/adr/ADR-20260725-boundary-first-proof-modeling.md)
-  and [ADR-20260726](../docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md)
-  accepted.
+  proposed for the amendment and
+  [ADR-20260726](../docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md)
+  otherwise accepted.
 - Boundary-first plan: [Boundary-First Proof Modeling](../docs/plans/2026-07-25-boundary-first-proof-modeling.md),
   approved by `plan-review-r14`.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
@@ -45,12 +47,12 @@ Boundary model scope: R28-R28z
 
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
-| Feature spec | `specs/rigorloop-workflow.md` | approved; spec-review-r26 | `sha256:67d1df62fcaf26dca8044afabdffff02ed39011bf7c33acff4c5893fe3dc8f68` |
+| Feature spec | `specs/rigorloop-workflow.md` | draft; focused spec-review pending | pending after approval |
 | Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion under spec-review-r26 | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
 | Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r26.md` | approved | `sha256:f994de035ef9d7721054155b20b6448735b78b00922eb5a75017b0734e43efc7` |
-| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r13 | `sha256:9bb8bbdded984d7be05cd8aa4dc680bb3179422b4a50ee397d927bd5f5755859` |
+| Architecture | `docs/architecture/system/architecture.md` | draft; focused architecture-review pending | pending after approval |
 | Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r13.md` | approved | `sha256:47571b7555fe6470de8e78a9c8b180c09fbdb627e8e641ab1c6915e0d9044288` |
-| ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted | `sha256:dac4993ec648a4c6ed72c50b5c22954760ea4b6c28f6686b7f7aeec246fdc216` |
+| ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | proposed amendment | pending after acceptance |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
 | Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active for M2 implementation; execution contract approved by plan-review-r14 | `sha256:9bf5bc6e0c56a8e63085ffee3f0c011e3644420ec7d04c643b7ab74602caa601` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
@@ -1477,7 +1479,12 @@ Boundary model scope: R28-R28z
   validation, after pointer replacement, after parent-directory fsync, and
   after receipt cleanup. Resume against the original inputs; inspect
   deterministic staging, installed run, prepared receipt, current pointer, and
-  directory durability; attempt a second in-flight publication.
+  directory durability; distinguish the current staged-manifest reference from
+  the prospective immutable target descriptor; attempt a second in-flight
+  publication. Exercise every durable staging/receipt/run/pointer/prior-pointer
+  combination plus corrupt, conflicting, and changed-input variants. For
+  orphan staging, prove automated stop and the documented manual-recovery
+  preconditions; for cleanup, prove receipt removal and parent fsync.
 - Expected result: Resume reconciles valid evidence without reinvoking skills,
   never installs or points at a partial run, never installs without a durable
   exclusive receipt, never loses the prior immutable pointer, and fails closed
@@ -1495,13 +1502,19 @@ Boundary model scope: R28-R28z
 - Level: e2e
 - Command IDs: CMD-BFP-8, CMD-BFP-10, CMD-BFP-11, CMD-BFP-12
 - Fixture/setup: The exact `workflow`, `spec`, `spec-review`, `test-spec`, and
-  `test-spec-review` packages and the simple-change scenario corpus.
+  `test-spec-review` packages and the simple-change scenario corpus; this is a
+  four-stage lifecycle path using five participating skills.
 - Steps: Pass preflight; freeze baseline; invoke `workflow` to route the
   five-stage upstream path; require each stage-owning skill to write its
   complete artifact under the isolated output root; snapshot it before the
   next stage; reject harness-authored normative content. Inject stage timeout
   with absent, complete, partial, extra, and contradictory output plus
-  protocol/security failures. Run validation repeatedly.
+  uncertain liveness and protocol/security failures. Assert lifecycle
+  correction attempt and transport attempt remain distinct, every transport
+  row has the closed R28y fields and decision, the original process is
+  terminated and reaped before retry, and transport evidence lives in the
+  successful immutable run or controlled failure fixture. Run validation
+  repeatedly.
 - Expected result: One fresh immutable run contains current output snapshots,
   terminal branches, review-event evidence unions, and computed simple-change
   observations. Complete output reconciles without reinvocation, absent output

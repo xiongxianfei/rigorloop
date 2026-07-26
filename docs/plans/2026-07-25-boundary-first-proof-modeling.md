@@ -85,7 +85,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r2.md
 - Review status: blocked; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec-review R27 for BFP-CR-M2-8 transaction clarification
+- Next stage: spec-review R28 for transport and publication-state closure
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 

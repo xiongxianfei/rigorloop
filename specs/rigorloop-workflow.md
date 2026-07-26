@@ -2052,11 +2052,11 @@ This invocation baseline is distinct from the frozen pre-M2 preservation
 baseline because the former measures artifacts created by the current scenario
 run while the latter measures behavior preservation across skill changes.
 
-The behavior harness writes one immutable run manifest containing event results
-under the run root.
+The behavior harness writes one immutable run manifest containing transport and
+lifecycle event results under the run root.
 The run manifest contains exactly `run_id`, `input_set`, `input_set_identity`,
 `baseline_commit`, `before_artifact_inventory`, `after_artifact_inventory`,
-`snapshots`, and `events`.
+`snapshots`, `transport_attempts`, and `events`.
 `run_id` matches `run-[0-9a-f]{32}`, is generated from 128 bits of
 cryptographically secure randomness, and MUST NOT already exist.
 
@@ -2117,8 +2117,18 @@ Run-ID/path, input-set, or identity mismatch fails closed.
 Before immutable-run installation or pointer replacement, the harness
 exclusively writes
 `docs/changes/<change-id>/evidence/simple-change/prepared.json`.
-That receipt contains exactly `run_id`, `input_set_identity`, `manifest_ref`,
-and `prior_pointer`.
+That receipt contains exactly `run_id`, `input_set_identity`,
+`staged_manifest_ref`, `target_manifest`, and `prior_pointer`.
+`staged_manifest_ref` is a standard current path-and-identity reference to
+`.prepared-<run-id>/manifest.json` and MUST exist when the receipt is written.
+`target_manifest` is a prospective immutable target descriptor containing
+exactly `path` and `identity`.
+Its path is
+`docs/changes/<change-id>/evidence/simple-change/runs/<run-id>/manifest.json`
+and its identity equals `staged_manifest_ref.identity`.
+It is not a current evidence reference until immutable installation succeeds.
+After installation, `current.json.manifest_ref` equals `target_manifest`
+byte-for-byte.
 `prior_pointer` is null for the first publication or an immutable inline copy
 of the prior pointer's exact `run_id`, `input_set_identity`, and
 `manifest_ref` values.
@@ -2135,8 +2145,9 @@ skills.
 The harness writes and fsyncs a sibling temporary pointer, atomically replaces
 the pointer file with the platform's same-filesystem atomic file-replace
 primitive, and fsyncs the parent directory.
-Failure before pointer replacement leaves the prior pointer and immutable run
-unchanged.
+Failure before pointer replacement leaves the prior pointer unchanged.
+It may leave the prepared immutable run installed but unpointed; that run is
+non-current and can become current only through receipt reconciliation.
 On resume, a prepared receipt is reconciled before any generation or
 validation:
 
@@ -2154,6 +2165,16 @@ validation:
 
 The harness never accepts the old run as completion of a different prepared
 invocation and never reinvokes lifecycle skills during reconciliation.
+Receipt removal is followed by fsync of the receipt parent before publication
+is reported complete.
+If deterministic staging exists without a receipt, automated generation and
+publication stop with `orphan-staging`.
+The staged run is never adopted or discarded automatically.
+Documented manual recovery MUST first establish that no publisher remains
+live, validate the complete staged run and current input identities, preserve
+bounded diagnostics, and then either remove staging for an explicit new
+generation or create a new reviewed recovery action.
+Uncertain publisher liveness pauses without retry or mutation.
 `baseline_commit` is exactly the harness-derived
 `git:<40 lowercase hexadecimal characters>` pre-run HEAD and names the commit
 used for the before run.
@@ -2204,6 +2225,58 @@ criteria, test cases, validation commands, formal review judgments, or review
 records.
 Caller prose, candidate fixtures, pre-existing files, and copied expected
 outputs cannot be recorded as fresh behavior outputs.
+
+`transport_attempts` records runtime transport separately from lifecycle
+correction events.
+Every transport-attempt row contains exactly:
+`transport_attempt_id`, `event_key`, `transport_attempt`, `runtime_thread_id`,
+`termination_state`, `output_state`, `diagnostic_id`, `decision`, and
+`evidence_refs`.
+`event_key` is the lifecycle event identity `<stage>#<attempt>`.
+`transport_attempt` is `1` or `2` and does not change the lifecycle event's
+`attempt`.
+`transport_attempt_id` is exactly
+`<event-key>/transport/<transport-attempt>`.
+`runtime_thread_id` is the exact fresh runtime thread identity.
+Rows are ordered first by lifecycle-event order and then by transport attempt.
+
+`termination_state` is exactly `completed`, `confirmed-stopped`, or
+`liveness-uncertain`.
+The adapter MUST terminate and reap an expired runtime process before recording
+`confirmed-stopped`.
+Failure to prove termination records `liveness-uncertain`, pauses, and performs
+no retry or output mutation.
+`output_state` is exactly `absent`, `complete`, `partial`, `extra`, or
+`contradictory`, computed from the bound stage-output path after termination or
+normal completion.
+`diagnostic_id` is `none` for normal completion, `stage-turn-timeout` for the
+only retryable transport failure, or a stable non-retryable protocol, security,
+shape, identity, or output diagnostic.
+`decision` is exactly `accept`, `reconcile`, `retry`, `pause`, or
+`fail-closed`.
+
+The closed transport decision matrix is:
+
+| Termination | Output | Diagnostic | Decision |
+| --- | --- | --- | --- |
+| `completed` | `complete` | `none` | `accept` |
+| `confirmed-stopped` | `complete` | `stage-turn-timeout` | `reconcile` without reinvocation |
+| `confirmed-stopped` | `absent` | `stage-turn-timeout` and transport attempt 1 | `retry` once in a fresh runtime |
+| `confirmed-stopped` | `absent` | `stage-turn-timeout` and transport attempt 2 | `fail-closed` |
+| `liveness-uncertain` | any | any | `pause` |
+| `completed` or `confirmed-stopped` | `partial`, `extra`, or `contradictory` | any | `fail-closed` |
+| `completed` or `confirmed-stopped` | `absent` or `complete` | protocol, security, shape, identity, or other non-retryable diagnostic | `fail-closed` |
+
+For `complete`, `evidence_refs` contains exactly the current stage-owned output
+references inspected for that attempt.
+For `absent`, it is empty.
+Partial, extra, contradictory, paused, and failed invocations cannot satisfy a
+published behavior run; their controlled-fixture proof records bounded
+diagnostics but no canonical behavior evidence.
+A successful run retains every preceding absent-timeout row plus the accepted
+or reconciled terminal row.
+Validation and publication reconciliation consume recorded transport rows and
+MUST NOT reinvoke lifecycle skills.
 
 Every event contains exactly:
 `stage`, `attempt`, `input_snapshot_ids`, `reviewed_snapshot_id`,
