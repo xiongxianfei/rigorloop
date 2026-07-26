@@ -122,6 +122,10 @@
 - Single Bounded Review-Fix Workflow Automation spec-review: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md`
 - Single Bounded Review-Fix Workflow Automation ADR: `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`
 - Single Bounded Review-Fix Workflow Automation change metadata: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml`
+- Boundary-First Proof Modeling proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
+- Boundary-First Proof Modeling spec amendments: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
+- Boundary-First Proof Modeling spec-review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r2.md`
+- Boundary-First Proof Modeling ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
@@ -168,6 +172,10 @@ The goals are:
 - reduce redundant workflow routing through one target-driven `bounded-review-fix` automation mechanism while preserving stage-owned artifacts, formal review independence, risk-class authorization boundaries, bounded correction policies, resumable transition evidence, and the human-controlled PR boundary.
 - make workflow-managed automated reviews structurally independent and adversarial through fresh review contexts, neutral initial packets, blind-first risk formation, staged evidence release, risk-tiered escalation, clean-review sufficiency receipts, and calibration evidence.
 - make applicable automated reviews spec-canonical by requiring deterministic requirement-fidelity applicability, requirement-property decomposition, property-by-surface matrices, validator assertion comparison against the spec, and compression-defect calibration.
+- move exhaustive boundary-class and proof-map reasoning before code review
+  through one versioned model projected across eight public lifecycle skills,
+  deterministic structural validation, incident replay, adapter parity, and a
+  computed release capability baseline.
 
 ## Architecture Constraints
 
@@ -253,6 +261,16 @@ The goals are:
 - The requirement-fidelity gate is an additive sibling to the independent adversarial review gate. When both apply, workflow-managed continuation requires both passing receipts.
 - Requirement-fidelity applicability is determined before artifact comparison from affected-path and category triggers, with closed applicability results and justified reviewer override only.
 - Requirement-fidelity review uses the governing spec clause as the canonical comparison point. Implementation and validator agreement is not proof of spec fidelity.
+- Boundary-model semantics, activation, stage gates, and capability-baseline
+  completion remain normative in `specs/rigorloop-workflow.md`; published-skill
+  projection remains normative in `specs/skill-contract.md`.
+- The first boundary release is limited to exactly eight skills and does not
+  add a lifecycle stage or universal per-change artifact.
+- Deterministic boundary validation checks syntax, closed values, references,
+  fixture registration, and computed aggregates only; semantic completeness
+  remains review-owned.
+- Boundary-model `v1` activates only through tracked release notes bound to the
+  SHA-256 of a passing capability report.
 - Mandatory manual-review applicability classification is outside the first requirement-fidelity slice; manual reviews may voluntarily record fidelity receipts.
 - Automation activation requires a valid structured target, canonical workflow position, active parent authorization for the required risk class, and a basis-complete effective capability. Artifact readiness and user consent remain independent.
 - Unified automation state is durable change-local evidence at `docs/changes/<change-id>/change.yaml#workflow.automation`; it records authority and transition evidence but not live next-stage ownership. Only `scripts/workflow_automation_state.py` writes that subsection.
@@ -355,6 +373,36 @@ The validation and generation container has these important internal responsibil
 - first-slice script-output shaping: `scripts/test-select-validation.py` is the first standalone runner surface for compact `[PASS]` success summaries, actionable `[FAIL]` details, explicit `--verbose`, silent successful `--quiet`, reliable-only rerun guidance, and behavior-preservation evidence.
 
 This decomposition is prose-only for now. A component diagram should be added when future validation work changes these internal responsibilities enough that prose no longer explains the selector, validator, generator, and CI-wrapper relationships.
+
+### Level 2 White-Box: Boundary-Proof Validation and Evaluation
+
+See
+[`diagrams/component-boundary-proof.mmd`](diagrams/component-boundary-proof.mmd)
+for the component view.
+
+| Component | Physical owner | Responsibility |
+| --- | --- | --- |
+| Boundary model constants and parser | `scripts/boundary_proof_model.py` | Projects closed IDs, marker and scope rules, row schemas, reference integrity, fixture identities, result vocabularies, and report aggregation from approved specs. |
+| Capability evaluator | Pure functions in `scripts/boundary_proof_model.py` | Computes the six-check, fixture, preservation, parity, overhead, and final capability outcomes from validated typed inputs; it performs no filesystem writes. |
+| Boundary validator | `scripts/validate-boundary-proof.py` | Validates scoped feature specs, matching test specs, fixture evidence, and the capability report without scoring semantic adequacy. |
+| Regression suite | `scripts/test-boundary-proof.py` | Proves known and unknown values, duplicates, orphans, version mismatch, aggregate behavior, and the compact simple fixture. |
+| Boundary fixtures | `tests/fixtures/boundary-proof/` | Holds valid, invalid, eight seeded incident-replay, and simple-change inputs. |
+| Skill behavior fixtures | Existing skill tests plus `tests/fixtures/skills/boundary-proof/` | Proves the eight skills preserve prior behavior and expose the approved stage responsibility. |
+| Selector registration | `scripts/validation_selection.py` and `scripts/test-select-validation.py` | Routes the six approved boundary check IDs for exact affected paths. |
+| Canonical public skills | `skills/{spec,spec-review,test-spec,test-spec-review,implement,code-review,verify,workflow}/` | Own project-portable stage procedure, stop behavior, and resource loading. |
+| Shared reference source | `templates/shared/boundary-proof-model.md` | Supplies one reviewed body copied byte-for-byte into each consuming skill. |
+| Packaged references | `skills/<in-scope-skill>/references/boundary-proof-model.md` | Make the complete model available on demand inside every installed skill package. |
+| Adapter generation and parity | Existing build and adapter validation scripts | Carry mapped references into generated, packed, and installed target trees with raw-byte parity. |
+| Capability report | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md` | Carries the one change-specific computed baseline; it is not a universal artifact type. |
+
+Only `scripts/boundary_proof_model.py` owns executable closed constants and
+shared parsing or aggregate evaluation.
+Selector code routes checks but does not parse boundary records.
+Skill validation may import the model but cannot carry a second vocabulary.
+Only `scripts/validate-boundary-proof.py` serializes or replaces the canonical
+capability report, using the pure evaluator result; fixtures, selector code,
+skill validators, adapter tooling, and release tooling cannot write it.
+The approved specs remain normative if code and contract disagree.
 
 ### Level 2 White-Box: Unified Workflow Automation
 
@@ -541,6 +589,34 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
 10. `scripts/validate-token-cost-report.py` validates the token-cost metadata schema, waiver fields, run references, runner metadata, portability status, raw-or-sanitized evidence, result-quality evidence, required benchmark coverage, optional warning evidence, claimed optional coverage, and comparison shape.
 11. Release validation delegates token-cost report validation before public release readiness is claimed.
 
+### Boundary-first proof flow
+
+1. `spec` loads the packaged boundary reference for a `v1` contract and records
+   the scoped core table, extensions, examples, and selected interactions.
+2. `spec-review` performs semantic completeness review while deterministic
+   validation checks markers, closed values, row shape, uniqueness, and links.
+3. `test-spec` maps every applicable partition, transition, and selected
+   interaction to proof; `test-spec-review` rejects example-complete but
+   boundary-incomplete evidence.
+4. `implement` establishes proof before or with behavior and records sibling
+   inspection for discovered defects.
+5. `code-review` independently challenges omitted dimensions, composed paths,
+   and example-only remediation.
+6. The incident runner evaluates the eight frozen fixture IDs at their
+   expected pre-code-review gates.
+7. Adapter generation carries the mapped reference through Codex, Claude, and
+   opencode packages; resource validation proves relative path and raw-byte
+   identity.
+8. The evaluator computes the capability report from fixtures, checks,
+   preservation, parity, false blocking, ownership, artifact count, and
+   correction-cycle evidence.
+9. `verify` rejects missing, stale, mismatched, asserted, or incomplete
+   evidence.
+10. A release activates `v1` only when tracked notes bind its tag to the
+    passing report's SHA-256.
+11. Rollback reverts skills, references, validators, fixtures, selectors, and
+    adapters as one unit; partial `v1` evidence is not legacy proof.
+
 ### Generated guidance flow
 
 1. Canonical skill sources under `skills/` are edited.
@@ -653,6 +729,13 @@ The main execution and publication boundaries are:
 - token-cost release evidence: `docs/reports/token-cost/releases/<version>.md`, `docs/reports/token-cost/releases/<version>.yaml`, and tracked raw or sanitized run summaries under `docs/reports/token-cost/runs/<version>/`;
 - release evidence: tracked `docs/releases/profiles/<tag>.yaml`, `docs/releases/v<version>.md`, `docs/releases/<version>/release.yaml`, release notes, generated pending/publication evidence, timing evidence, and maintainer smoke evidence used by release verification.
 - npm publication evidence: `docs/releases/v0.1.4/npm-publication.md`, recording selected publication mode, tarball identity, package-content checks, packed-package smoke, trusted publishing or bootstrap details, npm package URL, and real Codex install smoke.
+- boundary capability evidence: one change-specific Markdown report with a
+  canonical fenced YAML record at the R28y path; activation is recorded only
+  in tracked release notes using the report's raw-byte SHA-256;
+- boundary packaged references: identical mapped
+  `references/boundary-proof-model.md` files beneath the eight in-scope skill
+  roots, carried through generated release output and clean installed Codex,
+  Claude, and opencode trees.
 
 Rollback before public adapter skill-copy untracking keeps `dist/adapters/**/skills` tracked and defers archive publication or fixes archive metadata, install docs, and validation before release. Rollback before `v0.1.3` publication may regenerate and restore tracked adapter output from `skills/` if the release cannot validate generated packages or archives. Rollback after public adapter skill-copy untracking preserves generation from `skills/` and either republishes release artifacts from last known good generated output or uses a later approved recovery release. No runtime data migration is required.
 
@@ -716,6 +799,32 @@ The default resource identity is skill-root relative path plus raw-byte SHA-256.
 The migration lint is intentionally bounded. It catches legacy resource-loading instructions such as `templates/...` without treating ordinary artifact paths, customer-project paths, or code examples as package dependencies. Existing drift starts as audit-mode migration debt, but new or changed skills must satisfy the resource-integrity rules immediately once implemented.
 
 Runtime fallback is an emergency work-continuation rule, not package validation. A missing mapped resource keeps package validation failing; runtime may continue only for redundant convenience resources whose complete contract is already in `SKILL.md` and whose contents do not require invention.
+
+### Boundary-first proof ownership
+
+The workflow spec owns boundary language and lifecycle gates.
+The skill contract owns the portable eight-skill projection.
+Feature specs own behavior-specific classification and partitions; test specs
+own executable proof mappings.
+
+`scripts/boundary_proof_model.py` is an immutable executable projection.
+Unknown closed values fail before consistency checks.
+The projection cannot add a dimension, result, fixture, or gate.
+
+Structural validation and semantic review remain separate:
+
+- validators own marker and scope parity, exact fields, known values, ID
+  grammar, uniqueness, referential integrity, required registration, evidence
+  presence, and deterministic aggregate calculation;
+- reviewers own applicability, meaningful partitions, hazard-selected
+  interactions, manual-proof adequacy, and sibling reasoning.
+
+The shared reference uses the copied-resource pattern.
+`templates/shared/boundary-proof-model.md` is the reviewed copy source; every
+in-scope skill packages an identical mapped reference because installed skills
+cannot depend on repository-root templates.
+Each `SKILL.md` retains stage triggers, stops, claims, and handoffs so the
+reference cannot hide required control flow.
 
 ### Project-map current-state orientation
 
@@ -879,6 +988,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 ## Architecture Decisions
 
+- [ADR-20260725-boundary-first-proof-modeling](../../adr/ADR-20260725-boundary-first-proof-modeling.md) - Use a spec-normative typed projection, copied packaged reference, structural validator, frozen incident registry, and report-hash release activation for boundary-model `v1`.
+
 - `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
 - `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: removes change-local deltas from the normal architecture authoring path and requires architecture-review surface classification.
 - `docs/adr/ADR-20260419-repository-source-layout.md`: repository source layout and canonical-source/generated-output separation.
@@ -963,6 +1074,11 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Requirement-fidelity trustworthiness | An applicable automated review implements, validates, teaches, or preserves a normative spec clause. | The review records deterministic applicability, spec-first packet ordering, accepted or reviewer-authored decomposition, property-by-surface verification, validator assertion comparison against the governing spec, compressed-requirement risk, and a structurally valid requirement-fidelity receipt or material finding. |
 | Requirement-compression calibration | A review-quality calibration run measures compression detection. | The run cites a named corpus iteration, seeded defect type, expected finding, observed finding, recall result, and rotation state; Phase B sampling meets the approved floor rates. |
 | Second-review escalation | A sampled or required second reviewer disagrees with a first clean automated review. | Any material finding, blocked result, or inconclusive result prevents automatic continuation and routes to review-resolution, owner decision, or another authorized review without majority voting. |
+| Early boundary-omission detection | A published lifecycle skill is authored from representative examples that omit a required failure or recovery boundary. | Its active boundary proof map fails before implementation or publication unless every applicable core dimension and every normative extension has a typed proof row or an explicit `not-applicable` rationale. |
+| Semantic ownership | A maintainer changes a boundary dimension, proof-row field, or aggregation rule. | The approved feature spec remains normative; the typed Python model and skill-local shared reference are validated projections and cannot silently redefine the contract. |
+| Portable boundary capability | A core lifecycle skill is generated, packaged, or installed for a supported adapter. | Its mapped boundary-proof reference remains byte-identical to the canonical shared source and the skill retains the same boundary obligations outside the repository checkout. |
+| Boundary release activation | A release claims boundary-model v1 support. | Tracked release notes name `Boundary model activation: v1` and bind the SHA-256 identity of a passing capability-baseline report generated from the release candidate. |
+| Proportional proof overhead | A simple skill operation has few applicable boundary dimensions. | The map uses explicit `not-applicable` rows and concise typed proofs; it does not require invented examples, duplicate prose, or a second behavior contract. |
 | Closeout gate safety | A milestone closeout record cites only `cache-hit-inner-loop` evidence. | Lifecycle or change-metadata validation rejects the closeout because first-slice closeout requires `actual-run-pass`. |
 | Local archive verification | A user runs `rigorloop init codex --from-archive <path>`. | The CLI verifies the archive against bundled official metadata for the installed package's compatible target release and blocks with `metadata-unavailable` if metadata is absent. |
 | State determinism | A user reruns `rigorloop init codex --write-state` after a verified install with unchanged generated output. | The CLI computes the same normalized manifest hash and `rigorloop-tree-hash-v1`, preserves supported unrelated entries, and produces byte-identical target-oriented state content for identical state. |
@@ -1061,6 +1177,12 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Project maps could be mistaken for source-of-truth behavior contracts | The `project-map` contract makes maps living references only, requires source-ranked evidence for material current-state claims, and forces direct source inspection when map evidence is stale, partial, inferred, unknown, conflicting, security-sensitive, or exact-behavior critical. |
 | Area maps could fragment repository orientation | The root map remains the required entry point whenever area maps exist, area maps require durable boundaries and root registration, and overlap names one detail owner rather than duplicating descriptions. |
 | Project-map validation could overfit natural language | The first slice validates contract structure, skeleton presence, resource-map mapping, generated adapter inclusion, and small representative outputs; a dedicated artifact validator stays deferred until repeated produced-map drift appears. |
+| Boundary proof maps could become presence-only ceremony | Validation checks closed vocabulary, traceability, incident replay, adapter parity, and capability outcomes; formal review challenges whether each proof actually establishes its claimed boundary. |
+| Copied boundary references could drift across skills | One canonical shared source is copied to the eight governed skills, mapped as a packaged resource, and checked for raw-byte identity in canonical, generated, packed, and installed surfaces. |
+| The executable boundary model could become a competing specification | The approved feature specs remain normative; the Python model is an immutable projection with exhaustive conformance tests and fails closed when projection and spec disagree. |
+| Incident-derived fixtures could overfit known failures | Incident replay is one additive check beside the closed twelve-dimension model, normative extensions, negative fixtures, sibling-interaction proofs, and independent review. |
+| A capability report could be asserted, stale, or detached from the release candidate | The validator computes the report from named checks and evidence identities; activation binds the report byte hash in tracked release notes and fails on any non-pass or not-run required result. |
+| Mixed v1 and legacy skills could make rollback ambiguous | Each governed skill declares one boundary-model version; activation requires all governed skills at v1, while rollback removes the activation marker and restores a uniformly validated legacy set rather than accepting a mixed claim. |
 
 ## Glossary
 
@@ -1073,6 +1195,10 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - mapped skill-local resource: a packaged resource under a skill root that is declared in that skill's `Resource map`.
 - resource parity identity: the skill-root relative path plus raw-byte SHA-256 for an untransformed mapped resource.
 - transformation contract: explicit ownership and expected identity for a resource intentionally changed between canonical source and generated, packed, or installed output.
+- boundary model: the closed set of core failure, authority, identity, transition, recovery, composition, and interaction dimensions that a governed lifecycle skill must classify before examples can be treated as sufficient proof.
+- boundary proof map: the versioned, scope-bound table that maps every applicable boundary dimension and normative extension to typed proof evidence or an explicit `not-applicable` rationale.
+- capability baseline: the generated change-local report that aggregates the six required boundary checks across all governed skills and records whether capability preservation is proven.
+- boundary activation identity: the SHA-256 identity of the passing capability-baseline report recorded by release notes when boundary-model v1 becomes an active published capability claim.
 - transition release: a stable release that preserves repository-tree adapter installation from `dist/adapters/` while `.codex/skills/` remains ignored local runtime state and adapter archives remain a follow-on migration by default.
 - compatibility-window release: a stable release that preserves repository-tree adapter packages while also providing release archives and install guidance, giving downstream users one release to transition install models.
 - adapter artifact metadata: tracked YAML under `docs/reports/adapter-artifacts/releases/<version>.yaml` that records source commit, generator command, archive paths, checksums, and validation evidence for generated adapter release artifacts.
@@ -1150,10 +1276,11 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Next artifacts
 
-- Architecture-review for the unified bounded-review-fix architecture update, component diagram, and superseding ADR.
+- Execution plan and plan-review for boundary-first proof-modeling.
 
 ## Follow-on artifacts
 
+- Architecture-review for boundary-first proof-modeling: approved in `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r2.md` after evaluator ownership and component containment were made explicit.
 - Legacy architecture lifecycle normalization: completed; top-level legacy architecture records are archived historical evidence.
 - Architecture-review for the 2026-04-29 package-quality refinement: approved on 2026-04-29 with no findings.
 - Architecture-review for the 2026-05-08 workflow-governance direct canonical package update: approved in `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/architecture-review-r1.md` with no material findings.
@@ -1193,7 +1320,7 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-This approved canonical package revision records one writable bounded-review-fix workflow-automation mechanism at `docs/changes/<change-id>/change.yaml#workflow.automation`. Public semantics live in `skills/workflow/SKILL.md`; named Python modules own command coordination, the complete immutable stage-policy projection, state access and reconciliation, and validation. Prepared receipts bind the original effective capability and only the state adapter writes automation state. The revision preserves active-plan state ownership, stage-owned artifacts, independent review gates, stage-specific correction authority, fresh verification, and the stop before PR or other external actions. Architecture-review R3 approved the revision for planning reliance.
+The canonical package remains approved for all previously accepted architecture decisions. Architecture-review R2 approved the boundary-first proof-modeling amendment for planning reliance. The accepted ADR, executable projection boundary, one-writer capability-report flow, copied packaged-resource ownership, release activation identity, and component view are now settled; planning may sequence implementation but may not redefine those decisions.
 
 ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
 

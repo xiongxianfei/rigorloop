@@ -1,0 +1,41 @@
+flowchart LR
+  workflow_spec["Workflow specification<br/>[Normative boundary contract]"]:::container
+  skill_spec["Skill contract<br/>[Normative public projection]"]:::container
+  feature_specs["Feature and test specs<br/>[Boundary and proof records]"]:::container
+  skills["Eight canonical skills<br/>[Stage procedures + mapped reference]"]:::container
+  templates["Shared boundary reference source<br/>[Template container]"]:::container
+  fixtures["Boundary and skill fixtures<br/>[Test fixture container]"]:::container
+  report["Capability report<br/>[Change-local evidence]"]:::container
+  release["Release notes<br/>[Activation identity]"]:::container
+  reviewer["Independent reviewer"]:::person
+
+  subgraph validation["Validation and generation scripts<br/>[Python and shell container]"]
+    model["Boundary model projection<br/>[Typed constants + parser]"]:::component
+    evaluator["Capability evaluator<br/>[Pure aggregate]"]:::component
+    validator["Boundary validator + report writer<br/>[Structure + serialization]"]:::component
+    selector["Validation selector<br/>[Six check IDs]"]:::component
+    generators["Adapter integration<br/>[Generation + parity]"]:::component
+  end
+
+  workflow_spec -->|normative values and gates| model
+  skill_spec -->|normative stage projection| model
+  model --> validator
+  model --> evaluator
+  selector --> validator
+  fixtures -->|fixture and behavior evidence| validator
+  feature_specs -->|boundary and proof records| validator
+  reviewer -->|semantic completeness| feature_specs
+  templates -->|copied byte-for-byte| skills
+  skills -->|canonical procedures and resources| generators
+  generators -->|parity evidence| evaluator
+  validator -->|validated typed inputs| evaluator
+  fixtures -->|incident outcomes| evaluator
+  evaluator -->|computed result| validator
+  validator -->|only report writer| report
+  report -->|raw-byte SHA-256| release
+
+  classDef person fill:#08427b,stroke:#073b6f,color:#fff
+  classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+  classDef external fill:#999,stroke:#666,color:#fff
+  classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
+  classDef component fill:#85bbf0,stroke:#5b91c7,color:#111

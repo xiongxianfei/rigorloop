@@ -4,6 +4,9 @@
 
 - active
 
+Boundary model version: v1
+Boundary model scope: R56-R56q
+
 ## Related spec and plan
 
 - Spec: [Skill Contract](skill-contract.md), approved after clean spec-review on 2026-05-08.
@@ -37,6 +40,17 @@
   - `scripts/measure-skill-tokens.py`
   - `scripts/test-adapter-distribution.py`
   - `scripts/ci.sh`
+
+## Input artifact identities
+
+| Input | Path | Status / Review state | Identity |
+| --- | --- | --- | --- |
+| Feature spec | `specs/skill-contract.md` | approved; spec-review-r2 | `sha256:d19b30d1890b5e7834b976192465694077cef7bcee01152f9744741b02b0a566` |
+| Companion workflow spec | `specs/rigorloop-workflow.md` | approved; spec-review-r2 | `sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634` |
+| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r2.md` | approved | `spec-review-r2` |
+| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r2 | `sha256:9a50e14dededdd5bd68649437ef30aff3a8c75587a547077e0d267616d47aeda` |
+| ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted | `sha256:a797c36cd9ec4cbd262cdea825cfa9f38a787e0cab5ebc2d12d34ed8af1a8200` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; plan-review-r2 | `plan-review-r2` |
 
 ## Testing strategy
 
@@ -125,6 +139,20 @@
 | `R54`, `R54a`, `R54b`, `R54c`, `R54d` | `T42`, `T44`, `T48` | integration, manual | Runtime fallback remains separate from package validity, and missing normative or non-obvious structural resources stop execution. |
 | `R55`, `R55a`, `R55b` | `T41`, `T48` | integration, smoke, manual | M1 must complete the pre-change architecture resource-chain audit and identify the first divergent layer before architecture resources change. |
 | `R55c`, `R55d`, `R55e` | `T44`, `T48` | integration, manual | Architecture skeletons and diagram conventions are classified by content, and architecture behavior obligations are preserved. |
+
+### Boundary-first amendment coverage
+
+| Requirement ID | Covered by | Level | Notes |
+| --- | --- | --- | --- |
+| `R56`-`R56a` | `T49`, `T56` | contract, migration | Exact eight-skill projection and no deferred-skill drift |
+| `R56b`-`R56e` | `T50`, `T51` | integration, manual | Upstream classification, semantic review, proof map, and omission rejection |
+| `R56f`-`R56i` | `T52`, `T53` | integration, manual | Proof-first implementation, sibling review, verify coherence, and workflow stops |
+| `R56j`-`R56k` | `T49`, `T54` | integration | Portable wording and required mapped-reference boundaries |
+| `R56l` | `T55` | integration, manual | Existing routing, claims, recording, isolation, artifact, validation, and handoff preservation |
+| `R56m` | `T49` | unit, integration | Unknown closed values fail before consistency; no semantic scoring |
+| `R56n` | `T54` | integration, smoke | Canonical, generated, packed, and installed parity |
+| `R56o`-`R56p` | `T51`, `T55` | integration | Exact incident IDs and compact simple fixture |
+| `R56q` | `T56` | migration, integration | One release unit, partial-unit rejection, and rollback |
 
 ## Example coverage map
 
@@ -298,6 +326,55 @@
 | Locally packed clean-install smoke inspects real installed target trees, not dry-run output or source directories | `T46` |
 | Repository-wide audit starts in audit mode and enables global enforcement only after drift is resolved, deferred, or excepted | `T47` |
 | Runtime fallback never converts a broken package into a passing validation result | `T42`, `T44`, `T48` |
+
+## Boundary-first proof map
+
+| Proof obligation ID | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Automation level | Manual procedure IDs |
+| --- | --- | --- | --- | --- | --- |
+| `bfp-proof.skills-canonical` | R56a, R56j, R56n | bfps.canonical.workflow-contract, bfps.canonical.skill-source, bfps.canonical.installed-output | T49, T54 | automated | - |
+| `bfp-proof.skills-identity` | R56h, R56n, R56q | bfps.identity.current-resource, bfps.identity.stale-adapter, bfps.identity.version-mismatch | T53, T54, T56 | automated | - |
+| `bfp-proof.skills-vocabulary` | R56a, R56m, R56o | bfps.vocabulary.known, bfps.vocabulary.unknown, bfps.vocabulary.fixture-id | T49, T51 | automated | - |
+| `bfp-proof.skills-state` | R56c-R56i, R56q | bfps.state.author, bfps.state.review, bfps.state.pause, bfps.state.activate | T50, T51, T52, T53, T56 | hybrid | bfp-manual.skill-stage-semantics |
+| `bfp-proof.skills-authority` | R56f, R56g, R56i | bfps.authority.owned-behavior, bfps.authority.contract-gap, bfps.authority.scope-expansion | T52, T53 | hybrid | bfp-manual.skill-authority |
+| `bfp-proof.skills-atomicity` | R56d, R56f, R56o | bfps.mutation.proved, bfps.mutation.partial | T51, T52 | automated | - |
+| `bfp-proof.skills-recovery` | R56d, R56h, R56o | bfps.recovery.retry, bfps.recovery.reconcile, bfps.recovery.stale | T51, T53 | automated | - |
+| `bfp-proof.skills-concurrency` | R56d, R56h | bfps.concurrency.duplicate, bfps.concurrency.conflict, bfps.concurrency.replay | T51, T53 | automated | - |
+| `bfp-proof.skills-composition` | R56e-R56g, R56o | bfps.composition.helper, bfps.composition.public-path, bfps.composition.sibling | T51, T52 | hybrid | bfp-manual.skill-composition |
+| `bfp-proof.skills-compatibility` | R56j, R56n, R56q | bfps.compatibility.canonical, bfps.compatibility.generated, bfps.compatibility.installed, bfps.compatibility.rollback | T54, T56 | automated | - |
+| `bfp-proof.skills-outcome` | R56c-R56i, R56m, R56q | bfps.outcome.continue, bfps.outcome.pause, bfps.outcome.fail, bfps.outcome.pass | T49, T50, T51, T52, T53, T56 | automated | - |
+| `bfp-proof.skills-evidence` | R56c-R56h, R56l-R56n | bfps.evidence.structural, bfps.evidence.semantic-review, bfps.evidence.behavior-preservation, bfps.evidence.overclaim | T50, T51, T52, T53, T54, T55 | hybrid | bfp-manual.skill-preservation |
+| `bfp-proof.skills-stale-adapter-review` | R56l, R56n, R56q | bfps.interaction.stale-adapter-review, bfps.identity.stale-adapter, bfps.evidence.behavior-preservation | T54, T55, T56 | automated | - |
+| `bfp-proof.skills-helper-sibling` | R56e, R56g, R56o | bfps.interaction.helper-sibling, bfps.composition.helper, bfps.composition.sibling | T51, T52 | hybrid | bfp-manual.skill-composition |
+
+## Boundary-first manual procedures
+
+| Manual procedure ID | Automation rationale | Exact steps | Required environment | Evidence artifact | Pass condition | Failure condition | Owning stage |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `bfp-manual.skill-stage-semantics` | Stage-specific triggers, stops, claims, and handoffs require semantic comparison with R56 responsibilities. | Read the relevant R56 clause; inspect the skill's workflow role, stop conditions, body, claims, result, and handoff; exercise the representative behavior fixture; record missing or contradictory responsibility as a finding. | Repository checkout with approved skill contract, canonical skill, mapped reference, and representative fixture. | Formal skill-family review record or behavior-preservation evidence naming the skill and R56 clause. | The skill preserves prior stage behavior and exposes its exact boundary-first responsibility without adding authority. | A responsibility is absent, optional when required, contradictory, or changes existing routing or claims without approval. | M2/M3 code-review |
+| `bfp-manual.skill-authority` | Authority and contract-gap behavior cannot be proven by phrase presence alone. | Inspect implement and workflow instructions against the approved authority owner; challenge target-as-authority, example-as-authority, validator-as-authority, and scope-expansion cases; record any inferred mutation permission. | Repository checkout with approved workflow and skill specs, implementation/workflow skills, and authority fixtures. | M3 code-review record citing inspected authority cases. | Missing contract or authority always stops, and no skill upgrades scope or consent. | Any target, example, structural result, or missing rule permits mutation or continuation. | M3 code-review |
+| `bfp-manual.skill-composition` | Composed and sibling path adequacy requires adversarial path inspection. | Select helper/public and sibling fixtures; inspect direct skill procedure, helper-loaded reference, public workflow route, retry/recovery path, and sibling cases; compare proof IDs and record omissions. | Repository checkout with the eight skills, mapped reference, workflow routes, and composition fixtures. | Test-spec-review or M3 code-review record naming paths and interaction IDs. | Every selected composed and sibling path retains equivalent proof and stop behavior. | A helper, direct example, or fixed sibling masks an unproved public, retry, or sibling path. | test-spec-review and M3 code-review |
+| `bfp-manual.skill-preservation` | Nuanced routing, claim, recording, isolation, artifact, validation, and handoff equivalence exceeds safe prose linting. | For each of the eight skills, compare pre-change behavior-preservation fixture with the changed skill; inspect all seven preservation categories; record result and evidence identity per category. | Repository checkout with canonical before/after evidence, eight behavior fixtures, generated output, and review records. | Eight-skill behavior-preservation record referenced by the capability report. | All seven categories pass for every skill and new behavior is limited to approved boundary-first responsibilities. | Any category regresses, evidence is missing/stale, or repository-maintainer detail leaks into published text. | M2/M3 code-review and M4 capability evaluation |
+
+## Validation commands
+
+| Command ID | Command | Classification | Owner | Owning milestone | First required milestone | Failure behavior | Zero-test behavior | Evidence artifact | Safe mode / side-effect boundary |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `CMD-SBFP-1` | `python scripts/test-boundary-proof.py` | planned-for-implementation | boundary model owner | M1-M4 | M1 code-review | nonzero blocks milestone | zero tests is failure | milestone validation notes | repository-local |
+| `CMD-SBFP-2` | `python scripts/validate-skills.py` | existing/configured | skill validator owner | M2-M3 | M2 code-review | nonzero blocks milestone | not applicable | milestone validation notes | repository-local |
+| `CMD-SBFP-3` | `python scripts/test-skill-validator.py` | existing/configured | skill validator owner | M2-M3 | M2 code-review | nonzero blocks milestone | zero tests is failure | milestone validation notes | repository-local |
+| `CMD-SBFP-4` | `python scripts/build-skills.py --check` | existing/configured | skill generator owner | M2-M3 | M2 code-review | nonzero drift blocks milestone | not applicable | generated-skill validation output | temporary/check mode; no authored generated edits |
+| `CMD-SBFP-5` | `python scripts/test-adapter-distribution.py` | existing/configured | adapter tooling owner | M4 | M4 code-review | nonzero blocks milestone | zero tests is failure | adapter validation output | repository-local |
+| `CMD-SBFP-6` | `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` | existing/configured | adapter tooling owner | M4 | M4 code-review | any nonzero result blocks milestone | not applicable | temporary adapter validation output | local temporary output; no network or publication |
+| `CMD-SBFP-7` | `python scripts/validate-boundary-proof.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md` | planned-for-implementation | boundary validator owner | M4 | M4 code-review | nonzero blocks milestone | not applicable | canonical capability report | sole report writer; no release action |
+
+## Milestone proof map
+
+| Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| M1 | T49, T51, T55 | bfp-manual.skill-stage-semantics | CMD-SBFP-1 | model and skill fixture families | M1 code-review | Establishes the projection consumed by skills. |
+| M2 | T49, T50, T51, T54, T55 | bfp-manual.skill-stage-semantics, bfp-manual.skill-preservation | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4 | four upstream skill fixtures and mapped resources | M2 code-review | Exact four upstream skills only. |
+| M3 | T49, T52, T53, T54, T55 | bfp-manual.skill-authority, bfp-manual.skill-composition, bfp-manual.skill-preservation | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4 | four downstream skill fixtures and mapped resources | M3 code-review | Exact four downstream skills only. |
+| M4 | T54, T55, T56 | bfp-manual.skill-preservation | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4, CMD-SBFP-5, CMD-SBFP-6, CMD-SBFP-7 | generated, packed, installed, report, and release fixtures | M4 code-review | No release activation is performed. |
 
 ## Test cases
 
@@ -1614,8 +1691,116 @@
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md --path docs/plan.md --path docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/explain-change.md`
   - final validation bundle named by the active plan after M1-M6 implementation
 
+### T49. Exact skill scope and fail-closed vocabulary
+
+- Covers: R56-R56a, R56m
+- Level: integration
+- Command IDs: CMD-SBFP-1, CMD-SBFP-3
+- Fixture/setup: The exact eight governed skills plus one deferred skill and unknown model values.
+- Steps: Validate required skill membership, deferred-skill stability, projected vocabulary, and every unknown closed value before consistency checks.
+- Expected result: Exactly eight skills participate; unknown values and unauthorized scope expansion fail; validators make no semantic-quality claim.
+- Failure proves: The release can partially adopt, widen scope, or silently accept an unknown contract.
+- Evidence artifact: skill boundary fixtures
+- Automation location: `scripts/test-boundary-proof.py`; `scripts/test-skill-validator.py`
+- Required by milestone: M1 through M3
+
+### T50. Upstream skills classify and review complete boundaries
+
+- Covers: R56b-R56c
+- Level: integration
+- Command IDs: CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4
+- Fixture/setup: `spec` and `spec-review` inputs with complete, omitted, invalidly not-applicable, example-only, contradictory, and interaction-poor models.
+- Steps: Exercise stage instructions and behavior fixtures; inspect resource loading, stop behavior, claims, and formal review recording.
+- Expected result: Spec authors classify all core dimensions compactly; reviewers challenge semantics rather than accepting table presence.
+- Failure proves: Boundary completeness remains implicit or structural ceremony.
+- Evidence artifact: upstream skill behavior-preservation fixtures
+- Automation location: skill and boundary tests
+- Required by milestone: M2
+
+### T51. Test-spec skills map direct proof and reject omissions
+
+- Covers: R56d-R56e, R56o-R56p
+- Level: integration
+- Command IDs: CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3
+- Fixture/setup: All eight incident IDs, compact simple change, omitted partition, missing interaction, helper-only composition, unowned behavior, and missing manual procedure.
+- Steps: Author and review proof maps; run structural validation; verify the owning gate and correction-cycle count.
+- Expected result: Every applicable boundary and interaction maps to proof; example-complete omissions fail; the simple fixture needs at most one structural correction.
+- Failure proves: Test planning can repeat examples while omitting the modeled state space.
+- Evidence artifact: test-spec behavior and incident fixtures
+- Automation location: boundary and skill tests
+- Required by milestone: M1 and M2
+
+### T52. Implementation and code review enforce proof and siblings
+
+- Covers: R56f-R56g
+- Level: integration
+- Command IDs: CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3
+- Fixture/setup: Missing proof, caller-asserted trust, contract gap, one fixed bypass with an unfixed sibling, and helper-only public behavior.
+- Steps: Exercise implement handoff and independent code review; record a missed member and inspect the required resolution recipe.
+- Expected result: Implementation stops on gaps and sweeps siblings; code review independently requires full sibling and composed-path evidence.
+- Failure proves: One-example remediation can still leave a boundary class unsafe.
+- Evidence artifact: downstream skill behavior fixtures
+- Automation location: boundary and skill tests
+- Required by milestone: M3
+
+### T53. Verify and workflow stop on stale or contradictory proof
+
+- Covers: R56h-R56i
+- Level: integration
+- Command IDs: CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3
+- Fixture/setup: Version mismatch, stale review resolution, missing adapter parity, absent test proof, and attempted boundary-review lane.
+- Steps: Exercise verify coherence and workflow routing against each input.
+- Expected result: Stale or missing evidence pauses; no new stage, reduced lane, artifact owner, or inferred authority appears.
+- Failure proves: Final claims or routing can bypass the boundary contract.
+- Evidence artifact: verify and workflow behavior fixtures
+- Automation location: boundary and skill tests
+- Required by milestone: M3
+
+### T54. Mapped reference is portable and byte-identical
+
+- Covers: R56j-R56k, R56n
+- Level: smoke
+- Command IDs: CMD-SBFP-2, CMD-SBFP-4, CMD-SBFP-5, CMD-SBFP-6
+- Fixture/setup: Shared source, eight canonical mapped copies, generated mirrors, packed adapters, clean installed Codex, Claude, and opencode trees, plus one drifted copy.
+- Steps: Compare skill-relative path and raw-byte SHA-256 through every layer; inspect shipped wording for repository-only details.
+- Expected result: Portable stage behavior remains visible and every required reference is identical; drift or leaked maintainer detail fails.
+- Failure proves: Capability depends on repository context or changes during distribution.
+- Evidence artifact: adapter and resource parity output
+- Automation location: skill, build, and adapter tests
+- Required by milestone: M2 through M4
+
+### T55. Existing skill capabilities and simple-change overhead are preserved
+
+- Covers: R56l, R56p
+- Level: integration
+- Command IDs: CMD-SBFP-1, CMD-SBFP-3
+- Fixture/setup: Representative pre-change behavior fixtures for each skill and the valid simple change.
+- Steps: Compare routing, claims, review recording, isolation, artifacts, validation, handoffs, artifact count, false blocking, and structural correction cycles.
+- Expected result: Existing capabilities pass, no universal artifact appears, false blocking is zero, and the simple fixture needs at most one structural correction.
+- Failure proves: Boundary-first guidance regresses published behavior or adds unjustified ceremony.
+- Evidence artifact: eight-skill behavior-preservation evidence
+- Automation location: boundary and skill tests
+- Required by milestone: M1 through M4
+
+### T56. Release unit and rollback are all-or-nothing
+
+- Covers: R56q
+- Level: integration
+- Command IDs: CMD-SBFP-1, CMD-SBFP-5, CMD-SBFP-6, CMD-SBFP-7
+- Fixture/setup: Complete unit, missing skill, stale reference, omitted selector, drifted adapter, valid rollback, and invalid partial rollback.
+- Steps: Validate capability aggregation, generated distribution, activation prerequisites, and rollback unit.
+- Expected result: Only the complete versioned unit can pass; no test performs publication; rollback restores one uniformly validated state.
+- Failure proves: Public capability can be advertised from mixed or partial surfaces.
+- Evidence artifact: capability report and release fixtures
+- Automation location: boundary and adapter tests
+- Required by milestone: M4
+
 ## Fixtures and data
 
+- Boundary-first fixtures:
+  - `tests/fixtures/boundary-proof/` for closed model, incident, simple-change, report, and activation cases
+  - `tests/fixtures/skills/boundary-proof/` for the exact eight governed skills
+  - canonical and drifted copies of `references/boundary-proof-model.md` across source, generated, packed, and installed skill roots
 - No new external fixtures or runtime data are required.
 - Static tests use canonical repository files as fixtures:
   - approved spec and active test spec under `specs/`;
@@ -1836,6 +2021,7 @@
 
 ## Next artifacts
 
+- Boundary-first amendment: independent `test-spec-review` for R56-R56q and the companion R28-R28z proof map, then implementation authorization.
 - Current structural-hygiene rollout: `implement` M1 under [Spec and Test-Spec Structural Hygiene Execution Plan](../docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md).
 - Current rollout: `implement` M1 under [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md).
 - Current rollout: `implement` M2 under [Test-Spec Contract Normalization Plan](../docs/plans/2026-05-20-test-spec-contract-normalization.md).
@@ -1851,4 +2037,4 @@
 
 ## Readiness
 
-Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, completed spec-family rollout, completed execution/review rollout, completed plan-family rollout, assets-first plan pilot, structural-hygiene grouping, test-spec contract normalization, and the published-skill resource-integrity architecture pilot. The active plan `Current Handoff Summary` for each initiative owns its current workflow action.
+Active proof-planning surface for public skill portability and the boundary-first R56-R56q amendment, alongside the previously listed initiatives. Test-spec review R2 approved the boundary-first proof map; implementation remains subject to the separate implementation-authorization boundary. The active plan `Current Handoff Summary` for each initiative owns its current workflow action.

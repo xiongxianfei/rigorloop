@@ -4,6 +4,11 @@ classification: proposal
 risk: high
 artifacts:
   proposal: docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md
+  spec: specs/rigorloop-workflow.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260725-boundary-first-proof-modeling.md
+  plan: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+  test_spec: specs/rigorloop-workflow.test.md
   review_resolution: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-resolution.md
 requirements:
   - Record a proposal before changing lifecycle proof-modeling behavior or published skills.
@@ -27,27 +32,37 @@ tests:
   - Proposal-review R2 confirms all four R1 findings resolved before proposal acceptance.
   - Proposal-review confirms examples are preserved without owning completeness.
   - Proposal-review confirms the proposal does not require an exhaustive Cartesian product.
+  - Spec-review confirms exact boundary records, versioning, fixture identities, and capability-baseline aggregation.
   - Proposal-review confirms lifecycle and public-skill ownership are distinct and non-duplicative.
   - Artifact lifecycle validation covers the draft proposal.
   - Change metadata validation covers the proposal record.
 validation:
-  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
+  -
+    command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
     result: pass
-  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md
+  -
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md
     result: pass
-  - command: python scripts/test-change-metadata-validator.py
+  -
+    command: python scripts/test-change-metadata-validator.py
     result: pass
-  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
+  -
+    command: python scripts/validate-change-metadata.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
     result: pass
-  - command: git diff --check -- docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
+  -
+    command: git diff --check -- docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
     result: pass
-  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+  -
+    command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
     result: pass
-  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-log.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-resolution.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r1.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r2.md
+  -
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-log.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-resolution.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r1.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r2.md
     result: pass
-  - command: python scripts/validate-change-metadata.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
+  -
+    command: python scripts/validate-change-metadata.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
     result: pass
-  - command: git diff --check -- docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+  -
+    command: git diff --check -- docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
     result: pass
 changed_files:
   - docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md
@@ -56,6 +71,985 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-resolution.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r1.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/proposal-review-r2.md
+  - specs/rigorloop-workflow.md
+  - specs/skill-contract.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r1.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r2.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/architecture-assessment.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/architecture/system/diagrams/component-boundary-proof.mmd
+  - docs/adr/ADR-20260725-boundary-first-proof-modeling.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r1.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r2.md
+  - docs/plans/2026-07-25-boundary-first-proof-modeling.md
+  - docs/plan.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r1.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r2.md
+  - specs/rigorloop-workflow.test.md
+  - specs/skill-contract.test.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r1.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r2.md
 review:
   status: approved
   unresolved_items: 0
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    schema_version: 1
+    run:
+      run_id: run-20260725-boundary-first-verify
+      change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+      status: active
+      policy_version: 1
+      target:
+        stage: verify
+        occurrence:
+          kind: final
+        bound_at: 2026-07-25T22:55:46Z
+        completion:
+          rule: fresh verification passes
+    parent_authorizations:
+      authorization-authoring-run-20260725-boundary-first-verify:
+        authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        authorization_class: authoring
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        authorized_by: user
+        authorized_at: 2026-07-25T22:55:46Z
+        maximum_target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        allowed_capability_kinds:
+          - proposal-review
+          - post-proposal-authoring
+        maximum_path_roots:
+          - docs/proposals/
+          - specs/
+          - docs/architecture/
+          - docs/adr/
+          - docs/plans/
+          - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/
+        maximum_mutation_categories:
+          - change-local-review-evidence
+          - downstream-authoring-artifacts
+          - change-local-evidence
+        status: active
+        revocation:
+          revoked: false
+        invalidation:
+          on_policy_change: pause
+        external_actions: prohibited
+      authorization-implementation-run-20260725-boundary-first-verify:
+        authorization_id: authorization-implementation-run-20260725-boundary-first-verify
+        authorization_class: implementation
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        authorized_by: user
+        authorized_at: 2026-07-26T08:36:53Z
+        maximum_target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        allowed_capability_kinds:
+          - implementation
+          - implementation-correction
+        maximum_path_roots:
+          - scripts/
+          - tests/
+          - skills/
+          - templates/
+          - specs/
+          - docs/plans/
+          - docs/plan.md
+          - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/
+          - dist/adapters/
+        maximum_mutation_categories:
+          - tests
+          - production-code
+          - change-local-review-evidence
+          - change-local-evidence
+        status: active
+        revocation:
+          revoked: false
+        invalidation:
+          on_policy_change: pause
+        external_actions: prohibited
+        correction_budget:
+          cycles: 3
+    effective_capabilities:
+      capability-boundary-first-spec-r1:
+        capability_id: capability-boundary-first-spec-r1
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: spec
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:0bcecb7bb36f96f47373738e538affe70ce0173d6953ef522337402b05848393
+          stage_scope_identity: sha256:90e6baa8fc8d8fc3824a4bbf2b90344528a7c292a77a3bf30ec9c16def70b65f
+        scope:
+          affected_path_roots:
+            - specs/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-25T22:59:17Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-spec-r2:
+        capability_id: capability-boundary-first-spec-r2
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: spec
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:f7580bb78b5f83952e04dd526aeafcf29a78a09db723a605d33f50f45d60108f
+          stage_scope_identity: sha256:90e6baa8fc8d8fc3824a4bbf2b90344528a7c292a77a3bf30ec9c16def70b65f
+        scope:
+          affected_path_roots:
+            - specs/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-25T23:01:52Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-spec-review-r1:
+        capability_id: capability-boundary-first-spec-review-r1
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: spec-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:f7580bb78b5f83952e04dd526aeafcf29a78a09db723a605d33f50f45d60108f
+          stage_scope_identity: sha256:af7173e86737b101d279f15455b33bd068656fe636baf21c9d5c6dd071112caa
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-25T23:01:52Z
+        status: invalidated
+        invalidation:
+          on_parent_revocation: invalidate
+        invalidation_reason: invalid-stage-native-review-record-replaced-before-routing
+      capability-boundary-first-spec-review-r1b:
+        capability_id: capability-boundary-first-spec-review-r1b
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: spec-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:f7580bb78b5f83952e04dd526aeafcf29a78a09db723a605d33f50f45d60108f
+          stage_scope_identity: sha256:af7173e86737b101d279f15455b33bd068656fe636baf21c9d5c6dd071112caa
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-25T23:03:11Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-spec-r3:
+        capability_id: capability-boundary-first-spec-r3
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: spec
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:f7580bb78b5f83952e04dd526aeafcf29a78a09db723a605d33f50f45d60108f
+          stage_scope_identity: sha256:90e6baa8fc8d8fc3824a4bbf2b90344528a7c292a77a3bf30ec9c16def70b65f
+        scope:
+          affected_path_roots:
+            - specs/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-25T23:05:59Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-spec-r4:
+        capability_id: capability-boundary-first-spec-r4
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: spec
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:5025041548ffc79b6e410e9665c7a41cc065cbe573f9dc07288131d0dfe99b67
+          stage_scope_identity: sha256:90e6baa8fc8d8fc3824a4bbf2b90344528a7c292a77a3bf30ec9c16def70b65f
+        scope:
+          affected_path_roots:
+            - specs/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-25T23:07:28Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-spec-review-r2:
+        capability_id: capability-boundary-first-spec-review-r2
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: spec-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:5025041548ffc79b6e410e9665c7a41cc065cbe573f9dc07288131d0dfe99b67
+          stage_scope_identity: sha256:9a4d7ecba6abe8c740811bbba61d225544e3dc222efd6e233184551c321494ab
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-25T23:07:28Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-architecture-assessment:
+        capability_id: capability-boundary-first-architecture-assessment
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: architecture-assessment
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:5025041548ffc79b6e410e9665c7a41cc065cbe573f9dc07288131d0dfe99b67
+          stage_scope_identity: sha256:e605c5ac8330f83aeffdb638d347ea12f3576831e317680fa1327d8c4e6a35d7
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/
+          mutation_categories:
+            - change-local-evidence
+        derived_at: 2026-07-25T23:08:28Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-architecture-r1:
+        capability_id: capability-boundary-first-architecture-r1
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: architecture
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:d2180923f6830b6f263fe72431851f0c093d4cfe9fa357c86dd19dd33551dd0f
+          stage_scope_identity: sha256:4ca303a3bf7ddf7be8652031ff027f351973a205cddafbffa580750f61bc93ce
+        scope:
+          affected_path_roots:
+            - docs/architecture/
+            - docs/adr/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-25T23:30:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-architecture-review-r2:
+        capability_id: capability-boundary-first-architecture-review-r2
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: architecture-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:d2180923f6830b6f263fe72431851f0c093d4cfe9fa357c86dd19dd33551dd0f
+          stage_scope_identity: sha256:0d694babd1af805fb44d577b7565d4324ec74326d040b07ee5f2220cb859f964
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-25T23:32:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-plan-r1:
+        capability_id: capability-boundary-first-plan-r1
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: plan
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:d2180923f6830b6f263fe72431851f0c093d4cfe9fa357c86dd19dd33551dd0f
+          stage_scope_identity: sha256:64879f7d6b960a01909762d911a32d4582c20010c5641ee90278b644a9e3b525
+        scope:
+          affected_path_roots:
+            - docs/plans/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-25T23:40:00Z
+        status: invalidated
+        invalidation:
+          on_parent_revocation: invalidate
+        invalidation_reason: stage-native-plan-invalid-revised-before-retry
+      capability-boundary-first-plan-r1b:
+        capability_id: capability-boundary-first-plan-r1b
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: plan
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:d2180923f6830b6f263fe72431851f0c093d4cfe9fa357c86dd19dd33551dd0f
+          stage_scope_identity: sha256:200d624a53b91fce2d7949af05e32631017375c30c06312c51b056ec512df519
+        scope:
+          affected_path_roots:
+            - docs/plans/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-25T23:42:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-plan-review-r2:
+        capability_id: capability-boundary-first-plan-review-r2
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: plan-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:def768a73e5f634f1db0cfb8970958e7d2e9bec0a5ce25e2447ef6af2384cd1b
+          stage_scope_identity: sha256:f44550fb4278f0670b59307ab15c07c9ca52bc025849d812529329a9c93c156d
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-25T23:48:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+    transition_receipts:
+      transition-boundary-first-spec-r1:
+        transition_id: transition-boundary-first-spec-r1
+        transition_key: sha256:0c822a921bd651b58fe90405baa3a990a258e52adb339de94b34211f65623c04
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: proposal-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-spec-r1
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:0bcecb7bb36f96f47373738e538affe70ce0173d6953ef522337402b05848393
+          stage_scope_identity: sha256:90e6baa8fc8d8fc3824a4bbf2b90344528a7c292a77a3bf30ec9c16def70b65f
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+        expected_postcondition:
+          completion_rule: spec is authored against current upstream identities
+          required_evidence:
+            - spec
+        status: completed
+        outputs:
+          -
+            path: specs/rigorloop-workflow.md
+            identity: sha256:a4df2267a51df86197334c7efdadfdc64ce08de7f29d9fa3acd6f261b52cc664
+        canonical_sync:
+          status: synchronized
+          evidence:
+            spec:
+              path: specs/rigorloop-workflow.md
+              identity: sha256:a4df2267a51df86197334c7efdadfdc64ce08de7f29d9fa3acd6f261b52cc664
+          observed_identities:
+            spec: sha256:a4df2267a51df86197334c7efdadfdc64ce08de7f29d9fa3acd6f261b52cc664
+      transition-boundary-first-spec-r2:
+        transition_id: transition-boundary-first-spec-r2
+        transition_key: sha256:3d315d073e81b20495615cd8bd66325dab9556d732326838d06943be6731425e
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: proposal-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-spec-r2
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:f7580bb78b5f83952e04dd526aeafcf29a78a09db723a605d33f50f45d60108f
+          stage_scope_identity: sha256:90e6baa8fc8d8fc3824a4bbf2b90344528a7c292a77a3bf30ec9c16def70b65f
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+        expected_postcondition:
+          completion_rule: spec is authored against current upstream identities
+          required_evidence:
+            - spec
+        status: completed
+        outputs:
+          -
+            path: specs/rigorloop-workflow.md
+            identity: sha256:50c449f2c550a467539090aee6b9a079e19abbf6ff695d3f61c2b638b3221aaf
+        canonical_sync:
+          status: synchronized
+          evidence:
+            spec:
+              path: specs/rigorloop-workflow.md
+              identity: sha256:50c449f2c550a467539090aee6b9a079e19abbf6ff695d3f61c2b638b3221aaf
+          observed_identities:
+            spec: sha256:50c449f2c550a467539090aee6b9a079e19abbf6ff695d3f61c2b638b3221aaf
+      transition-boundary-first-spec-review-r1:
+        transition_id: transition-boundary-first-spec-review-r1
+        transition_key: sha256:44b29f96c23230f68157f834217ead0a2ef7001c8657a6fb16c13413ccc7674e
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: spec
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-spec-review-r1
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:f7580bb78b5f83952e04dd526aeafcf29a78a09db723a605d33f50f45d60108f
+          stage_scope_identity: sha256:af7173e86737b101d279f15455b33bd068656fe636baf21c9d5c6dd071112caa
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          spec: sha256:50c449f2c550a467539090aee6b9a079e19abbf6ff695d3f61c2b638b3221aaf
+        expected_postcondition:
+          completion_rule: formal spec review is recorded
+          required_evidence:
+            - spec-review
+        status: paused
+        outputs:
+          -
+            path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r1.md
+            identity: sha256:b9462aca911ca85fb1dbf2102fd86343dcfbacfe5b45c2499c4cb2b92f83bec4
+        canonical_sync:
+          status: failed
+      transition-boundary-first-spec-review-r1b:
+        transition_id: transition-boundary-first-spec-review-r1b
+        transition_key: sha256:3677da2593a3e05d6773a67dc1c7802469de72b4dc4ea3466a84e315c74a0c78
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: spec
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-spec-review-r1b
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:f7580bb78b5f83952e04dd526aeafcf29a78a09db723a605d33f50f45d60108f
+          stage_scope_identity: sha256:af7173e86737b101d279f15455b33bd068656fe636baf21c9d5c6dd071112caa
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          spec: sha256:50c449f2c550a467539090aee6b9a079e19abbf6ff695d3f61c2b638b3221aaf
+        expected_postcondition:
+          completion_rule: formal spec review is recorded
+          required_evidence:
+            - spec-review
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r1.md
+            identity: sha256:1a44dea737a22140dbf5bd0a93e12cbe891484d92af3ec375010b7f7108f0714
+        canonical_sync:
+          status: synchronized
+          evidence:
+            spec-review:
+              path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r1.md
+              identity: sha256:1a44dea737a22140dbf5bd0a93e12cbe891484d92af3ec375010b7f7108f0714
+          observed_identities:
+            spec-review: sha256:1a44dea737a22140dbf5bd0a93e12cbe891484d92af3ec375010b7f7108f0714
+            spec-review-log: sha256:8dc5d12b076f7eff15e11ae29ae1924678bb2ef43e151cabdc6b20919ddd4934
+      transition-boundary-first-spec-r3:
+        transition_id: transition-boundary-first-spec-r3
+        transition_key: sha256:6ec4cc20ada1f8644d9f549e724b5fdfe9d1b7d0c882ae98358ff47831929af6
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: proposal-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-spec-r3
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:f7580bb78b5f83952e04dd526aeafcf29a78a09db723a605d33f50f45d60108f
+          stage_scope_identity: sha256:90e6baa8fc8d8fc3824a4bbf2b90344528a7c292a77a3bf30ec9c16def70b65f
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+        expected_postcondition:
+          completion_rule: spec is authored against current upstream identities
+          required_evidence:
+            - spec
+        status: completed
+        outputs:
+          -
+            path: specs/rigorloop-workflow.md
+            identity: sha256:9dadde1616826b9b371c8d53d68d21a68fff968a86ac2fef56cfa7da5c654536
+        canonical_sync:
+          status: synchronized
+          evidence:
+            spec:
+              path: specs/rigorloop-workflow.md
+              identity: sha256:9dadde1616826b9b371c8d53d68d21a68fff968a86ac2fef56cfa7da5c654536
+          observed_identities:
+            spec: sha256:9dadde1616826b9b371c8d53d68d21a68fff968a86ac2fef56cfa7da5c654536
+      transition-boundary-first-spec-r4:
+        transition_id: transition-boundary-first-spec-r4
+        transition_key: sha256:b42006965aa480ed28e4cf881f1639c3008f8795070b08df100eb6bee687edb5
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: proposal-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-spec-r4
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:5025041548ffc79b6e410e9665c7a41cc065cbe573f9dc07288131d0dfe99b67
+          stage_scope_identity: sha256:90e6baa8fc8d8fc3824a4bbf2b90344528a7c292a77a3bf30ec9c16def70b65f
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+        expected_postcondition:
+          completion_rule: spec is authored against current upstream identities
+          required_evidence:
+            - spec
+        status: completed
+        outputs:
+          -
+            path: specs/rigorloop-workflow.md
+            identity: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+        canonical_sync:
+          status: synchronized
+          evidence:
+            spec:
+              path: specs/rigorloop-workflow.md
+              identity: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+          observed_identities:
+            spec: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+      transition-boundary-first-spec-review-r2:
+        transition_id: transition-boundary-first-spec-review-r2
+        transition_key: sha256:24bcd3af94da036ccc322933734e2cbbb69644371f2afdce0e1c7e8c13728e38
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: spec
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-spec-review-r2
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:5025041548ffc79b6e410e9665c7a41cc065cbe573f9dc07288131d0dfe99b67
+          stage_scope_identity: sha256:9a4d7ecba6abe8c740811bbba61d225544e3dc222efd6e233184551c321494ab
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          spec: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+        expected_postcondition:
+          completion_rule: formal spec review is recorded
+          required_evidence:
+            - spec-review
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r2.md
+            identity: sha256:0cf38c02bc32b8839f6fcba8f66df2718569befd96eaccaa06de9f6547196445
+        canonical_sync:
+          status: synchronized
+          evidence:
+            spec-review:
+              path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r2.md
+              identity: sha256:0cf38c02bc32b8839f6fcba8f66df2718569befd96eaccaa06de9f6547196445
+          observed_identities:
+            spec-review: sha256:0cf38c02bc32b8839f6fcba8f66df2718569befd96eaccaa06de9f6547196445
+            spec-review-log: sha256:a2c5755c27a68becd9d7f1e44def792e6407f2c6b81c99f444db0410930d96b5
+      transition-boundary-first-architecture-assessment:
+        transition_id: transition-boundary-first-architecture-assessment
+        transition_key: sha256:16160d6e79c4054beb872beaadc3934417cc878ec670f28963027d2eba3ca2a9
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: spec-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-architecture-assessment
+        retry_policy: idempotent-retry
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:5025041548ffc79b6e410e9665c7a41cc065cbe573f9dc07288131d0dfe99b67
+          stage_scope_identity: sha256:e605c5ac8330f83aeffdb638d347ea12f3576831e317680fa1327d8c4e6a35d7
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          spec: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+          spec-review: sha256:0cf38c02bc32b8839f6fcba8f66df2718569befd96eaccaa06de9f6547196445
+        expected_postcondition:
+          completion_rule: architecture applicability is recorded
+          required_evidence:
+            - architecture-assessment
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/architecture-assessment.md
+            identity: sha256:107413e283d4c3bed922a8ed917014ab105d37e0434d0018c66be4a80ca5297e
+        canonical_sync:
+          status: synchronized
+          evidence:
+            architecture-assessment:
+              path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/architecture-assessment.md
+              identity: sha256:107413e283d4c3bed922a8ed917014ab105d37e0434d0018c66be4a80ca5297e
+          observed_identities:
+            architecture-assessment: sha256:107413e283d4c3bed922a8ed917014ab105d37e0434d0018c66be4a80ca5297e
+      transition-boundary-first-architecture-r1:
+        transition_id: transition-boundary-first-architecture-r1
+        transition_key: sha256:fa79dcbe0a28893ca13fb0c8f064f580711e97162ccb3368dd1993a89f5d9582
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: architecture-assessment
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-architecture-r1
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:d2180923f6830b6f263fe72431851f0c093d4cfe9fa357c86dd19dd33551dd0f
+          stage_scope_identity: sha256:4ca303a3bf7ddf7be8652031ff027f351973a205cddafbffa580750f61bc93ce
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          spec: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+          spec-review: sha256:0cf38c02bc32b8839f6fcba8f66df2718569befd96eaccaa06de9f6547196445
+          architecture-assessment: sha256:107413e283d4c3bed922a8ed917014ab105d37e0434d0018c66be4a80ca5297e
+          architecture_applicability: required
+          architecture_applicability_identity: sha256:107413e283d4c3bed922a8ed917014ab105d37e0434d0018c66be4a80ca5297e
+        expected_postcondition:
+          completion_rule: architecture package is complete
+          required_evidence:
+            - architecture
+        status: completed
+        outputs:
+          -
+            path: docs/architecture/system/architecture.md
+            identity: sha256:9a50e14dededdd5bd68649437ef30aff3a8c75587a547077e0d267616d47aeda
+        canonical_sync:
+          status: synchronized
+          evidence:
+            architecture:
+              path: docs/architecture/system/architecture.md
+              identity: sha256:9a50e14dededdd5bd68649437ef30aff3a8c75587a547077e0d267616d47aeda
+          observed_identities:
+            architecture: sha256:9a50e14dededdd5bd68649437ef30aff3a8c75587a547077e0d267616d47aeda
+      transition-boundary-first-architecture-review-r2:
+        transition_id: transition-boundary-first-architecture-review-r2
+        transition_key: sha256:30ce62810b40242d54c26428e1f63d7785d3d113f1fc38dfb0a45b87500abb07
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: architecture
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-architecture-review-r2
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:d2180923f6830b6f263fe72431851f0c093d4cfe9fa357c86dd19dd33551dd0f
+          stage_scope_identity: sha256:0d694babd1af805fb44d577b7565d4324ec74326d040b07ee5f2220cb859f964
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          spec: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+          spec-review: sha256:0cf38c02bc32b8839f6fcba8f66df2718569befd96eaccaa06de9f6547196445
+          architecture-assessment: sha256:107413e283d4c3bed922a8ed917014ab105d37e0434d0018c66be4a80ca5297e
+          architecture: sha256:9a50e14dededdd5bd68649437ef30aff3a8c75587a547077e0d267616d47aeda
+        expected_postcondition:
+          completion_rule: formal architecture review is recorded
+          required_evidence:
+            - architecture-review
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r2.md
+            identity: sha256:6453ef9b0f4bfd8e014b96267722425a15a1a0297c2d86eddb23e34a63eaa53e
+        canonical_sync:
+          status: synchronized
+          evidence:
+            architecture-review:
+              path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r2.md
+              identity: sha256:6453ef9b0f4bfd8e014b96267722425a15a1a0297c2d86eddb23e34a63eaa53e
+          observed_identities:
+            architecture-review: sha256:6453ef9b0f4bfd8e014b96267722425a15a1a0297c2d86eddb23e34a63eaa53e
+            architecture-review-log: sha256:4681d0c400796e35ddd1969e6146ab0a1af3fb0bc88325c709cb60e07c38b1de
+      transition-boundary-first-plan-r1:
+        transition_id: transition-boundary-first-plan-r1
+        transition_key: sha256:d19195cb61f3cd9ad70b95a6cf67195a3139872ded449d697822baa101552839
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: architecture-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-plan-r1
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:d2180923f6830b6f263fe72431851f0c093d4cfe9fa357c86dd19dd33551dd0f
+          stage_scope_identity: sha256:64879f7d6b960a01909762d911a32d4582c20010c5641ee90278b644a9e3b525
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          spec: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+          spec-review: sha256:0cf38c02bc32b8839f6fcba8f66df2718569befd96eaccaa06de9f6547196445
+          architecture-assessment: sha256:107413e283d4c3bed922a8ed917014ab105d37e0434d0018c66be4a80ca5297e
+          architecture: sha256:9a50e14dededdd5bd68649437ef30aff3a8c75587a547077e0d267616d47aeda
+          architecture-review: sha256:6453ef9b0f4bfd8e014b96267722425a15a1a0297c2d86eddb23e34a63eaa53e
+        expected_postcondition:
+          completion_rule: valid active plan handoff is established
+          required_evidence:
+            - current-handoff-summary
+            - plan
+        status: paused
+        outputs:
+          -
+            path: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+            identity: sha256:ca03c77eb501ce3d2adc68137dcd5b7e0354835da09fac6402108ab65e8f2a1a
+        canonical_sync:
+          status: failed
+      transition-boundary-first-plan-r1b:
+        transition_id: transition-boundary-first-plan-r1b
+        transition_key: sha256:9c8f4e73b39059450db2dfae9aa92856b6e542e13f9ab1e133295edaeb03e38f
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: architecture-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-plan-r1b
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:d2180923f6830b6f263fe72431851f0c093d4cfe9fa357c86dd19dd33551dd0f
+          stage_scope_identity: sha256:200d624a53b91fce2d7949af05e32631017375c30c06312c51b056ec512df519
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          spec: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+          spec-review: sha256:0cf38c02bc32b8839f6fcba8f66df2718569befd96eaccaa06de9f6547196445
+          architecture-assessment: sha256:107413e283d4c3bed922a8ed917014ab105d37e0434d0018c66be4a80ca5297e
+          architecture: sha256:9a50e14dededdd5bd68649437ef30aff3a8c75587a547077e0d267616d47aeda
+          architecture-review: sha256:6453ef9b0f4bfd8e014b96267722425a15a1a0297c2d86eddb23e34a63eaa53e
+        expected_postcondition:
+          completion_rule: valid active plan handoff is established
+          required_evidence:
+            - current-handoff-summary
+            - plan
+        status: completed
+        outputs:
+          -
+            path: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+            identity: sha256:0d0e9359c14ec8c4874296809ceafc8a73bf8bbaa170bf0904bd29d701b07049
+        canonical_sync:
+          status: synchronized
+          evidence:
+            current-handoff-summary:
+              path: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+              identity: sha256:0d0e9359c14ec8c4874296809ceafc8a73bf8bbaa170bf0904bd29d701b07049
+            plan:
+              path: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+              identity: sha256:0d0e9359c14ec8c4874296809ceafc8a73bf8bbaa170bf0904bd29d701b07049
+          observed_identities:
+            current-handoff-summary: sha256:0d0e9359c14ec8c4874296809ceafc8a73bf8bbaa170bf0904bd29d701b07049
+            plan: sha256:0d0e9359c14ec8c4874296809ceafc8a73bf8bbaa170bf0904bd29d701b07049
+      transition-boundary-first-plan-review-r2:
+        transition_id: transition-boundary-first-plan-review-r2
+        transition_key: sha256:0b43061aa30ab678e4c783bf6550c27ee47c7da793810765f7fa03ca4d687149
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: plan
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-plan-review-r2
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          approved_proposal_review_identity: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          closed_review_resolution_identity: sha256:def768a73e5f634f1db0cfb8970958e7d2e9bec0a5ce25e2447ef6af2384cd1b
+          stage_scope_identity: sha256:f44550fb4278f0670b59307ab15c07c9ca52bc025849d812529329a9c93c156d
+          proposal: sha256:62914cef876526c7b28d706029c025f3a5d6f4aa99c71691ba94845089ffdbc1
+          proposal-review: sha256:501f2ea4cf84d6bdba8509e9b2b96dc4808479eaf2da63de818149458c7fd3be
+          spec: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+          spec-review: sha256:0cf38c02bc32b8839f6fcba8f66df2718569befd96eaccaa06de9f6547196445
+          architecture-assessment: sha256:107413e283d4c3bed922a8ed917014ab105d37e0434d0018c66be4a80ca5297e
+          architecture: sha256:9a50e14dededdd5bd68649437ef30aff3a8c75587a547077e0d267616d47aeda
+          architecture-review: sha256:6453ef9b0f4bfd8e014b96267722425a15a1a0297c2d86eddb23e34a63eaa53e
+          plan: sha256:dbc167ba7b5ea603692c3980c3864d4562af59d83d34039acb5dcc0be4d88e31
+        expected_postcondition:
+          completion_rule: formal plan review is recorded
+          required_evidence:
+            - plan-review
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r2.md
+            identity: sha256:15c71b3fcc04cf9c5c4e04d5527de60e0f010ff990cebd7915d5ccadac41a4cf
+        canonical_sync:
+          status: synchronized
+          evidence:
+            plan-review:
+              path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r2.md
+              identity: sha256:15c71b3fcc04cf9c5c4e04d5527de60e0f010ff990cebd7915d5ccadac41a4cf
+          observed_identities:
+            plan-review: sha256:15c71b3fcc04cf9c5c4e04d5527de60e0f010ff990cebd7915d5ccadac41a4cf
+            plan-review-log: sha256:fea7077dc82156c8a2e7c3e7cd1dc093aba605df1ed5d384f70cd6b4dad058f1
+    canonical_position_source: plan-current-handoff-summary
+    observed_identities:
+      plan: sha256:2d2e36836ecfc8b7edc1dc3fa83532abec0030e5bf28eb9f712855a7df389b1c
+    external_actions: prohibited

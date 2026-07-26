@@ -4,6 +4,9 @@
 
 - active
 
+Boundary model version: v1
+Boundary model scope: R28-R28z
+
 ## Related spec and plan
 
 - Spec: [RigorLoop Workflow](rigorloop-workflow.md), approved.
@@ -29,6 +32,17 @@
 - Architecture: not required. The approved refactor and PR-self-contained lifecycle completion amendment change workflow governance, documentation, skills, validators, and generated output without runtime architecture or deployment boundaries.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
+
+## Input artifact identities
+
+| Input | Path | Status / Review state | Identity |
+| --- | --- | --- | --- |
+| Feature spec | `specs/rigorloop-workflow.md` | approved; spec-review-r2 | `sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634` |
+| Companion skill spec | `specs/skill-contract.md` | approved; spec-review-r2 | `sha256:d19b30d1890b5e7834b976192465694077cef7bcee01152f9744741b02b0a566` |
+| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r2.md` | approved | `spec-review-r2` |
+| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r2 | `sha256:9a50e14dededdd5bd68649437ef30aff3a8c75587a547077e0d267616d47aeda` |
+| ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted | `sha256:a797c36cd9ec4cbd262cdea825cfa9f38a787e0cab5ebc2d12d34ed8af1a8200` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; plan-review-r2 | `plan-review-r2` |
 
 ## Testing strategy
 
@@ -78,6 +92,19 @@
 | `R25`, `R25a`-`R25e` | `T5`, `T6`, `T7`, `T15`, `T28` | integration | `change.yaml` schema, required fields, validation records, review state, and active change metadata |
 | `R25f`, `R25g` | `T15`, `T16`, `T28` | manual, integration | Narrative in Markdown and reviewer-facing summary in PR text |
 | `R25i` | `T39` | static, manual | New workflow-managed change roots select or confirm `YYYY-MM-DD-slug` before creation while preserving legacy roots |
+
+### Boundary-first amendment coverage
+
+| Requirement ID | Covered by | Level | Notes |
+| --- | --- | --- | --- |
+| `R28`-`R28c`, `R28s`-`R28t` | `T40`, `T41` | unit, integration | Closed core, applicability, extensions, exact fields, IDs, and fail-closed values |
+| `R28d`-`R28e`, `R28u`-`R28v` | `T41`, `T42` | integration | Example roles, partitions, transitions, and hazard-selected interactions |
+| `R28f`-`R28k`, `R28w` | `T42`, `T43` | integration, manual | Proof mapping and stage-owned review, implementation, sibling, and semantic boundaries |
+| `R28l`-`R28o`, `R28r` | `T44`, `T47` | integration, migration | Prospective adoption, grandfathering, synchronized opt-in, parity, and resumption predicate |
+| `R28p`-`R28q` | `T40`, `T43` | contract | Six check IDs and cross-spec ownership |
+| `R28x` | `T45` | integration | Eight frozen incident fixtures and owning gates |
+| `R28y` | `T46` | integration | Exact report schema, evidence, result vocabulary, and aggregate |
+| `R28z` | `T47` | integration, migration | Release-tag activation identity, partial-unit rejection, and rollback |
 
 ## Example coverage map
 
@@ -141,6 +168,56 @@
 - Tracked wording such as "move to Done after merge" is warning evidence and becomes blocking when the PR already contains the completion evidence: `T30`, `T32`
 - A spec may remain `draft` while awaiting spec-review, but if spec-review approves it and downstream artifacts rely on it, the same PR records `approved` before review-ready handoff continues: `T31`
 - A formal workflow-managed test spec remains `active`; approval lives in `test-spec-review`, and substantive post-review edits block implementation until re-reviewed: `T38`
+
+## Boundary-first proof map
+
+| Proof obligation ID | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Automation level | Manual procedure IDs |
+| --- | --- | --- | --- | --- | --- |
+| `bfp-proof.workflow-canonical` | R28q, R28z | bfp.canonical.workflow-owner, bfp.canonical.skill-projection, bfp.canonical.release-identity | T40, T47 | automated | - |
+| `bfp-proof.workflow-identity` | R28f, R28j, R28r, R28z | bfp.identity.exact, bfp.identity.stale, bfp.identity.mismatched-version | T43, T44, T47 | automated | - |
+| `bfp-proof.workflow-vocabulary` | R28a-R28e, R28p, R28r-R28y | bfp.vocabulary.known, bfp.vocabulary.unknown, bfp.vocabulary.extension | T40, T41, T44, T46 | automated | - |
+| `bfp-proof.workflow-state` | R28d, R28h-R28j, R28l, R28z | bfp.state.continue, bfp.state.pause, bfp.state.activate, bfp.state.rollback | T42, T44, T47 | automated | - |
+| `bfp-proof.workflow-authority` | R28d, R28h, R28i, R28l | bfp.authority.owned-rule, bfp.authority.missing-rule, bfp.authority.new-scope | T42, T44 | hybrid | bfp-manual.semantic-authority |
+| `bfp-proof.workflow-atomicity` | R28a, R28f, R28x | bfp.mutation.complete, bfp.mutation.partial | T43, T45 | automated | - |
+| `bfp-proof.workflow-recovery` | R28a, R28f, R28x | bfp.recovery.retry, bfp.recovery.reconcile, bfp.recovery.stale | T43, T45 | automated | - |
+| `bfp-proof.workflow-concurrency` | R28a, R28f | bfp.concurrency.duplicate, bfp.concurrency.conflict, bfp.concurrency.replay | T40, T43 | automated | - |
+| `bfp-proof.workflow-composition` | R28e, R28i, R28j, R28x | bfp.composition.direct, bfp.composition.helper, bfp.composition.public-path, bfp.composition.sibling | T42, T45 | hybrid | bfp-manual.composed-path |
+| `bfp-proof.workflow-compatibility` | R28l, R28r, R28z | bfp.compatibility.legacy, bfp.compatibility.opt-in, bfp.compatibility.partial, bfp.compatibility.rollback | T44, T47 | automated | - |
+| `bfp-proof.workflow-outcome` | R28d, R28h-R28j, R28y | bfp.outcome.pass, bfp.outcome.fail, bfp.outcome.not-run, bfp.outcome.pause | T42, T46 | automated | - |
+| `bfp-proof.workflow-evidence` | R28f, R28j, R28k, R28n, R28y | bfp.evidence.current, bfp.evidence.missing, bfp.evidence.stale, bfp.evidence.overclaim | T43, T46 | hybrid | bfp-manual.semantic-evidence |
+| `bfp-proof.workflow-stale-authority` | R28f, R28h | bfp.interaction.stale-authority, bfp.identity.stale, bfp.authority.owned-rule | T43 | automated | - |
+| `bfp-proof.workflow-partial-retry` | R28f, R28x | bfp.interaction.partial-retry, bfp.mutation.partial, bfp.recovery.reconcile | T45 | automated | - |
+| `bfp-proof.workflow-helper-public` | R28e, R28j, R28x | bfp.interaction.helper-public, bfp.composition.helper, bfp.composition.public-path | T42, T45 | hybrid | bfp-manual.composed-path |
+
+## Boundary-first manual procedures
+
+| Manual procedure ID | Automation rationale | Exact steps | Required environment | Evidence artifact | Pass condition | Failure condition | Owning stage |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `bfp-manual.semantic-authority` | Applicability and ownership require contract judgment that structural parsing cannot safely score. | Read the governing requirements first; inspect every core and extension row; challenge each `not-applicable` rationale; trace every applicable row to an approved rule; record any inferred or example-owned rule as a finding. | Repository checkout with approved feature spec, latest clean spec review, and current proof map. | Formal spec-review or test-spec-review record citing challenged rows and requirements. | Every applicable behavior is owned by an approved requirement and every non-applicability rationale is defensible. | Any behavior is owned only by an example, validator, plan, or implementation, or any rationale is unsupported. | spec-review and test-spec-review |
+| `bfp-manual.composed-path` | Hazard selection and sibling completeness require adversarial inspection across paths, not phrase matching. | Select interactions from the approved rationale set; inspect direct, helper, public, retry, and sibling paths named by each interaction; compare their proof IDs; record every missing path or sibling as a finding. | Repository checkout with feature spec, proof map, implementation diff when available, and path-oriented fixtures. | Test-spec-review or code-review record with interaction IDs, inspected paths, and findings or no-finding rationale. | Every selected interaction has direct proof for all material composed and sibling paths. | A helper substitutes for public-path proof, or a sibling, retry, or direct path remains unproved. | test-spec-review and code-review |
+| `bfp-manual.semantic-evidence` | Evidence adequacy and overclaim detection require source-aware review rather than natural-language scoring. | For each cited result, open the repository-visible evidence; verify identity and owner; compare the assertion with the governing boundary; challenge stale, missing, circular, or asserted evidence; record uncertainty as a blocker. | Repository checkout with current artifacts, review records, test output references, and capability-report inputs. | Formal review or verify evidence listing inspected identities and the resulting pass, finding, or blocker. | Every material claim is supported by current owner-derived evidence and no structural result claims semantic completeness. | Evidence is stale, missing, caller-asserted, circular, or broader than what it proves. | spec-review, test-spec-review, code-review, and verify |
+
+## Validation commands
+
+| Command ID | Command | Classification | Owner | Owning milestone | First required milestone | Failure behavior | Zero-test behavior | Evidence artifact | Safe mode / side-effect boundary |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `CMD-BFP-1` | `python scripts/test-boundary-proof.py` | planned-for-implementation | boundary model owner | M1 | M1 code-review | nonzero blocks milestone | zero tests is failure | M1 validation notes | repository-local; no network or external mutation |
+| `CMD-BFP-2` | `python scripts/validate-boundary-proof.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md` | planned-for-implementation | boundary validator owner | M4 | M4 code-review | nonzero blocks milestone | not applicable | canonical capability report | sole report writer; repository-local |
+| `CMD-BFP-3` | `python scripts/test-skill-validator.py` | existing/configured | skill validator owner | M2 and M3 | M2 code-review | nonzero blocks milestone | zero tests is failure | milestone validation notes | repository-local |
+| `CMD-BFP-4` | `python scripts/test-select-validation.py` | existing/configured | selector owner | M4 | M4 code-review | nonzero blocks milestone | zero tests is failure | M4 validation notes | repository-local |
+| `CMD-BFP-5` | `python scripts/test-adapter-distribution.py` | existing/configured | adapter tooling owner | M4 | M4 code-review | nonzero blocks milestone | zero tests is failure | M4 validation notes | local generation only; no publication |
+| `CMD-BFP-6` | `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` | existing/configured | adapter tooling owner | M4 | M4 code-review | any nonzero result blocks milestone | not applicable | temporary adapter validation output | temporary local output; no registry, release, or publication |
+| `CMD-BFP-7` | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-07-25-boundary-first-proof-modeling.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml` | existing/configured | lifecycle validator owner | lifecycle closeout | test-spec-review and verify | blocking result stops handoff | not applicable | validation ledger in change.yaml | read-only repository validation |
+
+## Milestone proof map
+
+| Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| M1 | T40, T41, T42, T43, T44, T45, T46 | bfp-manual.semantic-authority, bfp-manual.semantic-evidence | CMD-BFP-1 | `scripts/test-boundary-proof.py`; `tests/fixtures/boundary-proof/` | M1 code-review | Report tests use synthetic inputs; the canonical report and CMD-BFP-2 are deferred to M4. |
+| M2 | T41, T42, T43 | bfp-manual.semantic-authority | CMD-BFP-1, CMD-BFP-3 | authoring-skill behavior fixtures | M2 code-review | Covers upstream skill projection and semantic-review boundary. |
+| M3 | T42, T43, T44, T45 | bfp-manual.composed-path, bfp-manual.semantic-evidence | CMD-BFP-1, CMD-BFP-3 | implementation-skill behavior fixtures | M3 code-review | Covers sibling and composed-path proof. |
+| M4 | T44, T45, T46, T47 | bfp-manual.composed-path | CMD-BFP-1, CMD-BFP-2, CMD-BFP-4, CMD-BFP-5, CMD-BFP-6 | canonical report and generated adapter evidence | M4 code-review | R28y report pass is not the later R28o resumption predicate. |
+| Final lifecycle closeout | T40, T41, T42, T43, T44, T45, T46, T47 | bfp-manual.semantic-authority, bfp-manual.composed-path, bfp-manual.semantic-evidence | CMD-BFP-1, CMD-BFP-2, CMD-BFP-3, CMD-BFP-4, CMD-BFP-5, CMD-BFP-6, CMD-BFP-7 | clean milestone/final reviews, closed resolution, explanation, verification | verify | Progressive-disclosure review remains paused until R28o passes. |
 
 ## Test cases
 
@@ -1005,8 +1082,116 @@
 - Failure proves:
   - Agents may continue to infer plain slug roots from the placeholder syntax and create inconsistent change-local artifact paths.
 
+### T40. Closed model and typed record validation
+
+- Covers: R28-R28c, R28k, R28p-R28t
+- Level: unit
+- Command IDs: CMD-BFP-1
+- Fixture/setup: Valid and invalid core, extension, marker, scope, and check-ID records.
+- Steps: Parse every closed value; remove, duplicate, or replace each required field; inject one unknown value for every closed vocabulary.
+- Expected result: Valid records normalize deterministically; unknown, missing, duplicate, incompatible, or orphan values fail before consistency evaluation.
+- Failure proves: The executable projection can silently narrow or widen the approved model.
+- Evidence artifact: `scripts/test-boundary-proof.py`
+- Automation location: `scripts/test-boundary-proof.py`
+- Required by milestone: M1
+
+### T41. Examples and interactions remain subordinate to boundaries
+
+- Covers: R28d-R28e, R28s-R28v
+- Level: integration
+- Command IDs: CMD-BFP-1
+- Fixture/setup: Illustration, regression, discovery, non-normative, extension, and interaction records.
+- Steps: Validate each role; omit required trace IDs; add invalid links; supply fewer than two interaction boundaries; verify a discovery gap pauses.
+- Expected result: Every role follows its exact conditional fields and no example or extension satisfies a missing core entry.
+- Failure proves: Examples can again become the implicit completeness model.
+- Evidence artifact: boundary model fixtures
+- Automation location: `scripts/test-boundary-proof.py`
+- Required by milestone: M1 and M2
+
+### T42. Stage gates reject example-complete but boundary-incomplete work
+
+- Covers: R28f-R28j, R28w
+- Level: integration
+- Command IDs: CMD-BFP-1, CMD-BFP-3
+- Fixture/setup: Feature spec and proof map with all examples covered but one partition, interaction, public path, or sibling omitted.
+- Steps: Exercise spec-review, test-spec-review, implement, and code-review behavior fixtures against the omission.
+- Expected result: The owning pre-code-review gate stops; implementation never upgrades missing authority; code-review remains independent.
+- Failure proves: The workflow still defers exhaustive boundary audit to code review.
+- Evidence artifact: workflow and skill behavior fixtures
+- Automation location: `scripts/test-boundary-proof.py`; `scripts/test-skill-validator.py`
+- Required by milestone: M2 and M3
+
+### T43. Proof map traceability and canonical evidence
+
+- Covers: R28f, R28h-R28k, R28q, R28w
+- Level: integration
+- Command IDs: CMD-BFP-1
+- Fixture/setup: Current, missing, stale, substituted, partial, duplicated, and replayed proof inputs.
+- Steps: Validate exact requirement, boundary, interaction, test, and manual-procedure references; replace canonical identities with caller assertions.
+- Expected result: Only current owner-derived evidence passes; semantic adequacy stays reviewer-owned.
+- Failure proves: Structural presence or caller assertion can masquerade as proof.
+- Evidence artifact: boundary proof regression fixtures
+- Automation location: `scripts/test-boundary-proof.py`
+- Required by milestone: M1 through M3
+
+### T44. Adoption, grandfathering, and synchronized version parity
+
+- Covers: R28l-R28o, R28r
+- Level: integration
+- Command IDs: CMD-BFP-1, CMD-BFP-7
+- Fixture/setup: Legacy approved artifacts, reviewed v1 opt-in, version mismatch, missing marker, and partial adoption.
+- Steps: Validate prospective activation, grandfathering, synchronized opt-in, stale inputs, and the paused progressive-disclosure dependency.
+- Expected result: Compatible legacy remains valid; partial or mismatched v1 fails; target selection cannot imply missing authority.
+- Failure proves: Adoption can invalidate history or permit mixed proof.
+- Evidence artifact: version and lifecycle fixtures
+- Automation location: `scripts/test-boundary-proof.py`; lifecycle validator
+- Required by milestone: M1 and M4
+
+### T45. Frozen incident replay detects omissions at owning gates
+
+- Covers: R28x
+- Level: integration
+- Command IDs: CMD-BFP-1
+- Fixture/setup: BFP-FX-CANONICAL-001, BFP-FX-VOCAB-001, BFP-FX-TRANSITION-001, BFP-FX-IDENTITY-001, BFP-FX-ATOMICITY-001, BFP-FX-RECOVERY-001, BFP-FX-COMPOSITION-001, BFP-FX-SIBLING-001.
+- Steps: Run each seeded omission through its named owning gate and inspect escape and sibling results.
+- Expected result: Every fixture is detected no later than its expected gate; none escapes to code review or leaves a sibling bypass.
+- Failure proves: The first release does not solve the observed late-boundary-audit problem.
+- Evidence artifact: `tests/fixtures/boundary-proof/`
+- Automation location: `scripts/test-boundary-proof.py`
+- Required by milestone: M1 through M4
+
+### T46. Capability report is computed and evidence-bound
+
+- Covers: R28n, R28y
+- Level: integration
+- Command IDs: CMD-BFP-1, CMD-BFP-2
+- Fixture/setup: Passing, failing, not-run, asserted, stale, unordered, missing-evidence, bad-count, and late-detection reports.
+- Steps: Compute every row and overall result; attempt to hand-assert pass; change a cited input; serialize through the sole writer.
+- Expected result: Only the exact evidence-bearing record aggregates to pass; not-run never passes; other writers cannot create a valid canonical report.
+- Failure proves: The capability baseline can be asserted or detached from its evidence.
+- Evidence artifact: `boundary-capability-baseline.md` and report fixtures
+- Automation location: `scripts/test-boundary-proof.py`; `scripts/validate-boundary-proof.py`
+- Required by milestone: M1 synthetic aggregate via CMD-BFP-1; M4 canonical report via CMD-BFP-2
+
+### T47. Activation, rollback, and final resumption remain distinct
+
+- Covers: R28o, R28z
+- Level: integration
+- Command IDs: CMD-BFP-1, CMD-BFP-5, CMD-BFP-6, CMD-BFP-7
+- Fixture/setup: Passing report hash, mismatched hash, partial release unit, rollback notes, and incomplete review/verify closeout.
+- Steps: Validate release-note activation identity, unit parity, rollback marker, and the separate R28o review-resolution and verification predicate.
+- Expected result: Activation requires an actual tag and matching report bytes; partial units fail; report pass alone cannot resume progressive disclosure.
+- Failure proves: Release or proposal-resumption claims can outrun reviewed evidence.
+- Evidence artifact: release validation fixtures and lifecycle closeout
+- Automation location: boundary, adapter, and lifecycle tests
+- Required by milestone: M4 and verify
+
 ## Fixtures and data
 
+- Boundary-first fixtures:
+  - `tests/fixtures/boundary-proof/` for valid, invalid, incident, aggregate, activation, and simple-change records
+  - `tests/fixtures/skills/boundary-proof/` for stage behavior and preservation
+  - exact IDs `BFP-FX-CANONICAL-001`, `BFP-FX-VOCAB-001`, `BFP-FX-TRANSITION-001`, `BFP-FX-IDENTITY-001`, `BFP-FX-ATOMICITY-001`, `BFP-FX-RECOVERY-001`, `BFP-FX-COMPOSITION-001`, and `BFP-FX-SIBLING-001`
 - Canonical workflow artifacts:
   - `specs/rigorloop-workflow.md`
   - `specs/rigorloop-workflow.test.md`
@@ -1152,6 +1337,7 @@
 
 ## Next artifacts
 
+- Boundary-first amendment: independent `test-spec-review` for R28-R28z and the companion R56-R56q proof map, then implementation authorization.
 - `code-review M2` under [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md) after M2 implementation handoff.
 - Continue the approved milestone loop with M3 through M5 until all in-scope implementation milestones are closed.
 
@@ -1162,6 +1348,6 @@
 
 ## Readiness
 
-Active proof-planning and regression surface for the workflow contract and the 2026-05-08 single-workflow-lane amendment.
+Active proof-planning and regression surface for the workflow contract, including the boundary-first R28-R28z amendment. Test-spec review R2 approved the boundary-first proof map; implementation remains subject to the separate implementation-authorization boundary.
 
 Test-spec proof map is confirmed against the approved active plan. M2 implementation can hand off to `code-review M2` only after the M2 guidance and contract surfaces make the relevant assertions and validation commands pass. Each milestone closes only after clean review and any required review-resolution.
