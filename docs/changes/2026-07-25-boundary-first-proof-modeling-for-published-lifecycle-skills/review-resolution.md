@@ -2193,6 +2193,68 @@ ordered prior non-output diagnostics between liveness and timeout, forbids
 output diagnostics with uninspected output, and always pauses; T52 covers the
 cross-products; pending spec-review-r34.
 
+### spec-review-r34
+
+#### BFP-SR-R34-1 - Add value-sensitive protocol policy routing
+
+Finding ID: BFP-SR-R34-1
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y protocol policy
+Decision needed: none
+Required outcome: Route schema-valid but conditionally forbidden protocol values without retaining secrets.
+Chosen action: Add a closed conditional-policy diagnostic and boolean-only remote-control rule evidence.
+Rationale: Static variant classification cannot express value-sensitive safety.
+Validation target: spec-review-r35
+Validation evidence: pending
+
+#### BFP-SR-R34-2 - Separate completed recovery history from active state
+
+Finding ID: BFP-SR-R34-2
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y global discovery
+Decision needed: none
+Required outcome: Permit fresh runs beside validated completed recovery history without weakening active single-run exclusion.
+Chosen action: Validate historical recovery triples, remove them from active run-ID projection, then apply conflict rules only to active state.
+Rationale: Preserved audit history is not an in-flight publisher.
+Validation target: spec-review-r35
+Validation evidence: pending
+
+#### BFP-SR-R34-3 - Bind transport time policy
+
+Finding ID: BFP-SR-R34-3
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y implementation manifest
+Decision needed: none
+Required outcome: Make turn and termination waits positive, bounded, manifest-owned, monotonic, and non-substitutable.
+Chosen action: Add a closed transport policy to the implementation manifest and bind row/evidence identities and logical process/thread identities to it.
+Rationale: Caller-selected or zero deadlines invalidate retry safety.
+Validation target: spec-review-r35
+Validation evidence: pending
+
+#### BFP-SR-R34-4 - Bind runtime identity checkpoint
+
+Finding ID: BFP-SR-R34-4
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y runtime attestation
+Decision needed: none
+Required outcome: Identify the changed runtime resource and exact checkpoint and bind expected identity to attestation.
+Chosen action: Add closed identity-kind/checkpoint fields and same-resource validation.
+Rationale: Unequal hashes alone do not prove the governed runtime changed.
+Validation target: spec-review-r35
+Validation evidence: pending
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
