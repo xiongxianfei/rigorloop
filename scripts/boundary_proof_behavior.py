@@ -1374,6 +1374,11 @@ def _validate_review_payload(
         or not isinstance(record, str)
         or not isinstance(log, str)
     ):
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(
+                f"review-envelope:{stage}:id={review_id!r}:outcome={outcome!r}",
+                file=sys.stderr,
+            )
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
     record_required = (
         f"Review ID: {review_id}",
@@ -1393,6 +1398,13 @@ def _validate_review_payload(
     if any(value not in record for value in record_required) or any(
         value not in log for value in log_required
     ):
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            missing_record = [value for value in record_required if value not in record]
+            missing_log = [value for value in log_required if value not in log]
+            print(
+                f"review-fields:{stage}:record={missing_record!r}:log={missing_log!r}",
+                file=sys.stderr,
+            )
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
 
 
