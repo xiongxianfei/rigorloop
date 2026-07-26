@@ -1014,6 +1014,10 @@ the fixture ID.
 Behavior fixtures MUST prove that the skill's named gate consumes the same
 closed boundary-state fields and produces the same diagnostic family as the
 shared evaluator.
+For this release, diagnostic-family equality means exact diagnostic-ID
+equality with the R28x derivation table.
+Fixture IDs and expected labels are comparison evidence only and MUST NOT be
+inputs to the gate outcome.
 
 R56p. A valid simple-change fixture MUST exercise the same workflow while
 recording the twelve core classifications once in one compact feature-spec
@@ -1026,6 +1030,9 @@ false-blocking, or correction-cycle result.
 The shared structural evaluator derives those observations from a stage trace
 through `spec`, `spec-review`, `test-spec`, and `test-spec-review`, including
 current input and output identities.
+The trace grammar, linkage invariants, operation-bound evidence receipts, and
+metric formulas are exactly those in R28y; skills MUST NOT introduce an
+alternate trace or evidence schema.
 Skill behavior-preservation review remains responsible for semantic,
 instruction-following, isolation, and handoff equivalence that deterministic
 structural replay cannot establish.

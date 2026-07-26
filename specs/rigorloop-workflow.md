@@ -1288,8 +1288,8 @@ The fixture IDs, seeded omission classes, and owning gates are closed for the
 first release.
 
 Every incident fixture MUST contain exactly:
-`fixture_id`, `seeded_omission`, `expected_gate`, `boundary_state`, and
-`expected_diagnostic`.
+`fixture_id`, `seeded_omission`, `expected_gate`, `expected_diagnostic`,
+`boundary_state`, and `valid_contrast_state`.
 `boundary_state` is one complete stage-gate input with exactly these closed
 fields:
 
@@ -1312,6 +1312,28 @@ diagnostic from `boundary_state`; it MUST NOT select an outcome from
 The fixture passes replay only when the derived stage is no later than
 `expected_gate`, the expected diagnostic matches, the omission does not escape
 to code review, and the sibling state does not retain a bypass.
+
+The normative derivation table is:
+
+| Fixture ID | Trigger field | Trigger value | Valid contrast | First detecting stage | Diagnostic ID |
+| --- | --- | --- | --- | --- | --- |
+| `BFP-FX-CANONICAL-001` | `canonical_source` | `caller-asserted` | `owner-derived` | `spec-review` | `bfp-canonical-source-invalid` |
+| `BFP-FX-VOCAB-001` | `vocabulary_state` | `unknown` | `known` | `test-spec-review` | `bfp-unknown-vocabulary` |
+| `BFP-FX-TRANSITION-001` | `transition_state` | `illegal` | `legal` | `test-spec-review` | `bfp-illegal-transition` |
+| `BFP-FX-IDENTITY-001` | `identity_state` | `stale` | `current` | `test-spec-review` | `bfp-stale-identity` |
+| `BFP-FX-ATOMICITY-001` | `mutation_state` | `partial` | `complete` | `test-spec-review` | `bfp-partial-mutation` |
+| `BFP-FX-RECOVERY-001` | `recovery_state` | `repeated` | `reconciled` | `test-spec-review` | `bfp-repeat-without-reconcile` |
+| `BFP-FX-COMPOSITION-001` | `composition_state` | `helper-only` | `complete` | `test-spec-review` | `bfp-composed-path-omitted` |
+| `BFP-FX-SIBLING-001` | `sibling_state` | `one-only` | `complete` | `implement` | `bfp-sibling-bypass-remains` |
+
+`valid_contrast_state` MUST contain the valid-contrast value in the trigger
+field and MUST equal `boundary_state` in every other field.
+The fixture's omission text, expected gate, and expected diagnostic MUST equal
+the R28x registry and derivation-table values.
+Diagnostic equality is exact string equality against the closed diagnostic IDs
+in this table.
+Changing a fixture ID or any expected field MUST NOT change the evaluator's
+derived field, stage, or diagnostic.
 
 R28y. The canonical first-release report path is:
 
@@ -1351,6 +1373,40 @@ The path MUST resolve beneath the repository root to a tracked or
 change-local regular file, MUST NOT traverse a symbolic link, and the identity
 MUST equal the SHA-256 of the file's current raw bytes.
 
+Every pass/fail evidence reference MUST identify a
+`boundary-evidence-receipt-v1` record.
+That receipt contains exactly:
+
+```text
+schema_version
+operation_kind
+operation_id
+result
+diagnostic_id
+subject_refs
+output_refs
+observations
+```
+
+`operation_kind` is exactly `check`, `fixture`, `preservation`, or
+`adapter-parity`.
+`operation_id` MUST equal the report row key or fixture ID.
+`result` MUST equal the report row result.
+`diagnostic_id` is `none` for `pass` and a stable non-`none` diagnostic ID for
+`fail`.
+`subject_refs` MUST be non-empty; `output_refs` MAY be empty.
+Every nested reference uses the same repository-relative path and current
+raw-byte identity contract.
+For `fixture`, `observations` contains exactly `expected_gate`,
+`detected_stage`, `escaped_to_code_review`, and
+`sibling_bypass_remaining`, and those values MUST equal the report fixture row.
+For every other operation kind, `observations` MUST be an empty mapping.
+The receipt's own path MUST be under the selected change-local evidence root
+or `tests/fixtures/boundary-proof/evidence/`.
+An arbitrary tracked file, a receipt for another operation, a receipt with a
+different result or diagnostic, or a cross-row substituted receipt fails
+closed even when all cited hashes are current.
+
 For `pass` and `fail`, `evidence_refs` MUST be non-empty and
 `blocking_reason` MUST be null.
 For `not-run`, `evidence_refs` MUST be empty and `blocking_reason` MUST contain
@@ -1362,15 +1418,63 @@ Unknown evidence fields, unsafe paths, missing or non-regular files, symbolic
 links, stale identities, substituted content, missing blocking reasons, and
 blocking reasons attached to executed rows fail closed.
 
-The compact simple-change fixture contains an initial feature model, its
-reviewed feature model, and its test-spec proof map.
-The same structural stage-gate evaluator MUST compute a trace through
-`spec`, `spec-review`, `test-spec`, and `test-spec-review`.
-The computed trace records input and output identities, result, diagnostic,
-and whether an author-review correction occurred at each stage.
-Artifact count, false-blocking count, applicable-only proof mapping, and
-structural correction cycles MUST be derived from that trace and repository
-outputs; fixture-supplied aggregate counters are forbidden.
+The compact simple-change fixture contains initial and corrected candidate
+artifacts but MUST NOT contain a trace or aggregate counters.
+The same structural stage-gate evaluator MUST compute an ordered event trace.
+Every event contains exactly:
+
+```text
+stage
+input_refs
+output_refs
+result
+diagnostic_id
+```
+
+`stage` is exactly `spec`, `spec-review`, `test-spec`, or
+`test-spec-review`.
+Authoring-stage `result` is exactly `produced`.
+Review-stage `result` is exactly `approved`, `changes-requested`, or `blocked`.
+`diagnostic_id` is `none` for `produced` and `approved`; other results require
+a stable non-`none` diagnostic.
+All references use the current repository-evidence contract.
+
+The valid event grammar is:
+
+```text
+spec -> spec-review
+  -> [spec -> spec-review]?
+  -> test-spec -> test-spec-review
+  -> [test-spec -> test-spec-review]?
+```
+
+At most one optional correction pair may appear across the whole trace.
+An authoring output MUST be the following review input.
+An approved review's reviewed artifact MUST be an input to the next authoring
+stage.
+A `changes-requested` review MUST be followed by its matching authoring stage
+and an approving rereview; a `blocked` event terminates the trace.
+Substituted identities, broken links, illegal ordering, a second correction
+pair, and continuation after `blocked` fail closed.
+
+The evaluator derives:
+
+- `simple_fixture_structure_correction_cycles`: the number of
+  `changes-requested` events closed by their required authoring-and-rereview
+  pair;
+- `false_blocking_count`: the number of review events whose input passes the
+  stage's structural gate while the recorded result is not `approved`;
+- applicable-only proof mapping: exact set equality between proof-map
+  boundary/interaction references and the applicable feature-model boundaries
+  plus selected interactions, with no not-applicable reference;
+- `new_universal_artifact_count`: the number of distinct event output paths
+  outside `specs/*.md`, `specs/*.test.md`, and
+  `docs/changes/<change-id>/reviews/*.md`.
+
+The valid fixture passes only when the trace terminates in approved
+`test-spec-review`, applicable-only proof mapping holds, false blocking and new
+universal artifact counts are zero, and correction cycles are at most one.
+Fixture-supplied trace events, outcomes, or aggregate counters are forbidden.
 
 `overall_result` is computed as `pass` only when every required check and
 fixture is `pass`, every `detected_stage` is no later than its expected gate,
