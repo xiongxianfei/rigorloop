@@ -2,7 +2,7 @@
 
 ## Status
 
-Plan lifecycle state: blocked
+Plan lifecycle state: active
 Terminal disposition: none
 
 - Owner: maintainer
@@ -28,7 +28,8 @@ resumes.
 - Spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r13.md`
 - Architecture: `docs/architecture/system/architecture.md`
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md`
-- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r4.md`
+- Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
+- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r8.md`
 - Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; revision required after plan-review R3
 
 ## Context and orientation
@@ -80,10 +81,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-preflight-r2.md
-- Review status: approved; stage=code-review; round=r2
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r8.md
+- Review status: approved; stage=architecture-review; round=r8
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture revision for effective runtime-profile attestation
+- Next stage: plan revision
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -475,6 +476,14 @@ resource through generated, packed, and installed outputs.
   the approved R13 specification, R4 architecture, and R5 plan with hermetic
   input closure, runtime-boundary, immutable-publication, crash-recovery,
   preservation, parity, and release proof mapped to M1-M4.
+- 2026-07-26: Architecture-review R6 resolved the R5 runtime-evidence findings
+  and requested one final correction: bind a fully paginated experimental
+  feature inventory to an exhaustive pre-turn built-in-tool classification.
+- 2026-07-26: Architecture-review R7 confirmed that closure and requested one
+  feasibility correction: distinguish complete protocol vocabulary from the
+  effective capability set, while rejecting prohibited events at runtime.
+- 2026-07-26: Architecture-review R8 approved the corrected permission-profile
+  and app-server boundary with no material findings.
 - 2026-07-26: Test-spec-review R3 retained one gap: aggregate hermetic-input
   coverage must become field-complete mutation proof before implementation.
 - 2026-07-26: The R4 test-spec candidate now mutates every manifest collection,

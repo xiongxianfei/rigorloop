@@ -41,6 +41,17 @@ Material findings: None
 Open findings: None
 
 ### Review entry
+Review ID: architecture-review-r5
+Stage: architecture-review
+Round: 5
+Reviewed artifact: M2 runtime-attestation architecture revision
+Status: changes-requested
+Detailed record: reviews/architecture-review-r5.md
+Resolution: review-resolution.md#architecture-review-r5
+Material findings: BFP-AR5, BFP-AR6, BFP-AR7, BFP-AR8
+Open findings: None
+
+### Review entry
 Review ID: proposal-review-r2
 Stage: proposal-review
 Round: 2
@@ -380,5 +391,38 @@ Reviewed artifact: M1 correction commit `c97f3240`
 Status: clean-with-notes
 Detailed record: reviews/code-review-m1-r4.md
 Resolution: review-resolution.md#code-review-m1-r4
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r6
+Stage: architecture-review
+Round: 6
+Reviewed artifact: docs/architecture/system/architecture.md; docs/architecture/system/diagrams/component-boundary-proof.mmd; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md
+Status: changes-requested
+Detailed record: reviews/architecture-review-r6.md
+Resolution: review-resolution.md#architecture-review-r6
+Material findings: BFP-AR9
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r7
+Stage: architecture-review
+Round: 7
+Reviewed artifact: docs/architecture/system/architecture.md; docs/architecture/system/diagrams/component-boundary-proof.mmd; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md
+Status: changes-requested
+Detailed record: reviews/architecture-review-r7.md
+Resolution: review-resolution.md#architecture-review-r7
+Material findings: BFP-AR10
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r8
+Stage: architecture-review
+Round: 8
+Reviewed artifact: docs/architecture/system/architecture.md; docs/architecture/system/diagrams/component-boundary-proof.mmd; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md
+Status: approved
+Detailed record: reviews/architecture-review-r8.md
+Resolution: review-resolution.md#architecture-review-r8
 Material findings: None
 Open findings: None

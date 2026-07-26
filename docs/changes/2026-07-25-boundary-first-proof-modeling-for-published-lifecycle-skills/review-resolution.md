@@ -10,6 +10,10 @@ Closeout status: open
 - Review closeout: code-review-m1-r4
 - Review closeout: code-review-m2-preflight-r1
 - Review closeout: code-review-m2-preflight-r2
+- Review closeout: architecture-review-r5
+- Review closeout: architecture-review-r6
+- Review closeout: architecture-review-r7
+- Review closeout: architecture-review-r8
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
@@ -38,10 +42,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m2-preflight-r1`, `code-review-m2-preflight-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
-- Findings resolved: 33
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m2-preflight-r1`, `code-review-m2-preflight-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `architecture-review-r5`, `architecture-review-r6`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
+- Findings resolved: 39
 - Unresolved findings: 0
-- Current result: M2 preflight implementation is approved, but the live environment gate failed safely and routes the initiative to architecture.
+- Current result: Architecture-review R8 approved the runtime boundary; plan and test-spec projection are next.
 
 ## Resolution Overview
 
@@ -78,6 +82,12 @@ Closeout status: open
 | BFP-PL4 | accepted | resolved | Preserve approved R28y M1-M4 ownership and keep runtime feasibility as a pre-harness promotion gate. |
 | BFP-PL5 | accepted | resolved | Name exact evidence inputs, outputs, production/validation commands, promotion receipts, and failure stops. |
 | BFP-TSR3-1 | accepted | resolved | Expand T48-T50 so every closed manifest, instruction, contract, profile, baseline, and input-set field has explicit positive and negative proof. |
+| BFP-AR5 | accepted | resolved | Runtime-owned configuration and exact capability inventories now close the pre-turn runtime surface. |
+| BFP-AR6 | accepted | resolved | The exact executable-generated experimental protocol schema is identity-bound and validated fail-closed. |
+| BFP-AR7 | accepted | resolved | Managed-policy equivalence and credential isolation are proven across all child-visible channels. |
+| BFP-AR8 | accepted | resolved | The runtime ADR and complete attestation conjunction are projected into canonical architecture and C4 views. |
+| BFP-AR9 | accepted | resolved | A fully paginated feature inventory and exhaustive classification establish the closed built-in tool boundary before turn start. |
+| BFP-AR10 | accepted | resolved | Complete schema vocabulary is classified separately from effective enablement; prohibited capabilities must be disabled pre-turn and remain event-inactive. |
 
 ## Finding Details
 
@@ -139,6 +149,68 @@ Validation evidence: Unreadable, removed, and replaced executable regressions pa
 No material findings. The preflight implementation is approved. Its live
 `environment-unavailable` result is an architecture feasibility stop, not an
 implementation review failure.
+
+### architecture-review-r5
+
+#### BFP-AR5 — Runtime capability closure was asserted
+
+Finding ID: BFP-AR5
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: accepted R28y
+Decision needed: none
+Required outcome: Bind runtime-owned effective config and exact capability inventories.
+Chosen action: Required config and managed-requirement reads plus app, plugin, MCP, and skill inventories and unexpected-tool rejection.
+Rationale: Disabled parent config is intention, not runtime-owned effective evidence.
+Validation target: architecture-review-r6
+Validation evidence: canonical architecture and proposed ADR exact inventory contract.
+
+#### BFP-AR6 — Experimental protocol identity was undefined
+
+Finding ID: BFP-AR6
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: accepted R28y
+Decision needed: none
+Required outcome: Bind experimental negotiation and exact generated schema.
+Chosen action: Required `experimentalApi: true`, exact-executable schema generation, bundle identity, and fail-closed required method/field validation.
+Rationale: A version floor does not prove optional experimental fields exist.
+Validation target: architecture-review-r6
+Validation evidence: canonical architecture and proposed ADR protocol contract.
+
+#### BFP-AR7 — Profile equivalence and auth isolation were underproved
+
+Finding ID: BFP-AR7
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: accepted R28y
+Decision needed: none
+Required outcome: Bind generated/managed policy and prove every child-visible credential channel closed.
+Chosen action: Added `--include-managed-config`, runtime-owned config requirements, profile/config identities, transient canary, exact environment names, and argv/stdin/path/process denial.
+Rationale: Profile name and one denied file read do not establish effective equivalence or secret isolation.
+Validation target: architecture-review-r6
+Validation evidence: canonical trust-boundary and proposed ADR proof contract.
+
+#### BFP-AR8 — Canonical package omitted and overstated the new decision
+
+Finding ID: BFP-AR8
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: accepted architecture package method
+Decision needed: none
+Required outcome: Link the ADR and depict the full attestation conjunction.
+Chosen action: Added the Architecture Decisions link and corrected the component evidence arrow.
+Rationale: C4 must not imply probes plus thread metadata alone close the boundary.
+Validation target: architecture-review-r6
+Validation evidence: architecture decision list and component-boundary-proof.mmd.
 
 ### proposal-review-r1
 
@@ -752,3 +824,43 @@ Chosen action: Use the shared structural evaluator to compute a four-stage trace
 Rationale: The approved implementation contract states the measurements but not the executable trace boundary.
 Validation target: code-review-m1-r4
 Validation evidence: Focused tests reject classifier mismatches, duplicate inventory identities, orphan behavior-output snapshots, and diagnostics that differ from independent structural evaluation.
+
+### architecture-review-r6
+
+#### BFP-AR9 - Pre-turn built-in tool closure is incomplete
+
+Finding ID: BFP-AR9
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved R28y trust boundary
+Decision needed: none
+Required outcome: Define and prove a complete model-visible tool boundary before any lifecycle turn starts.
+Chosen action: Require fully paginated `experimentalFeature/list`, an exact two-class permitted side-effect surface, empty dynamic tools and environments, exhaustive version/schema-bound feature classification, and fail-closed handling for missing, unknown, or newly enabled rows.
+Rationale: Partial configuration and post-hoc event rejection cannot prove that undeclared built-in tools were unavailable to the model.
+Validation target: architecture-review-r7
+Validation evidence: pending architecture-review-r7
+
+### architecture-review-r7
+
+#### BFP-AR10 - Protocol vocabulary is conflated with effective enablement
+
+Finding ID: BFP-AR10
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved R28y trust boundary
+Decision needed: none
+Required outcome: Separate complete protocol vocabulary support from effectively enabled runtime capabilities.
+Chosen action: Bind and classify every generated schema item variant, prove prohibited capabilities disabled through pre-turn evidence, and reject any prohibited event observed during the accepted turn.
+Rationale: A schema describes supported messages; it does not prove those capabilities are enabled for the current run.
+Validation target: architecture-review-r8
+Validation evidence: pending architecture-review-r8
+
+### architecture-review-r8
+
+No material findings.
+Architecture-review R8 confirmed BFP-AR5 through BFP-AR10 resolved and approved
+the runtime-attestation architecture for plan and test-spec projection.
