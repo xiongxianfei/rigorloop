@@ -27,9 +27,9 @@ R4. An unknown mode MUST fail with `unknown-mode` and MUST NOT return text.
 | state-transition | not-applicable | - | - | The function is stateless. |
 | authorization-scope | not-applicable | - | - | The function grants no authority. |
 | mutation-atomicity | not-applicable | - | - | The function performs no mutation. |
-| interruption-recovery | not-applicable | - | - | The operation is not interruptible. |
+| interruption-recovery | not-applicable | - | - | The contract exposes one returned result and no partial state or recovery obligation. |
 | concurrency-idempotency | not-applicable | - | - | The pure result has no shared state. |
-| composition-bypass | not-applicable | - | - | One public function owns the behavior. |
+| composition-bypass | not-applicable | - | - | Conformance is defined only for this public normalizer contract; wrappers and alternate entrypoints may claim conformance only by preserving it. |
 | compatibility-migration | not-applicable | - | - | No legacy representation exists. |
 | outcome-stop | applicable | R2, R3, R4 | text.outcome.value, text.outcome.error | - |
 | evidence-claims | applicable | R1, R2, R3, R4 | text.evidence.tests | - |
