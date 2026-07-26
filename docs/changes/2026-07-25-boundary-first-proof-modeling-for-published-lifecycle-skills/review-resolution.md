@@ -2490,6 +2490,69 @@ Validation evidence: R38 candidate now binds the exact
 `materialization-canary-v1` policy through the parent request, response
 schema, runtime attestation, and cross-use rejection; pending spec-review-r38
 
+### spec-review-r38
+
+#### BFP-SR-R38-1 - Lifecycle artifact policy is not constructible or manifest-bound
+
+Finding ID: BFP-SR-R38-1
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y policy identity contract
+Decision needed: none
+Required outcome: Freeze and transitively bind one byte-deterministic lifecycle artifact policy.
+Chosen action: Define exact policy/nested row schemas and ordering and add the
+object to behavior-manifest selection and validation.
+Rationale: A required runtime identity must have one independently reconstructible preimage.
+Validation target: spec-review-r39
+Validation evidence: pending spec revision and spec-review-r39
+
+#### BFP-SR-R38-2 - Malformed and oversized candidate observations are ambiguous
+
+Finding ID: BFP-SR-R38-2
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y candidate evidence contract
+Decision needed: none
+Required outcome: Give every parse state one exact representation and deterministic byte accounting.
+Chosen action: Add malformation kinds, exact null/list values, size-before-parse precedence, and inclusive overflow accounting.
+Rationale: Failure evidence must be canonical and independently replayable.
+Validation target: spec-review-r39
+Validation evidence: pending spec revision and spec-review-r39
+
+#### BFP-SR-R38-3 - Post-materialization failures lack replayable evidence
+
+Finding ID: BFP-SR-R38-3
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y transport evidence contract
+Decision needed: none
+Required outcome: Record bounded byte-materialization and structural-content observations.
+Chosen action: Add exact value-free observation records and bind their identities into failed transport evidence.
+Rationale: A contradictory label alone cannot prove a physical or structural mismatch.
+Validation target: spec-review-r39
+Validation evidence: pending spec revision and spec-review-r39
+
+#### BFP-SR-R38-4 - Second changes-requested review lacks a terminal trace
+
+Finding ID: BFP-SR-R38-4
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y trace grammar
+Decision needed: none
+Required outcome: Map second-review changes-requested to one explicit terminal state.
+Chosen action: Add correction-budget-exhausted terminal branches with an open resolution and stable failure diagnostic.
+Rationale: Every permitted stage result must be observable in exactly one valid branch.
+Validation target: spec-review-r39
+Validation evidence: pending spec revision and spec-review-r39
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
