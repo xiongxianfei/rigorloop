@@ -3341,6 +3341,8 @@ class _AppServer:
                     "unexpected-prohibited-event", "in-turn"
                 )
             if method == "error":
+                if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                    print("turn-error:", repr(params), file=sys.stderr)
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
