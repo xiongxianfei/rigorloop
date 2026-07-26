@@ -30,7 +30,7 @@ def _render_report(payload: Any) -> str:
     """Render one deterministic YAML-compatible fenced record."""
 
     validate_capability_report(payload)
-    body = json.dumps(payload, indent=2, sort_keys=False, ensure_ascii=False)
+    body = json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False)
     return (
         "# Boundary Capability Baseline\n\n"
         "This report is computed from repository-visible evidence.\n\n"

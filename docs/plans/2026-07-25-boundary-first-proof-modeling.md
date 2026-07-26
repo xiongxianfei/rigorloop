@@ -79,19 +79,19 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M1. Deterministic core correction
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r4.md
-- Review status: approved; stage=test-spec-review; round=r4
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: implement M1 correction
+- Next stage: code-review M1 R2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
 ### M1. Deterministic core correction
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Close every M1 code-review finding in the deterministic model, fixtures, synthetic trace, and report engine without invoking lifecycle skills.
 - Requirements: R28-R28e, R28k, R28p-R28y, R56m, R56o-R56p
 - Files/components likely touched:
@@ -483,6 +483,9 @@ resource through generated, packed, and installed outputs.
   input-set fields and members, and comparison-only scenario expectations.
 - 2026-07-26: Test-spec-review R4 resolved BFP-TSR3-1 and approved the
   field-complete proof map for M1 implementation.
+- 2026-07-26: M1 correction added direct negative regressions and deterministic
+  fixes for BFP-M1-CR1 through BFP-M1-CR7; focused tests and lifecycle
+  validation pass and the milestone is review-requested.
 
 ## Decision log
 

@@ -1,0 +1,8 @@
+{
+  "fixture_id": "BFP-FX-CANONICAL-001",
+  "seeded_omission": "caller assertion accepted instead of canonical evidence",
+  "expected_gate": "spec-review",
+  "expected_diagnostic": "bfp-canonical-source-invalid",
+  "boundary_state": {"canonical_source": "caller-asserted", "vocabulary_state": "known", "transition_state": "legal", "identity_state": "current", "mutation_state": "complete", "recovery_state": "reconciled", "composition_state": "complete", "sibling_state": "complete"},
+  "valid_contrast_state": {"canonical_source": "owner-derived", "vocabulary_state": "known", "transition_state": "legal", "identity_state": "current", "mutation_state": "complete", "recovery_state": "reconciled", "composition_state": "complete", "sibling_state": "complete"}
+}
