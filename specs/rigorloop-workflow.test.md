@@ -9,8 +9,9 @@ Boundary model scope: R28-R28z
 
 ## Related spec and plan
 
-- Spec: [RigorLoop Workflow](rigorloop-workflow.md), draft pending focused
-  spec-review of the boundary publication and transport-attempt amendment.
+- Spec: [RigorLoop Workflow](rigorloop-workflow.md), approved by focused
+  `spec-review-r36` for the boundary publication and transport-attempt
+  amendment.
 - Proposal: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md), accepted.
 - Historical plan: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md), done.
 - Related follow-on spec: [Learn Artifact Model](learn-artifact-model.md), approved.
@@ -47,14 +48,14 @@ Boundary model scope: R28-R28z
 
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
-| Feature spec | `specs/rigorloop-workflow.md` | draft; focused spec-review pending | pending after approval |
+| Feature spec | `specs/rigorloop-workflow.md` | approved by focused spec-review R36 | `sha256:e7b256e1d3e48335bd4fd88275ccf89375bc3d99e4089e252c03086b387b4f04` |
 | Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion to the draft workflow amendment | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r35.md` | changes-requested; R35 findings resolved in the R36 candidate | `sha256:e8ef367b3ab2c540003d9c707315f946b651597e38728d412cd9238403edf12c` |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r36.md` | approved; architecture synchronization required | `sha256:273e1b5dd55f02b5a838083e8247d93940b118cb3c87a49bb464cded02f0a8b2` |
 | Architecture | `docs/architecture/system/architecture.md` | draft; focused architecture-review pending | pending after approval |
 | Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r13.md` | approved | `sha256:47571b7555fe6470de8e78a9c8b180c09fbdb627e8e641ab1c6915e0d9044288` |
 | ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | proposed amendment | pending after acceptance |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; spec-review R36 is the next gate | `sha256:b30452b950c5948f5b518d0a30e88e6c336a3c56d478374f756e6017ad02b36d` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; architecture revision is the next gate | `sha256:62d07a193c38c2c7262bd469f30b956bd7d7428fcc0ba746faac324326b7b6e0` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
 
 ## Testing strategy

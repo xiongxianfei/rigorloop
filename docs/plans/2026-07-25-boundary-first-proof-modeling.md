@@ -25,7 +25,7 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r35.md` (changes requested; revision in progress)
+- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r36.md` (approved; architecture required)
 - Architecture: `docs/architecture/system/architecture.md`
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md`
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
@@ -84,10 +84,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r35.md
-- Review status: changes-requested; stage=spec-review; round=r35
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r36.md
+- Review status: approved; stage=spec-review; round=r36
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec-review R36 for preflight and manifest consistency
+- Next stage: architecture revision for approved R28y contract
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
