@@ -31,6 +31,7 @@ from boundary_proof_behavior import (
     _build_behavior_manifest,
     _derive_config_origin_paths,
     _feature_inventory,
+    _feature_model_schema,
     freeze_baseline,
     _normalize_config_result,
     _normalize_skill_inventory,
@@ -40,6 +41,7 @@ from boundary_proof_behavior import (
     _parse_feature_markdown,
     _parse_test_spec_markdown,
     _portable_text_contract,
+    _proof_map_schema,
     _parse_semver,
     _preflight_failure,
     _runtime_environment,
@@ -1603,6 +1605,19 @@ class BoundaryProofModelTests(unittest.TestCase):
 
 
 class BoundaryProofEnvironmentTests(unittest.TestCase):
+    def test_stage_output_schemas_are_compact_closed_records(self) -> None:
+        feature = _feature_model_schema()
+        proof = _proof_map_schema()
+        dimensions = feature["properties"]["core_dimensions"]
+        obligations = proof["properties"]["proof_obligations"]
+        self.assertEqual(dimensions["type"], "array")
+        self.assertEqual(dimensions["minItems"], len(CORE_DIMENSION_IDS))
+        self.assertEqual(dimensions["maxItems"], len(CORE_DIMENSION_IDS))
+        self.assertEqual(obligations["type"], "array")
+        self.assertEqual(obligations["minItems"], obligations["maxItems"])
+        self.assertLess(len(json.dumps(feature)), 6000)
+        self.assertLess(len(json.dumps(proof)), 4000)
+
     def test_simple_change_candidates_parse_to_the_closed_profile(self) -> None:
         expected_feature, expected_proof = _portable_text_contract()
         feature_path = (
