@@ -9,6 +9,7 @@ Closeout status: open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
 - Review closeout: spec-review-r6 open
+- Review closeout: spec-review-r7 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -19,10 +20,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`
 - Findings resolved: 15
 - Unresolved findings: 9
-- Current result: `spec-review-r6` kept BFP-SR3-2 and BFP-SR3-3 open for final trace and provenance closure.
+- Current result: `spec-review-r7` kept BFP-SR3-2 and BFP-SR3-3 open for oracle independence, complete formal-review evidence, and canonical manifest/baseline closure.
 
 ## Resolution Overview
 
@@ -336,6 +337,15 @@ No new material findings.
 inventory, historical evidence, typed-result identity, aggregate observations,
 marker-absence selection, and canonical fixture paths were not yet
 deterministic.
+
+### spec-review-r7
+
+No new material findings.
+`spec-review-r7` confirmed trace and typed-result improvements but kept
+`BFP-SR3-2` and `BFP-SR3-3` open because oracle labels could still drive
+results, canonical review output was modeled as one file rather than a complete
+formal-recording bundle, and manifest/baseline selectors were not uniquely
+owned.
 
 ### spec-review-r3
 
