@@ -1219,6 +1219,7 @@ def evaluate_simple_change_trace(
     *,
     feature_models: Mapping[str, FeatureBoundaryModel] | None = None,
     proof_maps: Mapping[str, BoundaryProofMap] | None = None,
+    structural_evaluations: Mapping[str, Mapping[str, str]] | None = None,
 ) -> SimpleTraceMetrics:
     """Validate the exact R28y synthetic trace and derive its observations."""
 
@@ -1264,6 +1265,10 @@ def evaluate_simple_change_trace(
         "other-lifecycle",
         "non-lifecycle",
     )
+    behavior_artifact_pattern = re.compile(
+        r"^docs/changes/[a-z0-9-]+/evidence/simple-change/runs/"
+        r"run-[0-9a-f]{32}/artifacts/(?P<relative>.+)$"
+    )
 
     def normalized_path(value: Any, label: str) -> str:
         raw = _nonempty_string(value, label)
@@ -1277,6 +1282,59 @@ def evaluate_simple_change_trace(
         if not identity_pattern.fullmatch(result):
             raise BoundaryProofError(f"{label}: invalid identity")
         return result
+
+    def classify_artifact(path: str) -> str:
+        behavior_match = behavior_artifact_pattern.fullmatch(path)
+        if behavior_match is not None:
+            relative = Path(behavior_match.group("relative"))
+            top = relative.parts[0]
+            if (
+                len(relative.parts) == 2
+                and relative.suffix == ".md"
+                and top in {"feature-spec", "test-spec"}
+            ):
+                return top
+            if len(relative.parts) == 2 and top == "review-evidence":
+                return "review-evidence"
+            if top in {"proposal", "plan", "architecture", "adr", "change-record"}:
+                return "other-lifecycle"
+            return "non-lifecycle"
+
+        parts = Path(path).parts
+        if (
+            len(parts) == 2
+            and parts[0] == "specs"
+            and parts[1].endswith(".md")
+        ):
+            return "test-spec" if parts[1].endswith(".test.md") else "feature-spec"
+        if path.startswith(BOUNDARY_CHANGE_ROOT + "/reviews/") and path.endswith(
+            ".md"
+        ):
+            return "review-evidence"
+        if path in {
+            BOUNDARY_CHANGE_ROOT + "/review-log.md",
+            BOUNDARY_CHANGE_ROOT + "/review-resolution.md",
+        }:
+            return "review-evidence"
+        if (
+            (
+                (
+                    len(parts) == 3
+                    and parts[:2]
+                    in {
+                        ("docs", "proposals"),
+                        ("docs", "plans"),
+                        ("docs", "adr"),
+                    }
+                )
+                and path.endswith(".md")
+            )
+            or (len(parts) >= 3 and parts[:2] == ("docs", "architecture"))
+        ):
+            return "other-lifecycle"
+        if path == BOUNDARY_CHANGE_ROOT + "/change.yaml":
+            return "other-lifecycle"
+        return "non-lifecycle"
 
     snapshots: dict[str, Mapping[str, Any]] = {}
     snapshot_by_ref: dict[tuple[str, str], str] = {}
@@ -1441,6 +1499,17 @@ def evaluate_simple_change_trace(
     final_approved_test_spec: str | None = None
 
     events = _records(record["events"], "events")
+    if structural_evaluations is None:
+        raise BoundaryProofError(
+            "simple_trace: independent structural evaluations are required"
+        )
+    expected_structural_keys = {
+        f"{event.get('stage')}#{event.get('attempt')}" for event in events
+    }
+    if set(structural_evaluations) != expected_structural_keys:
+        raise BoundaryProofError(
+            "simple_trace: structural evaluation key set mismatch"
+        )
     for index, raw_event in enumerate(events):
         label = f"events[{index}]"
         event = _object(raw_event, label)
@@ -1477,6 +1546,42 @@ def evaluate_simple_change_trace(
         reviewed = event["reviewed_snapshot_id"]
         is_review = stage.endswith("-review")
         output_id = outputs[0]
+        structural_key = f"{stage}#{attempt}"
+        structural_evaluation = _object(
+            structural_evaluations[structural_key],
+            f"structural_evaluations.{structural_key}",
+        )
+        _exact_fields(
+            structural_evaluation,
+            frozenset({"structural_result", "diagnostic_id"}),
+            f"structural_evaluations.{structural_key}",
+        )
+        evaluated_result = structural_evaluation["structural_result"]
+        if evaluated_result not in ("pass", "fail"):
+            raise BoundaryProofError(
+                f"structural_evaluations.{structural_key}: unknown result"
+            )
+        evaluated_diagnostic = _nonempty_string(
+            structural_evaluation["diagnostic_id"],
+            f"structural_evaluations.{structural_key}.diagnostic_id",
+        )
+        if (
+            evaluated_diagnostic != "none"
+            and not STABLE_ID_RE.fullmatch(evaluated_diagnostic)
+        ):
+            raise BoundaryProofError(
+                f"structural_evaluations.{structural_key}: invalid diagnostic ID"
+            )
+        if (evaluated_result == "pass") != (evaluated_diagnostic == "none"):
+            raise BoundaryProofError(
+                f"structural_evaluations.{structural_key}: result/diagnostic mismatch"
+            )
+        if structural != evaluated_result:
+            raise BoundaryProofError(f"{label}: structural result mismatch")
+        if structural == "fail" and diagnostic != evaluated_diagnostic:
+            raise BoundaryProofError(f"{label}: structural diagnostic mismatch")
+        if not is_review and diagnostic != evaluated_diagnostic:
+            raise BoundaryProofError(f"{label}: authoring diagnostic mismatch")
 
         if is_review:
             expected_role = "feature-spec" if stage == "spec-review" else "test-spec"
@@ -1644,6 +1749,7 @@ def evaluate_simple_change_trace(
         if paths != sorted(paths):
             raise BoundaryProofError(f"{label}: inventory is not path sorted")
         result: dict[str, tuple[str, str]] = {}
+        identities: set[str] = set()
         for index, raw_row in enumerate(rows):
             item_label = f"{label}[{index}]"
             row = _object(raw_row, item_label)
@@ -1652,15 +1758,28 @@ def evaluate_simple_change_trace(
             kind = row["artifact_kind"]
             if kind not in artifact_kinds:
                 raise BoundaryProofError(f"{item_label}: unknown artifact kind")
+            expected_kind = classify_artifact(path)
+            if kind != expected_kind:
+                raise BoundaryProofError(
+                    f"{item_label}: artifact kind does not match closed path classifier"
+                )
             digest = identity(row["identity"], f"{item_label}.identity")
             if path in result:
                 raise BoundaryProofError(f"{item_label}: duplicate inventory path")
+            if digest in identities:
+                raise BoundaryProofError(f"{item_label}: duplicate inventory identity")
             result[path] = (kind, digest)
+            identities.add(digest)
         return result
 
     before = inventory(record["before_inventory"], "before_inventory")
     after = inventory(record["after_inventory"], "after_inventory")
-    for snapshot_id in produced:
+    behavior_outputs = {
+        snapshot_id
+        for snapshot_id, snapshot in snapshots.items()
+        if snapshot["source"] == "behavior-output"
+    }
+    for snapshot_id in behavior_outputs:
         snapshot = snapshots[snapshot_id]
         path = snapshot["path"]
         expected_inventory = (
