@@ -47,6 +47,7 @@ from boundary_proof_behavior import (
     _preflight_failure,
     _runtime_environment,
     _schema_bundle_projection,
+    _test_spec_request,
     _thread_start_request,
     _turn_start_request,
     _validate_review_payload,
@@ -1606,6 +1607,13 @@ class BoundaryProofModelTests(unittest.TestCase):
 
 
 class BoundaryProofEnvironmentTests(unittest.TestCase):
+    def test_test_spec_stage_assigns_preserve_to_canonical_proof(self) -> None:
+        request = _test_spec_request("normalize text", "spec", "review")
+        self.assertIn(
+            "T3 covers preserve plus canonical/outcome/evidence",
+            request["prompt"],
+        )
+
     def test_feature_contract_does_not_require_an_empty_unknown_mode_class(
         self,
     ) -> None:
