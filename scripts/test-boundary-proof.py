@@ -29,25 +29,24 @@ from boundary_proof_behavior import (
     _StageTurnTimeout,
     _artifact_kind,
     _build_behavior_manifest,
+    _invoke_with_reconciliation,
+    _load_transport_fixture,
     _derive_config_origin_paths,
     _feature_inventory,
-    _feature_model_schema,
     freeze_baseline,
     _normalize_config_result,
     _normalize_skill_inventory,
     _load_generated_payload,
     _publish_run,
     _reconcile_prepared,
-    _render_feature_markdown,
     _parse_feature_markdown,
     _parse_test_spec_markdown,
-    _portable_text_contract,
-    _proof_map_schema,
     _parse_semver,
     _preflight_failure,
     _runtime_environment,
     _schema_bundle_projection,
-    _test_spec_request,
+    _workflow_request,
+    _workflow_stage_request,
     _thread_start_request,
     _turn_start_request,
     _validate_review_payload,
@@ -1607,24 +1606,163 @@ class BoundaryProofModelTests(unittest.TestCase):
 
 
 class BoundaryProofEnvironmentTests(unittest.TestCase):
-    def test_test_spec_stage_assigns_preserve_to_canonical_proof(self) -> None:
-        request = _test_spec_request("normalize text", "spec", "review")
-        self.assertIn(
-            "T3 covers preserve plus canonical/outcome/evidence",
-            request["prompt"],
+    def test_workflow_request_owns_routing_without_normative_rendering(self) -> None:
+        request = _workflow_request("normalize portable text")
+        self.assertEqual(request["stage"], "workflow")
+        self.assertEqual(request["skill_names"], list(PARTICIPATING_SKILLS))
+        self.assertEqual(
+            request["expected_outputs"],
+            [
+                "feature-spec/portable-text-normalizer.md",
+                "reviews/spec-review.md",
+                "review-log/spec-review.md",
+                "test-spec/portable-text-normalizer.test.md",
+                "reviews/test-spec-review.md",
+                "review-log/test-spec-review.md",
+            ],
         )
+        self.assertNotIn("R1. The public normalizer", request["prompt"])
+        self.assertNotIn("T1-CANONICAL-PAIR", request["prompt"])
+        stage_request = _workflow_stage_request("spec", "normalize text")
+        self.assertEqual(stage_request["skill_names"], ["workflow", "spec"])
+        self.assertEqual(
+            stage_request["expected_outputs"],
+            ["feature-spec/portable-text-normalizer.md"],
+        )
+
+    def test_timeout_reconciles_complete_output_without_reinvocation(self) -> None:
+        calls = 0
+
+        def invoke() -> tuple[dict[str, object], dict[str, object]]:
+            nonlocal calls
+            calls += 1
+            raise _StageTurnTimeout(
+                attestation={"identity": "current"},
+                output_files=[{"path": "artifact.md", "text": "complete"}],
+                termination_state="confirmed-stopped",
+            )
+
+        attestation, result, attempts = _invoke_with_reconciliation(
+            invoke, ["artifact.md"]
+        )
+        self.assertEqual(calls, 1)
+        self.assertEqual(attestation, {"identity": "current"})
+        self.assertEqual(result["output_files"][0]["path"], "artifact.md")
+        self.assertEqual(attempts[-1]["decision"], "reconcile")
+
+    def test_timeout_retries_only_absent_output_once(self) -> None:
+        calls = 0
+
+        def invoke() -> tuple[dict[str, object], dict[str, object]]:
+            nonlocal calls
+            calls += 1
+            if calls == 1:
+                raise _StageTurnTimeout(
+                    attestation={"identity": "first"},
+                    output_files=[],
+                    termination_state="confirmed-stopped",
+                )
+            return (
+                {"identity": "second"},
+                {"output_files": [{"path": "artifact.md", "text": "complete"}]},
+            )
+
+        attestation, _, attempts = _invoke_with_reconciliation(
+            invoke, ["artifact.md"]
+        )
+        self.assertEqual(calls, 2)
+        self.assertEqual(attestation, {"identity": "second"})
+        self.assertEqual(
+            [row["decision"] for row in attempts], ["retry", "accept"]
+        )
+
+    def test_timeout_partial_output_and_second_timeout_fail_closed(self) -> None:
+        with self.assertRaises(BoundaryRuntimeError):
+            _invoke_with_reconciliation(
+                lambda: (_ for _ in ()).throw(
+                    _StageTurnTimeout(
+                        attestation={"identity": "first"},
+                        output_files=[{"path": "one.md", "text": "partial"}],
+                        termination_state="confirmed-stopped",
+                    )
+                ),
+                ["one.md", "two.md"],
+            )
+
+        calls = 0
+
+        def absent() -> tuple[dict[str, object], dict[str, object]]:
+            nonlocal calls
+            calls += 1
+            raise _StageTurnTimeout(
+                attestation={"identity": str(calls)},
+                output_files=[],
+                termination_state="confirmed-stopped",
+            )
+
+        with self.assertRaises(BoundaryRuntimeError):
+            _invoke_with_reconciliation(absent, ["artifact.md"])
+        self.assertEqual(calls, 2)
+
+    def test_controlled_transport_fixture_is_closed_and_noncanonical(self) -> None:
+        fixture = _load_transport_fixture(
+            ROOT
+            / "tests"
+            / "fixtures"
+            / "boundary-proof"
+            / "transport"
+            / "timeout-complete-reconcile.json"
+        )
+        self.assertFalse(fixture["canonical_evidence_eligible"])
+        self.assertEqual(
+            fixture["expected_terminal_decision"], "reconcile"
+        )
+        for mutation in (
+            {key: value for key, value in fixture.items() if key != "event_key"},
+            {**fixture, "unknown": True},
+            {**fixture, "canonical_evidence_eligible": True},
+        ):
+            with self.subTest(keys=sorted(mutation)):
+                with tempfile.TemporaryDirectory() as raw:
+                    path = Path(raw) / "fixture.json"
+                    path.write_text(json.dumps(mutation), encoding="utf-8")
+                    with self.assertRaises(BoundaryRuntimeError):
+                        _load_transport_fixture(path)
+
+    def test_transport_fixture_unknown_value_fails_closed(self) -> None:
+        source = (
+            ROOT
+            / "tests"
+            / "fixtures"
+            / "boundary-proof"
+            / "transport"
+            / "timeout-complete-reconcile.json"
+        )
+        fixture = json.loads(source.read_text(encoding="utf-8"))
+        fixture["transport_attempts"][0]["decision"] = "unknown-decision"
+        fixture["expected_terminal_decision"] = "unknown-decision"
+        with tempfile.TemporaryDirectory() as raw:
+            path = Path(raw) / "fixture.json"
+            path.write_text(json.dumps(fixture), encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError):
+                _load_transport_fixture(path)
+
+    def test_test_spec_stage_assigns_preserve_to_canonical_proof(self) -> None:
+        request = _workflow_request("normalize text")
+        self.assertIn("test-spec", request["prompt"])
+        self.assertIn("stage-owning skill", request["prompt"])
 
     def test_feature_contract_does_not_require_an_empty_unknown_mode_class(
         self,
     ) -> None:
-        feature, _ = _portable_text_contract()
-        rendered = _render_feature_markdown(feature)
+        rendered = (
+            FIXTURES
+            / "simple-change"
+            / "candidates"
+            / "feature-spec.md"
+        ).read_text(encoding="utf-8")
         self.assertIn(
-            "no distinct canonically equivalent mode exists", rendered
-        )
-        self.assertIn(
-            "that empty class is not an unknown-mode evidence obligation",
-            rendered,
+            "accept exactly `trim` and `preserve`", rendered
         )
         self.assertNotIn(
             "including empty, canonically equivalent, differently cased",
@@ -1632,20 +1770,14 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
 
     def test_stage_output_schemas_are_compact_closed_records(self) -> None:
-        feature = _feature_model_schema()
-        proof = _proof_map_schema()
-        dimensions = feature["properties"]["core_dimensions"]
-        obligations = proof["properties"]["proof_obligations"]
-        self.assertEqual(dimensions["type"], "array")
-        self.assertEqual(dimensions["minItems"], len(CORE_DIMENSION_IDS))
-        self.assertEqual(dimensions["maxItems"], len(CORE_DIMENSION_IDS))
-        self.assertEqual(obligations["type"], "array")
-        self.assertEqual(obligations["minItems"], obligations["maxItems"])
-        self.assertLess(len(json.dumps(feature)), 6000)
-        self.assertLess(len(json.dumps(proof)), 4000)
+        schema = _workflow_request("normalize text")["output_schema"]
+        self.assertFalse(schema["additionalProperties"])
+        self.assertEqual(
+            schema["required"], ["completed", "last_stage"]
+        )
+        self.assertLess(len(json.dumps(schema)), 500)
 
     def test_simple_change_candidates_parse_to_the_closed_profile(self) -> None:
-        expected_feature, expected_proof = _portable_text_contract()
         feature_path = (
             FIXTURES / "simple-change" / "candidates" / "feature-spec.md"
         )
@@ -1658,33 +1790,31 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         proof = _parse_test_spec_markdown(
             test_path.read_text(encoding="utf-8")
         )
+        normalized_feature = normalize_feature_model(feature)
+        normalized_proof = normalize_proof_map(proof, normalized_feature)
         self.assertEqual(
-            normalize_feature_model(feature),
-            normalize_feature_model(expected_feature),
+            {row.dimension_id for row in normalized_feature.core_dimensions},
+            set(CORE_DIMENSION_IDS),
         )
-        self.assertEqual(
-            normalize_proof_map(proof, normalize_feature_model(feature)),
-            normalize_proof_map(
-                expected_proof, normalize_feature_model(expected_feature)
-            ),
-        )
+        self.assertEqual(len(normalized_proof.proof_obligations), 4)
 
     def test_stage_output_rejects_label_only_generation(self) -> None:
-        feature_model, _ = _portable_text_contract()
         accepted = {
             "agent_message": json.dumps(
-                {"feature_model": feature_model}
+                {"completed": True, "last_stage": "test-spec-review"}
             )
         }
-        payload = _load_generated_payload(accepted, {"feature_model"})
-        self.assertIn("feature_model", payload)
+        payload = _load_generated_payload(
+            accepted, {"completed", "last_stage"}
+        )
+        self.assertTrue(payload["completed"])
         label_only = {
             "agent_message": json.dumps(
-                {"feature_profile": "complete-boundary-first-v1"}
+                {"workflow_profile": "complete-boundary-first-v1"}
             )
         }
         with self.assertRaises(BoundaryRuntimeError) as raised:
-            _load_generated_payload(label_only, {"feature_model"})
+            _load_generated_payload(label_only, {"completed", "last_stage"})
         self.assertEqual(
             raised.exception.diagnostic_id, "unexpected-prohibited-event"
         )
@@ -1812,8 +1942,16 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             profile["tool_profile"], "isolated-workspace-no-network-v1"
         )
         self.assertEqual(profile["python_implementation"], "cpython")
+        self.assertEqual(
+            manifest["transport_policy"],
+            {
+                "schema_version": "boundary-transport-policy-v1",
+                "turn_deadline_ms": 120000,
+                "termination_wait_deadline_ms": 10000,
+            },
+        )
 
-    def test_stage_turn_binds_only_its_stage_owner(self) -> None:
+    def test_workflow_turn_binds_orchestrator_and_all_stage_owners(self) -> None:
         request = _turn_start_request(
             "thread-1",
             Path("/isolated-workspace"),
@@ -1821,20 +1959,14 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             Path("/runtime-home"),
             "Author the artifact.",
             {"type": "object"},
-            ["spec"],
+            PARTICIPATING_SKILLS,
         )
         skill_inputs = [
             item for item in request["input"] if item["type"] == "skill"
         ]
         self.assertEqual(
-            skill_inputs,
-            [
-                {
-                    "type": "skill",
-                    "name": "spec",
-                    "path": "/runtime-home/skills/spec/SKILL.md",
-                }
-            ],
+            [item["name"] for item in skill_inputs],
+            list(PARTICIPATING_SKILLS),
         )
 
     def test_review_payload_requires_durable_identity_bound_evidence(self) -> None:

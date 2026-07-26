@@ -1,0 +1,51 @@
+{
+  "fixture_id": "transport-timeout-complete-reconcile-v1",
+  "event_key": "spec#1",
+  "transport_attempts": [
+    {
+      "transport_attempt_id": "spec#1/transport/1",
+      "event_key": "spec#1",
+      "transport_attempt": 1,
+      "runtime_thread_id": "thread-fixture-1",
+      "runtime_process_id": "process-00000000000000000000000000000001",
+      "transport_policy_identity": "sha256:0000000000000000000000000000000000000000000000000000000000000001",
+      "termination_state": "confirmed-stopped",
+      "termination_receipt": {
+        "method": "terminate-wait-v1",
+        "runtime_process_id": "process-00000000000000000000000000000001",
+        "transport_policy_identity": "sha256:0000000000000000000000000000000000000000000000000000000000000001",
+        "wait_deadline_ms": 5000,
+        "wait_elapsed_ms": 5000,
+        "termination_observed": true,
+        "reaped": true
+      },
+      "output_state": "complete",
+      "primary_diagnostic_id": "stage-turn-timeout",
+      "diagnostic_ids": [
+        "stage-turn-timeout"
+      ],
+      "decision": "reconcile",
+      "evidence_refs": [
+        {
+          "path": "feature-spec/portable-text-normalizer.md",
+          "identity": "sha256:0000000000000000000000000000000000000000000000000000000000000002"
+        }
+      ],
+      "diagnostic_evidence": {
+        "stage-turn-timeout": {
+          "kind": "deadline-observation-v1",
+          "transport_policy_identity": "sha256:0000000000000000000000000000000000000000000000000000000000000001",
+          "deadline_ms": 300000,
+          "elapsed_ms": 300000,
+          "runtime_thread_id": "thread-fixture-1"
+        }
+      }
+    }
+  ],
+  "expected_terminal_decision": "reconcile",
+  "expected_diagnostic_id": "stage-turn-timeout",
+  "expected_diagnostic_ids": [
+    "stage-turn-timeout"
+  ],
+  "canonical_evidence_eligible": false
+}
