@@ -2929,7 +2929,8 @@ complete bounded observation above.
 `workspace_integrity_observation` is null only for `uninspected`; otherwise it
 is the complete pre-materialization observation below.
 `stage_envelope_identity` and `artifact_set_variant` are non-null only for
-`complete`, and equal the sole accepted or reconciled candidate.
+`complete`, and equal the sole structurally complete candidate whether the
+transport decision later accepts, reconciles, or fails closed.
 `materialization_observation` is null unless one structurally complete
 candidate reached materialization.
 `content_validation_observation` is null unless materialization comparison
@@ -3193,8 +3194,8 @@ and permits eventual publication.
 For `complete` with terminal `accept` or `reconcile`, `evidence_refs` contains
 exactly the current materialized stage-owned output references inspected for
 that attempt.
-For `complete` rejected before materialization by
-`stage-workspace-mutated`, it is empty.
+For `complete` with `fail-closed`, it is empty because no non-accepting
+transport decision may publish materialized evidence.
 For `absent` and `uninspected`, it is empty.
 For `partial`, `extra`, or `contradictory`, it is empty because invalid
 candidates are never materialized.
