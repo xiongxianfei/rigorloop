@@ -5,6 +5,7 @@
 Closeout status: open
 
 - Review closeout: code-review-m1-r1
+- Review closeout: code-review-m1-r2 open
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
@@ -33,10 +34,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
-- Findings resolved: 31
-- Unresolved findings: 0
-- Current result: M1 corrections for BFP-M1-CR1 through BFP-M1-CR7 are validated and await independent code-review R2.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
+- Findings resolved: 29
+- Unresolved findings: 2
+- Current result: M1 R2 retained BFP-M1-CR4 and BFP-M1-CR7; M1 remains resolution-needed.
 
 ## Resolution Overview
 
@@ -59,10 +60,10 @@ Closeout status: open
 | BFP-M1-CR1 | accepted | resolved | Enforce stable unique example evidence IDs and per-reference requirement ownership. |
 | BFP-M1-CR2 | accepted | resolved | Freeze exact incident ID, omission class, and owning gate. |
 | BFP-M1-CR3 | accepted | resolved | Enforce the complete legacy/v1 marker and scope matrix. |
-| BFP-M1-CR4 | accepted | resolved | Use repository-relative path plus current raw-byte SHA-256 evidence references and closed not-run blockers. |
+| BFP-M1-CR4 | accepted | open | Enforce byte identity plus tracked-or-current-change-local evidence provenance. |
 | BFP-M1-CR5 | accepted | resolved | Canonicalize capability-report serialization. |
 | BFP-M1-CR6 | accepted | resolved | Use a closed boundary-state envelope evaluated independently of fixture labels by the shared stage-gate evaluator. |
-| BFP-M1-CR7 | accepted | resolved | Derive simple-change measurements from a structural stage trace owned by the shared evaluator. |
+| BFP-M1-CR7 | accepted | open | Implement the exact R28y trace, snapshot, review-bundle, evidence, inventory, and formula contract. |
 | BFP-SR3-1 | accepted | resolved | Incident derivation now requires exactly one field/value trigger and a trigger-free contrast. |
 | BFP-SR3-2 | accepted | resolved | Trace observations, formal-review bundles, output capture, inventory, and terminal branches are deterministic. |
 | BFP-SR3-3 | accepted | resolved | Filesystem inputs, typed dependencies, manifests, result identities, and report projection are bound losslessly. |
@@ -75,6 +76,13 @@ Closeout status: open
 | BFP-TSR3-1 | accepted | resolved | Expand T48-T50 so every closed manifest, instruction, contract, profile, baseline, and input-set field has explicit positive and negative proof. |
 
 ## Finding Details
+
+### code-review-m1-r2
+
+M1 R2 introduced no new finding IDs. It confirmed BFP-M1-CR1,
+BFP-M1-CR2, BFP-M1-CR3, BFP-M1-CR5, and BFP-M1-CR6 resolved, and retained
+BFP-M1-CR4 and BFP-M1-CR7 as open because evidence provenance and the exact
+R28y synthetic trace contract remain incomplete.
 
 ### proposal-review-r1
 
@@ -633,7 +641,7 @@ Validation evidence: The full marker/scope contrast matrix passes in the focused
 
 Finding ID: BFP-M1-CR4
 Disposition: accepted
-Status: resolved
+Status: open
 Owner: initiative owner
 Owning stage: owner decision before review-resolution M1
 Decision owner: initiative owner
@@ -641,8 +649,8 @@ Decision needed: none; the user authorized the best contract correction on 2026-
 Required outcome: Evidence validation rejects missing, unsafe, stale, substituted, non-regular, and wrong-kind references.
 Chosen action: Use `{path, identity}` evidence references bound to repository-relative regular files and current raw-byte SHA-256; use a closed `{code, detail}` blocker for not-run rows.
 Rationale: The approved implementation contract requires current evidence but does not define its persisted identity or blocking-reason shape.
-Validation target: code-review-m1-r2
-Validation evidence: Missing, unsafe, stale, substituted, wrong-shape, and invalid-blocker regressions pass.
+Validation target: code-review-m1-r3
+Validation evidence: M1 R2 confirmed byte-identity and blocker checks but reproduced acceptance of untracked non-change-local evidence.
 
 #### BFP-M1-CR5 - Report bytes depend on caller mapping order
 
@@ -678,7 +686,7 @@ Validation evidence: Eight canonical incident envelopes replay through the share
 
 Finding ID: BFP-M1-CR7
 Disposition: accepted
-Status: resolved
+Status: open
 Owner: initiative owner
 Owning stage: owner decision before review-resolution M1
 Decision owner: initiative owner
@@ -686,5 +694,5 @@ Decision needed: none; the user authorized the best contract correction on 2026-
 Required outcome: Derive applicable-only proof mapping, artifact count, false blocking, and correction cycles from the same workflow path.
 Chosen action: Use the shared structural evaluator to compute a four-stage trace with identities, diagnostics, correction events, artifact count, false blocking, and applicable-only proof mapping.
 Rationale: The approved implementation contract states the measurements but not the executable trace boundary.
-Validation target: code-review-m1-r2
-Validation evidence: Synthetic trace tests derive zero/one correction, false-blocking, artifact-count, terminal, and multi-correction outcomes.
+Validation target: code-review-m1-r3
+Validation evidence: M1 R2 reproduced incomplete event/snapshot/bundle grammar and overbroad artifact subtraction.

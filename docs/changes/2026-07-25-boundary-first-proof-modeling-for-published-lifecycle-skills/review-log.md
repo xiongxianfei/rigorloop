@@ -128,7 +128,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: BFP-M1-CR1, BFP-M1-CR2, BFP-M1-CR3, BFP-M1-CR4, BFP-M1-CR5, BFP-M1-CR6, BFP-M1-CR7
-Open findings: None
+Open findings: BFP-M1-CR4, BFP-M1-CR7
 
 ### Review entry
 Review ID: spec-review-r3
@@ -325,5 +325,16 @@ Reviewed artifact: specs/rigorloop-workflow.test.md; specs/skill-contract.test.m
 Status: approved
 Detailed record: reviews/test-spec-review-r4.md
 Resolution: review-resolution.md#test-spec-review-r4
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: M1 R2
+Reviewed artifact: M1 correction commit `fec5eb73`
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
 Material findings: None
 Open findings: None
