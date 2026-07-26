@@ -12,6 +12,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 from boundary_proof_behavior import (
@@ -25,12 +26,16 @@ from boundary_proof_behavior import (
     RUNTIME_SCHEMA_IDENTITY_BY_VERSION,
     BoundaryRuntimeError,
     _AppServer,
+    _artifact_kind,
+    _build_behavior_manifest,
     _derive_config_origin_paths,
     _feature_inventory,
     freeze_baseline,
     _normalize_config_result,
     _normalize_skill_inventory,
     _load_generated_payload,
+    _publish_run,
+    _reconcile_prepared,
     _parse_feature_markdown,
     _parse_test_spec_markdown,
     _portable_text_contract,
@@ -40,6 +45,7 @@ from boundary_proof_behavior import (
     _schema_bundle_projection,
     _thread_start_request,
     _turn_start_request,
+    _validate_review_payload,
     _validate_attestation,
     _validate_runtime_projection,
     _validated_thread_metadata,
@@ -1621,28 +1627,23 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             ),
         )
 
-    def test_generated_profile_decision_rejects_example_only(self) -> None:
+    def test_stage_output_rejects_label_only_generation(self) -> None:
         accepted = {
             "agent_message": json.dumps(
-                {
-                    "feature_profile": "complete-boundary-first-v1",
-                    "proof_profile": "applicable-only-proof-v1",
-                    "spec_review_outcome": "approved",
-                    "test_spec_review_outcome": "approved",
-                }
+                {"artifact_markdown": "# Complete stage-owned artifact\n"}
             )
         }
-        payload = _load_generated_payload(accepted)
-        self.assertIn("feature_model", payload)
-        self.assertIn("proof_map", payload)
-        rejected = copy.deepcopy(accepted)
-        value = json.loads(rejected["agent_message"])
-        value["feature_profile"] = "example-only"
-        rejected["agent_message"] = json.dumps(value)
+        payload = _load_generated_payload(accepted, {"artifact_markdown"})
+        self.assertIn("artifact_markdown", payload)
+        label_only = {
+            "agent_message": json.dumps(
+                {"feature_profile": "complete-boundary-first-v1"}
+            )
+        }
         with self.assertRaises(BoundaryRuntimeError) as raised:
-            _load_generated_payload(rejected)
+            _load_generated_payload(label_only, {"artifact_markdown"})
         self.assertEqual(
-            raised.exception.diagnostic_id, "runtime-identity-unstable"
+            raised.exception.diagnostic_id, "unexpected-prohibited-event"
         )
 
     def test_controlled_fixture_detects_stale_candidate_bytes(self) -> None:
@@ -1677,9 +1678,19 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
         if not current.exists():
             self.skipTest("canonical M2 run is not generated yet")
-        with mock.patch(
-            "boundary_proof_behavior._collect_runtime_attestation",
-            side_effect=AssertionError("validation reinvoked the runtime"),
+        metrics = SimpleNamespace(
+            false_blocking_count=0,
+            new_universal_artifact_count=0,
+            structure_only_correction_cycles=0,
+        )
+        with (
+            mock.patch(
+                "boundary_proof_behavior._collect_runtime_attestation",
+                side_effect=AssertionError("validation reinvoked the runtime"),
+            ),
+            mock.patch(
+                "boundary_proof_behavior._validate_run", return_value=metrics
+            ),
         ):
             self.assertEqual(
                 validate_behavior(change_id)["result"],
@@ -1712,6 +1723,248 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             },
         )
         self.assertNotIn("must-not-cross", environment.values())
+        proxy_names = {
+            "ALL_PROXY",
+            "HTTPS_PROXY",
+            "HTTP_PROXY",
+            "NO_PROXY",
+            "all_proxy",
+            "https_proxy",
+            "http_proxy",
+            "no_proxy",
+        }
+        for proxy_name in proxy_names:
+            with self.subTest(proxy_name=proxy_name):
+                isolated = _runtime_environment(
+                    Path("/runtime-home"),
+                    "/usr/bin:/bin",
+                    "transient-canary",
+                    parent_environment={
+                        proxy_name: "http://proxy.invalid",
+                        "OPENAI_API_KEY": "must-not-cross",
+                    },
+                )
+                self.assertEqual(
+                    set(isolated),
+                    {
+                        "BOUNDARY_PROOF_CANARY",
+                        "CODEX_HOME",
+                        "HOME",
+                        "PATH",
+                        proxy_name,
+                    },
+                )
+
+    def test_invocation_profile_uses_approved_exact_literals(self) -> None:
+        manifest = _build_behavior_manifest(ROOT, self._attestation())
+        profile = manifest["invocation_profile"]
+        self.assertEqual(
+            profile["orchestration_mode"], "workflow-auto-isolated-v1"
+        )
+        self.assertEqual(
+            profile["instruction_profile"],
+            "repository-instructions-plus-runtime-default-v1",
+        )
+        self.assertEqual(
+            profile["tool_profile"], "isolated-workspace-no-network-v1"
+        )
+        self.assertEqual(profile["python_implementation"], "cpython")
+
+    def test_stage_turn_binds_only_its_stage_owner(self) -> None:
+        request = _turn_start_request(
+            "thread-1",
+            Path("/isolated-workspace"),
+            "gpt-5.6-sol",
+            Path("/runtime-home"),
+            "Author the artifact.",
+            {"type": "object"},
+            ["spec"],
+        )
+        skill_inputs = [
+            item for item in request["input"] if item["type"] == "skill"
+        ]
+        self.assertEqual(
+            skill_inputs,
+            [
+                {
+                    "type": "skill",
+                    "name": "spec",
+                    "path": "/runtime-home/skills/spec/SKILL.md",
+                }
+            ],
+        )
+
+    def test_review_payload_requires_durable_identity_bound_evidence(self) -> None:
+        identity = "sha256:" + "a" * 64
+        payload = {
+            "review_id": "spec-review-r1",
+            "outcome": "approved",
+            "review_record_markdown": (
+                "# Review\n\nReview ID: spec-review-r1\nStage: spec-review\n"
+                "Status: approved\n"
+                f"Reviewed artifact identity: {identity}\n"
+                "Material findings: none\nRecording status: recorded\n"
+                "## Evidence\nAll closed boundary rows were reviewed.\n"
+                "## Review result\nApproved.\n"
+            ),
+            "review_log_markdown": (
+                "Review ID: spec-review-r1\nStage: spec-review\n"
+                "Status: approved\n"
+                f"Reviewed artifact identity: {identity}\n"
+                "Material findings: none\n"
+            ),
+        }
+        _validate_review_payload(
+            payload, stage="spec-review", artifact_identity=identity
+        )
+        malformed = copy.deepcopy(payload)
+        malformed["review_record_markdown"] = "Status: approved"
+        with self.assertRaises(BoundaryRuntimeError):
+            _validate_review_payload(
+                malformed, stage="spec-review", artifact_identity=identity
+            )
+
+    def test_closed_artifact_classifier_covers_repository_boundaries(self) -> None:
+        change_id = "2026-07-25-example"
+        cases = {
+            "specs/example.md": "feature-spec",
+            "specs/example.test.md": "test-spec",
+            f"docs/changes/{change_id}/reviews/spec-review-r1.md": "review-evidence",
+            f"docs/changes/{change_id}/review-log.md": "review-evidence",
+            "docs/proposals/example.md": "other-lifecycle",
+            "docs/architecture/system/architecture.md": "other-lifecycle",
+            f"docs/changes/{change_id}/change.yaml": "other-lifecycle",
+            f"docs/changes/{change_id}/evidence/manifest.json": "non-lifecycle",
+        }
+        for path, expected in cases.items():
+            with self.subTest(path=path):
+                self.assertEqual(_artifact_kind(path, change_id), expected)
+
+    def test_prepared_publication_reconciles_without_reinvocation(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            simple = (
+                root
+                / "docs"
+                / "changes"
+                / change_id
+                / "evidence"
+                / "simple-change"
+            )
+            temporary = simple / ".candidate"
+            temporary.mkdir(parents=True)
+            manifest = {
+                "run_id": "run-" + "a" * 32,
+                "input_set_identity": "sha256:" + "b" * 64,
+                "snapshots": [],
+            }
+            (temporary / "manifest.json").write_text(
+                json.dumps(
+                    manifest,
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                    sort_keys=True,
+                ),
+                encoding="utf-8",
+            )
+            with mock.patch(
+                "boundary_proof_behavior._validate_run",
+                return_value=SimpleNamespace(),
+            ) as validate:
+                with self.assertRaises(BoundaryRuntimeError):
+                    _publish_run(
+                        root,
+                        change_id,
+                        temporary,
+                        manifest,
+                        crash_at="after-receipt-fsync",
+                    )
+                self.assertTrue((simple / "prepared.json").is_file())
+                self.assertFalse((simple / "current.json").exists())
+                competing = simple / ".competing"
+                competing.mkdir()
+                competing_manifest = {
+                    "run_id": "run-" + "c" * 32,
+                    "input_set_identity": "sha256:" + "d" * 64,
+                    "snapshots": [],
+                }
+                (competing / "manifest.json").write_text(
+                    json.dumps(
+                        competing_manifest,
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                        sort_keys=True,
+                    ),
+                    encoding="utf-8",
+                )
+                with self.assertRaises(BoundaryRuntimeError):
+                    _publish_run(
+                        root,
+                        change_id,
+                        competing,
+                        competing_manifest,
+                    )
+                _reconcile_prepared(root, change_id)
+                self.assertTrue((simple / "current.json").is_file())
+                self.assertFalse((simple / "prepared.json").exists())
+                self.assertEqual(validate.call_count, 1)
+
+    def test_every_post_prepare_crash_boundary_is_recoverable(self) -> None:
+        boundaries = (
+            "after-receipt-fsync",
+            "after-run-install",
+            "after-run-validation",
+            "after-pointer-replace",
+            "after-parent-fsync",
+            "after-receipt-cleanup",
+        )
+        for index, boundary in enumerate(boundaries):
+            with self.subTest(boundary=boundary), tempfile.TemporaryDirectory() as raw:
+                root = Path(raw)
+                change_id = "2026-07-25-example"
+                simple = (
+                    root
+                    / "docs"
+                    / "changes"
+                    / change_id
+                    / "evidence"
+                    / "simple-change"
+                )
+                temporary = simple / ".candidate"
+                temporary.mkdir(parents=True)
+                manifest = {
+                    "run_id": "run-" + format(index + 1, "032x"),
+                    "input_set_identity": "sha256:" + "e" * 64,
+                    "snapshots": [],
+                }
+                (temporary / "manifest.json").write_text(
+                    json.dumps(
+                        manifest,
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                        sort_keys=True,
+                    ),
+                    encoding="utf-8",
+                )
+                with mock.patch(
+                    "boundary_proof_behavior._validate_run",
+                    return_value=SimpleNamespace(),
+                ):
+                    with self.assertRaises(BoundaryRuntimeError):
+                        _publish_run(
+                            root,
+                            change_id,
+                            temporary,
+                            manifest,
+                            crash_at=boundary,
+                        )
+                    _reconcile_prepared(root, change_id)
+                    pointer = json.loads(
+                        (simple / "current.json").read_text(encoding="utf-8")
+                    )
+                    self.assertEqual(pointer["run_id"], manifest["run_id"])
+                    self.assertFalse((simple / "prepared.json").exists())
 
     def test_codex_0_145_thread_metadata_binds_the_exact_reported_shape(
         self,
