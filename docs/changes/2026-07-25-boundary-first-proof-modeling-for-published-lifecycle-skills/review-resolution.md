@@ -1886,7 +1886,7 @@ confirmation.
 
 Finding ID: BFP-SR-R29-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y transport protocol
@@ -1895,13 +1895,17 @@ Required outcome: Deterministically preserve and route compound transport diagno
 Chosen action: Add a closed ordered diagnostic set, primary routing diagnostic, precedence, tuple validation, prospective event identity, and compound T52 cases.
 Rationale: One observed failure may cross multiple independent boundary dimensions.
 Validation target: spec-review-r30
-Validation evidence: pending
+Validation evidence: R28y now separates `primary_diagnostic_id` from the
+complete ordered `diagnostic_ids`, defines closed precedence and bounded
+diagnostic evidence, preserves independent output state, permits prospective
+event correlation without event creation, and T52 covers compound and
+suppressed/reordered contrast cases; pending independent spec-review-r30.
 
 #### BFP-SR-R29-2 - Add global publication discovery and durable staged identity
 
 Finding ID: BFP-SR-R29-2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y publication transaction
@@ -1910,13 +1914,18 @@ Required outcome: Prevent candidate-local generation from bypassing unrelated in
 Chosen action: Add global pre-generation discovery, exclusive receipt-owned candidate selection, cross-run blocking, historical staged snapshot validation, and pre-install input validation.
 Rationale: A single-writer protocol must discover global state before nondeterministic work begins.
 Validation target: spec-review-r30
-Validation evidence: pending
+Validation evidence: R28y now acquires one global publisher lock and discovers
+all transient state before run allocation or stage invocation, derives the
+only candidate from active recovery/receipt/lease, blocks unrelated state,
+uses a historical staged snapshot across rename, and revalidates current inputs
+before installation; T51 covers cross-run and pre-generation discovery;
+pending independent spec-review-r30.
 
 #### BFP-SR-R29-3 - Bind and close orphan publisher recovery
 
 Finding ID: BFP-SR-R29-3
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y recovery transaction
@@ -1925,7 +1934,12 @@ Required outcome: Prove orphan publisher non-liveness and recover interruption w
 Chosen action: Bind staging to a publisher-instance lease, require lease-specific non-live proof, and define a write-ahead idempotent recovery state machine.
 Rationale: Transport child-process receipts cannot establish publisher ownership or post-restart liveness.
 Validation target: spec-review-r30
-Validation evidence: pending
+Validation evidence: R28y now binds every generation to a durable
+publisher-instance lease, uses successful exclusive lock acquisition as the
+publisher-specific non-live proof without claiming reaping, and defines
+idempotent authorized/orphan-parent-synced/completed recovery rows for working,
+staging, and lease-only interruption; T51 covers every recovery crash point;
+pending independent spec-review-r30.
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 

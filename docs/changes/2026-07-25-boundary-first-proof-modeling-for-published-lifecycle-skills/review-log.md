@@ -865,4 +865,4 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r29.md
 Resolution: review-resolution.md#spec-review-r29
 Material findings: BFP-SR-R29-1, BFP-SR-R29-2, BFP-SR-R29-3
-Open findings: BFP-SR-R29-1, BFP-SR-R29-2, BFP-SR-R29-3
+Open findings: None
