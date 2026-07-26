@@ -91,7 +91,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r17.md
 - Review status: changes-requested; stage=architecture-review; round=r17
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture
+- Next stage: architecture-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=6; open-findings=BFP-AR16-1,BFP-AR16-2,BFP-AR17-1,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -620,6 +620,13 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Architecture-review R17 confirmed the Runtime View, component
+  trace, evidence compatibility, and ADR lifecycle, but found one stale
+  writable-root statement in the Building Block View. The R18 candidate
+  replaces it with the approved parent-owned output-root contract: child
+  access is read-only with no writable root, and parent materialization is
+  permitted only after the unchanged-workspace gate.
 
 - 2026-07-26: Spec-review R45 approved the read-only transport contract and
   closed all R41-R44 spec findings. The R17 architecture candidate rewrites
