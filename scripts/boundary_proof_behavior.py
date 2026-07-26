@@ -19,7 +19,7 @@ import sys
 import tempfile
 import time
 import tomllib
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Final
@@ -260,9 +260,15 @@ MANIFEST_FIELDS: Final[frozenset[str]] = frozenset(
         "instruction_refs",
         "contract_refs",
         "invocation_profile",
+        "transport_policy",
         "runtime_attestation",
     }
 )
+TRANSPORT_POLICY: Final[dict[str, object]] = {
+    "schema_version": "boundary-transport-policy-v1",
+    "turn_deadline_ms": 120000,
+    "termination_wait_deadline_ms": 10000,
+}
 INVOCATION_PROFILE_FIELDS: Final[frozenset[str]] = frozenset(
     {
         "agent_runtime",
@@ -297,6 +303,24 @@ class BoundaryRuntimeError(RuntimeError):
 
 class _StageTurnTimeout(RuntimeError):
     """An ephemeral stage turn ended before an accepted result existed."""
+
+    def __init__(
+        self,
+        *,
+        attestation: Mapping[str, object] | None = None,
+        output_files: Sequence[Mapping[str, object]] = (),
+        termination_state: str = "confirmed-stopped",
+        runtime_thread_id: str | None = None,
+        runtime_process_id: str | None = None,
+        elapsed_ms: int | None = None,
+    ) -> None:
+        self.attestation = None if attestation is None else dict(attestation)
+        self.output_files = [dict(row) for row in output_files]
+        self.termination_state = termination_state
+        self.runtime_thread_id = runtime_thread_id
+        self.runtime_process_id = runtime_process_id
+        self.elapsed_ms = elapsed_ms
+        super().__init__("stage turn timed out")
 
 
 @dataclass(frozen=True)
@@ -809,6 +833,7 @@ def _build_behavior_manifest(
             for path in CONTRACT_PATHS
         ],
         "invocation_profile": profile,
+        "transport_policy": dict(TRANSPORT_POLICY),
         "runtime_attestation": dict(attestation),
     }
 
@@ -858,6 +883,8 @@ def _validate_behavior_manifest(
         _regular_reference(repo_root, repo_root / path) for path in CONTRACT_PATHS
     ]
     if manifest["contract_refs"] != expected_contracts:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    if manifest.get("transport_policy") != TRANSPORT_POLICY:
         raise BoundaryRuntimeError("runtime-identity-unstable")
     governed_paths = [
         repo_root / str(row["path"])
@@ -1176,373 +1203,560 @@ def _exact_string_array_schema(values: Sequence[str]) -> dict[str, object]:
     )
 
 
-def _feature_model_schema() -> dict[str, object]:
-    expected, _ = _portable_text_contract()
-    requirement_ids = sorted(
-        {
-            requirement_id
-            for row in expected["core_dimensions"]
-            for requirement_id in row["governing_requirement_ids"]
-        }
-    )
-    boundary_ids = sorted(
-        {
-            boundary_id
-            for row in (*expected["core_dimensions"], *expected["examples"])
-            for boundary_id in row["boundary_ids"]
-        }
-    )
-    dimension_row = _closed_object_schema(
-        {
-            "dimension_id": {
-                "type": "string",
-                "enum": list(CORE_DIMENSION_IDS),
-            },
-            "applicability": {
-                "type": "string",
-                "enum": ["applicable", "not-applicable"],
-            },
-            "governing_requirement_ids": {
-                "type": "array",
-                "items": {"type": "string", "enum": requirement_ids},
-            },
-            "boundary_ids": {
-                "type": "array",
-                "items": {"type": "string", "enum": boundary_ids},
-            },
-            "non_applicability_rationale": {
-                "anyOf": [{"type": "string"}, {"type": "null"}],
-            },
-        }
-    )
-    example_row = _closed_object_schema(
-        {
-            "example_id": {
-                "type": "string",
-                "enum": [
-                    row["example_id"] for row in expected["examples"]
-                ],
-            },
-            "role": {
-                "type": "string",
-                "enum": ["illustration", "regression"],
-            },
-            "governing_requirement_ids": {
-                "type": "array",
-                "items": {"type": "string", "enum": requirement_ids},
-            },
-            "boundary_ids": {
-                "type": "array",
-                "items": {"type": "string", "enum": boundary_ids},
-            },
-            "regression_id": {
-                "anyOf": [{"type": "string"}, {"type": "null"}],
-            },
-            "discovery_gap": {"type": "null"},
-            "non_normative_purpose": {"type": "null"},
-        }
-    )
-    interaction_row = _closed_object_schema(
-        {
-            "interaction_id": {"type": "string"},
-            "boundary_ids": _string_array_schema(),
-            "rationale": {"type": "string"},
-            "governing_requirement_ids": _string_array_schema(),
-        }
-    )
-    return _closed_object_schema(
-        {
-            "boundary_model_version": {"type": "string", "const": "v1"},
-            "boundary_model_scope": {"type": "string", "const": "R1-R4"},
-            "core_dimensions": {
-                "type": "array",
-                "items": dimension_row,
-                "minItems": len(CORE_DIMENSION_IDS),
-                "maxItems": len(CORE_DIMENSION_IDS),
-            },
-            "extensions": {
-                "type": "array",
-                "items": _closed_object_schema({}),
-                "maxItems": 0,
-            },
-            "examples": {
-                "type": "array",
-                "items": example_row,
-                "minItems": len(expected["examples"]),
-                "maxItems": len(expected["examples"]),
-            },
-            "interactions": {
-                "type": "array",
-                "items": interaction_row,
-                "maxItems": 0,
-            },
-        }
-    )
 
-
-def _proof_map_schema() -> dict[str, object]:
-    _, expected = _portable_text_contract()
-    proof_rows = expected["proof_obligations"]
-    requirement_ids = sorted(
-        {
-            value
-            for row in proof_rows
-            for value in row["governing_requirement_ids"]
-        }
-    )
-    boundary_ids = sorted(
-        {
-            value
-            for row in proof_rows
-            for value in row["boundary_or_interaction_ids"]
-        }
-    )
-    test_ids = sorted(
-        {value for row in proof_rows for value in row["test_case_ids"]}
-    )
-    proof_row = _closed_object_schema(
-        {
-            "proof_obligation_id": {
-                "type": "string",
-                "enum": [
-                    row["proof_obligation_id"] for row in proof_rows
-                ],
-            },
-            "governing_requirement_ids": {
-                "type": "array",
-                "items": {"type": "string", "enum": requirement_ids},
-            },
-            "boundary_or_interaction_ids": {
-                "type": "array",
-                "items": {"type": "string", "enum": boundary_ids},
-            },
-            "test_case_ids": {
-                "type": "array",
-                "items": {"type": "string", "enum": test_ids},
-            },
-            "automation_level": {"type": "string", "const": "automated"},
-            "manual_procedure_ids": {
-                "type": "array",
-                "items": {"type": "string"},
-                "maxItems": 0,
-            },
-        }
-    )
-    return _closed_object_schema(
-        {
-            "boundary_model_version": {"type": "string", "const": "v1"},
-            "boundary_model_scope": {"type": "string", "const": "R1-R4"},
-            "proof_obligations": {
-                "type": "array",
-                "items": proof_row,
-                "minItems": len(proof_rows),
-                "maxItems": len(proof_rows),
-            },
-        }
-    )
-
-
-def _expand_stage_feature_model(record: Mapping[str, object]) -> dict[str, object]:
-    dimensions = record.get("core_dimensions")
-    examples = record.get("examples")
-    if isinstance(dimensions, list) and isinstance(examples, list):
-        return dict(record)
-    if not isinstance(dimensions, dict) or not isinstance(examples, dict):
-        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
-    def expand_row(row: Mapping[str, object]) -> dict[str, object]:
-        expanded = dict(row)
-        for field in ("governing_requirement_ids", "boundary_ids"):
-            values = expanded.get(field)
-            if not isinstance(values, dict) or set(values.values()) != {True}:
-                if values != {}:
-                    raise BoundaryRuntimeError(
-                        "unexpected-prohibited-event", "in-turn"
-                    )
-            expanded[field] = list(values)
-        return expanded
-
+def _workflow_request(request: str) -> dict[str, object]:
+    expected_outputs = [
+        "feature-spec/portable-text-normalizer.md",
+        "reviews/spec-review.md",
+        "review-log/spec-review.md",
+        "test-spec/portable-text-normalizer.test.md",
+        "reviews/test-spec-review.md",
+        "review-log/test-spec-review.md",
+    ]
     return {
-        **{key: value for key, value in record.items() if key not in {"core_dimensions", "examples"}},
-        "core_dimensions": [
-            {"dimension_id": dimension_id, **expand_row(row)}
-            for dimension_id, row in dimensions.items()
-            if isinstance(row, dict)
-        ],
-        "examples": [
-            {"example_id": example_id, **expand_row(row)}
-            for example_id, row in examples.items()
-            if isinstance(row, dict)
-        ],
-    }
-
-
-def _expand_stage_proof_map(record: Mapping[str, object]) -> dict[str, object]:
-    obligations = record.get("proof_obligations")
-    if isinstance(obligations, list):
-        return dict(record)
-    if not isinstance(obligations, dict):
-        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
-    expanded_rows = []
-    for proof_id, row in obligations.items():
-        if not isinstance(row, dict):
-            continue
-        expanded = dict(row)
-        for field in (
-            "governing_requirement_ids",
-            "boundary_or_interaction_ids",
-            "test_case_ids",
-            "manual_procedure_ids",
-        ):
-            values = expanded.get(field)
-            if not isinstance(values, dict) or (
-                values and set(values.values()) != {True}
-            ):
-                raise BoundaryRuntimeError(
-                    "unexpected-prohibited-event", "in-turn"
-                )
-            expanded[field] = list(values)
-        expanded_rows.append({"proof_obligation_id": proof_id, **expanded})
-    return {
-        **{key: value for key, value in record.items() if key != "proof_obligations"},
-        "proof_obligations": expanded_rows,
-    }
-
-
-def _spec_request(request: str) -> dict[str, object]:
-    return {
-        "skill_names": ["spec"],
-        "stage": "spec",
+        "skill_names": list(PARTICIPATING_SKILLS),
+        "stage": "workflow",
+        "expected_outputs": expected_outputs,
         "prompt": (
-            "Use the installed spec skill to author the complete feature spec "
-            "for the request below. Do not use tools or repository files. The "
-            "typed record itself is the stage-owned semantic artifact. It must include "
-            "Status, R1-R4 requirements, Boundary model version/scope, all "
-            "twelve closed core-dimension rows with explicit applicability or "
-            "non-applicability, governed examples, interactions, and "
-            "acceptance criteria. Use the stable applicable mappings "
-            "`canonical-trust` -> R1,R2,R3 / `text.canonical.requirements`; "
-            "`closed-vocabulary` -> R1,R4 / `text.mode.valid`,"
-            "`text.mode.unknown`; `outcome-stop` -> R2,R3,R4 / "
-            "`text.outcome.value`,`text.outcome.error`; and "
-            "`evidence-claims` -> R1,R2,R3,R4 / `text.evidence.tests`. "
-            "The other eight core dimensions are not applicable. Use these "
-            "exact dimension/rationale pairs: `identity-freshness` -> `No "
-            "persisted identity is consumed.`; `state-transition` -> `The "
-            "function is stateless.`; `authorization-scope` -> `The function "
-            "grants no authority.`; `mutation-atomicity` -> `The function "
-            "performs no mutation.`; `interruption-recovery` -> `The contract "
-            "exposes one returned result and no partial state or recovery "
-            "obligation.`; `concurrency-idempotency` -> `The pure result has no "
-            "shared state.`; `composition-bypass` -> `Conformance is defined "
-            "only for this public normalizer contract; wrappers and alternate "
-            "entrypoints may claim conformance only by preserving it.`; and "
-            "`compatibility-migration` -> `No legacy representation exists.` "
-            "Include these exact example mappings: `text.example.trim` is an "
-            "illustration governed by R1,R2 and bounded by `text.mode.valid`,"
-            "`text.outcome.value`; `text.example.preserve` is an illustration "
-            "governed by R1,R3 and bounded by `text.mode.valid`,"
-            "`text.outcome.value`; `text.example.unknown` is a regression "
-            "governed by R1,R4, bounded by `text.mode.unknown`,"
-            "`text.outcome.error`, and uses regression ID "
-            "`text.regression.unknown-mode`. Be concise: return one "
-            "complete typed record, not commentary or a profile label.\n\n"
-            "Request:\n" + request
-        ),
-        "output_schema": _closed_object_schema(
-            {"feature_model": _feature_model_schema()}
-        ),
-    }
-
-
-def _review_request(
-    stage: str,
-    artifact_markdown: str,
-    artifact_identity: str,
-    *,
-    governing_context: str = "",
-) -> dict[str, object]:
-    if stage not in {"spec-review", "test-spec-review"}:
-        raise BoundaryRuntimeError("protocol-shape-incompatible", "pre-turn-start")
-    return {
-        "skill_names": [stage],
-        "stage": stage,
-        "prompt": (
-            f"Use the installed {stage} skill as an independent formal reviewer. "
-            "Do not use tools or repository files. Review the exact artifact "
-            f"whose raw UTF-8 identity is {artifact_identity}. Return a durable "
-            "formal review record and review-log entry, not a label-only answer. "
-            "The record must contain Review ID, Stage, Status, Reviewed artifact "
-            "identity, Material findings, Recording status, evidence, and a "
-            "review result. When approved, include the exact lines "
-            "`Status: approved`, `Reviewed artifact identity: <the identity "
-            "above>`, `Material findings: none`, and `Recording status: recorded` "
-            "in the record, and all except Recording status in the log. "
-            "Keep both records concise. Approve only if the artifact exhaustively models "
-            "the applicable boundaries and explicit non-applicability.\n\n"
-            "Artifact:\n"
-            + artifact_markdown
-            + (
-                "\n\nGoverning upstream evidence:\n" + governing_context
-                if governing_context
-                else ""
-            )
+            "Use the installed workflow skill to orchestrate this isolated "
+            "four-stage path: spec, spec-review, test-spec, test-spec-review. "
+            "Each stage-owning skill must write its complete artifact below "
+            "the current workspace output/ directory at the exact relative "
+            "paths listed below. Snapshot-worthy bytes must be authored by the "
+            "owning skill; do not ask the harness to render, inject, or complete "
+            "requirements, acceptance criteria, test cases, validation commands, "
+            "or review judgments. Reviews must be formal recorded reviews of the "
+            "exact preceding artifact and must approve before the workflow "
+            "advances. Do not implement the requested feature. Return only the "
+            "closed completion record after every required file is durable.\n\n"
+            "Output paths:\n- "
+            + "\n- ".join(expected_outputs)
+            + "\n\nRequest:\n"
+            + request
         ),
         "output_schema": _closed_object_schema(
             {
-                "review_id": {
+                "completed": {"type": "boolean", "const": True},
+                "last_stage": {
                     "type": "string",
-                    "pattern": rf"^{stage}-r[1-9][0-9]*$",
-                },
-                "outcome": {
-                    "type": "string",
-                    "enum": ["approved", "changes-requested", "blocked"],
-                },
-                "review_record_markdown": {
-                    "type": "string",
-                    "minLength": 200,
-                    "maxLength": 3500,
-                },
-                "review_log_markdown": {
-                    "type": "string",
-                    "minLength": 100,
-                    "maxLength": 900,
+                    "enum": ["test-spec-review"],
                 },
             }
         ),
     }
 
 
-def _test_spec_request(
-    request: str, feature_markdown: str, review_record: str
+def _workflow_stage_request(
+    stage: str,
+    request: str,
+    *,
+    artifact_context: str = "",
 ) -> dict[str, object]:
+    outputs_by_stage = {
+        "spec": ["feature-spec/portable-text-normalizer.md"],
+        "spec-review": [
+            "reviews/spec-review.md",
+            "review-log/spec-review.md",
+        ],
+        "test-spec": ["test-spec/portable-text-normalizer.test.md"],
+        "test-spec-review": [
+            "reviews/test-spec-review.md",
+            "review-log/test-spec-review.md",
+        ],
+    }
+    expected_outputs = outputs_by_stage.get(stage)
+    if expected_outputs is None:
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
     return {
-        "skill_names": ["test-spec"],
-        "stage": "test-spec",
+        "skill_names": ["workflow", stage],
+        "stage": stage,
+        "expected_outputs": expected_outputs,
         "prompt": (
-            "Use the installed test-spec skill to author the complete proof map "
-            "for the approved feature spec below. Do not use tools or repository "
-            "files. The typed proof record itself is the stage-owned semantic "
-            "artifact. Map every "
-            "applicable boundary to concrete tests and do not create obligations "
-            "for explicitly non-applicable dimensions. Include Boundary model "
-            "version/scope, proof obligations, and T1-T3 test cases. Use the "
-            "stable proof IDs `text.proof.canonical`, `text.proof.mode`, "
-            "`text.proof.outcome`, and `text.proof.evidence`; map them to the "
-            "exact applicable boundary IDs in the feature spec and automated "
-            "T1-T3 cases. T1 covers trim plus canonical/mode/outcome/evidence; "
-            "T2 covers every unknown mode plus canonical/mode/outcome/evidence; "
-            "T3 covers preserve plus canonical/outcome/evidence. Return the artifact, not "
-            "a profile label.\n\nRequest:\n"
+            "Use the installed workflow skill to route exactly the "
+            f"{stage} stage to its installed stage-owning skill. The owning "
+            "skill must write its complete artifact below the current workspace "
+            "output/ directory at the exact relative paths listed below. The "
+            "harness will only capture and validate those bytes; do not ask it "
+            "to render, inject, or complete normative content. Do not advance "
+            "past this stage. Use an available workspace file-write tool to "
+            "create the parent directories and files. A response without every "
+            "required file is a failed stage even if the response says complete. "
+            "Return only the closed completion record after every required file "
+            "is durable.\n\nOutput paths:\n- "
+            + "\n- ".join(expected_outputs)
+            + "\n\nRequest:\n"
             + request
-            + "\n\nApproved feature spec:\n"
-            + feature_markdown
-            + "\n\nIndependent review evidence:\n"
-            + review_record
+            + (
+                "\n\nAuthoritative stage input:\n" + artifact_context
+                if artifact_context
+                else ""
+            )
         ),
         "output_schema": _closed_object_schema(
-            {"proof_map": _proof_map_schema()}
+            {
+                "completed": {"type": "boolean", "const": True},
+                "last_stage": {"type": "string", "enum": [stage]},
+            }
         ),
     }
+
+
+def _output_state(
+    required_paths: Sequence[str], output_files: Sequence[Mapping[str, object]]
+) -> str:
+    if not required_paths or len(set(required_paths)) != len(required_paths):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    observed: list[str] = []
+    for row in output_files:
+        if set(row) != {"path", "text"}:
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        path = row.get("path")
+        text = row.get("text")
+        if (
+            not isinstance(path, str)
+            or not isinstance(text, str)
+            or not text
+            or Path(path).is_absolute()
+            or ".." in Path(path).parts
+        ):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        observed.append(path)
+    if not observed:
+        return "absent"
+    if len(set(observed)) != len(observed):
+        return "contradictory"
+    required = set(required_paths)
+    actual = set(observed)
+    if actual == required:
+        return "complete"
+    if actual < required:
+        return "partial"
+    if required < actual:
+        return "extra"
+    return "contradictory"
+
+
+def _collect_workspace_outputs(
+    workspace: Path, expected_paths: Sequence[str]
+) -> list[dict[str, str]]:
+    output_root = workspace / "output"
+    if not output_root.is_dir() or output_root.is_symlink():
+        return []
+    expected = set(expected_paths)
+    observed: list[dict[str, str]] = []
+    for path in sorted(output_root.rglob("*")):
+        if path.is_dir():
+            continue
+        if not path.is_file() or path.is_symlink():
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        relative = path.relative_to(output_root).as_posix()
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            raise BoundaryRuntimeError("protocol-shape-incompatible") from error
+        observed.append({"path": relative, "text": text})
+    if any(row["path"] not in expected for row in observed):
+        return observed
+    return observed
+
+
+def _invoke_with_reconciliation(
+    invoke: Callable[
+        [], tuple[dict[str, object], dict[str, object]]
+    ],
+    required_paths: Sequence[str],
+) -> tuple[dict[str, object], dict[str, object], list[dict[str, object]]]:
+    attempts: list[dict[str, object]] = []
+    for attempt in (1, 2):
+        try:
+            attestation, result = invoke()
+        except _StageTurnTimeout as error:
+            if error.termination_state != "confirmed-stopped":
+                raise BoundaryRuntimeError(
+                    "unexpected-prohibited-event", "in-turn"
+                ) from error
+            state = _output_state(required_paths, error.output_files)
+            if state == "complete" and error.attestation is not None:
+                attempts.append(
+                    {
+                        "transport_attempt": attempt,
+                        "output_state": state,
+                        "decision": "reconcile",
+                        "runtime_thread_id": error.runtime_thread_id,
+                        "runtime_process_id": error.runtime_process_id,
+                        "elapsed_ms": error.elapsed_ms,
+                        "timed_out": True,
+                    }
+                )
+                return (
+                    error.attestation,
+                    {"output_files": error.output_files},
+                    attempts,
+                )
+            if state == "absent" and attempt == 1:
+                attempts.append(
+                    {
+                        "transport_attempt": attempt,
+                        "output_state": state,
+                        "decision": "retry",
+                        "runtime_thread_id": error.runtime_thread_id,
+                        "runtime_process_id": error.runtime_process_id,
+                        "elapsed_ms": error.elapsed_ms,
+                        "timed_out": True,
+                    }
+                )
+                continue
+            attempts.append(
+                {
+                    "transport_attempt": attempt,
+                    "output_state": state,
+                    "decision": "fail-closed",
+                    "runtime_thread_id": error.runtime_thread_id,
+                    "runtime_process_id": error.runtime_process_id,
+                    "elapsed_ms": error.elapsed_ms,
+                    "timed_out": True,
+                }
+            )
+            raise BoundaryRuntimeError(
+                "unexpected-prohibited-event", "in-turn"
+            ) from error
+        output_files = result.get("output_files")
+        if not isinstance(output_files, list):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        state = _output_state(required_paths, output_files)
+        if state != "complete":
+            raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+        attempts.append(
+            {
+                "transport_attempt": attempt,
+                "output_state": state,
+                "decision": "accept",
+                "runtime_thread_id": result.get("thread_id"),
+                "runtime_process_id": result.get("runtime_process_id"),
+                "elapsed_ms": None,
+                "timed_out": False,
+            }
+        )
+        return attestation, result, attempts
+    raise AssertionError("closed two-attempt loop did not terminate")
+
+
+def _finalize_transport_rows(
+    attempts: Sequence[Mapping[str, object]],
+    stage_artifacts: Mapping[str, str],
+    transport_policy_identity: str,
+) -> list[dict[str, object]]:
+    required_by_stage = {
+        "spec": ["feature-spec/portable-text-normalizer.md"],
+        "spec-review": [
+            "reviews/spec-review.md",
+            "review-log/spec-review.md",
+        ],
+        "test-spec": ["test-spec/portable-text-normalizer.test.md"],
+        "test-spec-review": [
+            "reviews/test-spec-review.md",
+            "review-log/test-spec-review.md",
+        ],
+    }
+    rows: list[dict[str, object]] = []
+    for attempt in attempts:
+        event_key = attempt.get("event_key")
+        transport_attempt = attempt.get("transport_attempt")
+        thread_id = attempt.get("runtime_thread_id")
+        process_id = attempt.get("runtime_process_id")
+        output_state = attempt.get("output_state")
+        decision = attempt.get("decision")
+        if (
+            not isinstance(event_key, str)
+            or "#" not in event_key
+            or not isinstance(transport_attempt, int)
+            or transport_attempt not in {1, 2}
+            or not isinstance(thread_id, str)
+            or not isinstance(process_id, str)
+            or re.fullmatch(r"process-[0-9a-f]{32}", process_id) is None
+            or output_state
+            not in {"absent", "complete", "partial", "extra", "contradictory"}
+            or decision
+            not in {"accept", "reconcile", "retry", "pause", "fail-closed"}
+        ):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        stage = event_key.rsplit("#", 1)[0]
+        required_paths = required_by_stage.get(stage)
+        if required_paths is None:
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        evidence_refs = (
+            [
+                {
+                    "path": path,
+                    "identity": _sha256(stage_artifacts[path].encode("utf-8")),
+                }
+                for path in required_paths
+            ]
+            if output_state == "complete"
+            else []
+        )
+        timed_out = attempt.get("timed_out") is True
+        if timed_out:
+            elapsed_ms = attempt.get("elapsed_ms")
+            deadline_ms = int(TRANSPORT_POLICY["turn_deadline_ms"])
+            if not isinstance(elapsed_ms, int) or elapsed_ms < deadline_ms:
+                raise BoundaryRuntimeError("protocol-shape-incompatible")
+            diagnostics = (
+                ["stage-turn-timeout"]
+                if output_state == "complete"
+                else [
+                    {
+                        "absent": "stage-output-absent",
+                        "partial": "stage-output-partial",
+                        "extra": "stage-output-extra",
+                        "contradictory": "stage-output-contradictory",
+                    }[str(output_state)],
+                    "stage-turn-timeout",
+                ]
+            )
+            termination_receipt: dict[str, object] | None = {
+                "method": "terminate-wait-v1",
+                "runtime_process_id": process_id,
+                "transport_policy_identity": transport_policy_identity,
+                "wait_deadline_ms": int(
+                    TRANSPORT_POLICY["termination_wait_deadline_ms"]
+                ),
+                "wait_elapsed_ms": 0,
+                "termination_observed": True,
+                "reaped": True,
+            }
+            diagnostic_evidence: dict[str, object] = {
+                "stage-turn-timeout": {
+                    "kind": "deadline-observation-v1",
+                    "transport_policy_identity": transport_policy_identity,
+                    "deadline_ms": deadline_ms,
+                    "elapsed_ms": elapsed_ms,
+                    "runtime_thread_id": thread_id,
+                }
+            }
+            if output_state != "complete":
+                observed_outputs: list[dict[str, str]] = []
+                required_outputs = [
+                    {
+                        "role": f"{stage}-output-{index}",
+                        "path": path,
+                        "identity_rule": "any-current",
+                    }
+                    for index, path in enumerate(required_paths, start=1)
+                ]
+                inventory = {
+                    "root": "output/",
+                    "required_outputs": required_outputs,
+                    "observed_outputs": observed_outputs,
+                }
+                diagnostic_evidence[diagnostics[0]] = {
+                    "kind": "output-inventory-v1",
+                    **inventory,
+                    "inventory_identity": _sha256(
+                        _canonical_json_bytes(inventory)
+                    ),
+                }
+            termination_state = "confirmed-stopped"
+        else:
+            diagnostics = ["none"]
+            diagnostic_evidence = {}
+            termination_receipt = None
+            termination_state = "completed"
+        rows.append(
+            {
+                "transport_attempt_id": (
+                    f"{event_key}/transport/{transport_attempt}"
+                ),
+                "event_key": event_key,
+                "transport_attempt": transport_attempt,
+                "runtime_thread_id": thread_id,
+                "runtime_process_id": process_id,
+                "transport_policy_identity": transport_policy_identity,
+                "termination_state": termination_state,
+                "termination_receipt": termination_receipt,
+                "output_state": output_state,
+                "primary_diagnostic_id": diagnostics[0],
+                "diagnostic_ids": diagnostics,
+                "decision": decision,
+                "evidence_refs": evidence_refs,
+                "diagnostic_evidence": diagnostic_evidence,
+            }
+        )
+    return rows
+
+
+_TRANSPORT_FIXTURE_FIELDS = {
+    "fixture_id",
+    "event_key",
+    "transport_attempts",
+    "expected_terminal_decision",
+    "expected_diagnostic_id",
+    "expected_diagnostic_ids",
+    "canonical_evidence_eligible",
+}
+
+_TRANSPORT_ROW_FIELDS = {
+    "transport_attempt_id",
+    "event_key",
+    "transport_attempt",
+    "runtime_thread_id",
+    "runtime_process_id",
+    "transport_policy_identity",
+    "termination_state",
+    "termination_receipt",
+    "output_state",
+    "primary_diagnostic_id",
+    "diagnostic_ids",
+    "decision",
+    "evidence_refs",
+    "diagnostic_evidence",
+}
+
+
+def _validate_transport_rows(
+    rows: object, transport_policy_identity: str
+) -> list[dict[str, object]]:
+    if not isinstance(rows, list) or not rows:
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    grouped: dict[str, list[dict[str, object]]] = {}
+    seen_ids: set[str] = set()
+    for value in rows:
+        if not isinstance(value, dict) or set(value) != _TRANSPORT_ROW_FIELDS:
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        row = dict(value)
+        event_key = row.get("event_key")
+        attempt = row.get("transport_attempt")
+        attempt_id = row.get("transport_attempt_id")
+        thread_id = row.get("runtime_thread_id")
+        process_id = row.get("runtime_process_id")
+        diagnostics = row.get("diagnostic_ids")
+        decision = row.get("decision")
+        if (
+            not isinstance(event_key, str)
+            or re.fullmatch(
+                r"(?:spec|spec-review|test-spec|test-spec-review)#[1-9][0-9]*",
+                event_key,
+            )
+            is None
+            or attempt not in {1, 2}
+            or attempt_id != f"{event_key}/transport/{attempt}"
+            or not isinstance(attempt_id, str)
+            or attempt_id in seen_ids
+            or not isinstance(thread_id, str)
+            or not isinstance(process_id, str)
+            or re.fullmatch(r"process-[0-9a-f]{32}", process_id) is None
+            or row.get("transport_policy_identity")
+            != transport_policy_identity
+            or row.get("termination_state")
+            not in {"completed", "confirmed-stopped", "liveness-uncertain"}
+            or row.get("output_state")
+            not in {
+                "uninspected",
+                "absent",
+                "complete",
+                "partial",
+                "extra",
+                "contradictory",
+            }
+            or not isinstance(diagnostics, list)
+            or not diagnostics
+            or len(set(diagnostics)) != len(diagnostics)
+            or row.get("primary_diagnostic_id") != diagnostics[0]
+            or decision
+            not in {"accept", "reconcile", "retry", "pause", "fail-closed"}
+            or not isinstance(row.get("evidence_refs"), list)
+            or not isinstance(row.get("diagnostic_evidence"), dict)
+        ):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        seen_ids.add(attempt_id)
+        grouped.setdefault(event_key, []).append(row)
+    if set(grouped) != {
+        "spec#1",
+        "spec-review#1",
+        "test-spec#1",
+        "test-spec-review#1",
+    }:
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    for attempts in grouped.values():
+        attempts.sort(key=lambda row: int(row["transport_attempt"]))
+        if [row["transport_attempt"] for row in attempts] not in (
+            [1],
+            [1, 2],
+        ):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        if len(attempts) == 2 and (
+            attempts[0]["decision"] != "retry"
+            or attempts[0]["runtime_thread_id"]
+            == attempts[1]["runtime_thread_id"]
+            or attempts[0]["runtime_process_id"]
+            == attempts[1]["runtime_process_id"]
+        ):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        if attempts[-1]["decision"] == "retry":
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+    return [dict(row) for row in rows]
+
+
+def _load_transport_fixture(path: Path) -> dict[str, object]:
+    fixture = _read_json(path)
+    if set(fixture) != _TRANSPORT_FIXTURE_FIELDS:
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    fixture_id = fixture.get("fixture_id")
+    event_key = fixture.get("event_key")
+    attempts = fixture.get("transport_attempts")
+    diagnostic_ids = fixture.get("expected_diagnostic_ids")
+    if (
+        not isinstance(fixture_id, str)
+        or not fixture_id
+        or not isinstance(event_key, str)
+        or re.fullmatch(r"[a-z-]+#[1-9][0-9]*", event_key) is None
+        or not isinstance(attempts, list)
+        or not 1 <= len(attempts) <= 2
+        or not isinstance(diagnostic_ids, list)
+        or not diagnostic_ids
+        or any(not isinstance(value, str) for value in diagnostic_ids)
+        or len(set(diagnostic_ids)) != len(diagnostic_ids)
+        or fixture.get("canonical_evidence_eligible") is not False
+    ):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    for index, row in enumerate(attempts, start=1):
+        if (
+            not isinstance(row, dict)
+            or set(row) != _TRANSPORT_ROW_FIELDS
+            or row.get("event_key") != event_key
+            or row.get("transport_attempt") != index
+            or row.get("transport_attempt_id")
+            != f"{event_key}/transport/{index}"
+            or row.get("termination_state")
+            not in {"completed", "confirmed-stopped", "liveness-uncertain"}
+            or row.get("output_state")
+            not in {
+                "uninspected",
+                "absent",
+                "complete",
+                "partial",
+                "extra",
+                "contradictory",
+            }
+            or row.get("decision")
+            not in {"accept", "reconcile", "retry", "pause", "fail-closed"}
+            or not isinstance(row.get("diagnostic_ids"), list)
+            or not row["diagnostic_ids"]
+            or row.get("primary_diagnostic_id") != row["diagnostic_ids"][0]
+        ):
+            raise BoundaryRuntimeError(
+                "protocol-shape-incompatible"
+            )
+    terminal = attempts[-1]
+    if (
+        terminal.get("decision") != fixture.get("expected_terminal_decision")
+        or terminal.get("primary_diagnostic_id")
+        != fixture.get("expected_diagnostic_id")
+        or terminal.get("diagnostic_ids") != diagnostic_ids
+        or terminal.get("decision") == "retry"
+    ):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    return fixture
 
 
 def _scenario(repo_root: Path, scenario_path: Path) -> dict[str, object]:
@@ -1661,356 +1875,32 @@ def _validate_review_payload(
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
 
 
-def _portable_text_contract() -> tuple[dict[str, object], dict[str, object]]:
-    applicable = {
-        "canonical-trust": (
-            ["R1", "R2", "R3"],
-            ["text.canonical.requirements"],
-        ),
-        "closed-vocabulary": (
-            ["R1", "R4"],
-            ["text.mode.valid", "text.mode.unknown"],
-        ),
-        "outcome-stop": (
-            ["R2", "R3", "R4"],
-            ["text.outcome.value", "text.outcome.error"],
-        ),
-        "evidence-claims": (
-            ["R1", "R2", "R3", "R4"],
-            ["text.evidence.tests"],
-        ),
-    }
-    rationales = {
-        "identity-freshness": "No persisted identity is consumed.",
-        "state-transition": "The function is stateless.",
-        "authorization-scope": "The function grants no authority.",
-        "mutation-atomicity": "The function performs no mutation.",
-        "interruption-recovery": "The contract exposes one returned result and no partial state or recovery obligation.",
-        "concurrency-idempotency": "The pure result has no shared state.",
-        "composition-bypass": "Conformance is defined only for this public normalizer contract; wrappers and alternate entrypoints may claim conformance only by preserving it.",
-        "compatibility-migration": "No legacy representation exists.",
-    }
-    core = []
-    for dimension_id in CORE_DIMENSION_IDS:
-        if dimension_id in applicable:
-            requirements, boundaries = applicable[dimension_id]
-            core.append(
-                {
-                    "dimension_id": dimension_id,
-                    "applicability": "applicable",
-                    "governing_requirement_ids": requirements,
-                    "boundary_ids": boundaries,
-                    "non_applicability_rationale": None,
-                }
-            )
-        else:
-            core.append(
-                {
-                    "dimension_id": dimension_id,
-                    "applicability": "not-applicable",
-                    "governing_requirement_ids": [],
-                    "boundary_ids": [],
-                    "non_applicability_rationale": rationales[dimension_id],
-                }
-            )
-    feature = {
-        "boundary_model_version": "v1",
-        "boundary_model_scope": "R1-R4",
-        "core_dimensions": core,
-        "extensions": [],
-        "examples": [
-            {
-                "example_id": "text.example.trim",
-                "role": "illustration",
-                "governing_requirement_ids": ["R1", "R2"],
-                "boundary_ids": ["text.mode.valid", "text.outcome.value"],
-                "regression_id": None,
-                "discovery_gap": None,
-                "non_normative_purpose": None,
-            },
-            {
-                "example_id": "text.example.preserve",
-                "role": "illustration",
-                "governing_requirement_ids": ["R1", "R3"],
-                "boundary_ids": ["text.mode.valid", "text.outcome.value"],
-                "regression_id": None,
-                "discovery_gap": None,
-                "non_normative_purpose": None,
-            },
-            {
-                "example_id": "text.example.unknown",
-                "role": "regression",
-                "governing_requirement_ids": ["R1", "R4"],
-                "boundary_ids": ["text.mode.unknown", "text.outcome.error"],
-                "regression_id": "text.regression.unknown-mode",
-                "discovery_gap": None,
-                "non_normative_purpose": None,
-            },
-        ],
-        "interactions": [],
-    }
-    proof = {
-        "boundary_model_version": "v1",
-        "boundary_model_scope": "R1-R4",
-        "proof_obligations": [
-            {
-                "proof_obligation_id": "text.proof.canonical",
-                "governing_requirement_ids": ["R1", "R2", "R3"],
-                "boundary_or_interaction_ids": ["text.canonical.requirements"],
-                "test_case_ids": ["T1", "T2", "T3"],
-                "automation_level": "automated",
-                "manual_procedure_ids": [],
-            },
-            {
-                "proof_obligation_id": "text.proof.mode",
-                "governing_requirement_ids": ["R1", "R4"],
-                "boundary_or_interaction_ids": [
-                    "text.mode.valid",
-                    "text.mode.unknown",
-                ],
-                "test_case_ids": ["T1", "T2"],
-                "automation_level": "automated",
-                "manual_procedure_ids": [],
-            },
-            {
-                "proof_obligation_id": "text.proof.outcome",
-                "governing_requirement_ids": ["R2", "R3", "R4"],
-                "boundary_or_interaction_ids": [
-                    "text.outcome.value",
-                    "text.outcome.error",
-                ],
-                "test_case_ids": ["T1", "T2", "T3"],
-                "automation_level": "automated",
-                "manual_procedure_ids": [],
-            },
-            {
-                "proof_obligation_id": "text.proof.evidence",
-                "governing_requirement_ids": ["R1", "R2", "R3", "R4"],
-                "boundary_or_interaction_ids": ["text.evidence.tests"],
-                "test_case_ids": ["T1", "T2", "T3"],
-                "automation_level": "automated",
-                "manual_procedure_ids": [],
-            },
-        ],
-    }
-    return feature, proof
-
-
-def _join(values: Sequence[str]) -> str:
-    return ", ".join(values) if values else "-"
-
-
-def _render_feature_markdown(payload: Mapping[str, object]) -> str:
-    model = normalize_feature_model(payload)
-    core_by_id = {row.dimension_id: row for row in model.core_dimensions}
-    lines = [
-        "# Portable text normalizer",
-        "",
-        "## Status",
-        "",
-        "approved",
-        "",
-        f"Boundary model version: {model.boundary_model_version}",
-        f"Boundary model scope: {model.boundary_model_scope}",
-        "",
-        "## Problem",
-        "",
-        "Callers need one portable text-normalization contract whose accepted modes and failure behavior do not vary by implementation.",
-        "",
-        "## Goals",
-        "",
-        "- Define the complete closed mode vocabulary and observable results.",
-        "- Model every core boundary dimension as applicable or explicitly not applicable.",
-        "- Preserve examples as governed illustrations or regressions rather than completeness claims.",
-        "",
-        "## Non-goals",
-        "",
-        "- Choosing a programming language, storage system, transport, or deployment topology.",
-        "- Adding locale-specific transformations or implicit mode aliases.",
-        "",
-        "## Requirements",
-        "",
-        "R1. The public normalizer contract accepts `mode` as a Unicode scalar-value string and `text` as a sequence of Unicode scalar values; it MUST accept exactly the mode values `trim` and `preserve` by exact scalar-sequence comparison without normalization or case folding. It performs no externally observable state mutation, authorization action, or hidden alternate-entrypoint behavior. Ill-formed encoded byte sequences are outside this typed API domain. A conformance claim MUST include executable evidence for the typed input domain and complete mode partition.",
-        "",
-        "R2. `trim` MUST NOT normalize text; it removes only the longest leading and trailing sequences containing exactly these Unicode scalar values: U+0009-U+000D, U+0020, U+0085, U+00A0, U+1680, U+2000-U+200A, U+2028, U+2029, U+202F, U+205F, and U+3000. This set is version-independent and changes only through a contract revision. On success it returns exactly `{\"mode\":\"trim\",\"text\":<normalized scalar-value string>}`. A conformance claim MUST include executable evidence for every listed edge scalar, interior preservation, and adjacent non-member stopping.",
-        "",
-        "R3. `preserve` MUST perform no Unicode normalization and return the exact input scalar-value sequence unchanged as `{\"mode\":\"preserve\",\"text\":<original scalar-value string>}`. A conformance claim MUST include executable evidence covering trim-set members and canonically equivalent but scalar-distinct sequences.",
-        "",
-        "R4. Every other exact mode scalar sequence, including empty, differently cased, and future-looking values, MUST return exactly `{\"error\":\"unknown-mode\"}` and MUST NOT return `mode` or `text`. A conformance claim MUST include executable evidence for each named unknown-mode class. Because the accepted mode tokens contain only ASCII scalars and are invariant under Unicode normalization, no distinct canonically equivalent mode exists; that empty class is not an unknown-mode evidence obligation.",
-        "",
-        "## Boundary model",
-        "",
-        "| Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |",
-        "| --- | --- | --- | --- | --- |",
-    ]
-    for dimension_id in CORE_DIMENSION_IDS:
-        row = core_by_id[dimension_id]
-        lines.append(
-            "| "
-            + " | ".join(
-                [
-                    row.dimension_id,
-                    row.applicability,
-                    _join(row.governing_requirement_ids),
-                    _join(row.boundary_ids),
-                    row.non_applicability_rationale or "-",
-                ]
-            )
-            + " |"
+def _review_payload_from_markdown(
+    stage: str, record: str, log: str
+) -> dict[str, object]:
+    def metadata(markdown: str, label: str) -> str | None:
+        match = re.search(
+            rf"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?{re.escape(label)}"
+            rf"(?:\*\*)?\s*:\s*(.+?)\s*$",
+            markdown,
         )
-    lines.extend(
-        [
-            "",
-            "Extensions: none.",
-            "",
-            "## Examples",
-            "",
-            "| Example ID | Role | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap |",
-            "| --- | --- | --- | --- | --- | --- |",
-        ]
-    )
-    for row in sorted(model.examples, key=lambda item: item.example_id):
-        lines.append(
-            "| "
-            + " | ".join(
-                [
-                    row.example_id,
-                    row.role,
-                    _join(row.governing_requirement_ids),
-                    _join(row.boundary_ids),
-                    row.regression_id or "-",
-                    row.discovery_gap or "-",
-                ]
-            )
-            + " |"
+        return (
+            None
+            if match is None
+            else match.group(1).strip().rstrip("  ").strip("`* ")
         )
-    lines.extend(
-        [
-            "",
-            "## Interactions",
-            "",
-            "None selected. The closed mode and outcome partitions do not create a cross-boundary hazard.",
-            "",
-            "## Observable behavior and errors",
-            "",
-            "The input domain and the success/error records are closed by R1-R4. A result is exactly one success record or the error-only record; fields are never combined across those alternatives.",
-            "",
-            "## Compatibility",
-            "",
-            "The contract is additive for a new normalizer. Future modes require a contract revision and may not be accepted implicitly.",
-            "",
-            "## Acceptance criteria",
-            "",
-            "- Both valid modes produce the exact requirement-defined result record.",
-            "- Every scalar in the fixed trim set is removed at both edges and preserved in the interior; adjacent scalars outside the set stop trimming.",
-            "- Empty, differently cased, and future-looking modes fail with `unknown-mode` and no text.",
-            "- Every core boundary dimension has one explicit applicability decision.",
-            "- Every example links to governing requirements and boundary IDs.",
-            "",
-        ]
-    )
-    return "\n".join(lines)
 
-
-def _render_test_spec_markdown(
-    payload: Mapping[str, object], feature_payload: Mapping[str, object]
-) -> str:
-    feature = normalize_feature_model(feature_payload)
-    proof = normalize_proof_map(payload, feature)
-    lines = [
-        "# Portable text normalizer test spec",
-        "",
-        "## Status",
-        "",
-        "active",
-        "",
-        f"Boundary model version: {proof.boundary_model_version}",
-        f"Boundary model scope: {proof.boundary_model_scope}",
-        "",
-        "## Test strategy",
-        "",
-        "Exercise every applicable partition directly and retain explicit non-applicability as feature-spec evidence rather than inventing tests for absent behavior.",
-        "",
-        "## Boundary disposition",
-        "",
-        "| Dimension ID | Applicability | Governing rationale | Test case IDs |",
-        "| --- | --- | --- | --- |",
-    ]
-    test_ids_by_dimension = {
-        "canonical-trust": "T1, T2, T3",
-        "closed-vocabulary": "T1, T2",
-        "outcome-stop": "T1, T2, T3",
-        "evidence-claims": "T1, T2, T3",
+    review_id = metadata(record, "Review ID")
+    outcome = metadata(record, "Status")
+    if not isinstance(review_id, str) or not isinstance(outcome, str):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    return {
+        "review_id": review_id,
+        "outcome": outcome,
+        "review_record_markdown": record,
+        "review_log_markdown": log,
     }
-    for row in feature.core_dimensions:
-        lines.append(
-            "| "
-            + " | ".join(
-                [
-                    row.dimension_id,
-                    row.applicability,
-                    (
-                        _join(row.governing_requirement_ids)
-                        if row.applicability == "applicable"
-                        else str(row.non_applicability_rationale)
-                    ),
-                    test_ids_by_dimension.get(row.dimension_id, "-"),
-                ]
-            )
-            + " |"
-        )
-    lines.extend(
-        [
-        "",
-        "## Proof map",
-        "",
-        "| Proof obligation ID | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Automation level | Manual procedure IDs |",
-        "| --- | --- | --- | --- | --- | --- |",
-        ]
-    )
-    for row in sorted(proof.proof_obligations, key=lambda item: item.proof_obligation_id):
-        lines.append(
-            "| "
-            + " | ".join(
-                [
-                    row.proof_obligation_id,
-                    _join(row.governing_requirement_ids),
-                    _join(row.boundary_or_interaction_ids),
-                    _join(row.test_case_ids),
-                    row.automation_level,
-                    _join(row.manual_procedure_ids),
-                ]
-            )
-            + " |"
-        )
-    lines.extend(
-        [
-            "",
-            "## Test cases",
-            "",
-            "T1. For every scalar in the fixed R2 trim set, place it at each edge and in the interior; require edge removal and interior preservation. Stable case `T1-CANONICAL-PAIR` surrounds U+00E9 and the scalar-distinct U+0065 U+0301 sequence with trim scalars and requires each distinct interior sequence unchanged. Stable case `T1-NONTRIM-BOUNDARIES` places ASCII, combining-mark, BMP non-ASCII, and supplementary non-members adjacent to trimmed edges and requires trimming to stop at each member. Every case requires the exact `trim` success record and a failure-identifiable case ID.",
-            "",
-            "T2. Exercise the closed unknown-mode partition with stable cases `T2-EMPTY` (empty), `T2-CASE` (`TRIM` and `Preserve`), `T2-FUTURE` (`trim-v2`), `T2-CANONICAL-CLOSURE` (enumerate the canonical-normalization closure of the two ASCII accepted tokens and prove it contains no scalar-distinct accepted alias), and `T2-OTHER` (deterministically generate non-equal scalar strings across empty, one-scalar, combining-mark, non-ASCII, and multi-scalar classes). Every case requires exactly `{\"error\":\"unknown-mode\"}` and asserts that `mode` and `text` fields are absent.",
-            "",
-            "T3. Use stable cases `T3-EMPTY`, `T3-ASCII`, `T3-TRIM-SCALARS`, and `T3-CANONICAL-PAIR` (U+00E9 versus the scalar-distinct U+0065 U+0301 sequence), plus `T3-GENERATED`, a deterministic seed-`0x50544E31` corpus over empty, ASCII, every trim-set member, combining marks, BMP non-ASCII, and supplementary scalars at lengths 0 through 4. For each corpus member, require scalar-for-scalar unchanged text and exactly `{\"mode\":\"preserve\",\"text\":<original>}`; identify a failure by stable case ID and corpus index.",
-            "",
-            "## Validation",
-            "",
-            "Command ID: PTN-VALIDATE-1",
-            "",
-            "Command: `python -m unittest -q tests.test_portable_text_normalizer`",
-            "",
-            "Owner: implementation milestone owner",
-            "",
-            "Milestone: portable-text-normalizer implementation",
-            "",
-            "Classification: automated deterministic validation",
-            "",
-            "Expected result: exit 0 after discovering and executing T1, T2, and T3. A nonzero exit, a missing named case, or zero discovered tests blocks implementation handoff.",
-            "",
-        ]
-    )
-    return "\n".join(lines)
+
 
 
 def _snapshot(
@@ -2098,20 +1988,34 @@ def _assemble_run(
     spec_review_payload = payload.get("spec_review")
     test_review_payload = payload.get("test_spec_review")
     provenance = payload.get("stage_provenance")
+    stage_artifacts = payload.get("stage_artifacts")
     if (
         not isinstance(feature_payload, dict)
         or not isinstance(proof_payload, dict)
         or not isinstance(spec_review_payload, dict)
         or not isinstance(test_review_payload, dict)
         or not isinstance(provenance, list)
+        or not isinstance(stage_artifacts, dict)
+        or set(stage_artifacts)
+        != {
+            "feature-spec/portable-text-normalizer.md",
+            "reviews/spec-review.md",
+            "review-log/spec-review.md",
+            "test-spec/portable-text-normalizer.test.md",
+            "reviews/test-spec-review.md",
+            "review-log/test-spec-review.md",
+        }
+        or any(not isinstance(value, str) for value in stage_artifacts.values())
     ):
-        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
     try:
-        feature_raw = _render_feature_markdown(feature_payload).encode("utf-8")
-        test_raw = _render_test_spec_markdown(
-            proof_payload, feature_payload
-        ).encode("utf-8")
-    except (UnicodeError, BoundaryProofError) as error:
+        feature_raw = stage_artifacts[
+            "feature-spec/portable-text-normalizer.md"
+        ].encode("utf-8")
+        test_raw = stage_artifacts[
+            "test-spec/portable-text-normalizer.test.md"
+        ].encode("utf-8")
+    except UnicodeError as error:
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn") from error
     try:
         parsed_feature = normalize_feature_model(
@@ -2133,6 +2037,9 @@ def _assemble_run(
         or test_review_payload.get("outcome") != "approved"
     ):
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    transport_attempts = payload.get("transport_attempts")
+    if not isinstance(transport_attempts, list):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
 
     _write_run_artifact(temporary, "feature-spec/portable-text-normalizer.md", feature_raw)
     _write_run_artifact(temporary, "test-spec/portable-text-normalizer.test.md", test_raw)
@@ -2195,7 +2102,7 @@ def _assemble_run(
             or not isinstance(log_markdown, str)
             or not isinstance(review_id, str)
         ):
-            raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
         record_raw = record_markdown.encode("utf-8")
         log_raw = log_markdown.encode("utf-8")
         record_path = f"{final_prefix}/artifacts/review-evidence/{prefix}-record.md"
@@ -2248,13 +2155,21 @@ def _assemble_run(
         "test-spec",
         "test-spec-review",
     }:
-        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
     spec_review_thread = provenance_by_stage["spec-review"].get("thread_id")
     test_review_thread = provenance_by_stage["test-spec-review"].get("thread_id")
+    provenance_threads = [
+        row.get("thread_id") for row in provenance_by_stage.values()
+    ]
     if (
         not isinstance(spec_review_thread, str)
         or not isinstance(test_review_thread, str)
-        or spec_review_thread == test_review_thread
+        or any(not isinstance(value, str) for value in provenance_threads)
+        or len(set(provenance_threads)) != 4
+        or any(
+            row.get("skill_names") != ["workflow", stage]
+            for stage, row in provenance_by_stage.items()
+        )
     ):
         raise BoundaryRuntimeError("thread-metadata-mismatch", "in-turn")
     spec_bundle_snapshot, spec_bundle, spec_artifacts = review_bundle(
@@ -2355,6 +2270,7 @@ def _assemble_run(
         "after_artifact_inventory": after_inventory,
         "snapshots": snapshots,
         "events": events,
+        "transport_attempts": list(map(dict, transport_attempts)),
     }
     (temporary / "manifest.json").write_bytes(_canonical_json_bytes(manifest))
     return temporary, manifest
@@ -2642,6 +2558,7 @@ def _validate_run(
         "after_artifact_inventory",
         "snapshots",
         "events",
+        "transport_attempts",
     }:
         raise BoundaryRuntimeError("runtime-identity-unstable")
     input_set = run.get("input_set")
@@ -2660,6 +2577,12 @@ def _validate_run(
     )
     implementation_manifest = _read_json(implementation_path)
     _validate_behavior_manifest(repo_root, implementation_manifest)
+    transport_policy_identity = _sha256(
+        _canonical_json_bytes(implementation_manifest["transport_policy"])
+    )
+    _validate_transport_rows(
+        run.get("transport_attempts"), transport_policy_identity
+    )
     _validate_input_set(repo_root, implementation_manifest, input_set)
     snapshots = run.get("snapshots")
     events = run.get("events")
@@ -2858,78 +2781,115 @@ def generate_behavior(
         or baseline.get("change_id") != change_id
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
-    def invoke(request: Mapping[str, object]) -> tuple[dict[str, object], dict[str, object]]:
-        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-            print(f"stage-start:{request.get('stage')}", file=sys.stderr)
-        for attempt in (1, 2):
+    def run_stage(
+        stage_request: Mapping[str, object],
+    ) -> tuple[
+        dict[str, object],
+        dict[str, object],
+        list[dict[str, object]],
+        dict[str, str],
+    ]:
+        def invoke() -> tuple[dict[str, object], dict[str, object]]:
             generated: list[dict[str, object]] = []
-            try:
-                observed_attestation = _collect_runtime_attestation(
-                    command,
-                    repo_root=repo_root,
-                    generation_request=request,
-                    generation_sink=generated,
-                )
-            except _StageTurnTimeout as error:
-                if attempt == 2:
-                    raise BoundaryRuntimeError(
-                        "unexpected-prohibited-event", "in-turn"
-                    ) from error
-                continue
-            if len(generated) != 1:
-                raise BoundaryRuntimeError(
-                    "protocol-shape-incompatible", "in-turn"
-                )
-            break
-        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-            print(f"stage-complete:{request.get('stage')}", file=sys.stderr)
-        return observed_attestation, generated[0]
-
-    attestation, spec_result = invoke(
-        _spec_request(str(scenario["request"]))
-    )
-    spec_payload = _load_generated_payload(spec_result, {"feature_model"})
-    feature_model = spec_payload.get("feature_model")
-    if not isinstance(feature_model, dict):
-        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
-    feature_model = _expand_stage_feature_model(feature_model)
-    try:
-        normalized_feature = normalize_feature_model(feature_model)
-        expected_feature, expected_proof = _portable_text_contract()
-        observed_feature_record = _feature_record(normalized_feature)
-        expected_feature_record = _feature_record(
-            normalize_feature_model(expected_feature)
-        )
-        if observed_feature_record != expected_feature_record:
-            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                print(
-                    "feature-model-mismatch:"
-                    + _canonical_json_bytes(observed_feature_record).decode(
-                        "utf-8"
-                    ),
-                    file=sys.stderr,
-                )
-            raise BoundaryProofError(
-                "stage-owned feature semantics differ from the fixture contract"
+            observed_attestation = _collect_runtime_attestation(
+                command,
+                repo_root=repo_root,
+                generation_request=stage_request,
+                generation_sink=generated,
             )
-        feature_markdown = _render_feature_markdown(feature_model)
-    except BoundaryProofError as error:
-        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-            print(f"feature-model-invalid:{error}", file=sys.stderr)
-        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn") from error
-    feature_identity = _sha256(feature_markdown.encode("utf-8"))
+            if len(generated) != 1:
+                raise BoundaryRuntimeError("protocol-shape-incompatible")
+            return observed_attestation, generated[0]
 
-    spec_review_attestation, spec_review_result = invoke(
-        _review_request("spec-review", feature_markdown, feature_identity)
+        observed, result, attempts = _invoke_with_reconciliation(
+            invoke, list(stage_request["expected_outputs"])
+        )
+        completion = (
+            _load_generated_payload(result, {"completed", "last_stage"})
+            if "agent_message" in result
+            else {
+                "completed": True,
+                "last_stage": stage_request["stage"],
+            }
+        )
+        if completion != {
+            "completed": True,
+            "last_stage": stage_request["stage"],
+        }:
+            raise BoundaryRuntimeError(
+                "unexpected-prohibited-event", "in-turn"
+            )
+        rows = result.get("output_files")
+        if not isinstance(rows, list):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        artifacts = {
+            str(row["path"]): str(row["text"])
+            for row in rows
+            if isinstance(row, dict) and set(row) == {"path", "text"}
+        }
+        if len(artifacts) != len(rows):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        for attempt in attempts:
+            attempt["event_key"] = f"{stage_request['stage']}#1"
+        return observed, result, attempts, artifacts
+
+    stage_results: list[dict[str, object]] = []
+    stage_attestations: list[dict[str, object]] = []
+    transport_attempts: list[dict[str, object]] = []
+    stage_artifacts: dict[str, str] = {}
+
+    spec_request = _workflow_stage_request(
+        "spec", str(scenario["request"])
     )
-    spec_review_payload = _load_generated_payload(
-        spec_review_result,
-        {
-            "review_id",
-            "outcome",
-            "review_record_markdown",
-            "review_log_markdown",
-        },
+    attestation, spec_result, attempts, artifacts = run_stage(spec_request)
+    stage_attestations.append(attestation)
+    stage_results.append(spec_result)
+    transport_attempts.extend(attempts)
+    stage_artifacts.update(artifacts)
+    feature_markdown = stage_artifacts[
+        "feature-spec/portable-text-normalizer.md"
+    ]
+    feature_identity = _sha256(feature_markdown.encode("utf-8"))
+    try:
+        normalized_feature = normalize_feature_model(
+            _parse_feature_markdown(feature_markdown)
+        )
+        oracle_feature_path = (
+            scenario_path.parent / "candidates" / "feature-spec.md"
+        )
+        expected_feature_model = normalize_feature_model(
+            _parse_feature_markdown(
+                oracle_feature_path.read_text(encoding="utf-8")
+            )
+        )
+        if _feature_record(normalized_feature) != _feature_record(
+            expected_feature_model
+        ):
+            raise BoundaryProofError(
+                "stage-owned feature differs from the fixture contract"
+            )
+    except BoundaryProofError as error:
+        raise BoundaryRuntimeError(
+            "unexpected-prohibited-event", "in-turn"
+        ) from error
+
+    spec_review_request = _workflow_stage_request(
+        "spec-review",
+        "Review the exact feature specification and record the formal result.",
+        artifact_context=(
+            f"Reviewed artifact identity: {feature_identity}\n\n"
+            + feature_markdown
+        ),
+    )
+    observed, result, attempts, artifacts = run_stage(spec_review_request)
+    stage_attestations.append(observed)
+    stage_results.append(result)
+    transport_attempts.extend(attempts)
+    stage_artifacts.update(artifacts)
+    spec_review_payload = _review_payload_from_markdown(
+        "spec-review",
+        stage_artifacts["reviews/spec-review.md"],
+        stage_artifacts["review-log/spec-review.md"],
     )
     _validate_review_payload(
         spec_review_payload,
@@ -2937,73 +2897,70 @@ def generate_behavior(
         artifact_identity=feature_identity,
     )
 
-    test_spec_attestation, test_spec_result = invoke(
-        _test_spec_request(
-            str(scenario["request"]),
-            feature_markdown,
-            str(spec_review_payload["review_record_markdown"]),
-        )
+    test_spec_request = _workflow_stage_request(
+        "test-spec",
+        "Author the complete proof map for the approved feature specification.",
+        artifact_context=(
+            feature_markdown
+            + "\n\nApproved formal review:\n"
+            + str(spec_review_payload["review_record_markdown"])
+        ),
     )
-    test_spec_payload = _load_generated_payload(test_spec_result, {"proof_map"})
-    proof_map = test_spec_payload.get("proof_map")
-    if not isinstance(proof_map, dict):
-        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
-    proof_map = _expand_stage_proof_map(proof_map)
+    observed, result, attempts, artifacts = run_stage(test_spec_request)
+    stage_attestations.append(observed)
+    stage_results.append(result)
+    transport_attempts.extend(attempts)
+    stage_artifacts.update(artifacts)
+    test_spec_markdown = stage_artifacts[
+        "test-spec/portable-text-normalizer.test.md"
+    ]
+    test_spec_identity = _sha256(test_spec_markdown.encode("utf-8"))
     try:
         normalized_proof = normalize_proof_map(
-            proof_map, normalized_feature
+            _parse_test_spec_markdown(test_spec_markdown),
+            normalized_feature,
         )
-        observed_proof_record = _proof_record(normalized_proof)
-        expected_proof_record = _proof_record(
-            normalize_proof_map(expected_proof, normalized_feature)
+        oracle_test_path = (
+            scenario_path.parent / "candidates" / "test-spec.md"
         )
-        if observed_proof_record != expected_proof_record:
-            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                print(
-                    "proof-map-mismatch:"
-                    + _canonical_json_bytes(observed_proof_record).decode(
-                        "utf-8"
-                    ),
-                    file=sys.stderr,
-                )
-            raise BoundaryProofError(
-                "stage-owned proof semantics differ from the fixture contract"
-            )
-        test_spec_markdown = _render_test_spec_markdown(
-            proof_map, feature_model
-        )
-    except BoundaryProofError as error:
-        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-            print(f"proof-map-invalid:{error}", file=sys.stderr)
-        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn") from error
-    test_spec_identity = _sha256(test_spec_markdown.encode("utf-8"))
-
-    test_review_attestation, test_review_result = invoke(
-        _review_request(
-            "test-spec-review",
-            test_spec_markdown,
-            test_spec_identity,
-            governing_context=(
-                "Approved fixture execution context: R28y/T52 simple-change "
-                "upstream behavior proof; owning milestone M2; active plan "
-                "review R14 approved; active test-spec review R12 approved; "
-                "the closed fixture route intentionally contains spec, "
-                "spec-review, test-spec, and test-spec-review only, so no "
-                "fixture-local implementation plan is applicable.\n\n"
-                + feature_markdown
-                + "\n\n"
-                + str(spec_review_payload["review_record_markdown"])
+        expected_proof_map = normalize_proof_map(
+            _parse_test_spec_markdown(
+                oracle_test_path.read_text(encoding="utf-8")
             ),
+            expected_feature_model,
         )
+        if _proof_record(normalized_proof) != _proof_record(
+            expected_proof_map
+        ):
+            raise BoundaryProofError(
+                "stage-owned proof differs from the fixture contract"
+            )
+    except BoundaryProofError as error:
+        raise BoundaryRuntimeError(
+            "unexpected-prohibited-event", "in-turn"
+        ) from error
+
+    test_review_request = _workflow_stage_request(
+        "test-spec-review",
+        "Review the exact test specification and record the formal result.",
+        artifact_context=(
+            f"Reviewed artifact identity: {test_spec_identity}\n\n"
+            + test_spec_markdown
+            + "\n\nGoverning feature specification:\n"
+            + feature_markdown
+            + "\n\nApproved feature review:\n"
+            + str(spec_review_payload["review_record_markdown"])
+        ),
     )
-    test_review_payload = _load_generated_payload(
-        test_review_result,
-        {
-            "review_id",
-            "outcome",
-            "review_record_markdown",
-            "review_log_markdown",
-        },
+    observed, result, attempts, artifacts = run_stage(test_review_request)
+    stage_attestations.append(observed)
+    stage_results.append(result)
+    transport_attempts.extend(attempts)
+    stage_artifacts.update(artifacts)
+    test_review_payload = _review_payload_from_markdown(
+        "test-spec-review",
+        stage_artifacts["reviews/test-spec-review.md"],
+        stage_artifacts["review-log/test-spec-review.md"],
     )
     _validate_review_payload(
         test_review_payload,
@@ -3015,44 +2972,53 @@ def generate_behavior(
         for field in ATTESTATION_FIELDS
         if field.endswith("_identity") or field == "active_permission_profile"
     }
-    for observed in (
-        spec_review_attestation,
-        test_spec_attestation,
-        test_review_attestation,
+    if any(
+        observed[field] != attestation[field]
+        for observed in stage_attestations[1:]
+        for field in attestation_identity_fields
     ):
-        if any(observed[field] != attestation[field] for field in attestation_identity_fields):
-            raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
-    thread_ids = [
-        spec_result.get("thread_id"),
-        spec_review_result.get("thread_id"),
-        test_spec_result.get("thread_id"),
-        test_review_result.get("thread_id"),
-    ]
-    if any(not isinstance(value, str) for value in thread_ids) or len(
-        set(thread_ids)
-    ) != 4:
+        raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
+    thread_ids = [result.get("thread_id") for result in stage_results]
+    if (
+        any(not isinstance(value, str) for value in thread_ids)
+        or len(set(thread_ids)) != 4
+    ):
         raise BoundaryRuntimeError("thread-metadata-mismatch", "in-turn")
+    feature_model = _feature_record(normalized_feature)
+    proof_map = _proof_record(normalized_proof)
     payload = {
         "feature_model": feature_model,
         "spec_review": spec_review_payload,
         "proof_map": proof_map,
         "test_spec_review": test_review_payload,
+        "stage_artifacts": stage_artifacts,
+        "transport_attempts": transport_attempts,
         "stage_provenance": [
             {
-                "stage": result["stage"],
+                "stage": stage,
                 "thread_id": result["thread_id"],
-                "skill_names": result["skill_names"],
+                "skill_names": ["workflow", stage],
             }
-            for result in (
-                spec_result,
-                spec_review_result,
-                test_spec_result,
-                test_review_result,
+            for stage, result in zip(
+                ("spec", "spec-review", "test-spec", "test-spec-review"),
+                stage_results,
+                strict=True,
             )
         ],
     }
     behavior_manifest = _build_behavior_manifest(repo_root, attestation)
     _validate_behavior_manifest(repo_root, behavior_manifest)
+    transport_policy_identity = _sha256(
+        _canonical_json_bytes(behavior_manifest["transport_policy"])
+    )
+    payload["transport_attempts"] = _validate_transport_rows(
+        _finalize_transport_rows(
+            transport_attempts,
+            stage_artifacts,
+            transport_policy_identity,
+        ),
+        transport_policy_identity,
+    )
     change_root = _select_change_root(repo_root, change_id)
     implementation_path = (
         change_root / "evidence" / "behavior-implementation-manifest.json"
@@ -3817,12 +3783,15 @@ class _AppServer:
         raise _StageTurnTimeout
 
     def close(self) -> None:
+        wait_seconds = (
+            int(TRANSPORT_POLICY["termination_wait_deadline_ms"]) / 1000
+        )
         self._process.terminate()
         try:
-            self._process.wait(timeout=5)
+            self._process.wait(timeout=wait_seconds)
         except subprocess.TimeoutExpired:
             self._process.kill()
-            self._process.wait(timeout=5)
+            self._process.wait(timeout=wait_seconds)
 
 
 def _expect_object(value: object, keys: set[str], diagnostic: str) -> dict[str, object]:
@@ -4535,7 +4504,12 @@ def _collect_runtime_attestation(
         _validate_runtime_projection(
             version, schema_identity, protocol_classification
         )
+        runtime_process_id = "process-" + secrets.token_hex(16)
+        timeout_elapsed_ms: int | None = None
         server = _AppServer(executable, environment)
+        turn_timeout = False
+        generation_result: dict[str, object] | None = None
+        expected_outputs: list[str] = []
         try:
             initialize = server.request(
                 "initialize",
@@ -4613,14 +4587,18 @@ def _collect_runtime_attestation(
                 prompt = generation_request.get("prompt")
                 output_schema = generation_request.get("output_schema")
                 skill_names = generation_request.get("skill_names")
+                expected_output_value = generation_request.get(
+                    "expected_outputs", []
+                )
                 if not isinstance(prompt, str) or not isinstance(
                     output_schema, dict
                 ) or not isinstance(skill_names, list) or any(
                     not isinstance(name, str) for name in skill_names
+                ) or not isinstance(expected_output_value, list) or any(
+                    not isinstance(path, str) for path in expected_output_value
                 ):
-                    raise BoundaryRuntimeError(
-                        "protocol-shape-incompatible", "pre-turn-start"
-                    )
+                    raise BoundaryRuntimeError("protocol-shape-incompatible")
+                expected_outputs = list(expected_output_value)
                 started = server.request(
                     "turn/start",
                     _turn_start_request(
@@ -4640,21 +4618,36 @@ def _collect_runtime_attestation(
                     or not isinstance(started["turn"].get("id"), str)
                 ):
                     raise BoundaryRuntimeError(
-                        "protocol-shape-incompatible", "in-turn"
+                        "protocol-shape-incompatible"
                     )
-                generation_result = server.collect_turn(
-                    thread_id, protocol_classification
-                )
+                try:
+                    turn_started = time.monotonic()
+                    generation_result = server.collect_turn(
+                        thread_id,
+                        protocol_classification,
+                        timeout=(
+                            int(TRANSPORT_POLICY["turn_deadline_ms"]) // 1000
+                        ),
+                    )
+                except _StageTurnTimeout:
+                    turn_timeout = True
+                    timeout_elapsed_ms = int(
+                        (time.monotonic() - turn_started) * 1000
+                    )
                 if generation_sink is None:
-                    raise BoundaryRuntimeError(
-                        "protocol-shape-incompatible", "in-turn"
-                    )
-                generation_result["thread_id"] = thread_id
-                generation_result["stage"] = generation_request.get("stage")
-                generation_result["skill_names"] = list(skill_names)
-                generation_sink.append(generation_result)
+                    raise BoundaryRuntimeError("protocol-shape-incompatible")
         finally:
             server.close()
+        output_files = _collect_workspace_outputs(workspace, expected_outputs)
+        if generation_request is not None and not turn_timeout:
+            if generation_result is None:
+                raise BoundaryRuntimeError("protocol-shape-incompatible")
+            generation_result["thread_id"] = thread_id
+            generation_result["stage"] = generation_request.get("stage")
+            generation_result["skill_names"] = list(skill_names)
+            generation_result["runtime_process_id"] = runtime_process_id
+            generation_result["output_files"] = output_files
+            generation_sink.append(generation_result)
         if (
             _read_file_identity(executable) != launcher_before
             or _bundle_projection(package_root, "runtime-unreadable")[1]
@@ -4669,7 +4662,7 @@ def _collect_runtime_attestation(
             "plugin/list": plugins,
             "mcpServerStatus/list": mcp,
         }
-        return {
+        attestation = {
             "schema_version": "boundary-runtime-attestation-v1",
             "runtime_launcher_identity": launcher_before.digest,
             "runtime_package_identity": package_identity,
@@ -4707,6 +4700,16 @@ def _collect_runtime_attestation(
                 "process_metadata_unreadable": "pass",
             },
         }
+        if turn_timeout:
+            raise _StageTurnTimeout(
+                attestation=attestation,
+                output_files=output_files,
+                termination_state="confirmed-stopped",
+                runtime_thread_id=thread_id,
+                runtime_process_id=runtime_process_id,
+                elapsed_ms=timeout_elapsed_ms,
+            )
+        return attestation
 
 
 def _validate_attestation(attestation: Mapping[str, object]) -> None:
