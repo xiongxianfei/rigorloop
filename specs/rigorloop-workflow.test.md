@@ -49,12 +49,12 @@ Boundary model scope: R28-R28z
 | --- | --- | --- | --- |
 | Feature spec | `specs/rigorloop-workflow.md` | draft; focused spec-review pending | pending after approval |
 | Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion to the draft workflow amendment | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r33.md` | changes-requested; R33 findings resolved in the R34 candidate | `sha256:54c0df8263c71eda9fd2aa12f02b75a0bcbcf6c93a7e6d0eb5ae76f698e0cde1` |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r34.md` | changes-requested; R34 findings resolved in the R35 candidate | `sha256:e19a033ace10c2c1b93fbc5a0532a7a39de5c164b99da05865a81ccab993ff4d` |
 | Architecture | `docs/architecture/system/architecture.md` | draft; focused architecture-review pending | pending after approval |
 | Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r13.md` | approved | `sha256:47571b7555fe6470de8e78a9c8b180c09fbdb627e8e641ab1c6915e0d9044288` |
 | ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | proposed amendment | pending after acceptance |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; spec-review R34 is the next gate | `sha256:e3a54ad63cc50e21869d02f6a3a85c778cbafe6a527d411640b525f7eec1af1a` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; spec-review R35 is the next gate | `sha256:0ca274bb41a4fc588547ef1b47dcf4ae00c46d1b9d749bc005882c931fa2acfb` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
 
 ## Testing strategy
@@ -1285,7 +1285,8 @@ Boundary model scope: R28-R28z
   feature pages, effective configuration, managed requirements, app/plugin/MCP
   inventories, complete skill inventory with exactly five enabled manifested
   lifecycle packages and only disabled runtime-bundled system-skill rows,
-  thread metadata, and protocol item streams. Generated TOML fixtures include
+  thread metadata, protocol item streams, and the exact manifest-bound
+  `boundary-transport-policy-v1` record. Generated TOML fixtures include
   nested tables, zero-based arrays, and quoted keys whose preserved key bytes
   contain dots and spaces; each fixture has an independently computed complete
   flattened leaf-key set and matching runtime-origin rows.
@@ -1341,9 +1342,14 @@ Boundary model scope: R28-R28z
   then add, remove, or mutate schema files, object members, methods,
   classifications, and feature rows as contrast cases. Capture the exact
   `thread/start` and `turn/start` requests and independently remove, add,
-  substitute, or reorder their workspace roots. Permit
-  `remoteControl/status/changed` only with disabled status and null environment
-  identity. Run the parent runtime with each closed proxy-name spelling and an
+  substitute, or reorder their workspace roots. Exercise all four
+  `status_is_disabled` × `environment_identity_is_null` combinations for
+  `remoteControl/status/changed`: accept only `true`/`true` as non-side-effect
+  traffic, reject the other three with
+  `protocol-conditional-policy-violation`, and prove retained evidence
+  contains only the booleans, closed rule ID, and event kind rather than raw
+  status or environment identity. Run the parent runtime with each closed
+  proxy-name spelling and an
   unrelated or secret-bearing environment name; prove spawned commands still
   receive only their exact closed environment.
   Independently map every feature row exactly once as permitted built-in tool,
@@ -1375,11 +1381,26 @@ Boundary model scope: R28-R28z
   installed evidence on failure, stale prior evidence never satisfying the
   current attempt, and restart after replacement repeating replacement and
   directory fsync before pass. Test pass emission before durability. Require
-  every failure result to carry a null attestation reference.
+  every failure result to carry a null attestation reference. Validate the
+  transport policy as an exact manifest member: reject a missing, additional,
+  substituted, caller-selected, zero, negative, or unbounded turn or
+  termination-wait deadline and reject any policy-identity mismatch. Sample
+  the parent monotonic clock immediately below, exactly at, and above each
+  deadline. Require timeout only at or above the turn deadline; require
+  confirmed stop/reap only at or below the termination-wait deadline and
+  liveness uncertainty when that bounded wait reaches its deadline without
+  confirmation. Bind timeout rows to their exact runtime thread and
+  termination/liveness records to their exact logical `runtime_process_id`;
+  reject thread, process, deadline, elapsed-time, and policy substitutions.
+  Exercise both closed runtime-identity kinds at every closed checkpoint.
+  Reject cross-kind substitutions, unknown kinds or checkpoints, expected
+  identity not equal to the attested resource, observation of a different
+  resource, and expected/observed equality.
   Assert the closed diagnostic mapping
   `runtime-unavailable`, `runtime-unreadable`, `runtime-version-invalid`,
   `runtime-version-unsupported`, `runtime-identity-unstable`, `schema-bundle-invalid`,
   `experimental-api-unavailable`, `protocol-shape-incompatible`,
+  `protocol-conditional-policy-violation`,
   `thread-metadata-mismatch`, `feature-pagination-invalid`,
   `capability-inventory-mismatch`, `skill-inventory-mismatch`,
   `feature-classification-invalid`, `protocol-item-classification-invalid`,
@@ -1525,7 +1546,14 @@ Boundary model scope: R28-R28z
   well-named lease/basis-bound malformed temp as recoverable and reaches the
   cleanup route, while malformed names, multiple temps, ambiguous leases,
   cross-run temps, and canonical corruption stop before mutation. Interrupt
-  unlink and parent fsync independently and prove idempotent resume.
+  unlink and parent fsync independently and prove idempotent resume. Add one
+  valid completed recovery history for run A beside a full publication
+  candidate for run B and require B to remain the sole active candidate; repeat
+  with multiple valid completed histories. Add completed history beside one
+  active recovery and require only the active recovery run to own candidacy.
+  Mutate each completed-history basis, state, completion, and quarantine
+  invariant and keep every nonterminal or malformed object in the active set,
+  where it conflicts or fails closed rather than being ignored as history.
 - Expected result: Resume reconciles valid evidence without reinvoking skills,
   never installs or points at a partial run, never installs without a durable
   exclusive receipt, never loses the prior immutable pointer, and fails closed
@@ -1563,7 +1591,9 @@ Boundary model scope: R28-R28z
   Assert lifecycle correction attempt and transport attempt remain distinct;
   a prospective event key remains valid when no lifecycle event is created;
   every row has the exact R28y fields; confirmed-stopped rows bind the exact
-  termination receipt; liveness-uncertain rows are uninspected; and attempt 2
+  termination receipt, logical runtime process, and manifest-bound transport
+  policy; liveness-uncertain rows bind the same logical child and policy and
+  are uninspected; and attempt 2
   exists if and only if attempt 1 decides retry, uses a fresh runtime identity,
   and terminates without retry. Reject missing, extra, duplicate, unknown,
   suppressed, reordered, out-of-order, post-terminal, multiple-terminal, and
@@ -1574,7 +1604,18 @@ Boundary model scope: R28-R28z
   its inline evidence, add an unrelated role, mutate each field, substitute a
   stale observation, and attempt direct or indirect self-reference to the row
   or manifest. Test elapsed time immediately below, equal to, and above the
-  deadline; equal and unequal runtime identities; schema-accepted and
+  manifest-bound turn and termination-wait deadlines; reject missing, zero,
+  negative, unbounded, caller-selected, or substituted policy values and
+  identities. Test matching and mismatched logical thread/process identities.
+  For both runtime-identity kinds, test every closed checkpoint, cross-kind and
+  cross-resource substitution, an attestation mismatch, an equal
+  expected/observed pair, and unknown kinds or checkpoints. Exercise all four
+  closed boolean combinations for the
+  `remote-control-disabled-null-environment-v1` rule; require only
+  `true`/`true` to pass and each other combination to emit
+  `protocol-conditional-policy-violation`, cross it with timeout and liveness
+  diagnostics, and reject raw status or environment identity in retained
+  evidence. Test equal and unequal runtime identities; schema-accepted and
   schema-rejected shape projections; known prohibited, known permitted, and
   unknown protocol event kinds, including exact
   `protocol-item-classification-invalid` evidence. Mutate every value-free
