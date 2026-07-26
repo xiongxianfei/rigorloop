@@ -55,7 +55,7 @@ Boundary model scope: R28-R28z
 | Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r15.md` | approved | `sha256:10887b1ca4319906873651ac3c0ba922cb1bd4fbba9ff6d62fb8d60a44b61eef` |
 | ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted by architecture-review R15 | `sha256:f2d6653d93382474b2a4e76b381b00d900dede8038358f51e699b3b634831a69` |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; test-spec-review R14 is the next gate | `sha256:d8b258355b8d68d3e25eeb1cd2d6169d8f94e1fb26576105548c0deb8cc5e370` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; implementation correction is the next stage after approved test-spec-review R14 | `sha256:6e4cbe71f5ad159b9c5eda3a3dde06c1c3661110ea8414d2c620214b8d6f3e9d` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
 
 ## Testing strategy
@@ -64,9 +64,8 @@ Boundary model scope: R28-R28z
 - Use filesystem-backed integration tests for selector behavior, lifecycle validation, skill validation, generated-output drift, adapter generation, change metadata, and review artifact validation.
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
-- Treat `specs/rigorloop-workflow.test.md` as the active proof-planning and
-  regression amendment; focused test-spec rereview is the remaining gate
-  before resumed M2 implementation.
+- Treat `specs/rigorloop-workflow.test.md` as the active, focused-R14-approved
+  proof-planning and regression amendment for resumed M2 implementation.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
@@ -1874,7 +1873,8 @@ Boundary model scope: R28-R28z
 
 - Boundary-first amendment: independent `test-spec-review` for the focused
   R28y/R35 proof map after approved spec-review R36 and architecture-review
-  R15, then resume M2 under the recorded implementation authorization.
+  R15 was approved at R14; resume M2 under the recorded implementation
+  authorization.
 - `code-review M2` under the current
   [Boundary-First Proof Modeling plan](../docs/plans/2026-07-25-boundary-first-proof-modeling.md)
   after M2 implementation handoff.
@@ -1891,7 +1891,7 @@ Boundary model scope: R28-R28z
 Active proof-planning and regression surface for the workflow contract,
 including the boundary-first R28-R28z amendment.
 The focused R28y/R35 runtime-boundary revision has approved upstream spec,
-architecture, ADR, and plan inputs. Approval of this revised active test spec
-is the remaining lifecycle gate before resumed M2 implementation.
+architecture, ADR, plan, and test-spec inputs. M2 implementation may resume
+against this active proof map.
 
 Test-spec proof map is confirmed against the approved active plan. M2 implementation can hand off to `code-review M2` only after the M2 guidance and contract surfaces make the relevant assertions and validation commands pass. Each milestone closes only after clean review and any required review-resolution.

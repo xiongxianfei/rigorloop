@@ -1071,9 +1071,8 @@ Chosen action: Set the test spec active and replace stale upstream-gate text
 with the current R36/R15/R14 identities and focused R14 rereview gate.
 Rationale: Implementation must rely on an active, current proof contract.
 Validation target: test-spec-review-r14
-Validation evidence: the test spec is active; governing-artifact text names
-approved R36/R15/R14 inputs; readiness identifies focused test-spec-review R14
-as the remaining gate; pending independent confirmation.
+Validation evidence: test-spec-review R14 independently approved the active
+proof surface and confirmed its governing-artifact and readiness claims.
 
 #### BFP-TSR13-2 - Controlled transport-failure fixtures lack an executable contract
 
@@ -1090,9 +1089,16 @@ Chosen action: Project the approved fixture contract into T52, the fixture
 declaration, and M2 ownership and evidence.
 Rationale: A named schema without closed data ownership is not executable proof.
 Validation target: test-spec-review-r14
-Validation evidence: T52, the global fixture declaration, and M2 now bind the
-exact transport root, owner, seven fields, false canonical-evidence eligibility,
-CMD-BFP-1, and fail-closed validation; pending independent confirmation.
+Validation evidence: test-spec-review R14 independently confirmed that T52,
+the global fixture declaration, and M2 bind the exact transport root, owner,
+seven fields, false canonical-evidence eligibility, CMD-BFP-1, and fail-closed
+validation.
+
+### test-spec-review-r14
+
+No new material findings. R14 independently confirmed BFP-TSR13-1 and
+BFP-TSR13-2 resolved, approved the active focused R28y proof map, and allowed
+M2 implementation handoff.
 
 ### architecture-review-r14
 
