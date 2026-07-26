@@ -5,6 +5,7 @@
 Closeout status: open
 
 - Review closeout: code-review-m1-r1 open
+- Review closeout: spec-review-r3 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -15,10 +16,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`
 - Findings resolved: 14
-- Unresolved findings: 7
-- Current result: `code-review-m1-r1` requested changes; three findings require owner decisions before automatic correction.
+- Unresolved findings: 10
+- Current result: `spec-review-r3` requested deterministic rule, trace, metric, and evidence-receipt contracts before M1 correction.
 
 ## Resolution Overview
 
@@ -45,6 +46,9 @@ Closeout status: open
 | BFP-M1-CR5 | accepted | open | Canonicalize capability-report serialization. |
 | BFP-M1-CR6 | accepted | open | Use a closed boundary-state envelope evaluated independently of fixture labels by the shared stage-gate evaluator. |
 | BFP-M1-CR7 | accepted | open | Derive simple-change measurements from a structural stage trace owned by the shared evaluator. |
+| BFP-SR3-1 | accepted | open | Freeze an independently executable incident rule table and contrasts. |
+| BFP-SR3-2 | accepted | open | Define a closed trace and deterministic observation formulas. |
+| BFP-SR3-3 | accepted | open | Bind current artifact bytes to the exact evaluated row through a receipt. |
 
 ## Finding Details
 
@@ -313,6 +317,53 @@ Required outcome: Bind proof requirements to referenced boundary ownership and e
 Chosen action: Apply the reviewer-provided declared-safe recipe after all M1 decisions are settled.
 Rationale: Direct probes accepted unrelated known requirements and malformed or duplicate example evidence IDs.
 Validation target: code-review-m1-r2
+Validation evidence: pending
+
+### spec-review-r3
+
+#### BFP-SR3-1 - Incident replay derivation is incomplete
+
+Finding ID: BFP-SR3-1
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec revision
+Decision owner: approved incident-replay direction
+Decision needed: none
+Required outcome: Freeze field/value triggers, valid contrasts, first gates, and diagnostic families.
+Chosen action: Add one exact incident rule table and make fixture labels non-authoritative expectations.
+Rationale: The first amendment still required evaluator-authored mappings.
+Validation target: spec-review-r4
+Validation evidence: pending
+
+#### BFP-SR3-2 - Simple-change observations are not computable
+
+Finding ID: BFP-SR3-2
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec revision
+Decision owner: approved simple-change workflow direction
+Decision needed: none
+Required outcome: Define trace shape, linkage, outcomes, correction events, inventory, and formulas.
+Chosen action: Add exact trace and metric contracts plus malformed contrasts.
+Rationale: Named observations without algorithms permit incompatible implementations.
+Validation target: spec-review-r4
+Validation evidence: pending
+
+#### BFP-SR3-3 - Evidence is not operation-bound
+
+Finding ID: BFP-SR3-3
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec revision
+Decision owner: approved evidence-bound report direction
+Decision needed: none
+Required outcome: Bind every executed row to a current operation-specific receipt.
+Chosen action: Add exact evidence receipt fields and cross-row substitution rejection.
+Rationale: A current hash alone authenticates bytes, not relevance.
+Validation target: spec-review-r4
 Validation evidence: pending
 
 #### BFP-M1-CR2 - Incident omission classes are not frozen

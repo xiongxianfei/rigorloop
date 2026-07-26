@@ -82,6 +82,7 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m1.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/implementation-m1.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r1.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r3.md
   - docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-log.md
@@ -109,9 +110,9 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r2.md
 review:
   status: changes-requested
-  unresolved_items: 7
-  material_findings: 21
-  open_findings: 7
+  unresolved_items: 10
+  material_findings: 24
+  open_findings: 10
   closed_findings: 14
   code_review: reviews/code-review-m1-r1.md
   review_log: review-log.md
