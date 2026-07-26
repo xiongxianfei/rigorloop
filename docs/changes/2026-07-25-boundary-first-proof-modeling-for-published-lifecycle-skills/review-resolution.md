@@ -8,6 +8,7 @@ Closeout status: open
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
+- Review closeout: spec-review-r6 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -18,10 +19,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`
 - Findings resolved: 15
 - Unresolved findings: 9
-- Current result: `spec-review-r5` resolved BFP-SR3-1; BFP-SR3-2 and BFP-SR3-3 remain open.
+- Current result: `spec-review-r6` kept BFP-SR3-2 and BFP-SR3-3 open for final trace and provenance closure.
 
 ## Resolution Overview
 
@@ -326,6 +327,15 @@ Validation evidence: pending
 No new material findings.
 `spec-review-r5` resolved `BFP-SR3-1` and kept `BFP-SR3-2` and
 `BFP-SR3-3` open for exact snapshot and operation-registry closure.
+
+### spec-review-r6
+
+No new material findings.
+`spec-review-r6` confirmed the closed row schemas but kept `BFP-SR3-2` and
+`BFP-SR3-3` open because candidate/input/output roles, behavior-workspace
+inventory, historical evidence, typed-result identity, aggregate observations,
+marker-absence selection, and canonical fixture paths were not yet
+deterministic.
 
 ### spec-review-r3
 

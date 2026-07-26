@@ -79,10 +79,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M1. Typed model, validator, fixtures, and report core
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r5.md
-- Review status: changes-requested; stage=spec-review; round=r5
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r6.md
+- Review status: changes-requested; stage=spec-review; round=r6
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: spec-review R6
+- Next stage: spec revision for trace and provenance closure
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=9; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-SR3-2,BFP-SR3-3
 
@@ -307,6 +307,7 @@ implementation authorization is requested.
 - 2026-07-26: The R5 candidate replaces caller-authored receipts with fresh closed-registry execution, makes incident triggers unique, and phases real skill behavior after M1's synthetic engine proof.
 - 2026-07-26: Spec-review R5 resolved incident derivation and retained only snapshot/trace closure and operation-registry projection.
 - 2026-07-26: The R6 candidate closes the operation-to-report registry, input/output provenance, preservation and adapter manifests, behavior-output capture, snapshot/event cardinality, structural/result consistency, and reproducible artifact-inventory formulas.
+- 2026-07-26: Spec-review R6 retained BFP-SR3-2 and BFP-SR3-3 for oracle/input/output separation, complete workspace inventory, historical and typed-result identity, aggregate observation projection, marker-absence selection, and frozen fixture paths.
 
 ## Decision log
 
