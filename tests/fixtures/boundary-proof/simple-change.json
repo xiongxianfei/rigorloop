@@ -31,18 +31,273 @@
     ]
   },
   "simple_trace": {
+    "snapshots": [
+      {
+        "snapshot_id": "simple.snapshot.feature.v1",
+        "source": "behavior-output",
+        "artifact_role": "feature-spec",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/feature-spec/feature-v1.md",
+        "identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      {
+        "snapshot_id": "simple.snapshot.spec-review.bundle.v1",
+        "source": "behavior-output",
+        "artifact_role": "review-evidence",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-bundle.json",
+        "identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      {
+        "snapshot_id": "simple.snapshot.spec-review.record.v1",
+        "source": "behavior-output",
+        "artifact_role": "review-evidence",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-record.md",
+        "identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      {
+        "snapshot_id": "simple.snapshot.spec-review.log.v1",
+        "source": "behavior-output",
+        "artifact_role": "review-evidence",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-log.md",
+        "identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+      },
+      {
+        "snapshot_id": "simple.snapshot.test-spec.v1",
+        "source": "behavior-output",
+        "artifact_role": "test-spec",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/test-spec/test-spec-v1.md",
+        "identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+      },
+      {
+        "snapshot_id": "simple.snapshot.test-spec-review.bundle.v1",
+        "source": "behavior-output",
+        "artifact_role": "review-evidence",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-bundle.json",
+        "identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+      },
+      {
+        "snapshot_id": "simple.snapshot.test-spec-review.record.v1",
+        "source": "behavior-output",
+        "artifact_role": "review-evidence",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-record.md",
+        "identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777"
+      },
+      {
+        "snapshot_id": "simple.snapshot.test-spec-review.log.v1",
+        "source": "behavior-output",
+        "artifact_role": "review-evidence",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-log.md",
+        "identity": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+      }
+    ],
+    "review_bundles": {
+      "simple.snapshot.spec-review.bundle.v1": {
+        "review_id": "simple.review.spec.v1",
+        "outcome": "approved",
+        "reviewed_snapshot_id": "simple.snapshot.feature.v1",
+        "material_finding_ids": [],
+        "artifact_refs": {
+          "review-record": {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-record.md",
+            "identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+          },
+          "review-log": {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-log.md",
+            "identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+          }
+        }
+      },
+      "simple.snapshot.test-spec-review.bundle.v1": {
+        "review_id": "simple.review.test-spec.v1",
+        "outcome": "approved",
+        "reviewed_snapshot_id": "simple.snapshot.test-spec.v1",
+        "material_finding_ids": [],
+        "artifact_refs": {
+          "review-record": {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-record.md",
+            "identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "review-log": {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-log.md",
+            "identity": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+          }
+        }
+      }
+    },
     "events": [
-      {"stage": "spec", "attempt": 1, "structural_result": "pass", "observed_result": "produced", "diagnostic_id": "none"},
-      {"stage": "spec-review", "attempt": 1, "structural_result": "pass", "observed_result": "approved", "diagnostic_id": "none"},
-      {"stage": "test-spec", "attempt": 1, "structural_result": "pass", "observed_result": "produced", "diagnostic_id": "none"},
-      {"stage": "test-spec-review", "attempt": 1, "structural_result": "pass", "observed_result": "approved", "diagnostic_id": "none"}
+      {
+        "stage": "spec",
+        "attempt": 1,
+        "input_snapshot_ids": [],
+        "reviewed_snapshot_id": null,
+        "output_snapshot_ids": ["simple.snapshot.feature.v1"],
+        "structural_result": "pass",
+        "observed_result": "produced",
+        "diagnostic_id": "none",
+        "evidence_refs": [
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/feature-spec/feature-v1.md",
+            "identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          }
+        ]
+      },
+      {
+        "stage": "spec-review",
+        "attempt": 1,
+        "input_snapshot_ids": ["simple.snapshot.feature.v1"],
+        "reviewed_snapshot_id": "simple.snapshot.feature.v1",
+        "output_snapshot_ids": ["simple.snapshot.spec-review.bundle.v1"],
+        "structural_result": "pass",
+        "observed_result": "approved",
+        "diagnostic_id": "none",
+        "evidence_refs": [
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/feature-spec/feature-v1.md",
+            "identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-bundle.json",
+            "identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-log.md",
+            "identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-record.md",
+            "identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+          }
+        ]
+      },
+      {
+        "stage": "test-spec",
+        "attempt": 1,
+        "input_snapshot_ids": [
+          "simple.snapshot.feature.v1",
+          "simple.snapshot.spec-review.bundle.v1",
+          "simple.snapshot.spec-review.record.v1",
+          "simple.snapshot.spec-review.log.v1"
+        ],
+        "reviewed_snapshot_id": null,
+        "output_snapshot_ids": ["simple.snapshot.test-spec.v1"],
+        "structural_result": "pass",
+        "observed_result": "produced",
+        "diagnostic_id": "none",
+        "evidence_refs": [
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/feature-spec/feature-v1.md",
+            "identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-bundle.json",
+            "identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-log.md",
+            "identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-record.md",
+            "identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/test-spec/test-spec-v1.md",
+            "identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+          }
+        ]
+      },
+      {
+        "stage": "test-spec-review",
+        "attempt": 1,
+        "input_snapshot_ids": [
+          "simple.snapshot.test-spec.v1",
+          "simple.snapshot.feature.v1",
+          "simple.snapshot.spec-review.bundle.v1",
+          "simple.snapshot.spec-review.record.v1",
+          "simple.snapshot.spec-review.log.v1"
+        ],
+        "reviewed_snapshot_id": "simple.snapshot.test-spec.v1",
+        "output_snapshot_ids": ["simple.snapshot.test-spec-review.bundle.v1"],
+        "structural_result": "pass",
+        "observed_result": "approved",
+        "diagnostic_id": "none",
+        "evidence_refs": [
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/feature-spec/feature-v1.md",
+            "identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-bundle.json",
+            "identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-log.md",
+            "identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-record.md",
+            "identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-bundle.json",
+            "identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-log.md",
+            "identity": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-record.md",
+            "identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          {
+            "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/test-spec/test-spec-v1.md",
+            "identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+          }
+        ]
+      }
     ],
     "before_inventory": [],
     "after_inventory": [
-      {"path": "artifacts/feature-spec/simple.md", "artifact_kind": "feature-spec"},
-      {"path": "artifacts/review-evidence/spec-review.md", "artifact_kind": "review-evidence"},
-      {"path": "artifacts/test-spec/simple.test.md", "artifact_kind": "test-spec"},
-      {"path": "artifacts/review-evidence/test-spec-review.md", "artifact_kind": "review-evidence"}
+      {
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/feature-spec/feature-v1.md",
+        "artifact_kind": "feature-spec",
+        "identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      {
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-bundle.json",
+        "artifact_kind": "review-evidence",
+        "identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      {
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-log.md",
+        "artifact_kind": "review-evidence",
+        "identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+      },
+      {
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-record.md",
+        "artifact_kind": "review-evidence",
+        "identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      {
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-bundle.json",
+        "artifact_kind": "review-evidence",
+        "identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+      },
+      {
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-log.md",
+        "artifact_kind": "review-evidence",
+        "identity": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+      },
+      {
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/test-spec-review-record.md",
+        "artifact_kind": "review-evidence",
+        "identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777"
+      },
+      {
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/test-spec/test-spec-v1.md",
+        "artifact_kind": "test-spec",
+        "identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+      }
     ]
   }
 }
