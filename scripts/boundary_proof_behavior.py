@@ -2492,8 +2492,6 @@ def generate_behavior(
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
     def invoke(request: Mapping[str, object]) -> tuple[dict[str, object], dict[str, object]]:
-        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-            print(f"stage-start:{request.get('stage')}", file=sys.stderr)
         generated: list[dict[str, object]] = []
         observed_attestation = _collect_runtime_attestation(
             command,
@@ -2503,8 +2501,6 @@ def generate_behavior(
         )
         if len(generated) != 1:
             raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
-        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-            print(f"stage-complete:{request.get('stage')}", file=sys.stderr)
         return observed_attestation, generated[0]
 
     attestation, route_result = invoke(_route_request(str(scenario["request"])))
@@ -3310,19 +3306,9 @@ class _AppServer:
                 )
             source = "ServerRequest" if "id" in response else "ServerNotification"
             classification = classifications.get(f"{source}:{method}")
-            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                print(
-                    f"turn-observed:{source}:{method}:{classification}",
-                    file=sys.stderr,
-                )
             if classification is None or classification == (
                 "prohibited-capability-event"
             ):
-                if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                    print(
-                        f"turn-event:{source}:{method}:{classification}",
-                        file=sys.stderr,
-                    )
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
@@ -3343,8 +3329,6 @@ class _AppServer:
                     "unexpected-prohibited-event", "in-turn"
                 )
             if method == "error":
-                if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                    print("turn-error:", repr(params), file=sys.stderr)
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
@@ -3364,8 +3348,6 @@ class _AppServer:
                         )
                     messages.append(text)
                 elif item_type not in {"userMessage", "reasoning"}:
-                    if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                        print(f"turn-item:{item_type}", file=sys.stderr)
                     raise BoundaryRuntimeError(
                         "unexpected-prohibited-event", "in-turn"
                     )
@@ -3379,35 +3361,14 @@ class _AppServer:
                     not isinstance(turn, dict)
                     or turn.get("status") != "completed"
                     or turn.get("error") is not None
-                    or len(messages) != 1
+                    or not messages
                 ):
-                    if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                        print(
-                            "turn-completed:",
-                            repr(
-                                {
-                                    "thread_match": params.get("threadId")
-                                    == thread_id,
-                                    "turn_status": (
-                                        turn.get("status")
-                                        if isinstance(turn, dict)
-                                        else None
-                                    ),
-                                    "turn_error": (
-                                        turn.get("error")
-                                        if isinstance(turn, dict)
-                                        else None
-                                    ),
-                                    "message_count": len(messages),
-                                }
-                            ),
-                            file=sys.stderr,
-                        )
                     raise BoundaryRuntimeError(
                         "unexpected-prohibited-event", "in-turn"
                     )
                 return {
-                    "agent_message": messages[0],
+                    "agent_message": messages[-1],
+                    "agent_message_count": len(messages),
                     "event_methods": event_methods,
                 }
         raise BoundaryRuntimeError(
@@ -3977,13 +3938,6 @@ def _collect_runtime_attestation(
             env=environment,
         )
         if environment_probe.returncode != 0:
-            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                print(
-                    "credential-environment-command:",
-                    environment_probe.returncode,
-                    environment_probe.stderr,
-                    file=sys.stderr,
-                )
             raise BoundaryRuntimeError(
                 "credential-isolation-failed", "pre-turn-start"
             )
@@ -4002,12 +3956,6 @@ def _collect_runtime_attestation(
             or canary in environment_probe.stdout
             or canary in environment_probe.stderr
         ):
-            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                print(
-                    "credential-environment-values:",
-                    repr(environment_values),
-                    file=sys.stderr,
-                )
             raise BoundaryRuntimeError(
                 "credential-isolation-failed", "pre-turn-start"
             )
@@ -4041,8 +3989,6 @@ def _collect_runtime_attestation(
             input_text="",
         )
         if canary in argv_probe.stdout + argv_probe.stderr + stdin_probe.stdout + stdin_probe.stderr:
-            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                print("credential-argv-stdin", file=sys.stderr)
             raise BoundaryRuntimeError(
                 "credential-isolation-failed", "pre-turn-start"
             )
@@ -4069,8 +4015,6 @@ def _collect_runtime_attestation(
                 or canary in proxy_probe.stdout
                 or canary in proxy_probe.stderr
             ):
-                if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                    print(f"credential-proxy:{proxy_name}", file=sys.stderr)
                 raise BoundaryRuntimeError(
                     "credential-isolation-failed", "pre-turn-start"
                 )
@@ -4134,8 +4078,6 @@ def _collect_runtime_attestation(
             expect_success=True,
         )
         if canary in process_metadata_probe.stdout + process_metadata_probe.stderr:
-            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                print("credential-process-output", file=sys.stderr)
             raise BoundaryRuntimeError(
                 "credential-isolation-failed", "pre-turn-start"
             )
