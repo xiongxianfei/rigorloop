@@ -1358,10 +1358,11 @@ def _spec_request(request: str) -> dict[str, object]:
             "The other eight core dimensions are not applicable with these "
             "exact rationales respectively: `No persisted identity is consumed.`, "
             "`The function is stateless.`, `The function grants no authority.`, "
-            "`The function performs no mutation.`, `The operation is not "
-            "interruptible.`, `The pure result has no shared state.`, `One "
-            "public function owns the behavior.`, and `No legacy representation "
-            "exists.` Include governed trim/preserve illustrations and the "
+            "`The function performs no mutation.`, the schema-defined "
+            "single-result/no-recovery rationale, `The pure result has no shared "
+            "state.`, the schema-defined public-contract conformance rationale, "
+            "and `No legacy representation exists.` Include governed "
+            "trim/preserve illustrations and the "
             "`text.regression.unknown-mode` regression. Be concise: return one "
             "complete typed record, not commentary or a profile label.\n\n"
             "Request:\n" + request
@@ -1603,9 +1604,9 @@ def _portable_text_contract() -> tuple[dict[str, object], dict[str, object]]:
         "state-transition": "The function is stateless.",
         "authorization-scope": "The function grants no authority.",
         "mutation-atomicity": "The function performs no mutation.",
-        "interruption-recovery": "The operation is not interruptible.",
+        "interruption-recovery": "The contract exposes one returned result and no partial state or recovery obligation.",
         "concurrency-idempotency": "The pure result has no shared state.",
-        "composition-bypass": "One public function owns the behavior.",
+        "composition-bypass": "Conformance is defined only for this public normalizer contract; wrappers and alternate entrypoints may claim conformance only by preserving it.",
         "compatibility-migration": "No legacy representation exists.",
     }
     core = []
@@ -1748,13 +1749,13 @@ def _render_feature_markdown(payload: Mapping[str, object]) -> str:
         "",
         "## Requirements",
         "",
-        "R1. The normalizer accepts `mode` as a Unicode scalar-value string and `text` as a sequence of Unicode scalar values; it MUST accept exactly the mode values `trim` and `preserve`. Ill-formed encoded byte sequences are outside this typed API domain.",
+        "R1. The public normalizer contract accepts `mode` as a Unicode scalar-value string and `text` as a sequence of Unicode scalar values; it MUST accept exactly the mode values `trim` and `preserve` by exact scalar-sequence comparison without normalization or case folding. It performs no externally observable state mutation, authorization action, or hidden alternate-entrypoint behavior. Ill-formed encoded byte sequences are outside this typed API domain. A conformance claim MUST include executable evidence for the typed input domain and complete mode partition.",
         "",
-        "R2. `trim` MUST remove the longest leading and trailing sequences containing exactly these Unicode scalar values: U+0009-U+000D, U+0020, U+0085, U+00A0, U+1680, U+2000-U+200A, U+2028, U+2029, U+202F, U+205F, and U+3000. This set is version-independent and changes only through a contract revision. On success it returns exactly `{\"mode\":\"trim\",\"text\":<normalized scalar-value string>}`.",
+        "R2. `trim` MUST NOT normalize text; it removes only the longest leading and trailing sequences containing exactly these Unicode scalar values: U+0009-U+000D, U+0020, U+0085, U+00A0, U+1680, U+2000-U+200A, U+2028, U+2029, U+202F, U+205F, and U+3000. This set is version-independent and changes only through a contract revision. On success it returns exactly `{\"mode\":\"trim\",\"text\":<normalized scalar-value string>}`. A conformance claim MUST include executable evidence for every listed edge scalar, interior preservation, and adjacent non-member stopping.",
         "",
-        "R3. `preserve` MUST return the exact input scalar-value sequence unchanged as `{\"mode\":\"preserve\",\"text\":<original scalar-value string>}`.",
+        "R3. `preserve` MUST perform no Unicode normalization and return the exact input scalar-value sequence unchanged as `{\"mode\":\"preserve\",\"text\":<original scalar-value string>}`. A conformance claim MUST include executable evidence covering trim-set members and canonically equivalent but scalar-distinct sequences.",
         "",
-        "R4. Every other mode string, including empty, differently cased, and future-looking values, MUST return exactly `{\"error\":\"unknown-mode\"}` and MUST NOT return `mode` or `text`.",
+        "R4. Every other exact mode scalar sequence, including empty, canonically equivalent, differently cased, and future-looking values, MUST return exactly `{\"error\":\"unknown-mode\"}` and MUST NOT return `mode` or `text`. A conformance claim MUST include executable evidence for each named unknown-mode class.",
         "",
         "## Boundary model",
         "",
