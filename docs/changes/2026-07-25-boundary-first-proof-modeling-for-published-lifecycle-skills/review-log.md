@@ -811,3 +811,14 @@ Detailed record: reviews/test-spec-review-r12.md
 Resolution: review-resolution.md#test-spec-review-r12
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit range 450bb65f..093a0677
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: BFP-CR-M2-1, BFP-CR-M2-2, BFP-CR-M2-3, BFP-CR-M2-4, BFP-CR-M2-5, BFP-CR-M2-6
+Open findings: BFP-CR-M2-1, BFP-CR-M2-2, BFP-CR-M2-3, BFP-CR-M2-4, BFP-CR-M2-5, BFP-CR-M2-6

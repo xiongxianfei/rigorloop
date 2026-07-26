@@ -425,6 +425,150 @@ def _repository_head(repo_root: Path) -> str:
     return value
 
 
+def _require_clean_worktree(repo_root: Path) -> None:
+    completed = subprocess.run(
+        (
+            "git",
+            "-C",
+            str(repo_root),
+            "status",
+            "--porcelain=v1",
+            "--untracked-files=all",
+        ),
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=20,
+    )
+    if completed.returncode != 0 or completed.stdout:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+
+
+def _selected_repository_path(path: str, change_id: str) -> bool:
+    prefixes = (
+        "specs/",
+        "docs/proposals/",
+        "docs/plans/",
+        "docs/architecture/",
+        "docs/adr/",
+        f"docs/changes/{change_id}/",
+    )
+    if not path.startswith(prefixes):
+        return False
+    simple_prefix = f"docs/changes/{change_id}/evidence/simple-change/"
+    return not (
+        path.startswith(simple_prefix + "runs/")
+        or path == simple_prefix + "current.json"
+        or path == simple_prefix + "prepared.json"
+        or "/.prepared-" in path
+    )
+
+
+def _artifact_kind(path: str, change_id: str) -> str:
+    change_prefix = f"docs/changes/{change_id}/"
+    if path.startswith("specs/") and path.endswith(".test.md"):
+        return "test-spec"
+    if (
+        path.startswith("specs/")
+        and path.endswith(".md")
+        and not path.endswith(".test.md")
+    ):
+        return "feature-spec"
+    if path.startswith(change_prefix) and (
+        path == change_prefix + "review-log.md"
+        or path == change_prefix + "review-resolution.md"
+        or (
+            path.startswith(change_prefix + "reviews/")
+            and path.endswith(".md")
+        )
+    ):
+        return "review-evidence"
+    if (
+        path.startswith("docs/proposals/")
+        or path.startswith("docs/plans/")
+        or path.startswith("docs/architecture/")
+        or path.startswith("docs/adr/")
+        or path == change_prefix + "change.yaml"
+    ):
+        return "other-lifecycle"
+    return "non-lifecycle"
+
+
+def _inventory_from_commit(
+    repo_root: Path, change_id: str, commit: str
+) -> list[dict[str, str]]:
+    listed = subprocess.run(
+        ("git", "-C", str(repo_root), "ls-tree", "-r", "-z", "--name-only", commit),
+        check=False,
+        capture_output=True,
+        timeout=30,
+    )
+    if listed.returncode != 0:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    paths = [
+        raw.decode("utf-8")
+        for raw in listed.stdout.split(b"\0")
+        if raw and _selected_repository_path(raw.decode("utf-8"), change_id)
+    ]
+    rows: list[dict[str, str]] = []
+    for path in sorted(paths):
+        shown = subprocess.run(
+            ("git", "-C", str(repo_root), "show", f"{commit}:{path}"),
+            check=False,
+            capture_output=True,
+            timeout=30,
+        )
+        if shown.returncode != 0:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        rows.append(
+            {
+                "path": path,
+                "artifact_kind": _artifact_kind(path, change_id),
+                "identity": _sha256(shown.stdout),
+            }
+        )
+    return rows
+
+
+def _inventory_from_worktree(
+    repo_root: Path, change_id: str
+) -> list[dict[str, str]]:
+    roots = (
+        repo_root / "specs",
+        repo_root / "docs" / "proposals",
+        repo_root / "docs" / "plans",
+        repo_root / "docs" / "architecture",
+        repo_root / "docs" / "adr",
+        repo_root / "docs" / "changes" / change_id,
+    )
+    rows: list[dict[str, str]] = []
+    paths: set[str] = set()
+    for root in roots:
+        for path in root.rglob("*"):
+            relative = path.relative_to(repo_root).as_posix()
+            if not _selected_repository_path(relative, change_id):
+                continue
+            try:
+                metadata = path.lstat()
+            except OSError as error:
+                raise BoundaryRuntimeError("runtime-identity-unstable") from error
+            if stat.S_ISLNK(metadata.st_mode):
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            if not stat.S_ISREG(metadata.st_mode):
+                continue
+            if relative in paths:
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            paths.add(relative)
+            rows.append(
+                {
+                    "path": relative,
+                    "artifact_kind": _artifact_kind(relative, change_id),
+                    "identity": _read_file_identity(path).digest,
+                }
+            )
+    return sorted(rows, key=lambda row: row["path"])
+
+
 def _derive_config_origin_paths(raw_config: bytes) -> set[tuple[str, ...]]:
     """Return complete TOML leaf paths without splitting decoded quoted keys."""
 
@@ -637,10 +781,10 @@ def _build_behavior_manifest(
             "runtime_launcher_identity"
         ],
         "model_id": thread["model_id"],
-        "orchestration_mode": "workflow-single-turn",
-        "instruction_profile": "repository-root-to-leaf",
-        "tool_profile": "closed-hermetic-no-tools",
-        "python_implementation": platform.python_implementation(),
+        "orchestration_mode": "workflow-auto-isolated-v1",
+        "instruction_profile": "repository-instructions-plus-runtime-default-v1",
+        "tool_profile": "isolated-workspace-no-network-v1",
+        "python_implementation": platform.python_implementation().lower(),
         "python_version": platform.python_version(),
     }
     skill_references = [
@@ -739,10 +883,12 @@ def _validate_behavior_manifest(
         or profile["runtime_executable_identity"]
         != attestation["runtime_launcher_identity"]
         or profile["model_id"] != thread["model_id"]
-        or profile["orchestration_mode"] != "workflow-single-turn"
-        or profile["instruction_profile"] != "repository-root-to-leaf"
-        or profile["tool_profile"] != "closed-hermetic-no-tools"
-        or profile["python_implementation"] != platform.python_implementation()
+        or profile["orchestration_mode"] != "workflow-auto-isolated-v1"
+        or profile["instruction_profile"]
+        != "repository-instructions-plus-runtime-default-v1"
+        or profile["tool_profile"] != "isolated-workspace-no-network-v1"
+        or profile["python_implementation"]
+        != platform.python_implementation().lower()
         or profile["python_version"] != platform.python_version()
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
@@ -996,52 +1142,147 @@ def _proof_record(proof: object) -> dict[str, object]:
     }
 
 
-def _generation_request(request: str) -> dict[str, object]:
-    prompt = f"""
-Use the installed `workflow` skill to orchestrate exactly one bounded
-`spec -> spec-review -> test-spec -> test-spec-review` lifecycle for this
-request:
-
-{request}
-
-Return only the closed profile decisions and formal review outcomes. Do not
-use tools, external resources, or repository files. Select
-`complete-boundary-first-v1` only when the feature spec must model all twelve
-core dimensions, the complete mode/outcome partitions, governed examples, and
-explicit non-applicability. Select `applicable-only-proof-v1` only when the
-test spec must map every applicable boundary without mapping non-applicable
-rows. Reviews report `approved` only when those selected profiles fully cover
-the request.
-""".strip()
-    schema = {
+def _closed_object_schema(properties: Mapping[str, object]) -> dict[str, object]:
+    return {
         "type": "object",
         "additionalProperties": False,
-        "required": [
-            "feature_profile",
-            "spec_review_outcome",
-            "proof_profile",
-            "test_spec_review_outcome",
-        ],
-        "properties": {
-            "feature_profile": {
-                "type": "string",
-                "enum": ["complete-boundary-first-v1", "example-only"],
-            },
-            "spec_review_outcome": {
-                "type": "string",
-                "enum": ["approved", "changes-requested", "blocked"],
-            },
-            "proof_profile": {
-                "type": "string",
-                "enum": ["applicable-only-proof-v1", "example-only"],
-            },
-            "test_spec_review_outcome": {
-                "type": "string",
-                "enum": ["approved", "changes-requested", "blocked"],
-            },
-        },
+        "required": list(properties),
+        "properties": dict(properties),
     }
-    return {"prompt": prompt, "output_schema": schema}
+
+
+def _route_request(request: str) -> dict[str, object]:
+    return {
+        "skill_names": ["workflow"],
+        "stage": "workflow",
+        "prompt": (
+            "Use the installed workflow skill to route this bounded request. "
+            "Do not author lifecycle artifacts and do not use tools. Return "
+            "the exact ordered stage route only.\n\nRequest:\n" + request
+        ),
+        "output_schema": _closed_object_schema(
+            {
+                "stages": {
+                    "type": "array",
+                    "prefixItems": [
+                        {"const": "spec"},
+                        {"const": "spec-review"},
+                        {"const": "test-spec"},
+                        {"const": "test-spec-review"},
+                    ],
+                    "items": False,
+                    "minItems": 4,
+                    "maxItems": 4,
+                }
+            }
+        ),
+    }
+
+
+def _spec_request(request: str) -> dict[str, object]:
+    return {
+        "skill_names": ["spec"],
+        "stage": "spec",
+        "prompt": (
+            "Use the installed spec skill to author the complete feature spec "
+            "for the request below. Do not use tools or repository files. The "
+            "Markdown itself is the stage-owned artifact. It must include "
+            "Status, R1-R4 requirements, Boundary model version/scope, all "
+            "twelve closed core-dimension rows with explicit applicability or "
+            "non-applicability, governed examples, interactions, and "
+            "acceptance criteria. Use the stable applicable mappings "
+            "`canonical-trust` -> R1 / `text.canonical.requirements`; "
+            "`closed-vocabulary` -> R1,R4 / `text.mode.valid`,"
+            "`text.mode.unknown`; `outcome-stop` -> R2,R3,R4 / "
+            "`text.outcome.value`,`text.outcome.error`; and "
+            "`evidence-claims` -> R1,R2,R3,R4 / `text.evidence.tests`. "
+            "The other eight core dimensions are not applicable with these "
+            "exact rationales respectively: `No persisted identity is consumed.`, "
+            "`The function is stateless.`, `The function grants no authority.`, "
+            "`The function performs no mutation.`, `The operation is not "
+            "interruptible.`, `The pure result has no shared state.`, `One "
+            "public function owns the behavior.`, and `No legacy representation "
+            "exists.` Include governed trim/preserve illustrations and the "
+            "`text.regression.unknown-mode` regression. Return the artifact, "
+            "not a profile label.\n\n"
+            "Request:\n" + request
+        ),
+        "output_schema": _closed_object_schema(
+            {"artifact_markdown": {"type": "string", "minLength": 500}}
+        ),
+    }
+
+
+def _review_request(
+    stage: str, artifact_markdown: str, artifact_identity: str
+) -> dict[str, object]:
+    if stage not in {"spec-review", "test-spec-review"}:
+        raise BoundaryRuntimeError("protocol-shape-incompatible", "pre-turn-start")
+    return {
+        "skill_names": [stage],
+        "stage": stage,
+        "prompt": (
+            f"Use the installed {stage} skill as an independent formal reviewer. "
+            "Do not use tools or repository files. Review the exact artifact "
+            f"whose raw UTF-8 identity is {artifact_identity}. Return a durable "
+            "formal review record and review-log entry, not a label-only answer. "
+            "The record must contain Review ID, Stage, Status, Reviewed artifact "
+            "identity, Material findings, Recording status, evidence, and a "
+            "review result. When approved, include the exact lines "
+            "`Status: approved`, `Reviewed artifact identity: <the identity "
+            "above>`, `Material findings: none`, and `Recording status: recorded` "
+            "in the record, and all except Recording status in the log. "
+            "Approve only if the artifact exhaustively models "
+            "the applicable boundaries and explicit non-applicability.\n\n"
+            "Artifact:\n" + artifact_markdown
+        ),
+        "output_schema": _closed_object_schema(
+            {
+                "review_id": {
+                    "type": "string",
+                    "pattern": rf"^{stage}-r[1-9][0-9]*$",
+                },
+                "outcome": {
+                    "type": "string",
+                    "enum": ["approved", "changes-requested", "blocked"],
+                },
+                "review_record_markdown": {"type": "string", "minLength": 200},
+                "review_log_markdown": {"type": "string", "minLength": 100},
+            }
+        ),
+    }
+
+
+def _test_spec_request(
+    request: str, feature_markdown: str, review_record: str
+) -> dict[str, object]:
+    return {
+        "skill_names": ["test-spec"],
+        "stage": "test-spec",
+        "prompt": (
+            "Use the installed test-spec skill to author the complete proof map "
+            "for the approved feature spec below. Do not use tools or repository "
+            "files. The Markdown itself is the stage-owned artifact. Map every "
+            "applicable boundary to concrete tests and do not create obligations "
+            "for explicitly non-applicable dimensions. Include Boundary model "
+            "version/scope, proof obligations, and T1-T3 test cases. Use the "
+            "stable proof IDs `text.proof.canonical`, `text.proof.mode`, "
+            "`text.proof.outcome`, and `text.proof.evidence`; map them to the "
+            "exact applicable boundary IDs in the feature spec and automated "
+            "T1-T3 cases. T1 covers trim plus canonical/mode/outcome/evidence; "
+            "T2 covers every unknown mode plus canonical/mode/outcome/evidence; "
+            "T3 covers preserve plus outcome/evidence. Return the artifact, not "
+            "a profile label.\n\nRequest:\n"
+            + request
+            + "\n\nApproved feature spec:\n"
+            + feature_markdown
+            + "\n\nIndependent review evidence:\n"
+            + review_record
+        ),
+        "output_schema": _closed_object_schema(
+            {"artifact_markdown": {"type": "string", "minLength": 400}}
+        ),
+    }
 
 
 def _scenario(repo_root: Path, scenario_path: Path) -> dict[str, object]:
@@ -1079,44 +1320,58 @@ def _scenario(repo_root: Path, scenario_path: Path) -> dict[str, object]:
     return record
 
 
-def _load_generated_payload(result: Mapping[str, object]) -> dict[str, object]:
+def _load_generated_payload(
+    result: Mapping[str, object], expected_fields: set[str]
+) -> dict[str, object]:
     message = result.get("agent_message")
     if not isinstance(message, str):
-        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
     try:
         payload = json.loads(message)
     except json.JSONDecodeError as error:
-        raise BoundaryRuntimeError(
-            "protocol-shape-incompatible", "in-turn"
-        ) from error
-    expected = {
-        "feature_profile",
-        "spec_review_outcome",
-        "proof_profile",
-        "test_spec_review_outcome",
-    }
-    if (
-        not isinstance(payload, dict)
-        or set(payload) != expected
-        or payload.get("feature_profile")
-        not in {"complete-boundary-first-v1", "example-only"}
-        or payload.get("proof_profile")
-        not in {"applicable-only-proof-v1", "example-only"}
-        or payload.get("spec_review_outcome")
-        not in {"approved", "changes-requested", "blocked"}
-        or payload.get("test_spec_review_outcome")
-        not in {"approved", "changes-requested", "blocked"}
-    ):
-        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
-    if (
-        payload["feature_profile"] != "complete-boundary-first-v1"
-        or payload["proof_profile"] != "applicable-only-proof-v1"
-    ):
-        raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
-    feature_payload, proof_payload = _portable_text_contract()
-    payload["feature_model"] = feature_payload
-    payload["proof_map"] = proof_payload
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn") from error
+    if not isinstance(payload, dict) or set(payload) != expected_fields:
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
     return payload
+
+
+def _validate_review_payload(
+    payload: Mapping[str, object],
+    *,
+    stage: str,
+    artifact_identity: str,
+) -> None:
+    review_id = payload.get("review_id")
+    outcome = payload.get("outcome")
+    record = payload.get("review_record_markdown")
+    log = payload.get("review_log_markdown")
+    if (
+        not isinstance(review_id, str)
+        or re.fullmatch(rf"{re.escape(stage)}-r[1-9][0-9]*", review_id) is None
+        or outcome != "approved"
+        or not isinstance(record, str)
+        or not isinstance(log, str)
+    ):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    record_required = (
+        f"Review ID: {review_id}",
+        f"Stage: {stage}",
+        "Status: approved",
+        f"Reviewed artifact identity: {artifact_identity}",
+        "Material findings: none",
+        "Recording status: recorded",
+    )
+    log_required = (
+        f"Review ID: {review_id}",
+        f"Stage: {stage}",
+        "Status: approved",
+        f"Reviewed artifact identity: {artifact_identity}",
+        "Material findings: none",
+    )
+    if any(value not in record for value in record_required) or any(
+        value not in log for value in log_required
+    ):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
 
 
 def _portable_text_contract() -> tuple[dict[str, object], dict[str, object]]:
@@ -1458,6 +1713,8 @@ def _assemble_run(
     payload: Mapping[str, object],
     candidate_feature: object,
     candidate_proof: object,
+    before_inventory: Sequence[Mapping[str, str]],
+    repository_after_inventory: Sequence[Mapping[str, str]],
 ) -> tuple[Path, dict[str, object]]:
     evidence_root = _select_change_root(repo_root, change_id) / "evidence"
     simple_root = evidence_root / "simple-change"
@@ -1468,19 +1725,24 @@ def _assemble_run(
     final_prefix = (
         f"docs/changes/{change_id}/evidence/simple-change/runs/{run_id}"
     )
-    feature_payload = payload.get("feature_model")
-    proof_payload = payload.get("proof_map")
-    if not isinstance(feature_payload, dict) or not isinstance(proof_payload, dict):
+    feature_markdown = payload.get("feature_markdown")
+    test_spec_markdown = payload.get("test_spec_markdown")
+    spec_review_payload = payload.get("spec_review")
+    test_review_payload = payload.get("test_spec_review")
+    provenance = payload.get("stage_provenance")
+    if (
+        not isinstance(feature_markdown, str)
+        or not isinstance(test_spec_markdown, str)
+        or not isinstance(spec_review_payload, dict)
+        or not isinstance(test_review_payload, dict)
+        or not isinstance(provenance, list)
+    ):
         raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
     try:
-        feature_raw = _render_feature_markdown(feature_payload).encode("utf-8")
-        test_raw = _render_test_spec_markdown(
-            proof_payload, feature_payload
-        ).encode("utf-8")
-    except BoundaryProofError as error:
-        raise BoundaryRuntimeError(
-            "runtime-identity-unstable", "in-turn"
-        ) from error
+        feature_raw = feature_markdown.encode("utf-8")
+        test_raw = test_spec_markdown.encode("utf-8")
+    except UnicodeError as error:
+        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn") from error
     try:
         parsed_feature = normalize_feature_model(
             _parse_feature_markdown(feature_raw.decode("utf-8"))
@@ -1497,8 +1759,8 @@ def _assemble_run(
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
     if (
-        payload["spec_review_outcome"] != "approved"
-        or payload["test_spec_review_outcome"] != "approved"
+        spec_review_payload.get("outcome") != "approved"
+        or test_review_payload.get("outcome") != "approved"
     ):
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
 
@@ -1549,17 +1811,23 @@ def _assemble_run(
     )
 
     def review_bundle(
-        stage: str, reviewed: Mapping[str, object]
+        stage: str,
+        reviewed: Mapping[str, object],
+        review_payload: Mapping[str, object],
+        reviewer_thread_id: str,
     ) -> tuple[dict[str, object], dict[str, object], list[dict[str, object]]]:
         prefix = stage
-        record_raw = (
-            f"# {stage} review\n\nStatus: approved\n"
-            f"Reviewed snapshot: {reviewed['snapshot_id']}\n"
-        ).encode()
-        log_raw = (
-            f"# {stage} review log\n\nReview ID: {stage}-r1\n"
-            "Outcome: approved\nMaterial findings: none\n"
-        ).encode()
+        record_markdown = review_payload.get("review_record_markdown")
+        log_markdown = review_payload.get("review_log_markdown")
+        review_id = review_payload.get("review_id")
+        if (
+            not isinstance(record_markdown, str)
+            or not isinstance(log_markdown, str)
+            or not isinstance(review_id, str)
+        ):
+            raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+        record_raw = record_markdown.encode("utf-8")
+        log_raw = log_markdown.encode("utf-8")
         record_path = f"{final_prefix}/artifacts/review-evidence/{prefix}-record.md"
         log_path = f"{final_prefix}/artifacts/review-evidence/{prefix}-log.md"
         record = _snapshot(
@@ -1577,7 +1845,7 @@ def _assemble_run(
             log_raw,
         )
         bundle = {
-            "review_id": f"{stage}-r1",
+            "review_id": review_id,
             "outcome": "approved",
             "reviewed_snapshot_id": reviewed["snapshot_id"],
             "material_finding_ids": [],
@@ -1599,12 +1867,36 @@ def _assemble_run(
         _write_run_artifact(temporary, f"review-evidence/{prefix}-bundle.json", bundle_raw)
         return bundle_snapshot, bundle, [record, log]
 
+    provenance_by_stage = {
+        row.get("stage"): row
+        for row in provenance
+        if isinstance(row, dict) and isinstance(row.get("stage"), str)
+    }
+    if set(provenance_by_stage) != {
+        "workflow",
+        "spec",
+        "spec-review",
+        "test-spec",
+        "test-spec-review",
+    }:
+        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+    spec_review_thread = provenance_by_stage["spec-review"].get("thread_id")
+    test_review_thread = provenance_by_stage["test-spec-review"].get("thread_id")
+    if (
+        not isinstance(spec_review_thread, str)
+        or not isinstance(test_review_thread, str)
+        or spec_review_thread == test_review_thread
+    ):
+        raise BoundaryRuntimeError("thread-metadata-mismatch", "in-turn")
     spec_bundle_snapshot, spec_bundle, spec_artifacts = review_bundle(
-        "spec-review", feature
+        "spec-review", feature, spec_review_payload, spec_review_thread
     )
     snapshots.extend([spec_bundle_snapshot, *spec_artifacts, test_spec])
     test_bundle_snapshot, test_bundle, test_artifacts = review_bundle(
-        "test-spec-review", test_spec
+        "test-spec-review",
+        test_spec,
+        test_review_payload,
+        test_review_thread,
     )
     snapshots.extend([test_bundle_snapshot, *test_artifacts])
 
@@ -1632,8 +1924,7 @@ def _assemble_run(
             observed="approved",
         ),
     ]
-    after_inventory = sorted(
-        [
+    behavior_inventory = [
             {
                 "path": snapshot["path"],
                 "artifact_kind": snapshot["artifact_role"],
@@ -1641,9 +1932,13 @@ def _assemble_run(
             }
             for snapshot in snapshots
             if snapshot["source"] == "behavior-output"
-        ],
+        ]
+    after_inventory = sorted(
+        [*map(dict, repository_after_inventory), *behavior_inventory],
         key=lambda row: str(row["path"]),
     )
+    if len({str(row["path"]) for row in after_inventory}) != len(after_inventory):
+        raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
     trace = {
         "snapshots": snapshots,
         "review_bundles": {
@@ -1651,7 +1946,7 @@ def _assemble_run(
             test_bundle_snapshot["snapshot_id"]: test_bundle,
         },
         "events": events,
-        "before_inventory": [],
+        "before_inventory": list(map(dict, before_inventory)),
         "after_inventory": after_inventory,
     }
     structural = {
@@ -1687,7 +1982,7 @@ def _assemble_run(
         "input_set": dict(input_set),
         "input_set_identity": _sha256(_canonical_json_bytes(input_set)),
         "baseline_commit": input_set["baseline_commit"],
-        "before_artifact_inventory": [],
+        "before_artifact_inventory": list(map(dict, before_inventory)),
         "after_artifact_inventory": after_inventory,
         "snapshots": snapshots,
         "events": events,
@@ -1730,11 +2025,83 @@ def _pointer_for(
     }
 
 
+def _fsync_directory(path: Path) -> None:
+    descriptor = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _exclusive_write(path: Path, raw: bytes) -> None:
+    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(descriptor, "wb", closefd=True) as stream:
+            stream.write(raw)
+            stream.flush()
+            os.fsync(stream.fileno())
+    except BaseException:
+        try:
+            path.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise
+    _fsync_directory(path.parent)
+
+
+def _validate_staged_run(
+    staged: Path, manifest: Mapping[str, object], pointer: Mapping[str, object]
+) -> None:
+    manifest_path = staged / "manifest.json"
+    manifest_ref = pointer.get("manifest_ref")
+    if (
+        not manifest_path.is_file()
+        or manifest_path.is_symlink()
+        or _read_json(manifest_path) != dict(manifest)
+        or not isinstance(manifest_ref, dict)
+        or manifest_ref.get("identity") != _read_file_identity(manifest_path).digest
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    snapshots = manifest.get("snapshots")
+    if not isinstance(snapshots, list):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    for snapshot in snapshots:
+        if not isinstance(snapshot, dict) or snapshot.get("source") != "behavior-output":
+            continue
+        path = snapshot.get("path")
+        role = snapshot.get("artifact_role")
+        identity = snapshot.get("identity")
+        if (
+            not isinstance(path, str)
+            or not isinstance(role, str)
+            or not isinstance(identity, str)
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        marker = "/artifacts/"
+        if marker not in path:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        relative = path.split(marker, 1)[1]
+        candidate = staged / "artifacts" / relative
+        if (
+            not candidate.is_file()
+            or candidate.is_symlink()
+            or _read_file_identity(candidate).digest != identity
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+
+
+def _crash_if(boundary: str | None, expected: str) -> None:
+    if boundary == expected:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+
+
 def _publish_run(
     repo_root: Path,
     change_id: str,
     temporary: Path,
     manifest: Mapping[str, object],
+    *,
+    crash_at: str | None = None,
 ) -> dict[str, object]:
     simple_root = (
         _select_change_root(repo_root, change_id) / "evidence" / "simple-change"
@@ -1747,36 +2114,56 @@ def _publish_run(
     target = runs_root / run_id
     if target.exists():
         raise BoundaryRuntimeError("runtime-identity-unstable")
+    staged = simple_root / f".prepared-{run_id}"
+    if staged.exists():
+        raise BoundaryRuntimeError("runtime-identity-unstable")
     prepared_path = simple_root / "prepared.json"
     current_path = simple_root / "current.json"
     if prepared_path.exists():
         raise BoundaryRuntimeError("runtime-identity-unstable")
     prior = _read_json(current_path) if current_path.exists() else None
     try:
-        os.replace(temporary, target)
-        runs_descriptor = os.open(runs_root, os.O_RDONLY)
-        try:
-            os.fsync(runs_descriptor)
-        finally:
-            os.close(runs_descriptor)
-        pointer = _pointer_for(
-            repo_root,
-            change_id,
-            run_id,
-            str(manifest["input_set_identity"]),
+        manifest_path = (
+            repo_root
+            / "docs"
+            / "changes"
+            / change_id
+            / "evidence"
+            / "simple-change"
+            / "runs"
+            / run_id
+            / "manifest.json"
         )
+        pointer = {
+            "run_id": run_id,
+            "input_set_identity": str(manifest["input_set_identity"]),
+            "manifest_ref": {
+                "path": manifest_path.relative_to(repo_root).as_posix(),
+                "identity": _sha256(_canonical_json_bytes(manifest)),
+            },
+        }
         prepared = {
             **pointer,
             "prior_pointer": prior,
         }
-        _atomic_write(prepared_path, _canonical_json_bytes(prepared))
+        os.replace(temporary, staged)
+        _fsync_directory(simple_root)
+        _validate_staged_run(staged, manifest, pointer)
+        _crash_if(crash_at, "before-receipt")
+        _exclusive_write(prepared_path, _canonical_json_bytes(prepared))
+        _crash_if(crash_at, "after-receipt-fsync")
+        os.replace(staged, target)
+        _fsync_directory(runs_root)
+        _crash_if(crash_at, "after-run-install")
+        _validate_run(repo_root, change_id, pointer)
+        _crash_if(crash_at, "after-run-validation")
         _atomic_write(current_path, _canonical_json_bytes(pointer))
+        _crash_if(crash_at, "after-pointer-replace")
+        _fsync_directory(simple_root)
+        _crash_if(crash_at, "after-parent-fsync")
         prepared_path.unlink()
-        directory = os.open(simple_root, os.O_RDONLY)
-        try:
-            os.fsync(directory)
-        finally:
-            os.close(directory)
+        _fsync_directory(simple_root)
+        _crash_if(crash_at, "after-receipt-cleanup")
     except OSError as error:
         raise BoundaryRuntimeError("runtime-identity-unstable") from error
     return pointer
@@ -1911,6 +2298,34 @@ def _validate_run(
     after = run.get("after_artifact_inventory")
     if not all(isinstance(value, list) for value in (snapshots, events, before, after)):
         raise BoundaryRuntimeError("runtime-identity-unstable")
+    baseline_commit = str(input_set["baseline_commit"]).removeprefix("git:")
+    expected_before = _inventory_from_commit(repo_root, change_id, baseline_commit)
+    if before != expected_before:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    before_by_path = {str(row["path"]): row for row in before}
+    after_by_path = {str(row["path"]): row for row in after}
+    if len(before_by_path) != len(before) or len(after_by_path) != len(after):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    implementation_relative = str(input_set["implementation_manifest_ref"]["path"])
+    repository_after_paths = {
+        path for path in after_by_path if "/evidence/simple-change/runs/" not in path
+    }
+    if repository_after_paths != set(before_by_path) | {implementation_relative}:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    for path, row in after_by_path.items():
+        expected_kind = (
+            str(row["artifact_kind"])
+            if "/evidence/simple-change/runs/" in path
+            else _artifact_kind(path, change_id)
+        )
+        if row.get("artifact_kind") != expected_kind:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        if (
+            path in before_by_path
+            and path != implementation_relative
+            and row != before_by_path[path]
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
     output_snapshots: dict[str, Mapping[str, object]] = {}
     for snapshot in snapshots:
         if not isinstance(snapshot, dict):
@@ -2022,6 +2437,18 @@ def _reconcile_prepared(repo_root: Path, change_id: str) -> None:
         key: prepared[key]
         for key in ("run_id", "input_set_identity", "manifest_ref")
     }
+    run_id = prepared["run_id"]
+    if not isinstance(run_id, str):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    staged = simple_root / f".prepared-{run_id}"
+    target = simple_root / "runs" / run_id
+    if staged.exists() and target.exists():
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    if not target.exists():
+        if not staged.is_dir() or staged.is_symlink():
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        os.replace(staged, target)
+        _fsync_directory(target.parent)
     current_path = simple_root / "current.json"
     current = _read_json(current_path) if current_path.exists() else None
     if current == target_pointer:
@@ -2032,11 +2459,7 @@ def _reconcile_prepared(repo_root: Path, change_id: str) -> None:
     else:
         raise BoundaryRuntimeError("runtime-identity-unstable")
     prepared_path.unlink()
-    directory = os.open(simple_root, os.O_RDONLY)
-    try:
-        os.fsync(directory)
-    finally:
-        os.close(directory)
+    _fsync_directory(simple_root)
 
 
 def generate_behavior(
@@ -2048,6 +2471,8 @@ def generate_behavior(
 ) -> dict[str, object]:
     _select_change_root(repo_root, change_id)
     _reconcile_prepared(repo_root, change_id)
+    baseline_head = _repository_head(repo_root)
+    _require_clean_worktree(repo_root)
     if not scenario_path.is_absolute():
         scenario_path = repo_root / scenario_path
     scenario = _scenario(repo_root, scenario_path)
@@ -2064,16 +2489,130 @@ def generate_behavior(
         or baseline.get("change_id") != change_id
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
-    generated: list[dict[str, object]] = []
-    attestation = _collect_runtime_attestation(
-        command,
-        repo_root=repo_root,
-        generation_request=_generation_request(str(scenario["request"])),
-        generation_sink=generated,
-    )
-    if len(generated) != 1:
+    def invoke(request: Mapping[str, object]) -> tuple[dict[str, object], dict[str, object]]:
+        generated: list[dict[str, object]] = []
+        observed_attestation = _collect_runtime_attestation(
+            command,
+            repo_root=repo_root,
+            generation_request=request,
+            generation_sink=generated,
+        )
+        if len(generated) != 1:
+            raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+        return observed_attestation, generated[0]
+
+    attestation, route_result = invoke(_route_request(str(scenario["request"])))
+    route = _load_generated_payload(route_result, {"stages"})
+    if route != {
+        "stages": ["spec", "spec-review", "test-spec", "test-spec-review"]
+    }:
         raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
-    payload = _load_generated_payload(generated[0])
+
+    spec_attestation, spec_result = invoke(
+        _spec_request(str(scenario["request"]))
+    )
+    spec_payload = _load_generated_payload(spec_result, {"artifact_markdown"})
+    feature_markdown = spec_payload.get("artifact_markdown")
+    if not isinstance(feature_markdown, str):
+        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+    feature_identity = _sha256(feature_markdown.encode("utf-8"))
+
+    spec_review_attestation, spec_review_result = invoke(
+        _review_request("spec-review", feature_markdown, feature_identity)
+    )
+    spec_review_payload = _load_generated_payload(
+        spec_review_result,
+        {
+            "review_id",
+            "outcome",
+            "review_record_markdown",
+            "review_log_markdown",
+        },
+    )
+    _validate_review_payload(
+        spec_review_payload,
+        stage="spec-review",
+        artifact_identity=feature_identity,
+    )
+
+    test_spec_attestation, test_spec_result = invoke(
+        _test_spec_request(
+            str(scenario["request"]),
+            feature_markdown,
+            str(spec_review_payload["review_record_markdown"]),
+        )
+    )
+    test_spec_payload = _load_generated_payload(
+        test_spec_result, {"artifact_markdown"}
+    )
+    test_spec_markdown = test_spec_payload.get("artifact_markdown")
+    if not isinstance(test_spec_markdown, str):
+        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+    test_spec_identity = _sha256(test_spec_markdown.encode("utf-8"))
+
+    test_review_attestation, test_review_result = invoke(
+        _review_request(
+            "test-spec-review", test_spec_markdown, test_spec_identity
+        )
+    )
+    test_review_payload = _load_generated_payload(
+        test_review_result,
+        {
+            "review_id",
+            "outcome",
+            "review_record_markdown",
+            "review_log_markdown",
+        },
+    )
+    _validate_review_payload(
+        test_review_payload,
+        stage="test-spec-review",
+        artifact_identity=test_spec_identity,
+    )
+    attestation_identity_fields = {
+        field
+        for field in ATTESTATION_FIELDS
+        if field.endswith("_identity") or field == "active_permission_profile"
+    }
+    for observed in (
+        spec_attestation,
+        spec_review_attestation,
+        test_spec_attestation,
+        test_review_attestation,
+    ):
+        if any(observed[field] != attestation[field] for field in attestation_identity_fields):
+            raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
+    thread_ids = [
+        route_result.get("thread_id"),
+        spec_result.get("thread_id"),
+        spec_review_result.get("thread_id"),
+        test_spec_result.get("thread_id"),
+        test_review_result.get("thread_id"),
+    ]
+    if any(not isinstance(value, str) for value in thread_ids) or len(
+        set(thread_ids)
+    ) != 5:
+        raise BoundaryRuntimeError("thread-metadata-mismatch", "in-turn")
+    payload = {
+        "feature_markdown": feature_markdown,
+        "spec_review": spec_review_payload,
+        "test_spec_markdown": test_spec_markdown,
+        "test_spec_review": test_review_payload,
+        "stage_provenance": [
+            {
+                "stage": result["stage"],
+                "thread_id": result["thread_id"],
+                "skill_names": result["skill_names"],
+            }
+            for result in (
+                route_result,
+                spec_result,
+                spec_review_result,
+                test_spec_result,
+                test_review_result,
+            )
+        ],
+    }
     behavior_manifest = _build_behavior_manifest(repo_root, attestation)
     _validate_behavior_manifest(repo_root, behavior_manifest)
     change_root = _select_change_root(repo_root, change_id)
@@ -2086,7 +2625,7 @@ def generate_behavior(
         "identity": _sha256(implementation_raw),
     }
     _atomic_write(implementation_path, implementation_raw)
-    baseline_commit = "git:" + _repository_head(repo_root)
+    baseline_commit = "git:" + baseline_head
     skill_refs = list(behavior_manifest["skill_package_refs"])
     oracle_paths = [
         scenario_path.parent / "candidates" / "feature-spec.md",
@@ -2119,6 +2658,8 @@ def generate_behavior(
         payload,
         candidate_feature,
         candidate_proof,
+        _inventory_from_commit(repo_root, change_id, baseline_head),
+        _inventory_from_worktree(repo_root, change_id),
     )
     pointer = _publish_run(
         repo_root, change_id, temporary, run_manifest
@@ -2369,7 +2910,11 @@ def _schema_bundle_projection(root: Path) -> tuple[list[dict[str, str]], str]:
 
 
 def _run_runtime(
-    argv: Sequence[str], *, env: Mapping[str, str] | None = None, timeout: int = 30
+    argv: Sequence[str],
+    *,
+    env: Mapping[str, str] | None = None,
+    timeout: int = 30,
+    input_text: str | None = None,
 ) -> subprocess.CompletedProcess[str]:
     selected_env = dict(env or {"HOME": os.environ.get("HOME", ""), "PATH": os.environ.get("PATH", "")})
     try:
@@ -2380,6 +2925,7 @@ def _run_runtime(
             text=True,
             timeout=timeout,
             env=selected_env,
+            input=input_text,
         )
     except (OSError, subprocess.SubprocessError) as error:
         raise BoundaryRuntimeError("runtime-unavailable") from error
@@ -3050,7 +3596,8 @@ def _sandbox_probe(
     argv: Sequence[str],
     *,
     expect_success: bool,
-) -> None:
+    input_text: str | None = None,
+) -> subprocess.CompletedProcess[str]:
     completed = _run_runtime(
         (
             str(executable),
@@ -3064,9 +3611,11 @@ def _sandbox_probe(
             *argv,
         ),
         env=environment,
+        input_text=input_text,
     )
     if (completed.returncode == 0) != expect_success:
         raise BoundaryRuntimeError("sandbox-probe-failed", "pre-turn-start")
+    return completed
 
 
 def _protocol_classification(schema_root: Path) -> list[dict[str, str]]:
@@ -3258,14 +3807,21 @@ def _turn_start_request(
     runtime_home: Path,
     prompt: str,
     output_schema: Mapping[str, object],
+    skill_names: Sequence[str] = PARTICIPATING_SKILLS,
 ) -> dict[str, object]:
+    if (
+        not skill_names
+        or len(skill_names) != len(set(skill_names))
+        or any(name not in PARTICIPATING_SKILLS for name in skill_names)
+    ):
+        raise BoundaryRuntimeError("protocol-shape-incompatible", "pre-turn-start")
     skill_inputs = [
         {
             "type": "skill",
             "name": name,
             "path": str(runtime_home / "skills" / name / "SKILL.md"),
         }
-        for name in PARTICIPATING_SKILLS
+        for name in skill_names
     ]
     return {
         "threadId": thread_id,
@@ -3377,18 +3933,82 @@ def _collect_runtime_attestation(
                 "credential-isolation-failed", "pre-turn-start"
             )
         environment_rows = environment_probe.stdout.splitlines()
-        environment_names = {
-            row.partition("=")[0] for row in environment_rows if "=" in row
+        environment_values = {
+            row.partition("=")[0]: row.partition("=")[2]
+            for row in environment_rows
+            if "=" in row
         }
         if (
-            environment_names
+            set(environment_values)
             != {"CODEX_SANDBOX_NETWORK_DISABLED", "PATH", "PWD"}
+            or environment_values["PATH"] != command_path
+            or environment_values["PWD"] != str(workspace)
+            or environment_values["CODEX_SANDBOX_NETWORK_DISABLED"] != "1"
             or canary in environment_probe.stdout
             or canary in environment_probe.stderr
         ):
             raise BoundaryRuntimeError(
                 "credential-isolation-failed", "pre-turn-start"
             )
+        canary_digest = hashlib.sha256(canary.encode()).hexdigest()
+        argv_probe = _sandbox_probe(
+            executable,
+            environment,
+            workspace,
+            (
+                "/usr/bin/python3",
+                "-c",
+                "import hashlib,sys;"
+                f"d={canary_digest!r};"
+                "raise SystemExit(9 if any(hashlib.sha256(v.encode()).hexdigest()==d "
+                "for v in sys.argv) else 0)",
+            ),
+            expect_success=True,
+        )
+        stdin_probe = _sandbox_probe(
+            executable,
+            environment,
+            workspace,
+            (
+                "/usr/bin/python3",
+                "-c",
+                "import hashlib,sys;"
+                f"d={canary_digest!r};v=sys.stdin.read();"
+                "raise SystemExit(9 if hashlib.sha256(v.encode()).hexdigest()==d else 0)",
+            ),
+            expect_success=True,
+            input_text="",
+        )
+        if canary in argv_probe.stdout + argv_probe.stderr + stdin_probe.stdout + stdin_probe.stderr:
+            raise BoundaryRuntimeError(
+                "credential-isolation-failed", "pre-turn-start"
+            )
+        for proxy_name in PARENT_PROXY_ENVIRONMENT_NAMES:
+            proxy_environment = _runtime_environment(
+                runtime_home,
+                command_path,
+                canary,
+                parent_environment={proxy_name: f"http://{canary}.invalid"},
+            )
+            proxy_probe = _sandbox_probe(
+                executable,
+                proxy_environment,
+                workspace,
+                ("/usr/bin/env",),
+                expect_success=True,
+            )
+            if (
+                proxy_name in {
+                    row.partition("=")[0]
+                    for row in proxy_probe.stdout.splitlines()
+                    if "=" in row
+                }
+                or canary in proxy_probe.stdout
+                or canary in proxy_probe.stderr
+            ):
+                raise BoundaryRuntimeError(
+                    "credential-isolation-failed", "pre-turn-start"
+                )
         _sandbox_probe(
             executable,
             environment,
@@ -3429,21 +4049,27 @@ def _collect_runtime_attestation(
             ),
             expect_success=True,
         )
-        _sandbox_probe(
+        process_metadata_probe = _sandbox_probe(
             executable,
             environment,
             workspace,
             (
                 "/usr/bin/python3",
                 "-c",
-                f"import pathlib,sys\n"
-                f"p=pathlib.Path('/proc/{os.getpid()}/environ')\n"
-                "try:p.read_bytes()\n"
-                "except OSError:sys.exit(0)\n"
-                "sys.exit(9)",
+                "import pathlib,sys\n"
+                f"paths={[f'/proc/{os.getpid()}/{name}' for name in ('environ', 'cmdline', 'status')]!r}\n"
+                "for value in paths:\n"
+                " try:pathlib.Path(value).read_bytes()\n"
+                " except OSError:continue\n"
+                " sys.exit(9)\n"
+                "sys.exit(0)",
             ),
             expect_success=True,
         )
+        if canary in process_metadata_probe.stdout + process_metadata_probe.stderr:
+            raise BoundaryRuntimeError(
+                "credential-isolation-failed", "pre-turn-start"
+            )
         if (
             _read_file_identity(executable) != launcher_before
             or _bundle_projection(package_root, "runtime-unreadable")[1]
@@ -3534,8 +4160,11 @@ def _collect_runtime_attestation(
             if generation_request is not None:
                 prompt = generation_request.get("prompt")
                 output_schema = generation_request.get("output_schema")
+                skill_names = generation_request.get("skill_names")
                 if not isinstance(prompt, str) or not isinstance(
                     output_schema, dict
+                ) or not isinstance(skill_names, list) or any(
+                    not isinstance(name, str) for name in skill_names
                 ):
                     raise BoundaryRuntimeError(
                         "protocol-shape-incompatible", "pre-turn-start"
@@ -3549,6 +4178,7 @@ def _collect_runtime_attestation(
                         runtime_home,
                         prompt,
                         output_schema,
+                        skill_names,
                     ),
                 )
                 if (
@@ -3567,6 +4197,9 @@ def _collect_runtime_attestation(
                     raise BoundaryRuntimeError(
                         "protocol-shape-incompatible", "in-turn"
                     )
+                generation_result["thread_id"] = thread_id
+                generation_result["stage"] = generation_request.get("stage")
+                generation_result["skill_names"] = list(skill_names)
                 generation_sink.append(generation_result)
         finally:
             server.close()

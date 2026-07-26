@@ -1649,6 +1649,98 @@ No material findings.
 Test-spec-review R12 confirmed BFP-TSR11-1 and BFP-TSR11-2 resolved and
 approved the current M2 proof map for implementation.
 
+### code-review-m2-r1
+
+#### BFP-CR-M2-1 - Fresh workflow evidence is synthesized
+
+Finding ID: BFP-CR-M2-1
+Disposition: accepted
+Status: in-progress
+Owner: M2 harness implementer
+Owning stage: implementation correction
+Decision owner: stage-owned behavior-evidence contract
+Decision needed: none
+Required outcome: Capture actual isolated stage-owned authoring and independent formal review outputs.
+Chosen action: Replace label-only generation and harness-authored lifecycle artifacts with explicit workflow routing plus separate spec, spec-review, test-spec, and test-spec-review turns; bind reviews to fresh independent threads and validate their returned records before publication.
+Rationale: The harness may transport and validate evidence, but it cannot substitute for the stage owner or independent reviewer.
+Validation target: code-review-m2-r2
+Validation evidence: pending
+
+#### BFP-CR-M2-2 - Invocation-profile literals contradict the spec
+
+Finding ID: BFP-CR-M2-2
+Disposition: accepted
+Status: in-progress
+Owner: M2 harness implementer
+Owning stage: implementation correction
+Decision owner: approved R28y invocation profile
+Decision needed: none
+Required outcome: Use the four exact approved invocation-profile literals.
+Chosen action: Replace the orchestration, instruction, tool, and Python implementation values in generation, validation, and direct tests, then regenerate all transitive evidence.
+Rationale: Evidence produced under a different profile cannot satisfy the approved runtime contract.
+Validation target: code-review-m2-r2
+Validation evidence: pending
+
+#### BFP-CR-M2-3 - Artifact inventories are curated, not complete
+
+Finding ID: BFP-CR-M2-3
+Disposition: accepted
+Status: in-progress
+Owner: M2 harness implementer
+Owning stage: implementation correction
+Decision owner: closed repository inventory contract
+Decision needed: none
+Required outcome: Derive complete before and after inventories from a clean committed baseline and the closed selector.
+Chosen action: Require a clean worktree, capture HEAD before any evidence write, enumerate every selected baseline artifact from Git, classify the closed inventory, and add produced artifacts to the after inventory without allowing curated omissions.
+Rationale: A zero-new-universal claim is meaningful only when the inventory domain is complete.
+Validation target: code-review-m2-r2
+Validation evidence: pending
+
+#### BFP-CR-M2-4 - Publication has an unrecoverable crash window
+
+Finding ID: BFP-CR-M2-4
+Disposition: accepted
+Status: in-progress
+Owner: M2 harness implementer
+Owning stage: implementation correction
+Decision owner: immutable publication recovery contract
+Decision needed: none
+Required outcome: Establish exclusive durable recovery authority before run installation and prove every interruption state.
+Chosen action: Persist an exclusive prepared receipt before installation, retain a deterministic staged run, reconcile staged or installed state without reinvocation, serialize publishers, and directly test every T51 crash boundary plus prior, corrupt, changed, and concurrent cases.
+Rationale: Recovery authority must exist before the first irreversible filesystem transition.
+Validation target: code-review-m2-r2
+Validation evidence: pending
+
+#### BFP-CR-M2-5 - Credential-isolation pass results exceed direct proof
+
+Finding ID: BFP-CR-M2-5
+Disposition: accepted
+Status: in-progress
+Owner: M2 harness implementer
+Owning stage: implementation correction
+Decision owner: direct runtime-isolation attestation
+Decision needed: none
+Required outcome: Derive each credential-isolation claim from an exact direct probe.
+Chosen action: Pin the minimal child PATH, add argv and stdin canary probes, inspect the closed process-metadata set, cover all eight proxy spellings, and report pass only from observed probe results.
+Rationale: Configuration intent is not equivalent to runtime evidence.
+Validation target: code-review-m2-r2
+Validation evidence: pending
+
+#### BFP-CR-M2-6 - Plan state is contradictory
+
+Finding ID: BFP-CR-M2-6
+Disposition: accepted
+Status: resolved
+Owner: workflow orchestrator
+Owning stage: review-resolution synchronization
+Decision owner: active plan Current Handoff Summary
+Decision needed: none
+Required outcome: Synchronize plan body, handoff summary, index, and review status.
+Chosen action: Set M2 to `resolution-needed`, point at code-review M2 R1, preserve M2 through M4 as remaining, and route next to review-resolution and implementation correction.
+Rationale: The active plan must remain the single live handoff owner.
+Validation target: code-review-m2-r2
+Validation evidence: synchronized plan body, index, change metadata, and review log
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
