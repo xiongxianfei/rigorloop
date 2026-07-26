@@ -6,7 +6,7 @@ flowchart TB
   npm_registry["npm registry<br/>[Public package registry]"]:::external
   child_runtime["Isolated child agent runtime<br/>[Identified Codex process]"]:::external
   model_control_plane["Model service control plane<br/>[Runtime transport; not child-tool network]"]:::external
-  credential_channel["Opaque runtime credential channel<br/>[Private runtime home outside tool sandbox]"]:::external
+  credential_channel["Opaque runtime credential channel<br/>[Execution-environment boundary: private runtime home outside tool sandbox]"]:::external
   adapter_user["Codex, Claude Code, and opencode user"]:::person
 
   subgraph repo["RigorLoop repository<br/>[Git repository]"]

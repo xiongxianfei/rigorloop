@@ -2,7 +2,7 @@
 
 ## Status
 
-proposed
+accepted
 
 ## Context
 
@@ -140,8 +140,9 @@ the validated report identity without rewriting the report.
 
 ## Follow-up
 
-- Architecture-review R3 must accept this amendment before plan and test-spec
-  revision rely on the hermetic harness.
+- Architecture-review R4 accepted this amendment for plan and test-spec
+  reliance.
 - The execution plan must order typed model and fixtures before skill rollout.
 - The test spec must map R28-R28z and R56-R56q before implementation.
-- On architecture-review R3 approval, change this ADR back to `accepted`.
+- The revised plan begins with child-runtime sandbox and credential-isolation
+  feasibility proof before the complete harness is implemented.
