@@ -1655,16 +1655,16 @@ approved the current M2 proof map for implementation.
 
 Finding ID: BFP-CR-M2-1
 Disposition: accepted
-Status: resolved
+Status: in-progress
 Owner: M2 harness implementer
 Owning stage: implementation correction
 Decision owner: stage-owned behavior-evidence contract
 Decision needed: none
 Required outcome: Capture actual isolated stage-owned authoring and independent formal review outputs.
-Chosen action: Replace label-only generation and harness-authored lifecycle artifacts with explicit workflow routing plus separate spec, spec-review, test-spec, and test-spec-review turns; bind reviews to fresh independent threads and validate their returned records before publication.
+Chosen action: Invoke `workflow` as the isolated orchestrator, have each owning stage create its complete artifact file below the isolated output root, snapshot each file before advancing, remove harness-owned normative renderers, and keep candidate oracles only for post-production comparison.
 Rationale: The harness may transport and validate evidence, but it cannot substitute for the stage owner or independent reviewer.
 Validation target: code-review-m2-r2
-Validation evidence: Immutable run `run-91e41340b56169c06158eca244fb117c` records distinct isolated stage threads, exact stage skill manifests, stage-owned semantic records, identity-bound independent review records, and approved review outcomes. The live review loop rejected and then approved a substantive spec correction.
+Validation evidence: Code-review M2 R2 classified the remediation as failed: the run has distinct stage threads and real review outcomes, but direct stage routing and harness-owned normative renderers still violate R28y.
 
 #### BFP-CR-M2-2 - Invocation-profile literals contradict the spec
 
@@ -1740,6 +1740,38 @@ Chosen action: Set M2 to `resolution-needed`, point at code-review M2 R1, preser
 Rationale: The active plan must remain the single live handoff owner.
 Validation target: code-review-m2-r2
 Validation evidence: synchronized plan body, index, change metadata, and review log
+
+### code-review-m2-r2
+
+#### BFP-CR-M2-7 - Transient retry lacks evidence-first safety
+
+Finding ID: BFP-CR-M2-7
+Disposition: accepted
+Status: in-progress
+Owner: M2 harness implementer
+Owning stage: implementation correction
+Decision owner: stage-output reconciliation contract
+Decision needed: none
+Required outcome: Retry only an explicitly transient stage with no output evidence; reconcile complete output and stop on partial or non-retryable evidence.
+Chosen action: Extract a testable stage coordinator that owns output-state inspection and prove timeout success/failure, non-retryable behavior, complete reconciliation, partial stop, and no-reinvocation paths.
+Rationale: A timeout is not proof that a stage produced no durable or complete result.
+Validation target: code-review-m2-r3
+Validation evidence: pending
+
+#### BFP-CR-M2-8 - Publication ordering contradicts governing artifacts
+
+Finding ID: BFP-CR-M2-8
+Disposition: accepted
+Status: needs-decision
+Owner: architecture and plan owners
+Owning stage: architecture and plan correction
+Decision owner: approved publication transaction contract
+Decision needed: Confirm receipt-before-install as the canonical ordering and synchronize the architecture, ADR if needed, plan, test spec, and implementation.
+Required outcome: One noncontradictory transaction sequence governs specification, architecture, plan, proof, and code.
+Chosen action: Retain the safer staged-validation then durable-exclusive-receipt then immutable-install direction pending formal upstream correction and rereview.
+Rationale: The implementation cannot resolve contradictory higher-ranked architecture and plan text by silently choosing one.
+Validation target: architecture-review and plan-review, then code-review-m2-r3
+Validation evidence: pending
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 

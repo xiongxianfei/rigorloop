@@ -821,4 +821,15 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: BFP-CR-M2-1, BFP-CR-M2-2, BFP-CR-M2-3, BFP-CR-M2-4, BFP-CR-M2-5, BFP-CR-M2-6
-Open findings: None
+Open findings: BFP-CR-M2-1
+
+### Review entry
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit range 093a0677..343478f2
+Status: blocked
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: BFP-CR-M2-7, BFP-CR-M2-8
+Open findings: BFP-CR-M2-7, BFP-CR-M2-8
