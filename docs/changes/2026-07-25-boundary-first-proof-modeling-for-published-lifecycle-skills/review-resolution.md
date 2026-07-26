@@ -2888,3 +2888,8 @@ No new material findings. R18 independently confirmed BFP-AR16-1,
 BFP-AR16-2, and BFP-AR17-1 resolved and approved the canonical architecture,
 component trace, read-only child boundary, parent-only materialization gate,
 v2 current evidence, opaque v1 history, and scoped ADR supersession.
+
+### plan-review-r15
+
+No new material findings. R15 independently approved the R45/R18 M2
+correction sequence for test-spec synchronization.

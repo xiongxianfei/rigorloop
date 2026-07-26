@@ -1127,6 +1127,6 @@ Round: 15
 Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md at c6dcbf6d
 Status: approved
 Detailed record: reviews/plan-review-r15.md
-Resolution: not-required
+Resolution: review-resolution.md#plan-review-r15
 Material findings: None
 Open findings: None
