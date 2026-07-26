@@ -184,3 +184,12 @@ the validated report identity without rewriting the report.
 - The test spec must map R28-R28z and R56-R56q before implementation.
 - The revised plan begins with child-runtime sandbox and credential-isolation
   feasibility proof before the complete harness is implemented.
+
+## Scoped supersession
+
+On acceptance,
+`ADR-20260726-stage-authored-artifact-envelope-transport` supersedes only the
+original direct stage-filesystem-write clause. Until that ADR is accepted, this
+ADR remains the governing accepted decision. The proposed amendment preserves
+the stage as sole semantic author and moves only physical byte materialization
+to the transport adapter. All other decisions in this ADR remain accepted.
