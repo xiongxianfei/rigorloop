@@ -833,3 +833,14 @@ Detailed record: reviews/code-review-m2-r2.md
 Resolution: review-resolution.md#code-review-m2-r2
 Material findings: BFP-CR-M2-7, BFP-CR-M2-8
 Open findings: BFP-CR-M2-7, BFP-CR-M2-8
+
+### Review entry
+Review ID: spec-review-r27
+Stage: spec-review
+Round: 27
+Reviewed artifact: specs/rigorloop-workflow.md and specs/rigorloop-workflow.test.md at f0288e01
+Status: changes-requested
+Detailed record: reviews/spec-review-r27.md
+Resolution: review-resolution.md#spec-review-r27
+Material findings: BFP-SR-R27-1, BFP-SR-R27-2, BFP-SR-R27-3
+Open findings: None

@@ -1756,7 +1756,7 @@ Required outcome: Retry only an explicitly transient stage with no output eviden
 Chosen action: Extract a testable stage coordinator that owns output-state inspection and prove timeout success/failure, non-retryable behavior, complete reconciliation, partial stop, and no-reinvocation paths.
 Rationale: A timeout is not proof that a stage produced no durable or complete result.
 Validation target: code-review-m2-r3
-Validation evidence: pending
+Validation evidence: pending implementation and code-review M2 R3
 
 #### BFP-CR-M2-8 - Publication ordering contradicts governing artifacts
 
@@ -1771,7 +1771,54 @@ Required outcome: One noncontradictory transaction sequence governs specificatio
 Chosen action: Use staged validation, then durable exclusive receipt, then immutable install as the canonical sequence; synchronize the spec, architecture, ADR, plan, test spec, and implementation and rerun each affected review gate.
 Rationale: The implementation cannot resolve contradictory higher-ranked architecture and plan text by silently choosing one.
 Validation target: architecture-review and plan-review, then code-review-m2-r3
-Validation evidence: pending
+Validation evidence: pending spec, architecture, plan, and test-spec approval
+
+### spec-review-r27
+
+#### BFP-SR-R27-1 - Separate transport retry from lifecycle correction
+
+Finding ID: BFP-SR-R27-1
+Disposition: accepted
+Status: resolved
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y invocation protocol
+Decision needed: none
+Required outcome: Define separate transport attempts, quiescence, evidence-first reconciliation, retry eligibility, pause/fail behavior, and durable evidence.
+Chosen action: Add a closed transport-attempt record linked to but distinct from lifecycle events; permit one retry only after confirmed stop, absent output, and an approved transient diagnostic.
+Rationale: Lifecycle correction attempts and runtime transport retries prove different facts and must not share identity or semantics.
+Validation target: spec-review-r28
+Validation evidence: R28y now defines a separate closed `transport_attempts` record, confirmed-stop requirement, output-state inspection, one retry boundary, liveness pause, non-retryable failures, evidence location, and no-reinvocation validation rule.
+
+#### BFP-SR-R27-2 - Close every publication state
+
+Finding ID: BFP-SR-R27-2
+Disposition: accepted
+Status: resolved
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y publication transaction
+Decision needed: none
+Required outcome: Separate staged current evidence from the prospective target, define the durable state matrix, orphan staging behavior, correct invariants, and cleanup fsync.
+Chosen action: Add a staged manifest reference and prospective target descriptor to the receipt, define closed recovery rows for every durable combination, discard only identity-valid unreceipted staging from a confirmed stopped invocation, and fail closed otherwise.
+Rationale: Recovery must be derivable from durable evidence without treating a nonexistent future path as current.
+Validation target: spec-review-r28
+Validation evidence: R28y now separates `staged_manifest_ref` from prospective `target_manifest`, corrects the pre-pointer invariant, defines staged/installed recovery branches, makes orphan staging an explicit manual-recovery stop, and requires receipt-parent fsync.
+
+#### BFP-SR-R27-3 - Correct test-spec lifecycle state
+
+Finding ID: BFP-SR-R27-3
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: spec and test-spec metadata correction
+Decision owner: artifact lifecycle contract
+Decision needed: none
+Required outcome: Keep the amended test spec draft and its governing-spec claim current until feature-spec approval and independent test-spec review.
+Chosen action: Mark the test spec draft, label the feature-spec amendment draft, and reactivate only after spec, architecture, plan, and test-spec reviews pass.
+Rationale: Proof expectations cannot claim authority ahead of the contract they operationalize.
+Validation target: spec-review-r28 and test-spec-review-r13
+Validation evidence: The amended test spec is draft, labels the feature spec and architecture amendments as pending review, and no longer claims current approved identities for those surfaces.
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
