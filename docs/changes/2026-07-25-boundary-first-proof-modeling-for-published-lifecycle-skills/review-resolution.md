@@ -7,6 +7,7 @@ Closeout status: open
 - Review closeout: code-review-m1-r1
 - Review closeout: code-review-m1-r2
 - Review closeout: code-review-m1-r3
+- Review closeout: code-review-m1-r4
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
@@ -35,10 +36,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
 - Findings resolved: 31
 - Unresolved findings: 0
-- Current result: M1 R3 retained finding is corrected and awaits independent code-review R4.
+- Current result: M1 is approved and closed by independent code-review R4; M2 preflight is next.
 
 ## Resolution Overview
 
@@ -91,6 +92,13 @@ M1 R3 introduced no new finding ID. It confirmed BFP-M1-CR4 resolved and
 retained BFP-M1-CR7 because artifact classification, inventory identity
 uniqueness, behavior-output completeness, and structural-diagnostic provenance
 remain caller-asserted.
+
+### code-review-m1-r4
+
+M1 R4 found no material issues. It confirmed BFP-M1-CR1 through
+BFP-M1-CR7 resolved, closed M1, and authorized the handoff to M2's mandatory
+environment-feasibility preflight. Real lifecycle-skill behavior remains
+unclaimed until M2.
 
 ### proposal-review-r1
 
