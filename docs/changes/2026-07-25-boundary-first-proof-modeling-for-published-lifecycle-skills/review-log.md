@@ -1042,3 +1042,14 @@ Detailed record: reviews/architecture-review-r16.md
 Resolution: review-resolution.md#architecture-review-r16
 Material findings: BFP-AR16-1, BFP-AR16-2
 Open findings: BFP-AR16-1, BFP-AR16-2
+
+### Review entry
+Review ID: spec-review-r41
+Stage: spec-review
+Round: 41
+Reviewed artifact: specs/rigorloop-workflow.md at b4daa372
+Status: changes-requested
+Detailed record: reviews/spec-review-r41.md
+Resolution: review-resolution.md#spec-review-r41
+Material findings: BFP-SR41-1, BFP-SR41-2, BFP-SR41-3
+Open findings: BFP-SR41-1, BFP-SR41-2, BFP-SR41-3

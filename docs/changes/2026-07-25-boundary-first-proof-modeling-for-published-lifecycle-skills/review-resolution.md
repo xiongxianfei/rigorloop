@@ -2634,6 +2634,65 @@ and Crosscutting component contracts.
 Validation target: architecture-review-r17
 Validation evidence: pending
 
+### spec-review-r41
+
+#### BFP-SR41-1 — Terminal turn state does not prove writer quiescence
+
+Finding ID: BFP-SR41-1
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: stage-turn permission boundary
+Decision needed: none
+Required outcome: Prove no child-authorized writer can mutate the workspace
+during scan or materialization.
+Chosen action: Use a read-only stage-turn profile with parent-only
+materialization, or fail environment feasibility when that profile cannot be
+proved.
+Rationale: Removing child write authority is stronger and more portable than
+trying to discover every detached descendant after execution.
+Validation target: spec-review-r42
+Validation evidence: pending
+
+#### BFP-SR41-2 — Workspace scanning lacks closed race-safe failure behavior
+
+Finding ID: BFP-SR41-2
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: workspace-integrity observation
+Decision needed: none
+Required outcome: Define total race-resistant inspection and closed failure
+routing.
+Chosen action: Add root-anchored no-follow descriptor inspection, stability
+checks, closed scan states/reasons, baseline failure, and post-turn
+`stage-workspace-inspection-failed`.
+Rationale: Inspection inability is neither proof of mutation nor permission to
+materialize.
+Validation target: spec-review-r42
+Validation evidence: pending
+
+#### BFP-SR41-3 — Integrity work and evidence are unbounded and can persist child-authored path strings
+
+Finding ID: BFP-SR41-3
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: workspace-integrity policy and evidence
+Decision needed: none
+Required outcome: Bound scan work/evidence and make unexpected paths
+value-free.
+Chosen action: Bind lifecycle and canary integrity limits, stop on first
+deterministic bound, and represent unexpected paths only by identity and safe
+shape.
+Rationale: A security observation must not become an unbounded or
+child-authored evidence channel.
+Validation target: spec-review-r42
+Validation evidence: pending
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
