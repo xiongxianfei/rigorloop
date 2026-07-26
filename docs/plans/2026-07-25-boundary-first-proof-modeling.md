@@ -79,12 +79,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M1. Typed model, validator, fixtures, and report core
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r13.md
-- Review status: approved; stage=spec-review; round=r13
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r3.md
+- Review status: changes-requested; stage=architecture-review; round=r3
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: architecture-review R3
+- Next stage: architecture revision
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=10; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-AR3-1,BFP-AR3-2,BFP-AR3-3
 
 ## Milestones
 
@@ -323,6 +323,7 @@ implementation authorization is requested.
 - 2026-07-26: The R13 candidate replaces the open-ended transitive closure with a standalone hermetic behavior harness, a closed two-module import policy, complete five-skill resource-map binding, applicable instruction discovery, and an observable runtime/model/tool invocation profile.
 - 2026-07-26: Spec-review R13 approved the revised contract with no new findings and resolved BFP-SR9-1; architecture amendment is required before test-spec revision or implementation.
 - 2026-07-26: The architecture R3 candidate assigns the standalone harness, five-skill package assembly, isolated child runtime, observable invocation attestation, transient access enforcement, and prepared-receipt immutable publication to explicit components and updates the ADR and C4 views.
+- 2026-07-26: Architecture-review R3 requested the exact R28y publication order, trusted parent/runtime enforcement with opaque control-plane authentication, and durable ADR rationale for the hermetic design.
 
 ## Decision log
 
