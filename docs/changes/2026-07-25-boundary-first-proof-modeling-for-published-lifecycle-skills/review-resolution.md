@@ -1947,7 +1947,7 @@ pending independent spec-review-r30.
 
 Finding ID: BFP-SR-R30-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y transport protocol
@@ -1956,13 +1956,18 @@ Required outcome: Make retry reachable and deterministic for compound timeout/ou
 Chosen action: Route on the complete ordered diagnostic set and replace diagnostic references with an exact inline role-keyed evidence map that rejects missing, extra, and self-reference.
 Rationale: Primary presentation order cannot erase the full routing condition.
 Validation target: spec-review-r31
-Validation evidence: pending
+Validation evidence: R28y now routes on the complete ordered diagnostic tuple,
+defines the absent-plus-timeout retry/fail rows and every compound stop row,
+and uses an exact inline role-keyed evidence object for negative, timeout,
+liveness, output, protocol, prohibited-event, and runtime-identity
+observations; T52 covers missing, extra, stale, and self-referential evidence;
+pending independent spec-review-r31.
 
 #### BFP-SR-R30-2 - Make publisher recovery total and byte-stable
 
 Finding ID: BFP-SR-R30-2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y recovery transaction
@@ -1971,13 +1976,18 @@ Required outcome: Close lease-only durability, immutable recovery fields, workin
 Chosen action: Use the simple-change root for lease-only fsync, freeze every recovery field except state, validate cleanup against lease/snapshot, define minimum working marker, and record `same_live_publisher_instance`.
 Rationale: Recovery must be both total across crashes and immutable across resumes.
 Validation target: spec-review-r31
-Validation evidence: pending
+Validation evidence: R28y now uses the simple-change root as the lease-only
+durability parent, separates immutable recovery basis from the state record,
+keeps all non-state bytes fixed, validates cleanup against the lease/snapshot
+rather than current inputs, defines minimum-valid working roots, and routes on
+explicit `same_live_publisher_instance`; T51 covers every resume and forbidden
+mutation; pending independent spec-review-r31.
 
 #### BFP-SR-R30-3 - Synchronize current review and plan identities
 
 Finding ID: BFP-SR-R30-3
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec and plan authors
 Owning stage: lifecycle metadata correction
 Decision owner: artifact lifecycle contract
@@ -1986,7 +1996,10 @@ Required outcome: Bind the draft test spec to current review and plan evidence w
 Chosen action: Record R30, stabilize the resolution-needed plan and baseline/draft distinction, then bind their exact identities in the test spec.
 Rationale: Draft proof metadata must describe the actual current gate.
 Validation target: spec-review-r31
-Validation evidence: pending
+Validation evidence: the plan distinguishes the approved baseline from the
+draft R28y amendment and names R30/R31; the test spec binds the recorded R30
+review and will bind the stabilized resolution-needed plan identity before the
+R31 candidate is committed; pending independent spec-review-r31.
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
