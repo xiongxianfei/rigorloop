@@ -205,7 +205,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r9.md
 Resolution: review-resolution.md#spec-review-r9
 Material findings: BFP-SR9-1
-Open findings: BFP-SR9-1
+Open findings: None
 
 ### Review entry
 Review ID: spec-review-r10
@@ -237,5 +237,16 @@ Reviewed artifact: specs/rigorloop-workflow.md; specs/skill-contract.md
 Status: changes-requested
 Detailed record: reviews/spec-review-r12.md
 Resolution: review-resolution.md#spec-review-r12
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r13
+Stage: spec-review
+Round: 13
+Reviewed artifact: specs/rigorloop-workflow.md; specs/skill-contract.md
+Status: approved
+Detailed record: reviews/spec-review-r13.md
+Resolution: review-resolution.md#spec-review-r13
 Material findings: None
 Open findings: None

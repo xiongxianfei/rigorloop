@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- approved
 Boundary model version: v1
 Boundary model scope: R56-R56q
 

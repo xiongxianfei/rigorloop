@@ -15,6 +15,7 @@ Closeout status: open
 - Review closeout: spec-review-r10 open
 - Review closeout: spec-review-r11 open
 - Review closeout: spec-review-r12 open
+- Review closeout: spec-review-r13
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -25,10 +26,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`
-- Findings resolved: 17
-- Unresolved findings: 8
-- Current result: `spec-review-r12` kept BFP-SR9-1 open because the transitive dependency and runtime boundary is incomplete and not safely implementable.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`
+- Findings resolved: 18
+- Unresolved findings: 7
+- Current result: `spec-review-r13` approved the hermetic behavior-harness contract and resolved BFP-SR9-1; architecture amendment is next.
 
 ## Resolution Overview
 
@@ -58,7 +59,7 @@ Closeout status: open
 | BFP-SR3-1 | accepted | resolved | Incident derivation now requires exactly one field/value trigger and a trigger-free contrast. |
 | BFP-SR3-2 | accepted | resolved | Trace observations, formal-review bundles, output capture, inventory, and terminal branches are deterministic. |
 | BFP-SR3-3 | accepted | resolved | Filesystem inputs, typed dependencies, manifests, result identities, and report projection are bound losslessly. |
-| BFP-SR9-1 | accepted | open | Separate one-shot behavior generation from deterministic validation and bind immutable runs to current inputs. |
+| BFP-SR9-1 | accepted | resolved | A standalone hermetic harness binds immutable runs to complete packages, instructions, contracts, components, and invocation profile inputs. |
 
 ## Finding Details
 
@@ -368,7 +369,7 @@ filesystem/typed selector representations.
 
 Finding ID: BFP-SR9-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec revision
 Decision owner: approved immutable behavior-evidence direction
@@ -376,8 +377,8 @@ Decision needed: none
 Required outcome: Separate one-shot behavior generation from deterministic recorded-run validation and bind run reuse to a complete current input-set identity.
 Chosen action: Define generate and validate modes, exact input-set identity and pointer schemas, immutable-run validation, and interrupted-publication reconciliation.
 Rationale: Random run paths and nondeterministic skill output make complete typed-result rerun equality impossible, while an unbound old pointer could accept stale evidence.
-Validation target: spec-review-r10
-Validation evidence: pending
+Validation target: spec-review-r13
+Validation evidence: `spec-review-r13` approved the standalone harness, closed import policy, complete resource and instruction binding, observable invocation profile, and validation-only reuse.
 
 ### spec-review-r10
 
@@ -401,6 +402,15 @@ No new material findings.
 omitted participating skill resources and runtime-supplied instructions, could
 not model the existing dynamic import path, and did not define a complete
 static-import or observable runtime identity contract.
+
+### spec-review-r13
+
+No new material findings.
+`spec-review-r13` approved the hermetic standalone harness contract and
+resolved `BFP-SR9-1`.
+Architecture must now place the child runtime, isolated workspace, package
+assembly, invocation attestation, immutable publication, and recovery
+responsibilities before the test specification is revised.
 
 ### spec-review-r3
 
