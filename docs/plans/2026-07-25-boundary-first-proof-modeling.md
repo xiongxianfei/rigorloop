@@ -25,7 +25,7 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r36.md` (approved; architecture required)
+- Latest completed spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r36.md` (approved; superseded for M2 continuation by the implementation-discovered stage-transport gap)
 - Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R15)
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` (accepted by architecture-review R15)
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
@@ -36,8 +36,11 @@ resumes.
 ## Context and orientation
 
 The approved baseline outside the focused R28y amendment remains normative.
-The focused R28y feature contract and active proof text are approved through
-test-spec-review R14; implementation may resume.
+The focused R28y stage-transport text is under revision because live M2
+generation proved that the pinned app-server returns schema-constrained stage
+messages but does not expose the assumed stage-agent workspace-write surface.
+Implementation is paused at that contract boundary pending spec-review and
+the required downstream architecture, plan, and test-spec synchronization.
 `scripts/boundary_proof_model.py` will be their immutable typed projection and
 pure aggregate evaluator.
 `scripts/boundary_proof_behavior.py` will be the standalone hermetic behavior
@@ -84,10 +87,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r14.md
-- Review status: approved; stage=test-spec-review; round=r14
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r36.md
+- Review status: review-requested; stage=spec-review; round=r37
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2 correction for BFP-CR-M2-1, BFP-CR-M2-7, and BFP-CR-M2-8
+- Next stage: spec-review R37
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -593,6 +596,12 @@ resource through generated, packed, and installed outputs.
     execution mode.
 - Risk: Nondeterministic generation could be mistaken for deterministic validation.
   - Recovery: Keep generation and validation commands separate; validation never invokes lifecycle skills and a stale input identity requires a new explicit generation.
+- Risk: A pinned model runtime may support structured responses without
+  exposing a stage-agent file-write tool.
+  - Recovery: Keep semantic authorship in the stage-owning skill's closed
+    response envelope, permit the transport adapter only byte-for-byte
+    materialization after complete validation, and prove that path with a
+    noncanonical preflight canary before accepting lifecycle output.
 
 ## Dependencies
 
@@ -610,6 +619,18 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Live M2 generation against the pinned app-server failed closed
+  because each stage returned its completion message without creating the
+  required workspace files. Direct isolated probes confirmed that the runtime
+  supports schema-constrained agent messages but does not expose the assumed
+  stage-agent workspace-write surface. The workflow routed upstream rather
+  than restoring harness-owned normative renderers.
+- 2026-07-26: The focused R37 spec candidate separates semantic authorship
+  from physical materialization: the stage-owning skill returns one closed,
+  size-bounded artifact envelope and the transport adapter validates then
+  writes its UTF-8 bytes unchanged. The candidate also adds timeout retention,
+  byte-equality proof, and a noncanonical preflight materialization canary.
 
 - 2026-07-25: Plan created after spec-review R2 and architecture-review R2 approval.
 - 2026-07-25: Plan-review R2 approved the corrected four-milestone sequence.
@@ -755,6 +776,12 @@ resource through generated, packed, and installed outputs.
 | 2026-07-26 | Restore normative M1-M4 ownership and make runtime feasibility the first M2 promotion gate. | R28y explicitly assigns synthetic proof, upstream behavior, downstream preservation, and aggregation to M1-M4. | Renumber the approved phases; amend the spec only to preserve an unnecessary fifth phase. |
 
 ## Surprises and discoveries
+
+- The direct sandbox `workspace_write` probe proves that spawned commands can
+  write under the permission profile; it does not prove that a schema-bound
+  app-server stage turn exposes a file-write tool to the agent. Runtime
+  feasibility must test the actual stage-output transport, not a neighboring
+  capability.
 
 - The unified automation state adapter writes `run.pause_reason`, while the
   change-metadata schema currently accepts `run.stop_reason`. The run was

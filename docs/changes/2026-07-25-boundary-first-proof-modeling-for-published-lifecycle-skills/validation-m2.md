@@ -2,10 +2,39 @@
 
 Stage: implement
 Milestone: M2
-Result: pass
-Diagnostic: none
+Result: blocked
+Diagnostic: stage-output-transport-contract-unavailable
 
-## Commands
+## Current implementation discovery
+
+The latest live canonical `generate` attempt failed closed with
+`unexpected-prohibited-event` before publication.
+The current pointer remains on historical run
+`run-91e41340b56169c06158eca244fb117c`; that run predates the current
+implementation and cannot satisfy the pending M2 correction.
+
+Direct isolated app-server probes established the narrower boundary:
+
+- the pinned runtime returns the required schema-constrained agent completion
+  message;
+- the same stage turn produces no files below the isolated output root;
+- adding prompt instructions to use a workspace write tool does not expose
+  such a tool or produce a file;
+- the existing command-level workspace-write probe therefore proves a sibling
+  capability, not the lifecycle stage-output transport required by R28y.
+
+Implementation remains stopped.
+The governing spec is being revised so each stage-owning skill authors a
+closed artifact envelope and a semantics-free transport adapter materializes
+the returned UTF-8 bytes exactly.
+Architecture, plan, test-spec, implementation, and their review gates must be
+synchronized before a new canonical run is eligible.
+
+## Historical commands
+
+The commands and results below describe the earlier M2 candidate.
+They remain historical evidence only and do not override the current blocked
+result.
 
 - `python scripts/test-boundary-proof.py` — passed 49 tests, including the
   current immutable-run validation-only regression.
@@ -81,7 +110,7 @@ records that exact response while requiring both thread and turn requests to
 name only the isolated workspace; the independent sandbox probes remain the
 enforcement proof.
 
-## Immutable behavior result
+## Historical immutable behavior result
 
 ```json
 {"false_blocking_count":0,"input_set_identity":"sha256:b086ccd384d50212aca6e4956868dc33947d74abac02578d85f81a8133d7cfb2","new_universal_artifact_count":0,"result":"pass","run_id":"run-91e41340b56169c06158eca244fb117c","simple_fixture_structure_correction_cycles":0}
@@ -104,6 +133,7 @@ canonical proof obligation.
 
 ## Handoff
 
-Runtime feasibility, governing review synchronization, the controlled fixture,
-fresh generation, immutable publication, and validation-only reuse are
-satisfied. M2 is ready for independent code review.
+M2 is not ready for code review.
+The immediate next stage is focused spec-review of the stage-authored
+artifact-envelope correction, followed by synchronized architecture, plan, and
+test-spec review before implementation resumes.
