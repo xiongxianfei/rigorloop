@@ -1041,7 +1041,7 @@ Status: changes-requested
 Detailed record: reviews/architecture-review-r16.md
 Resolution: review-resolution.md#architecture-review-r16
 Material findings: BFP-AR16-1, BFP-AR16-2
-Open findings: BFP-AR16-1, BFP-AR16-2
+Open findings: None
 
 ### Review entry
 Review ID: spec-review-r41
@@ -1107,4 +1107,15 @@ Status: changes-requested
 Detailed record: reviews/architecture-review-r17.md
 Resolution: review-resolution.md#architecture-review-r17
 Material findings: BFP-AR17-1
-Open findings: BFP-AR17-1
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r18
+Stage: architecture-review
+Round: 18
+Reviewed artifact: canonical architecture, boundary-proof component diagram, architecture assessment, transport and predecessor ADRs, approved R45 workflow spec, and R17 resolution at ba25f026
+Status: approved
+Detailed record: reviews/architecture-review-r18.md
+Resolution: review-resolution.md#architecture-review-r18
+Material findings: None
+Open findings: None

@@ -2599,7 +2599,7 @@ implementation resumes.
 
 Finding ID: BFP-AR16-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec and architecture author
 Owning stage: focused spec revision, then architecture revision
 Decision owner: R28y transport mutation-integrity contract
@@ -2613,13 +2613,14 @@ Rationale: Final reread equality proves the materialized result but cannot
 prove exclusive adapter write ownership when child commands can prewrite the
 same path.
 Validation target: spec-review-r41, then architecture-review-r17
-Validation evidence: pending
+Validation evidence: architecture-review-r18 approved the read-only child
+boundary, unchanged-workspace gate, and parent-only materialization contract.
 
 #### BFP-AR16-2 — The canonical Runtime View still projects the superseded direct-output protocol
 
 Finding ID: BFP-AR16-2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture revision
 Decision owner: approved R40 transport sequence
@@ -2632,7 +2633,8 @@ focused spec amendment is approved.
 Rationale: A canonical runtime sequence must not contradict its Building Block
 and Crosscutting component contracts.
 Validation target: architecture-review-r17
-Validation evidence: pending
+Validation evidence: architecture-review-r18 approved the complete R45
+numbered Runtime View sequence.
 
 ### spec-review-r41
 
@@ -2864,7 +2866,7 @@ Validation evidence: pending plan-review-r7
 
 Finding ID: BFP-AR17-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture revision
 Decision owner: approved R45 child-write boundary
@@ -2877,4 +2879,12 @@ approved parent-owned output-root contract.
 Rationale: Component responsibilities are plan-authoritative architecture
 inputs and cannot contradict the canonical Runtime View and ADR.
 Validation target: architecture-review-r18
-Validation evidence: pending
+Validation evidence: architecture-review-r18 approved the corrected
+isolated-workspace assembler responsibility.
+
+### architecture-review-r18
+
+No new material findings. R18 independently confirmed BFP-AR16-1,
+BFP-AR16-2, and BFP-AR17-1 resolved and approved the canonical architecture,
+component trace, read-only child boundary, parent-only materialization gate,
+v2 current evidence, opaque v1 history, and scoped ADR supersession.
