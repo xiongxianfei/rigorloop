@@ -763,8 +763,9 @@ resource through generated, packed, and installed outputs.
   exposes no file-change operation under the approved configuration, so the
   model returns the terminal marker without an approval request. Enabling the
   candidate apply-patch feature flags still leaves those features disabled in
-  the runtime inventory. M2 is blocked and routes to architecture; no
-  participating skill was mutated and no v2 pass attestation was published.
+  the runtime inventory, including under a disposable workspace-write probe
+  profile. M2 is blocked and routes to architecture; no participating skill
+  was mutated and no v2 pass attestation was published.
 
 - 2026-07-26: Test-spec-review R17 approved the complete M2 proof map with no
   findings. BFP-TSR15-1 and BFP-TSR16-1 are closed; the Current Handoff

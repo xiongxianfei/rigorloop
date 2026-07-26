@@ -23,7 +23,11 @@ file-change items. The approved feature projection enables only
 file-change operation under that configuration. A bounded feasibility
 experiment that additionally selected `apply_patch_freeform`, and then both
 `apply_patch_freeform` and `apply_patch_streaming_events`, failed earlier at
-the capability inventory because those features remained disabled.
+the capability inventory because those features remained disabled. Repeating
+that experiment with an isolated disposable workspace-write probe profile
+produced the same disabled-feature inventory, so separating probe authority
+from lifecycle authority cannot make the operation observable in Codex
+0.145.0.
 
 This is not permission to accept the terminal marker as denial proof. The
 required decline interaction is absent, so no current v2 attestation was
