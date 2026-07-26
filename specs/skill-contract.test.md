@@ -28,7 +28,14 @@ Boundary model scope: R56-R56q
 - Current resource-integrity proposal: [Published Skill Resource Integrity with an Architecture-Skill Pilot](../docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md), accepted.
 - Current resource-integrity architecture: [System Architecture](../docs/architecture/system/architecture.md) and [ADR-20260623 Published Skill Resource Integrity](../docs/adr/ADR-20260623-published-skill-resource-integrity.md), approved and accepted.
 - Current resource-integrity plan: [Published Skill Resource Integrity Architecture Pilot](../docs/plans/2026-06-23-published-skill-resource-integrity-architecture-pilot.md), active after clean plan-review R2.
-- Architecture: not required. The approved slices change workflow-governance Markdown, canonical skill guidance, shared text blocks, static validation, generated skill mirrors, public adapter validation, and pilot skill wording. They do not add runtime components, storage, API boundaries, deployment boundaries, or a new validation architecture.
+- Historical skill-normalization architecture: not required for those completed
+  slices.
+- Boundary-first architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md),
+  approved by `architecture-review-r4`, with
+  [ADR-20260725](../docs/adr/ADR-20260725-boundary-first-proof-modeling.md)
+  accepted and the
+  [Boundary-First Plan](../docs/plans/2026-07-25-boundary-first-proof-modeling.md)
+  approved by `plan-review-r5`.
 - Project map: `docs/project-map.md` is present and was read for repository orientation. This test spec relies on the approved spec, active plan, workflow specs, stage skills, shared templates, generator scripts, existing validator patterns, and change-local pilot evidence.
 - Related proof surfaces:
   - `scripts/test-skill-validator.py`
@@ -45,12 +52,14 @@ Boundary model scope: R56-R56q
 
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
-| Feature spec | `specs/skill-contract.md` | approved; spec-review-r2 | `sha256:d19b30d1890b5e7834b976192465694077cef7bcee01152f9744741b02b0a566` |
-| Companion workflow spec | `specs/rigorloop-workflow.md` | approved; spec-review-r2 | `sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634` |
-| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r2.md` | approved | `spec-review-r2` |
-| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r2 | `sha256:9a50e14dededdd5bd68649437ef30aff3a8c75587a547077e0d267616d47aeda` |
-| ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted | `sha256:a797c36cd9ec4cbd262cdea825cfa9f38a787e0cab5ebc2d12d34ed8af1a8200` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; plan-review-r2 | `plan-review-r2` |
+| Feature spec | `specs/skill-contract.md` | approved; spec-review-r13 | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
+| Companion workflow spec | `specs/rigorloop-workflow.md` | approved; spec-review-r13 | `sha256:cce7047761aaa99d81263cf226261e73de3de35e9064e93732274d3a3a8ae1f8` |
+| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r13.md` | approved | `sha256:063f0bd15ff4ed9861179cc4be9da2f063276c01c2d536498a8c67974e4a3fe0` |
+| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r4 | `sha256:a766457e13872dcb01af9587fd3e23d1a7cd3cf7162a27457a70e076a9e6e9f0` |
+| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r4.md` | approved | `sha256:dad098aaf2800f3e8762ac9c05ac5b5067ba5c35925afadb69f97fa662225477` |
+| ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted | `sha256:dac4993ec648a4c6ed72c50b5c22954760ea4b6c28f6686b7f7aeec246fdc216` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; plan-review-r5 | `sha256:e761d02218270dca568deab8cdf7f27d316d471fd850dc79d5e2a62c0ad59e90` |
+| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r5.md` | approved | `sha256:41eca0f767652f05201becbe9a4a75a03935d506bdf0695fce4454f090e54ac3` |
 
 ## Testing strategy
 
@@ -145,12 +154,12 @@ Boundary model scope: R56-R56q
 | Requirement ID | Covered by | Level | Notes |
 | --- | --- | --- | --- |
 | `R56`-`R56a` | `T49`, `T56` | contract, migration | Exact eight-skill projection and no deferred-skill drift |
-| `R56b`-`R56e` | `T50`, `T51` | integration, manual | Upstream classification, semantic review, proof map, and omission rejection |
+| `R56b`-`R56e` | `T50`, `T51`, `T57`, `T58` | integration, e2e, manual | Upstream classification, hermetic package closure, fresh behavior, semantic review, proof map, and omission rejection |
 | `R56f`-`R56i` | `T52`, `T53` | integration, manual | Proof-first implementation, sibling review, verify coherence, and workflow stops |
 | `R56j`-`R56k` | `T49`, `T54` | integration | Portable wording and required mapped-reference boundaries |
-| `R56l` | `T55` | integration, manual | Existing routing, claims, recording, isolation, artifact, validation, and handoff preservation |
+| `R56l` | `T55`, `T59` | integration, manual | Exact five-category preservation across eight skills without upstream reinvocation |
 | `R56m` | `T49` | unit, integration | Unknown closed values fail before consistency; no semantic scoring |
-| `R56n` | `T54` | integration, smoke | Canonical, generated, packed, and installed parity |
+| `R56n` | `T54`, `T60` | integration, smoke | Canonical, generated, packed, installed, and durable parity |
 | `R56o`-`R56p` | `T51`, `T55` | integration | Exact incident IDs and compact simple fixture |
 | `R56q` | `T56` | migration, integration | One release unit, partial-unit rejection, and rollback |
 
@@ -365,16 +374,24 @@ Boundary model scope: R56-R56q
 | `CMD-SBFP-4` | `python scripts/build-skills.py --check` | existing/configured | skill generator owner | M2-M3 | M2 code-review | nonzero drift blocks milestone | not applicable | generated-skill validation output | temporary/check mode; no authored generated edits |
 | `CMD-SBFP-5` | `python scripts/test-adapter-distribution.py` | existing/configured | adapter tooling owner | M4 | M4 code-review | nonzero blocks milestone | zero tests is failure | adapter validation output | repository-local |
 | `CMD-SBFP-6` | `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` | existing/configured | adapter tooling owner | M4 | M4 code-review | any nonzero result blocks milestone | not applicable | temporary adapter validation output | local temporary output; no network or publication |
-| `CMD-SBFP-7` | `python scripts/validate-boundary-proof.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md` | planned-for-implementation | boundary validator owner | M4 | M4 code-review | nonzero blocks milestone | not applicable | canonical capability report | sole report writer; no release action |
+| `CMD-SBFP-7` | `python scripts/validate-boundary-proof.py validate-report docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md` | planned-for-implementation | boundary validator owner | M4 | M4 code-review | nonzero blocks milestone | not applicable | canonical capability report | validation-only; no release action |
+| `CMD-SBFP-8` | `python scripts/boundary_proof_behavior.py check-environment --json` | planned-for-implementation | behavior harness owner | M2 | M2 preflight gate | nonzero or `environment-unavailable` stops M2 | not applicable | `validation-m2.md` | read-only, non-secret feasibility probe |
+| `CMD-SBFP-9` | `python scripts/boundary_proof_behavior.py generate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --scenario tests/fixtures/boundary-proof/simple-change/scenario.json` | planned-for-implementation | behavior harness owner | M2 | M2 code-review | failed/partial publication blocks milestone | not applicable | immutable upstream run | isolated child runtime; no network/connectors/subagents |
+| `CMD-SBFP-10` | `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` | planned-for-implementation | behavior harness owner | M2 | M2 code-review | nonzero blocks milestone | not applicable | current immutable-run validation | no lifecycle reinvocation |
+| `CMD-SBFP-11` | `python scripts/boundary_proof_behavior.py generate-preservation --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` | planned-for-implementation | behavior harness owner | M3 | M3 code-review | nonzero blocks milestone | not applicable | preservation manifest and snapshots | no upstream reinvocation |
+| `CMD-SBFP-12` | `python scripts/boundary_proof_behavior.py validate-preservation --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` | planned-for-implementation | behavior harness owner | M3 | M3 code-review | nonzero blocks milestone | not applicable | 40 preservation pair results | validation-only |
+| `CMD-SBFP-13` | `python scripts/validate-boundary-proof.py generate-report --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --output docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md` | planned-for-implementation | boundary validator owner | M4 | M4 code-review | nonzero blocks milestone | not applicable | canonical capability report | sole report writer; no release action |
+| `CMD-SBFP-14` | `python scripts/test-release-transaction.py` | existing/configured | release validator owner | M4 | M4 code-review | nonzero blocks milestone | zero tests is failure | M4 validation notes | local fixtures; no publication |
+| `CMD-SBFP-15` | `python scripts/validate-release.py --version v0.3.6` | existing/configured | release validator owner | M4 | M4 code-review | nonzero blocks milestone | not applicable | current release validation | validation-only; no publication |
 
 ## Milestone proof map
 
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | T49, T51, T55 | bfp-manual.skill-stage-semantics | CMD-SBFP-1 | model and skill fixture families | M1 code-review | Establishes the projection consumed by skills. |
-| M2 | T49, T50, T51, T54, T55 | bfp-manual.skill-stage-semantics, bfp-manual.skill-preservation | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4 | four upstream skill fixtures and mapped resources | M2 code-review | Exact four upstream skills only. |
-| M3 | T49, T52, T53, T54, T55 | bfp-manual.skill-authority, bfp-manual.skill-composition, bfp-manual.skill-preservation | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4 | four downstream skill fixtures and mapped resources | M3 code-review | Exact four downstream skills only. |
-| M4 | T54, T55, T56 | bfp-manual.skill-preservation | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4, CMD-SBFP-5, CMD-SBFP-6, CMD-SBFP-7 | generated, packed, installed, report, and release fixtures | M4 code-review | No release activation is performed. |
+| M1 | T49, T51, T55 | bfp-manual.skill-stage-semantics | CMD-SBFP-1 | synthetic model, incident, trace, and report fixtures | M1 code-review | Establishes the deterministic projection; no skill behavior invocation. |
+| M2 | T49, T50, T51, T54, T55, T57, T58 | bfp-manual.skill-stage-semantics | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4, CMD-SBFP-8, CMD-SBFP-9, CMD-SBFP-10 | exact five-package manifest, preflight, immutable upstream run, and four upstream skill resources | M2 code-review | Preflight passes before all other harness or skill mutation. |
+| M3 | T49, T52, T53, T54, T55, T59 | bfp-manual.skill-authority, bfp-manual.skill-composition, bfp-manual.skill-preservation | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4, CMD-SBFP-11, CMD-SBFP-12 | four downstream resources, preservation manifest, snapshot roots, and 40 results | M3 code-review | Preservation uses recorded M2 outputs without upstream reinvocation. |
+| M4 | T54, T55, T56, T60 | bfp-manual.skill-preservation | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4, CMD-SBFP-5, CMD-SBFP-6, CMD-SBFP-7, CMD-SBFP-13, CMD-SBFP-14, CMD-SBFP-15 | four durable parity manifests, report, and release fixtures | M4 code-review | No release activation or publication is performed. |
 
 ## Test cases
 
@@ -1786,7 +1803,8 @@ Boundary model scope: R56-R56q
 
 - Covers: R56q
 - Level: integration
-- Command IDs: CMD-SBFP-1, CMD-SBFP-5, CMD-SBFP-6, CMD-SBFP-7
+- Command IDs: CMD-SBFP-1, CMD-SBFP-5, CMD-SBFP-6, CMD-SBFP-7,
+  CMD-SBFP-13, CMD-SBFP-14, CMD-SBFP-15
 - Fixture/setup: Complete unit, missing skill, stale reference, omitted selector, drifted adapter, valid rollback, and invalid partial rollback.
 - Steps: Validate capability aggregation, generated distribution, activation prerequisites, and rollback unit.
 - Expected result: Only the complete versioned unit can pass; no test performs publication; rollback restores one uniformly validated state.
@@ -1795,13 +1813,100 @@ Boundary model scope: R56-R56q
 - Automation location: boundary and adapter tests
 - Required by milestone: M4
 
+### T57. Participating package closure includes every mapped resource
+
+- Covers: R56a, R56j-R56k
+- Level: integration
+- Command IDs: CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-8
+- Fixture/setup: Exact `workflow`, `spec`, `spec-review`, `test-spec`, and
+  `test-spec-review` packages; every Resource map entry; missing, extra,
+  duplicate, stale, escaping, symlinked, and non-regular variants.
+- Steps: Derive the five package closures from current Resource maps and
+  compare exact path/byte identities; mutate each invalid class independently.
+- Expected result: Every existing mapped resource is included exactly once;
+  unmapped or unsafe resources and stale identities fail before behavior
+  generation.
+- Failure proves: Published skill behavior can depend on an unbound package
+  resource.
+- Evidence artifact: `evidence/behavior-implementation-manifest.json`
+- Automation location: skill validator and boundary behavior tests
+- Required by milestone: M2
+
+### T58. Upstream skill behavior is fresh, hermetic, and validation-only reusable
+
+- Covers: R56b-R56e, R56p
+- Level: e2e
+- Command IDs: CMD-SBFP-8, CMD-SBFP-9, CMD-SBFP-10
+- Fixture/setup: Exact five-stage simple-change scenario; isolated child home;
+  parent-observed sandbox; caller-instruction, tool, connector, subagent,
+  network, unmanifested-read, runtime-identity, and model-identity contrasts.
+- Steps: Run preflight, generate once, inspect complete outputs and reviews,
+  validate repeatedly, then alter each behavior-affecting input class.
+- Expected result: The accepted run uses only manifested packages and the
+  closed invocation profile; validation never reinvokes a skill; changed
+  identities make the run stale; unsafe or unavailable profiles stop before
+  output acceptance.
+- Failure proves: Upstream behavior evidence is asserted, non-hermetic, or
+  reusable across a different runtime/package contract.
+- Evidence artifact: M2 immutable run, current pointer, manifest, and trace
+- Automation location: boundary behavior harness and skill tests
+- Required by milestone: M2
+
+### T59. Eight-skill preservation is exact and invocation-free
+
+- Covers: R56l
+- Level: integration
+- Command IDs: CMD-SBFP-11, CMD-SBFP-12
+- Fixture/setup: All eight skills, five categories, frozen pre-M2 baseline,
+  current after evidence, and pair-key/origin/identity/dependency contrasts.
+- Steps: Materialize before snapshots; generate all `<skill>:<category>` pairs;
+  validate the exact 40-key set and monitor upstream invocation count.
+- Expected result: Behavior, claim boundary, review recording, isolation, and
+  handoff pass for each skill; historical origin and current materialized bytes
+  agree; upstream invocation count is zero.
+- Failure proves: A preserved claim can omit a skill/category, cite history as
+  current evidence, or silently regenerate its upstream oracle.
+- Evidence artifact: preservation manifest, immutable before/current after
+  roots, and 40 typed results
+- Automation location: boundary behavior harness and skill tests
+- Required by milestone: M3
+
+### T60. Canonical resources survive all distribution and release boundaries
+
+- Covers: R56n, R56q
+- Level: integration
+- Command IDs: CMD-SBFP-5, CMD-SBFP-6, CMD-SBFP-7, CMD-SBFP-13,
+  CMD-SBFP-14, CMD-SBFP-15
+- Fixture/setup: `dist/adapters/manifest.yaml`; exact canonical resource
+  manifest; generated, packed, and installed roots; four durable parity paths;
+  valid activation, invalid partial activation, and valid rollback notes.
+- Steps: Generate and validate adapters in a fresh root; compare every
+  skill-relative path and raw byte; persist the four exact maps; generate then
+  validate the report; run release regression and current release validation.
+- Expected result: All four surfaces are complete and byte-identical; partial
+  units, stale resources, mismatched report identity, and invalid rollback
+  fail without publication.
+- Failure proves: Shipped capability can diverge from canonical skill packages
+  or activate from incomplete evidence.
+- Evidence artifact: exact four parity manifests, capability report, and
+  release validation output
+- Automation location: skill, adapter, boundary, and release tests
+- Required by milestone: M4
+
 ## Fixtures and data
 
 - Boundary-first fixtures:
   - `tests/fixtures/boundary-proof/` for closed model, incident, simple-change, report, and activation cases
   - `tests/fixtures/skills/boundary-proof/` for the exact eight governed skills
   - canonical and drifted copies of `references/boundary-proof-model.md` across source, generated, packed, and installed skill roots
-- No new external fixtures or runtime data are required.
+  - `tests/fixtures/boundary-proof/behavior/happy-path.json`
+  - `tests/fixtures/boundary-proof/simple-change/scenario.json`
+  - exact release-note fixtures under
+    `tests/fixtures/boundary-proof/release/{valid-activation,invalid-partial-activation,valid-rollback}/release-notes.md`
+- M2 requires the actual locally available Codex runtime for the read-only
+  preflight and one isolated generation. No external network, connectors,
+  subagents, caller instructions, or durable secret/runtime-configuration
+  values are permitted.
 - Static tests use canonical repository files as fixtures:
   - approved spec and active test spec under `specs/`;
   - first-slice canonical skills under `skills/`;
@@ -1860,6 +1965,12 @@ Boundary model scope: R56-R56q
 ## Mocking/stubbing policy
 
 - Do not mock repository-owned validation commands for milestone closeout.
+- Do not mock Resource map closure, parent-observed sandbox state, resolved
+  runtime identity, or the private runtime-home boundary in M2 promotion proof.
+  Crash and unavailable-profile unit fixtures may use injected boundaries, but
+  actual M2 promotion requires the live read-only preflight and isolated run.
+- M3 validation consumes recorded before/after evidence and must assert zero
+  upstream lifecycle reinvocations.
 - Unit-level validator tests may use small fixture skill trees for negative cases when the production skill files should remain valid.
 - Generated-output tests may use temporary output roots when helper-level tests need stale, missing, or unexpected generated files.
 - Do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version 0.1.1 --check`, `scripts/validate-adapters.py --version 0.1.1`, or `scripts/ci.sh` in final milestone proof.
@@ -1896,7 +2007,9 @@ Boundary model scope: R56-R56q
 
 ## Observability verification
 
-- No runtime logs, metrics, traces, or audit events are required.
+- The boundary-first slice requires only its closed behavior access log,
+  structural stage trace, immutable publication receipt, and typed result
+  diagnostics. It adds no general application telemetry.
 - Validation output should identify failed required sections, shared-block drift, generated-output drift, selector classification gaps, and overclaim checks clearly enough for maintainers to fix them: `T7`, `T9`, `T10`, `T13`.
 - Published-skill design validation output should identify description-length failures, missing trigger contexts, missing near-miss boundaries, missing resource-map entries, unavailable repository-root dependencies, and routing fixture coverage gaps by stable check ID when those checks are implemented: `T17`, `T18`, `T19`.
 - Spec-family validation output should identify deterministic `spec` and `spec-review` failures by stable check ID or fixture expectation when those checks are implemented: `T22`, `T23`.
@@ -2021,7 +2134,9 @@ Boundary model scope: R56-R56q
 
 ## Next artifacts
 
-- Boundary-first amendment: independent `test-spec-review` for R56-R56q and the companion R28-R28z proof map, then implementation authorization.
+- Boundary-first amendment: independent `test-spec-review` for this R13/R4/R5
+  proof map, then resume M1 correction under the recorded implementation
+  authorization.
 - Current structural-hygiene rollout: `implement` M1 under [Spec and Test-Spec Structural Hygiene Execution Plan](../docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md).
 - Current rollout: `implement` M1 under [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md).
 - Current rollout: `implement` M2 under [Test-Spec Contract Normalization Plan](../docs/plans/2026-05-20-test-spec-contract-normalization.md).
@@ -2037,4 +2152,10 @@ Boundary model scope: R56-R56q
 
 ## Readiness
 
-Active proof-planning surface for public skill portability and the boundary-first R56-R56q amendment, alongside the previously listed initiatives. Test-spec review R2 approved the boundary-first proof map; implementation remains subject to the separate implementation-authorization boundary. The active plan `Current Handoff Summary` for each initiative owns its current workflow action.
+Active proof-planning surface for public skill portability and the
+boundary-first R56-R56q amendment, alongside the previously listed initiatives.
+The R13/R4/R5 revision is ready for independent test-spec review; the prior R2
+approval is stale and implementation must not resume until the new review
+approves this proof map.
+The active plan `Current Handoff Summary` for each initiative owns its current
+workflow action.
