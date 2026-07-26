@@ -4119,7 +4119,7 @@ def _collect_runtime_attestation(
 
         _copy_participating_skills(runtime_home)
         _install_auth(runtime_home)
-        model_id = "gpt-5.6-terra"
+        model_id = "gpt-5.6-sol"
         node = shutil.which("node")
         if node is None:
             raise BoundaryRuntimeError("runtime-unavailable")
