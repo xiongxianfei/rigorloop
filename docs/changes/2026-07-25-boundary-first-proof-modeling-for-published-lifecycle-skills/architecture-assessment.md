@@ -45,3 +45,20 @@ writes, carry stage-authored semantic bytes. Architecture must therefore:
 - prove actual stage-envelope materialization during preflight;
 - preserve immutable publication, recovery, runtime confinement, and the
   standalone two-module implementation boundary.
+
+The approved R45 amendment strengthens that transport boundary:
+
+- child commands and detached descendants have read-only workspace access and
+  no writable root;
+- one deny-only file-change authorization policy governs probe, canary,
+  lifecycle, retry, and no-child reconciliation behavior;
+- the parent retains a root descriptor and completes bounded no-follow
+  baseline/post-turn integrity inspection before materialization;
+- current runtime attestation, preflight, and implementation-manifest evidence
+  use v2; and
+- the sole registered v1 manifest is exact-identity opaque history and cannot
+  satisfy a current role.
+
+Architecture must update the Runtime View, crosscutting trust and transport
+boundaries, component diagram, permission-profile relationship, and proposed
+stage-envelope ADR without reopening the approved semantic-envelope contract.
