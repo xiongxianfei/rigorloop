@@ -91,7 +91,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r42.md
 - Review status: changes-requested; stage=spec-review; round=r42
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec
+- Next stage: spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=10; open-findings=BFP-AR16-1,BFP-AR16-2,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR41-1,BFP-SR41-2,BFP-SR41-3,BFP-SR42-1,BFP-SR42-2
 
@@ -620,6 +620,15 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Spec-review R42 confirmed the R41 workspace-integrity
+  corrections and retained two gaps: the app-server file-change path lacked an
+  independent denial probe, and baseline inspection failures lacked a typed
+  preflight and generation-start surface. The R43 candidate adds an
+  identity-bound file-change denial policy and fresh app-server probe, binds
+  its pass result into runtime attestation, and adds a bounded,
+  privacy-preserving `workspace-baseline-failure-v1` record to both exact
+  failure responses.
 
 - 2026-07-26: Spec-review R41 required writer-quiescence proof, total
   race-resistant scan failures, and bounded privacy-safe evidence. The R42

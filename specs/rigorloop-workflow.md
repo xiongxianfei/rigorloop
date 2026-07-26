@@ -1603,6 +1603,7 @@ capability_inventory_identity
 skill_inventory_identity
 feature_classification_identity
 protocol_item_classification_identity
+file_change_denial_policy_identity
 materialization_canary_policy_identity
 probe_results
 credential_isolation_results
@@ -1638,6 +1639,7 @@ The exact identity preimages are:
 | `skill_inventory_identity` | Canonical JSON of the complete accepted `skills/list` result after the exact path normalization below |
 | `feature_classification_identity` | Canonical JSON of the feature-name-sorted array of exact `{feature, classification}` rows |
 | `protocol_item_classification_identity` | Canonical JSON of the protocol-variant-name-sorted array of exact `{item_variant, classification}` rows derived from the bound schema |
+| `file_change_denial_policy_identity` | Canonical JSON of the exact `stage-file-change-denial-probe-v1` policy selected by the parent |
 | `materialization_canary_policy_identity` | Canonical JSON of the exact `materialization-canary-v1` policy selected by the parent for the noncanonical preflight turn |
 
 For `config/read.origins`, format-valid means
@@ -1765,8 +1767,8 @@ when it reports `status: disabled` and a null environment identity; every
 other value stops the turn.
 
 `probe_results` contains exactly `workspace_read`, `workspace_write_denied`,
-`descendant_workspace_write_denied`, `unmanifested_source_denied`,
-`private_auth_denied`, `network_denied`, and
+`descendant_workspace_write_denied`, `workspace_file_change_denied`,
+`unmanifested_source_denied`, `private_auth_denied`, `network_denied`, and
 `stage_envelope_materialization`.
 `credential_isolation_results` contains exactly `environment_names_closed`,
 `canary_absent_from_environment`, `canary_absent_from_argv`,
@@ -1797,16 +1799,77 @@ mutations and report only four denial booleans through that pipe.
 The parent requires all denial booleans, unchanged workspace identity, and
 bounded descendant exit/reap within `termination_wait_deadline_ms`.
 The probe records only `pass`.
-The permission enforcement is inherited by command descendants and applies
-equally to runtime file-change/apply-patch handling.
 A writable child root, successful mutation, absent or ambiguous descendant
 result, or incomplete reap is `environment-unavailable` before the canary.
 The exact-byte materializer executes in the parent outside child tool authority
 and is the only component with write access to the behavior-output root.
 
+`workspace_file_change_denied` independently proves the app-server
+file-change path after the direct and descendant command probes and before the
+materialization canary.
+The parent selects an exact `stage-file-change-denial-probe-v1` policy
+containing exactly `schema_version`, `required_protocol_classification`,
+`operation`, `fixture_path`, `prompt_identity`, and
+`accepted_terminal_statuses`.
+Its values are:
+
+```text
+schema_version: stage-file-change-denial-probe-v1
+required_protocol_classification: permitted-side-effect
+operation: create-regular-file
+fixture_path: preflight/file-change-denial-probe.md
+prompt_identity: sha256:<canonical deterministic probe prompt bytes>
+accepted_terminal_statuses:
+  - declined
+  - failed
+```
+
+The policy identity is the standard canonical-JSON identity of that exact
+object.
+The deterministic probe prompt is the UTF-8 encoding, with no trailing
+newline, of:
+
+```text
+Use only the runtime file-change/apply-patch operation, not a shell command, to create preflight/file-change-denial-probe.md with the exact UTF-8 content boundary-file-change-denial-probe-v1 followed by one LF. Perform no other operation. After the attempt, return exactly {"probe":"complete"}.
+```
+
+`prompt_identity` is the SHA-256 identity of those exact prompt bytes.
+The parent starts a fresh app-server thread under the same bound runtime
+version, generated configuration, schema bundle, protocol classification,
+read-only permission profile, and isolated workspace used by the accepted
+turn.
+The identity-bound prompt requires the child to attempt only the runtime
+file-change/apply-patch operation that creates the policy fixture and then
+return a schema-constrained terminal marker.
+The marker is control-flow evidence only and never proves denial.
+The parent independently requires exactly one version-projected
+`FileChangeThreadItem` whose `type` is `fileChange`, whose changes contain
+exactly one `add` for the policy fixture, and whose terminal status is one of
+the policy's accepted terminal statuses.
+If the runtime sends `item/fileChange/requestApproval`, the parent returns
+exactly `decision: decline`; an accept decision is forbidden.
+The parent additionally requires every observed file-change protocol item to
+resolve to `permitted-side-effect`, an unchanged root-anchored workspace
+identity, no candidate or lifecycle output, and complete thread/process stop
+and reap within `termination_wait_deadline_ms`.
+For Codex `0.145.0`, the applicable projected protocol family consists of
+`ServerRequest:item/fileChange/requestApproval`,
+`ServerNotification:item/fileChange/outputDelta`, and
+`ServerNotification:item/fileChange/patchUpdated`; the observed operation must
+resolve unambiguously through that bound schema projection.
+Missing invocation of the required file-change family, substitution of a shell
+command, an unknown or additional side-effect operation, a missing or
+ambiguous denial, any workspace mutation, lifecycle output, or incomplete
+cleanup is `sandbox-probe-failed`.
+The parent persists only `workspace_file_change_denied: pass` and the policy
+identity; it never persists the child marker, prompt, raw protocol event,
+fixture content, or child-authored path.
+Generation repeats this proof in a fresh runtime and binds its result into the
+fresh runtime attestation before the materialization canary or accepted turn.
+
 `stage_envelope_materialization` is proved by one noncanonical preflight turn
 through `workflow` and `spec` after runtime negotiation and the direct sandbox
-probes succeed.
+and file-change denial probes succeed.
 Before the turn, the parent selects the separate
 `materialization-canary-v1` artifact policy and binds its canonical identity
 into the turn request, output schema, and runtime attestation.
@@ -1861,23 +1924,26 @@ materialization.
 
 The evidence-only
 `check-environment --change-id <change-id> --json` command returns exactly
-`schema_version`, `result`, `diagnostic_id`, `phase`, and `attestation_ref`.
+`schema_version`, `result`, `diagnostic_id`, `phase`, `attestation_ref`, and
+`workspace_failure`.
 `change-id` must match `^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9][a-z0-9-]*$`
 and resolve to the existing non-symlink change root with that exact basename.
 Missing, malformed, mismatched, absent, or symlinked change roots fail before
 runtime discovery and produce no pass result.
-`schema_version` is `boundary-runtime-preflight-v1`.
+`schema_version` is `boundary-runtime-preflight-v2`.
 `result` is `pass` or `environment-unavailable`.
 For pass, `diagnostic_id` is `none`, `phase` is `pre-turn-start`, and
 `attestation_ref` is the standard current path-and-identity reference to
 `docs/changes/<change-id>/evidence/runtime-preflight-attestation.json`.
+`workspace_failure` is null.
 That file contains exactly the `boundary-runtime-attestation-v1` record above,
 is published durably only after every preflight check passes, and is
 referenced from `validation-m2.md`. It proves feasibility but does not
 authorize later execution; generation derives a fresh attestation for the
 then-current skill inventory.
 For failure, `diagnostic_id` is one closed value below and `phase` is the
-mapped phase, and `attestation_ref` is null:
+mapped phase, `attestation_ref` is null, and `workspace_failure` is null except
+for `workspace-baseline-invalid`:
 
 | Diagnostic | Phase |
 | --- | --- |
@@ -1926,6 +1992,23 @@ Pre-thread failures stop before `thread/start`; pre-turn failures stop before
 `turn/start`; in-turn failures discard the turn and stop before manifest or
 lifecycle-output acceptance. Unknown diagnostic IDs or phases fail closed.
 The successful `runtime_attestation` contains no diagnostic field.
+
+For `workspace-baseline-invalid`, `workspace_failure` contains exactly
+`kind`, `reason`, `policy_identity`, and `failure_identity`.
+`kind` is `workspace-baseline-failure-v1`.
+`reason` is the first reached member of the workspace-integrity
+`failure_reasons` vocabulary in its defined precedence order; an entry-count
+overflow uses `entry-limit-exceeded`.
+`policy_identity` is the canonical identity of the selected artifact policy's
+workspace-integrity policy.
+`failure_identity` is the canonical identity of the other three fields.
+The complete canonical serialized object MUST be at most 1024 bytes; equality
+is accepted and one byte over fails closed without substituting a less precise
+reason.
+It contains no path, content, exception, errno, raw protocol value, or private
+absolute value.
+Missing, additional, unknown, misordered-precedence, oversized, or
+identity-inconsistent workspace-failure data invalidates the response.
 
 Durable preflight publication writes a sibling mode-restricted temporary file
 in the target evidence directory, flushes and fsyncs that file, installs it
@@ -3087,6 +3170,22 @@ transport row, and performs no stage invocation.
 For preflight it is the corresponding `environment-unavailable` diagnostic;
 for generation it stops the run as `environment-unavailable` before the
 prospective event begins.
+The generation command emits exactly one canonical JSON object on stdout with
+exactly `schema_version`, `result`, `diagnostic_id`, `phase`, and
+`workspace_failure`, then exits nonzero:
+
+```text
+schema_version: boundary-behavior-generation-start-failure-v1
+result: environment-unavailable
+diagnostic_id: workspace-baseline-invalid
+phase: pre-turn-start
+workspace_failure: <the exact workspace-baseline-failure-v1 object>
+```
+
+It emits no raw diagnostic prose, creates no durable failure file, and does not
+append a transport row.
+The `workspace_failure` object and its 1024-byte equality boundary are
+identical to the preflight contract.
 `baseline_inventory_identity` is the canonical identity of
 `baseline_entries`.
 
