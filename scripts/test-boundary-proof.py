@@ -16,11 +16,14 @@ from types import SimpleNamespace
 from unittest import mock
 
 from boundary_proof_behavior import (
+    ARTIFACT_POLICY,
     ATTESTATION_FIELDS,
     CODEX_0_144_6_FEATURES,
     CODEX_0_145_0_FEATURES,
     PARTICIPATING_SKILLS,
     PREFLIGHT_FIELDS,
+    FILE_CHANGE_AUTHORIZATION_POLICY,
+    MATERIALIZATION_CANARY_POLICY,
     RUNTIME_SYSTEM_SKILLS,
     RUNTIME_PROTOCOL_CLASSIFICATION_IDENTITY_BY_VERSION,
     RUNTIME_SCHEMA_IDENTITY_BY_VERSION,
@@ -29,6 +32,7 @@ from boundary_proof_behavior import (
     _StageTurnTimeout,
     _artifact_kind,
     _build_behavior_manifest,
+    _classify_historical_evidence,
     _invoke_with_reconciliation,
     _load_transport_fixture,
     _derive_config_origin_paths,
@@ -37,6 +41,8 @@ from boundary_proof_behavior import (
     _normalize_config_result,
     _normalize_skill_inventory,
     _load_generated_payload,
+    _materialize_stage_envelope,
+    _parse_stage_envelope,
     _publish_run,
     _reconcile_prepared,
     _parse_feature_markdown,
@@ -1629,6 +1635,51 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             stage_request["expected_outputs"],
             ["feature-spec/portable-text-normalizer.md"],
         )
+        self.assertNotIn("file-write tool", stage_request["prompt"])
+        self.assertIn("artifact envelope", stage_request["prompt"])
+        self.assertEqual(
+            stage_request["artifact_policy_id"],
+            "lifecycle-stage-artifacts-v1",
+        )
+
+    def test_stage_envelope_is_policy_bound_and_parent_materialized(self) -> None:
+        envelope = {
+            "schema_version": "boundary-stage-artifact-envelope-v1",
+            "artifact_policy_id": "lifecycle-stage-artifacts-v1",
+            "completed": True,
+            "last_stage": "spec",
+            "artifact_set_variant": "spec-initial",
+            "artifacts": [
+                {
+                    "role": "feature-spec",
+                    "path": "feature-spec/portable-text-normalizer.md",
+                    "content_utf8": "# Feature\n",
+                }
+            ],
+        }
+        parsed, rows = _parse_stage_envelope(
+            json.dumps(envelope), stage="spec", attempt=1
+        )
+        self.assertEqual(parsed, envelope)
+        self.assertEqual(rows[0]["text"], "# Feature\n")
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            observation = _materialize_stage_envelope(root, parsed)
+            self.assertEqual(observation["result"], "pass")
+            self.assertEqual(
+                (root / rows[0]["path"]).read_text(encoding="utf-8"),
+                "# Feature\n",
+            )
+        for mutation in (
+            {**envelope, "artifact_policy_id": "unknown"},
+            {**envelope, "artifact_set_variant": "spec-correction"},
+            {**envelope, "unknown": True},
+        ):
+            with self.subTest(keys=sorted(mutation)):
+                with self.assertRaises(BoundaryRuntimeError):
+                    _parse_stage_envelope(
+                        json.dumps(mutation), stage="spec", attempt=1
+                    )
 
     def test_timeout_reconciles_complete_output_without_reinvocation(self) -> None:
         calls = 0
@@ -1930,6 +1981,10 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
 
     def test_invocation_profile_uses_approved_exact_literals(self) -> None:
         manifest = _build_behavior_manifest(ROOT, self._attestation())
+        self.assertEqual(
+            manifest["manifest_id"], "boundary-behavior-implementation-v2"
+        )
+        self.assertEqual(manifest["artifact_policy"], ARTIFACT_POLICY)
         profile = manifest["invocation_profile"]
         self.assertEqual(
             profile["orchestration_mode"], "workflow-auto-isolated-v1"
@@ -1939,7 +1994,8 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "repository-instructions-plus-runtime-default-v1",
         )
         self.assertEqual(
-            profile["tool_profile"], "isolated-workspace-no-network-v1"
+            profile["tool_profile"],
+            "isolated-workspace-readonly-no-network-v1",
         )
         self.assertEqual(profile["python_implementation"], "cpython")
         self.assertEqual(
@@ -2157,7 +2213,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "approvalsReviewer": "user",
             "sandbox": {"type": "readOnly", "networkAccess": False},
             "activePermissionProfile": {
-                "id": "boundary-proof-v1",
+                "id": "boundary-proof-stage-readonly-v1",
                 "extends": None,
             },
             "reasoningEffort": None,
@@ -2396,18 +2452,18 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
     def _attestation() -> dict[str, object]:
         digest = "sha256:" + "a" * 64
         return {
-            "schema_version": "boundary-runtime-attestation-v1",
+            "schema_version": "boundary-runtime-attestation-v2",
             "runtime_launcher_identity": digest,
             "runtime_package_identity": digest,
             "schema_bundle_identity": digest,
             "generated_config_identity": digest,
             "managed_requirements_identity": digest,
-            "active_permission_profile": "boundary-proof-v1",
+            "active_permission_profile": "boundary-proof-stage-readonly-v1",
             "thread_metadata": {
                 "cli_version": "0.145.0",
                 "model_id": "gpt-5",
                 "model_provider": "openai",
-                "active_permission_profile": "boundary-proof-v1",
+                "active_permission_profile": "boundary-proof-stage-readonly-v1",
                 "workspace_root_roles": [],
                 "instruction_source_refs": [],
                 "runtime_default_instruction_source": "identified-runtime-substrate",
@@ -2418,12 +2474,37 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "skill_inventory_identity": digest,
             "feature_classification_identity": digest,
             "protocol_item_classification_identity": digest,
+            "file_change_authorization_policy_identity": (
+                "sha256:"
+                + hashlib.sha256(
+                    json.dumps(
+                        FILE_CHANGE_AUTHORIZATION_POLICY,
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                        sort_keys=True,
+                    ).encode("utf-8")
+                ).hexdigest()
+            ),
+            "materialization_canary_policy_identity": (
+                "sha256:"
+                + hashlib.sha256(
+                    json.dumps(
+                        MATERIALIZATION_CANARY_POLICY,
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                        sort_keys=True,
+                    ).encode("utf-8")
+                ).hexdigest()
+            ),
             "probe_results": {
                 "workspace_read": "pass",
-                "workspace_write": "pass",
+                "workspace_write_denied": "pass",
+                "descendant_workspace_write_denied": "pass",
+                "workspace_file_change_denied": "pass",
                 "unmanifested_source_denied": "pass",
                 "private_auth_denied": "pass",
                 "network_denied": "pass",
+                "stage_envelope_materialization": "pass",
             },
             "credential_isolation_results": {
                 "environment_names_closed": "pass",
@@ -2441,13 +2522,58 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         self.assertEqual(
             result,
             {
-                "schema_version": "boundary-runtime-preflight-v1",
+                "schema_version": "boundary-runtime-preflight-v2",
                 "result": "environment-unavailable",
                 "diagnostic_id": "runtime-version-unsupported",
                 "phase": "pre-thread-start",
                 "attestation_ref": None,
+                "workspace_failure": None,
             },
         )
+
+    def test_v2_policies_are_closed_and_identity_bound(self) -> None:
+        self.assertEqual(
+            FILE_CHANGE_AUTHORIZATION_POLICY["schema_version"],
+            "stage-file-change-authorization-policy-v1",
+        )
+        self.assertEqual(
+            MATERIALIZATION_CANARY_POLICY["policy_id"],
+            "materialization-canary-v1",
+        )
+        self.assertEqual(
+            ARTIFACT_POLICY["policy_id"], "lifecycle-stage-artifacts-v1"
+        )
+        self.assertEqual(len(ARTIFACT_POLICY["stage_occurrences"]), 8)
+
+    def test_only_exact_registered_v1_history_is_recognized(self) -> None:
+        expected_path = (
+            "docs/changes/2026-07-25-boundary-first-proof-modeling-for-"
+            "published-lifecycle-skills/evidence/"
+            "behavior-implementation-manifest.json"
+        )
+        expected_identity = (
+            "sha256:d4a98482700e711f6c1ec17f1309d56c"
+            "64f67e9cc6181389cc74daf4f2c4cc0e"
+        )
+        self.assertEqual(
+            _classify_historical_evidence(
+                "behavior-implementation-manifest",
+                expected_path,
+                expected_identity,
+            ),
+            "registered-opaque-history",
+        )
+        for path, identity in (
+            (expected_path + ".moved", expected_identity),
+            (expected_path, "sha256:" + "0" * 64),
+        ):
+            with self.subTest(path=path, identity=identity):
+                self.assertEqual(
+                    _classify_historical_evidence(
+                        "behavior-implementation-manifest", path, identity
+                    ),
+                    "unsupported-historical-evidence",
+                )
 
     def test_runtime_attestation_rejects_unknown_nested_state(self) -> None:
         attestation = self._attestation()

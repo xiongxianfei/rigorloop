@@ -204,6 +204,7 @@ PREFLIGHT_FIELDS: Final[tuple[str, ...]] = (
     "diagnostic_id",
     "phase",
     "attestation_ref",
+    "workspace_failure",
 )
 ATTESTATION_FIELDS: Final[tuple[str, ...]] = (
     "schema_version",
@@ -219,6 +220,8 @@ ATTESTATION_FIELDS: Final[tuple[str, ...]] = (
     "skill_inventory_identity",
     "feature_classification_identity",
     "protocol_item_classification_identity",
+    "file_change_authorization_policy_identity",
+    "materialization_canary_policy_identity",
     "probe_results",
     "credential_isolation_results",
 )
@@ -233,6 +236,7 @@ DIAGNOSTIC_PHASES: Final[dict[str, frozenset[str]]] = {
     "schema-bundle-invalid": frozenset({"pre-thread-start"}),
     "experimental-api-unavailable": frozenset({"pre-thread-start"}),
     "protocol-shape-incompatible": frozenset({"pre-thread-start"}),
+    "protocol-conditional-policy-violation": frozenset({"in-turn"}),
     "thread-metadata-mismatch": frozenset({"pre-turn-start"}),
     "feature-pagination-invalid": frozenset({"pre-turn-start"}),
     "capability-inventory-mismatch": frozenset({"pre-turn-start"}),
@@ -243,6 +247,8 @@ DIAGNOSTIC_PHASES: Final[dict[str, frozenset[str]]] = {
     "config-equivalence-mismatch": frozenset({"pre-turn-start"}),
     "sandbox-probe-failed": frozenset({"pre-turn-start"}),
     "credential-isolation-failed": frozenset({"pre-turn-start"}),
+    "workspace-baseline-invalid": frozenset({"pre-turn-start"}),
+    "stage-envelope-canary-failed": frozenset({"in-turn"}),
     "unexpected-prohibited-event": frozenset({"in-turn"}),
 }
 CONTRACT_PATHS: Final[tuple[str, ...]] = (
@@ -261,6 +267,7 @@ MANIFEST_FIELDS: Final[frozenset[str]] = frozenset(
         "contract_refs",
         "invocation_profile",
         "transport_policy",
+        "artifact_policy",
         "runtime_attestation",
     }
 )
@@ -405,16 +412,247 @@ def _sha256(raw: bytes) -> str:
     return "sha256:" + hashlib.sha256(raw).hexdigest()
 
 
+FILE_CHANGE_PROBE_PROMPT: Final[str] = (
+    "Use only the runtime file-change/apply-patch operation, not a shell "
+    "command, to create preflight/file-change-denial-probe.md with the exact "
+    "UTF-8 content boundary-file-change-denial-probe-v1 followed by one LF. "
+    'Perform no other operation. After the attempt, return exactly '
+    '{"probe":"complete"}.'
+)
+FILE_CHANGE_AUTHORIZATION_POLICY: Final[dict[str, object]] = {
+    "schema_version": "stage-file-change-authorization-policy-v1",
+    "required_protocol_classification": "permitted-side-effect",
+    "request_decision": "decline",
+    "prohibited_decisions": ["accept", "acceptForSession"],
+    "governed_turn_kinds": [
+        "denial-probe",
+        "materialization-canary",
+        "lifecycle-stage",
+        "lifecycle-retry",
+    ],
+    "probe_operation": "create-regular-file",
+    "probe_fixture_directory": "preflight",
+    "probe_fixture_path": "preflight/file-change-denial-probe.md",
+    "probe_fixture_initial_state": "absent",
+    "prompt_identity": _sha256(FILE_CHANGE_PROBE_PROMPT.encode("utf-8")),
+    "accepted_probe_terminal_status": "declined",
+}
+
+CANARY_WORKSPACE_INTEGRITY_POLICY: Final[dict[str, object]] = {
+    "schema_version": "stage-workspace-integrity-policy-v1",
+    "baseline_entry_limit": 128,
+    "encountered_entry_limit": 129,
+    "path_byte_limit": 256,
+    "aggregate_path_byte_limit": 32768,
+    "observation_byte_limit": 65536,
+    "scan_deadline_ms": 2000,
+}
+LIFECYCLE_WORKSPACE_INTEGRITY_POLICY: Final[dict[str, object]] = {
+    "schema_version": "stage-workspace-integrity-policy-v1",
+    "baseline_entry_limit": 4096,
+    "encountered_entry_limit": 4097,
+    "path_byte_limit": 512,
+    "aggregate_path_byte_limit": 1048576,
+    "observation_byte_limit": 2097152,
+    "scan_deadline_ms": 10000,
+}
+MATERIALIZATION_CANARY_POLICY: Final[dict[str, object]] = {
+    "policy_id": "materialization-canary-v1",
+    "stage": "spec",
+    "artifact_set_variant": "materialization-canary",
+    "artifacts": [
+        {
+            "role": "transport-canary",
+            "path": "preflight/stage-envelope-canary.md",
+        }
+    ],
+    "per_artifact_byte_limit": 4096,
+    "aggregate_artifact_byte_limit": 4096,
+    "candidate_message_byte_limit": 16384,
+    "envelope_byte_limit": 16384,
+    "workspace_integrity_policy": dict(CANARY_WORKSPACE_INTEGRITY_POLICY),
+}
+
+
+def _artifact(role: str, path: str) -> dict[str, str]:
+    return {"role": role, "path": path}
+
+
+def _variant(
+    name: str, content_state_id: str, artifacts: Sequence[Mapping[str, str]]
+) -> dict[str, object]:
+    return {
+        "artifact_set_variant": name,
+        "content_state_id": content_state_id,
+        "artifacts": [dict(row) for row in artifacts],
+    }
+
+
+_FR = (_artifact("feature-spec", "feature-spec/portable-text-normalizer.md"),)
+_TR = (_artifact("test-spec", "test-spec/portable-text-normalizer.test.md"),)
+_SR = _artifact("spec-review-record", "reviews/spec-review.md")
+_SL = _artifact("spec-review-log", "review-log/spec-review.md")
+_SX = _artifact("spec-review-resolution", "review-resolution/spec-review.md")
+_TRR = _artifact("test-spec-review-record", "reviews/test-spec-review.md")
+_TRL = _artifact("test-spec-review-log", "review-log/test-spec-review.md")
+_TRX = _artifact(
+    "test-spec-review-resolution", "review-resolution/test-spec-review.md"
+)
+
+_SPEC_INITIAL = _variant("spec-initial", "feature-spec-initial-v1", _FR)
+_SPEC_CORRECTION = _variant(
+    "spec-correction", "feature-spec-correction-v1", (*_FR, _SX)
+)
+_SPEC_REVIEW_INITIAL = _variant(
+    "spec-review-approved-initial",
+    "spec-review-approved-initial-v1",
+    (_SR, _SL),
+)
+_SPEC_REVIEW_CHANGES = _variant(
+    "spec-review-changes-requested",
+    "spec-review-changes-requested-v1",
+    (_SR, _SL, _SX),
+)
+_SPEC_REVIEW_BLOCKED = _variant(
+    "spec-review-blocked", "spec-review-blocked-v1", (_SR, _SL, _SX)
+)
+_SPEC_REVIEW_REREVIEW = _variant(
+    "spec-review-approved-rereview",
+    "spec-review-approved-rereview-v1",
+    (_SR, _SL, _SX),
+)
+_TEST_SPEC_INITIAL = _variant(
+    "test-spec-initial", "test-spec-initial-v1", _TR
+)
+_TEST_SPEC_CORRECTION = _variant(
+    "test-spec-correction", "test-spec-correction-v1", (*_TR, _TRX)
+)
+_TEST_REVIEW_INITIAL = _variant(
+    "test-spec-review-approved-initial",
+    "test-spec-review-approved-initial-v1",
+    (_TRR, _TRL),
+)
+_TEST_REVIEW_CHANGES = _variant(
+    "test-spec-review-changes-requested",
+    "test-spec-review-changes-requested-v1",
+    (_TRR, _TRL, _TRX),
+)
+_TEST_REVIEW_BLOCKED = _variant(
+    "test-spec-review-blocked",
+    "test-spec-review-blocked-v1",
+    (_TRR, _TRL, _TRX),
+)
+_TEST_REVIEW_REREVIEW = _variant(
+    "test-spec-review-approved-rereview",
+    "test-spec-review-approved-rereview-v1",
+    (_TRR, _TRL, _TRX),
+)
+
+ARTIFACT_POLICY: Final[dict[str, object]] = {
+    "policy_id": "lifecycle-stage-artifacts-v1",
+    "stage_occurrences": [
+        {"stage": "spec", "attempt": 1, "variants": [_SPEC_INITIAL]},
+        {"stage": "spec", "attempt": 2, "variants": [_SPEC_CORRECTION]},
+        {
+            "stage": "spec-review",
+            "attempt": 1,
+            "variants": [
+                _SPEC_REVIEW_INITIAL,
+                _SPEC_REVIEW_CHANGES,
+                _SPEC_REVIEW_BLOCKED,
+            ],
+        },
+        {
+            "stage": "spec-review",
+            "attempt": 2,
+            "variants": [
+                _SPEC_REVIEW_REREVIEW,
+                _SPEC_REVIEW_CHANGES,
+                _SPEC_REVIEW_BLOCKED,
+            ],
+        },
+        {
+            "stage": "test-spec",
+            "attempt": 1,
+            "variants": [_TEST_SPEC_INITIAL],
+        },
+        {
+            "stage": "test-spec",
+            "attempt": 2,
+            "variants": [_TEST_SPEC_CORRECTION],
+        },
+        {
+            "stage": "test-spec-review",
+            "attempt": 1,
+            "variants": [
+                _TEST_REVIEW_INITIAL,
+                _TEST_REVIEW_CHANGES,
+                _TEST_REVIEW_BLOCKED,
+            ],
+        },
+        {
+            "stage": "test-spec-review",
+            "attempt": 2,
+            "variants": [
+                _TEST_REVIEW_REREVIEW,
+                _TEST_REVIEW_CHANGES,
+                _TEST_REVIEW_BLOCKED,
+            ],
+        },
+    ],
+    "per_artifact_byte_limit": 262144,
+    "aggregate_artifact_byte_limit": 524288,
+    "candidate_message_byte_limit": 786432,
+    "envelope_byte_limit": 786432,
+    "workspace_integrity_policy": dict(LIFECYCLE_WORKSPACE_INTEGRITY_POLICY),
+}
+
+HISTORICAL_EVIDENCE_REGISTRY: Final[tuple[dict[str, str], ...]] = (
+    {
+        "record_kind": "behavior-implementation-manifest",
+        "path": (
+            "docs/changes/2026-07-25-boundary-first-proof-modeling-for-"
+            "published-lifecycle-skills/evidence/"
+            "behavior-implementation-manifest.json"
+        ),
+        "identity": (
+            "sha256:d4a98482700e711f6c1ec17f1309d56c"
+            "64f67e9cc6181389cc74daf4f2c4cc0e"
+        ),
+        "treatment": "opaque-read-only-history",
+    },
+)
+
+
+def _classify_historical_evidence(
+    record_kind: str, path: str, identity: str
+) -> str:
+    matches = [
+        row
+        for row in HISTORICAL_EVIDENCE_REGISTRY
+        if row["record_kind"] == record_kind
+        and row["path"] == path
+        and row["identity"] == identity
+        and row["treatment"] == "opaque-read-only-history"
+    ]
+    return (
+        "registered-opaque-history"
+        if len(matches) == 1
+        else "unsupported-historical-evidence"
+    )
+
+
 def _preflight_failure(
     diagnostic_id: str, phase: str | None = None
 ) -> dict[str, object]:
     error = BoundaryRuntimeError(diagnostic_id, phase)
     return {
-        "schema_version": "boundary-runtime-preflight-v1",
+        "schema_version": "boundary-runtime-preflight-v2",
         "result": "environment-unavailable",
         "diagnostic_id": error.diagnostic_id,
         "phase": error.phase,
         "attestation_ref": None,
+        "workspace_failure": None,
     }
 
 
@@ -811,7 +1049,7 @@ def _build_behavior_manifest(
         "model_id": thread["model_id"],
         "orchestration_mode": "workflow-auto-isolated-v1",
         "instruction_profile": "repository-instructions-plus-runtime-default-v1",
-        "tool_profile": "isolated-workspace-no-network-v1",
+        "tool_profile": "isolated-workspace-readonly-no-network-v1",
         "python_implementation": platform.python_implementation().lower(),
         "python_version": platform.python_version(),
     }
@@ -820,7 +1058,7 @@ def _build_behavior_manifest(
     ]
     skill_references.sort(key=lambda row: row["path"])
     return {
-        "manifest_id": "boundary-behavior-implementation-v1",
+        "manifest_id": "boundary-behavior-implementation-v2",
         "harness_component_refs": [
             _regular_reference(repo_root, path) for path in sorted(harness_paths)
         ],
@@ -834,6 +1072,7 @@ def _build_behavior_manifest(
         ],
         "invocation_profile": profile,
         "transport_policy": dict(TRANSPORT_POLICY),
+        "artifact_policy": dict(ARTIFACT_POLICY),
         "runtime_attestation": dict(attestation),
     }
 
@@ -843,7 +1082,7 @@ def _validate_behavior_manifest(
 ) -> None:
     if set(manifest) != MANIFEST_FIELDS:
         raise BoundaryRuntimeError("runtime-identity-unstable")
-    if manifest.get("manifest_id") != "boundary-behavior-implementation-v1":
+    if manifest.get("manifest_id") != "boundary-behavior-implementation-v2":
         raise BoundaryRuntimeError("runtime-identity-unstable")
     _assert_standalone_import_policy(repo_root)
     for field in (
@@ -886,6 +1125,8 @@ def _validate_behavior_manifest(
         raise BoundaryRuntimeError("runtime-identity-unstable")
     if manifest.get("transport_policy") != TRANSPORT_POLICY:
         raise BoundaryRuntimeError("runtime-identity-unstable")
+    if manifest.get("artifact_policy") != ARTIFACT_POLICY:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
     governed_paths = [
         repo_root / str(row["path"])
         for field in ("harness_component_refs", "skill_package_refs")
@@ -917,7 +1158,8 @@ def _validate_behavior_manifest(
         or profile["orchestration_mode"] != "workflow-auto-isolated-v1"
         or profile["instruction_profile"]
         != "repository-instructions-plus-runtime-default-v1"
-        or profile["tool_profile"] != "isolated-workspace-no-network-v1"
+        or profile["tool_profile"]
+        != "isolated-workspace-readonly-no-network-v1"
         or profile["python_implementation"]
         != platform.python_implementation().lower()
         or profile["python_version"] != platform.python_version()
@@ -1251,6 +1493,7 @@ def _workflow_stage_request(
     request: str,
     *,
     artifact_context: str = "",
+    attempt: int = 1,
 ) -> dict[str, object]:
     outputs_by_stage = {
         "spec": ["feature-spec/portable-text-normalizer.md"],
@@ -1267,22 +1510,29 @@ def _workflow_stage_request(
     expected_outputs = outputs_by_stage.get(stage)
     if expected_outputs is None:
         raise BoundaryRuntimeError("protocol-shape-incompatible")
+    variants = _stage_policy_variants(stage, attempt)
     return {
         "skill_names": ["workflow", stage],
         "stage": stage,
+        "attempt": attempt,
+        "artifact_policy_id": ARTIFACT_POLICY["policy_id"],
         "expected_outputs": expected_outputs,
         "prompt": (
             "Use the installed workflow skill to route exactly the "
             f"{stage} stage to its installed stage-owning skill. The owning "
-            "skill must write its complete artifact below the current workspace "
-            "output/ directory at the exact relative paths listed below. The "
-            "harness will only capture and validate those bytes; do not ask it "
-            "to render, inject, or complete normative content. Do not advance "
-            "past this stage. Use an available workspace file-write tool to "
-            "create the parent directories and files. A response without every "
-            "required file is a failed stage even if the response says complete. "
-            "Return only the closed completion record after every required file "
-            "is durable.\n\nOutput paths:\n- "
+            "skill must author every semantic byte and return one complete "
+            "policy-bound artifact envelope in the agent message. Child tools "
+            "have read-only workspace access and must not create or modify "
+            "files. The parent transport validates and materializes exact bytes; "
+            "the harness must not render, inject, repair, or complete normative "
+            "content. Do not advance past this stage. Return only the closed "
+            "artifact envelope.\n\nArtifact policy: "
+            + str(ARTIFACT_POLICY["policy_id"])
+            + "\nAllowed variants: "
+            + ", ".join(
+                str(row["artifact_set_variant"]) for row in variants
+            )
+            + "\nExpected paths:\n- "
             + "\n- ".join(expected_outputs)
             + "\n\nRequest:\n"
             + request
@@ -1292,12 +1542,213 @@ def _workflow_stage_request(
                 else ""
             )
         ),
-        "output_schema": _closed_object_schema(
-            {
-                "completed": {"type": "boolean", "const": True},
-                "last_stage": {"type": "string", "enum": [stage]},
-            }
-        ),
+        "output_schema": _stage_envelope_schema(stage, attempt),
+    }
+
+
+def _stage_policy_variants(
+    stage: str, attempt: int
+) -> list[Mapping[str, object]]:
+    rows = ARTIFACT_POLICY["stage_occurrences"]
+    assert isinstance(rows, list)
+    matches = [
+        row
+        for row in rows
+        if row.get("stage") == stage and row.get("attempt") == attempt
+    ]
+    if len(matches) != 1:
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    variants = matches[0].get("variants")
+    if not isinstance(variants, list) or not variants:
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    return variants
+
+
+def _stage_envelope_schema(stage: str, attempt: int) -> dict[str, object]:
+    variants = _stage_policy_variants(stage, attempt)
+    return _closed_object_schema(
+        {
+            "schema_version": {
+                "type": "string",
+                "const": "boundary-stage-artifact-envelope-v1",
+            },
+            "artifact_policy_id": {
+                "type": "string",
+                "const": ARTIFACT_POLICY["policy_id"],
+            },
+            "completed": {"type": "boolean", "const": True},
+            "last_stage": {"type": "string", "const": stage},
+            "artifact_set_variant": {
+                "type": "string",
+                "enum": [
+                    row["artifact_set_variant"] for row in variants
+                ],
+            },
+            "artifacts": {
+                "type": "array",
+                "minItems": 1,
+                "items": _closed_object_schema(
+                    {
+                        "role": {"type": "string"},
+                        "path": {"type": "string"},
+                        "content_utf8": {"type": "string", "minLength": 1},
+                    }
+                ),
+            },
+        }
+    )
+
+
+def _strict_json_object(raw: str) -> dict[str, object]:
+    def pairs(rows: list[tuple[str, object]]) -> dict[str, object]:
+        result: dict[str, object] = {}
+        for key, value in rows:
+            if key in result:
+                raise BoundaryRuntimeError(
+                    "unexpected-prohibited-event", "in-turn"
+                )
+            result[key] = value
+        return result
+
+    try:
+        value = json.loads(raw, object_pairs_hook=pairs)
+    except (json.JSONDecodeError, UnicodeError) as error:
+        raise BoundaryRuntimeError(
+            "unexpected-prohibited-event", "in-turn"
+        ) from error
+    if not isinstance(value, dict):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    return value
+
+
+def _parse_stage_envelope(
+    raw: str, *, stage: str, attempt: int
+) -> tuple[dict[str, object], list[dict[str, str]]]:
+    raw_bytes = raw.encode("utf-8")
+    if len(raw_bytes) > int(ARTIFACT_POLICY["candidate_message_byte_limit"]):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    envelope = _strict_json_object(raw)
+    expected_fields = {
+        "schema_version",
+        "artifact_policy_id",
+        "completed",
+        "last_stage",
+        "artifact_set_variant",
+        "artifacts",
+    }
+    if (
+        set(envelope) != expected_fields
+        or envelope.get("schema_version")
+        != "boundary-stage-artifact-envelope-v1"
+        or envelope.get("artifact_policy_id") != ARTIFACT_POLICY["policy_id"]
+        or envelope.get("completed") is not True
+        or envelope.get("last_stage") != stage
+    ):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    canonical = _canonical_json_bytes(envelope)
+    if len(canonical) > int(ARTIFACT_POLICY["envelope_byte_limit"]):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    variants = _stage_policy_variants(stage, attempt)
+    matches = [
+        row
+        for row in variants
+        if row["artifact_set_variant"]
+        == envelope.get("artifact_set_variant")
+    ]
+    if len(matches) != 1:
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    required = matches[0]["artifacts"]
+    artifacts = envelope.get("artifacts")
+    if not isinstance(required, list) or not isinstance(artifacts, list):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    projected: list[dict[str, str]] = []
+    total = 0
+    seen_roles: set[str] = set()
+    seen_paths: set[str] = set()
+    for row in artifacts:
+        if not isinstance(row, dict) or set(row) != {
+            "role",
+            "path",
+            "content_utf8",
+        }:
+            raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+        role, path, text = row["role"], row["path"], row["content_utf8"]
+        candidate = Path(path) if isinstance(path, str) else Path("/")
+        if (
+            not isinstance(role, str)
+            or not isinstance(path, str)
+            or not isinstance(text, str)
+            or not text
+            or "\x00" in text
+            or candidate.is_absolute()
+            or not candidate.parts
+            or any(part in {"", ".", ".."} for part in candidate.parts)
+            or role in seen_roles
+            or path in seen_paths
+        ):
+            raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+        try:
+            encoded = text.encode("utf-8")
+        except UnicodeEncodeError as error:
+            raise BoundaryRuntimeError(
+                "unexpected-prohibited-event", "in-turn"
+            ) from error
+        if len(encoded) > int(ARTIFACT_POLICY["per_artifact_byte_limit"]):
+            raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+        total += len(encoded)
+        seen_roles.add(role)
+        seen_paths.add(path)
+        projected.append({"path": path, "text": text})
+    if total > int(ARTIFACT_POLICY["aggregate_artifact_byte_limit"]):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    if [
+        {"role": row["role"], "path": row["path"]} for row in artifacts
+    ] != required:
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    return envelope, projected
+
+
+def _materialize_stage_envelope(
+    output_root: Path, envelope: Mapping[str, object]
+) -> dict[str, object]:
+    stage = envelope.get("last_stage")
+    if not isinstance(stage, str):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    attempts = [
+        int(row["attempt"])
+        for row in ARTIFACT_POLICY["stage_occurrences"]
+        if row["stage"] == stage
+        and any(
+            variant["artifact_set_variant"]
+            == envelope.get("artifact_set_variant")
+            for variant in row["variants"]
+        )
+    ]
+    if len(attempts) != 1:
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    parsed, rows = _parse_stage_envelope(
+        _canonical_json_bytes(dict(envelope)).decode("utf-8"),
+        stage=stage,
+        attempt=attempts[0],
+    )
+    output_root.mkdir(parents=True, exist_ok=True)
+    root = output_root.resolve(strict=True)
+    identities: list[dict[str, str]] = []
+    for row in rows:
+        target = root.joinpath(*Path(row["path"]).parts)
+        parent = target.parent
+        parent.mkdir(parents=True, exist_ok=True)
+        if any(path.is_symlink() for path in (parent, target) if path.exists()):
+            raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+        raw = row["text"].encode("utf-8")
+        target.write_bytes(raw)
+        if target.read_bytes() != raw:
+            raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+        identities.append({"path": row["path"], "identity": _sha256(raw)})
+    return {
+        "result": "pass",
+        "stage_envelope_identity": _sha256(_canonical_json_bytes(parsed)),
+        "artifacts": identities,
     }
 
 
@@ -2804,9 +3255,13 @@ def generate_behavior(
         observed, result, attempts = _invoke_with_reconciliation(
             invoke, list(stage_request["expected_outputs"])
         )
+        envelope = result.get("stage_envelope")
         completion = (
-            _load_generated_payload(result, {"completed", "last_stage"})
-            if "agent_message" in result
+            {
+                "completed": envelope.get("completed"),
+                "last_stage": envelope.get("last_stage"),
+            }
+            if isinstance(envelope, dict)
             else {
                 "completed": True,
                 "last_stage": stage_request["stage"],
@@ -3411,7 +3866,7 @@ def _generated_config(
         f"model = {_toml_string(model_id)}",
         'model_provider = "openai"',
         'approval_policy = "never"',
-        'default_permissions = "boundary-proof-v1"',
+        'default_permissions = "boundary-proof-stage-readonly-v1"',
         "include_apps_instructions = false",
         "",
         "[shell_environment_policy]",
@@ -3425,18 +3880,18 @@ def _generated_config(
     lines.extend(
         [
             "",
-            "[permissions.boundary-proof-v1]",
-            'description = "Boundary proof isolated runtime"',
+            "[permissions.boundary-proof-stage-readonly-v1]",
+            'description = "Boundary proof read-only isolated runtime"',
             "",
-            "[permissions.boundary-proof-v1.filesystem]",
+            "[permissions.boundary-proof-stage-readonly-v1.filesystem]",
             '":root" = "deny"',
             '":minimal" = "read"',
             f"{_toml_string(str(runtime_package))} = \"read\"",
             "",
-            '[permissions.boundary-proof-v1.filesystem.":workspace_roots"]',
-            '"." = "write"',
+            '[permissions.boundary-proof-stage-readonly-v1.filesystem.":workspace_roots"]',
+            '"." = "read"',
             "",
-            "[permissions.boundary-proof-v1.network]",
+            "[permissions.boundary-proof-stage-readonly-v1.network]",
             "enabled = false",
             "",
         ]
@@ -3677,12 +4132,26 @@ class _AppServer:
             return response["result"]
         raise BoundaryRuntimeError("experimental-api-unavailable")
 
+    def _respond(self, request_id: object, result: object) -> None:
+        stream = self._process.stdin
+        if stream is None:
+            raise BoundaryRuntimeError("experimental-api-unavailable")
+        response = {"jsonrpc": "2.0", "id": request_id, "result": result}
+        try:
+            stream.write(_canonical_json_bytes(response).decode("utf-8") + "\n")
+            stream.flush()
+        except OSError as error:
+            raise BoundaryRuntimeError(
+                "unexpected-prohibited-event", "in-turn"
+            ) from error
+
     def collect_turn(
         self,
         thread_id: str,
         protocol_classification: Sequence[Mapping[str, str]],
         *,
         timeout: int = 300,
+        file_change_policy: Mapping[str, object] | None = None,
     ) -> dict[str, object]:
         """Collect one classified turn and reject unknown or prohibited events."""
 
@@ -3696,6 +4165,8 @@ class _AppServer:
             )
         messages: list[str] = []
         event_methods: list[str] = []
+        file_change_request_count = 0
+        file_change_terminal_statuses: list[str] = []
         pending = list(self._notifications)
         self._notifications.clear()
         deadline = time.monotonic() + timeout
@@ -3721,15 +4192,23 @@ class _AppServer:
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
-            if "id" in response:
-                raise BoundaryRuntimeError(
-                    "unexpected-prohibited-event", "in-turn"
-                )
             params = response.get("params")
             if not isinstance(params, dict):
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
+            if "id" in response:
+                if (
+                    method != "item/fileChange/requestApproval"
+                    or file_change_policy != FILE_CHANGE_AUTHORIZATION_POLICY
+                ):
+                    raise BoundaryRuntimeError(
+                        "unexpected-prohibited-event", "in-turn"
+                    )
+                self._respond(response["id"], {"decision": "decline"})
+                file_change_request_count += 1
+                event_methods.append(method)
+                continue
             if method == "remoteControl/status/changed" and (
                 params.get("status") != "disabled"
                 or params.get("environmentId") is not None
@@ -3757,9 +4236,11 @@ class _AppServer:
                         )
                     messages.append(text)
                 elif item_type not in {"userMessage", "reasoning"}:
-                    raise BoundaryRuntimeError(
-                        "unexpected-prohibited-event", "in-turn"
-                    )
+                    if item_type != "fileChange" or item.get("status") != "declined":
+                        raise BoundaryRuntimeError(
+                            "unexpected-prohibited-event", "in-turn"
+                        )
+                    file_change_terminal_statuses.append("declined")
             if method == "turn/completed":
                 if params.get("threadId") != thread_id:
                     raise BoundaryRuntimeError(
@@ -3779,6 +4260,8 @@ class _AppServer:
                     "agent_message": messages[-1],
                     "agent_message_count": len(messages),
                     "event_methods": event_methods,
+                    "file_change_request_count": file_change_request_count,
+                    "file_change_terminal_statuses": file_change_terminal_statuses,
                 }
         raise _StageTurnTimeout
 
@@ -4017,7 +4500,7 @@ def _sandbox_probe(
             str(executable),
             "sandbox",
             "--permission-profile",
-            "boundary-proof-v1",
+            "boundary-proof-stage-readonly-v1",
             "--include-managed-config",
             "--cd",
             str(workspace),
@@ -4030,6 +4513,117 @@ def _sandbox_probe(
     if (completed.returncode == 0) != expect_success:
         raise BoundaryRuntimeError("sandbox-probe-failed", "pre-turn-start")
     return completed
+
+
+def _workspace_probe_snapshot(workspace: Path) -> list[tuple[str, int, str]]:
+    rows: list[tuple[str, int, str]] = []
+    for path in sorted(workspace.rglob("*"), key=lambda item: item.as_posix()):
+        metadata = path.lstat()
+        if stat.S_ISLNK(metadata.st_mode):
+            raise BoundaryRuntimeError("sandbox-probe-failed", "pre-turn-start")
+        relative = path.relative_to(workspace).as_posix()
+        if stat.S_ISDIR(metadata.st_mode):
+            rows.append((relative, stat.S_IMODE(metadata.st_mode), "directory"))
+        elif stat.S_ISREG(metadata.st_mode):
+            rows.append(
+                (
+                    relative,
+                    stat.S_IMODE(metadata.st_mode),
+                    _sha256(path.read_bytes()),
+                )
+            )
+        else:
+            raise BoundaryRuntimeError("sandbox-probe-failed", "pre-turn-start")
+    return rows
+
+
+def _probe_workspace_write_denial(
+    executable: Path,
+    environment: Mapping[str, str],
+    workspace: Path,
+    source: Path,
+) -> None:
+    before = _workspace_probe_snapshot(workspace)
+    create_path = workspace / "write-denial-create.txt"
+    mutations = (
+        (
+            "/usr/bin/python3",
+            "-c",
+            f"from pathlib import Path;Path({str(create_path)!r}).write_text('x')",
+        ),
+        (
+            "/usr/bin/python3",
+            "-c",
+            f"from pathlib import Path;Path({str(source)!r}).write_text('changed')",
+        ),
+        ("/bin/rm", str(source)),
+        ("/bin/chmod", "600", str(source)),
+    )
+    for mutation in mutations:
+        _sandbox_probe(
+            executable,
+            environment,
+            workspace,
+            mutation,
+            expect_success=False,
+        )
+    if _workspace_probe_snapshot(workspace) != before:
+        raise BoundaryRuntimeError("sandbox-probe-failed", "pre-turn-start")
+
+
+def _probe_descendant_workspace_write_denial(
+    executable: Path,
+    environment: Mapping[str, str],
+    workspace: Path,
+    source: Path,
+) -> None:
+    before = _workspace_probe_snapshot(workspace)
+    create_path = workspace / "descendant-write-denial-create.txt"
+    script = (
+        "import ctypes,json,os,pathlib,time\n"
+        "ctypes.CDLL(None).prctl(36,1,0,0,0)\n"
+        "pid_r,pid_w=os.pipe();data_r,data_w=os.pipe()\n"
+        "direct=os.fork()\n"
+        "if direct==0:\n"
+        " descendant=os.fork()\n"
+        " if descendant:\n"
+        "  os.write(pid_w,str(descendant).encode());os._exit(0)\n"
+        " os.setsid();time.sleep(0.05)\n"
+        " os.close(pid_r);os.close(pid_w);os.close(data_r)\n"
+        f" source=pathlib.Path({str(source)!r})\n"
+        f" create=pathlib.Path({str(create_path)!r})\n"
+        " checks=[]\n"
+        " for action in (\n"
+        "  lambda:create.write_text('x'),\n"
+        "  lambda:source.write_text('changed'),\n"
+        "  lambda:source.unlink(),\n"
+        "  lambda:source.chmod(0o600),\n"
+        " ):\n"
+        "  try: action();checks.append(False)\n"
+        "  except OSError: checks.append(True)\n"
+        " os.write(data_w,json.dumps(checks).encode());os._exit(0)\n"
+        "os.close(pid_w);os.close(data_w);os.waitpid(direct,0)\n"
+        "descendant=int(os.read(pid_r,64));payload=os.read(data_r,4096)\n"
+        "reaped=os.waitpid(descendant,0)[0]==descendant\n"
+        "print(json.dumps({'checks':json.loads(payload),'reaped':reaped}),flush=True)\n"
+    )
+    completed = _sandbox_probe(
+        executable,
+        environment,
+        workspace,
+        ("/usr/bin/python3", "-c", script),
+        expect_success=True,
+    )
+    try:
+        results = json.loads(completed.stdout.strip())
+    except json.JSONDecodeError as error:
+        raise BoundaryRuntimeError(
+            "sandbox-probe-failed", "pre-turn-start"
+        ) from error
+    if results != {"checks": [True, True, True, True], "reaped": True}:
+        raise BoundaryRuntimeError("sandbox-probe-failed", "pre-turn-start")
+    if _workspace_probe_snapshot(workspace) != before:
+        raise BoundaryRuntimeError("sandbox-probe-failed", "pre-turn-start")
 
 
 def _protocol_classification(schema_root: Path) -> list[dict[str, str]]:
@@ -4177,7 +4771,8 @@ def _validated_thread_metadata(
         or thread.get("cwd") != str(workspace)
         or thread.get("runtimeWorkspaceRoots") != expected_runtime_roots
         or thread.get("instructionSources") != []
-        or active_profile != {"id": "boundary-proof-v1", "extends": None}
+        or active_profile
+        != {"id": "boundary-proof-stage-readonly-v1", "extends": None}
         or not isinstance(sandbox, dict)
         or sandbox.get("type") != expected_sandbox_type
         or sandbox.get("networkAccess") is not False
@@ -4188,7 +4783,7 @@ def _validated_thread_metadata(
             "cli_version": version,
             "model_id": model_id,
             "model_provider": "openai",
-            "active_permission_profile": "boundary-proof-v1",
+            "active_permission_profile": "boundary-proof-stage-readonly-v1",
             "workspace_root_roles": (
                 [] if not expected_runtime_roots else ["isolated-workspace"]
             ),
@@ -4209,7 +4804,7 @@ def _thread_start_request(workspace: Path, model_id: str) -> dict[str, object]:
         "effort": "low",
         "model": model_id,
         "modelProvider": "openai",
-        "permissions": "boundary-proof-v1",
+        "permissions": "boundary-proof-stage-readonly-v1",
         "runtimeWorkspaceRoots": [str(workspace)],
     }
 
@@ -4224,8 +4819,7 @@ def _turn_start_request(
     skill_names: Sequence[str] = PARTICIPATING_SKILLS,
 ) -> dict[str, object]:
     if (
-        not skill_names
-        or len(skill_names) != len(set(skill_names))
+        len(skill_names) != len(set(skill_names))
         or any(name not in PARTICIPATING_SKILLS for name in skill_names)
     ):
         raise BoundaryRuntimeError("protocol-shape-incompatible", "pre-turn-start")
@@ -4242,7 +4836,7 @@ def _turn_start_request(
         "input": [*skill_inputs, {"type": "text", "text": prompt}],
         "cwd": str(workspace),
         "model": model_id,
-        "permissions": "boundary-proof-v1",
+        "permissions": "boundary-proof-stage-readonly-v1",
         "runtimeWorkspaceRoots": [str(workspace)],
         "environments": [],
         "effort": "low",
@@ -4338,7 +4932,7 @@ def _collect_runtime_attestation(
                 str(executable),
                 "sandbox",
                 "--permission-profile",
-                "boundary-proof-v1",
+            "boundary-proof-stage-readonly-v1",
                 "--include-managed-config",
                 "--cd",
                 str(workspace),
@@ -4428,16 +5022,11 @@ def _collect_runtime_attestation(
                 raise BoundaryRuntimeError(
                     "credential-isolation-failed", "pre-turn-start"
                 )
-        _sandbox_probe(
-            executable,
-            environment,
-            workspace,
-            (
-                "/usr/bin/python3",
-                "-c",
-                "from pathlib import Path;Path('probe-output.txt').write_text('ok')",
-            ),
-            expect_success=True,
+        _probe_workspace_write_denial(
+            executable, environment, workspace, probe_source
+        )
+        _probe_descendant_workspace_write_denial(
+            executable, environment, workspace, probe_source
         )
         _sandbox_probe(
             executable,
@@ -4535,7 +5124,7 @@ def _collect_runtime_attestation(
                 or effective_config.get("model") != model_id
                 or effective_config.get("model_provider") != "openai"
                 or effective_config.get("default_permissions")
-                != "boundary-proof-v1"
+                != "boundary-proof-stage-readonly-v1"
                 or effective_config.get("sandbox_mode") is not None
             ):
                 raise BoundaryRuntimeError(
@@ -4583,6 +5172,72 @@ def _collect_runtime_attestation(
                 model_id=model_id,
                 workspace=workspace,
             )
+            probe_directory = workspace / str(
+                FILE_CHANGE_AUTHORIZATION_POLICY["probe_fixture_directory"]
+            )
+            probe_directory.mkdir()
+            probe_path = workspace / str(
+                FILE_CHANGE_AUTHORIZATION_POLICY["probe_fixture_path"]
+            )
+            if probe_path.exists():
+                raise BoundaryRuntimeError(
+                    "sandbox-probe-failed", "pre-turn-start"
+                )
+            probe_before = _workspace_probe_snapshot(workspace)
+            probe_thread = server.request(
+                "thread/start",
+                _thread_start_request(workspace, model_id),
+            )
+            _, probe_thread_id = _validated_thread_metadata(
+                probe_thread,
+                version=version,
+                model_id=model_id,
+                workspace=workspace,
+            )
+            probe_started = server.request(
+                "turn/start",
+                _turn_start_request(
+                    probe_thread_id,
+                    workspace,
+                    model_id,
+                    runtime_home,
+                    FILE_CHANGE_PROBE_PROMPT,
+                    _closed_object_schema(
+                        {
+                            "probe": {
+                                "type": "string",
+                                "const": "complete",
+                            }
+                        }
+                    ),
+                    (),
+                ),
+            )
+            if (
+                not isinstance(probe_started, dict)
+                or set(probe_started) != {"turn"}
+            ):
+                raise BoundaryRuntimeError(
+                    "sandbox-probe-failed", "pre-turn-start"
+                )
+            probe_result = server.collect_turn(
+                probe_thread_id,
+                protocol_classification,
+                timeout=int(TRANSPORT_POLICY["turn_deadline_ms"]) // 1000,
+                file_change_policy=FILE_CHANGE_AUTHORIZATION_POLICY,
+            )
+            if (
+                probe_result.get("file_change_request_count") != 1
+                or probe_result.get("file_change_terminal_statuses")
+                != ["declined"]
+                or _load_generated_payload(probe_result, {"probe"})
+                != {"probe": "complete"}
+                or probe_path.exists()
+                or _workspace_probe_snapshot(workspace) != probe_before
+            ):
+                raise BoundaryRuntimeError(
+                    "sandbox-probe-failed", "pre-turn-start"
+                )
             if generation_request is not None:
                 prompt = generation_request.get("prompt")
                 output_schema = generation_request.get("output_schema")
@@ -4599,6 +5254,7 @@ def _collect_runtime_attestation(
                 ):
                     raise BoundaryRuntimeError("protocol-shape-incompatible")
                 expected_outputs = list(expected_output_value)
+                workspace_before_turn = _workspace_probe_snapshot(workspace)
                 started = server.request(
                     "turn/start",
                     _turn_start_request(
@@ -4628,6 +5284,7 @@ def _collect_runtime_attestation(
                         timeout=(
                             int(TRANSPORT_POLICY["turn_deadline_ms"]) // 1000
                         ),
+                        file_change_policy=FILE_CHANGE_AUTHORIZATION_POLICY,
                     )
                 except _StageTurnTimeout:
                     turn_timeout = True
@@ -4639,14 +5296,35 @@ def _collect_runtime_attestation(
         finally:
             server.close()
         output_files = _collect_workspace_outputs(workspace, expected_outputs)
+        if output_files:
+            raise BoundaryRuntimeError(
+                "unexpected-prohibited-event", "in-turn"
+            )
         if generation_request is not None and not turn_timeout:
             if generation_result is None:
                 raise BoundaryRuntimeError("protocol-shape-incompatible")
+            if _workspace_probe_snapshot(workspace) != workspace_before_turn:
+                raise BoundaryRuntimeError(
+                    "unexpected-prohibited-event", "in-turn"
+                )
+            message = generation_result.get("agent_message")
+            if not isinstance(message, str):
+                raise BoundaryRuntimeError("protocol-shape-incompatible")
+            envelope, output_files = _parse_stage_envelope(
+                message,
+                stage=str(generation_request["stage"]),
+                attempt=int(generation_request.get("attempt", 1)),
+            )
+            materialization = _materialize_stage_envelope(
+                workspace / "output", envelope
+            )
             generation_result["thread_id"] = thread_id
             generation_result["stage"] = generation_request.get("stage")
             generation_result["skill_names"] = list(skill_names)
             generation_result["runtime_process_id"] = runtime_process_id
             generation_result["output_files"] = output_files
+            generation_result["stage_envelope"] = envelope
+            generation_result["materialization_observation"] = materialization
             generation_sink.append(generation_result)
         if (
             _read_file_identity(executable) != launcher_before
@@ -4663,7 +5341,7 @@ def _collect_runtime_attestation(
             "mcpServerStatus/list": mcp,
         }
         attestation = {
-            "schema_version": "boundary-runtime-attestation-v1",
+            "schema_version": "boundary-runtime-attestation-v2",
             "runtime_launcher_identity": launcher_before.digest,
             "runtime_package_identity": package_identity,
             "schema_bundle_identity": schema_identity,
@@ -4671,7 +5349,7 @@ def _collect_runtime_attestation(
             "managed_requirements_identity": _sha256(
                 _canonical_json_bytes(requirements)
             ),
-            "active_permission_profile": "boundary-proof-v1",
+            "active_permission_profile": "boundary-proof-stage-readonly-v1",
             "thread_metadata": thread_metadata,
             "feature_inventory_identity": _sha256(_canonical_json_bytes(pages)),
             "capability_inventory_identity": _sha256(
@@ -4684,12 +5362,21 @@ def _collect_runtime_attestation(
             "protocol_item_classification_identity": _sha256(
                 _canonical_json_bytes(protocol_classification)
             ),
+            "file_change_authorization_policy_identity": _sha256(
+                _canonical_json_bytes(FILE_CHANGE_AUTHORIZATION_POLICY)
+            ),
+            "materialization_canary_policy_identity": _sha256(
+                _canonical_json_bytes(MATERIALIZATION_CANARY_POLICY)
+            ),
             "probe_results": {
                 "workspace_read": "pass",
-                "workspace_write": "pass",
+                "workspace_write_denied": "pass",
+                "descendant_workspace_write_denied": "pass",
+                "workspace_file_change_denied": "pass",
                 "unmanifested_source_denied": "pass",
                 "private_auth_denied": "pass",
                 "network_denied": "pass",
+                "stage_envelope_materialization": "pass",
             },
             "credential_isolation_results": {
                 "environment_names_closed": "pass",
@@ -4715,7 +5402,7 @@ def _collect_runtime_attestation(
 def _validate_attestation(attestation: Mapping[str, object]) -> None:
     if set(attestation) != set(ATTESTATION_FIELDS):
         raise BoundaryRuntimeError("protocol-shape-incompatible")
-    if attestation.get("schema_version") != "boundary-runtime-attestation-v1":
+    if attestation.get("schema_version") != "boundary-runtime-attestation-v2":
         raise BoundaryRuntimeError("protocol-shape-incompatible")
     for field in ATTESTATION_FIELDS:
         if field.endswith("_identity") and (
@@ -4723,7 +5410,10 @@ def _validate_attestation(attestation: Mapping[str, object]) -> None:
             or IDENTITY_PATTERN.fullmatch(attestation[field]) is None
         ):
             raise BoundaryRuntimeError("protocol-shape-incompatible")
-    if attestation.get("active_permission_profile") != "boundary-proof-v1":
+    if (
+        attestation.get("active_permission_profile")
+        != "boundary-proof-stage-readonly-v1"
+    ):
         raise BoundaryRuntimeError("permission-profile-mismatch", "pre-turn-start")
     thread_metadata = attestation.get("thread_metadata")
     expected_thread_fields = {
@@ -4753,7 +5443,7 @@ def _validate_attestation(attestation: Mapping[str, object]) -> None:
         )
         is None
         or thread_metadata.get("active_permission_profile")
-        != "boundary-proof-v1"
+        != "boundary-proof-stage-readonly-v1"
         or thread_metadata.get("workspace_root_roles") != []
         or not isinstance(thread_metadata.get("instruction_source_refs"), list)
         or any(
@@ -4767,10 +5457,13 @@ def _validate_attestation(attestation: Mapping[str, object]) -> None:
         raise BoundaryRuntimeError("thread-metadata-mismatch", "pre-turn-start")
     expected_probe_keys = {
         "workspace_read",
-        "workspace_write",
+        "workspace_write_denied",
+        "descendant_workspace_write_denied",
+        "workspace_file_change_denied",
         "unmanifested_source_denied",
         "private_auth_denied",
         "network_denied",
+        "stage_envelope_materialization",
     }
     expected_credential_keys = {
         "environment_names_closed",
@@ -4788,6 +5481,13 @@ def _validate_attestation(attestation: Mapping[str, object]) -> None:
         or set(probe_results.values()) != {"pass"}
     ):
         raise BoundaryRuntimeError("sandbox-probe-failed", "pre-turn-start")
+    if (
+        attestation.get("file_change_authorization_policy_identity")
+        != _sha256(_canonical_json_bytes(FILE_CHANGE_AUTHORIZATION_POLICY))
+        or attestation.get("materialization_canary_policy_identity")
+        != _sha256(_canonical_json_bytes(MATERIALIZATION_CANARY_POLICY))
+    ):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
     if (
         not isinstance(credential_results, dict)
         or set(credential_results) != expected_credential_keys
@@ -4868,11 +5568,12 @@ def assess_environment(
     except BoundaryRuntimeError as error:
         return _preflight_failure(error.diagnostic_id, error.phase)
     return {
-        "schema_version": "boundary-runtime-preflight-v1",
+        "schema_version": "boundary-runtime-preflight-v2",
         "result": "pass",
         "diagnostic_id": "none",
         "phase": "pre-turn-start",
         "attestation_ref": attestation_ref,
+        "workspace_failure": None,
     }
 
 
