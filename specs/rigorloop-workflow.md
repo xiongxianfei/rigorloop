@@ -1476,8 +1476,25 @@ The canonical behavior-implementation manifest path is exactly
 `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json`.
 It contains exactly `manifest_id`, `harness_component_refs`,
 `skill_package_refs`, `instruction_refs`, `contract_refs`, and
-`invocation_profile`, and `runtime_attestation`.
+`invocation_profile`, `transport_policy`, and `runtime_attestation`.
 `manifest_id` is `boundary-behavior-implementation-v1`.
+
+`transport_policy` contains exactly `schema_version`, `turn_deadline_ms`, and
+`termination_wait_deadline_ms`.
+Its closed first-version value is:
+
+```text
+schema_version: boundary-transport-policy-v1
+turn_deadline_ms: 120000
+termination_wait_deadline_ms: 10000
+```
+
+Both deadlines are positive integers, are normative manifest inputs, and are
+not CLI parameters or caller-selectable values.
+`transport_policy_identity` is the SHA-256 of canonical JSON serialization of
+this exact object.
+Changing, omitting, substituting, or accepting a nonpositive or unbounded value
+invalidates the behavior-implementation manifest and every dependent run.
 
 `harness_component_refs` is the path-sorted current reference list containing
 exactly:
@@ -2158,8 +2175,20 @@ candidate identity and routes only to the constrained locked cleanup procedure
 below.
 Malformed names, multiple temps, cross-run or cross-recovery names, ambiguous
 lease/basis context, symlinks, malformed canonical objects, multiple active
-recoveries, or transient objects naming more than one run are
-`global-conflict` and fail closed without lifecycle invocation.
+recoveries are `global-conflict` and fail closed without lifecycle invocation.
+
+After validation and before the multi-run check, discovery partitions recovery
+objects into `completed_history` and `active_recovery`.
+A completed-history member requires one valid immutable basis, one valid state
+record with `state: completed`, no active orphan or matching lease, and the
+exact preserved quarantine for `working`/`staging` or no quarantine for
+`lease-only`.
+All such members, including multiple prior run IDs, are removed from the
+active candidate and active run-ID projection.
+The single-active-run conflict rule applies only after that removal.
+A remaining active projection naming more than one run is `global-conflict`.
+A malformed, incomplete, identity-mismatched, or nonterminal recovery remains
+in the active projection and participates in conflict detection.
 
 Global candidate selection is closed:
 
@@ -2500,7 +2529,8 @@ outputs cannot be recorded as fresh behavior outputs.
 correction events.
 Every transport-attempt row contains exactly:
 `transport_attempt_id`, `event_key`, `transport_attempt`, `runtime_thread_id`,
-`termination_state`, `termination_receipt`, `output_state`,
+`runtime_process_id`,
+`transport_policy_identity`, `termination_state`, `termination_receipt`, `output_state`,
 `primary_diagnostic_id`, `diagnostic_ids`, `decision`, `evidence_refs`, and
 `diagnostic_evidence`.
 `event_key` is the prospective lifecycle event identity `<stage>#<attempt>`.
@@ -2511,16 +2541,25 @@ pause or failure prevents creation of the lifecycle event.
 `transport_attempt_id` is exactly
 `<event-key>/transport/<transport-attempt>`.
 `runtime_thread_id` is the exact fresh runtime thread identity.
+`runtime_process_id` is the exact `process-[0-9a-f]{32}` logical child identity
+derived before invocation.
+`transport_policy_identity` equals the policy transitively bound through the
+run's `implementation_manifest_ref`.
 Rows are ordered first by lifecycle-event order and then by transport attempt.
 
 `termination_state` is exactly `completed`, `confirmed-stopped`, or
 `liveness-uncertain`.
 `termination_receipt` is null for `completed` and `liveness-uncertain`.
 For `confirmed-stopped`, it contains exactly `method`, `runtime_process_id`,
+`transport_policy_identity`, `wait_deadline_ms`, `wait_elapsed_ms`,
 `termination_observed`, and `reaped`.
 `method` is `terminate-wait-v1`; `runtime_process_id` matches
-`process-[0-9a-f]{32}` and is derived before invocation; and
+the row's logical child identity; and
 `termination_observed` and `reaped` are both `true`.
+The receipt policy identity equals the row policy;
+`wait_deadline_ms` equals `termination_wait_deadline_ms`; and
+`wait_elapsed_ms` is derived from one monotonic clock and is between zero and
+the wait deadline inclusive.
 The adapter MUST terminate, wait for, and reap an expired runtime process before
 recording that receipt.
 Failure to prove both facts records `liveness-uncertain` with a null receipt,
@@ -2538,6 +2577,7 @@ none
 stage-turn-timeout
 stage-liveness-uncertain
 protocol-item-classification-invalid
+protocol-conditional-policy-violation
 stage-output-absent
 stage-output-partial
 stage-output-extra
@@ -2554,14 +2594,15 @@ condition, ordered by this closed precedence:
 1. stage-liveness-uncertain
 2. protocol-item-classification-invalid
 3. protocol-shape-incompatible
-4. unexpected-prohibited-event
-5. runtime-identity-unstable
-6. stage-output-absent
-7. stage-output-partial
-8. stage-output-extra
-9. stage-output-contradictory
-10. stage-turn-timeout
-11. none
+4. protocol-conditional-policy-violation
+5. unexpected-prohibited-event
+6. runtime-identity-unstable
+7. stage-output-absent
+8. stage-output-partial
+9. stage-output-extra
+10. stage-output-contradictory
+11. stage-turn-timeout
+12. none
 ```
 
 `none` occurs only as the sole member when no other condition was detected.
@@ -2586,6 +2627,7 @@ matching-output-diagnostic:
 non-output-diagnostic:
   protocol-item-classification-invalid
   protocol-shape-incompatible
+  protocol-conditional-policy-violation
   unexpected-prohibited-event
   runtime-identity-unstable
 ```
@@ -2619,9 +2661,7 @@ Each lifecycle event has exactly one or two transport rows.
 The first row has `transport_attempt: 1`.
 A second row exists if and only if the first row has `decision: retry`; it has
 `transport_attempt: 2`, the same `event_key`, and a different fresh
-`runtime_thread_id`.
-If both rows contain confirmed-stopped receipts, their
-`runtime_process_id` values also differ.
+`runtime_thread_id` and `runtime_process_id`.
 `retry` is the only nonterminal decision.
 The last row is exactly one of `accept`, `reconcile`, `pause`, or
 `fail-closed`.
@@ -2645,26 +2685,43 @@ Each value has one exact role-specific shape:
 
 | Diagnostic | Inline evidence fields |
 | --- | --- |
-| `stage-turn-timeout` | `kind: deadline-observation-v1`, `deadline_ms`, `elapsed_ms`, `runtime_thread_id` |
-| `stage-liveness-uncertain` | `kind: liveness-observation-v1`, `termination_requested: true`, `wait_completed: false`, `runtime_process_id` |
+| `stage-turn-timeout` | `kind: deadline-observation-v1`, `transport_policy_identity`, `deadline_ms`, `elapsed_ms`, `runtime_thread_id` |
+| `stage-liveness-uncertain` | `kind: liveness-observation-v1`, `transport_policy_identity`, `termination_requested: true`, `wait_deadline_ms`, `wait_elapsed_ms`, `wait_completed: false`, `runtime_process_id` |
 | `stage-output-absent`, `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: output-inventory-v1`, exact output `root`, `required_outputs`, `observed_outputs`, and canonical `inventory_identity` |
 | `protocol-item-classification-invalid` | `kind: protocol-classification-observation-v1`, `event_kind`, `protocol_classification_identity`, `lookup_result: unknown`, `event_shape_projection`, `event_shape_identity` |
 | `protocol-shape-incompatible` | `kind: protocol-observation-v1`, `event_kind`, `schema_path`, `observed_shape_projection`, `observed_shape_identity` |
+| `protocol-conditional-policy-violation` | `kind: protocol-policy-observation-v1`, `rule_id`, `event_kind`, `status_is_disabled`, `environment_identity_is_null`, `policy_result: violation` |
 | `unexpected-prohibited-event` | `kind: prohibited-event-observation-v1`, `event_kind`, `event_identity`, `protocol_classification_identity` |
-| `runtime-identity-unstable` | `kind: runtime-identity-observation-v1`, `expected_identity`, `observed_identity` |
+| `runtime-identity-unstable` | `kind: runtime-identity-observation-v1`, `identity_kind`, `checkpoint`, `expected_identity`, `observed_identity` |
 
 All listed numeric fields are non-negative integers; every identity uses the
 standard `sha256:` form; every path is normalized and bounded to the invocation
 or approved schema root.
 The role predicates are exact:
 
-- `stage-turn-timeout` requires `elapsed_ms >= deadline_ms`; equality is the
-  minimum timeout boundary.
+- `stage-turn-timeout` requires the evidence and row policy identities to
+  match, `deadline_ms` to equal manifest `turn_deadline_ms`, and
+  `elapsed_ms >= deadline_ms`; equality is the minimum timeout boundary.
+  Elapsed time is the integer millisecond difference from one monotonic clock
+  sampled immediately before turn start and at timeout classification.
 - `stage-liveness-uncertain` requires a timeout record for the same thread,
   one attempted termination, and failure to observe process exit before the
   bounded wait completed.
-- `runtime-identity-unstable` requires unequal expected and observed
-  identities. Equal identities invalidate that diagnostic.
+  Its policy identity matches the row; `wait_deadline_ms` equals manifest
+  `termination_wait_deadline_ms`; and monotonic `wait_elapsed_ms` is at least
+  that deadline. No unbounded or caller-substituted wait is permitted.
+- `runtime-identity-unstable` requires `identity_kind` to be exactly
+  `runtime-launcher` or `runtime-package`.
+  `checkpoint` is exactly `before-schema-generation`,
+  `after-schema-generation`, `before-sandbox-probe`, `after-sandbox-probe`,
+  `before-app-server`, `after-app-server`, `before-accepted-turn`, or
+  `after-accepted-turn`.
+  `expected_identity` equals the corresponding bound
+  launcher or package identity in the runtime attestation;
+  `observed_identity` is freshly captured from that same resource at the named
+  checkpoint; and the two identities are unequal.
+  Equal identities, cross-resource substitution, or unknown checkpoints
+  invalidate the diagnostic.
 - `protocol-item-classification-invalid` requires
   `protocol_classification_identity` to equal the exact bound classification,
   lookup of `event_kind` in that classification to return no member, and
@@ -2685,6 +2742,13 @@ The role predicates are exact:
   `observed_shape_identity` is its canonical identity; and validation of that
   projection against the resolved schema MUST return false. A projection that
   the bound schema accepts invalidates the diagnostic.
+- `protocol-conditional-policy-violation` has the sole first-version
+  `rule_id` `remote-control-disabled-null-environment-v1` and sole
+  `event_kind` `remoteControl/status/changed`.
+  It is valid exactly when `status_is_disabled` and
+  `environment_identity_is_null` are not both true.
+  The two booleans are derived from the event without retaining status text,
+  environment identity, or raw protocol values.
 - `unexpected-prohibited-event` requires `event_kind` to resolve in the exact
   bound `protocol_item_classification_identity` to
   `prohibited-capability-event`. Unknown event kinds route through protocol
@@ -2742,7 +2806,7 @@ and mixed missing-plus-extra observations.
 `inventory_identity` is the canonical identity of exactly
 `{root, required_outputs, observed_outputs}`.
 The timeout and liveness records are cross-checked against the row's runtime
-thread and termination fields.
+thread, logical child process, policy, and termination fields.
 For `confirmed-stopped`, the separate inline `termination_receipt` is the
 required stop/reap authority evidence and is cross-checked with the timeout
 observation; it is not duplicated as a diagnostic-evidence role.

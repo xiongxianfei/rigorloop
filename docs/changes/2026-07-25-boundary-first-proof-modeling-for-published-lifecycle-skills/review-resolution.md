@@ -2199,7 +2199,7 @@ cross-products; pending spec-review-r34.
 
 Finding ID: BFP-SR-R34-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y protocol policy
@@ -2208,13 +2208,18 @@ Required outcome: Route schema-valid but conditionally forbidden protocol values
 Chosen action: Add a closed conditional-policy diagnostic and boolean-only remote-control rule evidence.
 Rationale: Static variant classification cannot express value-sensitive safety.
 Validation target: spec-review-r35
-Validation evidence: pending
+Validation evidence: R28y now adds the closed
+`protocol-conditional-policy-violation` route after shape validation, permits
+only disabled status with null environment identity, and retains only the
+closed rule/event identities plus two derived booleans; T49 and T52 prove all
+four boolean combinations, precedence cross-products, and raw-value exclusion;
+pending spec-review-r35.
 
 #### BFP-SR-R34-2 - Separate completed recovery history from active state
 
 Finding ID: BFP-SR-R34-2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y global discovery
@@ -2223,13 +2228,18 @@ Required outcome: Permit fresh runs beside validated completed recovery history 
 Chosen action: Validate historical recovery triples, remove them from active run-ID projection, then apply conflict rules only to active state.
 Rationale: Preserved audit history is not an in-flight publisher.
 Validation target: spec-review-r35
-Validation evidence: pending
+Validation evidence: global discovery now validates completed recovery tuples,
+partitions completed history from active recovery before multi-run candidate
+projection, and leaves malformed or nonterminal records active; T51 proves one
+and multiple completed histories beside a new publication, history beside
+active recovery, and malformed-history contrast cases; pending
+spec-review-r35.
 
 #### BFP-SR-R34-3 - Bind transport time policy
 
 Finding ID: BFP-SR-R34-3
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y implementation manifest
@@ -2238,13 +2248,18 @@ Required outcome: Make turn and termination waits positive, bounded, manifest-ow
 Chosen action: Add a closed transport policy to the implementation manifest and bind row/evidence identities and logical process/thread identities to it.
 Rationale: Caller-selected or zero deadlines invalidate retry safety.
 Validation target: spec-review-r35
-Validation evidence: pending
+Validation evidence: the behavior manifest now owns one exact positive
+`boundary-transport-policy-v1`; transport rows and timeout/termination evidence
+bind its identity, exact deadlines, monotonic elapsed time, runtime thread, and
+logical child process. T49 and T52 prove missing, nonpositive, unbounded,
+caller-selected, substituted, below/equal/above boundary, and identity mismatch
+cases; pending spec-review-r35.
 
 #### BFP-SR-R34-4 - Bind runtime identity checkpoint
 
 Finding ID: BFP-SR-R34-4
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y runtime attestation
@@ -2253,7 +2268,12 @@ Required outcome: Identify the changed runtime resource and exact checkpoint and
 Chosen action: Add closed identity-kind/checkpoint fields and same-resource validation.
 Rationale: Unequal hashes alone do not prove the governed runtime changed.
 Validation target: spec-review-r35
-Validation evidence: pending
+Validation evidence: runtime-identity evidence now names one of two closed
+resource kinds and one of eight closed checkpoints, binds the expected
+identity to the attestation, freshly observes the same resource, and requires
+inequality. T49 and T52 prove every checkpoint plus unknown, cross-kind,
+cross-resource, attestation-mismatch, and equal-identity contrast cases;
+pending spec-review-r35.
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
