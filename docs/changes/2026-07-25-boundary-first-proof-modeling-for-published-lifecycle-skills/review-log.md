@@ -1119,3 +1119,14 @@ Detailed record: reviews/architecture-review-r18.md
 Resolution: review-resolution.md#architecture-review-r18
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: plan-review-r15
+Stage: plan-review
+Round: 15
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md at c6dcbf6d
+Status: approved
+Detailed record: reviews/plan-review-r15.md
+Resolution: not-required
+Material findings: None
+Open findings: None
