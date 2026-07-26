@@ -3308,6 +3308,11 @@ class _AppServer:
                 )
             source = "ServerRequest" if "id" in response else "ServerNotification"
             classification = classifications.get(f"{source}:{method}")
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    f"turn-observed:{source}:{method}:{classification}",
+                    file=sys.stderr,
+                )
             if classification is None or classification == (
                 "prohibited-capability-event"
             ):
