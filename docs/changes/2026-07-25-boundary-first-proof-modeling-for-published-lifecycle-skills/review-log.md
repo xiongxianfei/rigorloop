@@ -1019,4 +1019,4 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r39.md
 Resolution: review-resolution.md#spec-review-r39
 Material findings: BFP-SR-R39-1
-Open findings: BFP-SR-R39-1
+Open findings: None

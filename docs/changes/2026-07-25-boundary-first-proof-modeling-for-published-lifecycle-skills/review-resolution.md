@@ -2570,7 +2570,7 @@ stable run diagnostic; pending spec-review-r39
 
 Finding ID: BFP-SR-R39-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y artifact policy
@@ -2579,7 +2579,11 @@ Required outcome: Bind separate raw pre-parse and canonical post-parse byte limi
 Chosen action: Add exact `candidate_message_byte_limit` fields and equality/one-byte-over behavior.
 Rationale: Raw transport framing and canonical envelope size are different boundaries.
 Validation target: spec-review-r40
-Validation evidence: pending spec revision and spec-review-r40
+Validation evidence: R40 candidate adds exact raw candidate-message limits to
+both canonical policies, retains separate canonical envelope limits, accepts
+equality, rejects one-byte-over at the correct pre- or post-parse boundary,
+and derives the lifecycle aggregate limit from the selected raw limit;
+pending spec-review-r40
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
