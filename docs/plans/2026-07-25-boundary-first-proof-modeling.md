@@ -94,7 +94,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r15.md
 - Review status: approved; stage=plan-review; round=r15
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec
+- Next stage: test-spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -756,6 +756,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Revised the active workflow test spec for R45/R18/R15. The
+  candidate adds v2/opaque-v1 compatibility, direct and descendant command
+  denial, cause-specific app-server file-change decline, bounded root-anchored
+  integrity inspection, exhaustive transport routing, and parent-only
+  materialization proof. Independent test-spec review is next.
 
 - 2026-07-26: Plan-review R15 approved the R45/R18 M2 correction sequence
   with no findings. The stale R14 test proof map must now be revised and
