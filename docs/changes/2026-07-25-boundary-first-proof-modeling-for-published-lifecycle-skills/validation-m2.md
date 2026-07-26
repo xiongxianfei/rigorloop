@@ -7,6 +7,46 @@ Diagnostic: stage-output-transport-contract-unavailable
 
 ## Current implementation discovery
 
+The approved R45/R18 preflight correction now proves real direct and detached
+descendant create, overwrite, removal, and permission-mode denial under
+`boundary-proof-stage-readonly-v1`. It then fails closed at the separate real
+app-server file-change denial probe:
+
+```json
+{"attestation_ref":null,"diagnostic_id":"sandbox-probe-failed","phase":"pre-turn-start","result":"environment-unavailable","schema_version":"boundary-runtime-preflight-v2","workspace_failure":null}
+```
+
+The exact probe prompt returns `{"probe":"complete"}`, but Codex 0.145.0 emits
+zero `item/fileChange/requestApproval` requests and zero terminal declined
+file-change items. The approved feature projection enables only
+`shell_tool`, `unified_exec`, and `shell_snapshot`; the runtime exposes no
+file-change operation under that configuration. A bounded feasibility
+experiment that additionally selected `apply_patch_freeform`, and then both
+`apply_patch_freeform` and `apply_patch_streaming_events`, failed earlier at
+the capability inventory because those features remained disabled.
+
+This is not permission to accept the terminal marker as denial proof. The
+required decline interaction is absent, so no current v2 attestation was
+published. The prior v1 attestation remains historical bytes only.
+Participating skills remain unchanged. M2 is blocked and routes to
+architecture because the approved plan forbids a weaker fallback on
+`environment-unavailable`.
+
+Focused implementation evidence:
+
+- `python scripts/test-boundary-proof.py` — passed 58 tests.
+- `python -m py_compile scripts/boundary_proof_behavior.py
+  scripts/test-boundary-proof.py` — passed.
+- `python scripts/boundary_proof_behavior.py check-environment --change-id
+  2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+  --json` — failed closed with the bounded v2 receipt above.
+
+The partial implementation adds the immutable v2 manifest, attestation,
+artifact, integrity, file-change, canary, and opaque-v1 projections; real
+direct and descendant command-denial probes; a parent-owned decline handler;
+and policy-bound stage-envelope validation/materialization tests. It is not an
+M2 completion claim.
+
 The latest live canonical `generate` attempt failed closed with
 `unexpected-prohibited-event` before publication.
 The current pointer remains on historical run

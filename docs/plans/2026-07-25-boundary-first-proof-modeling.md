@@ -2,7 +2,7 @@
 
 ## Status
 
-Plan lifecycle state: active
+Plan lifecycle state: blocked
 Terminal disposition: none
 
 - Owner: maintainer
@@ -94,7 +94,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r17.md
 - Review status: approved; stage=test-spec-review; round=r17
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement
+- Next stage: architecture
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -756,6 +756,15 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: The R45 read-only preflight now passes direct and detached
+  descendant create, overwrite, remove, and mode-change denial, but fails
+  closed at the required real app-server file-change probe. Codex 0.145.0
+  exposes no file-change operation under the approved configuration, so the
+  model returns the terminal marker without an approval request. Enabling the
+  candidate apply-patch feature flags still leaves those features disabled in
+  the runtime inventory. M2 is blocked and routes to architecture; no
+  participating skill was mutated and no v2 pass attestation was published.
 
 - 2026-07-26: Test-spec-review R17 approved the complete M2 proof map with no
   findings. BFP-TSR15-1 and BFP-TSR16-1 are closed; the Current Handoff

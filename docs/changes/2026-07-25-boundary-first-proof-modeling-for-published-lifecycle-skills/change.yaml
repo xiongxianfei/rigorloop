@@ -207,8 +207,9 @@ workflow:
     run:
       run_id: run-20260725-boundary-first-verify
       change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
-      status: active
+      status: paused
       policy_version: 1
+      stop_reason: environment-unavailable
       target:
         stage: verify
         occurrence:
