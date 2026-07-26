@@ -256,7 +256,26 @@ def _evaluate_simple(
         payload["simple_trace"],  # type: ignore[arg-type]
         feature_models=feature_models,  # type: ignore[arg-type]
         proof_maps=proof_maps,  # type: ignore[arg-type]
+        structural_evaluations=_structural_evaluations(  # type: ignore[arg-type]
+            payload["simple_trace"]
+        ),
     )
+
+
+def _structural_evaluations(
+    trace: dict[str, object],
+) -> dict[str, dict[str, str]]:
+    return {
+        f"{event['stage']}#{event['attempt']}": {
+            "structural_result": event["structural_result"],
+            "diagnostic_id": (
+                "none"
+                if event["structural_result"] == "pass"
+                else event["diagnostic_id"]
+            ),
+        }
+        for event in trace["events"]  # type: ignore[union-attr]
+    }
 
 
 def _snapshot_ref(trace: dict[str, object], snapshot_id: str) -> dict[str, str]:
@@ -286,6 +305,47 @@ def _sync_event_evidence(trace: dict[str, object], event: dict[str, object]) -> 
         (_snapshot_ref(trace, snapshot_id) for snapshot_id in snapshot_ids),
         key=lambda reference: (reference["path"], reference["identity"]),
     )
+
+
+def _trim_trace_to_event_snapshots(
+    trace: dict[str, object],
+    *,
+    trim_inventory: bool,
+) -> None:
+    retained: set[str] = set()
+    for event in trace["events"]:  # type: ignore[union-attr]
+        retained.update(event["input_snapshot_ids"])
+        retained.update(event["output_snapshot_ids"])
+        if event["stage"].endswith("-review"):
+            bundle = trace["review_bundles"][event["output_snapshot_ids"][0]]  # type: ignore[index]
+            for reference in bundle["artifact_refs"].values():
+                retained.add(
+                    next(
+                        snapshot["snapshot_id"]
+                        for snapshot in trace["snapshots"]  # type: ignore[union-attr]
+                        if snapshot["path"] == reference["path"]
+                        and snapshot["identity"] == reference["identity"]
+                    )
+                )
+    trace["snapshots"] = [  # type: ignore[index]
+        snapshot
+        for snapshot in trace["snapshots"]  # type: ignore[union-attr]
+        if snapshot["snapshot_id"] in retained
+    ]
+    trace["review_bundles"] = {  # type: ignore[index]
+        snapshot_id: bundle
+        for snapshot_id, bundle in trace["review_bundles"].items()  # type: ignore[union-attr]
+        if snapshot_id in retained
+    }
+    if trim_inventory:
+        retained_paths = {
+            snapshot["path"] for snapshot in trace["snapshots"]  # type: ignore[union-attr]
+        }
+        trace["after_inventory"] = [  # type: ignore[index]
+            row
+            for row in trace["after_inventory"]  # type: ignore[union-attr]
+            if row["path"] in retained_paths
+        ]
 
 
 class BoundaryProofModelTests(unittest.TestCase):
@@ -772,6 +832,9 @@ class BoundaryProofModelTests(unittest.TestCase):
             payload["simple_trace"],
             feature_models={"simple.snapshot.feature.v1": feature},
             proof_maps={"simple.snapshot.test-spec.v1": proof},
+            structural_evaluations=_structural_evaluations(
+                payload["simple_trace"]
+            ),
         )
         self.assertEqual(metrics.new_universal_artifact_count, 0)
         self.assertEqual(metrics.false_blocking_count, 0)
@@ -803,6 +866,7 @@ class BoundaryProofModelTests(unittest.TestCase):
             "simple.snapshot.spec-review.resolution.v1",
         )
         false_block["events"] = false_block["events"][:2]  # type: ignore[index]
+        _trim_trace_to_event_snapshots(false_block, trim_inventory=False)
         _sync_event_evidence(false_block, false_block["events"][1])  # type: ignore[index]
         allowed_paths = {
             snapshot_id
@@ -829,14 +893,17 @@ class BoundaryProofModelTests(unittest.TestCase):
             key=lambda row: row["path"],
         )
         self.assertEqual(
-            evaluate_simple_change_trace(false_block).false_blocking_count,
+            evaluate_simple_change_trace(
+                false_block,
+                structural_evaluations=_structural_evaluations(false_block),
+            ).false_blocking_count,
             1,
         )
 
         universal = copy.deepcopy(payload["simple_trace"])
         universal["after_inventory"].append(  # type: ignore[union-attr]
             {
-                "path": "docs/changes/example/new-required.md",
+                "path": "docs/plans/new-required.md",
                 "artifact_kind": "other-lifecycle",
                 "identity": "sha256:" + "a" * 64,
             }
@@ -847,6 +914,7 @@ class BoundaryProofModelTests(unittest.TestCase):
                 universal,
                 feature_models={"simple.snapshot.feature.v1": feature},
                 proof_maps={"simple.snapshot.test-spec.v1": proof},
+                structural_evaluations=_structural_evaluations(universal),
             ).new_universal_artifact_count,
             1,
         )
@@ -854,7 +922,7 @@ class BoundaryProofModelTests(unittest.TestCase):
         extra_feature = copy.deepcopy(payload["simple_trace"])
         extra_feature["after_inventory"].append(  # type: ignore[union-attr]
             {
-                "path": "docs/changes/example/unproduced-feature.md",
+                "path": "specs/unproduced-feature.md",
                 "artifact_kind": "feature-spec",
                 "identity": "sha256:" + "b" * 64,
             }
@@ -865,9 +933,41 @@ class BoundaryProofModelTests(unittest.TestCase):
                 extra_feature,
                 feature_models={"simple.snapshot.feature.v1": feature},
                 proof_maps={"simple.snapshot.test-spec.v1": proof},
+                structural_evaluations=_structural_evaluations(extra_feature),
             ).new_universal_artifact_count,
             1,
         )
+
+        classified_extras = (
+            ("specs/extra-feature.md", "feature-spec", "c"),
+            ("specs/extra-proof.test.md", "test-spec", "d"),
+            (
+                "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/extra-review.md",
+                "review-evidence",
+                "e",
+            ),
+            ("docs/plans/extra-plan.md", "other-lifecycle", "f"),
+        )
+        for path, artifact_kind, digit in classified_extras:
+            with self.subTest(artifact_kind=artifact_kind):
+                candidate = copy.deepcopy(payload["simple_trace"])
+                candidate["after_inventory"].append(
+                    {
+                        "path": path,
+                        "artifact_kind": artifact_kind,
+                        "identity": "sha256:" + digit * 64,
+                    }
+                )
+                candidate["after_inventory"].sort(key=lambda row: row["path"])
+                self.assertEqual(
+                    evaluate_simple_change_trace(
+                        candidate,
+                        feature_models={"simple.snapshot.feature.v1": feature},
+                        proof_maps={"simple.snapshot.test-spec.v1": proof},
+                        structural_evaluations=_structural_evaluations(candidate),
+                    ).new_universal_artifact_count,
+                    1,
+                )
 
     def test_simple_trace_rejects_invalid_diagnostics_and_linkage(self) -> None:
         payload = json.loads((FIXTURES / "simple-change.json").read_text())
@@ -925,7 +1025,10 @@ class BoundaryProofModelTests(unittest.TestCase):
             authoring_failure_without_diagnostic["simple_trace"]["events"][:1]
         )
         cases.append(
-            (authoring_failure_without_diagnostic, "authoring diagnostic mismatch")
+            (
+                authoring_failure_without_diagnostic,
+                "authoring diagnostic mismatch|result/diagnostic mismatch",
+            )
         )
 
         broken_review_link = copy.deepcopy(payload)
@@ -977,6 +1080,57 @@ class BoundaryProofModelTests(unittest.TestCase):
         ):
             _evaluate_simple(inventory_mismatch)
 
+        for path, claimed_kind in (
+            ("docs/plans/evades-count.md", "non-lifecycle"),
+            ("specs/evades-count.md", "non-lifecycle"),
+        ):
+            mislabeled = copy.deepcopy(payload)
+            mislabeled["simple_trace"]["after_inventory"].append(
+                {
+                    "path": path,
+                    "artifact_kind": claimed_kind,
+                    "identity": "sha256:" + "c" * 64,
+                }
+            )
+            mislabeled["simple_trace"]["after_inventory"].sort(
+                key=lambda row: row["path"]
+            )
+            with self.assertRaisesRegex(
+                BoundaryProofError,
+                "closed path classifier",
+            ):
+                _evaluate_simple(mislabeled)
+
+        duplicate_inventory_identity = copy.deepcopy(payload)
+        duplicate_inventory_identity["simple_trace"]["after_inventory"].append(
+            {
+                "path": "notes/duplicate-content.txt",
+                "artifact_kind": "non-lifecycle",
+                "identity": "sha256:" + "1" * 64,
+            }
+        )
+        duplicate_inventory_identity["simple_trace"]["after_inventory"].sort(
+            key=lambda row: row["path"]
+        )
+        with self.assertRaisesRegex(BoundaryProofError, "duplicate inventory identity"):
+            _evaluate_simple(duplicate_inventory_identity)
+
+        orphan_snapshot = copy.deepcopy(payload)
+        orphan_snapshot["simple_trace"]["snapshots"].append(
+            {
+                "snapshot_id": "simple.snapshot.orphan.output",
+                "source": "behavior-output",
+                "artifact_role": "review-evidence",
+                "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/orphan.md",
+                "identity": "sha256:" + "c" * 64,
+            }
+        )
+        with self.assertRaisesRegex(
+            BoundaryProofError,
+            "produced snapshot missing or mismatched",
+        ):
+            _evaluate_simple(orphan_snapshot)
+
         missing_final_model = copy.deepcopy(payload)
         with self.assertRaisesRegex(
             BoundaryProofError,
@@ -986,6 +1140,33 @@ class BoundaryProofModelTests(unittest.TestCase):
                 missing_final_model["simple_trace"],
                 feature_models={},
                 proof_maps={},
+                structural_evaluations=_structural_evaluations(
+                    missing_final_model["simple_trace"]
+                ),
+            )
+
+        unbound_failure_diagnostic = copy.deepcopy(payload["simple_trace"])
+        unbound_failure_diagnostic["events"][0].update(
+            structural_result="fail",
+            diagnostic_id="simple.diagnostic.caller-selected",
+        )
+        unbound_failure_diagnostic["events"] = unbound_failure_diagnostic["events"][:1]
+        _trim_trace_to_event_snapshots(
+            unbound_failure_diagnostic,
+            trim_inventory=True,
+        )
+        with self.assertRaisesRegex(
+            BoundaryProofError,
+            "structural diagnostic mismatch",
+        ):
+            evaluate_simple_change_trace(
+                unbound_failure_diagnostic,
+                structural_evaluations={
+                    "spec#1": {
+                        "structural_result": "fail",
+                        "diagnostic_id": "simple.diagnostic.structural-owner",
+                    }
+                },
             )
 
     def test_simple_trace_accepts_closed_terminal_failure_branches(self) -> None:
@@ -997,6 +1178,7 @@ class BoundaryProofModelTests(unittest.TestCase):
             diagnostic_id="simple.diagnostic.authoring-failure",
         )
         authoring_failure["events"] = authoring_failure["events"][:1]
+        _trim_trace_to_event_snapshots(authoring_failure, trim_inventory=False)
         first_output = "simple.snapshot.feature.v1"
         authoring_failure["after_inventory"] = [
             {
@@ -1005,7 +1187,10 @@ class BoundaryProofModelTests(unittest.TestCase):
                 "identity": _snapshot_ref(authoring_failure, first_output)["identity"],
             }
         ]
-        authoring_metrics = evaluate_simple_change_trace(authoring_failure)
+        authoring_metrics = evaluate_simple_change_trace(
+            authoring_failure,
+            structural_evaluations=_structural_evaluations(authoring_failure),
+        )
         self.assertFalse(authoring_metrics.applicable_only_mapping)
         self.assertEqual(authoring_metrics.false_blocking_count, 0)
 
@@ -1035,6 +1220,7 @@ class BoundaryProofModelTests(unittest.TestCase):
         )
         _sync_event_evidence(blocked, blocked["events"][1])
         blocked["events"] = blocked["events"][:2]
+        _trim_trace_to_event_snapshots(blocked, trim_inventory=False)
         blocked_with_unproduced_inventory = copy.deepcopy(blocked)
         blocked_with_unproduced_inventory["after_inventory"].append(
             {
@@ -1054,7 +1240,10 @@ class BoundaryProofModelTests(unittest.TestCase):
         )
         self.assertGreater(
             evaluate_simple_change_trace(
-                blocked_with_unproduced_inventory
+                blocked_with_unproduced_inventory,
+                structural_evaluations=_structural_evaluations(
+                    blocked_with_unproduced_inventory
+                ),
             ).new_universal_artifact_count,
             0,
         )
@@ -1077,7 +1266,10 @@ class BoundaryProofModelTests(unittest.TestCase):
             ),
             key=lambda row: row["path"],
         )
-        blocked_metrics = evaluate_simple_change_trace(blocked)
+        blocked_metrics = evaluate_simple_change_trace(
+            blocked,
+            structural_evaluations=_structural_evaluations(blocked),
+        )
         self.assertEqual(blocked_metrics.false_blocking_count, 0)
         self.assertEqual(blocked_metrics.new_universal_artifact_count, 0)
 

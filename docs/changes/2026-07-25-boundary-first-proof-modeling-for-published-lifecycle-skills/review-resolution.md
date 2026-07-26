@@ -6,7 +6,7 @@ Closeout status: open
 
 - Review closeout: code-review-m1-r1
 - Review closeout: code-review-m1-r2
-- Review closeout: code-review-m1-r3 open
+- Review closeout: code-review-m1-r3
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
@@ -36,9 +36,9 @@ Closeout status: open
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
-- Findings resolved: 30
-- Unresolved findings: 1
-- Current result: M1 R3 retained BFP-M1-CR7; M1 remains resolution-needed.
+- Findings resolved: 31
+- Unresolved findings: 0
+- Current result: M1 R3 retained finding is corrected and awaits independent code-review R4.
 
 ## Resolution Overview
 
@@ -64,7 +64,7 @@ Closeout status: open
 | BFP-M1-CR4 | accepted | resolved | Enforce byte identity plus tracked-or-current-change-local evidence provenance. |
 | BFP-M1-CR5 | accepted | resolved | Canonicalize capability-report serialization. |
 | BFP-M1-CR6 | accepted | resolved | Use a closed boundary-state envelope evaluated independently of fixture labels by the shared stage-gate evaluator. |
-| BFP-M1-CR7 | accepted | open | Derive the closed path classifier, inventory completeness and uniqueness, and exact failure diagnostics. |
+| BFP-M1-CR7 | accepted | resolved | Derive the closed path classifier, inventory completeness and uniqueness, and exact failure diagnostics. |
 | BFP-SR3-1 | accepted | resolved | Incident derivation now requires exactly one field/value trigger and a trigger-free contrast. |
 | BFP-SR3-2 | accepted | resolved | Trace observations, formal-review bundles, output capture, inventory, and terminal branches are deterministic. |
 | BFP-SR3-3 | accepted | resolved | Filesystem inputs, typed dependencies, manifests, result identities, and report projection are bound losslessly. |
@@ -604,7 +604,7 @@ Validation evidence: pending
 
 Finding ID: BFP-SR3-3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec revision
 Decision owner: approved evidence-bound report direction
@@ -703,4 +703,4 @@ Required outcome: Derive applicable-only proof mapping, artifact count, false bl
 Chosen action: Use the shared structural evaluator to compute a four-stage trace with identities, diagnostics, correction events, artifact count, false blocking, and applicable-only proof mapping.
 Rationale: The approved implementation contract states the measurements but not the executable trace boundary.
 Validation target: code-review-m1-r4
-Validation evidence: M1 R3 confirmed exact trace linkage but reproduced classifier mismatch, duplicate inventory identities, orphan behavior-output snapshots, and arbitrary failure diagnostics.
+Validation evidence: Focused tests reject classifier mismatches, duplicate inventory identities, orphan behavior-output snapshots, and diagnostics that differ from independent structural evaluation.

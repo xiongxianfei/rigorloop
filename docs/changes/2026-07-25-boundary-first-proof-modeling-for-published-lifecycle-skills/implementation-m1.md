@@ -32,7 +32,10 @@ Status: review-requested
   identity-bearing snapshots, formal-review bundles, nine-field events,
   evidence unions, terminal branches, final-approved feature/proof models,
   and three-field artifact inventories. Universal-artifact subtraction uses
-  only trace-produced outputs and review-bundle members.
+  only trace-produced outputs and review-bundle members. Artifact kinds are
+  derived from the closed path classifier, inventory identities are unique,
+  every captured behavior output must appear in the complete after inventory,
+  and failure diagnostics must equal the independent structural result.
 
 ## Contract boundary
 

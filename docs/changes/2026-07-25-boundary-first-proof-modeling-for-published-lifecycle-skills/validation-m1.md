@@ -27,4 +27,6 @@ not-run blockers, mapping-order byte permutations, every trace diagnostic
 consistency class, use-before-production and reviewed-snapshot linkage,
 review-bundle roles, invalid evidence unions, terminal failures, identity-bound
 single correction, same-path correction, unproduced inventory content, extra
-lifecycle artifacts, and multiple correction cycles.
+lifecycle artifacts, caller-mislabeled plan/spec paths, duplicate inventory
+identities, orphan captured outputs, unbound failure diagnostics, and multiple
+correction cycles.
