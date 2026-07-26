@@ -30,7 +30,7 @@ resumes.
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md`
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
 - Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r8.md`
-- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; revision required after plan-review R3
+- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; revision required after plan-review R6
 
 ## Context and orientation
 
@@ -81,10 +81,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r8.md
-- Review status: approved; stage=architecture-review; round=r8
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r8.md
+- Review status: approved; stage=plan-review; round=r8
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: plan revision
+- Next stage: test-spec revision
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -151,6 +151,7 @@ resource through generated, packed, and installed outputs.
   - `scripts/validate-boundary-proof.py`
   - `scripts/test-boundary-proof.py`
   - `tests/fixtures/boundary-proof/behavior/`
+  - `tests/fixtures/boundary-proof/runtime/`
   - `tests/fixtures/boundary-proof/simple-change/`
   - `templates/shared/boundary-proof-model.md`
   - `skills/workflow/SKILL.md`
@@ -171,7 +172,31 @@ resource through generated, packed, and installed outputs.
 - Dependencies:
   - M1 closed
 - Tests to add/update:
-  - Runtime supported/unsupported version, missing profile attestation, wrong effective sandbox, unavailable or unsafe model metadata, credential leakage, and secret-free evidence cases
+  - Runtime supported/unsupported version; exact executable and generated
+    experimental-schema identity; experimental-API negotiation; missing,
+    null, additional, or incompatible app-server fields
+  - Launcher and runtime-package removal, replacement, or raw-byte/filesystem
+    identity mutation before and after schema generation, every sandbox probe,
+    app-server negotiation, and the accepted lifecycle invocation
+  - Fully paginated `experimentalFeature/list`; missing, duplicate, unknown,
+    newly enabled prohibited, and disabled prohibited feature rows; exact
+    `config/read`, `configRequirements/read`, `app/list`, `plugin/list`,
+    `mcpServerStatus/list`, and five-package `skills/list` inventories
+  - Empty `dynamicTools` and `environments`; command tools closed to
+    `shell_tool`, `unified_exec`, and `shell_snapshot`; isolated-workspace
+    file-change/apply-patch events; prohibited schema variants that remain
+    disabled; and rejection of every observed prohibited item/event
+  - Exactly-one feature-row classification as permitted built-in tool,
+    permitted non-tool runtime behavior, or must-be-disabled tool-bearing
+    behavior; independently, exactly-one generated protocol-item
+    classification as permitted side effect, non-side-effect protocol traffic,
+    or prohibited capability event; missing, duplicate, unknown, and
+    unclassified contrasts for both mappings
+  - Missing profile attestation, wrong effective sandbox, profile/config
+    mismatch between app-server and `codex sandbox --include-managed-config`,
+    unavailable or unsafe model metadata, and secret-free evidence cases
+  - Transient-canary absence from the exact child environment-name allowlist,
+    argv, stdin, private paths, and readable process metadata
   - Sole allowed repository import plus relative, wildcard, third-party, other local, and dynamic-import rejections
   - Complete five-skill resource-map set; missing, extra, stale, escaping, non-regular, and unmapped resource contrasts
   - Root and nested applicable/inapplicable `AGENTS.md` discovery
@@ -186,6 +211,43 @@ resource through generated, packed, and installed outputs.
 - Implementation steps:
   - Implement only the minimal read-only `check-environment` preflight as the
     first bounded M2 slice.
+  - Resolve and identity-bind one Codex launcher and runtime package, reject
+    versions before 0.138.0, and capture their raw-byte and filesystem
+    identities before and after schema generation, each sandbox probe,
+    app-server negotiation, and the accepted lifecycle invocation. Any
+    removal, replacement, or mutation stops the run.
+  - Generate the experimental app-server schema with that same identified
+    runtime and bind the path-sorted raw-byte schema bundle before starting
+    the server.
+  - Build a fresh mode-restricted `CODEX_HOME` with one named permission
+    profile: root denied, minimal runtime paths readable, isolated workspace
+    writable, and child-command network disabled. Do not combine the profile
+    with legacy `sandbox_mode`.
+  - Initialize app-server over stdio with `experimentalApi: true`. Before
+    `turn/start`, require exact non-null `thread/start` metadata, fully
+    paginate `experimentalFeature/list`, and require exact closed results from
+    `config/read`, `configRequirements/read`, `app/list`, `plugin/list`,
+    `mcpServerStatus/list`, and `skills/list`.
+  - Apply one exhaustive version/schema-bound exactly-once feature-row
+    classification: permitted built-in tool, permitted non-tool runtime
+    behavior, or must-be-disabled tool-bearing behavior. Reject missing,
+    duplicate, unknown, or unclassified feature mappings and any enabled
+    must-be-disabled behavior.
+  - Independently apply one exhaustive version/schema-bound exactly-once
+    protocol-item classification: permitted side effect, non-side-effect
+    protocol traffic, or prohibited capability event. Reject missing,
+    duplicate, unknown, or unclassified item mappings.
+  - Permit command side effects only through `shell_tool`, `unified_exec`, or
+    `shell_snapshot`, and file-change/apply-patch events only in the isolated
+    workspace. A schema-supported prohibited variant must be disabled
+    pre-turn and fails the accepted turn if observed.
+  - Run positive and negative probes with the same executable, generated and
+    managed configuration, and named profile through
+    `codex sandbox --include-managed-config`. Require workspace read/write and
+    deny unmanifested source, private-auth path, and network access.
+  - Inject a transient parent canary and require exact child environment names
+    plus canary absence from environment values, argv, stdin, readable paths,
+    and process metadata. Persist only typed non-secret decisions.
   - Before any other harness mutation or any participating-skill mutation, run
     that preflight and record only bounded non-secret results in
     `validation-m2.md`. On `environment-unavailable`, stop M2 and route to
@@ -212,6 +274,12 @@ resource through generated, packed, and installed outputs.
   - `python scripts/boundary_proof_behavior.py generate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --scenario tests/fixtures/boundary-proof/simple-change/scenario.json`
   - `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`
 - Promotion evidence:
+  - accepted runtime-attestation receipt binding launcher and runtime-package
+    raw-byte/filesystem identities across every execution boundary, CLI,
+    model, provider, generated-schema bundle, effective permission profile,
+    runtime roots, instruction sources, effective configuration/inventories,
+    exact feature/item classification, sandbox probes, and
+    credential-isolation result without secret values or private paths
   - current `behavior-implementation-manifest.json`
   - immutable `boundary-proof-baseline.json`
   - current `simple-change/current.json` pointing to a fully validated immutable run
@@ -219,7 +287,13 @@ resource through generated, packed, and installed outputs.
   - focused and skill validation pass evidence
   - clean M2 code review before M3 starts
 - Failure stop:
-  - Stop on unavailable enforcement, baseline conflict, unmanifested input, runtime/profile mismatch, invalid run, unresolved receipt, stale pointer, or any failed validation; do not mutate participating skills after a failed preflight or baseline step.
+  - Stop on unavailable enforcement, unstable launcher or runtime-package
+    identity, incomplete pagination, schema/protocol drift, missing, duplicate,
+    unknown, or unclassified feature-row or protocol-item mapping, enabled or observed
+    prohibited capability, config/profile mismatch, credential-canary
+    exposure, baseline conflict, unmanifested input, invalid run, unresolved
+    receipt, stale pointer, or any failed validation; do not mutate
+    participating skills after a failed preflight or baseline step.
 - Expected observable result: The upstream skills require complete boundary/proof maps and one input-bound immutable behavior run proves the real upstream workflow with zero false blocking and no new universal artifact.
 - Commit message: `M2: implement and prove hermetic upstream behavior`
 - Milestone closeout:
@@ -484,6 +558,18 @@ resource through generated, packed, and installed outputs.
   effective capability set, while rejecting prohibited events at runtime.
 - 2026-07-26: Architecture-review R8 approved the corrected permission-profile
   and app-server boundary with no material findings.
+- 2026-07-26: The M2 plan projection now makes exact schema identity,
+  app-server inventory closure, profile-equivalent sandbox probes, exhaustive
+  feature/item classification, and child credential isolation mandatory
+  pre-mutation gates.
+- 2026-07-26: Plan-review R6 requested end-to-end runtime identity continuity,
+  exact tool/item mapping, and unambiguous review/pagination wording; the R7
+  candidate now closes all three gaps.
+- 2026-07-26: Plan-review R7 requested separate closed vocabularies for
+  pre-turn feature enablement and in-turn protocol events; the R8 candidate
+  now proves both independently.
+- 2026-07-26: Plan-review R8 approved the corrected M2 plan with no material
+  findings and routed the initiative to matching test-spec revision.
 - 2026-07-26: Test-spec-review R3 retained one gap: aggregate hermetic-input
   coverage must become field-complete mutation proof before implementation.
 - 2026-07-26: The R4 test-spec candidate now mutates every manifest collection,
