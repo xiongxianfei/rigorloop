@@ -1351,7 +1351,7 @@ The report MUST contain one fenced YAML record with:
 `schema_version: boundary-capability-baseline-v1`,
 `boundary_model_version: v1`, the exact eight `evaluated_skills`, all six
 `required_check_ids`, one row for every `R28x` fixture, preservation and
-adapter-parity check rows, `false_blocking_count`,
+adapter-parity check rows, one `simple_change` row, `false_blocking_count`,
 `duplicate_normative_owner_count`, `new_universal_artifact_count`,
 `simple_fixture_structure_correction_cycles`, and `overall_result`.
 Every check and fixture result uses exactly `pass`, `fail`, or `not-run`.
@@ -1385,8 +1385,15 @@ It MUST NOT accept caller-supplied report rows or caller-authored receipts as
 production evidence.
 Each operation result contains exactly:
 `operation_id`, `result`, `diagnostic_id`, `input_refs`, `output_refs`,
-`blocking_reason`, and `observations`.
-The operation owner derives all seven fields from the current invocation.
+`dependency_results`, `blocking_reason`, `observations`, and
+`result_identity`.
+`dependency_results` is an ordered list whose entries contain exactly
+`operation_id` and `result_identity`.
+`result_identity` is the SHA-256 of canonical JSON serialization of the other
+eight fields.
+Canonical JSON uses UTF-8, recursively lexicographic object keys, preserved
+list order, no insignificant whitespace, and standard JSON scalar encodings.
+The operation owner derives all nine fields from the current invocation.
 The report writer projects them without accepting row overrides.
 
 The closed operation registry is:
@@ -1395,36 +1402,46 @@ The closed operation registry is:
 | --- | --- | --- | --- | --- |
 | `boundary-workflow-contract` | boundary model validator | exact current `specs/rigorloop-workflow.md` and `specs/rigorloop-workflow.test.md` | workflow-contract validation result | `checks.boundary-workflow-contract` |
 | `boundary-skill-contract` | skill validator | exact current `specs/skill-contract.md`, `specs/skill-contract.test.md`, eight `skills/<skill>/SKILL.md` files named by R28m, and every boundary-proof resource mapped by those skills | skill-contract validation result | `checks.boundary-skill-contract` |
-| `boundary-traceability` | boundary model validator | current change metadata plus every unique path in its `changed_files` list whose current bytes contain `Boundary model version: v1` | traceability validation result | `checks.boundary-traceability` |
-| `boundary-incident-replay` | stage-gate evaluator | exact incident registry and the eight exact R28x fixture files | aggregate replay result | `checks.boundary-incident-replay` |
-| `BFP-FX-CANONICAL-001` | stage-gate evaluator | incident registry plus that exact fixture's boundary and valid-contrast states | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-CANONICAL-001` |
-| `BFP-FX-VOCAB-001` | stage-gate evaluator | incident registry plus that exact fixture's boundary and valid-contrast states | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-VOCAB-001` |
-| `BFP-FX-TRANSITION-001` | stage-gate evaluator | incident registry plus that exact fixture's boundary and valid-contrast states | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-TRANSITION-001` |
-| `BFP-FX-IDENTITY-001` | stage-gate evaluator | incident registry plus that exact fixture's boundary and valid-contrast states | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-IDENTITY-001` |
-| `BFP-FX-ATOMICITY-001` | stage-gate evaluator | incident registry plus that exact fixture's boundary and valid-contrast states | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-ATOMICITY-001` |
-| `BFP-FX-RECOVERY-001` | stage-gate evaluator | incident registry plus that exact fixture's boundary and valid-contrast states | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-RECOVERY-001` |
-| `BFP-FX-COMPOSITION-001` | stage-gate evaluator | incident registry plus that exact fixture's boundary and valid-contrast states | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-COMPOSITION-001` |
-| `BFP-FX-SIBLING-001` | stage-gate evaluator | incident registry plus that exact fixture's boundary and valid-contrast states | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-SIBLING-001` |
+| `boundary-traceability` | boundary model validator | exact current `specs/rigorloop-workflow.md`, `specs/rigorloop-workflow.test.md`, `specs/skill-contract.md`, `specs/skill-contract.test.md`, and current change metadata; paths are selected before marker inspection | traceability validation result | `checks.boundary-traceability` |
+| `boundary-incident-replay` | stage-gate evaluator | exact `tests/fixtures/boundary-proof/incident-registry.json` and the eight canonical fixture paths listed below | aggregate replay result | `checks.boundary-incident-replay` |
+| `BFP-FX-CANONICAL-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-CANONICAL-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-CANONICAL-001` |
+| `BFP-FX-VOCAB-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-VOCAB-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-VOCAB-001` |
+| `BFP-FX-TRANSITION-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-TRANSITION-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-TRANSITION-001` |
+| `BFP-FX-IDENTITY-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-IDENTITY-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-IDENTITY-001` |
+| `BFP-FX-ATOMICITY-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-ATOMICITY-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-ATOMICITY-001` |
+| `BFP-FX-RECOVERY-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-RECOVERY-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-RECOVERY-001` |
+| `BFP-FX-COMPOSITION-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-COMPOSITION-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-COMPOSITION-001` |
+| `BFP-FX-SIBLING-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-SIBLING-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-SIBLING-001` |
 | `preservation-behavior` | skill behavior harness | the current preservation manifest and all before/after references selected by it for the exact eight R28m skills | behavior result | `preservation.behavior` |
 | `preservation-claim-boundary` | skill behavior harness | the same complete preservation manifest and references | claim-boundary result | `preservation.claim-boundary` |
 | `preservation-review-recording` | skill behavior harness | the same complete preservation manifest and references | review-recording result | `preservation.review-recording` |
 | `preservation-isolation` | skill behavior harness | the same complete preservation manifest and references | isolation result | `preservation.isolation` |
 | `preservation-handoff` | skill behavior harness | the same complete preservation manifest and references | handoff result | `preservation.handoff` |
-| `boundary-adapter-parity` | adapter validator | canonical eight-skill/resource manifest plus generated, packed, and installed manifests created by the current invocation | aggregate adapter check result | `checks.boundary-adapter-parity` |
-| `adapter-parity` | adapter validator | the same complete current parity manifests | adapter-parity row result | `adapter_parity` |
-| `boundary-capability-baseline` | capability aggregator | every other typed result in this registry, ordered by this table | computed aggregate result | `checks.boundary-capability-baseline` and top-level counts/result |
+| `simple-change-behavior` | simple-change behavior harness and evaluator | exact candidate corpus, current four upstream skills and mapped resources, and the selected baseline commit | fresh run manifest, behavior-output snapshots, trace, and metric result | `simple_change` |
+| `adapter-parity` | adapter validator | exact current `scripts/adapter_distribution.py`, `scripts/build-adapters.py`, `scripts/validate-adapters.py`, `dist/adapters/manifest.yaml`, and canonical eight-skill/resource manifest | durable current four-surface parity manifest set | `adapter_parity` |
+| `boundary-adapter-parity` | adapter validator | current `adapter-parity` typed result | aggregate adapter check result | `checks.boundary-adapter-parity` |
+| `boundary-capability-baseline` | capability aggregator | every other typed result identity in this registry, ordered by this table | computed aggregate result | `checks.boundary-capability-baseline` and top-level counts/result |
 
 The preservation manifest contains exactly `manifest_id`, `baseline_commit`,
 `skills`, `before_refs`, and `after_refs`.
 `skills` is the exact ordered R28m skill list.
-`before_refs` and `after_refs` each contain exactly one normalized
-path-and-identity reference for each preserved behavior category and each
-skill.
+`before_refs` contains entries with exactly `pair_key`, `origin_path`,
+`origin_commit`, and `snapshot_ref`.
+`origin_commit` equals `baseline_commit`; `snapshot_ref` is a normalized
+current path-and-identity reference below
+`docs/changes/<change-id>/evidence/preservation/<run-id>/before/` whose bytes
+equal `origin_path` at that commit.
+`after_refs` contains entries with exactly `pair_key` and `artifact_ref`;
+`artifact_ref` is a normalized current reference produced by the current
+M2-or-M3 behavior run.
+Each collection contains exactly one entry for each preserved behavior
+category and each skill.
 The pair key is `<skill>:<category>`, where category is exactly `behavior`,
 `claim-boundary`, `review-recording`, `isolation`, or `handoff`.
 Missing, additional, duplicate, or mismatched pair keys fail closed.
-The before reference resolves at `baseline_commit`; the after reference
-resolves to current bytes produced by the current M2-or-M3 behavior run.
+Historical repository bytes are never cited directly as current evidence.
+The harness materializes them once under the immutable before root and verifies
+their origin before any preservation comparison.
 
 The adapter validator creates all three non-canonical manifests in a fresh
 temporary root during the current invocation.
@@ -1440,9 +1457,26 @@ binds that durable copy in `output_refs`.
 For `not-run`, `diagnostic_id` is `none`, input and output references are empty,
 and `blocking_reason` contains the required closed blocker.
 For pass/fail, `blocking_reason` is null.
-`observations` is empty except for incident operations, where it contains the
-derived diagnostic plus the exact fixture observations serialized in the
-report row.
+`dependency_results` is empty except for `boundary-incident-replay`,
+`boundary-adapter-parity`, and `boundary-capability-baseline`.
+Those aggregate operations list every directly aggregated child operation and
+its current `result_identity`; missing, duplicated, reordered, stale, or
+substituted dependencies fail closed.
+`observations` is empty except:
+
+- incident fixture operations contain the exact fixture observations
+  serialized in the report row;
+- `boundary-workflow-contract` contains exactly
+  `duplicate_normative_owner_count`;
+- `simple-change-behavior` contains exactly `false_blocking_count`,
+  `new_universal_artifact_count`,
+  `simple_fixture_structure_correction_cycles`, and the final approved
+  feature-spec and test-spec snapshot IDs;
+- `boundary-capability-baseline` contains exactly
+  `false_blocking_count`, `duplicate_normative_owner_count`,
+  `new_universal_artifact_count`, and
+  `simple_fixture_structure_correction_cycles`.
+
 `input_refs` MUST equal the complete resolved input selector; `output_refs`
 MUST equal every durable artifact produced by the invocation.
 Missing, extra, duplicate, stale, or reordered manifest entries fail closed
@@ -1462,15 +1496,22 @@ canonical report path.
 Test-fixture evidence under `tests/fixtures/` MUST NOT satisfy canonical
 production rows.
 
-Every serialized check, preservation, adapter-parity, and fixture row contains
-exactly `result`, `diagnostic_id`, `evidence_refs`, and `blocking_reason`, plus
-the fixture-only observation fields already defined.
+Every serialized check, preservation, adapter-parity, simple-change, and
+fixture row contains
+exactly `result`, `diagnostic_id`, `operation_identity`,
+`dependency_results`, `evidence_refs`, `blocking_reason`, and `observations`,
+plus the fixture-only observation fields already defined.
+`operation_identity` equals the typed result's `result_identity`.
+`dependency_results` is copied without loss.
+`observations` is copied without loss.
 For pass/fail, `evidence_refs` is the normalized concatenation of the typed
 result's complete `input_refs` and `output_refs`.
 For not-run it is empty.
 Fixture observations project to `expected_gate`, `detected_stage`,
 `escaped_to_code_review`, and `sibling_bypass_remaining`; the derived
 diagnostic remains in `diagnostic_id`.
+The capability-baseline observation fields project exactly to their same-named
+top-level count fields; its typed `result` projects to `overall_result`.
 Unknown or duplicate operation IDs, a missing required operation, aggregate
 and row ID collision, omitted input/output, and a typed-result/report-row
 round-trip mismatch fail closed.
@@ -1478,8 +1519,8 @@ The projection paths in the registry are unique except that
 `boundary-capability-baseline` deliberately owns both its named check row and
 the top-level aggregate fields.
 
-For `pass` and `fail`, `evidence_refs` MUST be non-empty and
-`blocking_reason` MUST be null.
+For `pass` and `fail`, at least one of `evidence_refs` or
+`dependency_results` MUST be non-empty and `blocking_reason` MUST be null.
 For `not-run`, `evidence_refs` MUST be empty and `blocking_reason` MUST contain
 exactly `code` and `detail`.
 `code` is exactly `prerequisite-unsatisfied`, `authorization-required`,
@@ -1491,6 +1532,14 @@ blocking reasons attached to executed rows fail closed.
 
 The compact simple-change corpus contains immutable candidate snapshots under
 `tests/fixtures/boundary-proof/simple-change/`.
+It also contains exactly
+`tests/fixtures/boundary-proof/simple-change/scenario.json` with fields
+`scenario_id`, `request`, `expected_branch`, and `corrected_role`.
+`scenario_id` is `BFP-SIMPLE-001`; `request` is the non-empty project-portable
+prompt passed to `spec#1`; `expected_branch` is `zero-correction` or
+`one-correction`; and `corrected_role` is null for zero correction or exactly
+`feature-spec` or `test-spec` for one correction.
+The scenario contains no stage result, diagnostic, trace, or aggregate count.
 Every snapshot contains exactly `snapshot_id`, `source`, `artifact_role`,
 `path`, and `identity`.
 `source` is `fixture-candidate` or `behavior-output`.
@@ -1506,8 +1555,15 @@ Fixture candidates use only `feature-spec` or `test-spec`;
 `review-evidence` is always a fresh behavior output.
 An event reference MUST resolve to exactly one snapshot in the current run
 manifest.
-Fixture candidates may be inputs or comparison oracles but MUST NOT be
-recorded as behavior outputs.
+Fixture candidates are comparison oracles only and MUST NOT be recorded as
+behavior outputs or appear in any
+event's `input_snapshot_ids`, `output_snapshot_ids`, or
+`reviewed_snapshot_id`.
+They define role-specific content assertions and the expected zero-correction
+or one-correction branch.
+The structural evaluator compares produced output fields to those assertions;
+it MUST NOT require raw-byte equality or copy candidate bytes into the
+behavior-output root.
 Zero-correction input contains one feature-spec and one test-spec candidate.
 One-correction input additionally contains exactly one corrected candidate for
 either the feature spec or test spec, never both.
@@ -1523,7 +1579,7 @@ test-spec-review` behavior run after those skills implement the contract.
 M3 owns downstream preservation and sibling/composed-path behavior.
 M4 reruns and aggregates all current evidence.
 
-The behavior harness writes the current run manifest and immutable event
+The behavior harness writes one current run manifest containing immutable event
 results under the behavior-output root.
 The run manifest contains exactly `run_id`, `baseline_commit`,
 `before_artifact_inventory`, `after_artifact_inventory`, `snapshots`, and
@@ -1538,11 +1594,28 @@ The before inventory is the complete classifier result from the
 `baseline_commit` tree; the after inventory is the complete classifier result
 from current invocation bytes.
 Both selectors cover `specs/`, `docs/proposals/`, `docs/plans/`,
-`docs/architecture/`, `docs/adr/`, and the selected change root, excluding the
-current behavior-output root.
+`docs/architecture/`, `docs/adr/`, and the selected change root.
+The after selector additionally covers the complete
+`<behavior-root>/artifacts/` subtree.
 Paths and identities are unique and normalized; identity is the raw-byte
 SHA-256.
 The run-manifest identity binds the complete inventories and events.
+
+The repository artifact classifier uses this closed ordered mapping:
+
+| Artifact kind | Canonical repository path | Behavior-workspace path |
+| --- | --- | --- |
+| `feature-spec` | `specs/*.md` excluding `*.test.md` | `<behavior-root>/artifacts/feature-spec/*.md` |
+| `test-spec` | `specs/*.test.md` | `<behavior-root>/artifacts/test-spec/*.md` |
+| `review-evidence` | selected change root `reviews/*.md`, `review-log.md`, or `review-resolution.md` | `<behavior-root>/artifacts/review-evidence/*.md` |
+| `other-lifecycle` | `docs/proposals/*.md`, `docs/plans/*.md`, `docs/architecture/**`, `docs/adr/*.md`, or selected `change.yaml` | the corresponding singular directory below `<behavior-root>/artifacts/` |
+| `non-lifecycle` | every other selected regular file | every other selected regular file |
+
+Paths matching more than one row or an unknown artifact kind fail closed.
+The behavior workspace permits only the run manifest and files below its
+`artifacts/` tree.
+An unexpected workspace file fails the run even when classified
+`non-lifecycle`.
 
 The harness invokes the canonical stage-owning skill through the workflow
 orchestrator and captures only newly produced files below the current
@@ -1558,21 +1631,31 @@ Every event contains exactly:
 `diagnostic_id`, and `evidence_refs`.
 `stage` is exactly `spec`, `spec-review`, `test-spec`, or
 `test-spec-review`; `attempt` is `1` or `2`.
+`input_snapshot_ids` records lifecycle-artifact inputs only; the fixed scenario
+request is operation input evidence and is not a snapshot.
 `spec#1` has no reviewed snapshot and consumes zero inputs.
-`test-spec#1` has no reviewed snapshot and consumes exactly the approved
-feature-spec behavior output plus its approving review evidence.
-Authoring attempt 2 has no reviewed snapshot, consumes exactly the prior
-authored artifact plus its changes-requested review evidence, and produces
-exactly one distinct corrected behavior-output snapshot of the matching role.
-Review stages consume and identify exactly one reviewed artifact and produce
-exactly one review-evidence snapshot.
+`spec#2` has no reviewed snapshot, consumes exactly the prior feature-spec
+behavior output plus its changes-requested review evidence, and produces
+exactly one distinct corrected feature-spec behavior output.
+`test-spec#1` has no reviewed snapshot, consumes exactly the final approved
+feature-spec behavior output plus its approving review evidence, and produces
+exactly one test-spec behavior output.
+`test-spec#2` has no reviewed snapshot, consumes exactly the prior test-spec
+behavior output, its changes-requested review evidence, the final approved
+feature-spec behavior output, and that feature spec's approving review
+evidence, and produces exactly one distinct corrected test-spec behavior
+output.
+`spec-review` consumes and identifies exactly one feature-spec behavior output
+and produces exactly one review-evidence snapshot.
+`test-spec-review` consumes and identifies exactly one test-spec behavior
+output, also consumes the final approved feature-spec behavior output plus its
+approving review evidence, and produces exactly one review-evidence snapshot.
 `input_snapshot_ids` and `output_snapshot_ids` are ordered unique lists.
 For every event, `evidence_refs` equals the normalized path-and-identity
 projection of all referenced input and output snapshots; review events also
 include their `reviewed_snapshot_id`, which MUST already occur exactly once in
 `input_snapshot_ids`.
-No snapshot may be used before the event that produced it, except immutable
-fixture-candidate inputs to `spec#1`.
+No snapshot may be used before the event that produced it.
 `structural_result` is freshly computed as `pass` or `fail`.
 `observed_result` is `produced` for authoring stages and `approved`,
 `changes-requested`, or `blocked` for review stages.
@@ -1610,12 +1693,15 @@ or:
 
 blocked:
   any valid prefix ending in a review event with observed_result blocked
+
+authoring failure:
+  any valid prefix ending in an authoring event with structural_result fail
 ```
 
-No event may follow blocked.
+No event may follow blocked or an authoring structural failure.
 Every authoring output identity MUST equal the following review's reviewed
 snapshot identity.
-Attempt 2 MUST use a distinct corrected-candidate path and identity.
+Attempt 2 MUST produce a distinct corrected behavior-output path and identity.
 The approved feature-spec snapshot and its review evidence MUST be inputs to
 test-spec attempt 1.
 Broken links, ambiguous reviewed inputs, empty required references,
@@ -1629,14 +1715,16 @@ The evaluator derives:
 - false blocking: count review events where `structural_result: pass` and
   `observed_result` is changes-requested or blocked;
 - applicable-only mapping: exact set equality between proof-map references and
-  applicable feature boundaries plus selected interactions;
+  applicable feature boundaries plus selected interactions, using the final
+  approved feature-spec and test-spec behavior-output snapshots selected by
+  the terminal approved `test-spec-review` trace;
 - new universal artifacts: compute the set of paths present only in the
   complete after inventory; remove the exact feature-spec and test-spec
   behavior outputs, and remove review-evidence outputs only for review events
   actually present in the trace; count the remaining paths whose classifier
-  kind is a lifecycle artifact; immutable fixture candidates and the
-  change-local behavior-output evidence root are excluded from both inventory
-  selectors.
+  kind is a lifecycle artifact.
+  The run manifest is control evidence outside the artifact-inventory selector.
+  Immutable fixture candidates are outside both inventory selectors.
 
 Only an M2-or-later fresh behavior run may claim the simple-change workflow
 result.
