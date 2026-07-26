@@ -821,4 +821,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: BFP-CR-M2-1, BFP-CR-M2-2, BFP-CR-M2-3, BFP-CR-M2-4, BFP-CR-M2-5, BFP-CR-M2-6
-Open findings: BFP-CR-M2-1, BFP-CR-M2-2, BFP-CR-M2-3, BFP-CR-M2-4, BFP-CR-M2-5, BFP-CR-M2-6
+Open findings: None

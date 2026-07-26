@@ -7,9 +7,7 @@ Diagnostic: none
 
 ## Commands
 
-- `python scripts/test-boundary-proof.py BoundaryProofEnvironmentTests` —
-  passed 23 focused tests.
-- `python scripts/test-boundary-proof.py` — passed 39 tests, including the
+- `python scripts/test-boundary-proof.py` — passed 49 tests, including the
   current immutable-run validation-only regression.
 - `python scripts/validate-skills.py` — validated 24 skills.
 - `python scripts/test-skill-validator.py` — passed 259 tests.
@@ -27,7 +25,7 @@ Diagnostic: none
 - The controlled `exercise-fixture` followed by `validate-fixture` passed in
   a temporary output root.
 - Canonical `generate` passed and published immutable run
-  `run-618414b81ad5279f187a6187e992e2c2`.
+  `run-91e41340b56169c06158eca244fb117c`.
 - Canonical `validate` passed without runtime or lifecycle-skill reinvocation.
 
 ## Bounded receipt
@@ -86,15 +84,23 @@ enforcement proof.
 ## Immutable behavior result
 
 ```json
-{"false_blocking_count":0,"input_set_identity":"sha256:ac62e92634807c60d709f66ca4c56ddc82c3e003a39ff6518c70ae62a73081e3","new_universal_artifact_count":0,"result":"pass","run_id":"run-618414b81ad5279f187a6187e992e2c2","simple_fixture_structure_correction_cycles":0}
+{"false_blocking_count":0,"input_set_identity":"sha256:b086ccd384d50212aca6e4956868dc33947d74abac02578d85f81a8133d7cfb2","new_universal_artifact_count":0,"result":"pass","run_id":"run-91e41340b56169c06158eca244fb117c","simple_fixture_structure_correction_cycles":0}
 ```
 
-The workflow turn selected the complete boundary-first feature profile and
-applicable-only proof profile; both formal review outcomes were approved. The
-harness projected that closed decision into fresh feature-spec, review,
-test-spec, and review artifacts, reparsed them with the same parser used for
-the independent candidates, and published them through the prepared-receipt
-transaction.
+The standalone workflow coordinator invoked isolated `spec`, `spec-review`,
+`test-spec`, and `test-spec-review` turns. Authoring turns returned complete
+typed semantic records; review turns used distinct fresh threads and returned
+durable formal review records bound to the exact generated artifact identities.
+Both review outcomes were approved. The harness validated and formatted those
+stage-owned records, reparsed them with the candidate parser, and published
+them through the prepared-receipt transaction.
+
+The correction loop also proved that formal review is substantive rather than
+label-only: `spec-review` rejected an unrealizable canonically equivalent
+unknown-mode evidence class. The contract removed that empty mandatory class,
+recorded its non-applicability, added a regression, and passed rereview. Exact
+semantic equality separately caught and corrected missing T3 ownership in the
+canonical proof obligation.
 
 ## Handoff
 
