@@ -2160,8 +2160,7 @@ Boundary model scope: R56-R56q
 
 Active proof-planning surface for public skill portability and the
 boundary-first R56-R56q amendment, alongside the previously listed initiatives.
-The R13/R4/R5 revision is ready for independent test-spec review; the prior R2
-approval is stale and implementation must not resume until the new review
-approves this proof map.
+The R13/R4/R5 revision is approved by `test-spec-review-r4` and is the active
+proof map for implementation.
 The active plan `Current Handoff Summary` for each initiative owns its current
 workflow action.

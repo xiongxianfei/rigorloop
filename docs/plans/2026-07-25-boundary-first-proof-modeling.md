@@ -80,12 +80,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M1. Deterministic core correction
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r5.md
-- Review status: approved; stage=plan-review; round=r5
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r4.md
+- Review status: approved; stage=test-spec-review; round=r4
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: test-spec-review R4
+- Next stage: implement M1 correction
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-TSR3-1
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7
 
 ## Milestones
 
@@ -481,6 +481,8 @@ resource through generated, packed, and installed outputs.
   all nine invocation-profile fields, all five contract refs, instruction
   ordering/deduplication/symlink behavior, the exact baseline record, the exact
   input-set fields and members, and comparison-only scenario expectations.
+- 2026-07-26: Test-spec-review R4 resolved BFP-TSR3-1 and approved the
+  field-complete proof map for M1 implementation.
 
 ## Decision log
 
