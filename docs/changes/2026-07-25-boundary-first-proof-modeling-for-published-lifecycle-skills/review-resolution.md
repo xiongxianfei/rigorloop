@@ -1941,6 +1941,53 @@ idempotent authorized/orphan-parent-synced/completed recovery rows for working,
 staging, and lease-only interruption; T51 covers every recovery crash point;
 pending independent spec-review-r30.
 
+### spec-review-r30
+
+#### BFP-SR-R30-1 - Route complete diagnostic sets with exact evidence
+
+Finding ID: BFP-SR-R30-1
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y transport protocol
+Decision needed: none
+Required outcome: Make retry reachable and deterministic for compound timeout/output observations and define exact evidence for every diagnostic.
+Chosen action: Route on the complete ordered diagnostic set and replace diagnostic references with an exact inline role-keyed evidence map that rejects missing, extra, and self-reference.
+Rationale: Primary presentation order cannot erase the full routing condition.
+Validation target: spec-review-r31
+Validation evidence: pending
+
+#### BFP-SR-R30-2 - Make publisher recovery total and byte-stable
+
+Finding ID: BFP-SR-R30-2
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y recovery transaction
+Decision needed: none
+Required outcome: Close lease-only durability, immutable recovery fields, working-root validity, input semantics, and live-owner routing.
+Chosen action: Use the simple-change root for lease-only fsync, freeze every recovery field except state, validate cleanup against lease/snapshot, define minimum working marker, and record `same_live_publisher_instance`.
+Rationale: Recovery must be both total across crashes and immutable across resumes.
+Validation target: spec-review-r31
+Validation evidence: pending
+
+#### BFP-SR-R30-3 - Synchronize current review and plan identities
+
+Finding ID: BFP-SR-R30-3
+Disposition: accepted
+Status: in-progress
+Owner: test-spec and plan authors
+Owning stage: lifecycle metadata correction
+Decision owner: artifact lifecycle contract
+Decision needed: none
+Required outcome: Bind the draft test spec to current review and plan evidence without claiming implementation readiness.
+Chosen action: Record R30, stabilize the resolution-needed plan and baseline/draft distinction, then bind their exact identities in the test spec.
+Rationale: Draft proof metadata must describe the actual current gate.
+Validation target: spec-review-r31
+Validation evidence: pending
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2

@@ -165,14 +165,15 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r27.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r28.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r29.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r30.md
 review:
   status: changes-requested
-  unresolved_items: 3
-  material_findings: 98
-  open_findings: 3
+  unresolved_items: 6
+  material_findings: 101
+  open_findings: 6
   closed_findings: 95
   architecture_review: reviews/architecture-review-r13.md
-  spec_review: reviews/spec-review-r29.md
+  spec_review: reviews/spec-review-r30.md
   code_review: reviews/code-review-m2-r2.md
   review_log: review-log.md
 workflow:
