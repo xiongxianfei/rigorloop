@@ -1130,3 +1130,14 @@ Detailed record: reviews/plan-review-r15.md
 Resolution: review-resolution.md#plan-review-r15
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r15
+Stage: test-spec-review
+Round: 15
+Reviewed artifact: specs/rigorloop-workflow.test.md at 90f98bb2
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r15.md
+Resolution: review-resolution.md#test-spec-review-r15
+Material findings: BFP-TSR15-1
+Open findings: BFP-TSR15-1

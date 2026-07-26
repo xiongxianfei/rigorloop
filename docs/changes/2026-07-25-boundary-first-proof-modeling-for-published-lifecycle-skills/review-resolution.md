@@ -2893,3 +2893,25 @@ v2 current evidence, opaque v1 history, and scoped ADR supersession.
 
 No new material findings. R15 independently approved the R45/R18 M2
 correction sequence for test-spec synchronization.
+
+### test-spec-review-r15
+
+#### BFP-TSR15-1 — Publication proof does not enforce staged validation before receipt creation
+
+Finding ID: BFP-TSR15-1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: approved R45 publication transaction
+Decision needed: none
+Required outcome: Prove complete staged-run and current-input validation before
+prepared-receipt creation, and prove invalid staging cannot create a receipt,
+install a run, mutate the pointer, or reinvoke lifecycle skills.
+Chosen action: Revise T51 setup, steps, and expected result with the exact
+ordered gate, invalid/stale staging contrasts, and the post-validation
+pre-receipt crash boundary.
+Rationale: Crash coverage cannot substitute for proof that invalid staging
+never crosses the publication mutation boundary.
+Validation target: test-spec-review-r16
+Validation evidence: pending
