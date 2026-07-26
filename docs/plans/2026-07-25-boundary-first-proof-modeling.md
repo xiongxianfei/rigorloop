@@ -91,7 +91,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r41.md
 - Review status: changes-requested; stage=spec-review; round=r41
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec
+- Next stage: spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-AR16-1,BFP-AR16-2,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR41-1,BFP-SR41-2,BFP-SR41-3
 
@@ -620,6 +620,13 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Spec-review R41 required writer-quiescence proof, total
+  race-resistant scan failures, and bounded privacy-safe evidence. The R42
+  candidate removes child workspace-write authority, adds direct and detached
+  descendant denial probes, binds lifecycle/canary integrity limits, and uses
+  root-anchored no-follow descriptor inspection with closed mutation,
+  inspection-failure, overflow, and baseline-failure routes.
 
 - 2026-07-26: Architecture-review R16 found that child workspace writes could
   bypass adapter-exclusive materialization and that the canonical Runtime View
