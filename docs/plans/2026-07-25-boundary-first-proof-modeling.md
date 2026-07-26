@@ -78,20 +78,20 @@ resource through generated, packed, and installed outputs.
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Deterministic core correction
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r3.md
-- Review status: review-requested; stage=code-review; round=r4
-- Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: code-review M1 R4
+- Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
+- Current milestone state: planned
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r4.md
+- Review status: approved; stage=code-review; round=r4
+- Remaining in-scope implementation milestones: M2, M3, M4
+- Next stage: implement M2 environment-feasibility preflight
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
 ### M1. Deterministic core correction
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Close every M1 code-review finding in the deterministic model, fixtures, synthetic trace, and report engine without invoking lifecycle skills.
 - Requirements: R28-R28e, R28k, R28p-R28y, R56m, R56o-R56p
 - Files/components likely touched:
