@@ -2424,6 +2424,64 @@ The recorded architecture assessment is `architecture-required`; architecture
 synchronization and review remain mandatory before test-spec approval or
 implementation resumes.
 
+### spec-review-r37
+
+#### BFP-SR-R37-1 - Review output variants omit required correction evidence
+
+Finding ID: BFP-SR-R37-1
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y stage-output contract
+Decision needed: none
+Required outcome: Define exhaustive stage-occurrence and output variants,
+including stage-owned review-resolution evidence for non-approving review
+branches.
+Chosen action: Add closed outcome- and occurrence-selected artifact sets and
+require lifecycle content/outcome agreement without adapter synthesis.
+Rationale: A transport contract must represent every already permitted
+lifecycle branch without moving semantic ownership into the adapter.
+Validation target: spec-review-r38
+Validation evidence: pending spec revision and spec-review-r38
+
+#### BFP-SR-R37-2 - Candidate failures lack replayable bounded evidence
+
+Finding ID: BFP-SR-R37-2
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y transport evidence contract
+Decision needed: none
+Required outcome: Define an exhaustive bounded candidate-set grammar,
+classification algorithm, and durable value-free evidence projection.
+Chosen action: Classify the complete bounded candidate set, retain raw content
+only transiently for one accepted candidate, and record per-candidate
+identities and artifact projections for every failure state.
+Rationale: Retry and reconciliation decisions must be reproducible without
+materializing invalid candidates or retaining unbounded semantic content.
+Validation target: spec-review-r38
+Validation evidence: pending spec revision and spec-review-r38
+
+#### BFP-SR-R37-3 - Preflight canary conflicts with the lifecycle policy
+
+Finding ID: BFP-SR-R37-3
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y preflight policy
+Decision needed: none
+Required outcome: Separate parent-selected canary policy from lifecycle stage
+policy and reject cross-use.
+Chosen action: Bind a closed canary policy identity through preflight request,
+response schema, attestation, and symmetric policy-selection validation.
+Rationale: A preflight probe must prove the real materialization mechanism
+without becoming an alternate lifecycle output policy.
+Validation target: spec-review-r38
+Validation evidence: pending spec revision and spec-review-r38
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
