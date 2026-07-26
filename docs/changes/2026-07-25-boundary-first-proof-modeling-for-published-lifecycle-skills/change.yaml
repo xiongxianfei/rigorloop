@@ -134,13 +134,14 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r3.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r4.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r2.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r3.md
 review:
   status: changes-requested
-  unresolved_items: 0
+  unresolved_items: 1
   material_findings: 31
-  open_findings: 0
-  closed_findings: 31
-  code_review: reviews/code-review-m1-r2.md
+  open_findings: 1
+  closed_findings: 30
+  code_review: reviews/code-review-m1-r3.md
   review_log: review-log.md
 workflow:
   automation:
@@ -149,7 +150,7 @@ workflow:
     run:
       run_id: run-20260725-boundary-first-verify
       change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
-      status: active
+      status: paused
       policy_version: 1
       target:
         stage: verify
@@ -158,6 +159,7 @@ workflow:
         bound_at: 2026-07-25T22:55:46Z
         completion:
           rule: fresh verification passes
+      stop_reason: review-findings-open:BFP-M1-CR7
     parent_authorizations:
       authorization-authoring-run-20260725-boundary-first-verify:
         authorization_id: authorization-authoring-run-20260725-boundary-first-verify
