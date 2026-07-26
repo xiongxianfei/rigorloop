@@ -18,6 +18,7 @@ Closeout status: open
 - Review closeout: spec-review-r13
 - Review closeout: architecture-review-r3
 - Review closeout: architecture-review-r4
+- Review closeout: plan-review-r3 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -28,10 +29,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`
 - Findings resolved: 21
-- Unresolved findings: 7
-- Current result: `architecture-review-r4` approved the hermetic runtime, exact publication recovery, ADR tradeoffs, and C4 views; plan revision is next.
+- Unresolved findings: 9
+- Current result: `plan-review-r3` requested M1-M4 phase alignment and exact evidence-production, validation, promotion, and recovery commands.
 
 ## Resolution Overview
 
@@ -65,6 +66,8 @@ Closeout status: open
 | BFP-AR3-1 | accepted | resolved | Durable publication installs the run before the fsynced receipt and atomic pointer, then fsyncs the parent and reconciles cleanup. |
 | BFP-AR3-2 | accepted | resolved | The parent attests the runtime sandbox and keeps opaque authentication outside child authority and durable evidence. |
 | BFP-AR3-3 | accepted | resolved | The ADR records rejected hermetic-runtime alternatives and operational consequences. |
+| BFP-PL4 | accepted | open | Preserve approved R28y M1-M4 ownership and keep runtime feasibility as a pre-harness promotion gate. |
+| BFP-PL5 | accepted | open | Name exact evidence inputs, outputs, production/validation commands, promotion receipts, and failure stops. |
 
 ## Finding Details
 
@@ -470,6 +473,38 @@ No new material findings.
 `architecture-review-r4` approved the hermetic child-runtime trust boundary,
 the exact recoverable publication sequence, the expanded ADR rationale, and
 the aligned C4 views.
+
+### plan-review-r3
+
+#### BFP-PL4 - Five milestones conflict with the approved R28y phase contract
+
+Finding ID: BFP-PL4
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan revision
+Decision owner: approved R28y phase contract
+Decision needed: none
+Required outcome: Restore M1-M4 ownership while retaining feasibility before full harness or skill mutation.
+Chosen action: Keep M1 deterministic; make feasibility and harness work pre-mutation work inside M2; keep upstream behavior in M2, preservation in M3, and aggregation in M4.
+Rationale: Plan sequencing cannot renumber explicit normative phase ownership.
+Validation target: plan-review-r4
+Validation evidence: pending
+
+#### BFP-PL5 - Evidence creation and promotion commands are incomplete
+
+Finding ID: BFP-PL5
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan revision
+Decision owner: approved R28y evidence contract
+Decision needed: none
+Required outcome: Make every evidence transition executable and independently promotable.
+Chosen action: Add exact production and validation commands, output paths, pre-mutation baseline timing, failure stops, and code-review promotion gates.
+Rationale: Validation of an existing artifact does not define how current evidence is produced.
+Validation target: plan-review-r4
+Validation evidence: pending
 
 ### spec-review-r3
 

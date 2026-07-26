@@ -81,12 +81,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M1. Runtime feasibility and deterministic core correction
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r4.md
-- Review status: approved; stage=architecture-review; round=r4
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r3.md
+- Review status: changes-requested; stage=plan-review; round=r3
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: plan-review R3
+- Next stage: plan revision
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=9; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-PL4,BFP-PL5
 
 ## Milestones
 
@@ -402,6 +402,7 @@ resource through generated, packed, and installed outputs.
 - 2026-07-26: The R4 candidate corrects publication to validated run installation, fsynced receipt, atomic pointer replacement, parent fsync, and receipt cleanup; assigns confinement to parent-attested runtime sandboxing; keeps credentials in a private runtime-only channel; and records rejected alternatives and operating costs.
 - 2026-07-26: Architecture-review R4 approved the hermetic child-runtime boundary, exact publication recovery, ADR tradeoffs, and C4 views; plan revision must start with runtime feasibility proof.
 - 2026-07-26: The plan R3 candidate replaces the stale four-milestone sequence with five reviewed boundaries: runtime feasibility and core correction, standalone harness and recovery, upstream behavior generation, downstream preservation, and portable capability aggregation.
+- 2026-07-26: Plan-review R3 requested restoration of normative R28y M1-M4 ownership and exact production, validation, promotion, baseline, and recovery commands.
 
 ## Decision log
 
