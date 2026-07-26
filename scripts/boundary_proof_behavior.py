@@ -1088,8 +1088,10 @@ def _feature_record(model: object) -> dict[str, object]:
             {
                 "dimension_id": row.dimension_id,
                 "applicability": row.applicability,
-                "governing_requirement_ids": list(row.governing_requirement_ids),
-                "boundary_ids": list(row.boundary_ids),
+                "governing_requirement_ids": sorted(
+                    row.governing_requirement_ids
+                ),
+                "boundary_ids": sorted(row.boundary_ids),
                 "non_applicability_rationale": row.non_applicability_rationale,
             }
             for row in model.core_dimensions
@@ -1099,8 +1101,10 @@ def _feature_record(model: object) -> dict[str, object]:
             {
                 "example_id": row.example_id,
                 "role": row.role,
-                "governing_requirement_ids": list(row.governing_requirement_ids),
-                "boundary_ids": list(row.boundary_ids),
+                "governing_requirement_ids": sorted(
+                    row.governing_requirement_ids
+                ),
+                "boundary_ids": sorted(row.boundary_ids),
                 "regression_id": row.regression_id,
                 "discovery_gap": row.discovery_gap,
                 "non_normative_purpose": row.non_normative_purpose,
@@ -1110,9 +1114,11 @@ def _feature_record(model: object) -> dict[str, object]:
         "interaction_rows": sorted([
             {
                 "interaction_id": row.interaction_id,
-                "boundary_ids": list(row.boundary_ids),
+                "boundary_ids": sorted(row.boundary_ids),
                 "rationale": row.rationale,
-                "governing_requirement_ids": list(row.governing_requirement_ids),
+                "governing_requirement_ids": sorted(
+                    row.governing_requirement_ids
+                ),
             }
             for row in model.interactions
         ], key=lambda row: row["interaction_id"]),
@@ -1126,13 +1132,15 @@ def _proof_record(proof: object) -> dict[str, object]:
         "proof_rows": sorted([
             {
                 "proof_obligation_id": row.proof_obligation_id,
-                "governing_requirement_ids": list(row.governing_requirement_ids),
-                "boundary_or_interaction_ids": list(
+                "governing_requirement_ids": sorted(
+                    row.governing_requirement_ids
+                ),
+                "boundary_or_interaction_ids": sorted(
                     row.boundary_or_interaction_ids
                 ),
-                "test_case_ids": list(row.test_case_ids),
+                "test_case_ids": sorted(row.test_case_ids),
                 "automation_level": row.automation_level,
-                "manual_procedure_ids": list(row.manual_procedure_ids),
+                "manual_procedure_ids": sorted(row.manual_procedure_ids),
             }
             for row in proof.proof_obligations
         ], key=lambda row: row["proof_obligation_id"]),
@@ -1417,13 +1425,19 @@ def _spec_request(request: str) -> dict[str, object]:
             "`text.mode.unknown`; `outcome-stop` -> R2,R3,R4 / "
             "`text.outcome.value`,`text.outcome.error`; and "
             "`evidence-claims` -> R1,R2,R3,R4 / `text.evidence.tests`. "
-            "The other eight core dimensions are not applicable with these "
-            "exact rationales respectively: `No persisted identity is consumed.`, "
-            "`The function is stateless.`, `The function grants no authority.`, "
-            "`The function performs no mutation.`, the schema-defined "
-            "single-result/no-recovery rationale, `The pure result has no shared "
-            "state.`, the schema-defined public-contract conformance rationale, "
-            "and `No legacy representation exists.` Include governed "
+            "The other eight core dimensions are not applicable. Use these "
+            "exact dimension/rationale pairs: `identity-freshness` -> `No "
+            "persisted identity is consumed.`; `state-transition` -> `The "
+            "function is stateless.`; `authorization-scope` -> `The function "
+            "grants no authority.`; `mutation-atomicity` -> `The function "
+            "performs no mutation.`; `interruption-recovery` -> `The contract "
+            "exposes one returned result and no partial state or recovery "
+            "obligation.`; `concurrency-idempotency` -> `The pure result has no "
+            "shared state.`; `composition-bypass` -> `Conformance is defined "
+            "only for this public normalizer contract; wrappers and alternate "
+            "entrypoints may claim conformance only by preserving it.`; and "
+            "`compatibility-migration` -> `No legacy representation exists.` "
+            "Include governed "
             "trim/preserve illustrations and the "
             "`text.regression.unknown-mode` regression. Be concise: return one "
             "complete typed record, not commentary or a profile label.\n\n"
@@ -2877,9 +2891,19 @@ def generate_behavior(
     try:
         normalized_feature = normalize_feature_model(feature_model)
         expected_feature, expected_proof = _portable_text_contract()
-        if _feature_record(normalized_feature) != _feature_record(
+        observed_feature_record = _feature_record(normalized_feature)
+        expected_feature_record = _feature_record(
             normalize_feature_model(expected_feature)
-        ):
+        )
+        if observed_feature_record != expected_feature_record:
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    "feature-model-mismatch:"
+                    + _canonical_json_bytes(observed_feature_record).decode(
+                        "utf-8"
+                    ),
+                    file=sys.stderr,
+                )
             raise BoundaryProofError(
                 "stage-owned feature semantics differ from the fixture contract"
             )
@@ -2924,9 +2948,19 @@ def generate_behavior(
         normalized_proof = normalize_proof_map(
             proof_map, normalized_feature
         )
-        if _proof_record(normalized_proof) != _proof_record(
+        observed_proof_record = _proof_record(normalized_proof)
+        expected_proof_record = _proof_record(
             normalize_proof_map(expected_proof, normalized_feature)
-        ):
+        )
+        if observed_proof_record != expected_proof_record:
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    "proof-map-mismatch:"
+                    + _canonical_json_bytes(observed_proof_record).decode(
+                        "utf-8"
+                    ),
+                    file=sys.stderr,
+                )
             raise BoundaryProofError(
                 "stage-owned proof semantics differ from the fixture contract"
             )
