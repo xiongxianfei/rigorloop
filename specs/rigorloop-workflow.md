@@ -1,7 +1,7 @@
 # RigorLoop Workflow
 
 ## Status
-- approved
+- draft
 Boundary model version: v1
 Boundary model scope: R28-R28z
 
@@ -1809,14 +1809,20 @@ envelope_byte_limit: 16384
 The policy identity is the standard SHA-256 identity of this exact
 canonical-JSON object.
 The stage-owning skill authors a nonempty UTF-8 canary value; the transport
-adapter validates the complete envelope, writes those exact UTF-8 bytes into
-the isolated output root, rereads them, and requires byte equality.
+adapter first requires the canary turn's pre-materialization workspace
+integrity observation to pass, validates the complete envelope, writes those
+exact UTF-8 bytes into the isolated output root, rereads them, and requires
+byte equality.
 The preflight discards the canary workspace and content after recording only
 the `pass` result and the already permitted bounded runtime observations.
+It applies the exact `stage-workspace-integrity-observation-v1` algorithm
+transiently around the canary turn; the observation and path inventory are
+discarded after deriving the pass-only probe result.
 The canary is never a lifecycle artifact, behavior snapshot, candidate oracle,
 or canonical evidence output.
-A missing, malformed, partial, additional, substituted, oversized, or
-non-byte-equal canary fails as `stage-envelope-canary-failed`.
+A missing, malformed, partial, additional, substituted, oversized,
+child-mutated-workspace, or non-byte-equal canary fails as
+`stage-envelope-canary-failed`.
 A canary envelope under a lifecycle policy, a lifecycle envelope under the
 canary policy, a response-selected policy, or a policy identity not equal to
 the parent-selected request and attestation identities fails before
@@ -2606,6 +2612,26 @@ It rereads every materialized file and requires byte-for-byte equality with
 the bound envelope before the harness snapshots those files and before any
 later stage begins.
 
+The agent-message envelope is the only stage-output transport.
+Child commands and file-change events may read or execute within their existing
+permission profile, but they do not own physical lifecycle-output
+materialization.
+Immediately before every accepted turn, after all parent assembly and
+turn-request preparation is complete, the parent captures the complete
+pre-turn isolated-workspace inventory defined below.
+After normal turn completion or confirmed stop and reap, and before envelope
+materialization, the parent compares the workspace to that exact baseline.
+Any child-created, removed, content-changed, kind-changed, mode-changed,
+symlinked, or non-regular entry fails closed with
+`stage-workspace-mutated`, discards the run workspace, and creates no
+lifecycle event, snapshot, evidence reference, or current pointer.
+Protocol file-change observations and child narration cannot substitute for
+the independent filesystem comparison.
+Only `comparison_result: pass` authorizes materialization.
+When the integrity result fails, every retained raw candidate message is
+discarded after the value-free candidate and workspace observations are
+derived.
+
 The stage-artifact envelope contains exactly:
 
 ```text
@@ -2879,7 +2905,8 @@ Every transport-attempt row contains exactly:
 `transport_policy_identity`, `artifact_policy_identity`,
 `termination_state`, `termination_receipt`, `output_state`,
 `stage_envelope_identity`, `artifact_set_variant`,
-`candidate_observation`, `materialization_observation`,
+`candidate_observation`, `workspace_integrity_observation`,
+`materialization_observation`,
 `content_validation_observation`, `primary_diagnostic_id`,
 `diagnostic_ids`, `decision`, `evidence_refs`, and `diagnostic_evidence`.
 `event_key` is the prospective lifecycle event identity `<stage>#<attempt>`.
@@ -2899,6 +2926,8 @@ policy identity for generation rows or the attested canary policy identity for
 the preflight row.
 `candidate_observation` is null only for `uninspected`; otherwise it is the
 complete bounded observation above.
+`workspace_integrity_observation` is null only for `uninspected`; otherwise it
+is the complete pre-materialization observation below.
 `stage_envelope_identity` and `artifact_set_variant` are non-null only for
 `complete`, and equal the sole accepted or reconciled candidate.
 `materialization_observation` is null unless one structurally complete
@@ -2924,6 +2953,11 @@ The adapter MUST terminate, wait for, and reap an expired runtime process before
 recording that receipt.
 Failure to prove both facts records `liveness-uncertain` with a null receipt,
 pauses, and performs no retry or output inspection.
+For `completed`, the runtime's terminal turn event must prove that every
+tool call and protocol item for that turn is terminal before workspace
+inspection begins; the parent sends no later request on that thread.
+Missing, additional, or still-active turn work is a protocol-shape failure,
+not a completed quiescence boundary.
 
 `output_state` is exactly `uninspected`, `absent`, `complete`, `partial`,
 `extra`, or `contradictory`.
@@ -2935,10 +2969,65 @@ malformed.
 Malformed, oversized, multiple, overflowing, or policy-incompatible candidate
 evidence is `contradictory` with its independently retained non-output
 diagnostic.
-Only a `complete` envelope may be materialized.
+Only a `complete` envelope with
+`workspace_integrity_observation.comparison_result: pass` may be materialized.
 After materialization, the adapter independently requires the bound
 stage-output root to contain exactly the envelope paths and exact returned
 bytes; a mismatch is `stage-output-contradictory` and cannot be accepted.
+
+`workspace_integrity_observation` contains exactly `schema_version`,
+`baseline_entries`, `baseline_inventory_identity`, `scan_state`,
+`observed_entries`, `observed_inventory_identity`, `changes`,
+`comparison_result`, and `observation_identity`.
+`schema_version` is `stage-workspace-integrity-observation-v1`.
+
+`baseline_entries` is the complete bytewise path-sorted pre-turn inventory of
+every descendant of the isolated workspace root; the root itself is excluded.
+Each row contains exactly `path`, `entry_kind`, `byte_identity`, `byte_count`,
+and `permission_mode`.
+`path` is normalized and relative.
+`entry_kind` is `directory`, `regular-file`, `symlink`, or `other`.
+`permission_mode` is the non-negative integer returned by
+`stat.S_IMODE(lstat_result.st_mode)`.
+Regular files have their exact raw-byte identity and non-negative byte count.
+Directories, symlinks, and other entries have null identity and byte count.
+Baseline capture does not follow symlinks and fails before `turn/start` unless
+every row is a directory or regular file.
+`baseline_inventory_identity` is the canonical identity of
+`baseline_entries`.
+
+Post-turn scanning uses `lstat`, does not follow symlinks, visits entries in
+bytewise path order, and records at most
+`len(baseline_entries) + 1` rows.
+`scan_state` is `complete` when traversal finishes within that bound and
+`overflow` when the additional row proves the tree grew beyond the bound.
+For `complete`, `observed_entries` is the complete path-sorted inventory and
+`observed_inventory_identity` is its canonical identity.
+For `overflow`, `observed_entries` is the deterministic first
+`len(baseline_entries) + 1` rows, `observed_inventory_identity` is null, and
+`changes` is null.
+
+For a complete scan, `changes` is the path-sorted exact diff.
+Each row contains exactly `path`, `change_kinds`, `before`, and `after`.
+`before` and `after` are null when absent and otherwise the complete
+corresponding inventory row.
+`change_kinds` is the nonempty ordered subset of `created`, `removed`,
+`kind-changed`, `content-changed`, and `mode-changed` in that precedence.
+`created` and `removed` occur alone.
+`kind-changed` excludes `content-changed`.
+`content-changed` applies only when both rows are regular files whose identity
+or byte count differs.
+`mode-changed` may accompany `kind-changed` or `content-changed` and occurs
+whenever permission modes differ.
+Applying `changes` to `baseline_entries` must reproduce `observed_entries`
+exactly.
+
+`comparison_result` is `pass` only when `scan_state` is `complete`,
+`changes` is empty, and both inventory identities are equal.
+Every other result is `fail`.
+`observation_identity` is the canonical identity of the other eight fields.
+The observation contains no file content, symlink target, private absolute
+path, raw protocol value, or child-authored prose.
 
 `materialization_observation` contains exactly `schema_version`,
 `expected_outputs`, `reread_outputs`, `comparison_result`, and
@@ -3002,6 +3091,7 @@ stage-output-contradictory
 protocol-shape-incompatible
 unexpected-prohibited-event
 runtime-identity-unstable
+stage-workspace-mutated
 ```
 
 `diagnostic_ids` is a non-empty unique list containing every detected
@@ -3016,12 +3106,13 @@ condition, ordered by this closed precedence:
 6. protocol-conditional-policy-violation
 7. unexpected-prohibited-event
 8. runtime-identity-unstable
-9. stage-output-absent
-10. stage-output-partial
-11. stage-output-extra
-12. stage-output-contradictory
-13. stage-turn-timeout
-14. none
+9. stage-workspace-mutated
+10. stage-output-absent
+11. stage-output-partial
+12. stage-output-extra
+13. stage-output-contradictory
+14. stage-turn-timeout
+15. none
 ```
 
 `none` occurs only as the sole member when no other condition was detected.
@@ -3051,6 +3142,7 @@ non-output-diagnostic:
   protocol-conditional-policy-violation
   unexpected-prohibited-event
   runtime-identity-unstable
+  stage-workspace-mutated
 
 pre-output-non-output-diagnostic:
   protocol-item-classification-invalid
@@ -3098,8 +3190,11 @@ No row may follow a terminal decision, and transport attempt 2 may never decide
 Only terminal `accept` or `reconcile` creates the corresponding lifecycle event
 and permits eventual publication.
 
-For `complete`, `evidence_refs` contains exactly the current materialized
-stage-owned output references inspected for that attempt.
+For `complete` with terminal `accept` or `reconcile`, `evidence_refs` contains
+exactly the current materialized stage-owned output references inspected for
+that attempt.
+For `complete` rejected before materialization by
+`stage-workspace-mutated`, it is empty.
 For `absent` and `uninspected`, it is empty.
 For `partial`, `extra`, or `contradictory`, it is empty because invalid
 candidates are never materialized.
@@ -3117,7 +3212,7 @@ Each value has one exact role-specific shape:
 | --- | --- |
 | `stage-turn-timeout` | `kind: deadline-observation-v1`, `transport_policy_identity`, `deadline_ms`, `elapsed_ms`, `runtime_thread_id` |
 | `stage-liveness-uncertain` | `kind: liveness-observation-v1`, `transport_policy_identity`, `termination_requested: true`, `wait_deadline_ms`, `wait_elapsed_ms`, `wait_completed: false`, `runtime_process_id` |
-| `stage-output-absent`, `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: candidate-output-observation-v1`, `artifact_policy_identity`, `required_outputs`, `candidate_observation_identity`, `materialization_observation_identity`, `content_validation_observation_identity`, and exact `output_state` |
+| `stage-output-absent`, `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: candidate-output-observation-v1`, `artifact_policy_identity`, `required_outputs`, `candidate_observation_identity`, `workspace_integrity_observation_identity`, `materialization_observation_identity`, `content_validation_observation_identity`, and exact `output_state` |
 | `stage-output-candidate-overflow` | `kind: candidate-overflow-observation-v1`, `candidate_observation_identity`, `overflow`, `candidate_count`, and `aggregate_message_bytes` |
 | `stage-envelope-invalid` | `kind: stage-envelope-observation-v1`, `candidate_observation_identity`, and nonempty ordered `invalidity_reasons` |
 | `protocol-item-classification-invalid` | `kind: protocol-classification-observation-v1`, `event_kind`, `protocol_classification_identity`, `lookup_result: unknown`, `event_shape_projection`, `event_shape_identity` |
@@ -3125,6 +3220,7 @@ Each value has one exact role-specific shape:
 | `protocol-conditional-policy-violation` | `kind: protocol-policy-observation-v1`, `rule_id`, `event_kind`, `status_is_disabled`, `environment_identity_is_null`, `policy_result: violation` |
 | `unexpected-prohibited-event` | `kind: prohibited-event-observation-v1`, `event_kind`, `event_identity`, `protocol_classification_identity` |
 | `runtime-identity-unstable` | `kind: runtime-identity-observation-v1`, `identity_kind`, `checkpoint`, `expected_identity`, `observed_identity` |
+| `stage-workspace-mutated` | `kind: workspace-mutation-observation-v1`, `workspace_integrity_observation_identity`, `scan_state`, `change_count`, and `change_count_is_lower_bound` |
 
 All listed numeric fields are non-negative integers; every identity uses the
 standard `sha256:` form; every path is normalized and bounded to the invocation
@@ -3151,6 +3247,8 @@ The role predicates are exact:
   Its materialization and content-validation identities are null exactly when
   the corresponding row observations are null and otherwise equal their
   canonical identities.
+  Its workspace-integrity identity always equals the non-null inspected row
+  observation.
   Overflow evidence exactly repeats the observation's non-`none` overflow,
   count, and aggregate byte count.
   `invalidity_reasons` uses only `malformed`, `oversized`,
@@ -3159,6 +3257,14 @@ The role predicates are exact:
   `order-invalid`, `byte-limit-exceeded`, or `content-state-mismatch`.
   It contains every detected reason in this precedence order and no other
   value.
+- `stage-workspace-mutated` requires the row's
+  `workspace_integrity_observation` to have `comparison_result: fail`.
+  Its observation identity and scan state exactly match the row.
+  For `complete`, `change_count` equals the nonzero length of `changes` and
+  `change_count_is_lower_bound` is `false`.
+  For `overflow`, `change_count` is `1` and
+  `change_count_is_lower_bound` is `true`, proving at least one additional
+  entry without claiming a complete diff or count.
 - `runtime-identity-unstable` requires `identity_kind` to be exactly
   `runtime-launcher` or `runtime-package`.
   `checkpoint` is exactly `before-schema-generation`,
@@ -3778,7 +3884,8 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
   semantics-free adapter, selected from an exhaustive review/correction
   artifact-set matrix, reconciled without reinvocation when complete, and
   rejected before publication when missing, malformed, partial, additional,
-  contradictory, oversized, non-byte-equal, or content-state-inconsistent.
+  contradictory, oversized, child-workspace-mutating, non-byte-equal, or
+  content-state-inconsistent.
   Failed candidate sets retain bounded value-free replay evidence, and the
   noncanonical canary policy cannot be substituted for lifecycle policy.
 
