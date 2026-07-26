@@ -11,6 +11,7 @@ Closeout status: open
 - Review closeout: spec-review-r6 open
 - Review closeout: spec-review-r7 open
 - Review closeout: spec-review-r8 open
+- Review closeout: spec-review-r9 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -21,10 +22,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`
-- Findings resolved: 15
-- Unresolved findings: 9
-- Current result: `spec-review-r8` kept BFP-SR3-2 and BFP-SR3-3 open only for review-evidence union, portable current-run publication, and filesystem-versus-typed selector separation.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`
+- Findings resolved: 17
+- Unresolved findings: 8
+- Current result: `spec-review-r9` resolved BFP-SR3-2 and BFP-SR3-3 and opened BFP-SR9-1 for generation-versus-validation and stale-run closure.
 
 ## Resolution Overview
 
@@ -52,8 +53,9 @@ Closeout status: open
 | BFP-M1-CR6 | accepted | open | Use a closed boundary-state envelope evaluated independently of fixture labels by the shared stage-gate evaluator. |
 | BFP-M1-CR7 | accepted | open | Derive simple-change measurements from a structural stage trace owned by the shared evaluator. |
 | BFP-SR3-1 | accepted | resolved | Incident derivation now requires exactly one field/value trigger and a trigger-free contrast. |
-| BFP-SR3-2 | accepted | open | Define a closed trace and deterministic observation formulas. |
-| BFP-SR3-3 | accepted | open | Bind current artifact bytes to the exact evaluated row through a receipt. |
+| BFP-SR3-2 | accepted | resolved | Trace observations, formal-review bundles, output capture, inventory, and terminal branches are deterministic. |
+| BFP-SR3-3 | accepted | resolved | Filesystem inputs, typed dependencies, manifests, result identities, and report projection are bound losslessly. |
+| BFP-SR9-1 | accepted | open | Separate one-shot behavior generation from deterministic validation and bind immutable runs to current inputs. |
 
 ## Finding Details
 
@@ -356,6 +358,23 @@ membership, baseline authority, canonical manifests, result identities, and
 the dependency graph, while retaining the two prior findings for an exact
 review-evidence union, portable immutable-run publication, and disjoint
 filesystem/typed selector representations.
+
+### spec-review-r9
+
+#### BFP-SR9-1 - Fresh validation cannot reproduce or safely reuse the published behavior run
+
+Finding ID: BFP-SR9-1
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec revision
+Decision owner: approved immutable behavior-evidence direction
+Decision needed: none
+Required outcome: Separate one-shot behavior generation from deterministic recorded-run validation and bind run reuse to a complete current input-set identity.
+Chosen action: Define generate and validate modes, exact input-set identity and pointer schemas, immutable-run validation, and interrupted-publication reconciliation.
+Rationale: Random run paths and nondeterministic skill output make complete typed-result rerun equality impossible, while an unbound old pointer could accept stale evidence.
+Validation target: spec-review-r10
+Validation evidence: pending
 
 ### spec-review-r3
 
