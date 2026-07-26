@@ -1155,38 +1155,65 @@ def _string_array_schema() -> dict[str, object]:
     return {"type": "array", "items": {"type": "string"}}
 
 
+def _exact_string_array_schema(values: Sequence[str]) -> dict[str, object]:
+    item_schema: dict[str, object] = {"type": "string"}
+    if values:
+        item_schema["enum"] = list(values)
+    return {
+        "type": "array",
+        "items": item_schema,
+        "minItems": len(values),
+        "maxItems": len(values),
+    }
+
+
 def _feature_model_schema() -> dict[str, object]:
-    boundary_row = _closed_object_schema(
-        {
-            "applicability": {
-                "type": "string",
-                "enum": ["applicable", "not-applicable"],
-            },
-            "governing_requirement_ids": _string_array_schema(),
-            "boundary_ids": _string_array_schema(),
-            "non_applicability_rationale": {
-                "type": ["string", "null"]
-            },
-        }
-    )
-    example_row = _closed_object_schema(
-        {
-            "role": {
-                "type": "string",
-                "enum": [
-                    "illustration",
-                    "regression",
-                    "discovery-gap",
-                    "non-normative",
-                ],
-            },
-            "governing_requirement_ids": _string_array_schema(),
-            "boundary_ids": _string_array_schema(),
-            "regression_id": {"type": ["string", "null"]},
-            "discovery_gap": {"type": ["string", "null"]},
-            "non_normative_purpose": {"type": ["string", "null"]},
-        }
-    )
+    expected, _ = _portable_text_contract()
+    expected_dimensions = {
+        row["dimension_id"]: row for row in expected["core_dimensions"]
+    }
+    expected_examples = {
+        row["example_id"]: row for row in expected["examples"]
+    }
+    dimension_schemas = {}
+    for dimension_id in CORE_DIMENSION_IDS:
+        row = expected_dimensions[dimension_id]
+        rationale = row["non_applicability_rationale"]
+        dimension_schemas[dimension_id] = _closed_object_schema(
+            {
+                "applicability": {
+                    "type": "string",
+                    "const": row["applicability"],
+                },
+                "governing_requirement_ids": _exact_string_array_schema(
+                    row["governing_requirement_ids"]
+                ),
+                "boundary_ids": _exact_string_array_schema(row["boundary_ids"]),
+                "non_applicability_rationale": (
+                    {"type": "null"}
+                    if rationale is None
+                    else {"type": "string", "const": rationale}
+                ),
+            }
+        )
+    example_schemas = {}
+    for example_id, row in expected_examples.items():
+        example_schemas[example_id] = _closed_object_schema(
+            {
+                "role": {"type": "string", "const": row["role"]},
+                "governing_requirement_ids": _exact_string_array_schema(
+                    row["governing_requirement_ids"]
+                ),
+                "boundary_ids": _exact_string_array_schema(row["boundary_ids"]),
+                "regression_id": (
+                    {"type": "null"}
+                    if row["regression_id"] is None
+                    else {"type": "string", "const": row["regression_id"]}
+                ),
+                "discovery_gap": {"type": "null"},
+                "non_normative_purpose": {"type": "null"},
+            }
+        )
     interaction_row = _closed_object_schema(
         {
             "interaction_id": {"type": "string"},
@@ -1200,25 +1227,15 @@ def _feature_model_schema() -> dict[str, object]:
             "boundary_model_version": {"type": "string", "const": "v1"},
             "boundary_model_scope": {"type": "string", "const": "R1-R4"},
             "core_dimensions": _closed_object_schema(
-                {
-                    dimension_id: boundary_row
-                    for dimension_id in CORE_DIMENSION_IDS
-                }
+                dimension_schemas
             ),
             "extensions": {
                 "type": "array",
-                "items": boundary_row,
+                "items": _closed_object_schema({}),
                 "maxItems": 0,
             },
             "examples": _closed_object_schema(
-                {
-                    example_id: example_row
-                    for example_id in (
-                        "text.example.trim",
-                        "text.example.preserve",
-                        "text.example.unknown",
-                    )
-                }
+                example_schemas
             ),
             "interactions": {
                 "type": "array",
@@ -1230,32 +1247,33 @@ def _feature_model_schema() -> dict[str, object]:
 
 
 def _proof_map_schema() -> dict[str, object]:
-    proof_row = _closed_object_schema(
-        {
-            "governing_requirement_ids": _string_array_schema(),
-            "boundary_or_interaction_ids": _string_array_schema(),
-            "test_case_ids": _string_array_schema(),
-            "automation_level": {
-                "type": "string",
-                "enum": ["automated", "manual", "hybrid"],
-            },
-            "manual_procedure_ids": _string_array_schema(),
-        }
-    )
+    _, expected = _portable_text_contract()
+    proof_schemas = {}
+    for row in expected["proof_obligations"]:
+        proof_schemas[row["proof_obligation_id"]] = _closed_object_schema(
+            {
+                "governing_requirement_ids": _exact_string_array_schema(
+                    row["governing_requirement_ids"]
+                ),
+                "boundary_or_interaction_ids": _exact_string_array_schema(
+                    row["boundary_or_interaction_ids"]
+                ),
+                "test_case_ids": _exact_string_array_schema(row["test_case_ids"]),
+                "automation_level": {
+                    "type": "string",
+                    "const": row["automation_level"],
+                },
+                "manual_procedure_ids": _exact_string_array_schema(
+                    row["manual_procedure_ids"]
+                ),
+            }
+        )
     return _closed_object_schema(
         {
             "boundary_model_version": {"type": "string", "const": "v1"},
             "boundary_model_scope": {"type": "string", "const": "R1-R4"},
             "proof_obligations": _closed_object_schema(
-                {
-                    proof_id: proof_row
-                    for proof_id in (
-                        "text.proof.canonical",
-                        "text.proof.mode",
-                        "text.proof.outcome",
-                        "text.proof.evidence",
-                    )
-                }
+                proof_schemas
             ),
         }
     )
