@@ -1350,7 +1350,7 @@ def _spec_request(request: str) -> dict[str, object]:
             "twelve closed core-dimension rows with explicit applicability or "
             "non-applicability, governed examples, interactions, and "
             "acceptance criteria. Use the stable applicable mappings "
-            "`canonical-trust` -> R1 / `text.canonical.requirements`; "
+            "`canonical-trust` -> R1,R2,R3 / `text.canonical.requirements`; "
             "`closed-vocabulary` -> R1,R4 / `text.mode.valid`,"
             "`text.mode.unknown`; `outcome-stop` -> R2,R3,R4 / "
             "`text.outcome.value`,`text.outcome.error`; and "
@@ -1583,7 +1583,7 @@ def _validate_review_payload(
 def _portable_text_contract() -> tuple[dict[str, object], dict[str, object]]:
     applicable = {
         "canonical-trust": (
-            ["R1"],
+            ["R1", "R2", "R3"],
             ["text.canonical.requirements"],
         ),
         "closed-vocabulary": (
@@ -1674,9 +1674,9 @@ def _portable_text_contract() -> tuple[dict[str, object], dict[str, object]]:
         "proof_obligations": [
             {
                 "proof_obligation_id": "text.proof.canonical",
-                "governing_requirement_ids": ["R1"],
+                "governing_requirement_ids": ["R1", "R2", "R3"],
                 "boundary_or_interaction_ids": ["text.canonical.requirements"],
-                "test_case_ids": ["T1", "T2"],
+                "test_case_ids": ["T1", "T2", "T3"],
                 "automation_level": "automated",
                 "manual_procedure_ids": [],
             },
@@ -1856,7 +1856,7 @@ def _render_test_spec_markdown(
         "| --- | --- | --- | --- |",
     ]
     test_ids_by_dimension = {
-        "canonical-trust": "T1, T2",
+        "canonical-trust": "T1, T2, T3",
         "closed-vocabulary": "T1, T2",
         "outcome-stop": "T1, T2, T3",
         "evidence-claims": "T1, T2, T3",
@@ -1907,7 +1907,7 @@ def _render_test_spec_markdown(
             "",
             "## Test cases",
             "",
-            "T1. For every scalar in the fixed R2 trim set, place it at each edge and in the interior; require edge removal, interior preservation, stopping at an adjacent non-member, and the exact `trim` success record.",
+            "T1. For every scalar in the fixed R2 trim set, place it at each edge and in the interior; require edge removal and interior preservation. Stable case `T1-CANONICAL-PAIR` surrounds U+00E9 and the scalar-distinct U+0065 U+0301 sequence with trim scalars and requires each distinct interior sequence unchanged. Stable case `T1-NONTRIM-BOUNDARIES` places ASCII, combining-mark, BMP non-ASCII, and supplementary non-members adjacent to trimmed edges and requires trimming to stop at each member. Every case requires the exact `trim` success record and a failure-identifiable case ID.",
             "",
             "T2. Exercise the closed unknown-mode partition with stable cases `T2-EMPTY` (empty), `T2-CASE` (`TRIM` and `Preserve`), `T2-FUTURE` (`trim-v2`), `T2-CANONICAL-CLOSURE` (enumerate the canonical-normalization closure of the two ASCII accepted tokens and prove it contains no scalar-distinct accepted alias), and `T2-OTHER` (deterministically generate non-equal scalar strings across empty, one-scalar, combining-mark, non-ASCII, and multi-scalar classes). Every case requires exactly `{\"error\":\"unknown-mode\"}` and asserts that `mode` and `text` fields are absent.",
             "",

@@ -21,7 +21,7 @@ R4. An unknown mode MUST fail with `unknown-mode` and MUST NOT return text.
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
-| canonical-trust | applicable | R1 | text.canonical.requirements | - |
+| canonical-trust | applicable | R1, R2, R3 | text.canonical.requirements | - |
 | identity-freshness | not-applicable | - | - | No persisted identity is consumed. |
 | closed-vocabulary | applicable | R1, R4 | text.mode.valid, text.mode.unknown | - |
 | state-transition | not-applicable | - | - | The function is stateless. |
