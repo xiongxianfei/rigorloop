@@ -855,3 +855,14 @@ Detailed record: reviews/spec-review-r28.md
 Resolution: review-resolution.md#spec-review-r28
 Material findings: BFP-SR-R28-1, BFP-SR-R28-2, BFP-SR-R28-3
 Open findings: None
+
+### Review entry
+Review ID: spec-review-r29
+Stage: spec-review
+Round: 29
+Reviewed artifact: specs/rigorloop-workflow.md and specs/rigorloop-workflow.test.md at 9a5cbe2b
+Status: changes-requested
+Detailed record: reviews/spec-review-r29.md
+Resolution: review-resolution.md#spec-review-r29
+Material findings: BFP-SR-R29-1, BFP-SR-R29-2, BFP-SR-R29-3
+Open findings: BFP-SR-R29-1, BFP-SR-R29-2, BFP-SR-R29-3

@@ -1880,6 +1880,53 @@ identity, the plan and index route to spec-review R29, and T52 consistently
 uses a four-stage path with five skills; pending independent spec-review-r29
 confirmation.
 
+### spec-review-r29
+
+#### BFP-SR-R29-1 - Close compound transport diagnostics
+
+Finding ID: BFP-SR-R29-1
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y transport protocol
+Decision needed: none
+Required outcome: Deterministically preserve and route compound transport diagnostics while keeping output state independent.
+Chosen action: Add a closed ordered diagnostic set, primary routing diagnostic, precedence, tuple validation, prospective event identity, and compound T52 cases.
+Rationale: One observed failure may cross multiple independent boundary dimensions.
+Validation target: spec-review-r30
+Validation evidence: pending
+
+#### BFP-SR-R29-2 - Add global publication discovery and durable staged identity
+
+Finding ID: BFP-SR-R29-2
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y publication transaction
+Decision needed: none
+Required outcome: Prevent candidate-local generation from bypassing unrelated in-flight publication state.
+Chosen action: Add global pre-generation discovery, exclusive receipt-owned candidate selection, cross-run blocking, historical staged snapshot validation, and pre-install input validation.
+Rationale: A single-writer protocol must discover global state before nondeterministic work begins.
+Validation target: spec-review-r30
+Validation evidence: pending
+
+#### BFP-SR-R29-3 - Bind and close orphan publisher recovery
+
+Finding ID: BFP-SR-R29-3
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y recovery transaction
+Decision needed: none
+Required outcome: Prove orphan publisher non-liveness and recover interruption without unsafe reaping or repeated mutation.
+Chosen action: Bind staging to a publisher-instance lease, require lease-specific non-live proof, and define a write-ahead idempotent recovery state machine.
+Rationale: Transport child-process receipts cannot establish publisher ownership or post-restart liveness.
+Validation target: spec-review-r30
+Validation evidence: pending
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
