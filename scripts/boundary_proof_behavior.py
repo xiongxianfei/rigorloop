@@ -1531,7 +1531,7 @@ def _test_spec_request(
             "exact applicable boundary IDs in the feature spec and automated "
             "T1-T3 cases. T1 covers trim plus canonical/mode/outcome/evidence; "
             "T2 covers every unknown mode plus canonical/mode/outcome/evidence; "
-            "T3 covers preserve plus outcome/evidence. Return the artifact, not "
+            "T3 covers preserve plus canonical/outcome/evidence. Return the artifact, not "
             "a profile label.\n\nRequest:\n"
             + request
             + "\n\nApproved feature spec:\n"
