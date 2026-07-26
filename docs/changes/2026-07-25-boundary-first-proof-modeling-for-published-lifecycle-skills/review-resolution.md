@@ -29,6 +29,24 @@ Closeout status: open
 - Review closeout: test-spec-review-r6
 - Review closeout: test-spec-review-r7
 - Review closeout: test-spec-review-r8
+- Review closeout: spec-review-r19
+- Review closeout: spec-review-r20
+- Review closeout: architecture-review-r9
+- Review closeout: spec-review-r21
+- Review closeout: spec-review-r22
+- Review closeout: spec-review-r23
+- Review closeout: spec-review-r24
+- Review closeout: spec-review-r25
+- Review closeout: spec-review-r26
+- Review closeout: architecture-review-r10
+- Review closeout: architecture-review-r11
+- Review closeout: architecture-review-r12
+- Review closeout: architecture-review-r13
+- Review closeout: plan-review-r12
+- Review closeout: plan-review-r13
+- Review closeout: plan-review-r14
+- Review closeout: test-spec-review-r9
+- Review closeout: test-spec-review-r10
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
@@ -1036,6 +1054,266 @@ Rationale: One-time resolution cannot detect replacement between trust-boundary 
 Validation target: plan-review-r7
 Validation evidence: pending plan-review-r7
 
+### spec-review-r19
+
+#### BFP-SR19-1 - Accepted skill-row classification is not deterministic
+
+Finding ID: BFP-SR19-1
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: focused spec revision
+Decision owner: approved runtime-attestation boundary
+Decision needed: none
+Required outcome: Close the skill request, row predicates, scopes, errors, and uniqueness rules.
+Chosen action: Require one forced-refresh request for the exact isolated CWD, one result row with empty errors, exact enabled/scope/path predicates for both rosters, and independent raw and normalized path uniqueness.
+Rationale: A complete inventory is useful only when every accepted row has one deterministic classification.
+Validation target: spec-review-r20
+Validation evidence: pending
+
+#### BFP-SR19-2 - Complete inventory conflicts with optional system rows
+
+Finding ID: BFP-SR19-2
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: focused spec revision
+Decision owner: identity-bound generated configuration
+Decision needed: none
+Required outcome: Select one authoritative runtime-system roster.
+Chosen action: Bind exactly five disabled runtime-system rows to the exact five `skills.config` disable entries in the generated configuration and reject every omission, addition, or roster mismatch.
+Rationale: The configured roster is independent of the response being validated and closes omission semantics.
+Validation target: spec-review-r20
+Validation evidence: pending
+
+### spec-review-r20
+
+No material findings.
+Spec-review R20 confirmed BFP-SR19-1 and BFP-SR19-2 resolved and approved the
+exact config-bound ten-row skill-inventory contract.
+
+### architecture-review-r9
+
+No material findings.
+Architecture-review R9 approved the focused exact skill-inventory projection
+without changing component, persistence, deployment, or trust boundaries.
+
+### spec-review-r21
+
+#### BFP-SR21-1 - Duplicate JSON keys can escape member binding
+
+Finding ID: BFP-SR21-1
+Disposition: accepted
+Status: resolved
+Owner: spec and harness authors
+Owning stage: focused spec revision
+Decision owner: deterministic schema identity contract
+Decision needed: none
+Required outcome: Reject duplicate JSON object names recursively.
+Chosen action: Require duplicate-preserving parse detection before canonicalization and add top-level and nested duplicate regressions.
+Rationale: Canonicalization cannot bind a member already discarded by parsing.
+Validation target: spec-review-r22
+Validation evidence: focused environment tests pass
+
+#### BFP-SR21-2 - Config-origin acceptance remains incomplete
+
+Finding ID: BFP-SR21-2
+Disposition: accepted
+Status: resolved
+Owner: spec and harness authors
+Owning stage: focused spec revision
+Decision owner: deterministic config projection
+Decision needed: none
+Required outcome: Close exact origin coverage, source shape, and version format.
+Chosen action: Derive the non-empty exact origin-key set by flattening generated TOML leaves; require exact user source/path/null profile, one SHA-256-form runtime version, and exact effective settings before logical normalization.
+Rationale: Complete runtime evidence must not accept empty, partial, or self-selected origins.
+Validation target: spec-review-r22
+Validation evidence: focused environment tests and stable consecutive live attestations
+
+#### BFP-SR21-3 - Architecture and plan are not synchronized
+
+Finding ID: BFP-SR21-3
+Disposition: accepted
+Status: resolved
+Owner: architecture and plan authors
+Owning stage: focused projection synchronization
+Decision owner: approved deterministic projection
+Decision needed: none
+Required outcome: Remove stale raw-byte schema wording and use valid handoff vocabulary.
+Chosen action: Align the architecture to canonical-JSON schema identity; refresh plan review pointers; set M2 to `resolution-needed` with `changes-requested` review state and normative closeout reasons.
+Rationale: Downstream artifacts must project the active contract exactly.
+Validation target: spec-review-r22
+Validation evidence: explicit plan lifecycle validation passes
+
+### spec-review-r22
+
+#### BFP-SR22-1 - T49 does not require duplicate-name rejection unambiguously
+
+Finding ID: BFP-SR22-1
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: focused test-spec correction
+Decision owner: recursive duplicate rejection contract
+Decision needed: none
+Required outcome: Give each schema contrast one exact expected result.
+Chosen action: Separate order-only, semantic-change, and invalid-JSON contrasts; duplicate names and malformed JSON now require `schema-bundle-invalid`.
+Rationale: A rejection requirement must not be satisfiable by producing a different identity.
+Validation target: spec-review-r23
+Validation evidence: T49 wording and executable duplicate regressions
+
+### spec-review-r23
+
+#### BFP-SR23-1 - Generation still uses the superseded five-row runtime inventory
+
+Finding ID: BFP-SR23-1
+Disposition: accepted
+Status: resolved
+Owner: test-spec and plan authors
+Owning stage: focused projection correction
+Decision owner: exact runtime inventory contract
+Decision needed: none
+Required outcome: Bind generation to the same exact ten-row runtime inventory as preflight while retaining the five-package resource set as a separate input.
+Chosen action: Replaced all stale generation-time five-skill inventory references with the exact five-enabled-plus-five-disabled ten-row roster and made the mutation contrast apply to any bound runtime inventory member.
+Rationale: Generation must not prove behavior against a weaker runtime inventory than preflight.
+Validation target: spec-review-r24
+Validation evidence: T50 and M2 plan wording plus executable inventory regressions
+
+### spec-review-r24
+
+No material findings.
+Spec-review R24 confirmed BFP-SR23-1 resolved and approved the exact
+generation-time ten-row runtime inventory contract while retaining the
+five-package resource set as a separate input.
+
+### architecture-review-r12
+
+#### BFP-AR12-1 - Component diagram retains the obsolete ten-row inventory
+
+Finding ID: BFP-AR12-1
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: exact runtime inventory projection
+Decision needed: none
+Required outcome: Align the linked component view to the exact eleven-row runtime inventory.
+Chosen action: Replaced both stale ten-row labels with exact eleven-row runtime inventory labels.
+Rationale: Architecture diagrams are executable planning inputs and cannot retain an obsolete trust-state count.
+Validation target: architecture-review-r13
+Validation evidence: component diagram diff and architecture-review-r13
+
+### architecture-review-r13
+
+No material findings.
+Architecture-review R13 confirmed BFP-AR12-1 resolved and approved the exact
+eleven-row component, trust, persistence, runtime, and publication projection.
+
+### architecture-review-r10
+
+#### BFP-AR10-1 - Generation-time attestation is not modeled as a distinct fresh trust-state transition
+
+Finding ID: BFP-AR10-1
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: focused architecture correction
+Decision owner: approved fresh-generation trust contract
+Decision needed: none
+Required outcome: Separate non-authorizing feasibility preflight from fresh generation authority and bind generation evidence transitively through all current behavior identities.
+Chosen action: Added distinct preflight, generation-attestation, implementation-manifest, input-set, immutable-run, pointer, and report-selector nodes and flow. The architecture and ADR now prohibit preflight or validation-time substitution and keep the ten-row runtime inventory separate from five-package resources.
+Rationale: Feasibility evidence cannot authorize a later behavior run against changed packages or runtime state.
+Validation target: architecture-review-r11
+Validation evidence: canonical architecture, component diagram, ADR, lifecycle validation, and diagram rendering
+
+### architecture-review-r11
+
+No material findings.
+Architecture-review R11 confirmed BFP-AR10-1 resolved and approved the explicit
+preflight-to-generation trust-state transition and transitive evidence binding.
+
+### plan-review-r12
+
+No material findings.
+Plan-review R12 approved the synchronized M2 sequencing, promotion gates, and
+M3/M4 predecessor constraints.
+
+### plan-review-r13
+
+#### BFP-PL13-1 - Source-review pointers remain stale
+
+Finding ID: BFP-PL13-1
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan revision
+Decision owner: active workflow
+Decision needed: none
+Required outcome: Synchronize the plan's governing review pointers.
+Chosen action: Updated the source artifacts to spec-review R26, architecture-review R13, and plan-review R13 before rereview.
+Rationale: Execution must not cite superseded approval evidence.
+Validation target: plan-review-r14
+Validation evidence: plan source-artifact section
+
+#### BFP-PL13-2 - M2 execution body omits focused runtime requirements
+
+Finding ID: BFP-PL13-2
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan revision
+Decision owner: approved runtime contract
+Decision needed: none
+Required outcome: Project every focused runtime decision into normative M2 execution.
+Chosen action: Added exact schema/protocol pins, 96 feature rows, disabled review-agent, both root requests, event enforcement, remote-control exception, proxy isolation, promotion evidence, and explicit failure stops.
+Rationale: Historical progress notes cannot govern implementation.
+Validation target: plan-review-r14
+Validation evidence: M2 tests, steps, promotion evidence, and failure-stop sections
+
+### plan-review-r14
+
+No material findings.
+Plan-review R14 confirmed BFP-PL13-1 and BFP-PL13-2 resolved and approved the
+source-aligned, normative Codex 0.145.0 M2 execution plan.
+
+### test-spec-review-r9
+
+#### BFP-TSR9-1 - Configuration-origin derivation rules lack structural contrasts
+
+Finding ID: BFP-TSR9-1
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: focused test-spec correction
+Decision owner: approved origin-key derivation contract
+Decision needed: none
+Required outcome: Prove nested-table, zero-based-array, and preserved quoted-key flattening independently of a fixed allowlist.
+Chosen action: Added structured TOML fixtures, exact derived/runtime set equality, and contrasts for collapsed nesting, one-based indices, split quoted keys, omitted leaves, and non-derived rows.
+Rationale: Set-shape mutations alone cannot prove the derivation algorithm.
+Validation target: test-spec-review-r10
+Validation evidence: T49 setup, steps, expected result, and executable regressions
+
+#### BFP-TSR9-2 - Four required M2 validation commands are unclassified
+
+Finding ID: BFP-TSR9-2
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: focused test-spec correction
+Decision owner: approved M2 validation plan
+Decision needed: none
+Required outcome: Classify and map every required M2 validation command.
+Chosen action: Added CMD-BFP-18 through CMD-BFP-21 with ownership, failure behavior, evidence, side-effect boundaries, and M2 proof-map membership.
+Rationale: Promotion commands require stable, reviewable ownership rather than plan-only prose.
+Validation target: test-spec-review-r10
+Validation evidence: validation-command registry and M2 milestone proof map
+
+### test-spec-review-r10
+
+No material findings.
+Test-spec-review R10 confirmed BFP-TSR9-1 and BFP-TSR9-2 resolved and approved
+the current M2 proof map for implementation handoff.
+
 ### plan-review-r7
 
 #### BFP-PL7-1 - Feature and protocol-item classification vocabularies are merged
@@ -1263,6 +1541,113 @@ Chosen action: Make selector, manifest reference, input-set identity, run, point
 Rationale: Transitive evidence must be normative, not inferred.
 Validation target: spec-review-r15
 Validation evidence: pending
+
+### spec-review-r25
+
+#### BFP-RUNTIME-1 - Protocol and schema projection is not closed
+
+Finding ID: BFP-RUNTIME-1
+Disposition: accepted
+Status: resolved
+Owner: M2 harness implementer
+Owning stage: focused spec and implementation revision
+Decision owner: exact runtime projection contract
+Decision needed: none
+Required outcome: Pin the exact schema and protocol projection and reject drift.
+Chosen action: Added immutable Codex 0.145.0 schema and protocol-classification identities plus missing, additional, and changed projection regressions.
+Rationale: A generated fallback classification would silently broaden the accepted runtime.
+Validation target: spec-review-r26
+Validation evidence: `python scripts/test-boundary-proof.py`; live 0.145.0 preflight
+
+#### BFP-RUNTIME-2 - Observed prohibited events are not enforced
+
+Finding ID: BFP-RUNTIME-2
+Disposition: accepted
+Status: resolved
+Owner: M2 harness implementer
+Owning stage: focused implementation revision
+Decision owner: accepted-turn runtime boundary
+Decision needed: none
+Required outcome: Check every observed event against the exact classification.
+Chosen action: The turn collector now rejects unknown, prohibited, malformed, or failed request/notification traffic and accepts remote-control status only when disabled and unbound.
+Rationale: Configuration-time disabling does not prove that prohibited runtime traffic was absent.
+Validation target: spec-review-r26
+Validation evidence: direct injected-event regressions and one live accepted structured turn
+
+#### BFP-RUNTIME-3 - Workspace-root request binding lacks direct proof
+
+Finding ID: BFP-RUNTIME-3
+Disposition: accepted
+Status: resolved
+Owner: M2 harness implementer
+Owning stage: focused test revision
+Decision owner: parent-observed sandbox boundary
+Decision needed: none
+Required outcome: Prove both outbound requests bind one exact isolated root.
+Chosen action: Added pure closed request builders used by production and direct assertions for thread and turn roots, CWD, tools, environments, and skill inputs.
+Rationale: Returned thread metadata alone does not prove the turn request retained the intended root.
+Validation target: spec-review-r26
+Validation evidence: `test_thread_and_turn_requests_bind_one_exact_workspace_root`
+
+#### BFP-RUNTIME-4 - Governing identities and approvals are stale
+
+Finding ID: BFP-RUNTIME-4
+Disposition: accepted
+Status: resolved
+Owner: workflow orchestrator
+Owning stage: lifecycle review synchronization
+Decision owner: active workflow
+Decision needed: none
+Required outcome: Refresh governing identities and rerun every affected review.
+Chosen action: Recompute the final artifact hashes after correction, update the test-spec source table, and record new spec, architecture, plan, and test-spec reviews before M2 resumes.
+Rationale: Earlier approvals cannot authorize materially changed closed runtime behavior.
+Validation target: spec-review-r26; architecture-review-r12; plan-review-r13; test-spec-review-r11
+Validation evidence: pending focused rereviews
+
+### spec-review-r26
+
+No material findings.
+Spec-review R26 confirmed BFP-RUNTIME-1 through BFP-RUNTIME-4 resolved and
+approved the exact Codex 0.145.0 schema, protocol, event, workspace-root,
+inventory, and proxy-isolation contract.
+
+### test-spec-review-r11
+
+#### BFP-TSR11-1 - Governing review prose is stale
+
+Finding ID: BFP-TSR11-1
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: current governing review evidence
+Decision needed: none
+Required outcome: Align every governing review reference with the current approved architecture and plan reviews.
+Chosen action: Updated the related-artifact prose to architecture-review R13 and plan-review R14.
+Rationale: Review identity tables and human-readable authority references must not disagree.
+Validation target: test-spec-review-r12
+Validation evidence: targeted stale-pointer scan
+
+#### BFP-TSR11-2 - The exact runtime projection lacks a literal proof oracle
+
+Finding ID: BFP-TSR11-2
+Disposition: accepted
+Status: resolved
+Owner: test-spec author and M2 harness implementer
+Owning stage: test-spec and regression-test revision
+Decision owner: approved exact Codex 0.145.0 projection
+Decision needed: none
+Required outcome: Bind T49 and direct regression proof to the approved literal runtime projection.
+Chosen action: Added the exact schema and protocol-classification identities and 96-row feature cardinality to T49, direct literal assertions, and missing/additional feature-row contrasts.
+Rationale: Synthetic comparison tests alone cannot prove agreement with the approved runtime oracle.
+Validation target: test-spec-review-r12
+Validation evidence: `python scripts/test-boundary-proof.py` (35 tests passed)
+
+### test-spec-review-r12
+
+No material findings.
+Test-spec-review R12 confirmed BFP-TSR11-1 and BFP-TSR11-2 resolved and
+approved the current M2 proof map for implementation.
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 

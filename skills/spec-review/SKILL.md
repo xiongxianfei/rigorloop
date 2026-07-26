@@ -67,6 +67,11 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Resource map
 
+- LOAD `references/boundary-proof-model.md` when reviewing a boundary-model
+  spec. Challenge applicability, requirement ownership, example roles,
+  interaction selection, closed failure behavior, and downstream
+  testability. Record every omitted or example-owned boundary as a material
+  finding.
 - COPY `assets/review-result-skeleton.md` when recording the review result.
   Fill: review title, result fields, findings summary, immediate next stage, eventual test-spec readiness, and stop condition.
   Do not emit unfilled placeholders.

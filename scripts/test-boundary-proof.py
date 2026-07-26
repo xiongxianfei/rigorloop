@@ -14,7 +14,40 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from boundary_proof_behavior import ENVIRONMENT_CHECK_IDS, assess_environment
+from boundary_proof_behavior import (
+    ATTESTATION_FIELDS,
+    CODEX_0_144_6_FEATURES,
+    CODEX_0_145_0_FEATURES,
+    PARTICIPATING_SKILLS,
+    PREFLIGHT_FIELDS,
+    RUNTIME_SYSTEM_SKILLS,
+    RUNTIME_PROTOCOL_CLASSIFICATION_IDENTITY_BY_VERSION,
+    RUNTIME_SCHEMA_IDENTITY_BY_VERSION,
+    BoundaryRuntimeError,
+    _AppServer,
+    _derive_config_origin_paths,
+    _feature_inventory,
+    freeze_baseline,
+    _normalize_config_result,
+    _normalize_skill_inventory,
+    _load_generated_payload,
+    _parse_feature_markdown,
+    _parse_test_spec_markdown,
+    _portable_text_contract,
+    _parse_semver,
+    _preflight_failure,
+    _runtime_environment,
+    _schema_bundle_projection,
+    _thread_start_request,
+    _turn_start_request,
+    _validate_attestation,
+    _validate_runtime_projection,
+    _validated_thread_metadata,
+    assess_environment,
+    exercise_fixture,
+    validate_behavior,
+    validate_fixture,
+)
 
 from boundary_proof_model import (
     APPLICABILITY_VALUES,
@@ -1563,183 +1596,876 @@ class BoundaryProofModelTests(unittest.TestCase):
 
 
 class BoundaryProofEnvironmentTests(unittest.TestCase):
-    def test_environment_preflight_rejects_advertised_but_unattested_controls(
-        self,
-    ) -> None:
-        advertising_help = """
-        --ignore-user-config --ignore-rules --ephemeral --json
-        --sandbox-state-json --sandbox-state-readable-root
-        --sandbox-state-disable-network --disable --runtime-metadata-json
-        """
-        with tempfile.TemporaryDirectory() as raw:
-            executable = Path(raw) / "codex"
-            executable.write_bytes(b"identified runtime")
-            executable.chmod(0o755)
-            with (
-                mock.patch(
-                    "boundary_proof_behavior.shutil.which",
-                    return_value=str(executable),
-                ),
-                mock.patch(
-                    "boundary_proof_behavior._run_runtime",
-                    side_effect=[
-                        (0, "codex-cli 1.0.0\n", ""),
-                        (0, advertising_help, ""),
-                    ],
-                ),
-            ):
-                result = assess_environment()
-
-        self.assertEqual(result["schema_version"], "boundary-environment-preflight-v1")
-        self.assertEqual(result["result"], "environment-unavailable")
+    def test_simple_change_candidates_parse_to_the_closed_profile(self) -> None:
+        expected_feature, expected_proof = _portable_text_contract()
+        feature_path = (
+            FIXTURES / "simple-change" / "candidates" / "feature-spec.md"
+        )
+        test_path = (
+            FIXTURES / "simple-change" / "candidates" / "test-spec.md"
+        )
+        feature = _parse_feature_markdown(
+            feature_path.read_text(encoding="utf-8")
+        )
+        proof = _parse_test_spec_markdown(
+            test_path.read_text(encoding="utf-8")
+        )
         self.assertEqual(
-            result["diagnostic_id"],
-            "effective-profile-attestation-unavailable",
+            normalize_feature_model(feature),
+            normalize_feature_model(expected_feature),
         )
-        self.assertEqual(list(result["checks"]), list(ENVIRONMENT_CHECK_IDS))
-        self.assertEqual(result["checks"]["runtime-identity"], "pass")
-        self.assertTrue(
-            all(
-                result["checks"][check_id] == "fail"
-                for check_id in ENVIRONMENT_CHECK_IDS[1:]
-            )
-        )
-        self.assertNotIn(str(executable.parent), json.dumps(result))
-
-    def test_environment_preflight_fails_closed_without_workspace_read_confinement(
-        self,
-    ) -> None:
-        current_help = """
-        --ignore-user-config --ignore-rules --ephemeral --json
-        --sandbox workspace-write --disable
-        """
-        with tempfile.TemporaryDirectory() as raw:
-            executable = Path(raw) / "codex"
-            executable.write_bytes(b"identified runtime")
-            executable.chmod(0o755)
-            with (
-                mock.patch(
-                    "boundary_proof_behavior.shutil.which",
-                    return_value=str(executable),
-                ),
-                mock.patch(
-                    "boundary_proof_behavior._run_runtime",
-                    side_effect=[
-                        (0, "codex-cli 1.0.0\n", ""),
-                        (0, current_help, ""),
-                    ],
-                ),
-            ):
-                result = assess_environment()
-
-        self.assertEqual(result["result"], "environment-unavailable")
         self.assertEqual(
-            result["diagnostic_id"],
-            "effective-profile-attestation-unavailable",
+            normalize_proof_map(proof, normalize_feature_model(feature)),
+            normalize_proof_map(
+                expected_proof, normalize_feature_model(expected_feature)
+            ),
         )
-        self.assertEqual(result["checks"]["runtime-identity"], "pass")
-        self.assertEqual(
-            result["checks"]["workspace-only-filesystem"],
-            "fail",
-        )
-        self.assertNotIn("identified runtime", json.dumps(result))
 
-    def test_environment_preflight_rejects_missing_and_unsafe_runtime_metadata(
+    def test_generated_profile_decision_rejects_example_only(self) -> None:
+        accepted = {
+            "agent_message": json.dumps(
+                {
+                    "feature_profile": "complete-boundary-first-v1",
+                    "proof_profile": "applicable-only-proof-v1",
+                    "spec_review_outcome": "approved",
+                    "test_spec_review_outcome": "approved",
+                }
+            )
+        }
+        payload = _load_generated_payload(accepted)
+        self.assertIn("feature_model", payload)
+        self.assertIn("proof_map", payload)
+        rejected = copy.deepcopy(accepted)
+        value = json.loads(rejected["agent_message"])
+        value["feature_profile"] = "example-only"
+        rejected["agent_message"] = json.dumps(value)
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _load_generated_payload(rejected)
+        self.assertEqual(
+            raised.exception.diagnostic_id, "runtime-identity-unstable"
+        )
+
+    def test_controlled_fixture_detects_stale_candidate_bytes(self) -> None:
+        fixture = FIXTURES / "behavior" / "happy-path.json"
+        with tempfile.TemporaryDirectory() as raw:
+            output = Path(raw)
+            exercise_fixture(fixture, output)
+            self.assertEqual(validate_fixture(output)["result"], "pass")
+            result_path = output / "fixture-result.json"
+            result = json.loads(result_path.read_text(encoding="utf-8"))
+            result["feature_ref"]["identity"] = "sha256:" + "0" * 64
+            result_path.write_text(json.dumps(result), encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError) as raised:
+                validate_fixture(output)
+            self.assertEqual(
+                raised.exception.diagnostic_id, "runtime-identity-unstable"
+            )
+
+    def test_validation_only_does_not_collect_runtime_attestation(self) -> None:
+        change_id = (
+            "2026-07-25-boundary-first-proof-modeling-for-published-"
+            "lifecycle-skills"
+        )
+        current = (
+            ROOT
+            / "docs"
+            / "changes"
+            / change_id
+            / "evidence"
+            / "simple-change"
+            / "current.json"
+        )
+        if not current.exists():
+            self.skipTest("canonical M2 run is not generated yet")
+        with mock.patch(
+            "boundary_proof_behavior._collect_runtime_attestation",
+            side_effect=AssertionError("validation reinvoked the runtime"),
+        ):
+            self.assertEqual(
+                validate_behavior(change_id)["result"],
+                "pass",
+            )
+
+    def test_parent_runtime_environment_forwards_only_closed_proxy_names(
         self,
     ) -> None:
-        cases = (
-            (False, [], "runtime-executable-unavailable"),
-            (True, [(0, "bad\nversion\n", ""), (0, "", "")], "runtime-version-unsafe"),
+        environment = _runtime_environment(
+            Path("/runtime-home"),
+            "/usr/bin:/bin",
+            "transient-canary",
+            parent_environment={
+                "HTTPS_PROXY": "http://proxy.invalid",
+                "no_proxy": "localhost",
+                "OPENAI_API_KEY": "must-not-cross",
+                "UNRELATED": "must-not-cross",
+            },
         )
-        for executable_present, responses, diagnostic in cases:
-            with self.subTest(diagnostic=diagnostic):
-                with tempfile.TemporaryDirectory() as raw:
-                    executable = Path(raw) / "codex"
-                    executable.write_bytes(b"identified runtime")
-                    executable.chmod(0o755)
-                    with mock.patch(
-                        "boundary_proof_behavior.shutil.which",
-                        return_value=str(executable) if executable_present else None,
-                    ):
-                        if responses:
-                            runner = mock.patch(
-                                "boundary_proof_behavior._run_runtime",
-                                side_effect=responses,
-                            )
-                        else:
-                            runner = mock.patch("boundary_proof_behavior._run_runtime")
-                        with runner:
-                            result = assess_environment()
-                self.assertEqual(result["result"], "environment-unavailable")
-                self.assertEqual(result["diagnostic_id"], diagnostic)
+        self.assertEqual(
+            set(environment),
+            {
+                "BOUNDARY_PROOF_CANARY",
+                "CODEX_HOME",
+                "HOME",
+                "PATH",
+                "HTTPS_PROXY",
+                "no_proxy",
+            },
+        )
+        self.assertNotIn("must-not-cross", environment.values())
 
-    def test_environment_preflight_rejects_identity_read_and_replacement(
+    def test_codex_0_145_thread_metadata_binds_the_exact_reported_shape(
+        self,
+    ) -> None:
+        workspace = Path("/isolated-workspace")
+        thread = {
+            "thread": {"id": "thread-1", "cliVersion": "0.145.0"},
+            "model": "gpt-5.6-sol",
+            "modelProvider": "openai",
+            "serviceTier": None,
+            "cwd": str(workspace),
+            "runtimeWorkspaceRoots": [],
+            "instructionSources": [],
+            "approvalPolicy": "never",
+            "approvalsReviewer": "user",
+            "sandbox": {"type": "readOnly", "networkAccess": False},
+            "activePermissionProfile": {
+                "id": "boundary-proof-v1",
+                "extends": None,
+            },
+            "reasoningEffort": None,
+            "multiAgentMode": "explicitRequestOnly",
+        }
+        normalized, thread_id = _validated_thread_metadata(
+            thread,
+            version="0.145.0",
+            model_id="gpt-5.6-sol",
+            workspace=workspace,
+        )
+        self.assertEqual(thread_id, "thread-1")
+        self.assertEqual(normalized["workspace_root_roles"], [])
+
+        widened = copy.deepcopy(thread)
+        widened["runtimeWorkspaceRoots"] = [str(workspace)]
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _validated_thread_metadata(
+                widened,
+                version="0.145.0",
+                model_id="gpt-5.6-sol",
+                workspace=workspace,
+            )
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "thread-metadata-mismatch",
+        )
+
+    def test_runtime_projection_rejects_schema_and_protocol_drift(self) -> None:
+        rows = [
+            {
+                "item_variant": "ServerNotification:turn/completed",
+                "classification": "non-side-effect-protocol-traffic",
+            }
+        ]
+        protocol_identity = "sha256:" + hashlib.sha256(
+            json.dumps(
+                rows,
+                ensure_ascii=False,
+                separators=(",", ":"),
+                sort_keys=True,
+            ).encode("utf-8")
+        ).hexdigest()
+        schema_identity = "sha256:" + "b" * 64
+        with (
+            mock.patch.dict(
+                RUNTIME_SCHEMA_IDENTITY_BY_VERSION,
+                {"test-runtime": schema_identity},
+            ),
+            mock.patch.dict(
+                RUNTIME_PROTOCOL_CLASSIFICATION_IDENTITY_BY_VERSION,
+                {"test-runtime": protocol_identity},
+            ),
+        ):
+            _validate_runtime_projection(
+                "test-runtime", schema_identity, rows
+            )
+            with self.assertRaises(BoundaryRuntimeError) as raised:
+                _validate_runtime_projection(
+                    "test-runtime", "sha256:" + "c" * 64, rows
+                )
+            self.assertEqual(
+                raised.exception.diagnostic_id, "schema-bundle-invalid"
+            )
+
+            added = [
+                *rows,
+                {
+                    "item_variant": "ServerNotification:unknown/value",
+                    "classification": "non-side-effect-protocol-traffic",
+                },
+            ]
+            with self.assertRaises(BoundaryRuntimeError) as raised:
+                _validate_runtime_projection(
+                    "test-runtime", schema_identity, added
+                )
+            self.assertEqual(
+                raised.exception.diagnostic_id,
+                "protocol-item-classification-invalid",
+            )
+
+    def test_codex_0_145_projection_matches_approved_literal_oracle(
+        self,
+    ) -> None:
+        self.assertEqual(
+            RUNTIME_SCHEMA_IDENTITY_BY_VERSION,
+            {
+                "0.145.0": (
+                    "sha256:"
+                    "18d79891673d9d43a8e7a49864fef49a04305bd13571a8aef45824209f1bfae8"
+                )
+            },
+        )
+        self.assertEqual(
+            RUNTIME_PROTOCOL_CLASSIFICATION_IDENTITY_BY_VERSION,
+            {
+                "0.145.0": (
+                    "sha256:"
+                    "35f1203d9c6abc62ef3f1aca94e2f3165e0213697d554ab11d0477d9cd7e4bf8"
+                )
+            },
+        )
+        self.assertEqual(len(CODEX_0_145_0_FEATURES), 96)
+        self.assertEqual(len(set(CODEX_0_145_0_FEATURES)), 96)
+
+    def test_turn_collection_enforces_every_observed_protocol_event(self) -> None:
+        classifications = [
+            {
+                "item_variant": f"ServerNotification:{method}",
+                "classification": "non-side-effect-protocol-traffic",
+            }
+            for method in (
+                "remoteControl/status/changed",
+                "item/completed",
+                "turn/completed",
+            )
+        ]
+        server = object.__new__(_AppServer)
+        server._notifications = [  # type: ignore[attr-defined]
+            {
+                "method": "remoteControl/status/changed",
+                "params": {"status": "disabled", "environmentId": None},
+            },
+            {
+                "method": "item/completed",
+                "params": {"item": {"type": "userMessage"}},
+            },
+            {
+                "method": "item/completed",
+                "params": {
+                    "item": {"type": "agentMessage", "text": '{"ok":true}'}
+                },
+            },
+            {
+                "method": "turn/completed",
+                "params": {
+                    "threadId": "thread-1",
+                    "turn": {"status": "completed", "error": None},
+                },
+            },
+        ]
+        result = server.collect_turn("thread-1", classifications)
+        self.assertEqual(result["agent_message"], '{"ok":true}')
+
+        for observed, classification in (
+            ("unknown/value", None),
+            ("mcp/tool/call", "prohibited-capability-event"),
+        ):
+            with self.subTest(observed=observed):
+                server = object.__new__(_AppServer)
+                server._notifications = [  # type: ignore[attr-defined]
+                    {"method": observed, "params": {}}
+                ]
+                rows = list(classifications)
+                if classification is not None:
+                    rows.append(
+                        {
+                            "item_variant": f"ServerNotification:{observed}",
+                            "classification": classification,
+                        }
+                    )
+                with self.assertRaises(BoundaryRuntimeError) as raised:
+                    server.collect_turn("thread-1", rows)
+                self.assertEqual(
+                    raised.exception.diagnostic_id,
+                    "unexpected-prohibited-event",
+                )
+
+    def test_thread_and_turn_requests_bind_one_exact_workspace_root(self) -> None:
+        workspace = Path("/isolated-workspace")
+        runtime_home = Path("/runtime-home")
+        thread_request = _thread_start_request(workspace, "gpt-5.6-sol")
+        turn_request = _turn_start_request(
+            "thread-1",
+            workspace,
+            "gpt-5.6-sol",
+            runtime_home,
+            "Return a closed result.",
+            {"type": "object"},
+        )
+        self.assertEqual(
+            thread_request["runtimeWorkspaceRoots"], [str(workspace)]
+        )
+        self.assertEqual(
+            turn_request["runtimeWorkspaceRoots"], [str(workspace)]
+        )
+        self.assertEqual(thread_request["cwd"], str(workspace))
+        self.assertEqual(turn_request["cwd"], str(workspace))
+        self.assertEqual(thread_request["dynamicTools"], [])
+        self.assertEqual(thread_request["environments"], [])
+        self.assertEqual(turn_request["environments"], [])
+        self.assertEqual(thread_request["effort"], "low")
+        self.assertEqual(turn_request["effort"], "low")
+        self.assertEqual(
+            {
+                item["path"]
+                for item in turn_request["input"]  # type: ignore[union-attr]
+                if item["type"] == "skill"
+            },
+            {
+                str(runtime_home / "skills" / skill / "SKILL.md")
+                for skill in PARTICIPATING_SKILLS
+            },
+        )
+
+    def test_boundary_reference_is_byte_identical_and_mapped(self) -> None:
+        canonical = (
+            ROOT / "templates" / "shared" / "boundary-proof-model.md"
+        ).read_bytes()
+        for skill in PARTICIPATING_SKILLS:
+            with self.subTest(skill=skill):
+                skill_root = ROOT / "skills" / skill
+                reference = (
+                    skill_root / "references" / "boundary-proof-model.md"
+                )
+                self.assertEqual(reference.read_bytes(), canonical)
+                self.assertIn(
+                    "references/boundary-proof-model.md",
+                    (skill_root / "SKILL.md").read_text(encoding="utf-8"),
+                )
+
+    @staticmethod
+    def _attestation() -> dict[str, object]:
+        digest = "sha256:" + "a" * 64
+        return {
+            "schema_version": "boundary-runtime-attestation-v1",
+            "runtime_launcher_identity": digest,
+            "runtime_package_identity": digest,
+            "schema_bundle_identity": digest,
+            "generated_config_identity": digest,
+            "managed_requirements_identity": digest,
+            "active_permission_profile": "boundary-proof-v1",
+            "thread_metadata": {
+                "cli_version": "0.145.0",
+                "model_id": "gpt-5",
+                "model_provider": "openai",
+                "active_permission_profile": "boundary-proof-v1",
+                "workspace_root_roles": [],
+                "instruction_source_refs": [],
+                "runtime_default_instruction_source": "identified-runtime-substrate",
+                "cwd_role": "isolated-workspace",
+            },
+            "feature_inventory_identity": digest,
+            "capability_inventory_identity": digest,
+            "skill_inventory_identity": digest,
+            "feature_classification_identity": digest,
+            "protocol_item_classification_identity": digest,
+            "probe_results": {
+                "workspace_read": "pass",
+                "workspace_write": "pass",
+                "unmanifested_source_denied": "pass",
+                "private_auth_denied": "pass",
+                "network_denied": "pass",
+            },
+            "credential_isolation_results": {
+                "environment_names_closed": "pass",
+                "canary_absent_from_environment": "pass",
+                "canary_absent_from_argv": "pass",
+                "canary_absent_from_stdin": "pass",
+                "private_paths_unreadable": "pass",
+                "process_metadata_unreadable": "pass",
+            },
+        }
+
+    def test_environment_preflight_failure_uses_exact_closed_receipt(self) -> None:
+        result = _preflight_failure("runtime-version-unsupported")
+        self.assertEqual(tuple(result), PREFLIGHT_FIELDS)
+        self.assertEqual(
+            result,
+            {
+                "schema_version": "boundary-runtime-preflight-v1",
+                "result": "environment-unavailable",
+                "diagnostic_id": "runtime-version-unsupported",
+                "phase": "pre-thread-start",
+                "attestation_ref": None,
+            },
+        )
+
+    def test_runtime_attestation_rejects_unknown_nested_state(self) -> None:
+        attestation = self._attestation()
+        _validate_attestation(attestation)
+
+        unknown_probe = copy.deepcopy(attestation)
+        unknown_probe["probe_results"]["unknown_value"] = "pass"  # type: ignore[index]
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _validate_attestation(unknown_probe)
+        self.assertEqual(raised.exception.diagnostic_id, "sandbox-probe-failed")
+
+        stale_thread = copy.deepcopy(attestation)
+        stale_thread["thread_metadata"]["cli_version"] = "0.145.1"  # type: ignore[index]
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _validate_attestation(stale_thread)
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "thread-metadata-mismatch",
+        )
+        with self.assertRaises(ValueError):
+            _preflight_failure("unknown-diagnostic")
+
+    def test_environment_preflight_validates_change_before_runtime_discovery(
         self,
     ) -> None:
         with tempfile.TemporaryDirectory() as raw:
-            executable = Path(raw) / "codex"
-            executable.write_bytes(b"identified runtime")
-            executable.chmod(0o755)
-            with (
-                mock.patch(
-                    "boundary_proof_behavior.shutil.which",
-                    return_value=str(executable),
-                ),
-                mock.patch(
-                    "boundary_proof_behavior._read_executable_identity",
-                    side_effect=OSError("unreadable"),
-                ),
+            root = Path(raw)
+            with mock.patch(
+                "boundary_proof_behavior._collect_runtime_attestation"
+            ) as collect:
+                result = assess_environment("bad/id", repo_root=root)
+        self.assertEqual(result["diagnostic_id"], "runtime-unavailable")
+        collect.assert_not_called()
+
+    def test_environment_preflight_publishes_exact_attestation_before_pass(
+        self,
+    ) -> None:
+        change_id = "2026-07-25-boundary-proof"
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_root = root / "docs" / "changes" / change_id
+            (change_root / "evidence").mkdir(parents=True)
+            attestation = self._attestation()
+            with mock.patch(
+                "boundary_proof_behavior._collect_runtime_attestation",
+                return_value=attestation,
             ):
-                unreadable = assess_environment()
+                result = assess_environment(change_id, repo_root=root)
+            attestation_path = (
+                change_root / "evidence" / "runtime-preflight-attestation.json"
+            )
+            self.assertEqual(tuple(result), PREFLIGHT_FIELDS)
+            self.assertEqual(result["result"], "pass")
+            self.assertEqual(result["diagnostic_id"], "none")
+            self.assertEqual(result["phase"], "pre-turn-start")
             self.assertEqual(
-                unreadable["diagnostic_id"],
-                "runtime-identity-unavailable",
+                result["attestation_ref"]["path"],
+                f"docs/changes/{change_id}/evidence/"
+                "runtime-preflight-attestation.json",
+            )
+            self.assertEqual(
+                json.loads(attestation_path.read_text(encoding="utf-8")),
+                attestation,
+            )
+            self.assertEqual(tuple(attestation), ATTESTATION_FIELDS)
+            self.assertFalse(
+                any(
+                    path.name.startswith(".runtime-preflight-attestation.")
+                    for path in attestation_path.parent.iterdir()
+                )
             )
 
-            def replace_after_version(argv: object) -> tuple[int, str, str]:
-                executable.write_bytes(b"replacement runtime")
-                return 0, "codex-cli 1.0.0\n", ""
-
-            executable.write_bytes(b"identified runtime")
-            with (
-                mock.patch(
-                    "boundary_proof_behavior.shutil.which",
-                    return_value=str(executable),
-                ),
-                mock.patch(
-                    "boundary_proof_behavior._run_runtime",
-                    side_effect=replace_after_version,
-                ),
-            ):
-                replaced = assess_environment()
-            self.assertEqual(replaced["result"], "environment-unavailable")
-            self.assertEqual(
-                replaced["diagnostic_id"],
-                "runtime-identity-changed",
-            )
-
-            def remove_after_version(argv: object) -> tuple[int, str, str]:
-                executable.unlink()
-                return 0, "codex-cli 1.0.0\n", ""
-
-            executable.write_bytes(b"identified runtime")
-            executable.chmod(0o755)
-            with (
-                mock.patch(
-                    "boundary_proof_behavior.shutil.which",
-                    return_value=str(executable),
-                ),
-                mock.patch(
-                    "boundary_proof_behavior._run_runtime",
-                    side_effect=remove_after_version,
+    def test_environment_preflight_never_promotes_failure_or_prior_evidence(
+        self,
+    ) -> None:
+        change_id = "2026-07-25-boundary-proof"
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            evidence = root / "docs" / "changes" / change_id / "evidence"
+            evidence.mkdir(parents=True)
+            installed = evidence / "runtime-preflight-attestation.json"
+            installed.write_bytes(b"prior evidence")
+            with mock.patch(
+                "boundary_proof_behavior._collect_runtime_attestation",
+                side_effect=BoundaryRuntimeError(
+                    "sandbox-probe-failed", "pre-turn-start"
                 ),
             ):
-                removed = assess_environment()
-            self.assertEqual(removed["result"], "environment-unavailable")
-            self.assertEqual(
-                removed["diagnostic_id"],
-                "runtime-identity-unavailable",
+                result = assess_environment(change_id, repo_root=root)
+            self.assertEqual(result["result"], "environment-unavailable")
+            self.assertIsNone(result["attestation_ref"])
+            self.assertEqual(installed.read_bytes(), b"prior evidence")
+
+    def test_semver_floor_and_prerelease_precedence_are_deterministic(self) -> None:
+        self.assertLess(_parse_semver("0.138.0-rc.1"), _parse_semver("0.138.0"))
+        self.assertEqual(
+            _parse_semver("0.138.0+build.7"),
+            _parse_semver("0.138.0+build.8"),
+        )
+        self.assertGreater(_parse_semver("0.144.0-rc.1"), _parse_semver("0.138.0"))
+        for value in ("0.138", "v0.138.0", "0.138.0-", "0.138.0+"):
+            with self.subTest(value=value):
+                with self.assertRaises(BoundaryRuntimeError):
+                    _parse_semver(value)
+
+    def test_skill_inventory_requires_exact_enabled_and_disabled_rosters(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            home = Path(raw) / "home"
+            workspace = Path(raw) / "workspace"
+            home.mkdir()
+            workspace.mkdir()
+            skills = [
+                {
+                    "name": name,
+                    "description": name,
+                    "path": str(home / "skills" / name / "SKILL.md"),
+                    "scope": "user",
+                    "enabled": True,
+                }
+                for name in PARTICIPATING_SKILLS
+            ]
+            skills.extend(
+                {
+                    "name": name,
+                    "description": name,
+                    "path": str(
+                        home / "skills" / ".system" / name / "SKILL.md"
+                    ),
+                    "scope": "system",
+                    "enabled": False,
+                }
+                for name in RUNTIME_SYSTEM_SKILLS
             )
+            result = {
+                "data": [
+                    {
+                        "cwd": str(workspace),
+                        "errors": [],
+                        "skills": skills,
+                    }
+                ]
+            }
+            normalized = _normalize_skill_inventory(result, home, workspace)
+            rows = normalized["data"][0]["skills"]
+            self.assertEqual(len(rows), 11)
+            self.assertEqual(
+                {row["classification"] for row in rows},
+                {
+                    "manifested-lifecycle-skill",
+                    "disabled-runtime-system-skill",
+                },
+            )
+
+            mutations = []
+            wrong_scope = copy.deepcopy(result)
+            wrong_scope["data"][0]["skills"][0]["scope"] = "repo"
+            mutations.append(wrong_scope)
+            enabled_system = copy.deepcopy(result)
+            enabled_system["data"][0]["skills"][-1]["enabled"] = True
+            mutations.append(enabled_system)
+            nonempty_error = copy.deepcopy(result)
+            nonempty_error["data"][0]["errors"] = [
+                {"path": "logical", "message": "failure"}
+            ]
+            mutations.append(nonempty_error)
+            wrong_cwd = copy.deepcopy(result)
+            wrong_cwd["data"][0]["cwd"] = str(home)
+            mutations.append(wrong_cwd)
+            omitted = copy.deepcopy(result)
+            omitted["data"][0]["skills"].pop()
+            mutations.append(omitted)
+            duplicate_path = copy.deepcopy(result)
+            duplicate_path["data"][0]["skills"][1]["path"] = duplicate_path[
+                "data"
+            ][0]["skills"][0]["path"]
+            mutations.append(duplicate_path)
+            for index, mutation in enumerate(mutations):
+                with self.subTest(index=index):
+                    with self.assertRaises(BoundaryRuntimeError) as raised:
+                        _normalize_skill_inventory(mutation, home, workspace)
+                    self.assertEqual(
+                        raised.exception.diagnostic_id,
+                        "skill-inventory-mismatch",
+                    )
+
+    def test_feature_inventory_rejects_unknown_and_enabled_prohibited_rows(
+        self,
+    ) -> None:
+        class Server:
+            def __init__(self, rows: list[dict[str, object]]) -> None:
+                self.rows = rows
+
+            def request(self, method: str, params: object) -> object:
+                self.assertions = (method, params)
+                return {"data": self.rows, "nextCursor": None}
+
+        rows = [
+            {
+                "name": name,
+                "enabled": name
+                in {
+                    "shell_tool",
+                    "unified_exec",
+                    "shell_snapshot",
+                    "terminal_resize_reflow",
+                    "tool_search_always_defer_mcp_tools",
+                    "resize_all_images",
+                    "tui_app_server",
+                },
+            }
+            for name in CODEX_0_145_0_FEATURES
+        ]
+        pages, classifications = _feature_inventory(Server(rows))
+        self.assertEqual(len(pages), 1)
+        self.assertEqual(len(classifications), 96)
+
+        missing = copy.deepcopy(rows)
+        missing.pop()
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _feature_inventory(Server(missing))
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "feature-classification-invalid",
+        )
+
+        additional = copy.deepcopy(rows)
+        additional.append({"name": "unknown_value", "enabled": False})
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _feature_inventory(Server(additional))
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "feature-classification-invalid",
+        )
+
+        unknown = copy.deepcopy(rows)
+        unknown[-1]["name"] = "unknown_value"
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _feature_inventory(Server(unknown))
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "feature-classification-invalid",
+        )
+
+        prohibited = copy.deepcopy(rows)
+        next(row for row in prohibited if row["name"] == "apps")["enabled"] = True
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _feature_inventory(Server(prohibited))
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "capability-inventory-mismatch",
+        )
+
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _feature_inventory(Server(rows), "0.145.1")
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "feature-classification-invalid",
+        )
+
+    def test_schema_bundle_ignores_object_order_but_preserves_array_order(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as left_raw, tempfile.TemporaryDirectory() as right_raw:
+            left = Path(left_raw)
+            right = Path(right_raw)
+            (left / "schema.json").write_text(
+                '{"properties":{"b":2,"a":1},"required":["a","b"]}',
+                encoding="utf-8",
+            )
+            (right / "schema.json").write_text(
+                '{"required":["a","b"],"properties":{"a":1,"b":2}}',
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                _schema_bundle_projection(left)[1],
+                _schema_bundle_projection(right)[1],
+            )
+            (right / "schema.json").write_text(
+                '{"required":["b","a"],"properties":{"a":1,"b":2}}',
+                encoding="utf-8",
+            )
+            self.assertNotEqual(
+                _schema_bundle_projection(left)[1],
+                _schema_bundle_projection(right)[1],
+            )
+            (right / "schema.json").write_text("{bad", encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError) as raised:
+                _schema_bundle_projection(right)
+            self.assertEqual(
+                raised.exception.diagnostic_id,
+                "schema-bundle-invalid",
+            )
+            for duplicate in (
+                '{"a":1,"a":2}',
+                '{"outer":{"a":1,"a":2}}',
+            ):
+                (right / "schema.json").write_text(duplicate, encoding="utf-8")
+                with self.assertRaises(BoundaryRuntimeError) as raised:
+                    _schema_bundle_projection(right)
+                self.assertEqual(
+                    raised.exception.diagnostic_id,
+                    "schema-bundle-invalid",
+                )
+
+    def test_config_projection_normalizes_roots_and_consistent_origin_version(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            home = root / "home"
+            package = root / "package"
+            workspace = root / "workspace"
+            for path in (home, package, workspace):
+                path.mkdir()
+            version = "sha256:" + "b" * 64
+            result = {
+                "config": {
+                    "path": str(workspace),
+                    "runtime": str(package),
+                },
+                "origins": {
+                    f"projects.{workspace}.trust_level": {
+                        "name": {
+                            "type": "user",
+                            "file": str(home / "config.toml"),
+                            "profile": None,
+                        },
+                        "version": version,
+                    },
+                    "model": {
+                        "name": {
+                            "type": "user",
+                            "file": str(home / "config.toml"),
+                            "profile": None,
+                        },
+                        "version": version,
+                    },
+                },
+            }
+            raw_config = (
+                'model = "gpt-5"\n'
+                f'[projects.{json.dumps(str(workspace))}]\n'
+                'trust_level = "trusted"\n'
+            ).encode()
+            normalized = _normalize_config_result(
+                copy.deepcopy(result),
+                raw_config,
+                home,
+                package,
+                workspace,
+            )
+            rendered = json.dumps(normalized, sort_keys=True)
+            self.assertNotIn(str(root), rendered)
+            self.assertIn("runtime-generated-config-origin", rendered)
+
+            mismatch = copy.deepcopy(result)
+            mismatch["origins"]["model"]["version"] = "sha256:" + "c" * 64
+            with self.assertRaises(BoundaryRuntimeError) as raised:
+                _normalize_config_result(
+                    mismatch,
+                    raw_config,
+                    home,
+                    package,
+                    workspace,
+                )
+            self.assertEqual(
+                raised.exception.diagnostic_id,
+                "config-equivalence-mismatch",
+            )
+            for invalid_origins in (
+                {},
+                {"model": copy.deepcopy(result["origins"]["model"])},
+                {
+                    **copy.deepcopy(result["origins"]),
+                    "unknown.root": copy.deepcopy(result["origins"]["model"]),
+                },
+            ):
+                invalid = copy.deepcopy(result)
+                invalid["origins"] = invalid_origins
+                with self.assertRaises(BoundaryRuntimeError) as raised:
+                    _normalize_config_result(
+                        invalid,
+                        raw_config,
+                        home,
+                        package,
+                        workspace,
+                    )
+                self.assertEqual(
+                    raised.exception.diagnostic_id,
+                    "config-equivalence-mismatch",
+                )
+
+    def test_config_origin_derivation_preserves_nested_array_and_quoted_segments(
+        self,
+    ) -> None:
+        raw_config = b"""
+title = "sample"
+[nested]
+leaf = true
+"quoted.key" = "preserved"
+[[items]]
+name = "zero"
+[[items]]
+name = "one"
+"""
+        paths = _derive_config_origin_paths(raw_config)
+        self.assertEqual(
+            paths,
+            {
+                ("items", "0", "name"),
+                ("items", "1", "name"),
+                ("nested", "leaf"),
+                ("nested", "quoted.key"),
+                ("title",),
+            },
+        )
+        self.assertIn(("nested", "quoted.key"), paths)
+        self.assertNotIn(("nested", "quoted", "key"), paths)
+
+    def test_freeze_baseline_is_immutable_and_exact(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            change_root = root / "docs" / "changes" / change_id
+            change_root.mkdir(parents=True)
+            with mock.patch(
+                "boundary_proof_behavior._repository_head",
+                return_value="a" * 40,
+            ):
+                first = freeze_baseline(change_id, repo_root=root)
+                second = freeze_baseline(change_id, repo_root=root)
+            self.assertEqual(first, second)
+            self.assertEqual(
+                first,
+                {
+                    "schema_version": "boundary-proof-baseline-v1",
+                    "change_id": change_id,
+                    "preservation_baseline_commit": "a" * 40,
+                },
+            )
+            baseline = (
+                change_root / "evidence" / "boundary-proof-baseline.json"
+            )
+            self.assertEqual(
+                baseline.read_bytes(),
+                json.dumps(
+                    first,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode(),
+            )
+            with mock.patch(
+                "boundary_proof_behavior._repository_head",
+                return_value="b" * 40,
+            ):
+                with self.assertRaises(BoundaryRuntimeError):
+                    freeze_baseline(change_id, repo_root=root)
 
 
 if __name__ == "__main__":

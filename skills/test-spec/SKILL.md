@@ -68,6 +68,11 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Resource map
 
+- LOAD `references/boundary-proof-model.md` when the approved spec carries
+  `Boundary model version: v1`. Map every applicable boundary and selected
+  interaction to direct proof, including invalid, stale, conflicting,
+  recovery, and composed-path partitions when applicable. Never substitute
+  example coverage for the proof map.
 - COPY `assets/test-spec-skeleton.md` when creating or fully rewriting a test spec.
   Fill: title, sections, coverage maps, test cases, artifacts, and readiness.
   Do not emit unfilled placeholders.

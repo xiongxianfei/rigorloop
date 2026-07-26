@@ -442,6 +442,14 @@ REVIEW_FAMILY_ASSET_APPROVED_ASSETS = {
     }
     for skill_name in REVIEW_FAMILY_FIRST_SLICE_SKILLS
 }
+BOUNDARY_PROOF_REFERENCE = "references/boundary-proof-model.md"
+BOUNDARY_PROOF_REFERENCE_SKILLS = {
+    "workflow",
+    "spec",
+    "spec-review",
+    "test-spec",
+    "test-spec-review",
+}
 REVIEW_FAMILY_PARSER_FIELD_LABELS = (
     "Finding ID",
     "Severity",
@@ -2589,6 +2597,11 @@ def _validate_review_family_asset_rollout(
         resource.relative_to(skill_dir).as_posix()
         for resource in resources
         if not resource.relative_to(skill_dir).as_posix().startswith("assets/")
+        and not (
+            skill_name in BOUNDARY_PROOF_REFERENCE_SKILLS
+            and resource.relative_to(skill_dir).as_posix()
+            == BOUNDARY_PROOF_REFERENCE
+        )
     ]
     for relative_resource in unexpected_resource_classes:
         errors.append(
@@ -2791,6 +2804,11 @@ def _validate_spec_family_asset_rollout(
         resource.relative_to(skill_dir).as_posix()
         for resource in resources
         if not resource.relative_to(skill_dir).as_posix().startswith("assets/")
+        and not (
+            skill_name in BOUNDARY_PROOF_REFERENCE_SKILLS
+            and resource.relative_to(skill_dir).as_posix()
+            == BOUNDARY_PROOF_REFERENCE
+        )
     ]
     for relative_resource in unexpected_resource_classes:
         errors.append(

@@ -1,0 +1,71 @@
+# Boundary-first proof model
+
+Use this reference when a change creates or reviews a contract, proof map, or
+workflow handoff. Examples illustrate the contract; they never define its
+complete boundary.
+
+## Boundary record
+
+Record `Boundary model version: v1` and the governed requirement range.
+Classify every core dimension exactly once:
+
+| Dimension | Question |
+| --- | --- |
+| canonical-trust | Which source is authoritative, and what fails on conflict? |
+| identity-freshness | Which identity binds evidence, and when does it become stale? |
+| closed-vocabulary | Which values are accepted, and how do unknown values fail? |
+| state-transition | What are the legal states and transitions? |
+| authorization-scope | Who may authorize each action, against which basis and scope? |
+| mutation-atomicity | What is the commit point, and what partial state is forbidden? |
+| interruption-recovery | How is prepared or interrupted work reconciled without repetition? |
+| concurrency-idempotency | What prevents duplicate, conflicting, or replayed work? |
+| composition-bypass | Which direct, helper, public, sibling, and retry paths need independent proof? |
+| compatibility-migration | How are old representations read, migrated, rejected, or retired? |
+| outcome-stop | Which result continues, pauses, blocks, or fails closed? |
+| evidence-claims | Which current evidence supports each claim, and what must not be inferred? |
+
+Each row records one stable dimension ID, `applicable` or `not-applicable`,
+governing requirement IDs, boundary IDs, and a rationale only when
+not applicable. Add extensions only for feature-specific dimensions not
+represented by the core.
+
+Classify every example as `illustration`, `regression`, `discovery`, or
+`non-normative`. Illustrations and regressions link to governing requirements
+and boundary IDs. Discovery examples expose an explicit contract gap.
+Non-normative examples state their limited purpose.
+
+Select interactions from actual hazards: stale authority, partial retry,
+helper/public bypass, sibling drift, or another requirement-owned cross-boundary
+risk. Record the involved boundary IDs and rationale. Do not generate a full
+Cartesian product.
+
+## Proof record
+
+Map every applicable boundary and selected interaction to a stable proof
+obligation. Each obligation records governing requirements, boundary or
+interaction IDs, test IDs, automation level, and any exact manual procedure.
+
+Proof partitions must include valid, invalid, missing, additional, stale,
+substituted, unknown, and conflicting states when the boundary admits them.
+Stateful behavior includes legal and illegal transitions. Mutation behavior
+includes commit, partial, retry, reconciliation, conflict, and replay paths.
+Composed behavior proves the public path and every material sibling path, not
+only a helper.
+
+Structural validation checks closed shape and references. Semantic review
+decides applicability, requirement ownership, interaction selection, evidence
+adequacy, and whether a boundary is missing. Neither examples nor validators
+may invent normative behavior.
+
+## Stop rules
+
+Stop and record a finding when:
+
+- a core dimension is absent, duplicated, or uses an unknown value;
+- `not-applicable` lacks a defensible rationale;
+- an example is the only owner of behavior;
+- an applicable boundary or selected interaction lacks direct proof;
+- a helper test substitutes for a public or sibling path;
+- evidence is missing, stale, caller-asserted, circular, or broader than its
+  claim; or
+- a discovered boundary requires a new owner decision.

@@ -32,12 +32,12 @@ Boundary model scope: R28-R28z
 - Historical workflow-refactor architecture: not required for that completed
   slice.
 - Boundary-first architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md),
-  approved by `architecture-review-r8`, with
+  approved by `architecture-review-r13`, with
   [ADR-20260725](../docs/adr/ADR-20260725-boundary-first-proof-modeling.md)
   and [ADR-20260726](../docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md)
   accepted.
 - Boundary-first plan: [Boundary-First Proof Modeling](../docs/plans/2026-07-25-boundary-first-proof-modeling.md),
-  approved by `plan-review-r11`.
+  approved by `plan-review-r14`.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
 
@@ -45,15 +45,15 @@ Boundary model scope: R28-R28z
 
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
-| Feature spec | `specs/rigorloop-workflow.md` | approved; spec-review-r18 | `sha256:51f95f5a428c5b3b5e3abf9f0f658e13a338ff9be1c42cb9e9103faf0b4c1013` |
-| Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion under spec-review-r18 | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r18.md` | approved | `sha256:01e2a3474a6a12bb5778e77c82b8f1b93d49e94adc4cc312177655588c152639` |
-| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r8 | `sha256:06e79aee80c0e3f7f43374b55c06b12f07853b89eae79e06821b38210ca24141` |
-| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r8.md` | approved | `sha256:b650908fcbfb3806d50ea27723f123c1b6bd9e8fca3a0b142ced55281fc8383b` |
+| Feature spec | `specs/rigorloop-workflow.md` | approved; spec-review-r26 | `sha256:67d1df62fcaf26dca8044afabdffff02ed39011bf7c33acff4c5893fe3dc8f68` |
+| Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion under spec-review-r26 | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
+| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r26.md` | approved | `sha256:f994de035ef9d7721054155b20b6448735b78b00922eb5a75017b0734e43efc7` |
+| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r13 | `sha256:9bb8bbdded984d7be05cd8aa4dc680bb3179422b4a50ee397d927bd5f5755859` |
+| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r13.md` | approved | `sha256:47571b7555fe6470de8e78a9c8b180c09fbdb627e8e641ab1c6915e0d9044288` |
 | ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted | `sha256:dac4993ec648a4c6ed72c50b5c22954760ea4b6c28f6686b7f7aeec246fdc216` |
-| Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:80eb7bc263a8c31a944fa6802027591b78db24b6087d268d2068963482d95d1e` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; plan-review-r11 | `sha256:7930093975ec074dfc73747b83c613eaa7e38629ff9c198e417259324a358c41` |
-| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r11.md` | approved | `sha256:6c72a7e95c71d052f4340232b57e9bef67ee401f4b6cb7b9884a83a906dd0376` |
+| Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active for M2 implementation; execution contract approved by plan-review-r14 | `sha256:9bf5bc6e0c56a8e63085ffee3f0c011e3644420ec7d04c643b7ab74602caa601` |
+| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
 
 ## Testing strategy
 
@@ -229,13 +229,17 @@ Boundary model scope: R28-R28z
 | `CMD-BFP-15` | `python scripts/validate-boundary-proof.py generate-report --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --output docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md` | planned-for-implementation | boundary validator owner | M4 | M4 code-review | nonzero blocks milestone | not applicable | canonical capability report | sole report writer; no release activation |
 | `CMD-BFP-16` | `python scripts/test-release-transaction.py` | existing/configured | release validator owner | M4 | M4 code-review | nonzero blocks milestone | zero tests is failure | M4 validation notes | repository-local fixtures; no publication |
 | `CMD-BFP-17` | `python scripts/validate-release.py --version v0.3.6` | existing/configured | release validator owner | M4 | M4 code-review | nonzero blocks milestone | not applicable | current release validation output | validation-only; does not publish or alter release state |
+| `CMD-BFP-18` | `python scripts/validate-skills.py` | existing/configured | skill validator owner | M2 | M2 code-review | nonzero blocks milestone | not applicable | M2 validation notes | repository-local canonical skill validation; no generated or external mutation |
+| `CMD-BFP-19` | `python scripts/build-skills.py --check` | existing/configured | skill build owner | M2 | M2 code-review | nonzero or detected drift blocks milestone | not applicable | M2 validation notes | check-only generated-skill projection; no authored-source mutation |
+| `CMD-BFP-20` | `python scripts/validate-boundary-proof.py --help` | planned-for-implementation | boundary validator owner | M2 | M2 code-review | nonzero blocks milestone | not applicable | M2 validation notes | CLI import and argument smoke only; no evidence or repository mutation |
+| `CMD-BFP-21` | `python -m py_compile scripts/boundary_proof_behavior.py scripts/boundary_proof_model.py scripts/validate-boundary-proof.py scripts/test-boundary-proof.py` | existing/configured | Python implementation owner | M2 | M2 code-review | nonzero blocks milestone | not applicable | M2 validation notes | local bytecode compilation only; no lifecycle invocation or durable evidence mutation |
 
 ## Milestone proof map
 
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | T40, T41, T42, T43, T44, T45, T46 | bfp-manual.semantic-authority, bfp-manual.semantic-evidence | CMD-BFP-1 | `scripts/test-boundary-proof.py`; synthetic incident, trace, and report fixtures | M1 code-review | Report tests use synthetic inputs; runtime behavior and the canonical report are deferred. |
-| M2 | T41, T42, T43, T48, T49, T50, T51, T52 | bfp-manual.semantic-authority | CMD-BFP-1, CMD-BFP-3, CMD-BFP-8, CMD-BFP-9, CMD-BFP-10, CMD-BFP-11, CMD-BFP-12 | environment receipt, immutable baseline, behavior manifest, immutable run, pointer, receipt recovery fixtures | M2 code-review | The minimal preflight is implemented and passed before all other harness or skill mutation. |
+| M2 | T41, T42, T43, T48, T49, T50, T51, T52 | bfp-manual.semantic-authority | CMD-BFP-1, CMD-BFP-3, CMD-BFP-8, CMD-BFP-9, CMD-BFP-10, CMD-BFP-11, CMD-BFP-12, CMD-BFP-18, CMD-BFP-19, CMD-BFP-20, CMD-BFP-21 | environment receipt, immutable baseline, behavior manifest, immutable run, pointer, receipt recovery fixtures, skill/build validation, CLI/import smoke | M2 code-review | The minimal preflight is implemented and passed before all other harness or skill mutation. |
 | M3 | T42, T43, T44, T45, T53 | bfp-manual.composed-path, bfp-manual.semantic-evidence | CMD-BFP-1, CMD-BFP-3, CMD-BFP-13, CMD-BFP-14 | exact preservation manifest, before/after roots, and 40 pair results | M3 code-review | Preservation consumes recorded M2 evidence without upstream reinvocation. |
 | M4 | T44, T45, T46, T47, T54 | bfp-manual.composed-path | CMD-BFP-1, CMD-BFP-2, CMD-BFP-4, CMD-BFP-5, CMD-BFP-6, CMD-BFP-15, CMD-BFP-16, CMD-BFP-17 | four durable parity manifests, canonical report, release fixtures, and validation output | M4 code-review | R28y report pass is not the later R28o resumption predicate. |
 | Final lifecycle closeout | T40, T41, T42, T43, T44, T45, T46, T47 | bfp-manual.semantic-authority, bfp-manual.composed-path, bfp-manual.semantic-evidence | CMD-BFP-1, CMD-BFP-2, CMD-BFP-3, CMD-BFP-4, CMD-BFP-5, CMD-BFP-6, CMD-BFP-7 | clean milestone/final reviews, closed resolution, explanation, verification | verify | Progressive-disclosure review remains paused until R28o passes. |
@@ -1269,14 +1273,19 @@ Boundary model scope: R28-R28z
 
 - Covers: R28y
 - Level: integration
-- Command IDs: CMD-BFP-1, CMD-BFP-8, CMD-BFP-9
+- Command IDs: CMD-BFP-1, CMD-BFP-8, CMD-BFP-9, CMD-BFP-20,
+  CMD-BFP-21
 - Fixture/setup: The sole allowed repository import; one fixture for each
   forbidden relative, wildcard, third-party, repository-local, dynamic import,
   evaluator, workflow-engine, lifecycle-validator, and test-driver edge;
   unavailable and unsafe runtime profiles; exact generated app-server schemas,
   feature pages, effective configuration, managed requirements, app/plugin/MCP
-  inventories, five-package skill inventory, thread metadata, and protocol
-  item streams.
+  inventories, complete skill inventory with exactly five enabled manifested
+  lifecycle packages and only disabled runtime-bundled system-skill rows,
+  thread metadata, and protocol item streams. Generated TOML fixtures include
+  nested tables, zero-based arrays, and quoted keys whose preserved key bytes
+  contain dots and spaces; each fixture has an independently computed complete
+  flattened leaf-key set and matching runtime-origin rows.
 - Steps: Inspect the AST closure; run the parent-observed preflight; attempt
   caller instructions, extra tools, connectors, subagents, network,
   unmanifested reads, and child self-attestation. Negotiate
@@ -1291,6 +1300,49 @@ Boundary model scope: R28-R28z
   rows; require exact closed results from `config/read`,
   `configRequirements/read`, `app/list`, `plugin/list`,
   `mcpServerStatus/list`, and `skills/list`.
+  Reorder JSON object keys in one generated schema file and require the same
+  schema identity. Reorder an array or add or remove an object member and
+  require a different identity. Inject top-level or nested duplicate object
+  names or malformed JSON and require closed `schema-bundle-invalid` failure.
+  Regenerate equivalent configuration under different temporary roots and
+  require the same normalized capability identity; make one runtime-reported
+  config-origin version differ from its siblings before normalization and require
+  `config-equivalence-mismatch`. Also test empty, partial, omitted, additional,
+  and unknown-root origin keys; wrong source type; wrong user-config path;
+  non-null profile; malformed or empty version; additional/missing origin
+  fields; and changed effective-config values. Parse each structured generated
+  TOML fixture independently and flatten every leaf using dot separators,
+  zero-based array indices, and preserved quoted-key bytes. Require exact
+  equality with the complete runtime-returned origin-key set. Contrast a fixed
+  current-config allowlist and mutations that collapse nesting, use one-based
+  indices, split quoted keys on dots or spaces, omit a derived leaf, or add a
+  non-derived origin row; each must fail `config-equivalence-mismatch`.
+  Invoke `skills/list` exactly once with the isolated-workspace `cwds` singleton
+  and `forceReload: true`. Require one exact-CWD row, empty errors, the five
+  enabled manifested `scope: user` rows, and the six generated-config-bound
+  disabled `scope: system` runtime rows, including `review-agent`. For the
+  Codex `0.145.0` projection, require `thread/start` to report the empty
+  runtime-root list while the accepted `thread/start` and `turn/start`
+  requests both contain exactly the isolated workspace root; reject any
+  different version/schema shape. Inject an enabled system skill,
+  disabled manifested skill, each valid-but-wrong `repo`, `system`, `admin`,
+  or `user` scope substitution, extra user/project skill, escaping system
+  path, wrong CWD, non-empty error, `forceReload: false`, stale response,
+  duplicate name, duplicate raw path, normalized-path collision,
+  generated-config roster mismatch, and each omitted manifested or system row.
+  Require the exact Codex 0.145.0 canonical schema identity
+  `sha256:18d79891673d9d43a8e7a49864fef49a04305bd13571a8aef45824209f1bfae8`,
+  protocol-classification identity
+  `sha256:35f1203d9c6abc62ef3f1aca94e2f3165e0213697d554ab11d0477d9cd7e4bf8`,
+  and exactly 96 unique feature rows; assert each approved literal directly,
+  then add, remove, or mutate schema files, object members, methods,
+  classifications, and feature rows as contrast cases. Capture the exact
+  `thread/start` and `turn/start` requests and independently remove, add,
+  substitute, or reorder their workspace roots. Permit
+  `remoteControl/status/changed` only with disabled status and null environment
+  identity. Run the parent runtime with each closed proxy-name spelling and an
+  unrelated or secret-bearing environment name; prove spawned commands still
+  receive only their exact closed environment.
   Independently map every feature row exactly once as permitted built-in tool,
   permitted non-tool runtime behavior, or must-be-disabled tool-bearing
   behavior, then map every generated protocol item variant exactly once as
@@ -1339,7 +1391,10 @@ Boundary model scope: R28-R28z
   only standard library plus `boundary_proof_model`; the parent establishes
   one stable launcher/runtime/schema identity, exact effective profile and
   capability closure, equivalent sandbox enforcement, and private
-  authentication channels. Missing, duplicate, unknown, unclassified,
+  authentication channels. Config-origin keys equal the independently derived
+  complete flattened TOML leaf set for nested tables, zero-based arrays, and
+  quoted keys; no fixed allowlist or lossy key normalization can satisfy the
+  gate. Missing, duplicate, unknown, unclassified,
   enabled-prohibited, observed-prohibited, mismatched-profile, incomplete-page,
   unstable-identity, or canary-visible cases stop with
   `environment-unavailable` and the exact stable diagnostic at its mapped
@@ -1378,10 +1433,10 @@ Boundary model scope: R28-R28z
   or mutate every attestation identity, classification, probe result, and
   credential-isolation result; attempt to replace recorded attestation with
   validation-time runtime evidence. In a controlled sequence, pass preflight,
-  change one attested five-skill inventory byte, generate against the new
-  current packages, and compare the nested generation attestation with the
-  preflight artifact; copy or substitute the preflight attestation into the
-  generation manifest; independently
+  change one bound member of the attested eleven-row runtime inventory, generate
+  against the current five-package resource set, and compare the nested
+  generation attestation with the preflight artifact; copy or substitute the
+  preflight attestation into the generation manifest; independently
   change `expected_branch` and `corrected_role`; rerun validation without
   invoking lifecycle skills.
 - Expected result: Unchanged inputs validate; any behavior-affecting identity
@@ -1398,8 +1453,10 @@ Boundary model scope: R28-R28z
   tampered attestation invalidates the manifest reference, input-set identity,
   immutable run, current pointer, and `simple-change-behavior` report selector
   together. Generation derives a fresh nested attestation for the then-current
-  five-skill inventory; copying preflight evidence fails before manifest or run
-  acceptance.
+  exact eleven-row runtime inventory: five enabled manifested lifecycle rows plus
+  six generated-config-bound disabled system rows. The complete path-sorted
+  five-package resource set remains a distinct input. Copying preflight
+  evidence fails before manifest or run acceptance.
 - Failure proves: Recorded behavior can be reused across materially different
   implementations or environments.
 - Evidence artifact: immutable run, current pointer, baseline, and manifest

@@ -107,6 +107,10 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Resource map
 
+- LOAD `references/boundary-proof-model.md` for contract-bearing behavior.
+  Classify every core dimension, example role, extension, and selected
+  interaction in the spec. Stop on a discovery gap that needs an owner
+  decision; do not let an example become the normative owner.
 - COPY `assets/spec-skeleton.md` when creating or fully rewriting a feature spec.
   Fill: spec title, required-section structures, examples, requirements, acceptance criteria, next artifacts, follow-on artifacts, and readiness.
   Do not emit unfilled placeholders.

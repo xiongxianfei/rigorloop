@@ -591,3 +591,223 @@ Detailed record: reviews/test-spec-review-r8.md
 Resolution: review-resolution.md#test-spec-review-r8
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: spec-review-r19
+Stage: spec-review
+Round: 19
+Reviewed artifact: specs/rigorloop-workflow.md; specs/rigorloop-workflow.test.md; docs/architecture/system/architecture.md; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md; docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r19.md
+Resolution: review-resolution.md#spec-review-r19
+Material findings: BFP-SR19-1, BFP-SR19-2
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r20
+Stage: spec-review
+Round: 20
+Reviewed artifact: specs/rigorloop-workflow.md; specs/rigorloop-workflow.test.md; docs/architecture/system/architecture.md; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md; docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: approved
+Detailed record: reviews/spec-review-r20.md
+Resolution: review-resolution.md#spec-review-r20
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r9
+Stage: architecture-review
+Round: 9
+Reviewed artifact: docs/architecture/system/architecture.md; docs/architecture/system/diagrams/component-boundary-proof.mmd; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md
+Status: approved
+Detailed record: reviews/architecture-review-r9.md
+Resolution: review-resolution.md#architecture-review-r9
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r21
+Stage: spec-review
+Round: 21
+Reviewed artifact: specs/rigorloop-workflow.md; specs/rigorloop-workflow.test.md; docs/architecture/system/architecture.md; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md; docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r21.md
+Resolution: review-resolution.md#spec-review-r21
+Material findings: BFP-SR21-1, BFP-SR21-2, BFP-SR21-3
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r22
+Stage: spec-review
+Round: 22
+Reviewed artifact: specs/rigorloop-workflow.md; specs/rigorloop-workflow.test.md; docs/architecture/system/architecture.md; docs/plans/2026-07-25-boundary-first-proof-modeling.md; docs/plan.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r22.md
+Resolution: review-resolution.md#spec-review-r22
+Material findings: BFP-SR22-1
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r23
+Stage: spec-review
+Round: 23
+Reviewed artifact: specs/rigorloop-workflow.md; specs/rigorloop-workflow.test.md; docs/architecture/system/architecture.md; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md; docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r23.md
+Resolution: review-resolution.md#spec-review-r23
+Material findings: BFP-SR23-1
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r24
+Stage: spec-review
+Round: 24
+Reviewed artifact: specs/rigorloop-workflow.md; specs/rigorloop-workflow.test.md; docs/architecture/system/architecture.md; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md; docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: approved
+Detailed record: reviews/spec-review-r24.md
+Resolution: review-resolution.md#spec-review-r24
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r25
+Stage: spec-review
+Round: 25
+Reviewed artifact: specs/rigorloop-workflow.md; specs/rigorloop-workflow.test.md; docs/architecture/system/architecture.md; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md; docs/plans/2026-07-25-boundary-first-proof-modeling.md; scripts/boundary_proof_behavior.py; scripts/test-boundary-proof.py
+Status: changes-requested
+Detailed record: reviews/spec-review-r25.md
+Resolution: review-resolution.md#spec-review-r25
+Material findings: BFP-RUNTIME-1, BFP-RUNTIME-2, BFP-RUNTIME-3, BFP-RUNTIME-4
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r26
+Stage: spec-review
+Round: 26
+Reviewed artifact: specs/rigorloop-workflow.md; specs/rigorloop-workflow.test.md; docs/architecture/system/architecture.md; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md; docs/plans/2026-07-25-boundary-first-proof-modeling.md; scripts/boundary_proof_behavior.py; scripts/test-boundary-proof.py
+Status: approved
+Detailed record: reviews/spec-review-r26.md
+Resolution: review-resolution.md#spec-review-r26
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r10
+Stage: architecture-review
+Round: 10
+Reviewed artifact: docs/architecture/system/architecture.md; docs/architecture/system/diagrams/component-boundary-proof.mmd; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md
+Status: changes-requested
+Detailed record: reviews/architecture-review-r10.md
+Resolution: review-resolution.md#architecture-review-r10
+Material findings: BFP-AR10-1
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r11
+Stage: architecture-review
+Round: 11
+Reviewed artifact: docs/architecture/system/architecture.md; docs/architecture/system/diagrams/component-boundary-proof.mmd; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md
+Status: approved
+Detailed record: reviews/architecture-review-r11.md
+Resolution: review-resolution.md#architecture-review-r11
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r12
+Stage: architecture-review
+Round: 12
+Reviewed artifact: docs/architecture/system/architecture.md; docs/architecture/system/diagrams/component-boundary-proof.mmd; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md; scripts/boundary_proof_behavior.py
+Status: changes-requested
+Detailed record: reviews/architecture-review-r12.md
+Resolution: review-resolution.md#architecture-review-r12
+Material findings: BFP-AR12-1
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r13
+Stage: architecture-review
+Round: 13
+Reviewed artifact: docs/architecture/system/architecture.md; docs/architecture/system/diagrams/component-boundary-proof.mmd; docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md; scripts/boundary_proof_behavior.py
+Status: approved
+Detailed record: reviews/architecture-review-r13.md
+Resolution: review-resolution.md#architecture-review-r13
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: plan-review-r12
+Stage: plan-review
+Round: 12
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: approved
+Detailed record: reviews/plan-review-r12.md
+Resolution: review-resolution.md#plan-review-r12
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: plan-review-r13
+Stage: plan-review
+Round: 13
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: changes-requested
+Detailed record: reviews/plan-review-r13.md
+Resolution: review-resolution.md#plan-review-r13
+Material findings: BFP-PL13-1, BFP-PL13-2
+Open findings: None
+
+### Review entry
+Review ID: plan-review-r14
+Stage: plan-review
+Round: 14
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: approved
+Detailed record: reviews/plan-review-r14.md
+Resolution: review-resolution.md#plan-review-r14
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r9
+Stage: test-spec-review
+Round: 9
+Reviewed artifact: specs/rigorloop-workflow.test.md
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r9.md
+Resolution: review-resolution.md#test-spec-review-r9
+Material findings: BFP-TSR9-1, BFP-TSR9-2
+Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r10
+Stage: test-spec-review
+Round: 10
+Reviewed artifact: specs/rigorloop-workflow.test.md
+Status: approved
+Detailed record: reviews/test-spec-review-r10.md
+Resolution: review-resolution.md#test-spec-review-r10
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r11
+Stage: test-spec-review
+Round: 11
+Reviewed artifact: specs/rigorloop-workflow.test.md
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r11.md
+Resolution: review-resolution.md#test-spec-review-r11
+Material findings: BFP-TSR11-1, BFP-TSR11-2
+Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r12
+Stage: test-spec-review
+Round: 12
+Reviewed artifact: specs/rigorloop-workflow.test.md
+Status: approved
+Detailed record: reviews/test-spec-review-r12.md
+Resolution: review-resolution.md#test-spec-review-r12
+Material findings: None
+Open findings: None
