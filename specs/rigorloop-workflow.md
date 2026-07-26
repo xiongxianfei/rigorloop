@@ -1351,7 +1351,8 @@ The report MUST contain one fenced YAML record with:
 `schema_version: boundary-capability-baseline-v1`,
 `boundary_model_version: v1`, the exact eight `evaluated_skills`, all six
 `required_check_ids`, one row for every `R28x` fixture, preservation and
-adapter-parity check rows, one `simple_change` row, `false_blocking_count`,
+adapter-parity check rows, a `support` mapping, one `simple_change` row,
+`false_blocking_count`,
 `duplicate_normative_owner_count`, `new_universal_artifact_count`,
 `simple_fixture_structure_correction_cycles`, and `overall_result`.
 Every check and fixture result uses exactly `pass`, `fail`, or `not-run`.
@@ -1389,8 +1390,8 @@ Each operation result contains exactly:
 `result_identity`.
 `dependency_results` is an ordered list whose entries contain exactly
 `operation_id` and `result_identity`.
-`result_identity` is the SHA-256 of canonical JSON serialization of the other
-eight fields.
+`result_identity` is `sha256:<64 lowercase hexadecimal characters>` computed
+from canonical JSON serialization of the other eight fields.
 Canonical JSON uses UTF-8, recursively lexicographic object keys, preserved
 list order, no insignificant whitespace, and standard JSON scalar encodings.
 The operation owner derives all nine fields from the current invocation.
@@ -1412,18 +1413,34 @@ The closed operation registry is:
 | `BFP-FX-RECOVERY-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-RECOVERY-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-RECOVERY-001` |
 | `BFP-FX-COMPOSITION-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-COMPOSITION-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-COMPOSITION-001` |
 | `BFP-FX-SIBLING-001` | stage-gate evaluator | registry plus `tests/fixtures/boundary-proof/incidents/BFP-FX-SIBLING-001.json` | derived stage, diagnostic, escape, and sibling observations | `fixtures.BFP-FX-SIBLING-001` |
-| `preservation-behavior` | skill behavior harness | the current preservation manifest and all before/after references selected by it for the exact eight R28m skills | behavior result | `preservation.behavior` |
-| `preservation-claim-boundary` | skill behavior harness | the same complete preservation manifest and references | claim-boundary result | `preservation.claim-boundary` |
-| `preservation-review-recording` | skill behavior harness | the same complete preservation manifest and references | review-recording result | `preservation.review-recording` |
-| `preservation-isolation` | skill behavior harness | the same complete preservation manifest and references | isolation result | `preservation.isolation` |
-| `preservation-handoff` | skill behavior harness | the same complete preservation manifest and references | handoff result | `preservation.handoff` |
-| `simple-change-behavior` | simple-change behavior harness and evaluator | exact candidate corpus, current four upstream skills and mapped resources, and the selected baseline commit | fresh run manifest, behavior-output snapshots, trace, and metric result | `simple_change` |
-| `adapter-parity` | adapter validator | exact current `scripts/adapter_distribution.py`, `scripts/build-adapters.py`, `scripts/validate-adapters.py`, `dist/adapters/manifest.yaml`, and canonical eight-skill/resource manifest | durable current four-surface parity manifest set | `adapter_parity` |
+| `preservation-manifest` | skill behavior harness | exact `docs/changes/<change-id>/evidence/boundary-proof-baseline.json`, its frozen pre-M2 commit, current eight skills and resources, and current behavior outputs | exact `docs/changes/<change-id>/evidence/preservation/manifest.json` plus immutable historical snapshots | `support.preservation-manifest` |
+| `preservation-behavior` | skill behavior harness | canonical preservation manifest and every reference selected by it | behavior result | `preservation.behavior` |
+| `preservation-claim-boundary` | skill behavior harness | canonical preservation manifest and every reference selected by it | claim-boundary result | `preservation.claim-boundary` |
+| `preservation-review-recording` | skill behavior harness | canonical preservation manifest and every reference selected by it | review-recording result | `preservation.review-recording` |
+| `preservation-isolation` | skill behavior harness | canonical preservation manifest and every reference selected by it | isolation result | `preservation.isolation` |
+| `preservation-handoff` | skill behavior harness | canonical preservation manifest and every reference selected by it | handoff result | `preservation.handoff` |
+| `simple-change-behavior` | simple-change behavior harness and evaluator | exact candidate corpus, current four upstream skills and mapped resources, and invocation-owned pre-run HEAD | fresh run manifest, behavior-output snapshots, trace, and metric result | `simple_change` |
+| `canonical-skill-resource-manifest` | skill validator | current exact eight R28m skills and every mapped boundary-proof resource | exact `docs/changes/<change-id>/evidence/canonical-skill-resource-manifest.json` | `support.canonical-skill-resource-manifest` |
+| `adapter-parity` | adapter validator | exact current `scripts/adapter_distribution.py`, `scripts/build-adapters.py`, `scripts/validate-adapters.py`, `dist/adapters/manifest.yaml`, and canonical skill/resource manifest | durable current four-surface parity manifest set | `adapter_parity` |
 | `boundary-adapter-parity` | adapter validator | current `adapter-parity` typed result | aggregate adapter check result | `checks.boundary-adapter-parity` |
 | `boundary-capability-baseline` | capability aggregator | every other typed result identity in this registry, ordered by this table | computed aggregate result | `checks.boundary-capability-baseline` and top-level counts/result |
 
+Before the first M2 skill mutation, the behavior harness writes exactly
+`docs/changes/<change-id>/evidence/boundary-proof-baseline.json`.
+That record contains exactly `schema_version`, `change_id`, and
+`preservation_baseline_commit`.
+`schema_version` is `boundary-proof-baseline-v1`;
+`preservation_baseline_commit` is the harness-derived pre-mutation
+`git:<40 lowercase hexadecimal characters>` from `git rev-parse HEAD`.
+If the record already exists, its fields and commit are immutable.
+Caller-provided commits and rewrites fail closed.
+
+The canonical preservation manifest path is exactly
+`docs/changes/<change-id>/evidence/preservation/manifest.json`.
 The preservation manifest contains exactly `manifest_id`, `baseline_commit`,
 `skills`, `before_refs`, and `after_refs`.
+`baseline_commit` MUST equal the frozen
+`preservation_baseline_commit`.
 `skills` is the exact ordered R28m skill list.
 `before_refs` contains entries with exactly `pair_key`, `origin_path`,
 `origin_commit`, and `snapshot_ref`.
@@ -1443,6 +1460,17 @@ Historical repository bytes are never cited directly as current evidence.
 The harness materializes them once under the immutable before root and verifies
 their origin before any preservation comparison.
 
+The canonical skill/resource manifest path is exactly
+`docs/changes/<change-id>/evidence/canonical-skill-resource-manifest.json`.
+It contains exactly `manifest_id`, `skills`, and `files`.
+`manifest_id` is `canonical-boundary-skill-resources-v1`;
+`skills` is the exact ordered R28m list; and `files` is a path-sorted list
+whose entries contain exactly `skill`, `logical_path`, `path`, and `identity`.
+It contains exactly one current `SKILL.md` entry and every current mapped
+boundary-proof resource for each skill.
+Missing, extra, duplicate, stale, unmapped, or substituted entries fail
+closed.
+
 The adapter validator creates all three non-canonical manifests in a fresh
 temporary root during the current invocation.
 Each parity manifest contains exactly `surface` and `files`;
@@ -1457,9 +1485,15 @@ binds that durable copy in `output_refs`.
 For `not-run`, `diagnostic_id` is `none`, input and output references are empty,
 and `blocking_reason` contains the required closed blocker.
 For pass/fail, `blocking_reason` is null.
-`dependency_results` is empty except for `boundary-incident-replay`,
-`boundary-adapter-parity`, and `boundary-capability-baseline`.
-Those aggregate operations list every directly aggregated child operation and
+`dependency_results` is empty except:
+
+- each preservation category depends on `preservation-manifest`;
+- `boundary-incident-replay` depends on all eight fixture operations;
+- `adapter-parity` depends on `canonical-skill-resource-manifest`;
+- `boundary-adapter-parity` depends on `adapter-parity`;
+- `boundary-capability-baseline` depends on every other registry operation.
+
+Those dependent operations list every directly consumed child operation and
 its current `result_identity`; missing, duplicated, reordered, stale, or
 substituted dependencies fail closed.
 `observations` is empty except:
@@ -1496,8 +1530,8 @@ canonical report path.
 Test-fixture evidence under `tests/fixtures/` MUST NOT satisfy canonical
 production rows.
 
-Every serialized check, preservation, adapter-parity, simple-change, and
-fixture row contains
+Every serialized check, support, preservation, adapter-parity, simple-change,
+and fixture row contains
 exactly `result`, `diagnostic_id`, `operation_identity`,
 `dependency_results`, `evidence_refs`, `blocking_reason`, and `observations`,
 plus the fixture-only observation fields already defined.
@@ -1540,6 +1574,11 @@ prompt passed to `spec#1`; `expected_branch` is `zero-correction` or
 `one-correction`; and `corrected_role` is null for zero correction or exactly
 `feature-spec` or `test-spec` for one correction.
 The scenario contains no stage result, diagnostic, trace, or aggregate count.
+`expected_branch` and `corrected_role` are comparison-only expectations.
+The harness derives events and observed results before reading either field.
+Changing either field may change only the final expectation comparison; it
+MUST NOT change invocation, produced events, structural results, observed
+results, or diagnostics.
 Every snapshot contains exactly `snapshot_id`, `source`, `artifact_role`,
 `path`, and `identity`.
 `source` is `fixture-candidate` or `behavior-output`.
@@ -1561,6 +1600,29 @@ event's `input_snapshot_ids`, `output_snapshot_ids`, or
 `reviewed_snapshot_id`.
 They define role-specific content assertions and the expected zero-correction
 or one-correction branch.
+The structural evaluator normalizes candidate and produced artifacts with the
+same R28s-R28w parser and compares these exact records:
+
+```text
+feature-spec:
+  boundary_model_version
+  boundary_model_scope
+  requirement_ids
+  core_rows
+  extension_rows
+  example_rows
+  interaction_rows
+
+test-spec:
+  boundary_model_version
+  boundary_model_scope
+  proof_rows
+  test_case_ids
+```
+
+Every list is stable-ID sorted; every row retains every governing R28 field;
+missing, additional, duplicate, unknown, or unequal normalized fields fail the
+oracle comparison.
 The structural evaluator compares produced output fields to those assertions;
 it MUST NOT require raw-byte equality or copy candidate bytes into the
 behavior-output root.
@@ -1579,13 +1641,26 @@ test-spec-review` behavior run after those skills implement the contract.
 M3 owns downstream preservation and sibling/composed-path behavior.
 M4 reruns and aggregates all current evidence.
 
+For each invocation, the behavior harness derives the pre-run HEAD itself with
+`git rev-parse HEAD`, requires a clean isolated worktree at that commit, and
+uses it as the simple-change inventory baseline.
+It MUST NOT accept a caller-selected commit.
+This invocation baseline is distinct from the frozen pre-M2 preservation
+baseline because the former measures artifacts created by the current scenario
+run while the latter measures behavior preservation across skill changes.
+
 The behavior harness writes one current run manifest containing immutable event
 results under the behavior-output root.
 The run manifest contains exactly `run_id`, `baseline_commit`,
 `before_artifact_inventory`, `after_artifact_inventory`, `snapshots`, and
 `events`.
-`baseline_commit` is exactly `git:<40 lowercase hexadecimal characters>` and
-names the commit used for the before run.
+`run_id` is `current`; the harness prepares a sibling temporary directory,
+atomically replaces the prior `current` directory only after all events,
+bundles, snapshots, inventories, and metrics validate, and preserves the prior
+complete directory on failure.
+`baseline_commit` is exactly the harness-derived
+`git:<40 lowercase hexadecimal characters>` pre-run HEAD and names the commit
+used for the before run.
 Both artifact inventories are sorted lists whose entries contain exactly
 `path`, `artifact_kind`, and `identity`.
 `artifact_kind` is exactly `feature-spec`, `test-spec`, `review-evidence`,
@@ -1594,7 +1669,8 @@ The before inventory is the complete classifier result from the
 `baseline_commit` tree; the after inventory is the complete classifier result
 from current invocation bytes.
 Both selectors cover `specs/`, `docs/proposals/`, `docs/plans/`,
-`docs/architecture/`, `docs/adr/`, and the selected change root.
+`docs/architecture/`, `docs/adr/`, and the selected change root except its
+`evidence/simple-change/current/` subtree.
 The after selector additionally covers the complete
 `<behavior-root>/artifacts/` subtree.
 Paths and identities are unique and normalized; identity is the raw-byte
@@ -1608,7 +1684,7 @@ The repository artifact classifier uses this closed ordered mapping:
 | `feature-spec` | `specs/*.md` excluding `*.test.md` | `<behavior-root>/artifacts/feature-spec/*.md` |
 | `test-spec` | `specs/*.test.md` | `<behavior-root>/artifacts/test-spec/*.md` |
 | `review-evidence` | selected change root `reviews/*.md`, `review-log.md`, or `review-resolution.md` | `<behavior-root>/artifacts/review-evidence/*.md` |
-| `other-lifecycle` | `docs/proposals/*.md`, `docs/plans/*.md`, `docs/architecture/**`, `docs/adr/*.md`, or selected `change.yaml` | the corresponding singular directory below `<behavior-root>/artifacts/` |
+| `other-lifecycle` | `docs/proposals/*.md`, `docs/plans/*.md`, `docs/architecture/**`, `docs/adr/*.md`, or selected `change.yaml` | exactly `<behavior-root>/artifacts/proposal/`, `/plan/`, `/architecture/`, `/adr/`, or `/change-record/` |
 | `non-lifecycle` | every other selected regular file | every other selected regular file |
 
 Paths matching more than one row or an unknown artifact kind fail closed.
@@ -1646,10 +1722,25 @@ feature-spec behavior output, and that feature spec's approving review
 evidence, and produces exactly one distinct corrected test-spec behavior
 output.
 `spec-review` consumes and identifies exactly one feature-spec behavior output
-and produces exactly one review-evidence snapshot.
+and produces exactly one review-evidence bundle-manifest snapshot.
 `test-spec-review` consumes and identifies exactly one test-spec behavior
 output, also consumes the final approved feature-spec behavior output plus its
-approving review evidence, and produces exactly one review-evidence snapshot.
+approving review evidence, and produces exactly one review-evidence
+bundle-manifest snapshot.
+
+Every review-evidence bundle manifest contains exactly `review_id`, `outcome`,
+`reviewed_snapshot_id`, `material_finding_ids`, and `artifact_refs`.
+`artifact_refs` is role-keyed and contains exactly one `review-record` and one
+`review-log` current path-and-identity reference.
+For `approved`, `material_finding_ids` is empty and `review-resolution` is
+absent.
+For `changes-requested` or `blocked`, `material_finding_ids` is non-empty and
+`artifact_refs` additionally contains exactly one `review-resolution`
+reference.
+The referenced files MUST satisfy the formal review-recording contract; the
+bundle manifest does not replace or weaken them.
+The review event's `evidence_refs` includes the bundle manifest and every
+`artifact_refs` member.
 `input_snapshot_ids` and `output_snapshot_ids` are ordered unique lists.
 For every event, `evidence_refs` equals the normalized path-and-identity
 projection of all referenced input and output snapshots; review events also
