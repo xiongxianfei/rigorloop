@@ -1437,9 +1437,14 @@ def _spec_request(request: str) -> dict[str, object]:
             "only for this public normalizer contract; wrappers and alternate "
             "entrypoints may claim conformance only by preserving it.`; and "
             "`compatibility-migration` -> `No legacy representation exists.` "
-            "Include governed "
-            "trim/preserve illustrations and the "
-            "`text.regression.unknown-mode` regression. Be concise: return one "
+            "Include these exact example mappings: `text.example.trim` is an "
+            "illustration governed by R1,R2 and bounded by `text.mode.valid`,"
+            "`text.outcome.value`; `text.example.preserve` is an illustration "
+            "governed by R1,R3 and bounded by `text.mode.valid`,"
+            "`text.outcome.value`; `text.example.unknown` is a regression "
+            "governed by R1,R4, bounded by `text.mode.unknown`,"
+            "`text.outcome.error`, and uses regression ID "
+            "`text.regression.unknown-mode`. Be concise: return one "
             "complete typed record, not commentary or a profile label.\n\n"
             "Request:\n" + request
         ),
