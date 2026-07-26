@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Boundary-First Proof Modeling for Published Lifecycle Skills](plans/2026-07-25-boundary-first-proof-modeling.md) | active | spec revision for fresh evidence and phased workflow proof | 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills |
+| [Boundary-First Proof Modeling for Published Lifecycle Skills](plans/2026-07-25-boundary-first-proof-modeling.md) | active | spec-review R5 for fresh evidence and phased workflow proof | 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
