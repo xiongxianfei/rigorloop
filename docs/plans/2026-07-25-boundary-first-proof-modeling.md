@@ -78,19 +78,19 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M1. Typed model, validator, fixtures, and report core
-- Current milestone state: review-requested
-- Latest review evidence: none
-- Review status: review-requested; stage=code-review; round=r1
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r1.md
+- Review status: changes-requested; stage=code-review; round=M1 R1
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: code-review M1
+- Next stage: owner decision for BFP-M1-CR4, BFP-M1-CR6, and BFP-M1-CR7
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-findings-open, owner-decisions-required, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7
 
 ## Milestones
 
 ### M1. Typed model, validator, fixtures, and report core
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Establish the closed executable projection and fail-closed proof engine before changing published skill behavior.
 - Requirements: R28-R28e, R28k, R28p-R28y, R56m, R56o-R56p
 - Files/components likely touched:
@@ -299,6 +299,7 @@ implementation authorization is requested.
 - 2026-07-25: Plan-review R2 approved the corrected four-milestone sequence.
 - 2026-07-25: Matching workflow and skill-contract test specs were amended with v1 proof maps, fixtures, commands, and milestone gates.
 - 2026-07-26: M1 added the immutable typed model, deterministic validator CLI, frozen incident registry, compact simple-change fixture, and synthetic capability aggregation proof.
+- 2026-07-26: M1 code-review R1 recorded seven findings; BFP-M1-CR4, BFP-M1-CR6, and BFP-M1-CR7 require owner decisions before correction.
 
 ## Decision log
 

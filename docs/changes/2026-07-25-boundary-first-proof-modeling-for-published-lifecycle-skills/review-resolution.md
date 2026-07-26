@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
+- Review closeout: code-review-m1-r1 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -14,10 +15,10 @@ Closeout status: closed
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`
 - Findings resolved: 14
-- Unresolved findings: 0
-- Current result: `test-spec-review-r2` approved the corrected proof maps for implementation handoff.
+- Unresolved findings: 7
+- Current result: `code-review-m1-r1` requested changes; three findings require owner decisions before automatic correction.
 
 ## Resolution Overview
 
@@ -37,6 +38,13 @@ Closeout status: closed
 | BFP-PL3 | accepted | resolved | R28y report pass and R28o resumption are separate closeout predicates. |
 | BFP-TSR1 | accepted | resolved | Canonical report validation begins in M4; M1 uses synthetic report fixtures. |
 | BFP-TSR2 | accepted | resolved | Every manual procedure ID now resolves to a complete bounded proof contract. |
+| BFP-M1-CR1 | accepted | open | Enforce stable unique example evidence IDs and per-reference requirement ownership. |
+| BFP-M1-CR2 | accepted | open | Freeze exact incident ID, omission class, and owning gate. |
+| BFP-M1-CR3 | accepted | open | Enforce the complete legacy/v1 marker and scope matrix. |
+| BFP-M1-CR4 | needs-decision | open | Select the repository-visible current-evidence representation. |
+| BFP-M1-CR5 | accepted | open | Canonicalize capability-report serialization. |
+| BFP-M1-CR6 | needs-decision | open | Select the executable incident payload and owning-gate harness. |
+| BFP-M1-CR7 | needs-decision | open | Select the simple-change workflow trace and harness owner. |
 
 ## Finding Details
 
@@ -289,3 +297,110 @@ Validation evidence: both test specs' `Boundary-first manual procedures` tables;
 No material findings.
 `test-spec-review-r2` confirmed `BFP-TSR1` and `BFP-TSR2` resolved and
 approved the active proof maps for test-driven M1 implementation.
+
+### code-review-m1-r1
+
+#### BFP-M1-CR1 - False traceability and invalid regression identities
+
+Finding ID: BFP-M1-CR1
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution M1
+Decision owner: approved R28s, R28u, and R28w contract
+Decision needed: none
+Required outcome: Bind proof requirements to referenced boundary ownership and enforce stable unique regression and discovery IDs.
+Chosen action: Apply the reviewer-provided declared-safe recipe after all M1 decisions are settled.
+Rationale: Direct probes accepted unrelated known requirements and malformed or duplicate example evidence IDs.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFP-M1-CR2 - Incident omission classes are not frozen
+
+Finding ID: BFP-M1-CR2
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution M1
+Decision owner: approved R28x registry
+Decision needed: none
+Required outcome: Freeze exact incident IDs, omission classes, and gates.
+Chosen action: Replace the gate-only mapping with the exact immutable R28x registry and add per-field mutation tests.
+Rationale: A changed non-empty omission description currently passes.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFP-M1-CR3 - Legacy parity accepts partial marker state
+
+Finding ID: BFP-M1-CR3
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution M1
+Decision owner: approved R28r matrix
+Decision needed: none
+Required outcome: Synchronize marker presence, version, scope presence, and scope equality.
+Chosen action: Implement the complete closed parity matrix and contrast tests.
+Rationale: Partial and mismatched legacy records currently pass.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFP-M1-CR4 - Report evidence identity is undefined
+
+Finding ID: BFP-M1-CR4
+Disposition: needs-decision
+Status: open
+Owner: initiative owner
+Owning stage: owner decision before review-resolution M1
+Decision owner: initiative owner
+Decision needed: Select the repository-visible current-evidence representation for pass/fail rows and the closed blocking-reason representation for not-run rows.
+Required outcome: Evidence validation rejects missing, unsafe, stale, substituted, non-regular, and wrong-kind references.
+Chosen action: pending owner decision
+Rationale: The approved implementation contract requires current evidence but does not define its persisted identity or blocking-reason shape.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFP-M1-CR5 - Report bytes depend on caller mapping order
+
+Finding ID: BFP-M1-CR5
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution M1
+Decision owner: approved deterministic report contract
+Decision needed: none
+Required outcome: Serialize semantically equivalent reports to identical bytes.
+Chosen action: Canonicalize report mapping order and add permutation tests.
+Rationale: Reordering an accepted checks mapping changes output bytes.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFP-M1-CR6 - Incident corpus is not executable
+
+Finding ID: BFP-M1-CR6
+Disposition: needs-decision
+Status: open
+Owner: initiative owner
+Owning stage: owner decision before review-resolution M1
+Decision owner: initiative owner
+Decision needed: Select the executable incident payload representation and owning-gate harness.
+Required outcome: Every exact incident is detected no later than its owning gate with escape and sibling-bypass evidence.
+Chosen action: pending owner decision
+Rationale: The approved implementation contract freezes the incidents but does not assign a payload or harness owner.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFP-M1-CR7 - Simple-change workflow evidence is asserted
+
+Finding ID: BFP-M1-CR7
+Disposition: needs-decision
+Status: open
+Owner: initiative owner
+Owning stage: owner decision before review-resolution M1
+Decision owner: initiative owner
+Decision needed: Select the simple-change trace representation and harness owner.
+Required outcome: Derive applicable-only proof mapping, artifact count, false blocking, and correction cycles from the same workflow path.
+Chosen action: pending owner decision
+Rationale: The approved implementation contract states the measurements but not the executable trace boundary.
+Validation target: code-review-m1-r2
+Validation evidence: pending

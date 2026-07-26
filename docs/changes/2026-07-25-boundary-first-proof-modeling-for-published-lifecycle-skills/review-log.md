@@ -116,3 +116,16 @@ Detailed record: reviews/test-spec-review-r2.md
 Resolution: review-resolution.md#test-spec-review-r2
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: M1 R1
+Reviewed artifact: commit a6300a9a
+Reviewed milestone: M1. Typed model, validator, fixtures, and report core
+Review scope: M1 implementation commit a6300a9a against 8da98fe1
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: BFP-M1-CR1, BFP-M1-CR2, BFP-M1-CR3, BFP-M1-CR4, BFP-M1-CR5, BFP-M1-CR6, BFP-M1-CR7
+Open findings: BFP-M1-CR1, BFP-M1-CR2, BFP-M1-CR3, BFP-M1-CR4, BFP-M1-CR5, BFP-M1-CR6, BFP-M1-CR7

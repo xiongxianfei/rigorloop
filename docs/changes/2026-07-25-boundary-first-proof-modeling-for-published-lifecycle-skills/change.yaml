@@ -81,6 +81,7 @@ changed_files:
   - tests/fixtures/boundary-proof/simple-change.json
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m1.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/implementation-m1.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r1.md
   - docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/review-log.md
@@ -107,8 +108,13 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r1.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r2.md
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 7
+  material_findings: 21
+  open_findings: 7
+  closed_findings: 14
+  code_review: reviews/code-review-m1-r1.md
+  review_log: review-log.md
 workflow:
   automation:
     mechanism: bounded-review-fix
@@ -116,7 +122,7 @@ workflow:
     run:
       run_id: run-20260725-boundary-first-verify
       change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
-      status: active
+      status: paused
       policy_version: 1
       target:
         stage: verify
@@ -125,6 +131,7 @@ workflow:
         bound_at: 2026-07-25T22:55:46Z
         completion:
           rule: fresh verification passes
+      stop_reason: owner-decision-required:BFP-M1-CR4,BFP-M1-CR6,BFP-M1-CR7
     parent_authorizations:
       authorization-authoring-run-20260725-boundary-first-verify:
         authorization_id: authorization-authoring-run-20260725-boundary-first-verify
@@ -546,6 +553,36 @@ workflow:
             - production-code
         derived_at: 2026-07-26T08:44:46Z
         status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      capability-boundary-first-code-review-m1-r1:
+        capability_id: capability-boundary-first-code-review-m1-r1
+        capability_kind: implementation
+        parent_authorization_id: authorization-implementation-run-20260725-boundary-first-verify
+        policy_version: 1
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        stage:
+          name: code-review
+          occurrence:
+            kind: milestone
+            milestone_id: M1
+        basis:
+          plan_identity: sha256:0f7eeb6a1789578eb16c7b70ec37f9bd7a3bb4d196e35f7930daf12c19789941
+          plan_review_identity: sha256:15c71b3fcc04cf9c5c4e04d5527de60e0f010ff990cebd7915d5ccadac41a4cf
+          test_spec_identity: sha256:074cd1e8df71b9972d2908d6d413b6143bfe11a5a3826caaacb4e851b65bb763
+          test_spec_review_identity: sha256:cebb6a48a53f304bbec2f12039bba2c8d29260a88e5b1e7298c92b53d7b18307
+          milestone_identity: sha256:f4f9cc6ea41f12159136d8a591510ed4a6cdfb803f52476a9549c6cdd01b1502
+          affected_paths_identity: sha256:e5f0457a0b6a70d69d48f9f535f638a3dea707a080404e03d17889e886c17e24
+          mutation_categories_identity: sha256:0548746e82625fe4f7b3bb0066836e2d755ecc86207497f34bfb02b2048efd59
+          validation_commands_identity: sha256:07a75382568030895eb17e5799944810d7e5043386f7394c3fd481e4eaebd5a2
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/
+            - docs/plans/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-26T08:48:20Z
+        status: invalidated
         invalidation:
           on_parent_revocation: invalidate
     transition_receipts:
@@ -1156,6 +1193,43 @@ workflow:
             plan-handoff: sha256:0f7eeb6a1789578eb16c7b70ec37f9bd7a3bb4d196e35f7930daf12c19789941
             implementation-diff: sha256:305e6c52d4eaf271bb5fc872e517952ab36f96711b8b860852534a1207d43de3
             validation: sha256:07a75382568030895eb17e5799944810d7e5043386f7394c3fd481e4eaebd5a2
+      transition-boundary-first-code-review-m1-r1:
+        transition_id: transition-boundary-first-code-review-m1-r1
+        transition_key: sha256:a52f0cdb2cdd9a998edb2f5d4a801b53b69c31488eb17bee10e53fe215bf9afb
+        policy_version: 1
+        run_id: run-20260725-boundary-first-verify
+        change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+        from_position: implement
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-25T22:55:46Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: capability-boundary-first-code-review-m1-r1
+        retry_policy: reconcile-only
+        input_identities:
+          plan: sha256:0f7eeb6a1789578eb16c7b70ec37f9bd7a3bb4d196e35f7930daf12c19789941
+          milestone: sha256:f4f9cc6ea41f12159136d8a591510ed4a6cdfb803f52476a9549c6cdd01b1502
+          implementation-diff: sha256:a6300a9a
+          validation: sha256:07a75382568030895eb17e5799944810d7e5043386f7394c3fd481e4eaebd5a2
+          source_milestone_id: M1
+          source_milestone_identity: sha256:f4f9cc6ea41f12159136d8a591510ed4a6cdfb803f52476a9549c6cdd01b1502
+          plan_identity: sha256:0f7eeb6a1789578eb16c7b70ec37f9bd7a3bb4d196e35f7930daf12c19789941
+        expected_postcondition:
+          completion_rule: milestone review is approved and resolution is closed
+          required_evidence:
+            - code-review
+            - plan-handoff
+            - review-resolution
+        status: paused
+        outputs:
+          -
+            path: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m1-r1.md
+            identity: sha256:ad1dd912e810373776b84649474a2b66c82d8ab08f34eb658b0d9194fa8c31be
+        canonical_sync:
+          status: failed
     canonical_position_source: plan-current-handoff-summary
     observed_identities:
       plan: sha256:0f7eeb6a1789578eb16c7b70ec37f9bd7a3bb4d196e35f7930daf12c19789941
