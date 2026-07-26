@@ -3413,12 +3413,6 @@ def _feature_inventory(
         if not isinstance(data, list) or not (
             next_cursor is None or isinstance(next_cursor, str)
         ):
-            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-                print(
-                    "credential-environment:",
-                    repr(environment_values),
-                    file=sys.stderr,
-                )
             raise BoundaryRuntimeError(
                 "feature-pagination-invalid", "pre-turn-start"
             )
@@ -3935,6 +3929,13 @@ def _collect_runtime_attestation(
             env=environment,
         )
         if environment_probe.returncode != 0:
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    "credential-environment-command:",
+                    environment_probe.returncode,
+                    environment_probe.stderr,
+                    file=sys.stderr,
+                )
             raise BoundaryRuntimeError(
                 "credential-isolation-failed", "pre-turn-start"
             )
@@ -3953,6 +3954,12 @@ def _collect_runtime_attestation(
             or canary in environment_probe.stdout
             or canary in environment_probe.stderr
         ):
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    "credential-environment-values:",
+                    repr(environment_values),
+                    file=sys.stderr,
+                )
             raise BoundaryRuntimeError(
                 "credential-isolation-failed", "pre-turn-start"
             )
