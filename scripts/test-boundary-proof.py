@@ -1628,20 +1628,21 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
 
     def test_stage_output_rejects_label_only_generation(self) -> None:
+        feature_model, _ = _portable_text_contract()
         accepted = {
             "agent_message": json.dumps(
-                {"artifact_markdown": "# Complete stage-owned artifact\n"}
+                {"feature_model": feature_model}
             )
         }
-        payload = _load_generated_payload(accepted, {"artifact_markdown"})
-        self.assertIn("artifact_markdown", payload)
+        payload = _load_generated_payload(accepted, {"feature_model"})
+        self.assertIn("feature_model", payload)
         label_only = {
             "agent_message": json.dumps(
                 {"feature_profile": "complete-boundary-first-v1"}
             )
         }
         with self.assertRaises(BoundaryRuntimeError) as raised:
-            _load_generated_payload(label_only, {"artifact_markdown"})
+            _load_generated_payload(label_only, {"feature_model"})
         self.assertEqual(
             raised.exception.diagnostic_id, "unexpected-prohibited-event"
         )

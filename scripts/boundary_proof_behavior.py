@@ -1151,6 +1151,97 @@ def _closed_object_schema(properties: Mapping[str, object]) -> dict[str, object]
     }
 
 
+def _string_array_schema() -> dict[str, object]:
+    return {"type": "array", "items": {"type": "string"}}
+
+
+def _feature_model_schema() -> dict[str, object]:
+    boundary_row = _closed_object_schema(
+        {
+            "dimension_id": {"type": "string"},
+            "applicability": {
+                "type": "string",
+                "enum": ["applicable", "not-applicable"],
+            },
+            "governing_requirement_ids": _string_array_schema(),
+            "boundary_ids": _string_array_schema(),
+            "non_applicability_rationale": {
+                "type": ["string", "null"]
+            },
+        }
+    )
+    example_row = _closed_object_schema(
+        {
+            "example_id": {"type": "string"},
+            "role": {
+                "type": "string",
+                "enum": [
+                    "illustration",
+                    "regression",
+                    "discovery-gap",
+                    "non-normative",
+                ],
+            },
+            "governing_requirement_ids": _string_array_schema(),
+            "boundary_ids": _string_array_schema(),
+            "regression_id": {"type": ["string", "null"]},
+            "discovery_gap": {"type": ["string", "null"]},
+            "non_normative_purpose": {"type": ["string", "null"]},
+        }
+    )
+    interaction_row = _closed_object_schema(
+        {
+            "interaction_id": {"type": "string"},
+            "boundary_ids": _string_array_schema(),
+            "rationale": {"type": "string"},
+            "governing_requirement_ids": _string_array_schema(),
+        }
+    )
+    return _closed_object_schema(
+        {
+            "boundary_model_version": {"type": "string", "const": "v1"},
+            "boundary_model_scope": {"type": "string", "const": "R1-R4"},
+            "core_dimensions": {
+                "type": "array",
+                "items": boundary_row,
+                "minItems": 12,
+                "maxItems": 12,
+            },
+            "extensions": {"type": "array", "items": boundary_row},
+            "examples": {"type": "array", "items": example_row},
+            "interactions": {"type": "array", "items": interaction_row},
+        }
+    )
+
+
+def _proof_map_schema() -> dict[str, object]:
+    proof_row = _closed_object_schema(
+        {
+            "proof_obligation_id": {"type": "string"},
+            "governing_requirement_ids": _string_array_schema(),
+            "boundary_or_interaction_ids": _string_array_schema(),
+            "test_case_ids": _string_array_schema(),
+            "automation_level": {
+                "type": "string",
+                "enum": ["automated", "manual", "hybrid"],
+            },
+            "manual_procedure_ids": _string_array_schema(),
+        }
+    )
+    return _closed_object_schema(
+        {
+            "boundary_model_version": {"type": "string", "const": "v1"},
+            "boundary_model_scope": {"type": "string", "const": "R1-R4"},
+            "proof_obligations": {
+                "type": "array",
+                "items": proof_row,
+                "minItems": 4,
+                "maxItems": 4,
+            },
+        }
+    )
+
+
 def _route_request(request: str) -> dict[str, object]:
     return {
         "skill_names": ["workflow"],
@@ -1188,7 +1279,7 @@ def _spec_request(request: str) -> dict[str, object]:
         "prompt": (
             "Use the installed spec skill to author the complete feature spec "
             "for the request below. Do not use tools or repository files. The "
-            "Markdown itself is the stage-owned artifact. It must include "
+            "typed record itself is the stage-owned semantic artifact. It must include "
             "Status, R1-R4 requirements, Boundary model version/scope, all "
             "twelve closed core-dimension rows with explicit applicability or "
             "non-applicability, governed examples, interactions, and "
@@ -1206,18 +1297,11 @@ def _spec_request(request: str) -> dict[str, object]:
             "public function owns the behavior.`, and `No legacy representation "
             "exists.` Include governed trim/preserve illustrations and the "
             "`text.regression.unknown-mode` regression. Be concise: return one "
-            "complete artifact under 4,500 characters, not commentary or a "
-            "profile label.\n\n"
+            "complete typed record, not commentary or a profile label.\n\n"
             "Request:\n" + request
         ),
         "output_schema": _closed_object_schema(
-            {
-                "artifact_markdown": {
-                    "type": "string",
-                    "minLength": 500,
-                    "maxLength": 4500,
-                }
-            }
+            {"feature_model": _feature_model_schema()}
         ),
     }
 
@@ -1279,7 +1363,8 @@ def _test_spec_request(
         "prompt": (
             "Use the installed test-spec skill to author the complete proof map "
             "for the approved feature spec below. Do not use tools or repository "
-            "files. The Markdown itself is the stage-owned artifact. Map every "
+            "files. The typed proof record itself is the stage-owned semantic "
+            "artifact. Map every "
             "applicable boundary to concrete tests and do not create obligations "
             "for explicitly non-applicable dimensions. Include Boundary model "
             "version/scope, proof obligations, and T1-T3 test cases. Use the "
@@ -1289,7 +1374,7 @@ def _test_spec_request(
             "T1-T3 cases. T1 covers trim plus canonical/mode/outcome/evidence; "
             "T2 covers every unknown mode plus canonical/mode/outcome/evidence; "
             "T3 covers preserve plus outcome/evidence. Return the artifact, not "
-            "a profile label, and keep it under 3,000 characters.\n\nRequest:\n"
+            "a profile label.\n\nRequest:\n"
             + request
             + "\n\nApproved feature spec:\n"
             + feature_markdown
@@ -1297,13 +1382,7 @@ def _test_spec_request(
             + review_record
         ),
         "output_schema": _closed_object_schema(
-            {
-                "artifact_markdown": {
-                    "type": "string",
-                    "minLength": 400,
-                    "maxLength": 3000,
-                }
-            }
+            {"proof_map": _proof_map_schema()}
         ),
     }
 
@@ -1760,24 +1839,26 @@ def _assemble_run(
     final_prefix = (
         f"docs/changes/{change_id}/evidence/simple-change/runs/{run_id}"
     )
-    feature_markdown = payload.get("feature_markdown")
-    test_spec_markdown = payload.get("test_spec_markdown")
+    feature_payload = payload.get("feature_model")
+    proof_payload = payload.get("proof_map")
     spec_review_payload = payload.get("spec_review")
     test_review_payload = payload.get("test_spec_review")
     provenance = payload.get("stage_provenance")
     if (
-        not isinstance(feature_markdown, str)
-        or not isinstance(test_spec_markdown, str)
+        not isinstance(feature_payload, dict)
+        or not isinstance(proof_payload, dict)
         or not isinstance(spec_review_payload, dict)
         or not isinstance(test_review_payload, dict)
         or not isinstance(provenance, list)
     ):
         raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
     try:
-        feature_raw = feature_markdown.encode("utf-8")
-        test_raw = test_spec_markdown.encode("utf-8")
-    except UnicodeError as error:
-        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn") from error
+        feature_raw = _render_feature_markdown(feature_payload).encode("utf-8")
+        test_raw = _render_test_spec_markdown(
+            proof_payload, feature_payload
+        ).encode("utf-8")
+    except (UnicodeError, BoundaryProofError) as error:
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn") from error
     try:
         parsed_feature = normalize_feature_model(
             _parse_feature_markdown(feature_raw.decode("utf-8"))
@@ -2550,10 +2631,15 @@ def generate_behavior(
     spec_attestation, spec_result = invoke(
         _spec_request(str(scenario["request"]))
     )
-    spec_payload = _load_generated_payload(spec_result, {"artifact_markdown"})
-    feature_markdown = spec_payload.get("artifact_markdown")
-    if not isinstance(feature_markdown, str):
-        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+    spec_payload = _load_generated_payload(spec_result, {"feature_model"})
+    feature_model = spec_payload.get("feature_model")
+    if not isinstance(feature_model, dict):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    try:
+        normalized_feature = normalize_feature_model(feature_model)
+        feature_markdown = _render_feature_markdown(feature_model)
+    except BoundaryProofError as error:
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn") from error
     feature_identity = _sha256(feature_markdown.encode("utf-8"))
 
     spec_review_attestation, spec_review_result = invoke(
@@ -2581,12 +2667,17 @@ def generate_behavior(
             str(spec_review_payload["review_record_markdown"]),
         )
     )
-    test_spec_payload = _load_generated_payload(
-        test_spec_result, {"artifact_markdown"}
-    )
-    test_spec_markdown = test_spec_payload.get("artifact_markdown")
-    if not isinstance(test_spec_markdown, str):
-        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+    test_spec_payload = _load_generated_payload(test_spec_result, {"proof_map"})
+    proof_map = test_spec_payload.get("proof_map")
+    if not isinstance(proof_map, dict):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    try:
+        normalize_proof_map(proof_map, normalized_feature)
+        test_spec_markdown = _render_test_spec_markdown(
+            proof_map, feature_model
+        )
+    except BoundaryProofError as error:
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn") from error
     test_spec_identity = _sha256(test_spec_markdown.encode("utf-8"))
 
     test_review_attestation, test_review_result = invoke(
@@ -2633,9 +2724,9 @@ def generate_behavior(
     ) != 5:
         raise BoundaryRuntimeError("thread-metadata-mismatch", "in-turn")
     payload = {
-        "feature_markdown": feature_markdown,
+        "feature_model": feature_model,
         "spec_review": spec_review_payload,
-        "test_spec_markdown": test_spec_markdown,
+        "proof_map": proof_map,
         "test_spec_review": test_review_payload,
         "stage_provenance": [
             {
