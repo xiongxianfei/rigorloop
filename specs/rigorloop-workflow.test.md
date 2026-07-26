@@ -58,7 +58,7 @@ Boundary model scope: R28-R28z
 | Boundary ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted with scoped transport supersession | `sha256:0bd0cc5b7964b45f61b020b31c6781d360d072e15120feaf2a7f106cae05df15` |
 | Transport ADR | `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` | accepted by architecture-review R18 | `sha256:c363bc2e8663c4f740a7fc7fc760b32bedfbc52a22fbc0d8f163d7048f9c43fb` |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted with scoped writable-child supersession | `sha256:b80c4a494ae1e08abea77d74fb270a959ebbde5cf5e01e1f8606791f0e0b5434` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; test-spec review is next | `sha256:67bfbc3b358cda0cfbaa93aa3492f4642fab41440e75ec05b48b92aa645ddbd6` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; test-spec review is next | `sha256:505709b9a8830fa580faa16a5f708792e96122515b8612abb788742eaed4b7a5` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r15.md` | approved | `sha256:0af0b98c1c3ebf31da237f043779c27f0b42d48f2292f4ed0c89224d5e5e23f4` |
 
 ## Testing strategy
@@ -1534,25 +1534,31 @@ Boundary model scope: R28-R28z
 - Covers: R28y
 - Level: integration
 - Command IDs: CMD-BFP-9, CMD-BFP-11, CMD-BFP-12
-- Fixture/setup: Crash injection before prepared-receipt creation, after
-  successful staged-run/current-input validation but before receipt creation,
-  after receipt fsync, before and after immutable-run installation, after
-  installed-run validation, pointer replacement, parent-directory fsync, and
-  receipt cleanup; malformed, incomplete, identity-mismatched, and
-  stale-input staged-run fixtures;
+- Fixture/setup: Crash injection after successful working-run validation but
+  before staging rename, after successful staged-run/current-input validation
+  but before receipt creation, after receipt fsync, before and after
+  immutable-run installation, after installed-run validation, pointer
+  replacement, parent-directory fsync, and receipt cleanup; malformed or
+  inconsistent working-run events, bundles, snapshots, inventories, and
+  metrics; malformed, incomplete, identity-mismatched, and stale-input
+  staged-run fixtures;
   exact global discovery fixtures and `clean`, `lease-acquired`, `generating`,
   `staged-unreceipted`, `prepared-staged`, `prepared-installed`,
   `prepared-pointer-temporary`, `prepared-pointed`, `published-owned`,
   `published`, `conflict`, and `corrupt` candidate fixtures.
-- Steps: Build and fsync the working run, rename and fsync it as the
-  non-authoritative staged run, then validate the complete staged run and
-  current input identities before publication begins. For each malformed,
+- Steps: Build and fsync the working run, then validate all of its events,
+  bundles, snapshots, inventories, and metrics before any staging rename. For
+  each malformed or inconsistent working-run object, assert failure before
+  staging rename. After successful working-run validation, rename and fsync it
+  as the non-authoritative staged run, then validate the complete staged run
+  and current input identities before publication begins. For each malformed,
   incomplete, identity-mismatched, and stale-input staged run, assert failure
-  before receipt creation. Interrupt after successful staged validation but
-  before receipt creation, after durable receipt but before immutable
-  installation, after installation/fsync, after installed-run validation,
-  after pointer replacement, after parent-directory fsync, and after receipt
-  cleanup. Resume against the original inputs; inspect
+  before receipt creation. Interrupt after successful working-run validation
+  but before staging rename, after successful staged validation but before
+  receipt creation, after durable receipt but before immutable installation,
+  after installation/fsync, after installed-run validation, after pointer
+  replacement, after parent-directory fsync, and after receipt cleanup. Resume
+  against the original inputs; inspect
   deterministic staging, installed run, prepared receipt, current pointer, and
   directory durability; distinguish the historical staged-manifest snapshot
   from the prospective immutable target descriptor; test a null prior pointer
@@ -1604,12 +1610,15 @@ Boundary model scope: R28-R28z
   Mutate each completed-history basis, state, completion, and quarantine
   invariant and keep every nonterminal or malformed object in the active set,
   where it conflicts or fails closed rather than being ignored as history.
-- Expected result: The only publication order is build/fsync working and
-  staged bytes; validate the complete staged run and current input identities;
-  exclusively write/fsync the prepared receipt; install/fsync and validate the
-  immutable run; replace/fsync the pointer; reconcile and remove/fsync the
-  receipt. Invalid or stale staging leaves no prepared receipt, immutable
-  installation, pointer mutation, or lifecycle reinvocation. Resume
+- Expected result: The only publication order is build/fsync working bytes;
+  validate working-run events, bundles, snapshots, inventories, and metrics;
+  rename/fsync staging; validate the complete staged run and current input
+  identities; exclusively write/fsync the prepared receipt; install/fsync and
+  validate the immutable run; replace/fsync the pointer; reconcile and
+  remove/fsync the receipt. Invalid working-run contents leave no staging
+  rename, prepared receipt, immutable installation, pointer mutation, or
+  lifecycle reinvocation. Invalid or stale staging leaves no prepared receipt,
+  immutable installation, pointer mutation, or lifecycle reinvocation. Resume
   reconciles valid evidence without reinvoking skills, never installs or
   points at a partial run, never installs without a durable exclusive receipt,
   never loses the prior immutable pointer, and fails closed before generation
