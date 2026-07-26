@@ -25,7 +25,7 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r29.md` (changes requested; revision in progress)
+- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r30.md` (changes requested; revision in progress)
 - Architecture: `docs/architecture/system/architecture.md`
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md`
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
@@ -35,7 +35,9 @@ resumes.
 
 ## Context and orientation
 
-The approved specs remain normative.
+The approved baseline outside the focused R28y amendment remains normative.
+The focused R28y feature and proof text is draft until spec and test-spec
+rereview approve it.
 `scripts/boundary_proof_model.py` will be their immutable typed projection and
 pure aggregate evaluator.
 `scripts/boundary_proof_behavior.py` will be the standalone hermetic behavior
@@ -82,12 +84,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r29.md
-- Review status: changes-requested; stage=spec-review; round=r29
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r30.md
+- Review status: changes-requested; stage=spec-review; round=r30
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec-review R30 for global publication and recovery closure
+- Next stage: spec-review R31 for transport evidence and recovery closure
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=6; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR-R30-1,BFP-SR-R30-2,BFP-SR-R30-3
 
 ## Milestones
 
