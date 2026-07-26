@@ -6,6 +6,7 @@ Closeout status: open
 
 - Review closeout: code-review-m1-r1 open
 - Review closeout: spec-review-r3 open
+- Review closeout: spec-review-r4 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -16,10 +17,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`
 - Findings resolved: 14
 - Unresolved findings: 10
-- Current result: `spec-review-r3` requested deterministic rule, trace, metric, and evidence-receipt contracts before M1 correction.
+- Current result: `spec-review-r4` kept BFP-SR3-1 through BFP-SR3-3 open and required fresh recomputation plus phase-appropriate proof.
 
 ## Resolution Overview
 
@@ -335,6 +336,12 @@ Chosen action: Add one exact incident rule table and make fixture labels non-aut
 Rationale: The first amendment still required evaluator-authored mappings.
 Validation target: spec-review-r4
 Validation evidence: pending
+
+### spec-review-r4
+
+No new material findings.
+`spec-review-r4` kept `BFP-SR3-1`, `BFP-SR3-2`, and `BFP-SR3-3` open because
+their first correction remained incomplete.
 
 #### BFP-SR3-2 - Simple-change observations are not computable
 
