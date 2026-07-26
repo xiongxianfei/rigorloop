@@ -13,6 +13,7 @@ Closeout status: open
 - Review closeout: spec-review-r8 open
 - Review closeout: spec-review-r9 open
 - Review closeout: spec-review-r10 open
+- Review closeout: spec-review-r11 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -23,10 +24,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`
 - Findings resolved: 17
 - Unresolved findings: 8
-- Current result: `spec-review-r10` kept BFP-SR9-1 open only for immutable prior-pointer history and complete behavior-implementation identity.
+- Current result: `spec-review-r11` resolved prior-pointer history and kept BFP-SR9-1 open for transitive implementation and exact environment identity.
 
 ## Resolution Overview
 
@@ -384,6 +385,13 @@ No new material findings.
 validation, pointer/run binding, dependency reconstruction, and inventory
 rules, while retaining `BFP-SR9-1` for an immutable prior-pointer value and an
 exact execution-affecting implementation manifest.
+
+### spec-review-r11
+
+No new material findings.
+`spec-review-r11` confirmed inline prior-pointer recovery but retained
+`BFP-SR9-1` because the manual implementation list omitted imported workflow
+modules, governing repository instructions, and exact environment derivation.
 
 ### spec-review-r3
 

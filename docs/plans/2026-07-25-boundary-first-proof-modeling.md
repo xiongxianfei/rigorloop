@@ -79,10 +79,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M1. Typed model, validator, fixtures, and report core
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r10.md
-- Review status: changes-requested; stage=spec-review; round=r10
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r11.md
+- Review status: changes-requested; stage=spec-review; round=r11
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: spec-review R11
+- Next stage: spec revision for transitive implementation identity
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-SR9-1
 
@@ -317,6 +317,7 @@ implementation authorization is requested.
 - 2026-07-26: The R10 candidate separates one-shot behavior generation from deterministic recorded-run validation, binds immutable evidence to an exact current input set, and reconciles prepared publication without repeating skills or accepting stale pointers.
 - 2026-07-26: Spec-review R10 retained BFP-SR9-1 only for immutable prior-pointer history and complete behavior-harness/orchestration implementation identity.
 - 2026-07-26: The R11 candidate stores the prior pointer as immutable inline history and binds every behavior-affecting workflow, harness, capture, serialization, evaluation, contract, and runtime input through one closed implementation manifest.
+- 2026-07-26: Spec-review R11 retained BFP-SR9-1 because the manual component list omitted transitive workflow imports, governing instructions, and exact environment derivation.
 
 ## Decision log
 
